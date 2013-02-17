@@ -7,13 +7,19 @@
 		<version>1.0-SNAPSHOT</version>
 		<relativePath>../mini2Dx-parent/pom.xml</relativePath>
 	</parent>
-	<artifactId>mini2Dx-core</artifactId>
+	<artifactId>mini2Dx-tiled</artifactId>
 	<packaging>jar</packaging>
 
-	<name>mini2Dx-core</name>
+	<name>mini2Dx-tiled</name>
 	<url>http://www.mini2dx.org</url>
 
 	<dependencies>
+		<!-- mini2Dx -->
+		<dependency>
+			<groupId>org.mini2Dx</groupId>
+			<artifactId>mini2Dx-core</artifactId>
+		</dependency>
+
 		<!-- LibGDX -->
 		<dependency>
 			<groupId>com.badlogic.gdx</groupId>
@@ -35,7 +41,7 @@
 
 	<build>
 
-		<finalName>mini2Dx-core</finalName>
+		<finalName>mini2Dx-tiled</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>

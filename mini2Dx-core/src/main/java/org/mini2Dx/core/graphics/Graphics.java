@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Implements graphics rendering functionality
@@ -202,6 +203,37 @@ public class Graphics {
 	}
 
 	/**
+	 * Draws a texture to this graphics context
+	 * 
+	 * @param texture
+	 *            The {@link Texture} to draw
+	 * @param x
+	 *            The x coordinate to draw at
+	 * @param y
+	 *            The y coordinate to draw at
+	 */
+	public void drawTexture(Texture texture, float x, float y) {
+		beginRendering();
+		spriteBatch.draw(texture, (x * scaleX), (y * scaleY), 0, 0,
+				texture.getWidth(), texture.getHeight(), scaleX, scaleY, 0, 0,
+				0, texture.getWidth(), texture.getHeight(), false, false);
+	}
+	
+	/**
+	 * Draws a texture region to this graphics context
+	 * @param textureRegion The {@link TextureRegion} to draw
+	 * @param x
+	 *            The x coordinate to draw at
+	 * @param y
+	 *            The y coordinate to draw at
+	 */
+	public void drawTextureRegion(TextureRegion textureRegion, float x, float y) {
+		beginRendering();
+		spriteBatch.draw(textureRegion, (x * scaleX), (y * scaleY), 0, 0, textureRegion.getRegionWidth(),
+				textureRegion.getRegionHeight(), scaleX, scaleY, 0);
+	}
+
+	/**
 	 * Draws a {@link Sprite} with all transformations applied to this graphics
 	 * context
 	 * 
@@ -209,6 +241,7 @@ public class Graphics {
 	 *            The {@link Sprite} to draw
 	 */
 	public void drawSprite(Sprite sprite) {
+		beginRendering();
 		float x = sprite.getX();
 		float y = sprite.getY();
 		sprite.setPosition(x * scaleX, y * scaleY);
@@ -313,8 +346,8 @@ public class Graphics {
 			camera.rotate(-rotation);
 		}
 		camera.update();
-		
-		if(font != null) {
+
+		if (font != null) {
 			font.setScale(1f, 1f);
 		}
 	}

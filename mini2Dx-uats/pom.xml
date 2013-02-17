@@ -19,6 +19,10 @@
 			<groupId>org.mini2Dx</groupId>
 			<artifactId>mini2Dx-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.mini2Dx</groupId>
+			<artifactId>mini2Dx-tiled</artifactId>
+		</dependency>
 
 		<!-- LibGDX -->
 		<dependency>
@@ -36,16 +40,6 @@
 		<dependency>
 			<groupId>com.badlogic.gdx</groupId>
 			<artifactId>gdx-backend-lwjgl-natives</artifactId>
-		</dependency>
-
-		<!-- LWJGL -->
-		<dependency>
-			<groupId>org.lwjgl.lwjgl</groupId>
-			<artifactId>lwjgl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.lwjgl.lwjgl</groupId>
-			<artifactId>lwjgl_util</artifactId>
 		</dependency>
 	</dependencies>
 
