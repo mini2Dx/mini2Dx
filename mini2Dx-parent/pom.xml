@@ -1,0 +1,168 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.mini2Dx</groupId>
+	<artifactId>mini2Dx-parent</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>mini2Dx-parent</name>
+	<url>http://www.mini2dx.org</url>
+
+	<properties>
+		<lwjgl.version>2.8.5</lwjgl.version>
+		<libgdx.version>0.9.8</libgdx.version>
+	</properties>
+
+	<dependencies>
+		<!-- Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jmock</groupId>
+			<artifactId>jmock-junit4</artifactId>
+			<version>2.5.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jmock</groupId>
+			<artifactId>jmock-legacy</artifactId>
+			<version>2.5.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- mini2Dx -->
+			<dependency>
+				<groupId>org.mini2Dx</groupId>
+				<artifactId>mini2Dx-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<!-- LibGDX -->
+			<dependency>
+				<groupId>com.badlogic.gdx</groupId>
+				<artifactId>gdx</artifactId>
+				<version>${libgdx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.badlogic.gdx</groupId>
+				<artifactId>gdx-natives</artifactId>
+				<version>${libgdx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.badlogic.gdx</groupId>
+				<artifactId>gdx-backend-lwjgl</artifactId>
+				<version>${libgdx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.badlogic.gdx</groupId>
+				<artifactId>gdx-backend-lwjgl-natives</artifactId>
+				<version>${libgdx.version}</version>
+			</dependency>
+
+			<!-- LWJGL -->
+			<dependency>
+				<groupId>org.lwjgl.lwjgl</groupId>
+				<artifactId>lwjgl</artifactId>
+				<version>${lwjgl.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.lwjgl.lwjgl</groupId>
+				<artifactId>lwjgl_util</artifactId>
+				<version>${lwjgl.version}</version>
+			</dependency>
+
+			<!-- Apache Commons -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.1</version>
+			</dependency>
+
+			<!-- Logging -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.6.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.6.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.simpleframework</groupId>
+				<artifactId>simple-xml</artifactId>
+				<version>2.6.9</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<configuration>
+					<targetJdk>1.6</targetJdk>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+
+	<modules>
+		<module>../mini2Dx-core</module>
+		<module>../mini2Dx-uats</module>
+	</modules>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>onejar-maven-plugin.googlecode.com</id>
+			<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<repositories>
+		<repository>
+			<id>mini2Dx-thirdparty</id>
+			<name>mini2Dx-thirdparty</name>
+			<url>http://mini2dx.org/nexus/content/repositories/thirdparty</url>
+		</repository>
+		<repository>
+			<id>mini2Dx</id>
+			<name>mini2Dx</name>
+			<url>http://mini2dx.org/nexus/content/repositories/releases</url>
+		</repository>
+	</repositories>
+</project>
