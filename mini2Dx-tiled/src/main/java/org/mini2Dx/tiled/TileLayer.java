@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Represents a tile layer with in a {@link TiledMap}
  *
  * @author Thomas Cashman
  */
@@ -24,40 +24,80 @@ public class TileLayer {
 	private int [][] tiles;
 	private Map<String, String> properties;
 	
+	/**
+	 * Returns if the layer contains the specified property
+	 * @param propertyName The property name to search for
+	 * @return True if the layer contains the property
+	 */
 	public boolean containsProperty(String propertyName) {
 		if(properties == null)
 			return false;
 		return properties.containsKey(propertyName);
 	}
-	
+
+	/**
+	 * Returns the value of a specified property
+	 * @param propertyName The property name to search for
+	 * @return Null if there is no such property
+	 */
 	public String getProperty(String propertyName) {
 		if(properties == null)
 			return null;
 		return properties.get(propertyName);
 	}
 	
+	/**
+	 * Sets the value of a specified property
+	 * @param propertyName The property name to set the value for
+	 * @param value The value of the property to set
+	 */
 	public void setProperty(String propertyName, String value) {
 		if(properties == null)
 			properties = new HashMap<String, String>();
 		properties.put(propertyName, value);
 	}
 	
+	/**
+	 * Returns the name of this layer
+	 * @return Null if there is no name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Sets the name of this layer
+	 * @param name The name to set
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 	
+	/**
+	 * Returns the tile id at a given coordinate on the layer
+	 * @param x The x coordinate in tiles
+	 * @param y The y coordinate in tiles
+	 * @return 0 if there is no tile
+	 */
 	public int getTileId(int x, int y) {
 		return tiles[x][y];
 	}
 	
+	/**
+	 * Sets the tile id at a given coordinate on the layer
+	 * @param x The x coordinate in tiles
+	 * @param y The y coordinate in tiles
+	 * @param id 0 if there is no tile
+	 */
 	public void setTileId(int x, int y, int id) {
 		tiles[x][y] = id;
 	}
 
+	/**
+	 * Sets the dimensions of this layer
+	 * @param width The width in tiles
+	 * @param height The height in tiles
+	 */
 	public void setDimensions(int width, int height) {
 		tiles = new int[width][height];
 	}

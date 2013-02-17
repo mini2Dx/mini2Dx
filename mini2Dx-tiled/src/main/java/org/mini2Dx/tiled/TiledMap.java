@@ -79,10 +79,37 @@ public class TiledMap implements TiledParserListener {
 		parser.parse(fileHandle);
 	}
 
+	/**
+	 * Draws the entire map at the specified coordinates
+	 * @param g The {@link Graphics} context available for rendering
+	 * @param x The x coordinate to render at
+	 * @param y The y coordinate to render at
+	 */
 	public void draw(Graphics g, int x, int y) {
 		draw(g, x, y, 0, 0, width, height);
 	}
+	
+	/**
+	 * Draws a layer of the map at the specified coordinates
+	 * @param g The {@link Graphics} context available for rendering
+	 * @param x The x coordinate to render at
+	 * @param y The y coordinate to render at
+	 * @param layer The layer index to render
+	 */
+	public void draw(Graphics g, int x, int y, int layer) {
+		draw(g, x, y, 0, 0, width, height, layer);
+	}
 
+	/**
+	 * Draws a section of the map at the specified coordinates
+	 * @param g The {@link Graphics} context available for rendering
+	 * @param x The x coordinate to render at
+	 * @param y The y coordinate to render at
+	 * @param startTileX The x tile coordinate in the map to start from
+	 * @param startTileY The y tile coordinate in the map to start from
+	 * @param width The amount of tiles across the x axis to render
+	 * @param height The amount of tiles across the y axis to render
+	 */
 	public void draw(Graphics g, int x, int y, int startTileX, int startTileY,
 			int width, int height) {
 		for (int i = 0; i < tileLayers.size(); i++) {
@@ -90,6 +117,17 @@ public class TiledMap implements TiledParserListener {
 		}
 	}
 
+	/**
+	 * Draws a section of a specified layer of the map at the specified coordinates
+	 * @param g The {@link Graphics} context available for rendering
+	 * @param x The x coordinate to render at
+	 * @param y The y coordinate to render at
+	 * @param startTileX The x tile coordinate in the map to start from
+	 * @param startTileY The y tile coordinate in the map to start from
+	 * @param width The amount of tiles across the x axis to render
+	 * @param height The amount of tiles across the y axis to render
+	 * @param layer The layer index to render
+	 */
 	public void draw(Graphics g, int x, int y, int startTileX, int startTileY,
 			int width, int height, int layer) {
 		drawLayer(g, tileLayers.get(layer), x, y, startTileX, startTileY,
@@ -139,18 +177,33 @@ public class TiledMap implements TiledParserListener {
 		onLayerRendered(layer, startTileX, startTileY, width, height);
 	}
 
+	/**
+	 * Returns if the map contains the specified property
+	 * @param propertyName The property name to search for
+	 * @return True if the map contains the property
+	 */
 	public boolean containsProperty(String propertyName) {
 		if (properties == null)
 			return false;
 		return properties.containsKey(propertyName);
 	}
 
+	/**
+	 * Returns the value of a specified property
+	 * @param propertyName The property name to search for
+	 * @return Null if there is no such property
+	 */
 	public String getProperty(String propertyName) {
 		if (properties == null)
 			return null;
 		return properties.get(propertyName);
 	}
 
+	/**
+	 * Sets the value of a specified property
+	 * @param propertyName The property name to set the value for
+	 * @param value The value of the property to set
+	 */
 	public void setProperty(String propertyName, String value) {
 		if (properties == null)
 			properties = new HashMap<String, String>();
@@ -201,34 +254,66 @@ public class TiledMap implements TiledParserListener {
 		this.objectGroups.add(parsedObjectGroup);
 	}
 
+	/**
+	 * Returns the {@link Orientation} of this map
+	 * @return
+	 */
 	public Orientation getOrientation() {
 		return orientation;
 	}
 
+	/**
+	 * Returns the width of the map in tiles
+	 * @return
+	 */
 	public int getWidth() {
 		return width;
 	}
 
+	/**
+	 * Returns the height of the map in tiles
+	 * @return
+	 */
 	public int getHeight() {
 		return height;
 	}
 
+	/**
+	 * Returns the width of tiles in pixels
+	 * @return
+	 */
 	public int getTileWidth() {
 		return tileWidth;
 	}
 
+	/**
+	 * Returns the height of tiles in pixels
+	 * @return
+	 */
 	public int getTileHeight() {
 		return tileHeight;
 	}
 
+	/**
+	 * Returns the {@link Tileset}s of this map
+	 * @return An empty list if none have been loaded
+	 */
 	public List<Tileset> getTilesets() {
 		return tilesets;
 	}
 
+	/**
+	 * Returns the {@link TileLayer}s of this map
+	 * @return An empty list if none have been loaded
+	 */
 	public List<TileLayer> getTileLayers() {
 		return tileLayers;
 	}
 
+	/**
+	 * Returns the {@link TiledObjectGroup}s of this map
+	 * @return An empty list if none have been loaded
+	 */
 	public List<TiledObjectGroup> getObjectGroups() {
 		return objectGroups;
 	}
