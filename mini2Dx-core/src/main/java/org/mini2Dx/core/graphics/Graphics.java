@@ -244,12 +244,15 @@ public class Graphics {
 		beginRendering();
 		float x = sprite.getX();
 		float y = sprite.getY();
+		float oldScaleX = sprite.getScaleX();
+		float oldScaleY = sprite.getScaleY();
+		
 		sprite.setPosition(x * scaleX, y * scaleY);
-		sprite.setScale(scaleX, scaleY);
+		sprite.setScale(scaleX * oldScaleX, scaleY * oldScaleY);
 		sprite.draw(spriteBatch);
 
 		sprite.setPosition(x, y);
-		sprite.setScale(1.0f, 1.0f);
+		sprite.setScale(oldScaleX, oldScaleY);
 	}
 
 	/**
@@ -419,5 +422,13 @@ public class Graphics {
 	public void setBackgroundColor(Color backgroundColor) {
 		if (backgroundColor != null)
 			this.backgroundColor = backgroundColor;
+	}
+
+	public BitmapFont getFont() {
+		return font;
+	}
+
+	public void setFont(BitmapFont font) {
+		this.font = font;
 	}
 }

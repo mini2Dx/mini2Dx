@@ -56,6 +56,7 @@ public abstract class ScreenBasedGame extends GameContainer {
 	 * @param screen The {@link GameScreen} to be added
 	 */
 	public void addScreen(GameScreen screen) {
+		screen.initialise(this);
 		screenManager.addGameScreen(screen);
 	}
 	

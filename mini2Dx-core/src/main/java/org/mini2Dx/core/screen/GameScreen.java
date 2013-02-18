@@ -23,6 +23,12 @@ import com.badlogic.gdx.Input;
  */
 public interface GameScreen {
 	/**
+	 * Initialises the game screen
+	 * @param gc The {@link GameContainer} of the game
+	 */
+	public void initialise(GameContainer gc);
+	
+	/**
 	 * Updates the game screen
 	 * @param gc The {@link GameContainer} of the game
 	 * @param screenManager The {@link ScreenManager} of the game
