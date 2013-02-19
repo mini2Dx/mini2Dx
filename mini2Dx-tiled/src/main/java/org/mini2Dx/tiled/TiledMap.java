@@ -237,7 +237,6 @@ public class TiledMap implements TiledParserListener {
 
 	@Override
 	public void onTilesetParsed(Tileset parsedTileset) {
-
 		if (loadMaps && !parsedTileset.isTextureLoaded()) {
 			parsedTileset.loadTexture(fileHandle.parent());
 		}
@@ -252,6 +251,48 @@ public class TiledMap implements TiledParserListener {
 	@Override
 	public void onObjectGroupParsed(TiledObjectGroup parsedObjectGroup) {
 		this.objectGroups.add(parsedObjectGroup);
+	}
+	
+	/**
+	 * Returns the {@link TileLayer} with the given name
+	 * @param name The name to search for
+	 * @return Null if there is no such {@link TileLayer}
+	 */
+	public TileLayer getTileLayer(String name) {
+		for(TileLayer layer : tileLayers) {
+			if(layer.getName().compareTo(name) == 0) {
+				return layer;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns the {@link TiledObjectGroup} with the given name
+	 * @param name The name to search for
+	 * @return Null if there is no such {@link TiledObjectGroup}
+	 */
+	public TiledObjectGroup getObjectGroup(String name) {
+		for(TiledObjectGroup group : objectGroups) {
+			if(group.getName().compareTo(name) == 0) {
+				return group;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns the index of the {@link TileLayer} with the given name
+	 * @param name The name to search for
+	 * @return -1 if there is no such {@link TileLayer}
+	 */
+	public int getLayerIndex(String name) {
+		for(int i = 0; i < tileLayers.size(); i++) {
+			if(tileLayers.get(i).getName().compareTo(name) == 0) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	/**
