@@ -65,6 +65,8 @@ public class GraphicsUAT extends GameContainer {
 
 		g.drawCircle(32, 160, 32);
 		g.fillCircle(128, 160, 32);
+		
+		g.drawString("Hello, world!", 0, 256);
 	}
 
 	@Override

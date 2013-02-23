@@ -13,11 +13,13 @@ package org.mini2Dx.core.graphics;
 
 import junit.framework.Assert;
 
+import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
@@ -36,6 +38,13 @@ public class GraphicsTest {
 		mockery = new Mockery();
 		mockery.setImposteriser(ClassImposteriser.INSTANCE);
 		spriteBatch = mockery.mock(SpriteBatch.class);
+		
+		mockery.checking(new Expectations() {
+			{
+				one(spriteBatch).getColor();
+				will(returnValue(null));
+			}
+		});
 		
 		graphics = new Graphics(spriteBatch);
 	}

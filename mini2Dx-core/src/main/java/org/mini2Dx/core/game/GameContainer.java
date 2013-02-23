@@ -84,14 +84,15 @@ public abstract class GameContainer implements Screen {
 
 	@Override
 	public void show() {
+		this.width = Gdx.graphics.getWidth();
+		this.height = Gdx.graphics.getHeight();
+		
 		if(!isInitialised) {
 			preinit();
 			initialise();
 			postinit();
 			isInitialised = true;
 		}
-		this.width = Gdx.graphics.getWidth();
-		this.height = Gdx.graphics.getHeight();
 	}
 	
 	@Override

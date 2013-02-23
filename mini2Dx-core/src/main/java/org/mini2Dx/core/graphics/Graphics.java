@@ -44,7 +44,9 @@ public class Graphics {
 	public Graphics(SpriteBatch spriteBatch) {
 		this.spriteBatch = spriteBatch;
 		defaultTint = spriteBatch.getColor();
-		font = new BitmapFont();
+		if (defaultTint != null) {
+			font = new BitmapFont(true);
+		}
 
 		lineHeight = 1;
 		foregroundColor = Color.WHITE;
@@ -84,7 +86,9 @@ public class Graphics {
 	 * Called by mini2Dx after rendering
 	 */
 	public void postRender() {
-		spriteBatch.end();
+		if (rendering) {
+			spriteBatch.end();
+		}
 		undoTransformations();
 		resetTransformations();
 	}
@@ -201,6 +205,7 @@ public class Graphics {
 	public void drawString(String text, float x, float y) {
 		if (font != null) {
 			beginRendering();
+			font.setColor(foregroundColor);
 			font.setScale(scaleX, scaleY);
 			font.draw(spriteBatch, text, x * scaleX, y * scaleY);
 		}
@@ -279,7 +284,7 @@ public class Graphics {
 		float oldY = sprite.getY();
 		float oldScaleX = sprite.getScaleX();
 		float oldScaleY = sprite.getScaleY();
-		
+
 		sprite.setPosition(x * scaleX, y * scaleY);
 		sprite.setScale(scaleX * oldScaleX, scaleY * oldScaleY);
 		sprite.draw(spriteBatch);
