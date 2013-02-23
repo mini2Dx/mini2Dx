@@ -60,6 +60,17 @@ public abstract class ScreenBasedGame extends GameContainer {
 		screenManager.addGameScreen(screen);
 	}
 	
+	/**
+	 * Begins a transition to a new {@link GameScreen}
+	 * @param id The id of the {@link GameScreen} to transition to
+	 * @param transitionOut The outgoing {@link Transition}, e.g. fade out
+	 * @param transitionIn The incoming {@link Transition}, e.g. fade in
+	 */
+	public void enterGameScreen(int id, Transition transitionOut,
+			Transition transitionIn) {
+		screenManager.enterGameScreen(id, transitionOut, transitionIn);
+	}
+	
 	@Override
 	protected void preinit() {
 		super.preinit();

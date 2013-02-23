@@ -27,7 +27,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * @author Thomas Cashman
  */
 public class Graphics {
-	private Color color, backgroundColor;
+	private Color foregroundColor, backgroundColor, tint, defaultTint;
 	private SpriteBatch spriteBatch;
 	private ColorTextureCache colorTextureCache;
 	private OrthographicCamera camera;
@@ -43,9 +43,11 @@ public class Graphics {
 
 	public Graphics(SpriteBatch spriteBatch) {
 		this.spriteBatch = spriteBatch;
+		defaultTint = spriteBatch.getColor();
+		font = new BitmapFont();
 
 		lineHeight = 1;
-		color = Color.WHITE;
+		foregroundColor = Color.WHITE;
 		backgroundColor = Color.BLACK;
 		colorTextureCache = new ColorTextureCache();
 
@@ -102,7 +104,8 @@ public class Graphics {
 	 */
 	public void drawRect(float x, float y, float width, float height) {
 		beginRendering();
-		spriteBatch.draw(colorTextureCache.getRectangleTextureForColor(color),
+		spriteBatch.draw(
+				colorTextureCache.getRectangleTextureForColor(foregroundColor),
 				(x * scaleX), (y * scaleY), 0, 0, width, height, scaleX,
 				scaleY, 0, 0, 0, 1, 1, false, false);
 		spriteBatch.draw(
@@ -127,7 +130,8 @@ public class Graphics {
 	 */
 	public void fillRect(float x, float y, float width, float height) {
 		beginRendering();
-		spriteBatch.draw(colorTextureCache.getRectangleTextureForColor(color),
+		spriteBatch.draw(
+				colorTextureCache.getRectangleTextureForColor(foregroundColor),
 				(x * scaleX), (y * scaleY), 0, 0, width, height, scaleX,
 				scaleY, 0, 0, 0, 1, 1, false, false);
 	}
@@ -145,8 +149,8 @@ public class Graphics {
 	 */
 	public void drawCircle(float centerX, float centerY, int radius) {
 		beginRendering();
-		Texture texture = colorTextureCache.getCircularTextureForColor(color,
-				radius);
+		Texture texture = colorTextureCache.getCircularTextureForColor(
+				foregroundColor, radius);
 		spriteBatch.draw(texture, (centerX * scaleX) - (radius * scaleX),
 				(centerY * scaleY) - (radius * scaleY), 0, 0,
 				texture.getWidth(), texture.getHeight(), scaleX, scaleY, 0, 0,
@@ -174,8 +178,8 @@ public class Graphics {
 	 *            The radius of the circle
 	 */
 	public void fillCircle(float centerX, float centerY, int radius) {
-		Texture texture = colorTextureCache.getCircularTextureForColor(color,
-				radius);
+		Texture texture = colorTextureCache.getCircularTextureForColor(
+				foregroundColor, radius);
 
 		beginRendering();
 		spriteBatch.draw(texture, (centerX * scaleX) - (radius * scaleX),
@@ -218,10 +222,12 @@ public class Graphics {
 				texture.getWidth(), texture.getHeight(), scaleX, scaleY, 0, 0,
 				0, texture.getWidth(), texture.getHeight(), false, false);
 	}
-	
+
 	/**
 	 * Draws a texture region to this graphics context
-	 * @param textureRegion The {@link TextureRegion} to draw
+	 * 
+	 * @param textureRegion
+	 *            The {@link TextureRegion} to draw
 	 * @param x
 	 *            The x coordinate to draw at
 	 * @param y
@@ -229,7 +235,8 @@ public class Graphics {
 	 */
 	public void drawTextureRegion(TextureRegion textureRegion, float x, float y) {
 		beginRendering();
-		spriteBatch.draw(textureRegion, (x * scaleX), (y * scaleY), 0, 0, textureRegion.getRegionWidth(),
+		spriteBatch.draw(textureRegion, (x * scaleX), (y * scaleY), 0, 0,
+				textureRegion.getRegionWidth(),
 				textureRegion.getRegionHeight(), scaleX, scaleY, 0);
 	}
 
@@ -246,7 +253,7 @@ public class Graphics {
 		float y = sprite.getY();
 		float oldScaleX = sprite.getScaleX();
 		float oldScaleY = sprite.getScaleY();
-		
+
 		sprite.setPosition(x * scaleX, y * scaleY);
 		sprite.setScale(scaleX * oldScaleX, scaleY * oldScaleY);
 		sprite.draw(spriteBatch);
@@ -256,7 +263,33 @@ public class Graphics {
 	}
 
 	/**
-	 * Rotates the canvas by the provided degrees
+	 * Draws a {@link Sprite} at the given coordinates with all transformations
+	 * applied to this graphics context
+	 * 
+	 * @param sprite
+	 *            The {@link Sprite} to draw
+	 * @param x
+	 *            The x coordinate to render at
+	 * @param y
+	 *            The y coordinate to render at
+	 */
+	public void drawSprite(Sprite sprite, float x, float y) {
+		beginRendering();
+		float oldX = sprite.getX();
+		float oldY = sprite.getY();
+		float oldScaleX = sprite.getScaleX();
+		float oldScaleY = sprite.getScaleY();
+		
+		sprite.setPosition(x * scaleX, y * scaleY);
+		sprite.setScale(scaleX * oldScaleX, scaleY * oldScaleY);
+		sprite.draw(spriteBatch);
+		sprite.setPosition(oldX, oldY);
+		sprite.setScale(oldScaleX, oldScaleY);
+	}
+
+	/**
+	 * Rotates the canvas by the provided degrees around the center of the game
+	 * screen
 	 * 
 	 * @param degrees
 	 *            The degree value in a clockwise direction
@@ -264,10 +297,26 @@ public class Graphics {
 	public void rotate(float degrees) {
 		if (rendering) {
 			spriteBatch.end();
-			camera.rotate(-rotation);
 			rendering = false;
 		}
 
+		camera.rotate(-rotation);
+		this.rotation += -degrees;
+	}
+
+	/**
+	 * Rotates the canvas by the provided degrees around the provided point
+	 * 
+	 * @param degrees
+	 *            The degree value in a clockwise direction
+	 */
+	public void rotate(float degrees, float x, float y) {
+		if (rendering) {
+			spriteBatch.end();
+			rendering = false;
+		}
+
+		camera.rotate(-rotation);
 		this.rotation += -degrees;
 	}
 
@@ -307,6 +356,30 @@ public class Graphics {
 
 		this.translationX = translateX;
 		this.translationY = translateY;
+	}
+
+	/**
+	 * Sets the {@link Color} to apply to draw operations
+	 * 
+	 * @param tint
+	 *            The {@link Color} to tint with
+	 */
+	public void setTint(Color tint) {
+		if (rendering) {
+			spriteBatch.end();
+			undoTransformations();
+			rendering = false;
+		}
+
+		this.tint = tint;
+		spriteBatch.setColor(tint);
+	}
+
+	/**
+	 * Removes the tinting {@link Color}
+	 */
+	public void removeTint() {
+		setTint(defaultTint);
 	}
 
 	/**
@@ -391,18 +464,18 @@ public class Graphics {
 	 * 
 	 * @return A non-null value
 	 */
-	public Color getColor() {
-		return color;
+	public Color getForegroundColor() {
+		return foregroundColor;
 	}
 
 	/**
 	 * Sets the foreground {@link Color} to be used
 	 * 
-	 * @param color
+	 * @param foregroundColor
 	 */
-	public void setColor(Color color) {
-		if (color != null)
-			this.color = color;
+	public void setForegroundColor(Color foregroundColor) {
+		if (foregroundColor != null)
+			this.foregroundColor = foregroundColor;
 	}
 
 	/**
@@ -424,11 +497,32 @@ public class Graphics {
 			this.backgroundColor = backgroundColor;
 	}
 
+	/**
+	 * Returns the {@link BitmapFont} to draw {@link String}s with
+	 * 
+	 * @return 15pt Arial font by default unless setFont() is called
+	 */
 	public BitmapFont getFont() {
 		return font;
 	}
 
+	/**
+	 * Sets the {@link BitmapFont} to draw {@link String}s with
+	 * 
+	 * @param font
+	 *            A non-null instance of {@link BitmapFont}
+	 */
 	public void setFont(BitmapFont font) {
-		this.font = font;
+		if (font != null)
+			this.font = font;
+	}
+
+	/**
+	 * Returns the {@link Color} tint being applied to all draw operations
+	 * 
+	 * @return
+	 */
+	public Color getTint() {
+		return tint;
 	}
 }

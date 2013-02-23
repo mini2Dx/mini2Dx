@@ -71,10 +71,10 @@ public class FadeOutTransition implements Transition {
 
 	@Override
 	public void postRender(GameContainer gc, Graphics g) {
-		Color old = g.getColor();
-        g.setColor(color);
+		Color old = g.getForegroundColor();
+        g.setForegroundColor(color);
         g.fillRect(0, 0, gc.getWidth(), gc.getHeight());
-        g.setColor(old);
+        g.setForegroundColor(old);
 	}
 
 	@Override

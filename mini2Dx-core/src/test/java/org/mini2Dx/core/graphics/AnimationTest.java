@@ -13,61 +13,68 @@ package org.mini2Dx.core.graphics;
 
 import junit.framework.Assert;
 
-import org.jmock.Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 /**
- * Unit tests for {@link Graphics}
+ * Unit tests for {@link Animation}
  * 
  * @author Thomas Cashman
  */
-public class GraphicsTest {
-	private Mockery mockery;
-	
-	private SpriteBatch spriteBatch;
-	private Graphics graphics;
-	
+public class AnimationTest {
+	private Animation<Sprite> animation;
+
 	@Before
 	public void setup() {
-		mockery = new Mockery();
-		mockery.setImposteriser(ClassImposteriser.INSTANCE);
-		spriteBatch = mockery.mock(SpriteBatch.class);
+		animation = new Animation<Sprite>();
+
+		for (int i = 0; i < 5; i++) {
+			animation.addFrame(null, 0.5f);
+		}
 		
-		graphics = new Graphics(spriteBatch);
+		Assert.assertEquals(0, animation.getCurrentFrameIndex());
+		Assert.assertEquals(5, animation.getNumberOfFrames());
 	}
 
 	@Test
-	public void testGetLineHeightNeverNull() {
-		Assert.assertEquals(1, graphics.getLineHeight());
-		
-		/* Line height should never be less than 1 */
-		graphics.setLineHeight(0);
-		Assert.assertEquals(1, graphics.getLineHeight());
-		
-		graphics.setLineHeight(2);
-		Assert.assertEquals(2, graphics.getLineHeight());
+	public void testUpdateByLessThanOneFrame() {
+		Assert.assertEquals(0, animation.getCurrentFrameIndex());
+		animation.update(0.1f);
+		Assert.assertEquals(0, animation.getCurrentFrameIndex());
 	}
 
 	@Test
-	public void testGetColorNeverNull() {
-		Assert.assertNotNull(graphics.getForegroundColor());
-
-		/* Foreground color should never be null */
-		graphics.setForegroundColor(null);
-		Assert.assertNotNull(graphics.getForegroundColor());
+	public void testUpdateByOneFrame() {
+		Assert.assertEquals(0, animation.getCurrentFrameIndex());
+		animation.update(0.5f);
+		Assert.assertEquals(1, animation.getCurrentFrameIndex());
 	}
-
+	
 	@Test
-	public void testGetBackgroundColorNeverNull() {
-		Assert.assertNotNull(graphics.getBackgroundColor());
-
-		/* Background color should never be null */
-		graphics.setBackgroundColor(null);
-		Assert.assertNotNull(graphics.getBackgroundColor());
+	public void testUpdateByMultipleFramesNoLooping() {
+		animation.setLooping(false);
+		
+		Assert.assertEquals(0, animation.getCurrentFrameIndex());
+		animation.update(1f);
+		Assert.assertEquals(2, animation.getCurrentFrameIndex());
+		animation.update(1f);
+		Assert.assertEquals(4, animation.getCurrentFrameIndex());
+		animation.update(1f);
+		Assert.assertEquals(4, animation.getCurrentFrameIndex());
 	}
-
+	
+	@Test
+	public void testUpdateByMultipleFramesLooping() {
+		animation.setLooping(true);
+		
+		Assert.assertEquals(0, animation.getCurrentFrameIndex());
+		animation.update(1f);
+		Assert.assertEquals(2, animation.getCurrentFrameIndex());
+		animation.update(1f);
+		Assert.assertEquals(4, animation.getCurrentFrameIndex());
+		animation.update(1f);
+		Assert.assertEquals(1, animation.getCurrentFrameIndex());
+	}
 }
