@@ -113,7 +113,7 @@
 
 	<modules>
 		<module>../mini2Dx-core</module>
-		<module>../mini2Dx-ioc</module>
+		<module>../mini2Dx-dependency-injection</module>
 		<module>../mini2Dx-tiled</module>
 		<module>../mini2Dx-uats</module>
 	</modules>
