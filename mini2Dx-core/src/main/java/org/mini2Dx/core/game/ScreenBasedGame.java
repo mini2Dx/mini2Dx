@@ -33,6 +33,12 @@ public abstract class ScreenBasedGame extends GameContainer {
 	 * @return The {@link GameScreen} identifier via {@link GameScreen}.getId()
 	 */
 	public abstract int getInitialScreenId();
+	
+	@Override
+	public void pause() {}
+
+	@Override
+	public void resume() {}
 
 	@Override
 	public void update(float delta) {

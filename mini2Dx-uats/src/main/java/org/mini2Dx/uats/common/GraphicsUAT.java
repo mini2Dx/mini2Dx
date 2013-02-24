@@ -32,14 +32,6 @@ public class GraphicsUAT extends BasicGame {
 	private float scaleX, scaleY;
 
 	@Override
-	public void pause() {
-	}
-
-	@Override
-	public void resume() {
-	}
-
-	@Override
 	public void initialise() {
 		playerX = 0;
 		playerY = 0;
