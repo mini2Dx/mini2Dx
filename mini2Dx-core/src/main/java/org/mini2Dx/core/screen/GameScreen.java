@@ -14,8 +14,6 @@ package org.mini2Dx.core.screen;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 
-import com.badlogic.gdx.Input;
-
 /**
  * A common interface to game screen implementations
  *
@@ -42,12 +40,6 @@ public interface GameScreen {
 	 * @param g The {@link Graphics} context available for rendering
 	 */
 	public void render(GameContainer gc, Graphics g);
-	
-	/**
-	 * Called when the game should process input
-	 * @param input The {@link Input} received from LibGDX
-	 */
-	public void handleInput(Input input);
 	
 	/**
 	 * Returns the identifier of the screen

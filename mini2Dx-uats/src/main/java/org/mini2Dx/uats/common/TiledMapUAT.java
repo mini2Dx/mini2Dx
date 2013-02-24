@@ -19,7 +19,6 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.tiled.TiledMap;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
@@ -62,10 +61,6 @@ public class TiledMapUAT extends GameContainer {
 		tiledMap.draw(g, 0, 0);
 		
 		tiledMap.getTilesets().get(0).drawTileset(g, tiledMap.getWidth() * tiledMap.getTileWidth() + 32, 0);
-	}
-
-	@Override
-	public void handleInput(Input input) {
 	}
 
 	public static void main(String[] args) {

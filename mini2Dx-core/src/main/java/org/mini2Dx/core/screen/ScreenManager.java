@@ -18,8 +18,6 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.transition.NullTransition;
 
-import com.badlogic.gdx.Input;
-
 /**
  * Updates and renders {@link GameScreen}s and {@link Transition}s between them
  * 
@@ -121,11 +119,5 @@ public class ScreenManager {
 	 */
 	public void addGameScreen(GameScreen screen) {
 		this.gameScreens.put(screen.getId(), screen);
-	}
-
-	public void handleInput(Input input) {
-		if(currentScreen != null) {
-			currentScreen.handleInput(input);
-		}
 	}
 }

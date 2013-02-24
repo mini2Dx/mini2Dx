@@ -11,94 +11,58 @@
  */
 package org.mini2Dx.core.game;
 
-import org.mini2Dx.core.graphics.Graphics;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.InputProcessor;
 
 /**
- * Base class for mini2Dx game containers. All games using mini2Dx must extend
- * this.
+ * A simplified {@link GameContainer} for beginners to build upon
  * 
  * @author Thomas Cashman
  */
-public abstract class GameContainer implements Screen {
-	private int width, height;
-	private Graphics graphics;
-	private SpriteBatch spriteBatch;
-	private boolean isInitialised = false;
-	
-	/**
-	 * Initialse the game
-	 */
-	public abstract void initialise();
-
-	/**
-	 * Update the game
-	 * @param delta The time in seconds since the last update
-	 */
-	public abstract void update(float delta);
-
-	/**
-	 * Render the game
-	 * @param g The {@link Graphics} context available for rendering
-	 */
-	public abstract void render(Graphics g);
-
+public abstract class BasicGame extends GameContainer implements InputProcessor {
 	@Override
-	public void render(float delta) {
-		update(delta);
-		graphics.preRender(width, height);
-		render(graphics);
-		graphics.postRender();
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		this.width = width;
-		this.height = height;
-	}
-	
-	/**
-	 * Internal pre-initialisation code
-	 */
 	protected void preinit() {
-		this.spriteBatch = new SpriteBatch();
-		this.graphics = new Graphics(spriteBatch);
-	}
-	
-	/**
-	 * Internal post-initialisation code
-	 */
-	protected void postinit() {}
-
-	@Override
-	public void show() {
-		this.width = Gdx.graphics.getWidth();
-		this.height = Gdx.graphics.getHeight();
-		
-		if(!isInitialised) {
-			preinit();
-			initialise();
-			postinit();
-			isInitialised = true;
-		}
+		super.preinit();
+		Gdx.input.setInputProcessor(this);
 	}
 	
 	@Override
-	public void dispose() {
+	public boolean keyDown(int keycode) {
+		return false;
 	}
 
 	@Override
-	public void hide() {
+	public boolean keyUp(int keycode) {
+		return false;
 	}
 
-	public int getWidth() {
-		return width;
+	@Override
+	public boolean keyTyped(char character) {
+		return false;
 	}
 
-	public int getHeight() {
-		return height;
+	@Override
+	public boolean touchDown(int x, int y, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int x, int y, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int x, int y, int pointer) {
+		return false;
+	}
+	
+	@Override
+	public boolean mouseMoved(int x, int y) {
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		return false;
 	}
 }

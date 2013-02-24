@@ -11,11 +11,11 @@
  */
 package org.mini2Dx.uats.common;
 
+import org.mini2Dx.core.game.BasicGame;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.Mini2DxGame;
 import org.mini2Dx.core.graphics.Graphics;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -27,7 +27,7 @@ import com.badlogic.gdx.graphics.Color;
  * 
  * @author Thomas Cashman
  */
-public class GraphicsUAT extends GameContainer {
+public class GraphicsUAT extends BasicGame {
 	private int playerX, playerY;
 	private float scaleX, scaleY;
 
@@ -70,24 +70,30 @@ public class GraphicsUAT extends GameContainer {
 	}
 
 	@Override
-	public void handleInput(Input input) {
-		if (input.isKeyPressed(Keys.RIGHT)) {
+	public boolean keyDown(int keycode) {
+		switch(keycode) {
+		case Keys.RIGHT:
 			playerX++;
-		} else if (input.isKeyPressed(Keys.LEFT)) {
+			break;
+		case Keys.LEFT:
 			playerX--;
-		} else if (input.isKeyPressed(Keys.UP)) {
+			break;
+		case Keys.UP:
 			playerY--;
-		} else if (input.isKeyPressed(Keys.DOWN)) {
+			break;
+		case Keys.DOWN:
 			playerY++;
-		}
-
-		if (input.isKeyPressed(Keys.E)) {
+			break;
+		case Keys.E:
 			scaleX++;
 			scaleY++;
-		} else if (input.isKeyPressed(Keys.Q)) {
+			break;
+		case Keys.Q:
 			scaleX--;
 			scaleY--;
+			break;
 		}
+		return true;
 	}
 
 	public static void main(String[] args) {

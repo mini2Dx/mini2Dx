@@ -16,8 +16,6 @@ import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
 
-import com.badlogic.gdx.Input;
-
 /**
  * An implementation of {@link GameContainer} that allows for separation of a
  * game into multiple {@link GameScreen}s and provides support for
@@ -44,11 +42,6 @@ public abstract class ScreenBasedGame extends GameContainer {
 	@Override
 	public void render(Graphics g) {
 		screenManager.render(this, g);
-	}
-	
-	@Override
-	public void handleInput(Input input) {
-		screenManager.handleInput(input);
 	}
 
 	/**
