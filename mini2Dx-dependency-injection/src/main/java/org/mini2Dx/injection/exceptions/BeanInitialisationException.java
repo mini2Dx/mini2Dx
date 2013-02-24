@@ -12,7 +12,7 @@
 package org.mini2Dx.injection.exceptions;
 
 /**
- *
+ * Thrown when a bean fails to initialise
  *
  * @author Thomas Cashman
  */

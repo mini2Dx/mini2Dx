@@ -12,7 +12,7 @@
 package org.mini2Dx.injection.exceptions;
 
 /**
- *
+ * Thrown when a required dependency is not registered with a repository
  *
  * @author Thomas Cashman
  */

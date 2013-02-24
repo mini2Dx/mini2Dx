@@ -12,7 +12,7 @@
 package org.mini2Dx.injection.exceptions;
 
 /**
- *
+ * Thrown when a repository is accessed incorrectly
  *
  * @author Thomas Cashman
  */

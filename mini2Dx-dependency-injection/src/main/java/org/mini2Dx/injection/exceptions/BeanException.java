@@ -12,7 +12,7 @@
 package org.mini2Dx.injection.exceptions;
 
 /**
- *
+ * A base class for bean exceptions
  *
  * @author Thomas Cashman
  */
