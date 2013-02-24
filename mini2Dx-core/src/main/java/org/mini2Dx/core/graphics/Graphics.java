@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  * Implements graphics rendering functionality
@@ -27,9 +28,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * @author Thomas Cashman
  */
 public class Graphics {
-	private Color foregroundColor, backgroundColor, tint, defaultTint;
+	private Color color, backgroundColor, tint, defaultTint;
 	private SpriteBatch spriteBatch;
-	private ColorTextureCache colorTextureCache;
+	private ShapeTextureCache colorTextureCache;
 	private OrthographicCamera camera;
 	private BitmapFont font;
 
@@ -49,9 +50,9 @@ public class Graphics {
 		}
 
 		lineHeight = 1;
-		foregroundColor = Color.WHITE;
+		color = Color.WHITE;
 		backgroundColor = Color.BLACK;
-		colorTextureCache = new ColorTextureCache();
+		colorTextureCache = new ShapeTextureCache();
 
 		translationX = 0;
 		translationY = 0;
@@ -108,16 +109,14 @@ public class Graphics {
 	 */
 	public void drawRect(float x, float y, float width, float height) {
 		beginRendering();
-		spriteBatch.draw(
-				colorTextureCache.getRectangleTextureForColor(foregroundColor),
-				(x * scaleX), (y * scaleY), 0, 0, width, height, scaleX,
-				scaleY, 0, 0, 0, 1, 1, false, false);
-		spriteBatch.draw(
-				colorTextureCache.getRectangleTextureForColor(backgroundColor),
-				(x * scaleX) + (lineHeight * scaleX), (y * scaleY)
-						+ (lineHeight * scaleY), 0, 0,
-				width - (lineHeight * 2), height - (lineHeight * 2), scaleX,
-				scaleY, 0, 0, 0, 1, 1, false, false);
+
+		int roundWidth = MathUtils.round(width);
+		int roundHeight = MathUtils.round(height);
+
+		spriteBatch.draw(colorTextureCache.getRectangleTexture(color,
+				roundWidth, roundHeight, getLineHeight()), (x * scaleX),
+				(y * scaleY), 0, 0, roundWidth, roundHeight, scaleX, scaleY, 0, 0, 0,
+				roundWidth, roundHeight, false, false);
 	}
 
 	/**
@@ -135,7 +134,7 @@ public class Graphics {
 	public void fillRect(float x, float y, float width, float height) {
 		beginRendering();
 		spriteBatch.draw(
-				colorTextureCache.getRectangleTextureForColor(foregroundColor),
+				colorTextureCache.getFilledRectangleTexture(color),
 				(x * scaleX), (y * scaleY), 0, 0, width, height, scaleX,
 				scaleY, 0, 0, 0, 1, 1, false, false);
 	}
@@ -153,22 +152,12 @@ public class Graphics {
 	 */
 	public void drawCircle(float centerX, float centerY, int radius) {
 		beginRendering();
-		Texture texture = colorTextureCache.getCircularTextureForColor(
-				foregroundColor, radius);
+		Texture texture = colorTextureCache.getCircleTexture(
+				color, radius, getLineHeight());
 		spriteBatch.draw(texture, (centerX * scaleX) - (radius * scaleX),
 				(centerY * scaleY) - (radius * scaleY), 0, 0,
 				texture.getWidth(), texture.getHeight(), scaleX, scaleY, 0, 0,
 				0, texture.getWidth(), texture.getHeight(), false, false);
-
-		texture = colorTextureCache.getCircularTextureForColor(backgroundColor,
-				(radius - lineHeight));
-
-		spriteBatch.draw(texture, ((centerX * scaleX) - (radius * scaleX))
-				+ (lineHeight * scaleX),
-				((centerY * scaleY) - (radius * scaleY))
-						+ (lineHeight * scaleY), 0, 0, texture.getWidth(),
-				texture.getHeight(), scaleX, scaleY, 0, 0, 0,
-				texture.getWidth(), texture.getHeight(), false, false);
 	}
 
 	/**
@@ -182,8 +171,8 @@ public class Graphics {
 	 *            The radius of the circle
 	 */
 	public void fillCircle(float centerX, float centerY, int radius) {
-		Texture texture = colorTextureCache.getCircularTextureForColor(
-				foregroundColor, radius);
+		Texture texture = colorTextureCache.getFilledCircleTexture(
+				color, radius);
 
 		beginRendering();
 		spriteBatch.draw(texture, (centerX * scaleX) - (radius * scaleX),
@@ -205,7 +194,7 @@ public class Graphics {
 	public void drawString(String text, float x, float y) {
 		if (font != null) {
 			beginRendering();
-			font.setColor(foregroundColor);
+			font.setColor(color);
 			font.setScale(scaleX, scaleY);
 			font.draw(spriteBatch, text, x * scaleX, y * scaleY);
 		}
@@ -465,22 +454,22 @@ public class Graphics {
 	}
 
 	/**
-	 * Returns the foreground {@link Color}
+	 * Returns the {@link Color} to draw shapes with
 	 * 
 	 * @return A non-null value
 	 */
-	public Color getForegroundColor() {
-		return foregroundColor;
+	public Color getColor() {
+		return color;
 	}
 
 	/**
-	 * Sets the foreground {@link Color} to be used
+	 * Sets the {@link Color} to draw shapes with
 	 * 
-	 * @param foregroundColor
+	 * @param color
 	 */
-	public void setForegroundColor(Color foregroundColor) {
-		if (foregroundColor != null)
-			this.foregroundColor = foregroundColor;
+	public void setColor(Color color) {
+		if (color != null)
+			this.color = color;
 	}
 
 	/**

@@ -54,7 +54,7 @@ public class GraphicsUAT extends GameContainer {
 	@Override
 	public void render(Graphics g) {
 		g.setBackgroundColor(Color.WHITE);
-		g.setForegroundColor(Color.RED);
+		g.setColor(Color.RED);
 		g.scale(scaleX, scaleY);
 		g.translate(0 - playerX, 0 - playerY);
 

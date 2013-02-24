@@ -56,7 +56,6 @@ public abstract class GameContainer implements Screen {
 	@Override
 	public void render(float delta) {
 		handleInput(Gdx.input);
-		
 		update(delta);
 		graphics.preRender(width, height);
 		render(graphics);

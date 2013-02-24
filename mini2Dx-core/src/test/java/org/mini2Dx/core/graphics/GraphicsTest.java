@@ -63,11 +63,11 @@ public class GraphicsTest {
 
 	@Test
 	public void testGetColorNeverNull() {
-		Assert.assertNotNull(graphics.getForegroundColor());
+		Assert.assertNotNull(graphics.getColor());
 
 		/* Foreground color should never be null */
-		graphics.setForegroundColor(null);
-		Assert.assertNotNull(graphics.getForegroundColor());
+		graphics.setColor(null);
+		Assert.assertNotNull(graphics.getColor());
 	}
 
 	@Test

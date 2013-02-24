@@ -57,7 +57,7 @@ public class TiledMapUAT extends GameContainer {
 	@Override
 	public void render(Graphics g) {
 		g.setBackgroundColor(Color.WHITE);
-		g.setForegroundColor(Color.RED);
+		g.setColor(Color.RED);
 		
 		tiledMap.draw(g, 0, 0);
 		
