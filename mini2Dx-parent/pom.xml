@@ -108,18 +108,12 @@
 				<configuration>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-pmd-plugin</artifactId>
-				<configuration>
-					<targetJdk>1.6</targetJdk>
-				</configuration>
-			</plugin>
 		</plugins>
 	</reporting>
 
 	<modules>
 		<module>../mini2Dx-core</module>
+		<module>../mini2Dx-ioc</module>
 		<module>../mini2Dx-tiled</module>
 		<module>../mini2Dx-uats</module>
 	</modules>
@@ -130,6 +124,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.0</version>
 					<configuration>
 						<source>1.6</source>
 						<target>1.6</target>

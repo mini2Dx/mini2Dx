@@ -1,4 +1,4 @@
 mini2Dx
 =======
 
-A Slick-like API for libGDX
+A high-level game development API for LibGDX
