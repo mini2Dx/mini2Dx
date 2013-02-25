@@ -65,7 +65,7 @@ public class TiledMapUAT extends GameContainer {
 
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.title = "mini2Dx - Graphics Verification Test";
+		cfg.title = "mini2Dx - TiledMap Verification Test";
 		cfg.useGL20 = true;
 		cfg.width = 800;
 		cfg.height = 600;
