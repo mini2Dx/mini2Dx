@@ -82,6 +82,16 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle {
 		}
 		return true;
 	}
+	
+	public boolean intersects(float x, float y, float width, float height) {
+		if ((getX() > (x + width)) || ((getMaxX()) < x)) {
+			return false;
+		}
+		if ((getY() > (y + height)) || ((getMaxY()) < y)) {
+			return false;
+		}
+		return true;
+	}
 
 	@Override
 	public void setX(float x) {

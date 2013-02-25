@@ -11,6 +11,8 @@
  */
 package org.mini2Dx.core.graphics;
 
+import org.mini2Dx.core.geom.Rectangle;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -21,6 +23,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 /**
  * Implements graphics rendering functionality
@@ -41,6 +44,8 @@ public class Graphics {
 
 	private int lineHeight;
 	private boolean rendering;
+	private Rectangle clip;
+	private Rectangle scissors;
 
 	public Graphics(SpriteBatch spriteBatch) {
 		this.spriteBatch = spriteBatch;
@@ -115,8 +120,8 @@ public class Graphics {
 
 		spriteBatch.draw(colorTextureCache.getRectangleTexture(color,
 				roundWidth, roundHeight, getLineHeight()), (x * scaleX),
-				(y * scaleY), 0, 0, roundWidth, roundHeight, scaleX, scaleY, 0, 0, 0,
-				roundWidth, roundHeight, false, false);
+				(y * scaleY), 0, 0, roundWidth, roundHeight, scaleX, scaleY, 0,
+				0, 0, roundWidth, roundHeight, false, false);
 	}
 
 	/**
@@ -133,8 +138,7 @@ public class Graphics {
 	 */
 	public void fillRect(float x, float y, float width, float height) {
 		beginRendering();
-		spriteBatch.draw(
-				colorTextureCache.getFilledRectangleTexture(color),
+		spriteBatch.draw(colorTextureCache.getFilledRectangleTexture(color),
 				(x * scaleX), (y * scaleY), 0, 0, width, height, scaleX,
 				scaleY, 0, 0, 0, 1, 1, false, false);
 	}
@@ -152,8 +156,8 @@ public class Graphics {
 	 */
 	public void drawCircle(float centerX, float centerY, int radius) {
 		beginRendering();
-		Texture texture = colorTextureCache.getCircleTexture(
-				color, radius, getLineHeight());
+		Texture texture = colorTextureCache.getCircleTexture(color, radius,
+				getLineHeight());
 		spriteBatch.draw(texture, (centerX * scaleX) - (radius * scaleX),
 				(centerY * scaleY) - (radius * scaleY), 0, 0,
 				texture.getWidth(), texture.getHeight(), scaleX, scaleY, 0, 0,
@@ -171,8 +175,8 @@ public class Graphics {
 	 *            The radius of the circle
 	 */
 	public void fillCircle(float centerX, float centerY, int radius) {
-		Texture texture = colorTextureCache.getFilledCircleTexture(
-				color, radius);
+		Texture texture = colorTextureCache.getFilledCircleTexture(color,
+				radius);
 
 		beginRendering();
 		spriteBatch.draw(texture, (centerX * scaleX) - (radius * scaleX),
@@ -324,9 +328,7 @@ public class Graphics {
 	 */
 	public void scale(float scaleX, float scaleY) {
 		if (rendering) {
-			spriteBatch.end();
-			undoTransformations();
-			rendering = false;
+			endRendering();
 		}
 
 		this.scaleX = scaleX;
@@ -343,13 +345,37 @@ public class Graphics {
 	 */
 	public void translate(int translateX, int translateY) {
 		if (rendering) {
-			spriteBatch.end();
-			undoTransformations();
-			rendering = false;
+			endRendering();
 		}
 
 		this.translationX = translateX;
 		this.translationY = translateY;
+	}
+
+	/**
+	 * Sets the graphics context clip. Only pixels within this area will be rendered
+	 * @param x The x coordinate the clip begins at
+	 * @param y The y coordinate the clip begins at
+	 * @param width The width of the clip
+	 * @param height The height of the clip
+	 */
+	public void setClip(float x, float y, float width, float height) {
+		if (rendering) {
+			endRendering();
+		}
+
+		clip = new Rectangle(x, y, width, height);
+	}
+
+	/**
+	 * Removes the applied clip
+	 */
+	public void removeClip() {
+		if (rendering) {
+			endRendering();
+		}
+		
+		clip = null;
 	}
 
 	/**
@@ -360,9 +386,7 @@ public class Graphics {
 	 */
 	public void setTint(Color tint) {
 		if (rendering) {
-			spriteBatch.end();
-			undoTransformations();
-			rendering = false;
+			endRendering();
 		}
 
 		this.tint = tint;
@@ -383,9 +407,27 @@ public class Graphics {
 	private void beginRendering() {
 		if (!rendering) {
 			applyTransformations();
+			if (clip != null) {
+				scissors = new Rectangle();
+				ScissorStack.calculateScissors(camera,
+						spriteBatch.getTransformMatrix(), clip, scissors);
+				ScissorStack.pushScissors(scissors);
+			}
 			spriteBatch.begin();
 			rendering = true;
 		}
+	}
+
+	/**
+	 * Ends rendering
+	 */
+	private void endRendering() {
+		spriteBatch.end();
+		undoTransformations();
+		if (clip != null) {
+			ScissorStack.popScissors();
+		}
+		rendering = false;
 	}
 
 	/**
