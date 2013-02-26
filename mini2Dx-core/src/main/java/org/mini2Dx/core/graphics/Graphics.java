@@ -353,11 +353,17 @@ public class Graphics {
 	}
 
 	/**
-	 * Sets the graphics context clip. Only pixels within this area will be rendered
-	 * @param x The x coordinate the clip begins at
-	 * @param y The y coordinate the clip begins at
-	 * @param width The width of the clip
-	 * @param height The height of the clip
+	 * Sets the graphics context clip. Only pixels within this area will be
+	 * rendered
+	 * 
+	 * @param x
+	 *            The x coordinate the clip begins at
+	 * @param y
+	 *            The y coordinate the clip begins at
+	 * @param width
+	 *            The width of the clip
+	 * @param height
+	 *            The height of the clip
 	 */
 	public void setClip(float x, float y, float width, float height) {
 		if (rendering) {
@@ -374,7 +380,7 @@ public class Graphics {
 		if (rendering) {
 			endRendering();
 		}
-		
+
 		clip = null;
 	}
 
@@ -408,9 +414,12 @@ public class Graphics {
 		if (!rendering) {
 			applyTransformations();
 			if (clip != null) {
+				Rectangle scaledClip = new Rectangle(clip.getX() * scaleX,
+						clip.getY() * scaleY, clip.getWidth() * scaleX,
+						clip.getHeight() * scaleY);
 				scissors = new Rectangle();
 				ScissorStack.calculateScissors(camera,
-						spriteBatch.getTransformMatrix(), clip, scissors);
+						spriteBatch.getTransformMatrix(), scaledClip, scissors);
 				ScissorStack.pushScissors(scissors);
 			}
 			spriteBatch.begin();

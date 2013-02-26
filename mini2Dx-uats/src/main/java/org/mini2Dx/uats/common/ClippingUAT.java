@@ -63,6 +63,11 @@ public class ClippingUAT extends GameContainer {
 		tiledMap.draw(g, 0, 0);
 		g.removeClip();
 		
+		g.setClip(0f, 128f, 64f, 64f);
+		//Should draw four tiles from bottom left corner of map
+		tiledMap.draw(g, 0, 0);
+		g.removeClip();
+		
 		//Should draw whole map
 		tiledMap.draw(g, 96, 0);
 	}
