@@ -199,7 +199,6 @@ public class Graphics {
 		if (font != null) {
 			beginRendering();
 			font.setColor(color);
-			font.setScale(scaleX, scaleY);
 			font.draw(spriteBatch, text, x * scaleX, y * scaleY);
 		}
 	}
@@ -398,6 +397,23 @@ public class Graphics {
 		this.tint = tint;
 		spriteBatch.setColor(tint);
 	}
+	
+
+	/**
+	 * Sets the {@link BitmapFont} to draw {@link String}s with
+	 * 
+	 * @param font
+	 *            A non-null instance of {@link BitmapFont}
+	 */
+	public void setFont(BitmapFont font) {
+		if (font != null) {
+			if(rendering) {
+				endRendering();
+			}
+			
+			this.font = font;
+		}
+	}
 
 	/**
 	 * Removes the tinting {@link Color}
@@ -453,6 +469,10 @@ public class Graphics {
 		}
 		camera.update();
 		spriteBatch.setProjectionMatrix(camera.combined);
+		
+		if (font != null) {
+			font.setScale(scaleX, scaleY);
+		}
 	}
 
 	/**
@@ -549,17 +569,6 @@ public class Graphics {
 	 */
 	public BitmapFont getFont() {
 		return font;
-	}
-
-	/**
-	 * Sets the {@link BitmapFont} to draw {@link String}s with
-	 * 
-	 * @param font
-	 *            A non-null instance of {@link BitmapFont}
-	 */
-	public void setFont(BitmapFont font) {
-		if (font != null)
-			this.font = font;
 	}
 
 	/**
