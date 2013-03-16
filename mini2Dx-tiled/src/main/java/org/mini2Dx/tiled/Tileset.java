@@ -14,6 +14,10 @@ package org.mini2Dx.tiled;
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -24,7 +28,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class Tileset {
 	private TextureRegion[][] tiles;
-	private String name, tilesetImagePath;
+	private String name, tilesetImagePath, transparentColorValue;
 	private int width, height;
 	private int tileWidth, tileHeight;
 	private int spacing, margin;
@@ -47,7 +51,6 @@ public class Tileset {
 	public void drawTile(Graphics g, int tileId, int renderX, int renderY) {
 		int tileX = getTileX(tileId);
 		int tileY = getTileY(tileId);
-		System.out.println(tileId + " " +tileX + " " + tileY);
 		g.drawTextureRegion(tiles[tileX][tileY], renderX, renderY);
 	}
 
@@ -88,7 +91,14 @@ public class Tileset {
 	 *            {@link TiledMap} that has loaded this tileset
 	 */
 	public void loadTexture(FileHandle tmxDirectory) {
-		Texture texture = new Texture(tmxDirectory.child(tilesetImagePath));
+		Pixmap pixmap = new Pixmap(tmxDirectory.child(tilesetImagePath));
+		Texture texture = null;
+		if(transparentColorValue != null) {
+			texture = modifyPixmapWithTransparentColor(pixmap);
+		} else {
+			texture = new Texture(pixmap);
+			pixmap.dispose();
+		}
 		calculateLastGid();
 		tiles = new TextureRegion[getWidthInTiles()][getHeightInTiles()];
 
@@ -102,6 +112,30 @@ public class Tileset {
 				tiles[x][y] = tile;
 			}
 		}
+	}
+	
+	private Texture modifyPixmapWithTransparentColor(Pixmap pixmap) {
+		float r = Integer.parseInt(transparentColorValue.substring(0, 2), 16) / 255f;
+		float g = Integer.parseInt(transparentColorValue.substring(2, 4), 16) / 255f;
+		float b = Integer.parseInt(transparentColorValue.substring(4, 6), 16) / 155f;
+		
+		int transparentColor = Color.rgba8888(new Color(r, g, b, 1f));
+		
+		Pixmap updatedPixmap = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGBA8888);
+		
+		for(int x = 0; x < pixmap.getWidth(); x++) {
+			for(int y = 0; y < pixmap.getHeight(); y++) {
+				int pixelColor = pixmap.getPixel(x, y);
+				if(pixelColor != transparentColor) {
+					updatedPixmap.drawPixel(x, y, pixelColor);
+				}
+			}
+		}
+		
+		Texture result = new Texture(updatedPixmap);
+		updatedPixmap.dispose();
+		pixmap.dispose();
+		return result;
 	}
 	
 	public void calculateLastGid() {
@@ -348,5 +382,13 @@ public class Tileset {
 	 */
 	public void setTilesetImagePath(String tilesetImagePath) {
 		this.tilesetImagePath = tilesetImagePath;
+	}
+
+	public String getTransparentColorValue() {
+		return transparentColorValue;
+	}
+
+	public void setTransparentColorValue(String transparentColorValue) {
+		this.transparentColorValue = transparentColorValue;
 	}
 }

@@ -208,6 +208,10 @@ public class TiledParser {
 						currTileSet.setHeight(Integer.parseInt(value));
 						return;
 					}
+					if("trans".equals(name)) {
+						currTileSet.setTransparentColorValue(value);
+						return;
+					}
 					return;
 				}
 
