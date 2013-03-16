@@ -54,8 +54,7 @@ public class TiledMap implements TiledParserListener {
 	 * @throws IOException
 	 *             Thrown if the map file could not be parsed
 	 */
-	public TiledMap(FileHandle fileHandle)
-			throws IOException {
+	public TiledMap(FileHandle fileHandle) throws IOException {
 		this(fileHandle, true);
 	}
 
@@ -73,7 +72,7 @@ public class TiledMap implements TiledParserListener {
 		this();
 		this.loadMaps = loadMaps;
 		this.fileHandle = fileHandle;
-		
+
 		TiledParser parser = new TiledParser();
 		parser.addListener(this);
 		parser.parse(fileHandle);
@@ -81,20 +80,29 @@ public class TiledMap implements TiledParserListener {
 
 	/**
 	 * Draws the entire map at the specified coordinates
-	 * @param g The {@link Graphics} context available for rendering
-	 * @param x The x coordinate to render at
-	 * @param y The y coordinate to render at
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context available for rendering
+	 * @param x
+	 *            The x coordinate to render at
+	 * @param y
+	 *            The y coordinate to render at
 	 */
 	public void draw(Graphics g, int x, int y) {
 		draw(g, x, y, 0, 0, width, height);
 	}
-	
+
 	/**
 	 * Draws a layer of the map at the specified coordinates
-	 * @param g The {@link Graphics} context available for rendering
-	 * @param x The x coordinate to render at
-	 * @param y The y coordinate to render at
-	 * @param layer The layer index to render
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context available for rendering
+	 * @param x
+	 *            The x coordinate to render at
+	 * @param y
+	 *            The y coordinate to render at
+	 * @param layer
+	 *            The layer index to render
 	 */
 	public void draw(Graphics g, int x, int y, int layer) {
 		draw(g, x, y, 0, 0, width, height, layer);
@@ -102,13 +110,21 @@ public class TiledMap implements TiledParserListener {
 
 	/**
 	 * Draws a section of the map at the specified coordinates
-	 * @param g The {@link Graphics} context available for rendering
-	 * @param x The x coordinate to render at
-	 * @param y The y coordinate to render at
-	 * @param startTileX The x tile coordinate in the map to start from
-	 * @param startTileY The y tile coordinate in the map to start from
-	 * @param width The amount of tiles across the x axis to render
-	 * @param height The amount of tiles across the y axis to render
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context available for rendering
+	 * @param x
+	 *            The x coordinate to render at
+	 * @param y
+	 *            The y coordinate to render at
+	 * @param startTileX
+	 *            The x tile coordinate in the map to start from
+	 * @param startTileY
+	 *            The y tile coordinate in the map to start from
+	 * @param width
+	 *            The amount of tiles across the x axis to render
+	 * @param height
+	 *            The amount of tiles across the y axis to render
 	 */
 	public void draw(Graphics g, int x, int y, int startTileX, int startTileY,
 			int width, int height) {
@@ -118,15 +134,25 @@ public class TiledMap implements TiledParserListener {
 	}
 
 	/**
-	 * Draws a section of a specified layer of the map at the specified coordinates
-	 * @param g The {@link Graphics} context available for rendering
-	 * @param x The x coordinate to render at
-	 * @param y The y coordinate to render at
-	 * @param startTileX The x tile coordinate in the map to start from
-	 * @param startTileY The y tile coordinate in the map to start from
-	 * @param width The amount of tiles across the x axis to render
-	 * @param height The amount of tiles across the y axis to render
-	 * @param layer The layer index to render
+	 * Draws a section of a specified layer of the map at the specified
+	 * coordinates
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context available for rendering
+	 * @param x
+	 *            The x coordinate to render at
+	 * @param y
+	 *            The y coordinate to render at
+	 * @param startTileX
+	 *            The x tile coordinate in the map to start from
+	 * @param startTileY
+	 *            The y tile coordinate in the map to start from
+	 * @param width
+	 *            The amount of tiles across the x axis to render
+	 * @param height
+	 *            The amount of tiles across the y axis to render
+	 * @param layer
+	 *            The layer index to render
 	 */
 	public void draw(Graphics g, int x, int y, int startTileX, int startTileY,
 			int width, int height, int layer) {
@@ -137,6 +163,8 @@ public class TiledMap implements TiledParserListener {
 	/**
 	 * Developers can override this method to implement sprite rendering
 	 * 
+	 * @param g
+	 *            The {@link Graphics} context used for rendering
 	 * @param layer
 	 *            The {@link TileLayer} which was just rendered
 	 * @param startTileX
@@ -148,7 +176,7 @@ public class TiledMap implements TiledParserListener {
 	 * @param height
 	 *            The amount of tiles that were rendered along the Y axis
 	 */
-	protected void onLayerRendered(TileLayer layer, int startTileX,
+	protected void onLayerRendered(Graphics g, TileLayer layer, int startTileX,
 			int startTileY, int width, int height) {
 
 	}
@@ -174,12 +202,14 @@ public class TiledMap implements TiledParserListener {
 				}
 			}
 		}
-		onLayerRendered(layer, startTileX, startTileY, width, height);
+		onLayerRendered(g, layer, startTileX, startTileY, width, height);
 	}
 
 	/**
 	 * Returns if the map contains the specified property
-	 * @param propertyName The property name to search for
+	 * 
+	 * @param propertyName
+	 *            The property name to search for
 	 * @return True if the map contains the property
 	 */
 	public boolean containsProperty(String propertyName) {
@@ -190,7 +220,9 @@ public class TiledMap implements TiledParserListener {
 
 	/**
 	 * Returns the value of a specified property
-	 * @param propertyName The property name to search for
+	 * 
+	 * @param propertyName
+	 *            The property name to search for
 	 * @return Null if there is no such property
 	 */
 	public String getProperty(String propertyName) {
@@ -201,8 +233,11 @@ public class TiledMap implements TiledParserListener {
 
 	/**
 	 * Sets the value of a specified property
-	 * @param propertyName The property name to set the value for
-	 * @param value The value of the property to set
+	 * 
+	 * @param propertyName
+	 *            The property name to set the value for
+	 * @param value
+	 *            The value of the property to set
 	 */
 	public void setProperty(String propertyName, String value) {
 		if (properties == null)
@@ -252,43 +287,49 @@ public class TiledMap implements TiledParserListener {
 	public void onObjectGroupParsed(TiledObjectGroup parsedObjectGroup) {
 		this.objectGroups.add(parsedObjectGroup);
 	}
-	
+
 	/**
 	 * Returns the {@link TileLayer} with the given name
-	 * @param name The name to search for
+	 * 
+	 * @param name
+	 *            The name to search for
 	 * @return Null if there is no such {@link TileLayer}
 	 */
 	public TileLayer getTileLayer(String name) {
-		for(TileLayer layer : tileLayers) {
-			if(layer.getName().compareTo(name) == 0) {
+		for (TileLayer layer : tileLayers) {
+			if (layer.getName().compareTo(name) == 0) {
 				return layer;
 			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the {@link TiledObjectGroup} with the given name
-	 * @param name The name to search for
+	 * 
+	 * @param name
+	 *            The name to search for
 	 * @return Null if there is no such {@link TiledObjectGroup}
 	 */
 	public TiledObjectGroup getObjectGroup(String name) {
-		for(TiledObjectGroup group : objectGroups) {
-			if(group.getName().compareTo(name) == 0) {
+		for (TiledObjectGroup group : objectGroups) {
+			if (group.getName().compareTo(name) == 0) {
 				return group;
 			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the index of the {@link TileLayer} with the given name
-	 * @param name The name to search for
+	 * 
+	 * @param name
+	 *            The name to search for
 	 * @return -1 if there is no such {@link TileLayer}
 	 */
 	public int getLayerIndex(String name) {
-		for(int i = 0; i < tileLayers.size(); i++) {
-			if(tileLayers.get(i).getName().compareTo(name) == 0) {
+		for (int i = 0; i < tileLayers.size(); i++) {
+			if (tileLayers.get(i).getName().compareTo(name) == 0) {
 				return i;
 			}
 		}
@@ -297,6 +338,7 @@ public class TiledMap implements TiledParserListener {
 
 	/**
 	 * Returns the {@link Orientation} of this map
+	 * 
 	 * @return
 	 */
 	public Orientation getOrientation() {
@@ -305,6 +347,7 @@ public class TiledMap implements TiledParserListener {
 
 	/**
 	 * Returns the width of the map in tiles
+	 * 
 	 * @return
 	 */
 	public int getWidth() {
@@ -313,6 +356,7 @@ public class TiledMap implements TiledParserListener {
 
 	/**
 	 * Returns the height of the map in tiles
+	 * 
 	 * @return
 	 */
 	public int getHeight() {
@@ -321,6 +365,7 @@ public class TiledMap implements TiledParserListener {
 
 	/**
 	 * Returns the width of tiles in pixels
+	 * 
 	 * @return
 	 */
 	public int getTileWidth() {
@@ -329,6 +374,7 @@ public class TiledMap implements TiledParserListener {
 
 	/**
 	 * Returns the height of tiles in pixels
+	 * 
 	 * @return
 	 */
 	public int getTileHeight() {
@@ -337,6 +383,7 @@ public class TiledMap implements TiledParserListener {
 
 	/**
 	 * Returns the {@link Tileset}s of this map
+	 * 
 	 * @return An empty list if none have been loaded
 	 */
 	public List<Tileset> getTilesets() {
@@ -345,6 +392,7 @@ public class TiledMap implements TiledParserListener {
 
 	/**
 	 * Returns the {@link TileLayer}s of this map
+	 * 
 	 * @return An empty list if none have been loaded
 	 */
 	public List<TileLayer> getTileLayers() {
@@ -353,6 +401,7 @@ public class TiledMap implements TiledParserListener {
 
 	/**
 	 * Returns the {@link TiledObjectGroup}s of this map
+	 * 
 	 * @return An empty list if none have been loaded
 	 */
 	public List<TiledObjectGroup> getObjectGroups() {
