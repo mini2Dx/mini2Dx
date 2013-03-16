@@ -66,7 +66,7 @@ public class FadeInTransition implements Transition {
 
 	@Override
 	public void update(GameContainer gc, float delta) {
-		color.a -= delta * 1.0f * duration;
+		color.a -= (delta * 1.0f) / duration;
         if (color.a < 0) {
                 color.a = 0;
         }
