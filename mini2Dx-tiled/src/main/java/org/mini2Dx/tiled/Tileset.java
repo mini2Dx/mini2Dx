@@ -45,8 +45,10 @@ public class Tileset {
 	 *            The Y coordinate to render at
 	 */
 	public void drawTile(Graphics g, int tileId, int renderX, int renderY) {
-		g.drawTextureRegion(tiles[getTileX(tileId)][getTileY(tileId)], renderX,
-				renderY);
+		int tileX = getTileX(tileId);
+		int tileY = getTileY(tileId);
+		System.out.println(tileId + " " +tileX + " " + tileY);
+		g.drawTextureRegion(tiles[tileX][tileY], renderX, renderY);
 	}
 
 	/**
@@ -87,7 +89,7 @@ public class Tileset {
 	 */
 	public void loadTexture(FileHandle tmxDirectory) {
 		Texture texture = new Texture(tmxDirectory.child(tilesetImagePath));
-		lastGid = (tileWidth * tileHeight) + firstGid - 1;
+		calculateLastGid();
 		tiles = new TextureRegion[getWidthInTiles()][getHeightInTiles()];
 
 		for (int x = 0; x < getWidthInTiles(); x++) {
@@ -101,10 +103,16 @@ public class Tileset {
 			}
 		}
 	}
+	
+	public void calculateLastGid() {
+		lastGid = (getWidthInTiles() * getHeightInTiles()) + firstGid - 1;
+	}
 
 	/**
 	 * Returns true if this tileset contains the tile with the given id
-	 * @param tileId The tile id to search for
+	 * 
+	 * @param tileId
+	 *            The tile id to search for
 	 * @return False if the tileset does not contain the tile
 	 */
 	public boolean contains(int tileId) {
@@ -113,7 +121,9 @@ public class Tileset {
 
 	/**
 	 * Returns the x coordinate of a tile within this tileset
-	 * @param tileId The tile id to get the x coordinate for
+	 * 
+	 * @param tileId
+	 *            The tile id to get the x coordinate for
 	 * @return
 	 */
 	public int getTileX(int tileId) {
@@ -122,7 +132,9 @@ public class Tileset {
 
 	/**
 	 * Returns the y coordinate of a tile within this tileset
-	 * @param tileId The tile id to get the y coordinate for
+	 * 
+	 * @param tileId
+	 *            The tile id to get the y coordinate for
 	 * @return
 	 */
 	public int getTileY(int tileId) {
@@ -131,6 +143,7 @@ public class Tileset {
 
 	/**
 	 * Returns the width of this tileset in tiles
+	 * 
 	 * @return
 	 */
 	public int getWidthInTiles() {
@@ -145,6 +158,7 @@ public class Tileset {
 
 	/**
 	 * Returns the height of this tileset in tiles
+	 * 
 	 * @return
 	 */
 	public int getHeightInTiles() {
@@ -159,6 +173,7 @@ public class Tileset {
 
 	/**
 	 * Returns the name of this tileset
+	 * 
 	 * @return
 	 */
 	public String getName() {
@@ -167,7 +182,9 @@ public class Tileset {
 
 	/**
 	 * Sets the name of this tileset
-	 * @param name The name to set
+	 * 
+	 * @param name
+	 *            The name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -175,6 +192,7 @@ public class Tileset {
 
 	/**
 	 * Returns the width of this tileset in pixels
+	 * 
 	 * @return
 	 */
 	public int getWidth() {
@@ -183,7 +201,9 @@ public class Tileset {
 
 	/**
 	 * Sets the width of this tileset in pixels
-	 * @param width The width in pixels
+	 * 
+	 * @param width
+	 *            The width in pixels
 	 */
 	public void setWidth(int width) {
 		this.width = width;
@@ -192,6 +212,7 @@ public class Tileset {
 
 	/**
 	 * Returns the height of this tileset in pixels
+	 * 
 	 * @return
 	 */
 	public int getHeight() {
@@ -200,7 +221,9 @@ public class Tileset {
 
 	/**
 	 * Sets the height of this tileset in pixels
-	 * @param height The height in pixels
+	 * 
+	 * @param height
+	 *            The height in pixels
 	 */
 	public void setHeight(int height) {
 		this.height = height;
@@ -209,15 +232,18 @@ public class Tileset {
 
 	/**
 	 * Returns the width of each tile in pixels
+	 * 
 	 * @return
 	 */
 	public int getTileWidth() {
 		return tileWidth;
 	}
-	
+
 	/**
 	 * Sets the width of each tile in pixels
-	 * @param tileWidth The width in pixels
+	 * 
+	 * @param tileWidth
+	 *            The width in pixels
 	 */
 	public void setTileWidth(int tileWidth) {
 		this.tileWidth = tileWidth;
@@ -226,6 +252,7 @@ public class Tileset {
 
 	/**
 	 * Returns the height of each tile in pixels
+	 * 
 	 * @return
 	 */
 	public int getTileHeight() {
@@ -234,7 +261,9 @@ public class Tileset {
 
 	/**
 	 * Sets the height of each tile in pixels
-	 * @param tileHeight The height in pixels
+	 * 
+	 * @param tileHeight
+	 *            The height in pixels
 	 */
 	public void setTileHeight(int tileHeight) {
 		this.tileHeight = tileHeight;
@@ -243,6 +272,7 @@ public class Tileset {
 
 	/**
 	 * Returns the internal spacing between each tile
+	 * 
 	 * @return The spacing in pixels
 	 */
 	public int getSpacing() {
@@ -251,7 +281,9 @@ public class Tileset {
 
 	/**
 	 * Sets the internal spacing between each tile
-	 * @param spacing The spacing in pixels
+	 * 
+	 * @param spacing
+	 *            The spacing in pixels
 	 */
 	public void setSpacing(int spacing) {
 		this.spacing = spacing;
@@ -261,6 +293,7 @@ public class Tileset {
 
 	/**
 	 * Returns the margin at the borders of the tileset
+	 * 
 	 * @return The margin in pixels
 	 */
 	public int getMargin() {
@@ -269,7 +302,9 @@ public class Tileset {
 
 	/**
 	 * Sets the margin at the borders of the tileset
-	 * @param margin The margin in pixels
+	 * 
+	 * @param margin
+	 *            The margin in pixels
 	 */
 	public void setMargin(int margin) {
 		this.margin = margin;
@@ -278,7 +313,9 @@ public class Tileset {
 	}
 
 	/**
-	 * Returns the first GID {@see <a>https://github.com/bjorn/tiled/wiki/TMX-Map-Format</a>}
+	 * Returns the first GID {@see
+	 * <a>https://github.com/bjorn/tiled/wiki/TMX-Map-Format</a>}
+	 * 
 	 * @return
 	 */
 	public int getFirstGid() {
@@ -286,7 +323,9 @@ public class Tileset {
 	}
 
 	/**
-	 * Sets the first GID {@see <a>https://github.com/bjorn/tiled/wiki/TMX-Map-Format</a>}
+	 * Sets the first GID {@see
+	 * <a>https://github.com/bjorn/tiled/wiki/TMX-Map-Format</a>}
+	 * 
 	 * @param firstGid
 	 */
 	public void setFirstGid(int firstGid) {
@@ -295,6 +334,7 @@ public class Tileset {
 
 	/**
 	 * Returns the relative path of the tileset image
+	 * 
 	 * @return
 	 */
 	public String getTilesetImagePath() {
@@ -303,6 +343,7 @@ public class Tileset {
 
 	/**
 	 * Sets the relative path of the tileset image
+	 * 
 	 * @param tilesetImagePath
 	 */
 	public void setTilesetImagePath(String tilesetImagePath) {

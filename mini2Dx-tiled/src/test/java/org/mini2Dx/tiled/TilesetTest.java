@@ -35,6 +35,21 @@ public class TilesetTest {
 	}
 	
 	@Test
+	public void testLastGidWithoutSpacing() {
+		tileset.calculateLastGid();
+		Assert.assertEquals(true, tileset.contains(16));
+		Assert.assertEquals(false, tileset.contains(17));
+	}
+	
+	@Test
+	public void testLastGidWithSpacing() {
+		tileset.setSpacing(4);
+		tileset.calculateLastGid();
+		Assert.assertEquals(true, tileset.contains(9));
+		Assert.assertEquals(false, tileset.contains(10));
+	}
+	
+	@Test
 	public void testGetTileX() {
 		Assert.assertEquals(0, tileset.getTileX(1));
 		Assert.assertEquals(0, tileset.getTileX(5));
