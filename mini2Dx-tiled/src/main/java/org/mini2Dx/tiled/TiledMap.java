@@ -17,9 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.SpriteCache;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  * An implementation of a parsed map from Tiled
@@ -36,6 +41,9 @@ public class TiledMap implements TiledParserListener {
 	private boolean loadMaps = true;
 	private FileHandle fileHandle;
 
+	private SpriteCache layerCache;
+	private Map<TileLayer, Integer> layerCacheIds;
+
 	/**
 	 * Constructs an empty map
 	 */
@@ -43,6 +51,7 @@ public class TiledMap implements TiledParserListener {
 		tilesets = new ArrayList<Tileset>();
 		tileLayers = new ArrayList<TileLayer>();
 		objectGroups = new ArrayList<TiledObjectGroup>();
+		layerCacheIds = new HashMap<TileLayer, Integer>();
 		this.loadMaps = false;
 	}
 
@@ -76,6 +85,35 @@ public class TiledMap implements TiledParserListener {
 		TiledParser parser = new TiledParser();
 		parser.addListener(this);
 		parser.parse(fileHandle);
+
+		if (loadMaps) {
+			layerCache = new SpriteCache();
+			for (int layer = 0; layer < tileLayers.size(); layer++) {
+				layerCache.beginCache();
+				for (int y = 0; y < getHeight(); y++) {
+					for (int x = 0; x < getWidth(); x++) {
+						int tileId = tileLayers.get(layer).getTileId(x, y);
+
+						if (tileId > 0) {
+							int tileRenderX = x * getTileWidth();
+							int tileRenderY = y * getTileHeight();
+
+							for (int i = 0; i < tilesets.size(); i++) {
+								Tileset tileset = tilesets.get(i);
+								if (tileset.contains(tileId)) {
+									layerCache.add(
+											tileset.getTileImage(tileId),
+											tileRenderX, tileRenderY);
+									break;
+								}
+							}
+						}
+					}
+				}
+				int layerCacheId = layerCache.endCache();
+				layerCacheIds.put(tileLayers.get(layer), layerCacheId);
+			}
+		}
 	}
 
 	/**
@@ -183,25 +221,40 @@ public class TiledMap implements TiledParserListener {
 
 	private void drawLayer(Graphics g, TileLayer layer, int renderX,
 			int renderY, int startTileX, int startTileY, int width, int height) {
-		for (int y = startTileY; y < height && y < getHeight(); y++) {
-			for (int x = startTileX; x < width && x < getWidth(); x++) {
-				int tileId = layer.getTileId(x, y);
+		int startTileRenderX = startTileX * getTileWidth();
+		int tileRenderX = MathUtils.round(startTileRenderX * g.getScaleX())
+				- renderX;
 
-				if (tileId > 0) {
-					int tileRenderX = renderX + (x * getTileWidth());
-					int tileRenderY = renderY + (y * getTileHeight());
+		int startTileRenderY = startTileY * getTileHeight();
+		int tileRenderY = MathUtils.round(startTileRenderY * g.getScaleY())
+				- renderY;
 
-					for (int i = 0; i < tilesets.size(); i++) {
-						Tileset tileset = tilesets.get(i);
-						if (tileset.contains(tileId)) {
-							tileset.drawTile(g, tileId, tileRenderX,
-									tileRenderY);
-							break;
-						}
-					}
-				}
+		Rectangle existingClip = g.removeClip();
+		Rectangle newClip = new Rectangle(startTileRenderX, startTileRenderY, width
+					* getTileWidth(), height * getTileHeight());
+
+		g.translate(-tileRenderX, -tileRenderY);
+
+		if (existingClip != null) {
+			if(existingClip.intersects(newClip)) {
+				g.setClip(existingClip.intersection(newClip));
+			} else {
+				g.setClip(existingClip);
 			}
+		} else {
+			g.setClip(newClip);
 		}
+
+		int layerCacheId = layerCacheIds.get(layer);
+		g.drawSpriteCache(layerCache, layerCacheId);
+
+		g.removeClip();
+		g.translate(tileRenderX, tileRenderY);
+
+		if (existingClip != null)
+			g.setClip(existingClip.getX(), existingClip.getY(),
+					existingClip.getWidth(), existingClip.getHeight());
+
 		onLayerRendered(g, layer, startTileX, startTileY, width, height);
 	}
 

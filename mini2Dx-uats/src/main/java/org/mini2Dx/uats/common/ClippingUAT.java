@@ -63,13 +63,17 @@ public class ClippingUAT extends GameContainer {
 		tiledMap.draw(g, 0, 0);
 		g.removeClip();
 		
-		g.setClip(0f, 128f, 64f, 64f);
+		g.setClip(0f, 192f, 64f, 64f);
 		//Should draw four tiles from bottom left corner of map
 		tiledMap.draw(g, 0, 0);
 		g.removeClip();
 		
 		//Should draw whole map
 		tiledMap.draw(g, 96, 0);
+		
+		//Should only draw part of text
+		g.setClip(0, 256, 64, 64);
+		g.drawString("Hello, world!", 0, 256);
 	}
 
 	public static void main(String[] args) {
@@ -78,6 +82,7 @@ public class ClippingUAT extends GameContainer {
 		cfg.useGL20 = true;
 		cfg.width = 800;
 		cfg.height = 600;
+		cfg.stencil = 8;
 		cfg.useCPUSynch = false;
 		cfg.vSyncEnabled = true;
 		new LwjglApplication(new Mini2DxGame(new ClippingUAT()), cfg);

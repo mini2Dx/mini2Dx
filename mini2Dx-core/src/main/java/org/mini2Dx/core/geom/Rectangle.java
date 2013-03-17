@@ -92,6 +92,14 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle {
 		}
 		return true;
 	}
+	
+	public Rectangle intersection(Rectangle rect) {
+		float newX = Math.max(getX(), rect.getX());
+		float newY =  Math.max(getY(), rect.getY());
+		float newWidth = Math.min(getMaxX(), rect.getMaxX()) - newX;
+		float newHeight = Math.min(getMaxY(), rect.getMaxY()) - newY;
+		return new Rectangle(newX, newY, newWidth, newHeight);
+	}
 
 	@Override
 	public void setX(float x) {

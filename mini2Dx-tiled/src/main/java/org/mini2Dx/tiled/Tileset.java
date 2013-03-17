@@ -73,6 +73,17 @@ public class Tileset {
 			}
 		}
 	}
+	
+	/**
+	 * Returns the {@link TextureRegion} for a given tile id
+	 * @param tileId The tile id to look up
+	 * @return The tile image
+	 */
+	public TextureRegion getTileImage(int tileId) {
+		int tileX = getTileX(tileId);
+		int tileY = getTileY(tileId);
+		return tiles[tileX][tileY];
+	}
 
 	/**
 	 * Returns if the tileset image has been loaded

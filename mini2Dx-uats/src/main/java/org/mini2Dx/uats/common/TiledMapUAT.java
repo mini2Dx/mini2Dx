@@ -61,6 +61,13 @@ public class TiledMapUAT extends GameContainer {
 		tiledMap.draw(g, 0, 0);
 		
 		tiledMap.getTilesets().get(0).drawTileset(g, tiledMap.getWidth() * tiledMap.getTileWidth() + 32, 0);
+		
+		tiledMap.draw(g, 0, tiledMap.getHeight() * tiledMap.getTileHeight(), 1, 1, 4, 8);
+		
+		g.scale(1.25f,1.25f);
+		g.rotate(5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 2);
+
+		tiledMap.draw(g, 0, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 2, 1, 1, 4, 8);
 	}
 
 	public static void main(String[] args) {
@@ -68,7 +75,8 @@ public class TiledMapUAT extends GameContainer {
 		cfg.title = "mini2Dx - TiledMap Verification Test";
 		cfg.useGL20 = true;
 		cfg.width = 800;
-		cfg.height = 600;
+		cfg.height = 800;
+		cfg.stencil = 8;
 		cfg.useCPUSynch = false;
 		cfg.vSyncEnabled = true;
 		new LwjglApplication(new Mini2DxGame(new TiledMapUAT()), cfg);

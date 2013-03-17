@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.Color;
 public class GraphicsUAT extends BasicGame {
 	private int playerX, playerY;
 	private float scaleX, scaleY;
+	private int rotation;
 
 	@Override
 	public void initialise() {
@@ -37,6 +38,7 @@ public class GraphicsUAT extends BasicGame {
 		playerY = 0;
 		scaleX = 2f;
 		scaleY = 2f;
+		rotation = 0;
 	}
 
 	@Override
@@ -46,15 +48,29 @@ public class GraphicsUAT extends BasicGame {
 	@Override
 	public void render(Graphics g) {
 		g.setBackgroundColor(Color.WHITE);
+		
+		g.setColor(Color.GREEN);
+		for(int x = 0; x < 800 / 32; x++) {
+			for(int y = 0; y < 600 / 32; y++) {
+				g.drawRect(x * 32, y * 32, 32, 32);
+			}
+		}
+		
+		g.drawRect(32, 32, 64, 64);
+		
+		g.setColor(Color.BLUE);
+		g.rotate(rotation, 440 + 16, 320 + 16);
+		g.fillRect(440, 320, 32, 32);
+		g.rotate(-rotation, 440 + 16, 320 + 16);
+		
 		g.setColor(Color.RED);
 		g.scale(scaleX, scaleY);
-		g.translate(0 - playerX, 0 - playerY);
+		g.translate(playerX, playerY);
 
-		g.drawRect(32, 32, 64, 64);
-		g.rotate(25);
+		g.rotate(rotation, 0, 0);
 		g.fillRect(128, 32, 64, 64);
-		g.rotate(-25);
-
+		g.rotate(-rotation, 0, 0);
+		
 		g.drawCircle(32, 160, 32);
 		g.fillCircle(128, 160, 32);
 		
@@ -83,6 +99,9 @@ public class GraphicsUAT extends BasicGame {
 		case Keys.Q:
 			scaleX--;
 			scaleY--;
+			break;
+		case Keys.R:
+			rotation++;
 			break;
 		}
 		return true;

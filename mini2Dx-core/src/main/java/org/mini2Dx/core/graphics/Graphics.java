@@ -14,15 +14,20 @@ package org.mini2Dx.core.graphics;
 import org.mini2Dx.core.geom.Rectangle;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 /**
@@ -39,7 +44,7 @@ public class Graphics {
 
 	private int translationX, translationY;
 	private float scaleX, scaleY;
-	private float rotation;
+	private float rotation, rotationX, rotationY;
 	private float currentWidth, currentHeight;
 
 	private int lineHeight;
@@ -64,6 +69,8 @@ public class Graphics {
 		scaleX = 1f;
 		scaleY = 1f;
 		rotation = 0f;
+		rotationX = 0f;
+		rotationY = 0f;
 
 		/* Create Ortho camera so that 0,0 is in top-left */
 		camera = new OrthographicCamera();
@@ -83,7 +90,7 @@ public class Graphics {
 
 		Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g,
 				backgroundColor.b, backgroundColor.a);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_STENCIL_BUFFER_BIT);
 
 		rendering = false;
 	}
@@ -92,10 +99,7 @@ public class Graphics {
 	 * Called by mini2Dx after rendering
 	 */
 	public void postRender() {
-		if (rendering) {
-			spriteBatch.end();
-		}
-		undoTransformations();
+		endRendering();
 		resetTransformations();
 	}
 
@@ -119,9 +123,9 @@ public class Graphics {
 		int roundHeight = MathUtils.round(height);
 
 		spriteBatch.draw(colorTextureCache.getRectangleTexture(color,
-				roundWidth, roundHeight, getLineHeight()), (x * scaleX),
-				(y * scaleY), 0, 0, roundWidth, roundHeight, scaleX, scaleY, 0,
-				0, 0, roundWidth, roundHeight, false, false);
+				roundWidth, roundHeight, getLineHeight()), x, y, 0, 0,
+				roundWidth, roundHeight, 1f, 1f, 0, 0, 0, roundWidth,
+				roundHeight, false, false);
 	}
 
 	/**
@@ -138,9 +142,9 @@ public class Graphics {
 	 */
 	public void fillRect(float x, float y, float width, float height) {
 		beginRendering();
-		spriteBatch.draw(colorTextureCache.getFilledRectangleTexture(color),
-				(x * scaleX), (y * scaleY), 0, 0, width, height, scaleX,
-				scaleY, 0, 0, 0, 1, 1, false, false);
+
+		spriteBatch.draw(colorTextureCache.getFilledRectangleTexture(color), x,
+				y, 0, 0, width, height, 1f, 1f, 0, 0, 0, 1, 1, false, false);
 	}
 
 	/**
@@ -156,12 +160,15 @@ public class Graphics {
 	 */
 	public void drawCircle(float centerX, float centerY, int radius) {
 		beginRendering();
+
+		float renderX = (centerX - radius);
+		float renderY = (centerY - radius);
+
 		Texture texture = colorTextureCache.getCircleTexture(color, radius,
 				getLineHeight());
-		spriteBatch.draw(texture, (centerX * scaleX) - (radius * scaleX),
-				(centerY * scaleY) - (radius * scaleY), 0, 0,
-				texture.getWidth(), texture.getHeight(), scaleX, scaleY, 0, 0,
-				0, texture.getWidth(), texture.getHeight(), false, false);
+		spriteBatch.draw(texture, renderX, renderY, 0, 0, texture.getWidth(),
+				texture.getHeight(), 1f, 1f, 0, 0, 0, texture.getWidth(),
+				texture.getHeight(), false, false);
 	}
 
 	/**
@@ -178,11 +185,13 @@ public class Graphics {
 		Texture texture = colorTextureCache.getFilledCircleTexture(color,
 				radius);
 
+		float renderX = (centerX - radius);
+		float renderY = (centerY - radius);
+
 		beginRendering();
-		spriteBatch.draw(texture, (centerX * scaleX) - (radius * scaleX),
-				(centerY * scaleY) - (radius * scaleY), 0, 0,
-				texture.getWidth(), texture.getHeight(), scaleX, scaleY, 0, 0,
-				0, texture.getWidth(), texture.getHeight(), false, false);
+		spriteBatch.draw(texture, renderX, renderY, 0, 0, texture.getWidth(),
+				texture.getHeight(), 1f, 1f, 0, 0, 0, texture.getWidth(),
+				texture.getHeight(), false, false);
 	}
 
 	/**
@@ -199,7 +208,7 @@ public class Graphics {
 		if (font != null) {
 			beginRendering();
 			font.setColor(color);
-			font.draw(spriteBatch, text, x * scaleX, y * scaleY);
+			font.draw(spriteBatch, text, x, y);
 		}
 	}
 
@@ -215,9 +224,9 @@ public class Graphics {
 	 */
 	public void drawTexture(Texture texture, float x, float y) {
 		beginRendering();
-		spriteBatch.draw(texture, (x * scaleX), (y * scaleY), 0, 0,
-				texture.getWidth(), texture.getHeight(), scaleX, scaleY, 0, 0,
-				0, texture.getWidth(), texture.getHeight(), false, false);
+		spriteBatch.draw(texture, x, y, 0, 0, texture.getWidth(),
+				texture.getHeight(), 1f, 1f, 0, 0, 0, texture.getWidth(),
+				texture.getHeight(), false, false);
 	}
 
 	/**
@@ -232,9 +241,9 @@ public class Graphics {
 	 */
 	public void drawTextureRegion(TextureRegion textureRegion, float x, float y) {
 		beginRendering();
-		spriteBatch.draw(textureRegion, (x * scaleX), (y * scaleY), 0, 0,
+		spriteBatch.draw(textureRegion, x, y, 0, 0,
 				textureRegion.getRegionWidth(),
-				textureRegion.getRegionHeight(), scaleX, scaleY, 0);
+				textureRegion.getRegionHeight(), 1f, 1f, 0);
 	}
 
 	/**
@@ -246,17 +255,7 @@ public class Graphics {
 	 */
 	public void drawSprite(Sprite sprite) {
 		beginRendering();
-		float x = sprite.getX();
-		float y = sprite.getY();
-		float oldScaleX = sprite.getScaleX();
-		float oldScaleY = sprite.getScaleY();
-
-		sprite.setPosition(x * scaleX, y * scaleY);
-		sprite.setScale(scaleX * oldScaleX, scaleY * oldScaleY);
 		sprite.draw(spriteBatch);
-
-		sprite.setPosition(x, y);
-		sprite.setScale(oldScaleX, oldScaleY);
 	}
 
 	/**
@@ -274,31 +273,21 @@ public class Graphics {
 		beginRendering();
 		float oldX = sprite.getX();
 		float oldY = sprite.getY();
-		float oldScaleX = sprite.getScaleX();
-		float oldScaleY = sprite.getScaleY();
 
-		sprite.setPosition(x * scaleX, y * scaleY);
-		sprite.setScale(scaleX * oldScaleX, scaleY * oldScaleY);
+		sprite.setPosition(x, y);
 		sprite.draw(spriteBatch);
 		sprite.setPosition(oldX, oldY);
-		sprite.setScale(oldScaleX, oldScaleY);
 	}
 
-	/**
-	 * Rotates the canvas by the provided degrees around the center of the game
-	 * screen
-	 * 
-	 * @param degrees
-	 *            The degree value in a clockwise direction
-	 */
-	public void rotate(float degrees) {
-		if (rendering) {
-			spriteBatch.end();
-			rendering = false;
-		}
+	public void drawSpriteCache(SpriteCache spriteCache, int cacheId) {
+		beginRendering();
+		spriteCache.getProjectionMatrix().set(spriteBatch.getProjectionMatrix().cpy());
+		spriteCache.getTransformMatrix().set(spriteBatch.getTransformMatrix().cpy());
+		Gdx.gl.glEnable(GL10.GL_BLEND);
 
-		camera.rotate(-rotation);
-		this.rotation += -degrees;
+		spriteCache.begin();
+		spriteCache.draw(cacheId);
+		spriteCache.end();
 	}
 
 	/**
@@ -306,15 +295,17 @@ public class Graphics {
 	 * 
 	 * @param degrees
 	 *            The degree value in a clockwise direction
+	 * @param x The x coordinate to rotate around
+	 * @param y The y coordinate to rotate around
 	 */
 	public void rotate(float degrees, float x, float y) {
 		if (rendering) {
-			spriteBatch.end();
-			rendering = false;
+			endRendering();
 		}
 
-		camera.rotate(-rotation);
-		this.rotation += -degrees;
+		this.rotation += degrees;
+		this.rotationX = x;
+		this.rotationY = y;
 	}
 
 	/**
@@ -330,8 +321,8 @@ public class Graphics {
 			endRendering();
 		}
 
-		this.scaleX = scaleX;
-		this.scaleY = scaleY;
+		this.scaleX *= scaleX;
+		this.scaleY *= scaleY;
 	}
 
 	/**
@@ -347,8 +338,8 @@ public class Graphics {
 			endRendering();
 		}
 
-		this.translationX = translateX;
-		this.translationY = translateY;
+		this.translationX += translateX;
+		this.translationY += translateY;
 	}
 
 	/**
@@ -371,16 +362,32 @@ public class Graphics {
 
 		clip = new Rectangle(x, y, width, height);
 	}
-
+	
 	/**
-	 * Removes the applied clip
+	 * Sets the graphics context clip. Only pixels within this area will be
+	 * rendered
+	 * 
+	 * @param clip The clip area
 	 */
-	public void removeClip() {
+	public void setClip(Rectangle clip) {
 		if (rendering) {
 			endRendering();
 		}
 
+		this.clip = clip;
+	}
+
+	/**
+	 * Removes the applied clip
+	 */
+	public Rectangle removeClip() {
+		if (rendering) {
+			endRendering();
+		}
+
+		Rectangle result = clip;
 		clip = null;
+		return result;
 	}
 
 	/**
@@ -397,7 +404,6 @@ public class Graphics {
 		this.tint = tint;
 		spriteBatch.setColor(tint);
 	}
-	
 
 	/**
 	 * Sets the {@link BitmapFont} to draw {@link String}s with
@@ -407,10 +413,10 @@ public class Graphics {
 	 */
 	public void setFont(BitmapFont font) {
 		if (font != null) {
-			if(rendering) {
+			if (rendering) {
 				endRendering();
 			}
-			
+
 			this.font = font;
 		}
 	}
@@ -429,16 +435,31 @@ public class Graphics {
 	private void beginRendering() {
 		if (!rendering) {
 			applyTransformations();
-			if (clip != null) {
-				Rectangle scaledClip = new Rectangle(clip.getX() * scaleX,
-						clip.getY() * scaleY, clip.getWidth() * scaleX,
-						clip.getHeight() * scaleY);
-				scissors = new Rectangle();
-				ScissorStack.calculateScissors(camera,
-						spriteBatch.getTransformMatrix(), scaledClip, scissors);
-				ScissorStack.pushScissors(scissors);
-			}
 			spriteBatch.begin();
+			Gdx.gl.glClearStencil(0);
+			Gdx.gl.glClear(GL10.GL_STENCIL_BUFFER_BIT);
+			if (clip != null) {
+				Gdx.gl.glEnable(GL10.GL_STENCIL_TEST);
+				Gdx.gl.glColorMask(false, false, false, false);
+				Gdx.gl.glDepthMask(false);
+				Gdx.gl.glStencilFunc(GL10.GL_ALWAYS, 1, 1);
+				Gdx.gl.glStencilOp(GL10.GL_REPLACE, GL10.GL_REPLACE,
+						GL10.GL_REPLACE);
+
+				spriteBatch.draw(colorTextureCache
+						.getFilledRectangleTexture(Color.WHITE), clip.getX(),
+						clip.getY(), 0f, 0f, clip.getWidth(), clip.getHeight(),
+						1f, 1f, 0, 0, 0, 1, 1, false, false);
+				spriteBatch.end();
+
+				Gdx.gl.glColorMask(true, true, true, true);
+				Gdx.gl.glDepthMask(true);
+				Gdx.gl.glStencilFunc(GL10.GL_EQUAL, 1, 1);
+				Gdx.gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_KEEP);
+
+				spriteBatch.begin();
+			}
+
 			rendering = true;
 		}
 	}
@@ -447,10 +468,13 @@ public class Graphics {
 	 * Ends rendering
 	 */
 	private void endRendering() {
-		spriteBatch.end();
-		undoTransformations();
-		if (clip != null) {
-			ScissorStack.popScissors();
+		if (rendering) {
+			undoTransformations();
+			spriteBatch.end();
+
+			if (clip != null) {
+				Gdx.gl.glDisable(GL10.GL_STENCIL_TEST);
+			}
 		}
 		rendering = false;
 	}
@@ -460,16 +484,21 @@ public class Graphics {
 	 */
 	private void applyTransformations() {
 		camera.setToOrtho(true, currentWidth, currentHeight);
-		if (rotation != 0f) {
-			camera.rotate(rotation);
+
+		camera.rotateAround(new Vector3(rotationX, rotationY, 0), new Vector3(
+				0, 0, 1), -rotation);
+		camera.update();
+
+		spriteBatch.setProjectionMatrix(camera.combined);
+
+		if (translationX != 0f || translationY != 0f) {
+			spriteBatch.getTransformMatrix().translate(translationX,
+					translationY, 0f);
+		}
+		if (scaleX != 1f || scaleY != 1f) {
+			spriteBatch.getTransformMatrix().scale(scaleX, scaleY, 1f);
 		}
 
-		if (translationX != 0 || translationY != 0) {
-			camera.translate(translationX * scaleX, translationY * scaleY);
-		}
-		camera.update();
-		spriteBatch.setProjectionMatrix(camera.combined);
-		
 		if (font != null) {
 			font.setScale(scaleX, scaleY);
 		}
@@ -479,14 +508,19 @@ public class Graphics {
 	 * Cleans up all translations, scaling and rotation
 	 */
 	private void undoTransformations() {
-		if (translationX != 0 || translationY != 0) {
-			camera.translate(-(translationX * scaleX), -(translationY * scaleY));
+		camera.rotateAround(new Vector3(rotationX, rotationY, 0), new Vector3(
+				0, 0, 1), rotation);
+		camera.update();
+
+		if (scaleX != 1f || scaleY != 1f) {
+			spriteBatch.getTransformMatrix()
+					.scale(1f / scaleX, 1f / scaleY, 1f);
 		}
 
-		if (rotation != 0f) {
-			camera.rotate(-rotation);
+		if (translationX != 0f || translationY != 0f) {
+			spriteBatch.getTransformMatrix().translate(-translationX,
+					-translationY, 0f);
 		}
-		camera.update();
 
 		if (font != null) {
 			font.setScale(1f, 1f);
@@ -502,6 +536,8 @@ public class Graphics {
 		this.scaleX = 1f;
 		this.scaleY = 1f;
 		this.rotation = 0f;
+		this.rotationX = 0f;
+		this.rotationY = 0f;
 	}
 
 	/**
@@ -578,5 +614,13 @@ public class Graphics {
 	 */
 	public Color getTint() {
 		return tint;
+	}
+
+	public float getScaleX() {
+		return scaleX;
+	}
+
+	public float getScaleY() {
+		return scaleY;
 	}
 }
