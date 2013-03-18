@@ -43,6 +43,7 @@ public class GraphicsUAT extends BasicGame {
 
 	@Override
 	public void update(float delta) {
+		rotation += 180f * delta;
 	}
 
 	@Override
