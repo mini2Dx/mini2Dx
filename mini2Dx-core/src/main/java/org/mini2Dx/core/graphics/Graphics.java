@@ -501,7 +501,7 @@ public class Graphics {
 		camera.update();
 		
 		if (rotation != 0f) {
-			camera.rotateAround(new Vector3(rotationX, rotationY, 0),
+			camera.rotateAround(new Vector3(rotationX - translationX, rotationY - translationY, 0),
 					new Vector3(0, 0, 1), -rotation);
 		}
 		camera.update();
@@ -514,7 +514,7 @@ public class Graphics {
 	 */
 	private void undoTransformations() {
 		if (rotation != 0f) {
-		camera.rotateAround(new Vector3(rotationX, rotationY, 0), new Vector3(
+		camera.rotateAround(new Vector3(rotationX - translationX, rotationY - translationY, 0), new Vector3(
 				0, 0, 1), rotation);
 		}
 		camera.update();
