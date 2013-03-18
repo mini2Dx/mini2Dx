@@ -222,21 +222,19 @@ public class TiledMap implements TiledParserListener {
 	private void drawLayer(Graphics g, TileLayer layer, int renderX,
 			int renderY, int startTileX, int startTileY, int width, int height) {
 		int startTileRenderX = startTileX * getTileWidth();
-		int tileRenderX = MathUtils.round(startTileRenderX * g.getScaleX())
-				- renderX;
+		int tileRenderX = startTileRenderX - renderX;
 
 		int startTileRenderY = startTileY * getTileHeight();
-		int tileRenderY = MathUtils.round(startTileRenderY * g.getScaleY())
-				- renderY;
+		int tileRenderY = startTileRenderY - renderY;
 
 		Rectangle existingClip = g.removeClip();
-		Rectangle newClip = new Rectangle(startTileRenderX, startTileRenderY, width
-					* getTileWidth(), height * getTileHeight());
+		Rectangle newClip = new Rectangle(startTileRenderX, startTileRenderY,
+				width * getTileWidth(), height * getTileHeight());
 
 		g.translate(-tileRenderX, -tileRenderY);
 
 		if (existingClip != null) {
-			if(existingClip.intersects(newClip)) {
+			if (existingClip.intersects(newClip)) {
 				g.setClip(existingClip.intersection(newClip));
 			} else {
 				g.setClip(existingClip);

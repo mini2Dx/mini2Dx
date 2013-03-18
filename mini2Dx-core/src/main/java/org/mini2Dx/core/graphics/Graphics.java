@@ -281,8 +281,10 @@ public class Graphics {
 
 	public void drawSpriteCache(SpriteCache spriteCache, int cacheId) {
 		beginRendering();
-		spriteCache.getProjectionMatrix().set(spriteBatch.getProjectionMatrix().cpy());
-		spriteCache.getTransformMatrix().set(spriteBatch.getTransformMatrix().cpy());
+		spriteCache.getProjectionMatrix().set(
+				spriteBatch.getProjectionMatrix().cpy());
+		spriteCache.getTransformMatrix().set(
+				spriteBatch.getTransformMatrix().cpy());
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 
 		spriteCache.begin();
@@ -295,8 +297,10 @@ public class Graphics {
 	 * 
 	 * @param degrees
 	 *            The degree value in a clockwise direction
-	 * @param x The x coordinate to rotate around
-	 * @param y The y coordinate to rotate around
+	 * @param x
+	 *            The x coordinate to rotate around
+	 * @param y
+	 *            The y coordinate to rotate around
 	 */
 	public void rotate(float degrees, float x, float y) {
 		if (rendering) {
@@ -304,6 +308,7 @@ public class Graphics {
 		}
 
 		this.rotation += degrees;
+		this.rotation = this.rotation % 360f;
 		this.rotationX = x;
 		this.rotationY = y;
 	}
@@ -362,12 +367,13 @@ public class Graphics {
 
 		clip = new Rectangle(x, y, width, height);
 	}
-	
+
 	/**
 	 * Sets the graphics context clip. Only pixels within this area will be
 	 * rendered
 	 * 
-	 * @param clip The clip area
+	 * @param clip
+	 *            The clip area
 	 */
 	public void setClip(Rectangle clip) {
 		if (rendering) {
@@ -482,49 +488,42 @@ public class Graphics {
 	/**
 	 * Applies all translation, scaling and rotation to the {@link SpriteBatch}
 	 */
-	private void applyTransformations() {
-		camera.setToOrtho(true, currentWidth, currentHeight);
-
-		camera.rotateAround(new Vector3(rotationX, rotationY, 0), new Vector3(
-				0, 0, 1), -rotation);
+	private void applyTransformations() {	
+		float viewportWidth = MathUtils.round(currentWidth / scaleX);
+		float viewportHeight = MathUtils.round(currentHeight / scaleY);
+		
+		camera.setToOrtho(true, viewportWidth, viewportHeight);
+		
+		if (translationX != 0f || translationY != 0f) {
+			camera.translate(-translationX,
+					-translationY);
+		}
+		camera.update();
+		
+		if (rotation != 0f) {
+			camera.rotateAround(new Vector3(rotationX, rotationY, 0),
+					new Vector3(0, 0, 1), -rotation);
+		}
 		camera.update();
 
 		spriteBatch.setProjectionMatrix(camera.combined);
-
-		if (translationX != 0f || translationY != 0f) {
-			spriteBatch.getTransformMatrix().translate(translationX,
-					translationY, 0f);
-		}
-		if (scaleX != 1f || scaleY != 1f) {
-			spriteBatch.getTransformMatrix().scale(scaleX, scaleY, 1f);
-		}
-
-		if (font != null) {
-			font.setScale(scaleX, scaleY);
-		}
 	}
 
 	/**
 	 * Cleans up all translations, scaling and rotation
 	 */
 	private void undoTransformations() {
+		if (rotation != 0f) {
 		camera.rotateAround(new Vector3(rotationX, rotationY, 0), new Vector3(
 				0, 0, 1), rotation);
+		}
 		camera.update();
 
-		if (scaleX != 1f || scaleY != 1f) {
-			spriteBatch.getTransformMatrix()
-					.scale(1f / scaleX, 1f / scaleY, 1f);
-		}
-
 		if (translationX != 0f || translationY != 0f) {
-			spriteBatch.getTransformMatrix().translate(-translationX,
-					-translationY, 0f);
+			camera.translate(translationX,
+					translationY);
 		}
-
-		if (font != null) {
-			font.setScale(1f, 1f);
-		}
+		camera.update();
 	}
 
 	/**
