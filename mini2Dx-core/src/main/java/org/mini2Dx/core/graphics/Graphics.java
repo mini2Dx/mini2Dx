@@ -335,7 +335,7 @@ public class Graphics {
 	}
 
 	/**
-	 * Applies a translation to rendering
+	 * Moves the graphics context by a certain amount of the X and Y axis
 	 * 
 	 * @param translateX
 	 *            The x axis translation
@@ -505,11 +505,11 @@ public class Graphics {
 		camera.update();
 		
 		if (rotation != 0f) {
-			camera.rotateAround(new Vector3(rotationX + translationX, rotationY + translationY, 0),
+			camera.rotateAround(new Vector3(rotationX, rotationY, 0),
 					new Vector3(0, 0, 1), -rotation);
 		}
 		camera.update();
-
+		
 		spriteBatch.setProjectionMatrix(camera.combined);
 	}
 
@@ -517,12 +517,13 @@ public class Graphics {
 	 * Cleans up all translations, scaling and rotation
 	 */
 	private void undoTransformations() {
+		
 		if (rotation != 0f) {
-		camera.rotateAround(new Vector3(rotationX + translationX, rotationY + translationY, 0), new Vector3(
+		camera.rotateAround(new Vector3(rotationX, rotationY, 0), new Vector3(
 				0, 0, 1), rotation);
 		}
 		camera.update();
-
+		
 		if (translationX != 0f || translationY != 0f) {
 			camera.translate(-translationX,
 					-translationY);

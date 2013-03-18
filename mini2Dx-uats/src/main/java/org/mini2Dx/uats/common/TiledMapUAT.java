@@ -69,7 +69,7 @@ public class TiledMapUAT extends GameContainer {
 		
 		g.rotate(-5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 2);
 		g.scale(0.8f,0.8f);
-		tiledMap.draw(g, 0, tiledMap.getHeight() * tiledMap.getTileHeight(), 1, 1, 4, 8);
+		tiledMap.draw(g, 32, tiledMap.getHeight() * tiledMap.getTileHeight(), 1, 1, 4, 8);
 	}
 
 	public static void main(String[] args) {

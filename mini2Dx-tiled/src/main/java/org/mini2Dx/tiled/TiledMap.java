@@ -224,8 +224,8 @@ public class TiledMap implements TiledParserListener {
 		int startTileRenderX = (startTileX * getTileWidth());
 		int startTileRenderY = (startTileY * getTileHeight());
 		
-		int tileRenderX = renderX - startTileRenderX;
-		int tileRenderY = renderY - startTileRenderY;
+		int tileRenderX = MathUtils.round(renderX - startTileRenderX);
+		int tileRenderY = MathUtils.round(renderY - startTileRenderY);
 
 		Rectangle existingClip = g.removeClip();
 		Rectangle newClip = new Rectangle(startTileRenderX, startTileRenderY,
