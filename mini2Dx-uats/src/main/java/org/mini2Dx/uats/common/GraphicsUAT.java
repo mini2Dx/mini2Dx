@@ -66,7 +66,7 @@ public class GraphicsUAT extends BasicGame {
 		
 		g.setColor(Color.RED);
 		g.scale(scaleX, scaleY);
-		g.translate(playerX, playerY);
+		g.translate(-(playerX * 32), -(playerY * 32));
 
 		g.rotate(rotation, 0, 0);
 		g.fillRect(128, 32, 64, 64);

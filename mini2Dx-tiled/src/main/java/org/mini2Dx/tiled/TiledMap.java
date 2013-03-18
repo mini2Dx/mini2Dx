@@ -221,16 +221,16 @@ public class TiledMap implements TiledParserListener {
 
 	private void drawLayer(Graphics g, TileLayer layer, int renderX,
 			int renderY, int startTileX, int startTileY, int width, int height) {
-		int startTileRenderX = startTileX * getTileWidth();
-		int tileRenderX = startTileRenderX - renderX;
-
-		int startTileRenderY = startTileY * getTileHeight();
-		int tileRenderY = startTileRenderY - renderY;
+		int startTileRenderX = (startTileX * getTileWidth());
+		int startTileRenderY = (startTileY * getTileHeight());
+		
+		int tileRenderX = renderX - startTileRenderX;
+		int tileRenderY = renderY - startTileRenderY;
 
 		Rectangle existingClip = g.removeClip();
 		Rectangle newClip = new Rectangle(startTileRenderX, startTileRenderY,
 				width * getTileWidth(), height * getTileHeight());
-
+		
 		g.translate(-tileRenderX, -tileRenderY);
 
 		if (existingClip != null) {

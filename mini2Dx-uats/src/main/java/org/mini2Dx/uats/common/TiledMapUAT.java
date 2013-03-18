@@ -62,12 +62,14 @@ public class TiledMapUAT extends GameContainer {
 		
 		tiledMap.getTilesets().get(0).drawTileset(g, tiledMap.getWidth() * tiledMap.getTileWidth() + 32, 0);
 		
-		tiledMap.draw(g, 0, tiledMap.getHeight() * tiledMap.getTileHeight(), 1, 1, 4, 8);
-		
 		g.scale(1.25f,1.25f);
 		g.rotate(5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 2);
 
 		tiledMap.draw(g, 0, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 2, 1, 1, 4, 8);
+		
+		g.rotate(-5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 2);
+		g.scale(0.8f,0.8f);
+		tiledMap.draw(g, 0, tiledMap.getHeight() * tiledMap.getTileHeight(), 1, 1, 4, 8);
 	}
 
 	public static void main(String[] args) {

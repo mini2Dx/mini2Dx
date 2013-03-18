@@ -104,7 +104,7 @@ public class Animation<T extends Sprite> {
 	 *            The y coordinate to render at
 	 */
 	public void draw(Graphics g, float x, float y) {
-		g.drawTextureRegion(frames.get(currentFrameIndex), x, y);
+		g.drawSprite(getCurrentFrame(), x, y);
 	}
 
 	/**

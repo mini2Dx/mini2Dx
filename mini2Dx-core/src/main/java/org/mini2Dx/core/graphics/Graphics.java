@@ -273,10 +273,14 @@ public class Graphics {
 		beginRendering();
 		float oldX = sprite.getX();
 		float oldY = sprite.getY();
+		Color oldTint = sprite.getColor();
 
+		if(tint != null)
+			sprite.setColor(tint);
 		sprite.setPosition(x, y);
 		sprite.draw(spriteBatch);
 		sprite.setPosition(oldX, oldY);
+		sprite.setColor(oldTint);
 	}
 
 	public void drawSpriteCache(SpriteCache spriteCache, int cacheId) {
@@ -495,13 +499,13 @@ public class Graphics {
 		camera.setToOrtho(true, viewportWidth, viewportHeight);
 		
 		if (translationX != 0f || translationY != 0f) {
-			camera.translate(-translationX,
-					-translationY);
+			camera.translate(translationX,
+					translationY);
 		}
 		camera.update();
 		
 		if (rotation != 0f) {
-			camera.rotateAround(new Vector3(rotationX - translationX, rotationY - translationY, 0),
+			camera.rotateAround(new Vector3(rotationX + translationX, rotationY + translationY, 0),
 					new Vector3(0, 0, 1), -rotation);
 		}
 		camera.update();
@@ -514,14 +518,14 @@ public class Graphics {
 	 */
 	private void undoTransformations() {
 		if (rotation != 0f) {
-		camera.rotateAround(new Vector3(rotationX - translationX, rotationY - translationY, 0), new Vector3(
+		camera.rotateAround(new Vector3(rotationX + translationX, rotationY + translationY, 0), new Vector3(
 				0, 0, 1), rotation);
 		}
 		camera.update();
 
 		if (translationX != 0f || translationY != 0f) {
-			camera.translate(translationX,
-					translationY);
+			camera.translate(-translationX,
+					-translationY);
 		}
 		camera.update();
 	}
@@ -621,5 +625,36 @@ public class Graphics {
 
 	public float getScaleY() {
 		return scaleY;
+	}
+
+	public int getTranslationX() {
+		return translationX;
+	}
+
+	public int getTranslationY() {
+		return translationY;
+	}
+	
+	public float getRotation() {
+		return rotation;
+	}
+
+	public float getRotationX() {
+		return rotationX;
+	}
+
+	public float getRotationY() {
+		return rotationY;
+	}
+
+	@Override
+	public String toString() {
+		return "Graphics [color=" + color + ", backgroundColor="
+				+ backgroundColor + ", tint=" + tint + ", translationX="
+				+ translationX + ", translationY=" + translationY + ", scaleX="
+				+ scaleX + ", scaleY=" + scaleY + ", rotation=" + rotation
+				+ ", rotationX=" + rotationX + ", rotationY=" + rotationY
+				+ ", currentWidth=" + currentWidth + ", currentHeight="
+				+ currentHeight + ", lineHeight=" + lineHeight + "]";
 	}
 }
