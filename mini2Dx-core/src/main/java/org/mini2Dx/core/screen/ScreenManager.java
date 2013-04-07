@@ -120,4 +120,12 @@ public class ScreenManager {
 	public void addGameScreen(GameScreen screen) {
 		this.gameScreens.put(screen.getId(), screen);
 	}
+	
+	/**
+	 * Returns if the {@link ScreenManager} is moving between {@link Screen}s
+	 * @return False if there are no {@link Transition}s active
+	 */
+	public boolean isTransitioning() {
+		return transitionIn != null || transitionOut != null;
+	}
 }
