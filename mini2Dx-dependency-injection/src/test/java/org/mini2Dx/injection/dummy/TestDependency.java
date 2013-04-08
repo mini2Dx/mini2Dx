@@ -13,11 +13,14 @@ package org.mini2Dx.injection.dummy;
 
 import java.util.Random;
 
+import org.mini2Dx.injection.Singleton;
+
 /**
  * A dummy dependency for testing dependency injection
  *
  * @author Thomas Cashman
  */
+@Singleton
 public class TestDependency {
 	private int value;
 	

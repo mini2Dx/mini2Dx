@@ -15,6 +15,7 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.context.SingletonBeanRepository;
 import org.mini2Dx.injection.dummy.TestBean;
 import org.mini2Dx.injection.dummy.TestDependency;
 import org.mini2Dx.injection.dummy.TestInterfaceImpl;
