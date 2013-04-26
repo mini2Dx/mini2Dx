@@ -111,6 +111,7 @@ public class Tileset {
 			texture = new Texture(pixmap);
 			pixmap.dispose();
 		}
+		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		calculateLastGid();
 		tiles = new TextureRegion[getWidthInTiles()][getHeightInTiles()];
 

@@ -38,9 +38,14 @@ public class ScreenManager {
 	}
 
 	/**
-	 * Updates the current {@link GameScreen} and any {@link Transition} that may be occurring
-	 * @param gc The {@link GameContainer} that is updating this {@link ScreenManager}
-	 * @param delta The time since the last update
+	 * Updates the current {@link GameScreen} and any {@link Transition} that
+	 * may be occurring
+	 * 
+	 * @param gc
+	 *            The {@link GameContainer} that is updating this
+	 *            {@link ScreenManager}
+	 * @param delta
+	 *            The time since the last update
 	 */
 	public void update(GameContainer gc, float delta) {
 		if (transitionOut != null) {
@@ -50,7 +55,7 @@ public class ScreenManager {
 				currentScreen = nextScreen;
 				nextScreen = null;
 				transitionOut = null;
-				
+
 				if (transitionIn != null) {
 					transitionIn.initialise(oldScreen, currentScreen);
 				}
@@ -70,11 +75,16 @@ public class ScreenManager {
 
 		currentScreen.update(gc, this, delta);
 	}
-	
+
 	/**
-	 * Renders the current {@link GameScreen} and any {@link Transition} that may be occurring
-	 * @param gc The {@link GameContainer} that is rendering this {@link ScreenManager}
-	 * @param g The {@link Graphics} context available for rendering
+	 * Renders the current {@link GameScreen} and any {@link Transition} that
+	 * may be occurring
+	 * 
+	 * @param gc
+	 *            The {@link GameContainer} that is rendering this
+	 *            {@link ScreenManager}
+	 * @param g
+	 *            The {@link Graphics} context available for rendering
 	 */
 	public void render(GameContainer gc, Graphics g) {
 		if (transitionOut != null) {
@@ -83,7 +93,9 @@ public class ScreenManager {
 			transitionIn.preRender(gc, g);
 		}
 
-		currentScreen.render(gc, g);
+		if (currentScreen != null) {
+			currentScreen.render(gc, g);
+		}
 
 		if (transitionOut != null) {
 			transitionOut.postRender(gc, g);
@@ -94,9 +106,13 @@ public class ScreenManager {
 
 	/**
 	 * Begins a transition to a new {@link GameScreen}
-	 * @param id The id of the {@link GameScreen} to transition to
-	 * @param transitionOut The outgoing {@link Transition}, e.g. fade out
-	 * @param transitionIn The incoming {@link Transition}, e.g. fade in
+	 * 
+	 * @param id
+	 *            The id of the {@link GameScreen} to transition to
+	 * @param transitionOut
+	 *            The outgoing {@link Transition}, e.g. fade out
+	 * @param transitionIn
+	 *            The incoming {@link Transition}, e.g. fade in
 	 */
 	public void enterGameScreen(int id, Transition transitionOut,
 			Transition transitionIn) {
@@ -112,17 +128,20 @@ public class ScreenManager {
 		this.nextScreen = gameScreens.get(id);
 		this.transitionOut.initialise(currentScreen, nextScreen);
 	}
-	
+
 	/**
 	 * Adds a {@link GameScreen} to this manager
-	 * @param screen The {@link GameScreen} to be added
+	 * 
+	 * @param screen
+	 *            The {@link GameScreen} to be added
 	 */
 	public void addGameScreen(GameScreen screen) {
 		this.gameScreens.put(screen.getId(), screen);
 	}
-	
+
 	/**
 	 * Returns if the {@link ScreenManager} is moving between {@link Screen}s
+	 * 
 	 * @return False if there are no {@link Transition}s active
 	 */
 	public boolean isTransitioning() {

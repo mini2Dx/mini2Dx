@@ -11,11 +11,31 @@
  */
 package org.mini2Dx.context;
 
+import java.io.IOException;
+import java.util.Map;
+
+import org.mini2Dx.component.ComponentScanner;
+
 /**
  *
  *
  * @author Thomas Cashman
  */
+@SuppressWarnings(value={ "unchecked", "rawtypes"})
 public class GameContext {
-
+	private static ComponentScanner componentScanner;
+	private static Map<String, BeanRetriever> beans;
+	
+	public static void initialise(String [] packageNames) throws IOException {
+		componentScanner = new ComponentScanner();
+		componentScanner.scan(packageNames);
+	}
+	
+	public static <T> T getBean(Class<T> clazz) {
+		return getBeanRetriever(clazz).getBean();
+	}
+	
+	private static <T> BeanRetriever<T> getBeanRetriever(Class<T> clazz) {
+		return (BeanRetriever<T>) beans.get(clazz.getCanonicalName());
+	}
 }

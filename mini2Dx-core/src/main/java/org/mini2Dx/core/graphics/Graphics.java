@@ -42,7 +42,7 @@ public class Graphics {
 	private OrthographicCamera camera;
 	private BitmapFont font;
 
-	private int translationX, translationY;
+	private float translationX, translationY;
 	private float scaleX, scaleY;
 	private float rotation, rotationX, rotationY;
 	private float currentWidth, currentHeight;
@@ -342,7 +342,7 @@ public class Graphics {
 	 * @param translateY
 	 *            The y axis translation
 	 */
-	public void translate(int translateX, int translateY) {
+	public void translate(float translateX, float translateY) {
 		if (rendering) {
 			endRendering();
 		}
@@ -628,11 +628,11 @@ public class Graphics {
 		return scaleY;
 	}
 
-	public int getTranslationX() {
+	public float getTranslationX() {
 		return translationX;
 	}
 
-	public int getTranslationY() {
+	public float getTranslationY() {
 		return translationY;
 	}
 	
