@@ -9,26 +9,22 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.injection.dummy;
-
-import java.util.Random;
-
-import org.mini2Dx.injection.Prototype;
+package org.mini2Dx.context;
 
 /**
- * A dummy implementaiton of {@link TestInterface} for testing dependency injection
- *
+ * An implementation of {@link Bean} based on the {@link <a href="http://en.wikipedia.org/wiki/Singleton_pattern">singleton pattern</a>}
+ * 
  * @author Thomas Cashman
  */
-@Prototype
-public class TestInterfaceImpl implements TestInterface {
-	private int value;
-	
-	public TestInterfaceImpl() {
-		value = new Random().nextInt();
+public class SingletonBean extends Bean {
+	private Object bean;
+
+	public SingletonBean(Object bean) {
+		this.bean = bean;
 	}
 
-	public int getValue() {
-		return value;
+	@Override
+	public Object getInstance() {
+		return bean;
 	}
 }

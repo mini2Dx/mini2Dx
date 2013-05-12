@@ -13,6 +13,7 @@ package org.mini2Dx.injection.dummy;
 
 import java.util.Random;
 
+import org.mini2Dx.injection.Autowired;
 import org.mini2Dx.injection.Singleton;
 
 /**
@@ -23,6 +24,8 @@ import org.mini2Dx.injection.Singleton;
 @Singleton
 public class TestDependency {
 	private int value;
+	@Autowired
+	private TestInterface interfaceField;
 	
 	public TestDependency() {
 		value = new Random().nextInt();
@@ -30,5 +33,13 @@ public class TestDependency {
 
 	public int getValue() {
 		return value;
+	}
+
+	public TestInterface getInterfaceField() {
+		return interfaceField;
+	}
+
+	public void setInterfaceField(TestInterface interfaceField) {
+		this.interfaceField = interfaceField;
 	}
 }

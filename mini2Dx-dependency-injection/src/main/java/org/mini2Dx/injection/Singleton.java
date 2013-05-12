@@ -6,9 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a class as a singleton bean
- *
- * @see <a href="http://en.wikipedia.org/wiki/Singleton_pattern">Singleton Pattern</a>
+ * Marks a class as a {@link <a href="http://en.wikipedia.org/wiki/Singleton_pattern">singleton</a>} bean
  *
  * @author Thomas Cashman
  */

@@ -12,30 +12,55 @@
 package org.mini2Dx.context;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.mini2Dx.component.ComponentScanner;
+import org.mini2Dx.injection.exceptions.NoSuchBeanException;
 
 /**
- *
- *
+ * 
+ * 
  * @author Thomas Cashman
  */
-@SuppressWarnings(value={ "unchecked", "rawtypes"})
+@SuppressWarnings(value = { "unchecked", "rawtypes" })
 public class GameContext {
 	private static ComponentScanner componentScanner;
-	private static Map<String, BeanRetriever> beans;
-	
-	public static void initialise(String [] packageNames) throws IOException {
+	private static Map<String, Bean> beans;
+	private static ExecutorService prototypeService;
+
+	public static void initialise(String[] packageNames) throws IOException,
+			InstantiationException, IllegalAccessException, NoSuchBeanException {
 		componentScanner = new ComponentScanner();
 		componentScanner.scan(packageNames);
+
+		Map<String, Object> singletons = new HashMap<String, Object>();
+		Map<String, Object> prototypes = new HashMap<String, Object>();
+
+		for (Class clazz : componentScanner.getSingletonClasses()) {
+			String key = Bean.getClassKey(clazz);
+			singletons.put(key, clazz.newInstance());
+		}
+
+		for (Class clazz : componentScanner.getPrototypeClasses()) {
+			String key = Bean.getClassKey(clazz);
+			prototypes.put(key, clazz.newInstance());
+		}
+		
+		BeanInjector injector = new BeanInjector(singletons, prototypes);
+		injector.inject();
+		
+		prototypeService = Executors.newFixedThreadPool(1);
+		beans = injector.getInjectionResult(prototypeService);
 	}
 	
+	public static void end() {
+		prototypeService.shutdown();
+	}
+
 	public static <T> T getBean(Class<T> clazz) {
-		return getBeanRetriever(clazz).getBean();
-	}
-	
-	private static <T> BeanRetriever<T> getBeanRetriever(Class<T> clazz) {
-		return (BeanRetriever<T>) beans.get(clazz.getCanonicalName());
+		return (T) beans.get(Bean.getClassKey(clazz)).getInstance();
 	}
 }

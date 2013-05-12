@@ -9,45 +9,89 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.injection.dummy;
+package org.mini2Dx.context;
 
-import org.mini2Dx.injection.Autowired;
-import org.mini2Dx.injection.Prototype;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * A dummy bean for testing dependency injection
- *
+ * An implementation of {@link Map} that produces prototypes when get() is called
+ * 
  * @author Thomas Cashman
  */
-@Prototype
-public class TestBean {
-	private Integer intField;
-	@Autowired
-	private TestDependency dependency;
-	@Autowired(required = false)
-	private TestInterface interfaceField;
+public class PrototypeInjectionMap implements Map<String, Object> {
+	private Map<String, Object> prototypes;
 	
-	public Integer getIntField() {
-		return intField;
-	}
-	
-	public void setIntField(Integer intField) {
-		this.intField = intField;
-	}
-	
-	public TestDependency getDependency() {
-		return dependency;
-	}
-	
-	public void setDependency(TestDependency dependency) {
-		this.dependency = dependency;
+	public PrototypeInjectionMap(Map<String, Object> prototypes) {
+		this.prototypes = prototypes;
 	}
 
-	public TestInterface getInterfaceField() {
-		return interfaceField;
+	@Override
+	public int size() {
+		return prototypes.size();
 	}
 
-	public void setInterfaceField(TestInterface interfaceField) {
-		this.interfaceField = interfaceField;
+	@Override
+	public boolean isEmpty() {
+		return prototypes.isEmpty();
+	}
+
+	@Override
+	public boolean containsKey(Object key) {
+		return prototypes.containsKey(key);
+	}
+
+	@Override
+	public boolean containsValue(Object value) {
+		return prototypes.containsValue(value);
+	}
+
+	@Override
+	public Object get(Object key) {
+		Object prototype = prototypes.get(key);
+		
+		try {
+			return PrototypeBean.duplicate(prototype);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	@Override
+	public Object put(String key, Object value) {
+		return prototypes.put(key, value);
+	}
+
+	@Override
+	public Object remove(Object key) {
+		return prototypes.remove(key);
+	}
+
+	@Override
+	public void putAll(Map<? extends String, ? extends Object> m) {
+		prototypes.putAll(m);
+	}
+
+	@Override
+	public void clear() {
+		prototypes.clear();
+	}
+
+	@Override
+	public Set<String> keySet() {
+		return prototypes.keySet();
+	}
+
+	@Override
+	public Collection<Object> values() {
+		return prototypes.values();
+	}
+
+	@Override
+	public Set<java.util.Map.Entry<String, Object>> entrySet() {
+		return prototypes.entrySet();
 	}
 }
