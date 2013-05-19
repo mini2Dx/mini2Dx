@@ -25,16 +25,16 @@ import org.mini2Dx.core.screen.transition.NullTransition;
  * 
  * @author Thomas Cashman
  */
-public class ScreenManager {
-	private Map<Integer, GameScreen> gameScreens;
-	private GameScreen currentScreen, nextScreen;
-	private Transition transitionIn, transitionOut;
+public class ScreenManager<T extends GameScreen> {
+	private Map<Integer, T> gameScreens;
+	protected T currentScreen, nextScreen;
+	protected Transition transitionIn, transitionOut;
 
 	/**
 	 * Constructor
 	 */
 	public ScreenManager() {
-		gameScreens = new ConcurrentHashMap<Integer, GameScreen>();
+		gameScreens = new ConcurrentHashMap<Integer, T>();
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class ScreenManager {
 	 * @param screen
 	 *            The {@link GameScreen} to be added
 	 */
-	public void addGameScreen(GameScreen screen) {
+	public void addGameScreen(T screen) {
 		this.gameScreens.put(screen.getId(), screen);
 	}
 

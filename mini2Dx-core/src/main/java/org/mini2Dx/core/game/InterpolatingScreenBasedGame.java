@@ -13,18 +13,21 @@ package org.mini2Dx.core.game;
 
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.GameScreen;
-import org.mini2Dx.core.screen.ScreenManager;
+import org.mini2Dx.core.screen.InterpolatingGameScreen;
+import org.mini2Dx.core.screen.InterpolatingScreenManager;
 import org.mini2Dx.core.screen.Transition;
 
 /**
  * An implementation of {@link GameContainer} that allows for separation of a
- * game into multiple {@link GameScreen}s and provides support for
- * {@link Transition}s between such screens via a {@link ScreenManager}
+ * game into multiple {@link InterpolatingGameScreen}s and provides support for
+ * {@link Transition}s between such screens via a {@link InterpolatingScreenManager}
  * 
  * @author Thomas Cashman
  */
-public abstract class ScreenBasedGame extends GameContainer {
-	private ScreenManager<GameScreen> screenManager;
+public abstract class InterpolatingScreenBasedGame extends GameContainer {
+	private float accumulator = 0f;
+	private float targetDelta = 0.01f;
+	private InterpolatingScreenManager screenManager;
 
 	/**
 	 * Returns the identifier of the {@link GameScreen} that should be shown
@@ -41,6 +44,25 @@ public abstract class ScreenBasedGame extends GameContainer {
 	public void resume() {}
 
 	@Override
+	public void render(float delta) {
+		accumulator += delta;
+		
+		while(accumulator >= targetDelta) {
+			update(targetDelta);
+			accumulator -= targetDelta;
+		}
+		interpolate(accumulator / targetDelta);
+		
+		graphics.preRender(width, height);
+		render(graphics);
+		graphics.postRender();
+	}
+	
+	private void interpolate(float alpha) {
+		screenManager.interpolate(alpha);
+	}
+
+	@Override
 	public void update(float delta) {
 		screenManager.update(this, delta);
 	}
@@ -54,7 +76,7 @@ public abstract class ScreenBasedGame extends GameContainer {
 	 * Add a {@link GameScreen} to this game
 	 * @param screen The {@link GameScreen} to be added
 	 */
-	public void addScreen(GameScreen screen) {
+	public void addScreen(InterpolatingGameScreen screen) {
 		screen.initialise(this);
 		screenManager.addGameScreen(screen);
 	}
@@ -73,7 +95,7 @@ public abstract class ScreenBasedGame extends GameContainer {
 	@Override
 	protected void preinit() {
 		super.preinit();
-		screenManager = new ScreenManager<GameScreen>();
+		screenManager = new InterpolatingScreenManager();
 	}
 	
 	@Override

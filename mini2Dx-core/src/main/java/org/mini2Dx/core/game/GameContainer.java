@@ -24,9 +24,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * @author Thomas Cashman
  */
 public abstract class GameContainer implements Screen {
-	private int width, height;
-	private Graphics graphics;
-	private SpriteBatch spriteBatch;
+	protected int width, height;
+	protected Graphics graphics;
+	protected SpriteBatch spriteBatch;
 	private boolean isInitialised = false;
 	
 	/**
