@@ -32,7 +32,7 @@ public interface GameScreen {
 	 * @param screenManager The {@link ScreenManager} of the game
 	 * @param delta The time in seconds since the last update
 	 */
-	public void update(GameContainer gc, ScreenManager screenManager, float delta);
+	public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta);
 	
 	/**
 	 * Renders the game screen

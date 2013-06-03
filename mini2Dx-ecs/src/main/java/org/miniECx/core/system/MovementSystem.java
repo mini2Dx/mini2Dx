@@ -9,21 +9,48 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.screen;
+package org.miniECx.core.system;
+
+import java.util.List;
+
+import org.mini2Dx.core.graphics.Graphics;
+import org.miniECx.core.component.Body;
+import org.miniECx.core.component.CollisionListener;
+import org.miniECx.core.entity.Entity;
+
+import com.badlogic.gdx.math.Vector2;
 
 /**
- * An implementation of {@link ScreenManager} for {@link InterpolatingGameScreen}
  * 
  * @author Thomas Cashman
  */
-public class InterpolatingScreenManager extends ScreenManager<InterpolatingGameScreen> {
-	/**
-	 * Interpolates the current {@link InterpolatingGameScreen}
-	 * @param alpha The interpolation alpha value
-	 */
-	public void interpolate(float alpha) {
-		if(currentScreen != null) {
-			currentScreen.interpolate(alpha);
+public class MovementSystem extends AbstractSystem {
+	
+	
+	public MovementSystem() {
+		super();
+	}
+
+	@Override
+	public void update(Entity entity, float delta) {
+		List<Body> bodies = entity.getComponents(Body.class);
+		List<CollisionListener> collisionListeners = entity.getComponents(CollisionListener.class);
+
+		for (Body body : bodies) {
+			Vector2 netVelocity = body.calculateNetVelocity();
 		}
+	}
+
+	@Override
+	public void interpolate(Entity entity, float alpha) {
+		List<Body> bodies = entity.getComponents(Body.class);
+		for (Body body : bodies) {
+			body.interpolate(alpha);
+		}
+	}
+
+	@Override
+	public void render(Entity entity, Graphics g) {
+
 	}
 }

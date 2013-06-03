@@ -38,7 +38,7 @@ public class TiledMap implements TiledParserListener {
 	protected List<TileLayer> tileLayers;
 	protected List<TiledObjectGroup> objectGroups;
 	private Map<String, String> properties;
-	private boolean loadMaps = true;
+	private boolean loadTilesets = true;
 	private FileHandle fileHandle;
 
 	private SpriteCache layerCache;
@@ -52,7 +52,7 @@ public class TiledMap implements TiledParserListener {
 		tileLayers = new ArrayList<TileLayer>();
 		objectGroups = new ArrayList<TiledObjectGroup>();
 		layerCacheIds = new HashMap<TileLayer, Integer>();
-		this.loadMaps = false;
+		this.loadTilesets = false;
 	}
 
 	/**
@@ -72,21 +72,21 @@ public class TiledMap implements TiledParserListener {
 	 * 
 	 * @param fileHandle
 	 *            A {@link FileHandle} to a .tmx file
-	 * @param loadMaps
+	 * @param loadTilesets
 	 *            True if the tileset images should be loaded
 	 * @throws IOException
 	 *             Thrown if the map file could not be parsed
 	 */
-	public TiledMap(FileHandle fileHandle, boolean loadMaps) throws IOException {
+	public TiledMap(FileHandle fileHandle, boolean loadTilesets) throws IOException {
 		this();
-		this.loadMaps = loadMaps;
+		this.loadTilesets = loadTilesets;
 		this.fileHandle = fileHandle;
 
 		TiledParser parser = new TiledParser();
 		parser.addListener(this);
 		parser.parse(fileHandle);
 
-		if (loadMaps) {
+		if (loadTilesets) {
 			layerCache = new SpriteCache(getWidth() * getHeight(), true);
 			for (int layer = 0; layer < tileLayers.size(); layer++) {
 				layerCache.beginCache();
@@ -323,7 +323,7 @@ public class TiledMap implements TiledParserListener {
 
 	@Override
 	public void onTilesetParsed(Tileset parsedTileset) {
-		if (loadMaps && !parsedTileset.isTextureLoaded()) {
+		if (loadTilesets && !parsedTileset.isTextureLoaded()) {
 			parsedTileset.loadTexture(fileHandle.parent());
 		}
 		this.tilesets.add(parsedTileset);

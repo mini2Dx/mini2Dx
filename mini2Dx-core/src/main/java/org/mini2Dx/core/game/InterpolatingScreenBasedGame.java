@@ -17,6 +17,8 @@ import org.mini2Dx.core.screen.InterpolatingGameScreen;
 import org.mini2Dx.core.screen.InterpolatingScreenManager;
 import org.mini2Dx.core.screen.Transition;
 
+import com.badlogic.gdx.Gdx;
+
 /**
  * An implementation of {@link GameContainer} that allows for separation of a
  * game into multiple {@link InterpolatingGameScreen}s and provides support for
@@ -25,6 +27,8 @@ import org.mini2Dx.core.screen.Transition;
  * @author Thomas Cashman
  */
 public abstract class InterpolatingScreenBasedGame extends GameContainer {
+	private static final float MAXIMUM_DELTA = 1f / 60f;
+	
 	private float accumulator = 0f;
 	private float targetDelta = 0.01f;
 	private InterpolatingScreenManager screenManager;
@@ -45,6 +49,10 @@ public abstract class InterpolatingScreenBasedGame extends GameContainer {
 
 	@Override
 	public void render(float delta) {
+		delta = Gdx.graphics.getRawDeltaTime();
+		if(delta > MAXIMUM_DELTA)
+			delta = MAXIMUM_DELTA;
+		
 		accumulator += delta;
 		
 		while(accumulator >= targetDelta) {

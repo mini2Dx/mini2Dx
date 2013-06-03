@@ -11,17 +11,18 @@
  */
 package org.mini2Dx.core.geom;
 
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Adds extra functionality to the default rectangle implementation in LibGDX
  * 
  * @author Thomas Cashman
  */
-public class Rectangle extends com.badlogic.gdx.math.Rectangle {
+public class Rectangle extends com.badlogic.gdx.math.Rectangle implements Spatial {
 	private static final long serialVersionUID = 6405432580555614156L;
 
-	private float centerX, centerY;
-	private float maxX, maxY;
+	private Vector2 xy, centerXY, maxXY;
+	private Line topSide, bottomSide, leftSide, rightSide;
 
 	/**
 	 * Constructor. Creates a {@link Rectangle} at 0,0 with a width and height
@@ -45,26 +46,54 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle {
 	 */
 	public Rectangle(float x, float y, float width, float height) {
 		super(x, y, width, height);
-		calculateCenterCoordinates();
-		calculateMaxCoordinates();
+
+		xy = new Vector2();
+		centerXY = new Vector2();
+		maxXY = new Vector2();
+
+		topSide = new Line();
+		bottomSide = new Line();
+		leftSide = new Line();
+		rightSide = new Line();
+
+		calculateCoordinates();
+		calculateSides();
 	}
 
-	private void calculateMaxCoordinates() {
-		if (this.getWidth() > 0f) {
-			maxX = this.getX() + this.getWidth();
-		} else {
-			maxX = getX();
-		}
-		if (this.getHeight() > 0f) {
-			maxY = this.getY() + this.getHeight();
-		} else {
-			maxY = getY();
-		}
+	private void calculateCoordinates() {
+		xy.set(getX(), getY());
+		centerXY.set(getX() + (getWidth() / 2f), getY() + (getHeight() / 2f));
+		maxXY.set(this.getX() + this.getWidth(), this.getY() + this.getHeight());
 	}
 
-	private void calculateCenterCoordinates() {
-		centerX = getX() + (getWidth() / 2f);
-		centerY = getY() + (getHeight() / 2f);
+	private void calculateSides() {
+		topSide.set(x, y, maxXY.x, y);
+		bottomSide.set(x, maxXY.y, maxXY.x, maxXY.y);
+		leftSide.set(x, y, x, maxXY.y);
+		rightSide.set(maxXY.x, y, maxXY.x, maxXY.y);
+	}
+
+	/**
+	 * Moves this {@link Rectangle} by a distance
+	 * 
+	 * @param x
+	 *            The distance to move along the x axis
+	 * @param y
+	 *            The distance to move along the y axis
+	 */
+	public void move(float x, float y) {
+		setX(getX() + x);
+		setY(getY() + y);
+	}
+
+	/**
+	 * Moves this {@link Rectangle} by a distance
+	 * 
+	 * @param xy
+	 *            The distance to move expressed as a {@link Vector2}
+	 */
+	public void move(Vector2 xy) {
+		move(xy.x, xy.y);
 	}
 
 	/**
@@ -83,7 +112,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle {
 		}
 		return true;
 	}
-	
+
 	public boolean intersects(float x, float y, float width, float height) {
 		if ((getX() > (x + width)) || ((getMaxX()) < x)) {
 			return false;
@@ -93,10 +122,10 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle {
 		}
 		return true;
 	}
-	
+
 	public Rectangle intersection(Rectangle rect) {
 		float newX = Math.max(getX(), rect.getX());
-		float newY =  Math.max(getY(), rect.getY());
+		float newY = Math.max(getY(), rect.getY());
 		float newWidth = Math.min(getMaxX(), rect.getMaxX()) - newX;
 		float newHeight = Math.min(getMaxY(), rect.getMaxY()) - newY;
 		return new Rectangle(newX, newY, newWidth, newHeight);
@@ -105,53 +134,66 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle {
 	@Override
 	public void setX(float x) {
 		super.setX(x);
-		calculateCenterCoordinates();
-		calculateMaxCoordinates();
+		calculateCoordinates();
+		calculateSides();
 	}
 
 	@Override
 	public void setY(float y) {
 		super.setY(y);
-		calculateCenterCoordinates();
-		calculateMaxCoordinates();
+		calculateCoordinates();
+		calculateSides();
 	}
 
 	@Override
 	public void setWidth(float width) {
 		if (width > 0f) {
 			super.setWidth(width);
-			calculateCenterCoordinates();
-			calculateMaxCoordinates();
+			calculateCoordinates();
+			calculateSides();
 		} else {
-			
+
 		}
 	}
 
 	@Override
 	public void setHeight(float height) {
-		if(height > 0f) {
+		if (height > 0f) {
 			super.setHeight(height);
-			calculateCenterCoordinates();
-			calculateMaxCoordinates();
+			calculateCoordinates();
+			calculateSides();
 		} else {
-			
+
 		}
 	}
 
 	@Override
 	public void set(com.badlogic.gdx.math.Rectangle rectangle) {
 		super.set(rectangle);
-		calculateCenterCoordinates();
-		calculateMaxCoordinates();
+		calculateCoordinates();
+		calculateSides();
 	}
 
 	@Override
 	public void set(float x, float y, float width, float height) {
-		if(width > 0f && height > 0f) {
+		if (width > 0f && height > 0f) {
 			super.set(x, y, width, height);
-			calculateCenterCoordinates();
-			calculateMaxCoordinates();
+			calculateCoordinates();
+			calculateSides();
 		}
+	}
+
+	/**
+	 * Returns the coordinates of this {@link Rectangle} expressed as a
+	 * {@link Vector2}
+	 * 
+	 * Note: Modifying this {@link Vector2} will not move the {@link Rectangle}.
+	 * This object should only be used in a read-only manner.
+	 * 
+	 * @return
+	 */
+	protected Vector2 getCoordinatesAsVector2() {
+		return xy;
 	}
 
 	/**
@@ -160,40 +202,34 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle {
 	 * @return
 	 */
 	public float getCenterX() {
-		return centerX;
+		return centerXY.x;
 	}
 
 	/**
-	 * Sets the center x coordinate of the {@link Rectangle} and recalculates
-	 * the x and maxX coordinates based on the width of {@link Rectangle}
-	 * 
-	 * @param x
-	 */
-	public void setCenterX(float x) {
-		centerX = x;
-		super.setX(centerX - (getWidth() / 2f));
-		calculateMaxCoordinates();
-	}
-
-	/**
-	 * Returns the center y coordiante of the {@link Rectangle}
+	 * Returns the center y coordinate of the {@link Rectangle}
 	 * 
 	 * @return
 	 */
 	public float getCenterY() {
-		return centerY;
+		return centerXY.y;
 	}
 
 	/**
-	 * Sets the center y coordinate of the {@link Rectangle} and recalculates
-	 * the y and maxY coordinates based on the height of the {@link Rectangle}
+	 * Sets the center coordinates of the {@link Rectangle} and recalculates the
+	 * max x and y coordinates based on the width and height of
+	 * {@link Rectangle}
 	 * 
+	 * @param x
+	 *            The center x coordinate
 	 * @param y
+	 *            The center y coordinate
 	 */
-	public void setCenterY(float y) {
-		centerY = y;
-		super.setY(centerY - (getHeight() / 2f));
-		calculateMaxCoordinates();
+	public void setCenter(float x, float y) {
+		centerXY.set(x, y);
+		super.setX(centerXY.x - (getWidth() / 2f));
+		super.setY(centerXY.y - (getHeight() / 2f));
+		calculateCoordinates();
+		calculateSides();
 	}
 
 	/**
@@ -202,7 +238,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle {
 	 * @return
 	 */
 	public float getMaxX() {
-		return maxX;
+		return maxXY.x;
 	}
 
 	/**
@@ -211,6 +247,22 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle {
 	 * @return
 	 */
 	public float getMaxY() {
-		return maxY;
+		return maxXY.y;
+	}
+
+	public Line getTopSide() {
+		return topSide;
+	}
+
+	public Line getBottomSide() {
+		return bottomSide;
+	}
+
+	public Line getLeftSide() {
+		return leftSide;
+	}
+
+	public Line getRightSide() {
+		return rightSide;
 	}
 }
