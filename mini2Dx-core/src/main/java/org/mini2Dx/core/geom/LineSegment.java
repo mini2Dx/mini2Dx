@@ -14,25 +14,24 @@ package org.mini2Dx.core.geom;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Represents a line
+ * Represents a segement of a line (the space between two points )
  * @author Thomas Cashman
  */
-public class Line {
-	private Vector2 intersection;
-	private Vector2 p1, p2;
+public class LineSegment {
+	private Point intersection;
+	private Point p1, p2;
 
-	public Line() {
+	public LineSegment() {
 		this(0, 0, 0, 0);
 	}
 
-	public Line(float x1, float y1, float x2, float y2) {
-		p1 = new Vector2(x1, y1);
-		p2 = new Vector2(x2, y2);
-		intersection = new Vector2();
+	public LineSegment(float x1, float y1, float x2, float y2) {
+		p1 = new Point(x1, y1);
+		p2 = new Point(x2, y2);
+		intersection = new Point();
 	}
 	
 	public void set(float x1, float y1, float x2, float y2) {
@@ -40,16 +39,21 @@ public class Line {
 		p2.set(x2, y2);
 	}
 
-	public boolean intersects(Line line) {
-		return Intersector.intersectLines(p1, p2, line.getP1(), line.getP2(),
-				intersection);
+	public boolean intersects(LineSegment line) {
+		if(Intersector.intersectLines(p1, p2, line.getP1(), line.getP2(),
+				intersection)) {
+			return intersection.isBetween(p1, p2);
+		}
+		return false;
 	}
 
-	public Vector2 getIntersection(Line line) {
+	public Vector2 getIntersection(LineSegment line) {
 		if(!Intersector.intersectLines(p1, p2, line.getP1(), line.getP2(),
 				intersection)) {
 			return null;
 		}
+		if(!intersection.isBetween(p1, p2))
+			return null;
 		return intersection;
 	}
 
@@ -81,19 +85,24 @@ public class Line {
 		return result;
 	}
 
-	public Vector2 getP1() {
+	public Point getP1() {
 		return p1;
 	}
 
-	public void setP1(Vector2 p1) {
+	public void setP1(Point p1) {
 		this.p1 = p1;
 	}
 
-	public Vector2 getP2() {
+	public Point getP2() {
 		return p2;
 	}
 
-	public void setP2(Vector2 p2) {
+	public void setP2(Point p2) {
 		this.p2 = p2;
+	}
+
+	@Override
+	public String toString() {
+		return "Line [p1=" + p1 + ", p2=" + p2 + "]";
 	}
 }

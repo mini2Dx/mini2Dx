@@ -9,22 +9,20 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.geom;
+package org.mini2Dx.core.engine;
 
 /**
- * A common interface for objects that have an area
+ * A common interface for objects that can be positioned with an x and y
+ * coordinate
  * 
  * @author Thomas Cashman
  */
-public interface Spatial extends Positionable {
+public interface Positionable {
+	public float getX();
 
-	public float getWidth();
-
-	public float getHeight();
-
-	public float getMaxX();
-
-	public float getMaxY();
+	public float getY();
 	
-	public boolean intersects(float x, float y, float width, float height);
+	public <T extends Positionable> void addPostionChangeListener(PositionChangeListener<T> listener);
+	
+	public <T extends Positionable> void removePositionChangeListener(PositionChangeListener<T> listener);
 }

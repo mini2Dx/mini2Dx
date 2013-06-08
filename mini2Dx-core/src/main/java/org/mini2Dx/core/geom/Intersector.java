@@ -11,14 +11,36 @@
  */
 package org.mini2Dx.core.geom;
 
+import com.badlogic.gdx.math.Vector2;
+
 /**
- * A common interface for objects that can be positioned with an x and y
- * coordinate
+ * Provides implementations for detecting intersections between geom package objects.
+ * 
+ * Note: This exists because LibGDX implementations don't work and have no unit tests.
  * 
  * @author Thomas Cashman
  */
-public interface Positionable {
-	public float getX();
+public class Intersector {
+	public static boolean intersectLines(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection) {
+		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y, x3 = p3.x, y3 = p3.y, x4 = p4.x, y4 = p4.y;
 
-	public float getY();
+		float det3 = det(x1 - x2, y1 - y2, x3 - x4, y3 - y4);
+		if(det3 == 0)
+			return false;
+		
+		float det1 = det(x1, y1, x2, y2);
+		float det2 = det(x3, y3, x4, y4);
+
+		float x = det(det1, x1 - x2, det2, x3 - x4) / det3;
+		float y = det(det1, y1 - y2, det2, y3 - y4) / det3;
+
+		intersection.x = x;
+		intersection.y = y;
+
+		return true;
+	}
+	
+	private static float det (float a, float b, float c, float d) {
+		return (a * d) - (b * c);
+	}
 }

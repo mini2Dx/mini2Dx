@@ -11,6 +11,13 @@
  */
 package org.mini2Dx.core.geom;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.mini2Dx.core.engine.PositionChangeListener;
+import org.mini2Dx.core.engine.Positionable;
+import org.mini2Dx.core.engine.Spatial;
+
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -18,11 +25,13 @@ import com.badlogic.gdx.math.Vector2;
  * 
  * @author Thomas Cashman
  */
-public class Rectangle extends com.badlogic.gdx.math.Rectangle implements Spatial {
+public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
+		Spatial {
 	private static final long serialVersionUID = 6405432580555614156L;
 
 	private Vector2 xy, centerXY, maxXY;
-	private Line topSide, bottomSide, leftSide, rightSide;
+	private LineSegment topSide, bottomSide, leftSide, rightSide;
+	private List<PositionChangeListener> positionChangleListeners;
 
 	/**
 	 * Constructor. Creates a {@link Rectangle} at 0,0 with a width and height
@@ -51,10 +60,10 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements Spatia
 		centerXY = new Vector2();
 		maxXY = new Vector2();
 
-		topSide = new Line();
-		bottomSide = new Line();
-		leftSide = new Line();
-		rightSide = new Line();
+		topSide = new LineSegment();
+		bottomSide = new LineSegment();
+		leftSide = new LineSegment();
+		rightSide = new LineSegment();
 
 		calculateCoordinates();
 		calculateSides();
@@ -71,6 +80,12 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements Spatia
 		bottomSide.set(x, maxXY.y, maxXY.x, maxXY.y);
 		leftSide.set(x, y, x, maxXY.y);
 		rightSide.set(maxXY.x, y, maxXY.x, maxXY.y);
+		
+		if (positionChangleListeners != null) {
+			for (PositionChangeListener<Spatial> listener : positionChangleListeners) {
+				listener.positionChanged(this);
+			}
+		}
 	}
 
 	/**
@@ -95,24 +110,12 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements Spatia
 	public void move(Vector2 xy) {
 		move(xy.x, xy.y);
 	}
-
-	/**
-	 * Returns if another {@link Rectangle} intersects this one
-	 * 
-	 * @param rect
-	 *            The {@link Rectangle} to check if it intersects this one
-	 * @return True if there is an intersection
-	 */
-	public boolean intersects(Rectangle rect) {
-		if ((x > rect.getMaxX()) || ((getMaxX()) < rect.getX())) {
-			return false;
-		}
-		if ((y > (rect.getMaxY())) || ((getMaxY()) < rect.getY())) {
-			return false;
-		}
-		return true;
+	
+	public boolean intersects(LineSegment line) {
+		return line.intersects(this);
 	}
 
+	@Override
 	public boolean intersects(float x, float y, float width, float height) {
 		if ((getX() > (x + width)) || ((getMaxX()) < x)) {
 			return false;
@@ -121,6 +124,23 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements Spatia
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public boolean intersects(Spatial spatial) {
+		if ((x > spatial.getMaxX()) || ((getMaxX()) < spatial.getX())) {
+			return false;
+		}
+		if ((y > (spatial.getMaxY())) || ((getMaxY()) < spatial.getY())) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean contains(Spatial spatial) {
+		return spatial.getX() >= getX() && spatial.getMaxX() <= getMaxX()
+				&& spatial.getY() >= getY() && spatial.getMaxY() <= getMaxY();
 	}
 
 	public Rectangle intersection(Rectangle rect) {
@@ -249,20 +269,49 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements Spatia
 	public float getMaxY() {
 		return maxXY.y;
 	}
+	
+	@Override
+	public boolean contains(Positionable positionable) {
+		return this.contains(positionable.getX(), positionable.getY());
+	}
+	
+	@Override
+	public <T extends Positionable> void addPostionChangeListener(
+			PositionChangeListener<T> listener) {
+		if(positionChangleListeners == null) {
+			positionChangleListeners = new CopyOnWriteArrayList<PositionChangeListener>();
+		}
+		positionChangleListeners.add(listener);
+	}
 
-	public Line getTopSide() {
+	@Override
+	public <T extends Positionable> void removePositionChangeListener(
+			PositionChangeListener<T> listener) {
+		if(positionChangleListeners != null) {
+			positionChangleListeners.remove(listener);
+		}
+	}
+
+	public LineSegment getTopSide() {
 		return topSide;
 	}
 
-	public Line getBottomSide() {
+	public LineSegment getBottomSide() {
 		return bottomSide;
 	}
 
-	public Line getLeftSide() {
+	public LineSegment getLeftSide() {
 		return leftSide;
 	}
 
-	public Line getRightSide() {
+	public LineSegment getRightSide() {
 		return rightSide;
+	}
+
+	@Override
+	public String toString() {
+		return "Rectangle [xy=" + xy + ", centerXY=" + centerXY + ", maxXY="
+				+ maxXY + ", topSide=" + topSide + ", bottomSide=" + bottomSide
+				+ ", leftSide=" + leftSide + ", rightSide=" + rightSide + "]";
 	}
 }

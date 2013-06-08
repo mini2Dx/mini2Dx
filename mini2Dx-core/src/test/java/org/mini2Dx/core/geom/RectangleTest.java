@@ -120,7 +120,7 @@ public class RectangleTest {
 	}
 
 	@Test
-	public void testIntersects() {
+	public void testIntersectsRectangle() {
 		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
 		rectangle2 = new Rectangle(50f, 50f, 100f, 100f);
 
@@ -132,34 +132,61 @@ public class RectangleTest {
 		Assert.assertEquals(false, rectangle1.intersects(rectangle2));
 		Assert.assertEquals(false, rectangle2.intersects(rectangle1));
 	}
-
+	
 	@Test
-	public void testSetCenterX() {
-		rectangle1 = new Rectangle(0f, 0f, 50f, 50f);
-		rectangle1.setCenterX(50f);
+	public void testIntersectsLine() {
+		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
+		LineSegment line = new LineSegment(0, 100, 0, 200);
 		
-		Assert.assertEquals(25f, rectangle1.getX());
-		Assert.assertEquals(0f, rectangle1.getY());
-		Assert.assertEquals(50f, rectangle1.getWidth());
-		Assert.assertEquals(50f, rectangle1.getHeight());
-		Assert.assertEquals(75f, rectangle1.getMaxX());
-		Assert.assertEquals(50f, rectangle1.getMaxY());
-		Assert.assertEquals(50f, rectangle1.getCenterX());
-		Assert.assertEquals(25f, rectangle1.getCenterY());
+		for(float x = 0; x < rectangle1.getX(); x++) {
+			line.setP1(new Point(x, 100));
+			line.setP2(new Point(x, 200));
+			Assert.assertEquals(false, rectangle1.intersects(line));
+		}
+		
+		for(float y = 0; y < rectangle1.getY(); y++) {
+			line.setP1(new Point(100, y));
+			line.setP2(new Point(200, y));
+			Assert.assertEquals(false, rectangle1.intersects(line));
+		}
+		
+		for(float x = rectangle1.getX(); x <= rectangle1.getMaxX(); x++) {
+			line.setP1(new Point(x, 100));
+			line.setP2(new Point(x, 200));
+			Assert.assertEquals(true, rectangle1.intersects(line));
+		}
+		
+		for(float y = rectangle1.getY(); y <= rectangle1.getMaxY(); y++) {
+			line.setP1(new Point(100, y));
+			line.setP2(new Point(200, y));
+			Assert.assertEquals(true, rectangle1.intersects(line));
+		}
+		
+		for(float x = rectangle1.getMaxX() + 1; x < rectangle1.getMaxX() * 2; x++) {
+			line.setP1(new Point(x, 100));
+			line.setP2(new Point(x, 200));
+			Assert.assertEquals(false, rectangle1.intersects(line));
+		}
+		
+		for(float y = rectangle1.getMaxY() + 1; y < rectangle1.getMaxY() * 2; y++) {
+			line.setP1(new Point(100, y));
+			line.setP2(new Point(200, y));
+			Assert.assertEquals(false, rectangle1.intersects(line));
+		}
 	}
 
 	@Test
-	public void testSetCenterY() {
+	public void testSetCenter() {
 		rectangle1 = new Rectangle(0f, 0f, 50f, 50f);
-		rectangle1.setCenterY(50f);
+		rectangle1.setCenter(50f, 50f);
 		
-		Assert.assertEquals(0f, rectangle1.getX());
+		Assert.assertEquals(25f, rectangle1.getX());
 		Assert.assertEquals(25f, rectangle1.getY());
 		Assert.assertEquals(50f, rectangle1.getWidth());
 		Assert.assertEquals(50f, rectangle1.getHeight());
-		Assert.assertEquals(50f, rectangle1.getMaxX());
+		Assert.assertEquals(75f, rectangle1.getMaxX());
 		Assert.assertEquals(75f, rectangle1.getMaxY());
-		Assert.assertEquals(25f, rectangle1.getCenterX());
+		Assert.assertEquals(50f, rectangle1.getCenterX());
 		Assert.assertEquals(50f, rectangle1.getCenterY());
 	}
 }

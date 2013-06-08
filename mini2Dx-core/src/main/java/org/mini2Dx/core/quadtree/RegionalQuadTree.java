@@ -13,7 +13,9 @@ package org.mini2Dx.core.quadtree;
 
 import java.util.List;
 
-import org.mini2Dx.core.geom.Spatial;
+import org.mini2Dx.core.engine.PositionChangeListener;
+import org.mini2Dx.core.engine.Spatial;
+import org.mini2Dx.core.geom.LineSegment;
 
 /**
  * Implements a {@link QuadTree} which contains regions. Each region can contain
@@ -39,6 +41,14 @@ public class RegionalQuadTree<T extends Spatial> implements QuadTree<T>, Quad<T>
 
 	public List<Quad<T>> getQuadsFor(T object) {
 		return rootQuad.getQuadsFor(object);
+	}
+	
+	public List<Quad<T>> getQuadsFor(LineSegment line) {
+		return rootQuad.getQuadsFor(line);
+	}
+	
+	public List<T> getIntersectionsFor(LineSegment line) {
+		return rootQuad.getIntersectionsFor(line);
 	}
 
 	@Override
@@ -72,5 +82,15 @@ public class RegionalQuadTree<T extends Spatial> implements QuadTree<T>, Quad<T>
 
 	public float getHeight() {
 		return height;
+	}
+
+	@Override
+	public List<T> getValues() {
+		return rootQuad.getValues();
+	}
+
+	@Override
+	public void positionChanged(T moved) {
+		
 	}
 }

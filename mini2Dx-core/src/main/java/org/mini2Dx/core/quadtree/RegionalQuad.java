@@ -1,25 +1,34 @@
-/*******************************************************
- * Copyright (c) 2013 Thomas Cashman
+/**
+ * Copyright (c) 2013, mini2Dx Project
  * All rights reserved.
- *******************************************************/
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 package org.mini2Dx.core.quadtree;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.mini2Dx.core.engine.PositionChangeListener;
+import org.mini2Dx.core.engine.Positionable;
+import org.mini2Dx.core.engine.Spatial;
+import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Rectangle;
-import org.mini2Dx.core.geom.Spatial;
 
 /**
  * 
  * @author Thomas Cashman
  */
-public class RegionalQuad<T extends Spatial> extends Rectangle implements
-		Quad<T> {
+public class RegionalQuad<T extends Spatial> extends
+		Rectangle implements Quad<T> {
 	private RegionalQuad<T>[][] childQuads;
 	private Quad<T> parent;
-	private float x, y, width, height;
 	private List<T> values;
 
 	public RegionalQuad(Quad<T> parent, float x, float y, float width,
@@ -42,14 +51,13 @@ public class RegionalQuad<T extends Spatial> extends Rectangle implements
 						regionWidth, regionHeight);
 
 				for (T spatial : values) {
-					if (childQuads[x][y].intersects(spatial.getX(),
-							spatial.getX(), spatial.getWidth(),
-							spatial.getHeight())) {
+					if (childQuads[x][y].contains(spatial)) {
 						childQuads[x][y].add(spatial);
 					}
 				}
 			}
 		}
+		values.clear();
 		values = null;
 	}
 
@@ -57,19 +65,17 @@ public class RegionalQuad<T extends Spatial> extends Rectangle implements
 	public void add(T object) {
 		if (childQuads == null) {
 			values.add(object);
-			
-			if (values.size() >= getElementLimit()) {
+
+			if (values.size() > getElementLimit()) {
 				subdivide();
+			} else {
+				object.addPostionChangeListener(this);
 			}
 		} else {
 			for (int x = 0; x < 2; x++) {
 				for (int y = 0; y < 2; y++) {
-					for (T spatial : values) {
-						if (childQuads[x][y].intersects(spatial.getX(),
-								spatial.getX(), spatial.getWidth(),
-								spatial.getHeight())) {
-							childQuads[x][y].add(spatial);
-						}
+					if (childQuads[x][y].contains(object)) {
+						childQuads[x][y].add(object);
 					}
 				}
 			}
@@ -80,19 +86,49 @@ public class RegionalQuad<T extends Spatial> extends Rectangle implements
 	public void remove(T object) {
 		if (childQuads == null) {
 			values.remove(object);
+			object.removePositionChangeListener(this);
 		} else {
+			int childElementCount = 0;
 			for (int x = 0; x < 2; x++) {
 				for (int y = 0; y < 2; y++) {
-					for (T spatial : values) {
-						if (childQuads[x][y].intersects(spatial.getX(),
-								spatial.getX(), spatial.getWidth(),
-								spatial.getHeight())) {
-							childQuads[x][y].remove(spatial);
-						}
+					if (childQuads[x][y].contains(object)) {
+						childQuads[x][y].remove(object);
+						childElementCount += childQuads[x][y]
+								.getNumberOfElements();
 					}
 				}
 			}
+
+			if (childElementCount < (getElementLimit() / 2)) {
+				values = new ArrayList<T>();
+				for (int x = 0; x < 2; x++) {
+					for (int y = 0; y < 2; y++) {
+						values.addAll(childQuads[x][y].removeAll());
+					}
+				}
+				childQuads = null;
+			}
 		}
+	}
+
+	public List<T> removeAll() {
+		List<T> result = new ArrayList<T>();
+		if (childQuads == null) {
+			result.addAll(values);
+			for (T object : values) {
+				object.removePositionChangeListener(this);
+			}
+			values.clear();
+		} else {
+			for (int x = 0; x < 2; x++) {
+				for (int y = 0; y < 2; y++) {
+					result.addAll(childQuads[x][y].removeAll());
+				}
+			}
+			values = new ArrayList<T>();
+			childQuads = null;
+		}
+		return result;
 	}
 
 	@Override
@@ -115,13 +151,81 @@ public class RegionalQuad<T extends Spatial> extends Rectangle implements
 		if (childQuads != null) {
 			for (int x = 0; x < 2; x++) {
 				for (int y = 0; y < 2; y++) {
-					result.addAll(childQuads[x][y].getQuadsFor(object));
+					if(childQuads[x][y].contains(object)) {
+						result.addAll(childQuads[x][y].getQuadsFor(object));
+					}
 				}
 			}
 		} else {
 			result.add(this);
 		}
 		return result;
+	}
+
+	public List<Quad<T>> getQuadsFor(LineSegment line) {
+		List<Quad<T>> result = new ArrayList<Quad<T>>(1);
+		if (childQuads != null) {
+			for (int x = 0; x < 2; x++) {
+				for (int y = 0; y < 2; y++) {
+					if (line.intersects(childQuads[x][y])) {
+						result.addAll(childQuads[x][y].getQuadsFor(line));
+					}
+				}
+			}
+		} else if (line.intersects(this)) {
+			result.add(this);
+		}
+		return result;
+	}
+
+	public List<T> getIntersectionsFor(LineSegment line) {
+		List<T> result = new ArrayList<T>(1);
+		if (childQuads != null) {
+			for (int x = 0; x < 2; x++) {
+				for (int y = 0; y < 2; y++) {
+					if (line.intersects(childQuads[x][y])) {
+						result.addAll(childQuads[x][y]
+								.getIntersectionsFor(line));
+					}
+				}
+			}
+		} else if (line.intersects(this)) {
+			for (T value : values) {
+				if (value.intersects(line)) {
+					result.add(value);
+				}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public List<T> getValues() {
+		if (childQuads != null) {
+			List<T> result = new ArrayList<T>(1);
+			for (int x = 0; x < 2; x++) {
+				for (int y = 0; y < 2; y++) {
+					result.addAll(childQuads[x][y].getValues());
+				}
+			}
+			return result;
+		} else {
+			return values;
+		}
+	}
+
+	@Override
+	public void positionChanged(T moved) {
+		if (!this.contains(moved)) {
+			if (values != null) {
+				remove(moved);
+			}
+			if (parent != null) {
+				parent.positionChanged(moved);
+			}
+		} else {
+			add(moved);
+		}
 	}
 
 	public Quad<T> getParent() {
