@@ -29,11 +29,13 @@ public interface Spatial extends Positionable {
 
 	public float getMaxY();
 	
+	public float getDistanceTo(Spatial spatial);
+	
 	public boolean intersects(LineSegment line);
 	
 	public boolean intersects(Spatial spatial);
 	
-	public boolean intersects(float x, float y, float width, float height);
+	public boolean overlaps(float x, float y, float width, float height);
 	
 	public boolean contains(Spatial spatial);
 	

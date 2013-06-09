@@ -87,6 +87,62 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 			}
 		}
 	}
+	
+	public float getDistanceTo(Positionable positionable) {
+		if(positionable.getX() < getX()) {
+			/* Left side */
+			return com.badlogic.gdx.math.Intersector.distanceLinePoint(leftSide.getP1(), leftSide.getP2(), new Vector2(positionable.getX(), positionable.getY()));
+		} else if(positionable.getX() > getMaxX()) {
+			/* Right side */
+			return com.badlogic.gdx.math.Intersector.distanceLinePoint(rightSide.getP1(), rightSide.getP2(), new Vector2(positionable.getX(), positionable.getY()));
+		} else if(positionable.getY() < getY()) {
+			/* Above */
+			return com.badlogic.gdx.math.Intersector.distanceLinePoint(topSide.getP1(), topSide.getP2(), new Vector2(positionable.getX(), positionable.getY()));
+		} else if(positionable.getY() > getMaxY()) {
+			/* Below */
+			return com.badlogic.gdx.math.Intersector.distanceLinePoint(bottomSide.getP1(), bottomSide.getP2(), new Vector2(positionable.getX(), positionable.getY()));
+		}
+		/* Inside */
+		return 0;
+	}
+	
+	public float getDistanceTo(Spatial spatial) {
+		if(overlaps(spatial.getX(), spatial.getY(), spatial.getWidth(), spatial.getHeight())) {
+			return 0;
+		}
+		
+		if(spatial.getMaxX() < getX()) {
+			/* Left side */
+			if(spatial.getMaxY() < getY()) {
+				/* Top Left */
+				return getCoordinatesAsVector2().dst(spatial.getMaxX(), spatial.getMaxY());
+			} else if(spatial.getX() > getMaxY()) {
+				/* Botton Left */
+				return new Vector2(x, getMaxY()).dst(spatial.getMaxX(), spatial.getY());
+			} else {
+				/* Pure left side - distance between spatial maxX and x */
+				return new Vector2(getX(), 0).dst(spatial.getMaxX(), 0);
+			}
+		} else if(spatial.getX() > getMaxX()) {
+			/* Right side */
+			if(spatial.getMaxY() < getY()) {
+				/* Top Right */
+				return new Vector2(getMaxX(), getY()).dst(spatial.getX(), spatial.getMaxY());
+			} else if(spatial.getX() > getMaxY()) {
+				/* Botton Right */
+				return maxXY.dst(spatial.getX(), spatial.getY());
+			} else {
+				/* Pure right side - distance between maxX and spatial x */
+				return new Vector2(getMaxX(), 0).dst(spatial.getX(), 0);
+			}
+		} else if(spatial.getMaxY() < getY()) {
+			/* Above */
+			return new Vector2(0, getY()).dst(0, spatial.getMaxY());
+		} else {
+			/* Below */
+			return new Vector2(0, getMaxY()).dst(0, spatial.getY());
+		}
+	}
 
 	/**
 	 * Moves this {@link Rectangle} by a distance
@@ -116,7 +172,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	}
 
 	@Override
-	public boolean intersects(float x, float y, float width, float height) {
+	public boolean overlaps(float x, float y, float width, float height) {
 		if ((getX() > (x + width)) || ((getMaxX()) < x)) {
 			return false;
 		}
@@ -172,7 +228,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 			calculateCoordinates();
 			calculateSides();
 		} else {
-
+			throw new RuntimeException("Cannot set width to a value less than 1");
 		}
 	}
 
@@ -183,7 +239,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 			calculateCoordinates();
 			calculateSides();
 		} else {
-
+			throw new RuntimeException("Cannot set height to a value less than 1");
 		}
 	}
 

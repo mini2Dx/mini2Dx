@@ -97,4 +97,9 @@ public class Point extends Vector2 implements Positionable {
 			positionChangleListeners.remove(listener);
 		}
 	}
+
+	@Override
+	public float getDistanceTo(Positionable positionable) {
+		return this.dst(positionable.getX(), positionable.getY());
+	}
 }

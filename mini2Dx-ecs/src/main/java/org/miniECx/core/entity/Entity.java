@@ -27,6 +27,7 @@ import org.miniECx.core.component.Component;
 public class Entity {
 	private UUID uuid;
 	private Map<String, List> components;
+	private List<EntityListener> listeners;
 
 	public Entity() {
 		this(UUID.randomUUID());
@@ -49,36 +50,68 @@ public class Entity {
 			checkConsistency(key, interfaceClass);
 			components.get(key).add(component);
 		}
+
+		if (listeners != null) {
+			for (EntityListener listener : listeners) {
+				listener.componentAdded(this, component);
+			}
+		}
 	}
 
-	public <T> List<T> getComponents(Class<T> clazz) {
+	public <T extends Component> List<T> getComponents(Class<T> clazz) {
 		String key = getClassKey(clazz);
 		checkConsistency(key, clazz);
 		return components.get(key);
 	}
-	
+
 	public void removeComponent(Component component) {
 		Class clazz = component.getClass();
 
 		String key = getClassKey(clazz);
 		checkConsistency(key, clazz);
 		components.get(key).remove(component);
-		
+
 		for (Class interfaceClass : clazz.getInterfaces()) {
 			key = getClassKey(interfaceClass);
 			checkConsistency(key, interfaceClass);
 			components.get(key).remove(component);
 		}
-	}
-	
-	public <T> void removeAllComponentsOfType(Class<T> clazz) {
-		String key = getClassKey(clazz);
-		components.remove(key);
-		checkConsistency(key, clazz);
+
+		if (listeners != null) {
+			for (EntityListener listener : listeners) {
+				listener.componentRemoved(this, component);
+			}
+		}
 	}
 
-	private <T> void checkConsistency(String key,
-			Class<T> clazz) {
+	public <T extends Component> void removeAllComponentsOfType(Class<T> clazz) {
+		String key = getClassKey(clazz);
+		List<T> componentsRemoved = components.remove(key);
+		checkConsistency(key, clazz);
+
+		if (listeners != null) {
+			for (T component : componentsRemoved) {
+				for (EntityListener listener : listeners) {
+					listener.componentRemoved(this, component);
+				}
+			}
+		}
+	}
+
+	public void addEntityListener(EntityListener listener) {
+		if (listeners == null) {
+			listeners = new CopyOnWriteArrayList<EntityListener>();
+		}
+		listeners.add(listener);
+	}
+
+	public void removeEntityListener(EntityListener listener) {
+		if (listeners != null) {
+			listeners.remove(listener);
+		}
+	}
+
+	private <T> void checkConsistency(String key, Class<T> clazz) {
 		if (!components.containsKey(key)) {
 			components.put(key, new CopyOnWriteArrayList<T>());
 		}
