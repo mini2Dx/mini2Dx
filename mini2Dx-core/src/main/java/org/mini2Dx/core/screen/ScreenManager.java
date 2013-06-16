@@ -75,6 +75,16 @@ public class ScreenManager<T extends GameScreen> {
 
 		currentScreen.update(gc, this, delta);
 	}
+	
+	/**
+	 * Interpolate between the previous and current state
+	 * @param alpha The interpolation alpha value
+	 */
+	public void interpolate(GameContainer gc, float alpha) {
+		if (currentScreen != null) {
+			currentScreen.interpolate(gc, alpha);
+		}
+	}
 
 	/**
 	 * Renders the current {@link GameScreen} and any {@link Transition} that

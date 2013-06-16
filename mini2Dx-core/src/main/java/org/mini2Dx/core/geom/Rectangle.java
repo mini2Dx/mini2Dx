@@ -16,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
-import org.mini2Dx.core.engine.Spatial;
+import org.mini2Dx.core.engine.Parallelogram;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -25,8 +25,9 @@ import com.badlogic.gdx.math.Vector2;
  * 
  * @author Thomas Cashman
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
-		Spatial {
+		Parallelogram {
 	private static final long serialVersionUID = 6405432580555614156L;
 
 	private Vector2 xy, centerXY, maxXY;
@@ -82,7 +83,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		rightSide.set(maxXY.x, y, maxXY.x, maxXY.y);
 		
 		if (positionChangleListeners != null) {
-			for (PositionChangeListener<Spatial> listener : positionChangleListeners) {
+			for (PositionChangeListener<Parallelogram> listener : positionChangleListeners) {
 				listener.positionChanged(this);
 			}
 		}
@@ -104,44 +105,6 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		}
 		/* Inside */
 		return 0;
-	}
-	
-	public float getDistanceTo(Spatial spatial) {
-		if(overlaps(spatial.getX(), spatial.getY(), spatial.getWidth(), spatial.getHeight())) {
-			return 0;
-		}
-		
-		if(spatial.getMaxX() < getX()) {
-			/* Left side */
-			if(spatial.getMaxY() < getY()) {
-				/* Top Left */
-				return getCoordinatesAsVector2().dst(spatial.getMaxX(), spatial.getMaxY());
-			} else if(spatial.getX() > getMaxY()) {
-				/* Botton Left */
-				return new Vector2(x, getMaxY()).dst(spatial.getMaxX(), spatial.getY());
-			} else {
-				/* Pure left side - distance between spatial maxX and x */
-				return new Vector2(getX(), 0).dst(spatial.getMaxX(), 0);
-			}
-		} else if(spatial.getX() > getMaxX()) {
-			/* Right side */
-			if(spatial.getMaxY() < getY()) {
-				/* Top Right */
-				return new Vector2(getMaxX(), getY()).dst(spatial.getX(), spatial.getMaxY());
-			} else if(spatial.getX() > getMaxY()) {
-				/* Botton Right */
-				return maxXY.dst(spatial.getX(), spatial.getY());
-			} else {
-				/* Pure right side - distance between maxX and spatial x */
-				return new Vector2(getMaxX(), 0).dst(spatial.getX(), 0);
-			}
-		} else if(spatial.getMaxY() < getY()) {
-			/* Above */
-			return new Vector2(0, getY()).dst(0, spatial.getMaxY());
-		} else {
-			/* Below */
-			return new Vector2(0, getMaxY()).dst(0, spatial.getY());
-		}
 	}
 
 	/**
@@ -183,20 +146,34 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	}
 
 	@Override
-	public boolean intersects(Spatial spatial) {
-		if ((x > spatial.getMaxX()) || ((getMaxX()) < spatial.getX())) {
+	public boolean intersects(Parallelogram spatial) {
+		if(spatial instanceof Rectangle) {
+			return intersects((Rectangle) spatial);
+		}
+		return false;
+	}
+	
+	public boolean intersects(Rectangle rectangle) {
+		if ((x > rectangle.getMaxX()) || ((getMaxX()) < rectangle.getX())) {
 			return false;
 		}
-		if ((y > (spatial.getMaxY())) || ((getMaxY()) < spatial.getY())) {
+		if ((y > (rectangle.getMaxY())) || ((getMaxY()) < rectangle.getY())) {
 			return false;
 		}
 		return true;
 	}
 
 	@Override
-	public boolean contains(Spatial spatial) {
-		return spatial.getX() >= getX() && spatial.getMaxX() <= getMaxX()
-				&& spatial.getY() >= getY() && spatial.getMaxY() <= getMaxY();
+	public boolean contains(Parallelogram spatial) {
+		if(spatial instanceof Rectangle) {
+			return contains((Rectangle) spatial);
+		}
+		return false;
+	}
+	
+	public boolean contains(Rectangle rectangle) {
+		return rectangle.getX() >= getX() && rectangle.getMaxX() <= getMaxX()
+				&& rectangle.getY() >= getY() && rectangle.getMaxY() <= getMaxY();
 	}
 
 	public Rectangle intersection(Rectangle rect) {
@@ -369,5 +346,10 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		return "Rectangle [xy=" + xy + ", centerXY=" + centerXY + ", maxXY="
 				+ maxXY + ", topSide=" + topSide + ", bottomSide=" + bottomSide
 				+ ", leftSide=" + leftSide + ", rightSide=" + rightSide + "]";
+	}
+
+	@Override
+	public float getRotation() {
+		return 0;
 	}
 }

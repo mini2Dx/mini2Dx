@@ -9,36 +9,30 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.miniECx.core.component;
+package org.mini2Dx.core.engine;
 
-import org.miniECx.core.entity.Entity;
-
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
+import org.mini2Dx.core.geom.LineSegment;
 
 /**
- * Represents a force applied to an {@link Entity}
+ * A common interface for parallelogram implementations
  * 
  * @author Thomas Cashman
  */
-public class Force implements Component {
-	private Vector2 velocity;
+public interface Parallelogram extends Positionable {
 
-	public void set(float velocityX, float velocityY) {
-		velocity.set(velocityX, velocityY);
-	}
+	public float getWidth();
 
-	public Vector2 getVector() {
-		return velocity;
-	}
-
-	public float getForceX() {
-		return velocity.dst(0f, 0f)
-				* MathUtils.sin(MathUtils.degreesToRadians * velocity.angle());
-	}
-
-	public float getForceY() {
-		return velocity.dst(0f, 0f)
-				* MathUtils.cos(MathUtils.degreesToRadians * velocity.angle());
-	}
+	public float getHeight();
+	
+	public float getRotation();
+	
+	public boolean intersects(LineSegment line);
+	
+	public boolean intersects(Parallelogram parallelogram);
+	
+	public boolean overlaps(float x, float y, float width, float height);
+	
+	public boolean contains(Parallelogram parallelogram);
+	
+	public boolean contains(Positionable positionable);
 }

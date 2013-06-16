@@ -35,6 +35,12 @@ public interface GameScreen {
 	public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta);
 	
 	/**
+	 * Interpolate between the previous and current state
+	 * @param alpha The interpolation alpha value
+	 */
+	public void interpolate(GameContainer gc, float alpha);
+	
+	/**
 	 * Renders the game screen
 	 * @param gc The {@link GameContainer} of the game
 	 * @param g The {@link Graphics} context available for rendering

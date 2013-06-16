@@ -38,11 +38,16 @@ public class LineSegment {
 		p1.set(x1, y1);
 		p2.set(x2, y2);
 	}
+	
+	public boolean contains(float x, float y) {
+		Point p3 = new Point(x, y);
+		return p3.isOnLineBetween(p1, p2);
+	}
 
 	public boolean intersects(LineSegment line) {
 		if(Intersector.intersectLines(p1, p2, line.getP1(), line.getP2(),
 				intersection)) {
-			return intersection.isBetween(p1, p2);
+			return intersection.isOnLineBetween(p1, p2);
 		}
 		return false;
 	}
@@ -52,7 +57,7 @@ public class LineSegment {
 				intersection)) {
 			return null;
 		}
-		if(!intersection.isBetween(p1, p2))
+		if(!intersection.isOnLineBetween(p1, p2))
 			return null;
 		return intersection;
 	}

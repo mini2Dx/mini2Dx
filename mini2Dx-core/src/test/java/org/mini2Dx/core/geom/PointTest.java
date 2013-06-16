@@ -36,16 +36,16 @@ public class PointTest {
 		point2.set(10, 0);
 		point3.set(5, 0);
 		
-		Assert.assertEquals(true, point3.isBetween(point1, point2));
-		Assert.assertEquals(false, point1.isBetween(point2, point3));
-		Assert.assertEquals(false, point2.isBetween(point3, point1));
+		Assert.assertEquals(true, point3.isOnLineBetween(point1, point2));
+		Assert.assertEquals(false, point1.isOnLineBetween(point2, point3));
+		Assert.assertEquals(false, point2.isOnLineBetween(point3, point1));
 		
 		point1.set(0, 0);
 		point2.set(0, 10);
 		point3.set(0, 5);
 		
-		Assert.assertEquals(true, point3.isBetween(point1, point2));
-		Assert.assertEquals(false, point1.isBetween(point2, point3));
-		Assert.assertEquals(false, point2.isBetween(point3, point1));
+		Assert.assertEquals(true, point3.isOnLineBetween(point1, point2));
+		Assert.assertEquals(false, point1.isOnLineBetween(point2, point3));
+		Assert.assertEquals(false, point2.isOnLineBetween(point3, point1));
 	}
 }

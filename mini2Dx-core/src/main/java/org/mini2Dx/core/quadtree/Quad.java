@@ -17,20 +17,57 @@ import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
 
 /**
- *
+ * A common interface to {@link Quad} implementations within a {@link QuadTree}
+ * implementation
+ * 
  * @author Thomas Cashman
  */
 public interface Quad<T extends Positionable> extends PositionChangeListener<T> {
-	
+
+	/**
+	 * Returns all elements within this {@link Quad}
+	 * 
+	 * If this {@link Quad} contains child {@link Quad}s then this will return
+	 * all elements recursively within the children
+	 * 
+	 * @return An empty {@link List} if this {@link Quad} contains no elements
+	 */
 	public List<T> getValues();
-	
+
+	/**
+	 * Returns the maximum number of elements per {@link Quad}
+	 * 
+	 * @return
+	 */
 	public int getElementLimit();
-	
+
+	/**
+	 * Returns the number of elements within this {@link Quad}
+	 * 
+	 * @return 0 if there are no elements within this {@link Quad}
+	 */
 	public int getNumberOfElements();
-	
+
+	/**
+	 * Returns the {@link Quad} this {@link Quad} is contained in
+	 * 
+	 * @return Null if this is the root {@link Quad}
+	 */
 	public Quad<T> getParent();
 
+	/**
+	 * Adds an element to this {@link Quad}
+	 * 
+	 * @param object
+	 *            The element to be added
+	 */
 	public void add(T object);
-	
+
+	/**
+	 * Removes an element from this {@link Quad}
+	 * 
+	 * @param object
+	 *            The element to be removed
+	 */
 	public void remove(T object);
 }

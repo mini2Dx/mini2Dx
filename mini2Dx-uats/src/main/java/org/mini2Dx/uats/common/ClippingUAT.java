@@ -52,6 +52,10 @@ public class ClippingUAT extends GameContainer {
 	@Override
 	public void update(float delta) {
 	}
+	
+	@Override
+	public void interpolate(float alpha) {
+	}
 
 	@Override
 	public void render(Graphics g) {

@@ -14,12 +14,21 @@ package org.miniECx.core.entity;
 import org.miniECx.core.component.Component;
 
 /**
- *
+ * Allows classes to listen for component addition and removal within {@link Entity} instances
  * @author Thomas Cashman
  */
 public interface EntityListener {
-
+	/**
+	 * Called when a {@link Component} is added to an {@link Entity}
+	 * @param source The {@link Entity} the {@link Component} was added to
+	 * @param component The {@link Component} that was added
+	 */
 	public void componentAdded(Entity source, Component component);
 	
+	/**
+	 * Called when a {@link Component} is removed from an {@link Entity}
+	 * @param source The {@link Entity} the {@link Component} was removed from
+	 * @param component The {@link Component} that was removed
+	 */
 	public void componentRemoved(Entity source, Component component);
 }

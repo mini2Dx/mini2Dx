@@ -20,6 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.miniECx.core.component.Component;
 
 /**
+ * Implements an entity as part of the Entity-Component-System pattern
  * 
  * @author Thomas Cashman
  */
@@ -29,15 +30,30 @@ public class Entity {
 	private Map<String, List> components;
 	private List<EntityListener> listeners;
 
+	/**
+	 * Constructs an {@link Entity} with a random {@link UUID}
+	 */
 	public Entity() {
 		this(UUID.randomUUID());
 	}
 
+	/**
+	 * Constructs an {@link Entity} with the specified {@link UUID}
+	 * 
+	 * @param uuid
+	 *            The {@link UUID} to associate with this {@link Entity}
+	 */
 	public Entity(UUID uuid) {
 		components = new ConcurrentHashMap<String, List>();
 		this.uuid = uuid;
 	}
 
+	/**
+	 * Adds a {@link Component} to this {@link Entity} and notifies any attached
+	 * {@link EntityListener}s of this addition
+	 * 
+	 * @param component An instance of {@link Component}
+	 */
 	public void addComponent(Component component) {
 		Class clazz = component.getClass();
 
@@ -58,12 +74,21 @@ public class Entity {
 		}
 	}
 
-	public <T extends Component> List<T> getComponents(Class<T> clazz) {
+	/**
+	 * Returns all {@link Component}s that implement the specified the class or interface
+	 * @param clazz The {@link Class} to search for
+	 * @return An empty {@link List} if no such {@link Component}s are attached to this {@link Entity}
+	 */
+	public <T> List<T> getComponents(Class<T> clazz) {
 		String key = getClassKey(clazz);
 		checkConsistency(key, clazz);
 		return components.get(key);
 	}
 
+	/**
+	 * Removes the specified {@link Component} from this {@link Entity}
+	 * @param component The {@link Component} to remove
+	 */
 	public void removeComponent(Component component) {
 		Class clazz = component.getClass();
 
@@ -121,6 +146,11 @@ public class Entity {
 		return clazz.getPackage() + "." + clazz.getSimpleName();
 	}
 
+	/**
+	 * Returns the {@link UUID} for this {@link Entity}
+	 * 
+	 * @return
+	 */
 	public UUID getUUID() {
 		return uuid;
 	}

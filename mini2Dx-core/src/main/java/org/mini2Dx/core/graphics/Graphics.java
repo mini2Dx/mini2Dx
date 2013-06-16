@@ -14,10 +14,8 @@ package org.mini2Dx.core.graphics;
 import org.mini2Dx.core.geom.Rectangle;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -28,7 +26,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 /**
  * Implements graphics rendering functionality
@@ -50,7 +47,6 @@ public class Graphics {
 	private int lineHeight;
 	private boolean rendering;
 	private Rectangle clip;
-	private Rectangle scissors;
 
 	public Graphics(SpriteBatch spriteBatch) {
 		this.spriteBatch = spriteBatch;
@@ -646,6 +642,10 @@ public class Graphics {
 
 	public float getRotationY() {
 		return rotationY;
+	}
+	
+	public Matrix4 getProjectionMatrix() {
+		return camera.combined.cpy();
 	}
 
 	@Override

@@ -45,6 +45,10 @@ public class GraphicsUAT extends BasicGame {
 	public void update(float delta) {
 		rotation += 180f * delta;
 	}
+	
+	@Override
+	public void interpolate(float alpha) {
+	}
 
 	@Override
 	public void render(Graphics g) {

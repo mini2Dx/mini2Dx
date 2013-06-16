@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.Vector2;
  * 
  * @author Thomas Cashman
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Point extends Vector2 implements Positionable {
 	private static final long serialVersionUID = 3773673953486445831L;
 
@@ -41,28 +42,17 @@ public class Point extends Vector2 implements Positionable {
 		super(point);
 	}
 
-	@Override
-	public float getX() {
-		return this.x;
-	}
-
-	@Override
-	public float getY() {
-		return this.y;
-	}
-
-	@Override
-	public Vector2 set(float x, float y) {
-		super.set(x, y);
-		if (positionChangleListeners != null) {
-			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
-				listener.positionChanged(this);
-			}
-		}
-		return this;
-	}
-
-	public boolean isBetween(Point a, Point b) {
+	/**
+	 * Returns if this {@link Point} is between a and b on a line
+	 * 
+	 * @param a
+	 *            {@link Point} a on a line
+	 * @param b
+	 *            {@link Point} b on a line
+	 * @return False if this {@link Point} is not on the same line as a and b OR
+	 *         is not between a and b on the same line
+	 */
+	public boolean isOnLineBetween(Point a, Point b) {
 		float areaOfTriangle = (a.x * (b.y - y) + b.x * (y - a.y) + x
 				* (a.y - b.y)) / 2f;
 		if (areaOfTriangle == 0f) {
@@ -84,7 +74,7 @@ public class Point extends Vector2 implements Positionable {
 	@Override
 	public <T extends Positionable> void addPostionChangeListener(
 			PositionChangeListener<T> listener) {
-		if(positionChangleListeners == null) {
+		if (positionChangleListeners == null) {
 			positionChangleListeners = new CopyOnWriteArrayList<PositionChangeListener>();
 		}
 		positionChangleListeners.add(listener);
@@ -93,7 +83,7 @@ public class Point extends Vector2 implements Positionable {
 	@Override
 	public <T extends Positionable> void removePositionChangeListener(
 			PositionChangeListener<T> listener) {
-		if(positionChangleListeners != null) {
+		if (positionChangleListeners != null) {
 			positionChangleListeners.remove(listener);
 		}
 	}
@@ -101,5 +91,95 @@ public class Point extends Vector2 implements Positionable {
 	@Override
 	public float getDistanceTo(Positionable positionable) {
 		return this.dst(positionable.getX(), positionable.getY());
+	}
+	
+	@Override
+	public float getX() {
+		return this.x;
+	}
+
+	@Override
+	public float getY() {
+		return this.y;
+	}
+
+	@Override
+	public Vector2 set(float x, float y) {
+		super.set(x, y);
+		if (positionChangleListeners != null) {
+			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
+				listener.positionChanged(this);
+			}
+		}
+		return this;
+	}
+	
+	@Override
+	public Vector2 set(Vector2 v) {
+		return set(v.x, v.y);
+	}
+
+	@Override
+	public Vector2 add(float x, float y) {
+		super.add(x, y);
+		if (positionChangleListeners != null) {
+			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
+				listener.positionChanged(this);
+			}
+		}
+		return this;
+	}
+	
+	@Override
+	public Vector2 add(Vector2 v) {
+		return add(v.x, v.y);
+	}
+
+	@Override
+	public Vector2 sub(float x, float y) {
+		super.sub(x, y);
+		if (positionChangleListeners != null) {
+			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
+				listener.positionChanged(this);
+			}
+		}
+		return this;
+	}
+	
+	@Override
+	public Vector2 sub(Vector2 v) {
+		return sub(v.x, v.y);
+	}
+	
+	@Override
+	public Vector2 mul(float x, float y) {
+		super.mul(x, y);
+		if (positionChangleListeners != null) {
+			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
+				listener.positionChanged(this);
+			}
+		}
+		return this;
+	}
+	
+	@Override
+	public Vector2 mul(float scalar) {
+		return mul(scalar, scalar);
+	}
+	
+	@Override
+	public Vector2 div(float x, float y) {
+		super.div(x, y);
+		if (positionChangleListeners != null) {
+			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
+				listener.positionChanged(this);
+			}
+		}
+		return this;
+	}
+	
+	@Override
+	public Vector2 div(Vector2 v) {
+		return div(v.x, v.y);
 	}
 }

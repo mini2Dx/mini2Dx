@@ -14,7 +14,7 @@ package org.miniECx.core.test;
 import org.miniECx.core.component.Component;
 
 /**
- *
+ * An implementation of {@link Component} for testing purposes
  * @author Thomas Cashman
  */
 public class TestComponent1 implements Component, Runnable {

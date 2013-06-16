@@ -12,7 +12,7 @@
 package org.miniECx.core.component;
 
 /**
- *
+ * A common interface for implementing {@link Component}s as part of the Entity-Component-System pattern
  * @author Thomas Cashman
  */
 public interface Component {

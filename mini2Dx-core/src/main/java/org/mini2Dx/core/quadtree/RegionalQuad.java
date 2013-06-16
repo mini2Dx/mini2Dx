@@ -15,18 +15,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.mini2Dx.core.engine.PositionChangeListener;
-import org.mini2Dx.core.engine.Positionable;
-import org.mini2Dx.core.engine.Spatial;
+import org.mini2Dx.core.engine.Parallelogram;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Rectangle;
 
 /**
- * 
+ * An implementation of {@link Quad} based on regions
  * @author Thomas Cashman
  */
-public class RegionalQuad<T extends Spatial> extends
+public class RegionalQuad<T extends Parallelogram> extends
 		Rectangle implements Quad<T> {
+	private static final long serialVersionUID = 663493452499066041L;
 	private RegionalQuad<T>[][] childQuads;
 	private Quad<T> parent;
 	private List<T> values;
@@ -38,6 +37,7 @@ public class RegionalQuad<T extends Spatial> extends
 		this.values = new CopyOnWriteArrayList<T>();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void subdivide() {
 		float regionWidth = width / 2f;
 		float regionHeight = height / 2f;

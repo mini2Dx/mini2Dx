@@ -24,6 +24,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * @author Thomas Cashman
  */
 public abstract class GameContainer implements Screen {
+	private static final float MAXIMUM_DELTA = 1f / 60f;
+	
+	private float accumulator = 0f;
+	private float targetDelta = 0.01f;
 	protected int width, height;
 	protected Graphics graphics;
 	protected SpriteBatch spriteBatch;
@@ -39,6 +43,12 @@ public abstract class GameContainer implements Screen {
 	 * @param delta The time in seconds since the last update
 	 */
 	public abstract void update(float delta);
+	
+	/**
+	 * Interpolate the game state
+	 * @param alpha The alpha value to use during interpolation
+	 */
+	public abstract void interpolate(float alpha);
 
 	/**
 	 * Render the game
@@ -48,7 +58,18 @@ public abstract class GameContainer implements Screen {
 
 	@Override
 	public void render(float delta) {
-		update(delta);
+		delta = Gdx.graphics.getRawDeltaTime();
+		if(delta > MAXIMUM_DELTA)
+			delta = MAXIMUM_DELTA;
+		
+		accumulator += delta;
+		
+		while(accumulator >= targetDelta) {
+			update(targetDelta);
+			accumulator -= targetDelta;
+		}
+		interpolate(accumulator / targetDelta);
+		
 		graphics.preRender(width, height);
 		render(graphics);
 		graphics.postRender();
