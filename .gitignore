@@ -3,4 +3,5 @@ target/
 .classpath
 .project
 *.prefs
+*.mp3
 rebel.xml
