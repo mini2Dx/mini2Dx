@@ -22,7 +22,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class LineSegment {
 	private Point intersection;
-	private Point p1, p2;
+	protected Point p1, p2;
 
 	public LineSegment() {
 		this(0, 0, 0, 0);
@@ -31,6 +31,12 @@ public class LineSegment {
 	public LineSegment(float x1, float y1, float x2, float y2) {
 		p1 = new Point(x1, y1);
 		p2 = new Point(x2, y2);
+		intersection = new Point();
+	}
+	
+	public LineSegment(Point p1, Point p2) {
+		this.p1 = p1;
+		this.p2 = p2;
 		intersection = new Point();
 	}
 	
@@ -44,8 +50,8 @@ public class LineSegment {
 		return p3.isOnLineBetween(p1, p2);
 	}
 
-	public boolean intersects(LineSegment line) {
-		if(Intersector.intersectLines(p1, p2, line.getP1(), line.getP2(),
+	public boolean intersects(LineSegment lineSegment) {
+		if(Intersector.intersectLines(p1, p2, lineSegment.getP1(), lineSegment.getP2(),
 				intersection)) {
 			return intersection.isOnLineBetween(p1, p2);
 		}
@@ -63,27 +69,24 @@ public class LineSegment {
 	}
 
 	public boolean intersects(Rectangle rectangle) {
-		return rectangle.getTopSide().intersects(this)
-				|| rectangle.getBottomSide().intersects(this)
-				|| rectangle.getLeftSide().intersects(this)
-				|| rectangle.getRightSide().intersects(this);
+		return rectangle.intersects(this);
 	}
 	
 	public List<Vector2> getIntersections(Rectangle rectangle) {
 		List<Vector2> result = new ArrayList<Vector2>();
-		Vector2 intersection = rectangle.getTopSide().getIntersection(this);
+		Vector2 intersection = rectangle.top.getIntersection(this);
 		if(intersection != null) {
 			result.add(intersection);
 		}
-		intersection = rectangle.getBottomSide().getIntersection(this);
+		intersection = rectangle.bottom.getIntersection(this);
 		if(intersection != null) {
 			result.add(intersection);
 		}
-		intersection = rectangle.getLeftSide().getIntersection(this);
+		intersection = rectangle.left.getIntersection(this);
 		if(intersection != null) {
 			result.add(intersection);
 		}
-		intersection = rectangle.getRightSide().getIntersection(this);
+		intersection = rectangle.right.getIntersection(this);
 		if(intersection != null) {
 			result.add(intersection);
 		}

@@ -9,35 +9,28 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.engine;
+package org.mini2Dx.core.geom;
 
-import org.mini2Dx.core.geom.LineSegment;
-import org.mini2Dx.core.geom.Point;
+import com.badlogic.gdx.math.Vector2;
 
 /**
- * A common interface for parallelogram implementations
+ * Represents a geometric line
  * 
  * @author Thomas Cashman
  */
-public interface Parallelogram extends Shape {
+public class Line extends LineSegment {
 
-	public float getWidth();
+	public Line() {
+		this(0, 0, 0, 0);
+	}
 
-	public float getHeight();
-	
-	public float getRotation();
-	
-	public void rotate(float degrees);
-	
-	public void rotateAround(Point center, float degrees);
-	
-	public boolean intersects(LineSegment lineSegment);
-	
-	public boolean intersects(Parallelogram parallelogram);
-	
-	public boolean intersects(float x, float y, float width, float height);
-	
-	public boolean contains(Parallelogram parallelogram);
-	
-	public boolean contains(Positionable positionable);
+	public Line(float x1, float y1, float x2, float y2) {
+		super(x1, y1, x2, y2);
+	}
+
+	@Override
+	public boolean contains(float x, float y) {
+		return com.badlogic.gdx.math.Intersector.distanceLinePoint(p1, p2,
+				new Vector2(x, y)) == 0;
+	}
 }

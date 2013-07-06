@@ -11,33 +11,15 @@
  */
 package org.mini2Dx.core.engine;
 
+import org.mini2Dx.core.geom.Line;
 import org.mini2Dx.core.geom.LineSegment;
-import org.mini2Dx.core.geom.Point;
 
 /**
- * A common interface for parallelogram implementations
- * 
+ *
  * @author Thomas Cashman
  */
-public interface Parallelogram extends Shape {
-
-	public float getWidth();
-
-	public float getHeight();
+public interface Shape extends Positionable {
+	public int getNumberOfSides();
 	
-	public float getRotation();
-	
-	public void rotate(float degrees);
-	
-	public void rotateAround(Point center, float degrees);
-	
-	public boolean intersects(LineSegment lineSegment);
-	
-	public boolean intersects(Parallelogram parallelogram);
-	
-	public boolean intersects(float x, float y, float width, float height);
-	
-	public boolean contains(Parallelogram parallelogram);
-	
-	public boolean contains(Positionable positionable);
+	public LineSegment projectOnTo(Line line);
 }

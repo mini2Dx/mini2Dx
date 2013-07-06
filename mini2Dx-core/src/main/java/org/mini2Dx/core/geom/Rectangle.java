@@ -14,304 +14,60 @@ package org.mini2Dx.core.geom;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.mini2Dx.core.engine.Parallelogram;
 import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
-import org.mini2Dx.core.engine.Parallelogram;
 
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
- * Adds extra functionality to the default rectangle implementation in LibGDX
+ * Implements a rotatable rectangle. Adds extra functionality to the default
+ * rectangle implementation in LibGDX
  * 
  * @author Thomas Cashman
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
 public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		Parallelogram {
-	private static final long serialVersionUID = 6405432580555614156L;
-
-	private Vector2 xy, centerXY, maxXY;
-	private LineSegment topSide, bottomSide, leftSide, rightSide;
+	private static final long serialVersionUID = 4016090439885217620L;
+	private float rotation;
+	Point topLeft, topRight, bottomLeft, bottomRight;
+	LineSegment top, bottom, left, right;
 	private List<PositionChangeListener> positionChangleListeners;
 
-	/**
-	 * Constructor. Creates a {@link Rectangle} at 0,0 with a width and height
-	 * of 1
-	 */
 	public Rectangle() {
 		this(0, 0, 1, 1);
 	}
 
-	/**
-	 * Constructor
-	 * 
-	 * @param x
-	 *            The x coordinate of the {@link Rectangle}
-	 * @param y
-	 *            The y coordinate of the {@link Rectangle}
-	 * @param width
-	 *            The width of the {@link Rectangle}
-	 * @param height
-	 *            The height of the {@link Rectangle}
-	 */
 	public Rectangle(float x, float y, float width, float height) {
 		super(x, y, width, height);
+		topLeft = new Point(x, y);
+		topRight = new Point(x + width, y);
+		bottomLeft = new Point(x, y + height);
+		bottomRight = new Point(x + width, y + height);
 
-		xy = new Vector2();
-		centerXY = new Vector2();
-		maxXY = new Vector2();
-
-		topSide = new LineSegment();
-		bottomSide = new LineSegment();
-		leftSide = new LineSegment();
-		rightSide = new LineSegment();
-
-		calculateCoordinates();
-		calculateSides();
+		top = new LineSegment(topLeft, topRight);
+		bottom = new LineSegment(bottomLeft, bottomRight);
+		left = new LineSegment(topLeft, bottomLeft);
+		right = new LineSegment(topRight, bottomRight);
 	}
 
-	private void calculateCoordinates() {
-		xy.set(getX(), getY());
-		centerXY.set(getX() + (getWidth() / 2f), getY() + (getHeight() / 2f));
-		maxXY.set(this.getX() + this.getWidth(), this.getY() + this.getHeight());
+	private void recalculateCoordinates() {
+		topLeft.set(x, y);
+		topRight.set(x + width, y);
+		bottomLeft.set(x, y + height);
+		bottomRight.set(x + width, y + height);
+		rotate(rotation);
 	}
 
-	private void calculateSides() {
-		topSide.set(x, y, maxXY.x, y);
-		bottomSide.set(x, maxXY.y, maxXY.x, maxXY.y);
-		leftSide.set(x, y, x, maxXY.y);
-		rightSide.set(maxXY.x, y, maxXY.x, maxXY.y);
-		
-		if (positionChangleListeners != null) {
-			for (PositionChangeListener<Parallelogram> listener : positionChangleListeners) {
-				listener.positionChanged(this);
-			}
-		}
-	}
-	
+	@Override
 	public float getDistanceTo(Positionable positionable) {
-		if(positionable.getX() < getX()) {
-			/* Left side */
-			return com.badlogic.gdx.math.Intersector.distanceLinePoint(leftSide.getP1(), leftSide.getP2(), new Vector2(positionable.getX(), positionable.getY()));
-		} else if(positionable.getX() > getMaxX()) {
-			/* Right side */
-			return com.badlogic.gdx.math.Intersector.distanceLinePoint(rightSide.getP1(), rightSide.getP2(), new Vector2(positionable.getX(), positionable.getY()));
-		} else if(positionable.getY() < getY()) {
-			/* Above */
-			return com.badlogic.gdx.math.Intersector.distanceLinePoint(topSide.getP1(), topSide.getP2(), new Vector2(positionable.getX(), positionable.getY()));
-		} else if(positionable.getY() > getMaxY()) {
-			/* Below */
-			return com.badlogic.gdx.math.Intersector.distanceLinePoint(bottomSide.getP1(), bottomSide.getP2(), new Vector2(positionable.getX(), positionable.getY()));
-		}
-		/* Inside */
 		return 0;
 	}
 
-	/**
-	 * Moves this {@link Rectangle} by a distance
-	 * 
-	 * @param x
-	 *            The distance to move along the x axis
-	 * @param y
-	 *            The distance to move along the y axis
-	 */
-	public void move(float x, float y) {
-		setX(getX() + x);
-		setY(getY() + y);
-	}
-
-	/**
-	 * Moves this {@link Rectangle} by a distance
-	 * 
-	 * @param xy
-	 *            The distance to move expressed as a {@link Vector2}
-	 */
-	public void move(Vector2 xy) {
-		move(xy.x, xy.y);
-	}
-	
-	public boolean intersects(LineSegment line) {
-		return line.intersects(this);
-	}
-
-	@Override
-	public boolean overlaps(float x, float y, float width, float height) {
-		if ((getX() > (x + width)) || ((getMaxX()) < x)) {
-			return false;
-		}
-		if ((getY() > (y + height)) || ((getMaxY()) < y)) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
-	public boolean intersects(Parallelogram spatial) {
-		if(spatial instanceof Rectangle) {
-			return intersects((Rectangle) spatial);
-		}
-		return false;
-	}
-	
-	public boolean intersects(Rectangle rectangle) {
-		if ((x > rectangle.getMaxX()) || ((getMaxX()) < rectangle.getX())) {
-			return false;
-		}
-		if ((y > (rectangle.getMaxY())) || ((getMaxY()) < rectangle.getY())) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
-	public boolean contains(Parallelogram spatial) {
-		if(spatial instanceof Rectangle) {
-			return contains((Rectangle) spatial);
-		}
-		return false;
-	}
-	
-	public boolean contains(Rectangle rectangle) {
-		return rectangle.getX() >= getX() && rectangle.getMaxX() <= getMaxX()
-				&& rectangle.getY() >= getY() && rectangle.getMaxY() <= getMaxY();
-	}
-
-	public Rectangle intersection(Rectangle rect) {
-		float newX = Math.max(getX(), rect.getX());
-		float newY = Math.max(getY(), rect.getY());
-		float newWidth = Math.min(getMaxX(), rect.getMaxX()) - newX;
-		float newHeight = Math.min(getMaxY(), rect.getMaxY()) - newY;
-		return new Rectangle(newX, newY, newWidth, newHeight);
-	}
-
-	@Override
-	public void setX(float x) {
-		super.setX(x);
-		calculateCoordinates();
-		calculateSides();
-	}
-
-	@Override
-	public void setY(float y) {
-		super.setY(y);
-		calculateCoordinates();
-		calculateSides();
-	}
-
-	@Override
-	public void setWidth(float width) {
-		if (width > 0f) {
-			super.setWidth(width);
-			calculateCoordinates();
-			calculateSides();
-		} else {
-			throw new RuntimeException("Cannot set width to a value less than 1");
-		}
-	}
-
-	@Override
-	public void setHeight(float height) {
-		if (height > 0f) {
-			super.setHeight(height);
-			calculateCoordinates();
-			calculateSides();
-		} else {
-			throw new RuntimeException("Cannot set height to a value less than 1");
-		}
-	}
-
-	@Override
-	public void set(com.badlogic.gdx.math.Rectangle rectangle) {
-		super.set(rectangle);
-		calculateCoordinates();
-		calculateSides();
-	}
-
-	@Override
-	public void set(float x, float y, float width, float height) {
-		if (width > 0f && height > 0f) {
-			super.set(x, y, width, height);
-			calculateCoordinates();
-			calculateSides();
-		}
-	}
-
-	/**
-	 * Returns the coordinates of this {@link Rectangle} expressed as a
-	 * {@link Vector2}
-	 * 
-	 * Note: Modifying this {@link Vector2} will not move the {@link Rectangle}.
-	 * This object should only be used in a read-only manner.
-	 * 
-	 * @return
-	 */
-	protected Vector2 getCoordinatesAsVector2() {
-		return xy;
-	}
-
-	/**
-	 * Returns the center x coordinate of the {@link Rectangle}
-	 * 
-	 * @return
-	 */
-	public float getCenterX() {
-		return centerXY.x;
-	}
-
-	/**
-	 * Returns the center y coordinate of the {@link Rectangle}
-	 * 
-	 * @return
-	 */
-	public float getCenterY() {
-		return centerXY.y;
-	}
-
-	/**
-	 * Sets the center coordinates of the {@link Rectangle} and recalculates the
-	 * max x and y coordinates based on the width and height of
-	 * {@link Rectangle}
-	 * 
-	 * @param x
-	 *            The center x coordinate
-	 * @param y
-	 *            The center y coordinate
-	 */
-	public void setCenter(float x, float y) {
-		centerXY.set(x, y);
-		super.setX(centerXY.x - (getWidth() / 2f));
-		super.setY(centerXY.y - (getHeight() / 2f));
-		calculateCoordinates();
-		calculateSides();
-	}
-
-	/**
-	 * Returns the x coordinate of the right side of this {@link Rectangle}
-	 * 
-	 * @return
-	 */
-	public float getMaxX() {
-		return maxXY.x;
-	}
-
-	/**
-	 * Returns the y coordinate of the bottom side of this {@link Rectangle}
-	 * 
-	 * @return
-	 */
-	public float getMaxY() {
-		return maxXY.y;
-	}
-	
-	@Override
-	public boolean contains(Positionable positionable) {
-		return this.contains(positionable.getX(), positionable.getY());
-	}
-	
 	@Override
 	public <T extends Positionable> void addPostionChangeListener(
 			PositionChangeListener<T> listener) {
-		if(positionChangleListeners == null) {
+		if (positionChangleListeners == null) {
 			positionChangleListeners = new CopyOnWriteArrayList<PositionChangeListener>();
 		}
 		positionChangleListeners.add(listener);
@@ -320,36 +76,217 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	@Override
 	public <T extends Positionable> void removePositionChangeListener(
 			PositionChangeListener<T> listener) {
-		if(positionChangleListeners != null) {
+		if (positionChangleListeners != null) {
 			positionChangleListeners.remove(listener);
 		}
 	}
 
-	public LineSegment getTopSide() {
-		return topSide;
-	}
-
-	public LineSegment getBottomSide() {
-		return bottomSide;
-	}
-
-	public LineSegment getLeftSide() {
-		return leftSide;
-	}
-
-	public LineSegment getRightSide() {
-		return rightSide;
-	}
-
-	@Override
-	public String toString() {
-		return "Rectangle [xy=" + xy + ", centerXY=" + centerXY + ", maxXY="
-				+ maxXY + ", topSide=" + topSide + ", bottomSide=" + bottomSide
-				+ ", leftSide=" + leftSide + ", rightSide=" + rightSide + "]";
+	private void notifyPositionChangeListeners() {
+		if (positionChangleListeners != null) {
+			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
+				listener.positionChanged(this);
+			}
+		}
 	}
 
 	@Override
 	public float getRotation() {
-		return 0;
+		return rotation;
+	}
+
+	private void setRotation(float degrees) {
+		rotation = degrees % 360;
+	}
+
+	@Override
+	public void rotate(float degrees) {
+		rotateAround(topLeft, degrees);
+	}
+
+	@Override
+	public void rotateAround(Point center, float degrees) {
+		performRotation(center, degrees);
+		setRotation(rotation + degrees);
+		notifyPositionChangeListeners();
+	}
+
+	private void performRotation(Point center, float degrees) {
+		topLeft.rotateAround(center, degrees);
+		topRight.rotateAround(center, degrees);
+		bottomLeft.rotateAround(center, degrees);
+		bottomRight.rotateAround(center, degrees);
+		super.setX(topLeft.x);
+		super.setY(topLeft.y);
+	}
+
+	@Override
+	public boolean intersects(LineSegment lineSegment) {
+		return top.intersects(lineSegment) || bottom.intersects(lineSegment)
+				|| right.intersects(lineSegment)
+				|| left.intersects(lineSegment);
+	}
+
+	public boolean intersects(Rectangle rectangle) {
+		if (top.intersects(rectangle.top))
+			return true;
+		if (top.intersects(rectangle.left))
+			return true;
+		if (top.intersects(rectangle.right))
+			return true;
+		if (top.intersects(rectangle.bottom))
+			return true;
+
+		if (left.intersects(rectangle.top))
+			return true;
+		if (left.intersects(rectangle.left))
+			return true;
+		if (left.intersects(rectangle.right))
+			return true;
+		if (left.intersects(rectangle.bottom))
+			return true;
+
+		if (right.intersects(rectangle.top))
+			return true;
+		if (right.intersects(rectangle.left))
+			return true;
+		if (right.intersects(rectangle.right))
+			return true;
+		if (right.intersects(rectangle.bottom))
+			return true;
+
+		if (bottom.intersects(rectangle.top))
+			return true;
+		if (bottom.intersects(rectangle.left))
+			return true;
+		if (bottom.intersects(rectangle.right))
+			return true;
+		if (bottom.intersects(rectangle.bottom))
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean intersects(Parallelogram parallelogram) {
+		if (parallelogram instanceof Rectangle) {
+			return intersects((Rectangle) parallelogram);
+		} else {
+			Rectangle rect = new Rectangle(parallelogram.getX(),
+					parallelogram.getY(), parallelogram.getWidth(),
+					parallelogram.getHeight());
+			rect.rotate(parallelogram.getRotation());
+			return intersects(rect);
+		}
+	}
+
+	@Override
+	public boolean intersects(float x, float y, float width, float height) {
+		Rectangle rect = new Rectangle(x, y, width, height);
+		return intersects(rect);
+	}
+
+	public Rectangle intersection(Rectangle rect) {
+		if(rotation != 0 || rect.getRotation() != 0)
+			throw new UnsupportedOperationException("Rectangle.intersection is not implemented to handle rotated rectangles");
+		
+		float newX = Math.max(getX(), rect.getX());
+		float newY = Math.max(getY(), rect.getY());
+		float newWidth = Math.min(bottomRight.x, rect.bottomRight.x) - newX;
+		float newHeight = Math.min(bottomRight.y, rect.bottomRight.y) - newY;
+		return new Rectangle(newX, newY, newWidth, newHeight);
+	}
+
+	@Override
+	public boolean contains(Parallelogram parallelogram) {
+		if (parallelogram instanceof Rectangle) {
+			return contains((Rectangle) parallelogram);
+		} else {
+			Rectangle rect = new Rectangle(parallelogram.getX(),
+					parallelogram.getY(), parallelogram.getWidth(),
+					parallelogram.getHeight());
+			rect.rotate(parallelogram.getRotation());
+			return contains(rect);
+		}
+	}
+
+	public boolean contains(Rectangle rectangle) {
+		return contains(rectangle.topLeft) && contains(rectangle.topRight)
+				&& contains(rectangle.bottomLeft)
+				&& contains(rectangle.bottomRight);
+	}
+
+	@Override
+	public boolean contains(Positionable positionable) {
+		performRotation(topLeft, -rotation);
+		boolean result = true;
+
+		float px = positionable.getX();
+		float py = positionable.getY();
+
+		if (px < getX())
+			result = false;
+		if (py < getY())
+			result = false;
+		if (px > getX() + getWidth())
+			result = false;
+		if (py > getY() + getHeight())
+			result = false;
+		performRotation(topLeft, rotation);
+		return result;
+	}
+
+	@Override
+	public LineSegment projectOnTo(Line line) {
+		float minX = 0;
+		float minY = 0;
+		float maxX = 0;
+		float maxY = 0;
+
+		return null;
+	}
+
+	@Override
+	public int getNumberOfSides() {
+		return 4;
+	}
+
+	@Override
+	public void set(float x, float y, float width, float height) {
+		super.set(x, y, width, height);
+		recalculateCoordinates();
+	}
+
+	public void set(Rectangle rectangle) {
+		super.set(rectangle);
+		recalculateCoordinates();
+	}
+
+	@Override
+	public void set(com.badlogic.gdx.math.Rectangle rectangle) {
+		super.set(rectangle);
+		recalculateCoordinates();
+	}
+
+	@Override
+	public void setX(float x) {
+		super.setX(x);
+		recalculateCoordinates();
+	}
+
+	@Override
+	public void setY(float y) {
+		super.setY(y);
+		recalculateCoordinates();
+	}
+
+	@Override
+	public void setWidth(float width) {
+		super.setWidth(width);
+		recalculateCoordinates();
+	}
+
+	@Override
+	public void setHeight(float height) {
+		super.setHeight(height);
+		recalculateCoordinates();
 	}
 }

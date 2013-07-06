@@ -17,6 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -40,6 +41,33 @@ public class Point extends Vector2 implements Positionable {
 
 	public Point(Point point) {
 		super(point);
+	}
+	
+	private void notifyPositionChangeListeners() {
+		if (positionChangleListeners != null) {
+			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
+				listener.positionChanged(this);
+			}
+		}
+	}
+
+	/**
+	 * Rotates this {@link Point} around another {@link Point}
+	 * 
+	 * @param center
+	 *            The {@link Point} to rotate around
+	 * @param angle
+	 *            The angle to rotate by in degrees
+	 */
+	public void rotateAround(Point center, float angle) {
+		float newX = center.x
+				+ (MathUtils.cosDeg(angle) * (x - center.x) + MathUtils
+						.sinDeg(angle) * (y - center.y));
+		float newY = center.y
+				+ (MathUtils.sinDeg(angle) * (x - center.x) + MathUtils
+						.cosDeg(angle) * (y - center.y));
+
+		set(newX, newY);
 	}
 
 	/**
@@ -92,7 +120,7 @@ public class Point extends Vector2 implements Positionable {
 	public float getDistanceTo(Positionable positionable) {
 		return this.dst(positionable.getX(), positionable.getY());
 	}
-	
+
 	@Override
 	public float getX() {
 		return this.x;
@@ -106,14 +134,10 @@ public class Point extends Vector2 implements Positionable {
 	@Override
 	public Vector2 set(float x, float y) {
 		super.set(x, y);
-		if (positionChangleListeners != null) {
-			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
-				listener.positionChanged(this);
-			}
-		}
+		notifyPositionChangeListeners();
 		return this;
 	}
-	
+
 	@Override
 	public Vector2 set(Vector2 v) {
 		return set(v.x, v.y);
@@ -122,14 +146,10 @@ public class Point extends Vector2 implements Positionable {
 	@Override
 	public Vector2 add(float x, float y) {
 		super.add(x, y);
-		if (positionChangleListeners != null) {
-			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
-				listener.positionChanged(this);
-			}
-		}
+		notifyPositionChangeListeners();
 		return this;
 	}
-	
+
 	@Override
 	public Vector2 add(Vector2 v) {
 		return add(v.x, v.y);
@@ -138,46 +158,34 @@ public class Point extends Vector2 implements Positionable {
 	@Override
 	public Vector2 sub(float x, float y) {
 		super.sub(x, y);
-		if (positionChangleListeners != null) {
-			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
-				listener.positionChanged(this);
-			}
-		}
+		notifyPositionChangeListeners();
 		return this;
 	}
-	
+
 	@Override
 	public Vector2 sub(Vector2 v) {
 		return sub(v.x, v.y);
 	}
-	
+
 	@Override
 	public Vector2 mul(float x, float y) {
 		super.mul(x, y);
-		if (positionChangleListeners != null) {
-			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
-				listener.positionChanged(this);
-			}
-		}
+		notifyPositionChangeListeners();
 		return this;
 	}
-	
+
 	@Override
 	public Vector2 mul(float scalar) {
 		return mul(scalar, scalar);
 	}
-	
+
 	@Override
 	public Vector2 div(float x, float y) {
 		super.div(x, y);
-		if (positionChangleListeners != null) {
-			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
-				listener.positionChanged(this);
-			}
-		}
+		notifyPositionChangeListeners();
 		return this;
 	}
-	
+
 	@Override
 	public Vector2 div(Vector2 v) {
 		return div(v.x, v.y);
