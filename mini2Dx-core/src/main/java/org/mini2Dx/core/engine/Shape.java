@@ -15,7 +15,7 @@ import org.mini2Dx.core.geom.Line;
 import org.mini2Dx.core.geom.LineSegment;
 
 /**
- *
+ * A common interface for shapes
  * @author Thomas Cashman
  */
 public interface Shape extends Positionable {

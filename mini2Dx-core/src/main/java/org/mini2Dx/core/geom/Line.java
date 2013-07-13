@@ -30,7 +30,7 @@ public class Line extends LineSegment {
 
 	@Override
 	public boolean contains(float x, float y) {
-		return com.badlogic.gdx.math.Intersector.distanceLinePoint(p1, p2,
+		return com.badlogic.gdx.math.Intersector.distanceLinePoint(pointA, pointB,
 				new Vector2(x, y)) == 0;
 	}
 }

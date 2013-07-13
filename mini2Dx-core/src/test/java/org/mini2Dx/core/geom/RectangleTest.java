@@ -132,42 +132,42 @@ public class RectangleTest implements PositionChangeListener<Rectangle> {
 		LineSegment line = new LineSegment(0, 100, 0, 200);
 
 		for (float x = 0; x < rectangle1.getX(); x++) {
-			line.setP1(new Point(x, 100));
-			line.setP2(new Point(x, 200));
+			line.setPointA(new Point(x, 100));
+			line.setPointB(new Point(x, 200));
 			Assert.assertEquals(false, rectangle1.intersects(line));
 		}
 
 		for (float y = 0; y < rectangle1.getY(); y++) {
-			line.setP1(new Point(100, y));
-			line.setP2(new Point(200, y));
+			line.setPointA(new Point(100, y));
+			line.setPointB(new Point(200, y));
 			Assert.assertEquals(false, rectangle1.intersects(line));
 		}
 
 		for (float x = rectangle1.getX(); x <= rectangle1.getX()
 				+ rectangle1.getWidth(); x++) {
-			line.setP1(new Point(x, 100));
-			line.setP2(new Point(x, 200));
+			line.setPointA(new Point(x, 100));
+			line.setPointB(new Point(x, 200));
 			Assert.assertEquals(true, rectangle1.intersects(line));
 		}
 
 		for (float y = rectangle1.getY(); y <= rectangle1.getY()
 				+ rectangle1.getHeight(); y++) {
-			line.setP1(new Point(100, y));
-			line.setP2(new Point(200, y));
+			line.setPointA(new Point(100, y));
+			line.setPointB(new Point(200, y));
 			Assert.assertEquals(true, rectangle1.intersects(line));
 		}
 
 		for (float x = rectangle1.getX() + rectangle1.getWidth() + 1; x < (rectangle1
 				.getX() + rectangle1.getWidth()) * 2; x++) {
-			line.setP1(new Point(x, 100));
-			line.setP2(new Point(x, 200));
+			line.setPointA(new Point(x, 100));
+			line.setPointB(new Point(x, 200));
 			Assert.assertEquals(false, rectangle1.intersects(line));
 		}
 
 		for (float y = rectangle1.getY() + rectangle1.getHeight() + 1; y < (rectangle1
 				.getY() + rectangle1.getHeight()) * 2; y++) {
-			line.setP1(new Point(100, y));
-			line.setP2(new Point(200, y));
+			line.setPointA(new Point(100, y));
+			line.setPointB(new Point(200, y));
 			Assert.assertEquals(false, rectangle1.intersects(line));
 		}
 	}

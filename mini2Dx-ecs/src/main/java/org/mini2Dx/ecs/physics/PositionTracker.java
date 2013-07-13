@@ -18,7 +18,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
 /**
- *
+ * Tracks the position of a {@link Body} for calculating render coordinates
+ * 
  * @author Thomas Cashman
  */
 public class PositionTracker implements Component {
@@ -26,7 +27,7 @@ public class PositionTracker implements Component {
 	private Point previousPosition;
 	private Point renderPosition;
 	private Body body;
-	
+
 	public PositionTracker(Body body) {
 		this.body = body;
 		Vector2 position = body.getPosition();
@@ -34,28 +35,37 @@ public class PositionTracker implements Component {
 		previousPosition = new Point(position.x, position.y);
 		renderPosition = new Point(position.x, position.y);
 	}
-	
+
+	/**
+	 * Updates the coordinates
+	 */
 	public void update() {
 		previousPosition.set(currentPosition);
 		currentPosition.set(body.getPosition().x, body.getPosition().y);
 	}
-	
+
+	/**
+	 * Calculates the render coordinates by linear interpolating between the
+	 * previous and current position
+	 * 
+	 * @param alpha The alpha value to interpolate by
+	 */
 	public void interpolate(float alpha) {
 		renderPosition.set(previousPosition.lerp(currentPosition, alpha));
 	}
-	
+
 	public float getCurrentX() {
 		return currentPosition.x;
 	}
-	
+
 	public float getCurrentY() {
 		return currentPosition.y;
 	}
-	
+
 	public float getRenderX() {
 		return renderPosition.x;
 	}
-	
+
 	public float getRenderY() {
 		return renderPosition.y;
 	}

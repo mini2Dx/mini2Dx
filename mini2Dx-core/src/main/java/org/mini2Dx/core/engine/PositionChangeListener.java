@@ -12,7 +12,8 @@
 package org.mini2Dx.core.engine;
 
 /**
- *
+ * A common interface for implementing position listeners
+ * 
  * @author Thomas Cashman
  */
 public interface PositionChangeListener<T extends Positionable> {
