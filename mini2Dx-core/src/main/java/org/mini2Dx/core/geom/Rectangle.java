@@ -30,7 +30,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		Parallelogram {
 	private static final long serialVersionUID = 4016090439885217620L;
 	private float rotation;
-	Point topLeft, topRight, bottomLeft, bottomRight;
+	Point topLeft, topRight, bottomLeft, bottomRight, center;
 	LineSegment top, bottom, left, right;
 	private List<PositionChangeListener> positionChangleListeners;
 
@@ -44,6 +44,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		topRight = new Point(x + width, y);
 		bottomLeft = new Point(x, y + height);
 		bottomRight = new Point(x + width, y + height);
+		center = new Point(x + (width / 2f), y + (height / 2f));
 
 		top = new LineSegment(topLeft, topRight);
 		bottom = new LineSegment(bottomLeft, bottomRight);
@@ -56,6 +57,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		topRight.set(x + width, y);
 		bottomLeft.set(x, y + height);
 		bottomRight.set(x + width, y + height);
+		center.set(x + (width / 2f), y + (height / 2f));
 		rotate(rotation);
 	}
 
@@ -115,6 +117,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		topRight.rotateAround(center, degrees);
 		bottomLeft.rotateAround(center, degrees);
 		bottomRight.rotateAround(center, degrees);
+		this.center.rotateAround(center, degrees);
 		super.setX(topLeft.x);
 		super.setY(topLeft.y);
 	}
@@ -288,5 +291,13 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	public void setHeight(float height) {
 		super.setHeight(height);
 		recalculateCoordinates();
+	}
+	
+	public float getCenterX() {
+		return center.x;
+	}
+	
+	public float getCenterY() {
+		return center.y;
 	}
 }

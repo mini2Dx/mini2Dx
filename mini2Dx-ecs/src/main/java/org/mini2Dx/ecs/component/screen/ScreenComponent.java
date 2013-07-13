@@ -9,49 +9,35 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.miniECx.core.entity;
+package org.mini2Dx.ecs.component.screen;
 
-import java.util.List;
-
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mini2Dx.ecs.entity.UUIDEntity;
-import org.miniECx.core.test.TestComponent1;
-import org.miniECx.core.test.TestComponent2;
+import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.ecs.component.Component;
+import org.mini2Dx.ecs.game.EntityComponentSystemGame;
 
 /**
- * Unit tests for {@link UUIDEntity}
+ * A common interface for screen component implementations
  * @author Thomas Cashman
  */
-public class EntityTest {
-	private UUIDEntity entity;
-	private TestComponent1 testComponent1;
-	private TestComponent2 testComponent2;
+public interface ScreenComponent extends Component {
+	/**
+	 * Update the screen component
+	 * @param game The {@link EntityComponentSystemGame} calling the update
+	 * @param delta The time since the last update in seconds
+	 */
+	public void update(EntityComponentSystemGame game, float delta);
 	
-	@Before
-	public void setup() {
-		entity = new UUIDEntity();
-		testComponent1 = new TestComponent1();
-		testComponent2 = new TestComponent2();
-	}
-
-	@Test
-	public void testAddGetComponent() {
-		entity.addComponent(testComponent1);
-		entity.addComponent(testComponent2);
-		
-		List<TestComponent1> results1 = entity.getComponents(TestComponent1.class);
-		Assert.assertEquals(1, results1.size());
-		Assert.assertEquals(testComponent1, results1.get(0));
-		
-		List<TestComponent2> results2 = entity.getComponents(TestComponent2.class);
-		Assert.assertEquals(1, results2.size());
-		Assert.assertEquals(testComponent2, results2.get(0));
-		
-		List<Runnable> results3 = entity.getComponents(Runnable.class);
-		Assert.assertEquals(1, results3.size());
-		Assert.assertEquals(testComponent1, results3.get(0));
-	}
+	/**
+	 * Interpolate the screen component
+	 * @param game The {@link EntityComponentSystemGame} calling the interpolation
+	 * @param alpha The alpha value to use during interpolation
+	 */
+	public void interpolate(EntityComponentSystemGame game, float alpha);
+	
+	/**
+	 * Render the screen component
+	 * @param game The {@link EntityComponentSystemGame} calling the render
+	 * @param g The {@link Graphics} context
+	 */
+	public void render(EntityComponentSystemGame game, Graphics g);
 }

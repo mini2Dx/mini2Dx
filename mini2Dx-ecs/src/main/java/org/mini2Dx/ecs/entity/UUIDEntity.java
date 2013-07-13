@@ -9,7 +9,7 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.miniECx.core.entity;
+package org.mini2Dx.ecs.entity;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +17,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.miniECx.core.component.Component;
+import org.mini2Dx.ecs.component.Component;
 
 /**
  * Implements an entity as part of the Entity-Component-System pattern
@@ -25,35 +25,36 @@ import org.miniECx.core.component.Component;
  * @author Thomas Cashman
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class Entity {
+public class UUIDEntity implements Entity {
 	private UUID uuid;
 	private Map<String, List> components;
 	private List<EntityListener> listeners;
 
 	/**
-	 * Constructs an {@link Entity} with a random {@link UUID}
+	 * Constructs an {@link UUIDEntity} with a random {@link UUID}
 	 */
-	public Entity() {
+	public UUIDEntity() {
 		this(UUID.randomUUID());
 	}
 
 	/**
-	 * Constructs an {@link Entity} with the specified {@link UUID}
+	 * Constructs an {@link UUIDEntity} with the specified {@link UUID}
 	 * 
 	 * @param uuid
-	 *            The {@link UUID} to associate with this {@link Entity}
+	 *            The {@link UUID} to associate with this {@link UUIDEntity}
 	 */
-	public Entity(UUID uuid) {
+	public UUIDEntity(UUID uuid) {
 		components = new ConcurrentHashMap<String, List>();
 		this.uuid = uuid;
 	}
 
 	/**
-	 * Adds a {@link Component} to this {@link Entity} and notifies any attached
+	 * Adds a {@link Component} to this {@link UUIDEntity} and notifies any attached
 	 * {@link EntityListener}s of this addition
 	 * 
 	 * @param component An instance of {@link Component}
 	 */
+	@Override
 	public void addComponent(Component component) {
 		Class clazz = component.getClass();
 
@@ -77,8 +78,9 @@ public class Entity {
 	/**
 	 * Returns all {@link Component}s that implement the specified the class or interface
 	 * @param clazz The {@link Class} to search for
-	 * @return An empty {@link List} if no such {@link Component}s are attached to this {@link Entity}
+	 * @return An empty {@link List} if no such {@link Component}s are attached to this {@link UUIDEntity}
 	 */
+	@Override
 	public <T> List<T> getComponents(Class<T> clazz) {
 		String key = getClassKey(clazz);
 		checkConsistency(key, clazz);
@@ -86,9 +88,10 @@ public class Entity {
 	}
 
 	/**
-	 * Removes the specified {@link Component} from this {@link Entity}
+	 * Removes the specified {@link Component} from this {@link UUIDEntity}
 	 * @param component The {@link Component} to remove
 	 */
+	@Override
 	public void removeComponent(Component component) {
 		Class clazz = component.getClass();
 
@@ -109,6 +112,13 @@ public class Entity {
 		}
 	}
 
+	/**
+	 * Removes all {@link Component}s that implement a specific type
+	 * 
+	 * @param clazz
+	 *            The {@link Class} to search for
+	 */
+	@Override
 	public <T extends Component> void removeAllComponentsOfType(Class<T> clazz) {
 		String key = getClassKey(clazz);
 		List<T> componentsRemoved = components.remove(key);
@@ -123,6 +133,13 @@ public class Entity {
 		}
 	}
 
+	/**
+	 * Adds an {@link EntityListener} to this {@link UUIDEntity}
+	 * 
+	 * @param listener
+	 *            The {@link EntityListener} to add
+	 */
+	@Override
 	public void addEntityListener(EntityListener listener) {
 		if (listeners == null) {
 			listeners = new CopyOnWriteArrayList<EntityListener>();
@@ -130,6 +147,13 @@ public class Entity {
 		listeners.add(listener);
 	}
 
+	/**
+	 * Removes an {@link EntityListener} from this {@link UUIDEntity}
+	 * 
+	 * @param listener
+	 *            The {@link EntityListener} to be removed
+	 */
+	@Override
 	public void removeEntityListener(EntityListener listener) {
 		if (listeners != null) {
 			listeners.remove(listener);
@@ -147,7 +171,7 @@ public class Entity {
 	}
 
 	/**
-	 * Returns the {@link UUID} for this {@link Entity}
+	 * Returns the {@link UUID} for this {@link UUIDEntity}
 	 * 
 	 * @return
 	 */

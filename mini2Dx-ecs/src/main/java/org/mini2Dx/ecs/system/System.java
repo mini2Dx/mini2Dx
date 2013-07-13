@@ -9,26 +9,60 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.miniECx.core.entity;
+package org.mini2Dx.ecs.system;
 
-import org.miniECx.core.component.Component;
+import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.ecs.entity.Entity;
+import org.mini2Dx.ecs.entity.UUIDEntity;
 
 /**
- * Allows classes to listen for component addition and removal within {@link Entity} instances
+ * A common interface for implementing {@link System}s as part of the Entity-Component-System pattern
  * @author Thomas Cashman
  */
-public interface EntityListener {
+public interface System<T extends Entity> {
 	/**
-	 * Called when a {@link Component} is added to an {@link Entity}
-	 * @param source The {@link Entity} the {@link Component} was added to
-	 * @param component The {@link Component} that was added
+	 * Adds an {@link Entity} to the {@link System}
+	 * @param entity The {@link Entity} to be added
 	 */
-	public void componentAdded(Entity source, Component component);
+	public void addEntity(T entity);
 	
 	/**
-	 * Called when a {@link Component} is removed from an {@link Entity}
-	 * @param source The {@link Entity} the {@link Component} was removed from
-	 * @param component The {@link Component} that was removed
+	 * Removes an {@link Entity} from the {@link System}
+	 * @param entity The {@link UUIDEntity} to be removed
 	 */
-	public void componentRemoved(Entity source, Component component);
+	public void removeEntity(T entity);
+	
+	/**
+	 * Update the {@link System}
+	 * @param gc The {@link GameContainer} calling update
+	 * @param delta The time in seconds since the last update
+	 */
+	public void update(GameContainer gc, float delta);
+	
+	/**
+	 * Interpolate the {@link System}
+	 * @param gc The {@link GameContainer} calling interpolate
+	 * @param alpha The alpha value to use during interpolation
+	 */
+	public void interpolate(GameContainer gc, float alpha);
+	
+	/**
+	 * Render the {@link System}
+	 * @param gc The {@link GameContainer} calling render
+	 * @param g The {@link Graphics} instance
+	 */
+	public void render(GameContainer gc, Graphics g);
+	
+	/**
+	 * Returns if this {@link System} is debugging
+	 * @return True if debugging
+	 */
+	public boolean isDebugging();
+	
+	/**
+	 * Sets whether or not this {@link System} is in debug mode
+	 * @param debugging True if debugging
+	 */
+	public void setDebugging(boolean debugging);
 }

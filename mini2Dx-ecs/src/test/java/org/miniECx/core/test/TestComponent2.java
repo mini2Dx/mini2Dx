@@ -11,7 +11,7 @@
  */
 package org.miniECx.core.test;
 
-import org.miniECx.core.component.Component;
+import org.mini2Dx.ecs.component.Component;
 
 /**
  * An implementation of {@link Component} for testing purposes

@@ -9,59 +9,58 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.miniECx.core.system;
+package org.mini2Dx.ecs.physics;
 
-import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.core.graphics.Graphics;
-import org.miniECx.core.entity.Entity;
+import org.mini2Dx.core.geom.Point;
+import org.mini2Dx.ecs.component.Component;
+
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 
 /**
- * A common interface for implementing {@link System}s as part of the Entity-Component-System pattern
+ *
  * @author Thomas Cashman
  */
-public interface System {
-	/**
-	 * Adds an {@link Entity} to the {@link System}
-	 * @param entity The {@link Entity} to be added
-	 */
-	public void addEntity(Entity entity);
+public class PositionTracker implements Component {
+	private Point currentPosition;
+	private Point previousPosition;
+	private Point renderPosition;
+	private Body body;
 	
-	/**
-	 * Removes an {@link Entity} from the {@link System}
-	 * @param entity The {@link Entity} to be removed
-	 */
-	public void removeEntity(Entity entity);
+	public PositionTracker(Body body) {
+		this.body = body;
+		Vector2 position = body.getPosition();
+		currentPosition = new Point(position.x, position.y);
+		previousPosition = new Point(position.x, position.y);
+		renderPosition = new Point(position.x, position.y);
+	}
 	
-	/**
-	 * Update the {@link System}
-	 * @param gc The {@link GameContainer} calling update
-	 * @param delta The time in seconds since the last update
-	 */
-	public void update(GameContainer gc, float delta);
+	public void update() {
+		previousPosition.set(currentPosition);
+		currentPosition.set(body.getPosition().x, body.getPosition().y);
+	}
 	
-	/**
-	 * Interpolate the {@link System}
-	 * @param gc The {@link GameContainer} calling interpolate
-	 * @param alpha The alpha value to use during interpolation
-	 */
-	public void interpolate(GameContainer gc, float alpha);
+	public void interpolate(float alpha) {
+		renderPosition.set(previousPosition.lerp(currentPosition, alpha));
+	}
 	
-	/**
-	 * Render the {@link System}
-	 * @param gc The {@link GameContainer} calling render
-	 * @param g The {@link Graphics} instance
-	 */
-	public void render(GameContainer gc, Graphics g);
+	public float getCurrentX() {
+		return currentPosition.x;
+	}
 	
-	/**
-	 * Returns if this {@link System} is debugging
-	 * @return True if debugging
-	 */
-	public boolean isDebugging();
+	public float getCurrentY() {
+		return currentPosition.y;
+	}
 	
-	/**
-	 * Sets whether or not this {@link System} is in debug mode
-	 * @param debugging True if debugging
-	 */
-	public void setDebugging(boolean debugging);
+	public float getRenderX() {
+		return renderPosition.x;
+	}
+	
+	public float getRenderY() {
+		return renderPosition.y;
+	}
+
+	public Body getBody() {
+		return body;
+	}
 }
