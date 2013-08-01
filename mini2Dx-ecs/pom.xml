@@ -10,7 +10,7 @@
 	<artifactId>mini2Dx-ecs</artifactId>
 	<packaging>jar</packaging>
 
-	<name>mini2Dx-core</name>
+	<name>mini2Dx-ecs</name>
 	<url>http://www.mini2dx.org</url>
 
 	<dependencies>

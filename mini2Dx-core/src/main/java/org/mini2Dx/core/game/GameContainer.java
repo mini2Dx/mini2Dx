@@ -58,7 +58,6 @@ public abstract class GameContainer implements Screen {
 
 	@Override
 	public void render(float delta) {
-		delta = Gdx.graphics.getRawDeltaTime();
 		if(delta > MAXIMUM_DELTA)
 			delta = MAXIMUM_DELTA;
 		

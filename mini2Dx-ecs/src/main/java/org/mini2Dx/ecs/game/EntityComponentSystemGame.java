@@ -208,7 +208,7 @@ public abstract class EntityComponentSystemGame extends GameContainer implements
 	}
 
 	private String getClassKey(Class<?> clazz) {
-		return clazz.getPackage() + "." + clazz.getSimpleName();
+		return clazz.getName();
 	}
 
 	/**

@@ -167,7 +167,7 @@ public class UUIDEntity implements Entity {
 	}
 
 	private String getClassKey(Class<?> clazz) {
-		return clazz.getPackage() + "." + clazz.getSimpleName();
+		return clazz.getName();
 	}
 
 	/**
