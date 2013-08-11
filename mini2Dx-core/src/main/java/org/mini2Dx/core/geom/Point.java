@@ -60,14 +60,16 @@ public class Point extends Vector2 implements Positionable {
 	 *            The angle to rotate by in degrees
 	 */
 	public void rotateAround(Point center, float degrees) {
-		float newX = center.x
-				+ (MathUtils.cosDeg(degrees) * (x - center.x) + MathUtils
-						.sinDeg(degrees) * (y - center.y));
-		float newY = center.y
-				+ (MathUtils.sinDeg(degrees) * (x - center.x) + MathUtils
-						.cosDeg(degrees) * (y - center.y));
+		float cos = MathUtils.cosDeg(degrees);
+		float sin = MathUtils.sinDeg(degrees);
+		
+		x -= center.x;
+		y -= center.y;
+		
+		float newX = x * cos - y * sin;
+		float newY = x * sin + y * cos;
 
-		set(newX, newY);
+		set(newX + center.x, newY + center.y);
 	}
 
 	/**

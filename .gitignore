@@ -5,3 +5,4 @@ target/
 *.prefs
 *.mp3
 rebel.xml
+bin/
