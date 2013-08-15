@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.mini2Dx</groupId>
 		<artifactId>mini2Dx-parent</artifactId>
-		<version>0.9-SNAPSHOT</version>
+		<version>0.9-RC1</version>
 		<relativePath>../mini2Dx-parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>mini2Dx-uats</artifactId>
@@ -83,8 +82,7 @@
 					</configuration>
 				</plugin>
 				<!--<plugin> <artifactId>maven-antrun-plugin</artifactId> <version>1.7</version> 
-					<configuration> <tasks> <ant antfile="${basedir}/build.xml"> <target name="bundle" 
-					/> </ant> </tasks> </configuration> </plugin> -->
+					<configuration> <tasks> <ant antfile="${basedir}/build.xml"> <target name="bundle" /> </ant> </tasks> </configuration> </plugin> -->
 				<plugin>
 					<groupId>com.googlecode.mavennatives</groupId>
 					<artifactId>maven-nativedependencies-plugin</artifactId>
