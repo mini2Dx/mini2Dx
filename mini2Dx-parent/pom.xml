@@ -15,7 +15,7 @@
 	</properties>
 
 	<scm>
-		<developerConnection>scm:git:ssh://git@github.com:tomcashman/mini2Dx.git</developerConnection>
+		<developerConnection>scm:git:git@github.com:tomcashman/mini2Dx.git</developerConnection>
 	</scm>
 
 	<dependencies>
