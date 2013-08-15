@@ -62,6 +62,7 @@ public class FadeInTransition implements Transition {
 
 	@Override
 	public void initialise(GameScreen outScreen, GameScreen inScreen) {
+		inScreen.preTransitionIn(this);
 	}
 
 	@Override

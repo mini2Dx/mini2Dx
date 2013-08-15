@@ -53,6 +53,7 @@ public class ScreenManager<T extends GameScreen> {
 		if (transitionOut != null) {
 			transitionOut.update(gc, delta);
 			if (transitionOut.isFinished()) {
+				currentScreen.postTransitionOut(transitionOut);
 				GameScreen oldScreen = currentScreen;
 				currentScreen = nextScreen;
 				nextScreen = null;
@@ -69,6 +70,7 @@ public class ScreenManager<T extends GameScreen> {
 		if (transitionIn != null) {
 			transitionIn.update(gc, delta);
 			if (transitionIn.isFinished()) {
+				currentScreen.postTransitionIn(transitionIn);
 				transitionIn = null;
 			} else {
 				return;

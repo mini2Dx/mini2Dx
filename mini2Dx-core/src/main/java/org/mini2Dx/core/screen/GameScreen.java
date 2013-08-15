@@ -48,6 +48,30 @@ public interface GameScreen {
 	public void render(GameContainer gc, Graphics g);
 	
 	/**
+	 * Called before the transition in
+	 * @param transitionIn The {@link Transition} in to this screen
+	 */
+	public void preTransitionIn(Transition transitionIn);
+	
+	/**
+	 * Called after the transition in
+	 * @param transitionIn The {@link Transition} in to this screen
+	 */
+	public void postTransitionIn(Transition transitionIn);
+	
+	/**
+	 * Called before the transition out
+	 * @param transitionOut The {@link Transition} out from this screen
+	 */
+	public void preTransitionOut(Transition transitionOut);
+	
+	/**
+	 * Called after the transition out
+	 * @param transitionOut The {@link Transition} out from this screen
+	 */
+	public void postTransitionOut(Transition transitionOut);
+	
+	/**
 	 * Returns the identifier of the screen
 	 * @return A unique identifier
 	 */
