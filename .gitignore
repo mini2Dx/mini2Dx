@@ -4,5 +4,7 @@ target/
 .project
 *.prefs
 *.mp3
+*.releaseBackup
+release.properties
 rebel.xml
 bin/
