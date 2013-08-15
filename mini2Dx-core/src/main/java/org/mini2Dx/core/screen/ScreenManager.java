@@ -60,7 +60,7 @@ public class ScreenManager<T extends GameScreen> {
 				transitionOut = null;
 
 				if (transitionIn != null) {
-					transitionIn.initialise(oldScreen, currentScreen);
+					currentScreen.preTransitionIn(transitionIn);
 				}
 			} else {
 				return;
@@ -141,6 +141,7 @@ public class ScreenManager<T extends GameScreen> {
 
 		this.nextScreen = gameScreens.get(id);
 		this.transitionOut.initialise(currentScreen, nextScreen);
+		currentScreen.preTransitionOut(transitionOut);
 	}
 
 	/**
