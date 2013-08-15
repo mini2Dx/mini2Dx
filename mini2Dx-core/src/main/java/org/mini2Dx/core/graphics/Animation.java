@@ -106,6 +106,15 @@ public class Animation<T extends Sprite> {
 	public void draw(Graphics g, float x, float y) {
 		g.drawSprite(getCurrentFrame(), x, y);
 	}
+	
+	/**
+	 * Returns the frame at a given index
+	 * @param index The frame's index
+	 * @return Null if there is no frame image
+	 */
+	public T getFrame(int index) {
+		return frames.get(index);
+	}
 
 	/**
 	 * Returns the {@link T} of the current frame
