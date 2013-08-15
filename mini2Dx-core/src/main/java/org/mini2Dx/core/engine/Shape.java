@@ -11,8 +11,6 @@
  */
 package org.mini2Dx.core.engine;
 
-import org.mini2Dx.core.geom.Line;
-import org.mini2Dx.core.geom.LineSegment;
 
 /**
  * A common interface for shapes
@@ -20,6 +18,4 @@ import org.mini2Dx.core.geom.LineSegment;
  */
 public interface Shape extends Positionable {
 	public int getNumberOfSides();
-	
-	public LineSegment projectOnTo(Line line);
 }

@@ -18,6 +18,8 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.transition.NullTransition;
 
+import com.badlogic.gdx.Screen;
+
 /**
  * Updates and renders {@link GameScreen}s and {@link Transition}s between them
  * 

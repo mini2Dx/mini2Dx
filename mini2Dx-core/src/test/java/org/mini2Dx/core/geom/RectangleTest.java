@@ -74,6 +74,7 @@ public class RectangleTest implements PositionChangeListener<Rectangle> {
 		Assert.assertEquals(200f, rectangle1.getY());
 		Assert.assertEquals(50f, rectangle1.getWidth());
 		Assert.assertEquals(50f, rectangle1.getHeight());
+		Assert.assertEquals(true, notificationReceived);
 	}
 
 	@Test
@@ -124,6 +125,20 @@ public class RectangleTest implements PositionChangeListener<Rectangle> {
 
 		Assert.assertEquals(false, rectangle1.intersects(rectangle2));
 		Assert.assertEquals(false, rectangle2.intersects(rectangle1));
+	}
+	
+	@Test
+	public void testIntersectsRotatedRectangle() {
+		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
+		rectangle2 = new Rectangle(100f, 50f, 75f, 40f);
+		
+		Assert.assertEquals(false, rectangle1.intersects(rectangle2));
+		Assert.assertEquals(false, rectangle2.intersects(rectangle1));
+
+		rectangle2.rotate(45);
+		
+		Assert.assertEquals(true, rectangle1.intersects(rectangle2));
+		Assert.assertEquals(true, rectangle2.intersects(rectangle1));
 	}
 
 	@Test

@@ -100,6 +100,10 @@ public class Point extends Vector2 implements Positionable {
 		}
 		return false;
 	}
+	
+	public boolean equals(Point p) {
+		return x == p.x && y == p.y;
+	}
 
 	@Override
 	public <T extends Positionable> void addPostionChangeListener(

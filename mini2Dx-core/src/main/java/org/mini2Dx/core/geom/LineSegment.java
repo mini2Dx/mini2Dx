@@ -11,10 +11,6 @@
  */
 package org.mini2Dx.core.geom;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Represents a segement of a line (the space between two points )
@@ -124,32 +120,6 @@ public class LineSegment {
 		return rectangle.intersects(this);
 	}
 
-	/**
-	 * Returns the {@link Point}s at which this {@link LineSegment} intersects a {@link Rectangle}
-	 * @param rectangle The {@link Rectangle} to test for intersection
-	 * @return An empty {@link List} if there are no intersections
-	 */
-	public List<Point> getIntersections(Rectangle rectangle) {
-		List<Point> result = new ArrayList<Point>();
-		Point intersection = rectangle.top.getIntersection(this);
-		if (intersection != null) {
-			result.add(intersection);
-		}
-		intersection = rectangle.bottom.getIntersection(this);
-		if (intersection != null) {
-			result.add(intersection);
-		}
-		intersection = rectangle.left.getIntersection(this);
-		if (intersection != null) {
-			result.add(intersection);
-		}
-		intersection = rectangle.right.getIntersection(this);
-		if (intersection != null) {
-			result.add(intersection);
-		}
-		return result;
-	}
-
 	public Point getPointA() {
 		return pointA;
 	}
@@ -164,6 +134,30 @@ public class LineSegment {
 
 	public void setPointB(Point pointB) {
 		this.pointB = pointB;
+	}
+
+	public float getMinX() {
+		if(pointA.getX() < pointB.getX())
+			return pointA.getX();
+		return pointB.getX();
+	}
+
+	public float getMinY() {
+		if(pointA.getY() < pointB.getY())
+			return pointA.getY();
+		return pointB.getY();
+	}
+
+	public float getMaxX() {
+		if(pointA.getX() > pointB.getX())
+			return pointA.getX();
+		return pointB.getX();
+	}
+
+	public float getMaxY() {
+		if(pointA.getY() > pointB.getY())
+			return pointA.getY();
+		return pointB.getY();
 	}
 
 	@Override
