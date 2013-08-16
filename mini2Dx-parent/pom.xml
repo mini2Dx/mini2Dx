@@ -14,11 +14,6 @@
 		<libgdx.version>0.9.8</libgdx.version>
 	</properties>
 
-	<scm>
-		<connection>scm:git:git://git@github.com:tomcashman/mini2Dx.git</connection>
-		<developerConnection>scm:git:git://git@github.com:tomcashman/mini2Dx.git</developerConnection>
-	</scm>
-
 	<dependencies>
 		<!-- Testing -->
 		<dependency>
@@ -117,16 +112,6 @@
 	</modules>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.4.1</version>
-				<configuration>
-					<autoVersionSubmodules>true</autoVersionSubmodules>
-				</configuration>
-			</plugin>
-		</plugins>
 		<pluginManagement>
 			<plugins>
 				<plugin>
