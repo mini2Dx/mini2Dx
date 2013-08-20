@@ -79,10 +79,12 @@ public class ScreenManager<T extends GameScreen> {
 
 		currentScreen.update(gc, this, delta);
 	}
-	
+
 	/**
 	 * Interpolate between the previous and current state
-	 * @param alpha The interpolation alpha value
+	 * 
+	 * @param alpha
+	 *            The interpolation alpha value
 	 */
 	public void interpolate(GameContainer gc, float alpha) {
 		if (currentScreen != null) {
@@ -152,6 +154,18 @@ public class ScreenManager<T extends GameScreen> {
 	 */
 	public void addGameScreen(T screen) {
 		this.gameScreens.put(screen.getId(), screen);
+	}
+
+	/**
+	 * Returns the {@link GameScreen} with the given id
+	 * 
+	 * @param id
+	 *            The id to search for
+	 * @return Null if there is no such {@link GameScreen} registered with this
+	 *         manager
+	 */
+	public T getGameScreen(int id) {
+		return this.gameScreens.get(id);
 	}
 
 	/**
