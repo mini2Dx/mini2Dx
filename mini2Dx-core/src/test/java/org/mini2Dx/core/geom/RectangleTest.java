@@ -112,6 +112,22 @@ public class RectangleTest implements PositionChangeListener<Rectangle> {
 		Assert.assertEquals(50f, rectangle1.getHeight());
 		Assert.assertEquals(true, notificationReceived);
 	}
+	
+	@Test
+	public void testIntersectsLineSegement() {
+		rectangle1 = new Rectangle(2, 2, 4, 4);
+		LineSegment segment = new LineSegment(0, 0, 10, 10);
+		
+		Assert.assertEquals(true, rectangle1.intersects(segment));
+		
+		segment.getPointA().set(10, 2);
+		
+		Assert.assertEquals(false, rectangle1.intersects(segment));
+		
+		rectangle1 = new Rectangle(96, 0, 32, 32);
+		segment = new LineSegment(0, 0, 128, 128);
+		Assert.assertEquals(false, rectangle1.intersects(segment));
+	}
 
 	@Test
 	public void testIntersectsRectangle() {

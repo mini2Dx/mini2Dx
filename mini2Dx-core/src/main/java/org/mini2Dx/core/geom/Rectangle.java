@@ -54,27 +54,27 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		bottomRight.set(x + width, y + height);
 		center.set(x + (width / 2f), y + (height / 2f));
 	}
-	
+
 	private void recalculateMinMax() {
 		minX = topLeft.getX();
 		minY = topLeft.getY();
 		maxX = bottomRight.getX();
 		maxY = bottomRight.getY();
-		
+
 		checkAgainstMinMax(topLeft);
 		checkAgainstMinMax(topRight);
 		checkAgainstMinMax(bottomLeft);
 		checkAgainstMinMax(bottomRight);
 	}
-	
+
 	private void checkAgainstMinMax(Point p) {
-		if(p.getX() < minX)
+		if (p.getX() < minX)
 			minX = p.getX();
-		if(p.getX() > maxX)
+		if (p.getX() > maxX)
 			maxX = p.getX();
-		if(p.getY() < minY)
+		if (p.getY() < minY)
 			minY = p.getY();
-		if(p.getY() > maxY)
+		if (p.getY() > maxY)
 			maxY = p.getY();
 	}
 
@@ -135,8 +135,8 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		bottomLeft.rotateAround(center, degrees);
 		bottomRight.rotateAround(center, degrees);
 		this.center.rotateAround(center, degrees);
-		
-		if(!center.equals(topLeft)) {
+
+		if (!center.equals(topLeft)) {
 			topLeft.rotateAround(center, degrees);
 		}
 		super.setX(topLeft.x);
@@ -145,25 +145,29 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 
 	@Override
 	public boolean intersects(LineSegment lineSegment) {
-		boolean xAxisOverlaps = true;
-		boolean yAxisOverlaps = true;
-		
-		if (maxX < lineSegment.getMinX())
-			xAxisOverlaps = false;
-		if (lineSegment.getMaxX() < minX)
-			xAxisOverlaps = false;
-		if (maxY < lineSegment.getMinY())
-			yAxisOverlaps = false;
-		if (lineSegment.getMaxY() < minY)
-			yAxisOverlaps = false;
-		
-		return xAxisOverlaps && yAxisOverlaps;
+		if (lineSegment.intersectsLineSegment(topLeft.x, topLeft.y,
+				bottomLeft.x, bottomLeft.y)) {
+			return true;
+		}
+		if (lineSegment.intersectsLineSegment(bottomLeft.x, bottomLeft.y,
+				bottomRight.x, bottomRight.y)) {
+			return true;
+		}
+		if (lineSegment.intersectsLineSegment(bottomRight.x, bottomRight.y,
+				topRight.x, topRight.y)) {
+			return true;
+		}
+		if (lineSegment.intersectsLineSegment(topRight.x, topRight.y,
+				topLeft.x, topLeft.y)) {
+			return true;
+		}
+		return false;
 	}
 
 	public boolean intersects(Rectangle rectangle) {
 		boolean xAxisOverlaps = true;
 		boolean yAxisOverlaps = true;
-		
+
 		if (maxX < rectangle.getMinX())
 			xAxisOverlaps = false;
 		if (rectangle.getMaxX() < minX)
@@ -172,7 +176,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 			yAxisOverlaps = false;
 		if (rectangle.getMaxY() < minY)
 			yAxisOverlaps = false;
-		
+
 		return xAxisOverlaps && yAxisOverlaps;
 	}
 
@@ -196,9 +200,10 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	}
 
 	public Rectangle intersection(Rectangle rect) {
-		if(rotation != 0 || rect.getRotation() != 0)
-			throw new UnsupportedOperationException("Rectangle.intersection is not implemented to handle rotated rectangles");
-		
+		if (rotation != 0 || rect.getRotation() != 0)
+			throw new UnsupportedOperationException(
+					"Rectangle.intersection is not implemented to handle rotated rectangles");
+
 		float newX = Math.max(getX(), rect.getX());
 		float newY = Math.max(getY(), rect.getY());
 		float newWidth = Math.min(bottomRight.x, rect.bottomRight.x) - newX;
@@ -252,12 +257,12 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 
 	@Override
 	public void draw(Graphics g) {
-		if(rotation == 0f) {
+		if (rotation == 0f) {
 			g.drawRect(topLeft.x, topLeft.y, width, height);
 			return;
 		}
-		
-		//TODO: Draw rotated rectangle
+
+		// TODO: Draw rotated rectangle
 	}
 
 	@Override
@@ -328,15 +333,15 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		recalculateMinMax();
 		notifyPositionChangeListeners();
 	}
-	
+
 	public float getCenterX() {
 		return center.x;
 	}
-	
+
 	public float getCenterY() {
 		return center.y;
 	}
-	
+
 	public float getMinX() {
 		return minX;
 	}
