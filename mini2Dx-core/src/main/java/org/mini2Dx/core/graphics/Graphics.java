@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.core.graphics;
 
+import org.mini2Dx.core.engine.Shape;
 import org.mini2Dx.core.geom.Rectangle;
 
 import com.badlogic.gdx.Gdx;
@@ -240,6 +241,14 @@ public class Graphics {
 		spriteBatch.draw(textureRegion, x, y, 0, 0,
 				textureRegion.getRegionWidth(),
 				textureRegion.getRegionHeight(), 1f, 1f, 0);
+	}
+	
+	/**
+	 * Draws an instance of {@link Shape}
+	 * @param shape The implementation of {@link Shape} to draw
+	 */
+	public void drawShape(Shape shape) {
+		shape.draw(this);
 	}
 
 	/**

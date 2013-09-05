@@ -11,6 +11,8 @@
  */
 package org.mini2Dx.core.engine;
 
+import org.mini2Dx.core.graphics.Graphics;
+
 
 /**
  * A common interface for shapes
@@ -18,4 +20,6 @@ package org.mini2Dx.core.engine;
  */
 public interface Shape extends Positionable {
 	public int getNumberOfSides();
+	
+	public void draw(Graphics g);
 }

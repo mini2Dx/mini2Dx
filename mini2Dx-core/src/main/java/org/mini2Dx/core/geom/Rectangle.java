@@ -17,6 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.mini2Dx.core.engine.Parallelogram;
 import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
+import org.mini2Dx.core.graphics.Graphics;
 
 /**
  * Implements a rotatable rectangle. Adds extra functionality to the default
@@ -250,6 +251,16 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	}
 
 	@Override
+	public void draw(Graphics g) {
+		if(rotation == 0f) {
+			g.drawRect(topLeft.x, topLeft.y, width, height);
+			return;
+		}
+		
+		//TODO: Draw rotated rectangle
+	}
+
+	@Override
 	public void set(float x, float y, float width, float height) {
 		performRotation(topLeft, -rotation);
 		super.set(x, y, width, height);
@@ -341,5 +352,4 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	public float getMaxY() {
 		return maxY;
 	}
-
 }

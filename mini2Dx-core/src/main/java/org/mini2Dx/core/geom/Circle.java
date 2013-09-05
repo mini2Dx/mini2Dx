@@ -16,6 +16,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
+import org.mini2Dx.core.engine.Shape;
+import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -23,17 +25,17 @@ import com.badlogic.gdx.math.Vector2;
  * Implements a circle
  * @author Thomas Cashman
  */
-public class Circle implements Positionable {
+public class Circle implements Shape {
 	private Vector2 center;
-	private float radius;
+	private int radius;
 	private List<PositionChangeListener> positionChangleListeners;
 	
-	public Circle(float radius) {
+	public Circle(int radius) {
 		center = new Vector2();
 		this.radius = radius;
 	}
 	
-	public Circle(float centerX, float centerY, float radius) {
+	public Circle(float centerX, float centerY, int radius) {
 		center = new Vector2(centerX, centerY);
 		this.radius = radius;
 	}
@@ -49,6 +51,16 @@ public class Circle implements Positionable {
 			return 0f;
 		}
 		return result - radius;
+	}
+	
+	@Override
+	public int getNumberOfSides() {
+		return 0;
+	}
+
+	@Override
+	public void draw(Graphics g) {
+		g.drawCircle(center.x, center.y, radius);
 	}
 
 	@Override
@@ -101,12 +113,11 @@ public class Circle implements Positionable {
 		notifyPositionChanged();
 	}
 
-	public float getRadius() {
+	public int getRadius() {
 		return radius;
 	}
 
-	public void setRadius(float radius) {
+	public void setRadius(int radius) {
 		this.radius = radius;
 	}
-
 }

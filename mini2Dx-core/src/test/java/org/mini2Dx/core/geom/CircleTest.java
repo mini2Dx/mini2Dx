@@ -1,6 +1,5 @@
 package org.mini2Dx.core.geom;
 
-import static org.junit.Assert.fail;
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -13,13 +12,13 @@ public class CircleTest implements PositionChangeListener<Circle> {
 	
 	@Before
 	public void setup() {
-		circle = new Circle(4f);
+		circle = new Circle(4);
 		receivedNotification = false;
 	}
 
 	@Test
 	public void testIntersectsCircle() {
-		Circle circle2 = new Circle(20f, 20f, 4f);
+		Circle circle2 = new Circle(20f, 20f, 4);
 		Assert.assertEquals(false, circle.intersects(circle2));
 		Assert.assertEquals(false, circle2.intersects(circle));
 		
