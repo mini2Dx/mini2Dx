@@ -53,7 +53,9 @@ public class ScreenManager<T extends GameScreen> {
 		if (transitionOut != null) {
 			transitionOut.update(gc, delta);
 			if (transitionOut.isFinished()) {
-				currentScreen.postTransitionOut(transitionOut);
+				if (currentScreen != null) {
+					currentScreen.postTransitionOut(transitionOut);
+				}
 				GameScreen oldScreen = currentScreen;
 				currentScreen = nextScreen;
 				nextScreen = null;
@@ -143,7 +145,10 @@ public class ScreenManager<T extends GameScreen> {
 
 		this.nextScreen = gameScreens.get(id);
 		this.transitionOut.initialise(currentScreen, nextScreen);
-		currentScreen.preTransitionOut(transitionOut);
+
+		if (currentScreen != null) {
+			currentScreen.preTransitionOut(transitionOut);
+		}
 	}
 
 	/**
