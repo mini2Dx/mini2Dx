@@ -27,18 +27,28 @@ public class Circle implements Positionable {
 	private Vector2 center;
 	private float radius;
 	private List<PositionChangeListener> positionChangleListeners;
+	
+	public Circle(float radius) {
+		center = new Vector2();
+		this.radius = radius;
+	}
+	
+	public Circle(float centerX, float centerY, float radius) {
+		center = new Vector2(centerX, centerY);
+		this.radius = radius;
+	}
 
 	public boolean intersects(Circle circle) {
-		float r = radius + circle.getRadius();
-		r *= r;
-		return r < Math.pow(getX() + circle.getX(), 2)
-				+ Math.pow(getY() + circle.getY(), 2);
+		return center.dst(circle.center) <= radius + circle.radius;
 	}
 
 	@Override
 	public float getDistanceTo(Positionable positionable) {
-		// TODO Auto-generated method stub
-		return 0;
+		float result = center.dst(positionable.getX(), positionable.getY());
+		if(result <= radius) {
+			return 0f;
+		}
+		return result - radius;
 	}
 
 	@Override
@@ -57,6 +67,14 @@ public class Circle implements Positionable {
 			positionChangleListeners.remove(listener);
 		}
 	}
+	
+	private void notifyPositionChanged() {
+		if(positionChangleListeners != null) {
+			for(PositionChangeListener<Circle> listener : positionChangleListeners) {
+				listener.positionChanged(this);
+			}
+		}
+	}
 
 	@Override
 	public float getX() {
@@ -70,14 +88,17 @@ public class Circle implements Positionable {
 	
 	public void setX(float x) {
 		center.set(x, center.y);
+		notifyPositionChanged();
 	}
 	
 	public void setY(float y) {
 		center.set(center.x, y);
+		notifyPositionChanged();
 	}
 	
-	public void setPosition(float x, float y) {
+	public void setCenter(float x, float y) {
 		center.set(x, y);
+		notifyPositionChanged();
 	}
 
 	public float getRadius() {
