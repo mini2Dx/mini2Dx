@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * @author Thomas Cashman
  */
 public abstract class GameContainer implements Screen {
-	private static final float MAXIMUM_DELTA = 1f / 60f;
+	private static final float MAXIMUM_DELTA = (1f / 60f) * 2f;
 	
 	private float accumulator = 0f;
 	private float targetDelta = 0.01f;
