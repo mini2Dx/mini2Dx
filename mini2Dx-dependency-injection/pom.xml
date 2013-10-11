@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.mini2Dx</groupId>
 		<artifactId>mini2Dx-parent</artifactId>
-		<version>0.9-rc3-SNAPSHOT</version>
+		<version>0.9-rc3</version>
 		<relativePath>../mini2Dx-parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>mini2Dx-dependency-injection</artifactId>
