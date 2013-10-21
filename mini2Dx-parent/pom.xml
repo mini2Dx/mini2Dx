@@ -4,7 +4,7 @@
 
 	<groupId>org.mini2Dx</groupId>
 	<artifactId>mini2Dx-parent</artifactId>
-	<version>0.9-rc3</version>
+	<version>0.9-rc4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>mini2Dx-parent</name>
