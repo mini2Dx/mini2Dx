@@ -74,12 +74,12 @@
 			<dependency>
 				<groupId>com.badlogic.gdx</groupId>
 				<artifactId>gdx-backend-lwjgl</artifactId>
-				<version>${libgdx.version}</version>
+				<version>${libgdx.version}.1</version>
 			</dependency>
 			<dependency>
 				<groupId>com.badlogic.gdx</groupId>
 				<artifactId>gdx-backend-lwjgl-natives</artifactId>
-				<version>${libgdx.version}</version>
+				<version>${libgdx.version}.1</version>
 			</dependency>
 
 			<!-- Apache Commons -->
