@@ -87,7 +87,7 @@ public class TiledMap implements TiledParserListener {
 		parser.parse(fileHandle);
 
 		if (loadTilesets) {
-			layerCache = new SpriteCache(getWidth() * getHeight(), true);
+			layerCache = new SpriteCache(getWidth() * getHeight() * tileLayers.size(), true);
 			for (int layer = 0; layer < tileLayers.size(); layer++) {
 				layerCache.beginCache();
 				for (int y = 0; y < getHeight(); y++) {
