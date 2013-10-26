@@ -12,6 +12,7 @@
 package org.mini2Dx.core.game;
 
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.screen.BasicScreenManager;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
@@ -78,7 +79,7 @@ public abstract class ScreenBasedGame extends GameContainer {
 	@Override
 	protected void preinit() {
 		super.preinit();
-		screenManager = new ScreenManager<GameScreen>();
+		screenManager = new BasicScreenManager<GameScreen>();
 	}
 	
 	@Override

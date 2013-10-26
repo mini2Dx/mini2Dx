@@ -34,6 +34,12 @@ public interface System<T extends Entity> {
 	public void removeEntity(T entity);
 	
 	/**
+	 * Initialise the {@link System}
+	 * @param gc The {@link GameContainer} calling initialise
+	 */
+	public void initialise(GameContainer gc);
+	
+	/**
 	 * Update the {@link System}
 	 * @param gc The {@link GameContainer} calling update
 	 * @param delta The time in seconds since the last update

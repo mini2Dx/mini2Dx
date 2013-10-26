@@ -11,34 +11,17 @@
  */
 package org.mini2Dx.core.screen;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.core.screen.transition.NullTransition;
 
 import com.badlogic.gdx.Screen;
 
 /**
  * Updates and renders {@link GameScreen}s and {@link Transition}s between them
  * 
- * NOTE: Based on Slick implementation by Kevin Glass
- * 
  * @author Thomas Cashman
  */
-public class ScreenManager<T extends GameScreen> {
-	private Map<Integer, T> gameScreens;
-	protected T currentScreen, nextScreen;
-	protected Transition transitionIn, transitionOut;
-
-	/**
-	 * Constructor
-	 */
-	public ScreenManager() {
-		gameScreens = new ConcurrentHashMap<Integer, T>();
-	}
-
+public interface ScreenManager<T extends GameScreen> {
 	/**
 	 * Updates the current {@link GameScreen} and any {@link Transition} that
 	 * may be occurring
@@ -49,51 +32,16 @@ public class ScreenManager<T extends GameScreen> {
 	 * @param delta
 	 *            The time since the last update
 	 */
-	public void update(GameContainer gc, float delta) {
-		if (transitionOut != null) {
-			transitionOut.update(gc, delta);
-			if (transitionOut.isFinished()) {
-				if (currentScreen != null) {
-					currentScreen.postTransitionOut(transitionOut);
-				}
-				GameScreen oldScreen = currentScreen;
-				currentScreen = nextScreen;
-				nextScreen = null;
-				transitionOut = null;
-
-				if (transitionIn != null) {
-					currentScreen.preTransitionIn(transitionIn);
-				}
-			} else {
-				return;
-			}
-		}
-
-		if (transitionIn != null) {
-			transitionIn.update(gc, delta);
-			if (transitionIn.isFinished()) {
-				currentScreen.postTransitionIn(transitionIn);
-				transitionIn = null;
-			} else {
-				return;
-			}
-		}
-
-		currentScreen.update(gc, this, delta);
-	}
-
+	public void update(GameContainer gc, float delta);
+	
 	/**
 	 * Interpolate between the previous and current state
 	 * 
 	 * @param alpha
 	 *            The interpolation alpha value
 	 */
-	public void interpolate(GameContainer gc, float alpha) {
-		if (currentScreen != null) {
-			currentScreen.interpolate(gc, alpha);
-		}
-	}
-
+	public void interpolate(GameContainer gc, float alpha);
+	
 	/**
 	 * Renders the current {@link GameScreen} and any {@link Transition} that
 	 * may be occurring
@@ -104,24 +52,8 @@ public class ScreenManager<T extends GameScreen> {
 	 * @param g
 	 *            The {@link Graphics} context available for rendering
 	 */
-	public void render(GameContainer gc, Graphics g) {
-		if (transitionOut != null) {
-			transitionOut.preRender(gc, g);
-		} else if (transitionIn != null) {
-			transitionIn.preRender(gc, g);
-		}
-
-		if (currentScreen != null) {
-			currentScreen.render(gc, g);
-		}
-
-		if (transitionOut != null) {
-			transitionOut.postRender(gc, g);
-		} else if (transitionIn != null) {
-			transitionIn.postRender(gc, g);
-		}
-	}
-
+	public void render(GameContainer gc, Graphics g);
+	
 	/**
 	 * Begins a transition to a new {@link GameScreen}
 	 * 
@@ -133,34 +65,16 @@ public class ScreenManager<T extends GameScreen> {
 	 *            The incoming {@link Transition}, e.g. fade in
 	 */
 	public void enterGameScreen(int id, Transition transitionOut,
-			Transition transitionIn) {
-		if (transitionOut == null) {
-			transitionOut = new NullTransition();
-		}
-		if (transitionIn == null) {
-			transitionIn = new NullTransition();
-		}
-		this.transitionIn = transitionIn;
-		this.transitionOut = transitionOut;
-
-		this.nextScreen = gameScreens.get(id);
-		this.transitionOut.initialise(currentScreen, nextScreen);
-
-		if (currentScreen != null) {
-			currentScreen.preTransitionOut(transitionOut);
-		}
-	}
-
+			Transition transitionIn);
+	
 	/**
 	 * Adds a {@link GameScreen} to this manager
 	 * 
 	 * @param screen
 	 *            The {@link GameScreen} to be added
 	 */
-	public void addGameScreen(T screen) {
-		this.gameScreens.put(screen.getId(), screen);
-	}
-
+	public void addGameScreen(T screen);
+	
 	/**
 	 * Returns the {@link GameScreen} with the given id
 	 * 
@@ -169,16 +83,12 @@ public class ScreenManager<T extends GameScreen> {
 	 * @return Null if there is no such {@link GameScreen} registered with this
 	 *         manager
 	 */
-	public T getGameScreen(int id) {
-		return this.gameScreens.get(id);
-	}
-
+	public T getGameScreen(int id);
+	
 	/**
 	 * Returns if the {@link ScreenManager} is moving between {@link Screen}s
 	 * 
 	 * @return False if there are no {@link Transition}s active
 	 */
-	public boolean isTransitioning() {
-		return transitionIn != null || transitionOut != null;
-	}
+	public boolean isTransitioning();
 }

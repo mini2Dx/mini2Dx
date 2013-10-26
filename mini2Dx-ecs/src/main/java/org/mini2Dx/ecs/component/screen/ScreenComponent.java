@@ -11,9 +11,11 @@
  */
 package org.mini2Dx.ecs.component.screen;
 
+import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.screen.GameScreen;
+import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.ecs.component.Component;
-import org.mini2Dx.ecs.game.EntityComponentSystemGame;
 
 /**
  * A common interface for screen component implementations
@@ -22,22 +24,23 @@ import org.mini2Dx.ecs.game.EntityComponentSystemGame;
 public interface ScreenComponent extends Component {
 	/**
 	 * Update the screen component
-	 * @param game The {@link EntityComponentSystemGame} calling the update
+	 * @param game The {@link GameContainer} calling the update
 	 * @param delta The time since the last update in seconds
 	 */
-	public void update(EntityComponentSystemGame game, float delta);
+	public void update(GameContainer gc,
+			ScreenManager<? extends GameScreen> screenManager, float delta);
 	
 	/**
 	 * Interpolate the screen component
-	 * @param game The {@link EntityComponentSystemGame} calling the interpolation
+	 * @param game The {@link GameContainer} calling the interpolation
 	 * @param alpha The alpha value to use during interpolation
 	 */
-	public void interpolate(EntityComponentSystemGame game, float alpha);
+	public void interpolate(GameContainer gc, float alpha);
 	
 	/**
 	 * Render the screen component
-	 * @param game The {@link EntityComponentSystemGame} calling the render
+	 * @param game The {@link GameContainer} calling the render
 	 * @param g The {@link Graphics} context
 	 */
-	public void render(EntityComponentSystemGame game, Graphics g);
+	public void render(GameContainer gc, Graphics g);
 }
