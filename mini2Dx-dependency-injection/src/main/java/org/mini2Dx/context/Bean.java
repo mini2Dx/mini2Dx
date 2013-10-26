@@ -25,6 +25,6 @@ public abstract class Bean {
 	 * @return The {@link Class} unique key
 	 */
 	public static <T> String getClassKey(Class<T> clazz) {
-		return clazz.getPackage().getName() + clazz.getSimpleName();
+		return clazz.getName();
 	}
 }
