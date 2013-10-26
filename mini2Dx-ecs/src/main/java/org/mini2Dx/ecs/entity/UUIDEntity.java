@@ -67,11 +67,27 @@ public class UUIDEntity implements Entity {
 			checkConsistency(key, interfaceClass);
 			components.get(key).add(component);
 		}
+		
+		addSuperclassInterfaces(component);
 
 		if (listeners != null) {
 			for (EntityListener listener : listeners) {
 				listener.componentAdded(this, component);
 			}
+		}
+	}
+	
+	private void addSuperclassInterfaces(Component component) {
+		Class clazz = component.getClass().getSuperclass();
+		
+		while(clazz != null) {
+			String key;
+			for (Class interfaceClass : clazz.getInterfaces()) {
+				key = getClassKey(interfaceClass);
+				checkConsistency(key, interfaceClass);
+				components.get(key).add(component);
+			}
+			clazz = clazz.getSuperclass();
 		}
 	}
 
@@ -104,11 +120,27 @@ public class UUIDEntity implements Entity {
 			checkConsistency(key, interfaceClass);
 			components.get(key).remove(component);
 		}
+		
+		removeSuperclassInterfaces(component);
 
 		if (listeners != null) {
 			for (EntityListener listener : listeners) {
 				listener.componentRemoved(this, component);
 			}
+		}
+	}
+	
+	private void removeSuperclassInterfaces(Component component) {
+		Class clazz = component.getClass().getSuperclass();
+		
+		while(clazz != null) {
+			String key;
+			for (Class interfaceClass : clazz.getInterfaces()) {
+				key = getClassKey(interfaceClass);
+				checkConsistency(key, interfaceClass);
+				components.get(key).remove(component);
+			}
+			clazz = clazz.getSuperclass();
 		}
 	}
 
