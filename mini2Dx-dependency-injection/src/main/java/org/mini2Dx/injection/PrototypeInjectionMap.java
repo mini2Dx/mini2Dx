@@ -9,55 +9,91 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.context;
+package org.mini2Dx.injection;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Set;
 
-import org.mini2Dx.bean.Bean;
-import org.mini2Dx.injection.BeanInjector;
+import org.mini2Dx.bean.PrototypeBean;
 
 /**
- * 
+ * An implementation of {@link Map} that produces prototypes when get() is called
  * 
  * @author Thomas Cashman
  */
-@SuppressWarnings(value = { "unchecked", "rawtypes" })
-public class GameContext {
-	static ComponentScanner componentScanner;
-	private static Map<String, Bean> beans;
-	private static ExecutorService prototypeService;
-
-	protected static void initialiseContext(String[] packageNames) throws Exception {
-		componentScanner.scan(packageNames);
-
-		Map<String, Object> singletons = new HashMap<String, Object>();
-		Map<String, Object> prototypes = new HashMap<String, Object>();
-
-		for (Class clazz : componentScanner.getSingletonClasses()) {
-			String key = Bean.getClassKey(clazz);
-			singletons.put(key, clazz.newInstance());
-		}
-
-		for (Class clazz : componentScanner.getPrototypeClasses()) {
-			String key = Bean.getClassKey(clazz);
-			prototypes.put(key, clazz.newInstance());
-		}
-		
-		BeanInjector injector = new BeanInjector(singletons, prototypes);
-		injector.inject();
-		
-		prototypeService = Executors.newFixedThreadPool(1);
-		beans = injector.getInjectionResult(prototypeService);
-	}
+public class PrototypeInjectionMap implements Map<String, Object> {
+	private Map<String, Object> prototypes;
 	
-	public static void end() {
-		prototypeService.shutdown();
+	public PrototypeInjectionMap(Map<String, Object> prototypes) {
+		this.prototypes = prototypes;
 	}
 
-	public static <T> T getBean(Class<T> clazz) {
-		return (T) beans.get(Bean.getClassKey(clazz)).getInstance();
+	@Override
+	public int size() {
+		return prototypes.size();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return prototypes.isEmpty();
+	}
+
+	@Override
+	public boolean containsKey(Object key) {
+		return prototypes.containsKey(key);
+	}
+
+	@Override
+	public boolean containsValue(Object value) {
+		return prototypes.containsValue(value);
+	}
+
+	@Override
+	public Object get(Object key) {
+		Object prototype = prototypes.get(key);
+		
+		try {
+			return PrototypeBean.duplicate(prototype);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	@Override
+	public Object put(String key, Object value) {
+		return prototypes.put(key, value);
+	}
+
+	@Override
+	public Object remove(Object key) {
+		return prototypes.remove(key);
+	}
+
+	@Override
+	public void putAll(Map<? extends String, ? extends Object> m) {
+		prototypes.putAll(m);
+	}
+
+	@Override
+	public void clear() {
+		prototypes.clear();
+	}
+
+	@Override
+	public Set<String> keySet() {
+		return prototypes.keySet();
+	}
+
+	@Override
+	public Collection<Object> values() {
+		return prototypes.values();
+	}
+
+	@Override
+	public Set<java.util.Map.Entry<String, Object>> entrySet() {
+		return prototypes.entrySet();
 	}
 }

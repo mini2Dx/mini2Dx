@@ -9,45 +9,29 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.injection.dummy;
+package org.mini2Dx.context;
 
-import org.mini2Dx.injection.annotation.Autowired;
-import org.mini2Dx.injection.annotation.Prototype;
+import android.content.Context;
 
 /**
- * A dummy bean for testing dependency injection
- *
+ * Dalvik JVM specific initialiser for {@link GameContext}
+ * 
  * @author Thomas Cashman
  */
-@Prototype
-public class TestBean {
-	private Integer intField;
-	@Autowired
-	private TestDependency dependency;
-	@Autowired(required = false)
-	private TestInterface interfaceField;
-	
-	public Integer getIntField() {
-		return intField;
-	}
-	
-	public void setIntField(Integer intField) {
-		this.intField = intField;
-	}
-	
-	public TestDependency getDependency() {
-		return dependency;
-	}
-	
-	public void setDependency(TestDependency dependency) {
-		this.dependency = dependency;
-	}
-
-	public TestInterface getInterfaceField() {
-		return interfaceField;
-	}
-
-	public void setInterfaceField(TestInterface interfaceField) {
-		this.interfaceField = interfaceField;
+public class AndroidGameContext extends GameContext {
+	/**
+	 * Initialises the game context by performing a component scan and setting
+	 * up all beans
+	 * 
+	 * @param applicationContext
+	 *            The app's Android {@link Context}
+	 * @param packageNames
+	 *            The package names to scan through
+	 * @throws Exception
+	 */
+	public static void initialise(Context applicationContext,
+			String[] packageNames) throws Exception {
+		componentScanner = new AndroidComponentScanner(applicationContext);
+		initialiseContext(packageNames);
 	}
 }

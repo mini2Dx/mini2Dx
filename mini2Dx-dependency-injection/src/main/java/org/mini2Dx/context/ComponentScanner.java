@@ -11,87 +11,31 @@
  */
 package org.mini2Dx.context;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.io.IOException;
+import java.util.List;
+
+import org.mini2Dx.injection.annotation.Prototype;
+import org.mini2Dx.injection.annotation.Singleton;
 
 /**
- * An implementation of {@link Map} that produces prototypes when get() is called
+ * A common interface to component scanning implementations.
+ * 
+ * Scans packages for classes annotated with {@link Singleton} and
+ * {@link Prototype}
  * 
  * @author Thomas Cashman
  */
-public class PrototypeInjectionMap implements Map<String, Object> {
-	private Map<String, Object> prototypes;
-	
-	public PrototypeInjectionMap(Map<String, Object> prototypes) {
-		this.prototypes = prototypes;
-	}
+public interface ComponentScanner {
+	/**
+	 * Scans multiple packages recursively for {@link Singleton} and {@link Prototype}
+	 * annotated classes
+	 * 
+	 * @param packageNames  The package name to scan through, e.g. org.mini2Dx.component
+	 * @throws IOException
+	 */
+	public void scan(String[] packageNames) throws IOException, NullPointerException, ClassNotFoundException;
 
-	@Override
-	public int size() {
-		return prototypes.size();
-	}
+	public List<Class<?>> getSingletonClasses();
 
-	@Override
-	public boolean isEmpty() {
-		return prototypes.isEmpty();
-	}
-
-	@Override
-	public boolean containsKey(Object key) {
-		return prototypes.containsKey(key);
-	}
-
-	@Override
-	public boolean containsValue(Object value) {
-		return prototypes.containsValue(value);
-	}
-
-	@Override
-	public Object get(Object key) {
-		Object prototype = prototypes.get(key);
-		
-		try {
-			return PrototypeBean.duplicate(prototype);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
-
-	@Override
-	public Object put(String key, Object value) {
-		return prototypes.put(key, value);
-	}
-
-	@Override
-	public Object remove(Object key) {
-		return prototypes.remove(key);
-	}
-
-	@Override
-	public void putAll(Map<? extends String, ? extends Object> m) {
-		prototypes.putAll(m);
-	}
-
-	@Override
-	public void clear() {
-		prototypes.clear();
-	}
-
-	@Override
-	public Set<String> keySet() {
-		return prototypes.keySet();
-	}
-
-	@Override
-	public Collection<Object> values() {
-		return prototypes.values();
-	}
-
-	@Override
-	public Set<java.util.Map.Entry<String, Object>> entrySet() {
-		return prototypes.entrySet();
-	}
+	public List<Class<?>> getPrototypeClasses();
 }

@@ -13,8 +13,8 @@ package org.mini2Dx.injection.dummy;
 
 import java.util.Random;
 
-import org.mini2Dx.injection.Autowired;
-import org.mini2Dx.injection.Singleton;
+import org.mini2Dx.injection.annotation.Autowired;
+import org.mini2Dx.injection.annotation.Singleton;
 
 /**
  * A dummy dependency for testing dependency injection

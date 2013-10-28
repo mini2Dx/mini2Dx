@@ -12,19 +12,24 @@
 package org.mini2Dx.context;
 
 /**
- * A base class to bean facades during dependency injection
+ * Provides initialisation method for standard JVM {@link GameContext}
  * 
  * @author Thomas Cashman
  */
-public abstract class Bean {
-	public abstract Object getInstance();
-	
+public class DesktopGameContext extends GameContext {
+	static {
+		componentScanner = new DesktopComponentScanner();
+	}
+
 	/**
-	 * Returns the key to be used for a given {@link Class}
-	 * @param clazz The {@link Class} to get the key for
-	 * @return The {@link Class} unique key
+	 * Initialises the game context by performing a component scan and setting
+	 * up all beans
+	 * 
+	 * @param packageNames
+	 *            The package names to scan
+	 * @throws Exception
 	 */
-	public static <T> String getClassKey(Class<T> clazz) {
-		return clazz.getName();
+	public static void initialise(String[] packageNames) throws Exception {
+		initialiseContext(packageNames);
 	}
 }

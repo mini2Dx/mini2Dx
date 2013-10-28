@@ -9,61 +9,25 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.context;
+package org.mini2Dx.injection.annotation;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-
-import org.apache.commons.beanutils.BeanUtils;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * An implementation of {@link Bean} based on the
- * {@link <a href="http://en.wikipedia.org/wiki/Prototype_pattern">prototype pattern</a>}
+ * Marks a field as injectable. By default all fields using the annotation will
+ * be required to have a value injected otherwise an exception will be thrown.
  * 
  * @author Thomas Cashman
  */
-public class PrototypeBean extends Bean implements Runnable {
-	private static final int MAXIMUM_PREPARED_PROTOTYPES = 3;
-
-	private Object bean;
-	private BlockingQueue<Object> prototypes;
-	private ExecutorService executorService;
-
-	public PrototypeBean(Object bean, ExecutorService executorService) {
-		this.bean = bean;
-		this.executorService = executorService;
-		prototypes = new ArrayBlockingQueue<Object>(MAXIMUM_PREPARED_PROTOTYPES);
-	}
-
-	@Override
-	public Object getInstance() {
-		Object result = null;
-		try {
-			result = prototypes.take();
-			executorService.submit(this);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			result = null;
-		}
-		return result;
-	}
-
-	public static Object duplicate(Object object)
-			throws IllegalAccessException, InstantiationException,
-			InvocationTargetException, NoSuchMethodException {
-		return BeanUtils.cloneBean(object);
-	}
-
-	@Override
-	public void run() {
-		try {
-			while (prototypes.size() < MAXIMUM_PREPARED_PROTOTYPES) {
-				prototypes.offer(PrototypeBean.duplicate(bean));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface Autowired {
+	/**
+	 * Declares whether the annotated dependency is required.
+	 * @return True by default
+	 */
+	boolean required() default true;
 }

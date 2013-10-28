@@ -9,45 +9,61 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.injection.dummy;
+package org.mini2Dx.bean;
 
-import org.mini2Dx.injection.annotation.Autowired;
-import org.mini2Dx.injection.annotation.Prototype;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+
+import org.apache.commons.beanutils.BeanUtils;
 
 /**
- * A dummy bean for testing dependency injection
- *
+ * An implementation of {@link Bean} based on the
+ * {@link <a href="http://en.wikipedia.org/wiki/Prototype_pattern">prototype pattern</a>}
+ * 
  * @author Thomas Cashman
  */
-@Prototype
-public class TestBean {
-	private Integer intField;
-	@Autowired
-	private TestDependency dependency;
-	@Autowired(required = false)
-	private TestInterface interfaceField;
-	
-	public Integer getIntField() {
-		return intField;
-	}
-	
-	public void setIntField(Integer intField) {
-		this.intField = intField;
-	}
-	
-	public TestDependency getDependency() {
-		return dependency;
-	}
-	
-	public void setDependency(TestDependency dependency) {
-		this.dependency = dependency;
+public class PrototypeBean extends Bean implements Runnable {
+	private static final int MAXIMUM_PREPARED_PROTOTYPES = 3;
+
+	private Object bean;
+	private BlockingQueue<Object> prototypes;
+	private ExecutorService executorService;
+
+	public PrototypeBean(Object bean, ExecutorService executorService) {
+		this.bean = bean;
+		this.executorService = executorService;
+		prototypes = new ArrayBlockingQueue<Object>(MAXIMUM_PREPARED_PROTOTYPES);
 	}
 
-	public TestInterface getInterfaceField() {
-		return interfaceField;
+	@Override
+	public Object getInstance() {
+		Object result = null;
+		try {
+			result = prototypes.take();
+			executorService.submit(this);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			result = null;
+		}
+		return result;
 	}
 
-	public void setInterfaceField(TestInterface interfaceField) {
-		this.interfaceField = interfaceField;
+	public static Object duplicate(Object object)
+			throws IllegalAccessException, InstantiationException,
+			InvocationTargetException, NoSuchMethodException {
+		return BeanUtils.cloneBean(object);
+	}
+
+	@Override
+	public void run() {
+		try {
+			while (prototypes.size() < MAXIMUM_PREPARED_PROTOTYPES) {
+				prototypes.offer(PrototypeBean.duplicate(bean));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

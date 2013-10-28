@@ -13,7 +13,7 @@ package org.mini2Dx.injection.dummy;
 
 import java.util.Random;
 
-import org.mini2Dx.injection.Prototype;
+import org.mini2Dx.injection.annotation.Prototype;
 
 /**
  * A dummy implementaiton of {@link TestInterface} for testing dependency injection

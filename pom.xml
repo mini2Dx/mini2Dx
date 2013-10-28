@@ -12,6 +12,8 @@
 
 	<properties>
 		<libgdx.version>0.9.8</libgdx.version>
+		<android.version>4.1.1.4</android.version>
+		<android.maven.version>3.7.0</android.maven.version>
 	</properties>
 
 	<dependencies>
@@ -57,6 +59,23 @@
 			<dependency>
 				<groupId>org.mini2Dx</groupId>
 				<artifactId>mini2Dx-dependency-injection</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mini2Dx</groupId>
+				<artifactId>mini2Dx-dependency-injection</artifactId>
+				<version>${project.version}</version>
+				<type>test-jar</type>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mini2Dx</groupId>
+				<artifactId>mini2Dx-dependency-injection-desktop</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mini2Dx</groupId>
+				<artifactId>mini2Dx-dependency-injection-android</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
@@ -106,6 +125,8 @@
 	<modules>
 		<module>mini2Dx-core</module>
 		<module>mini2Dx-dependency-injection</module>
+		<module>mini2Dx-dependency-injection-desktop</module>
+		<module>mini2Dx-dependency-injection-android</module>
 		<module>mini2Dx-ecs</module>
 		<module>mini2Dx-tiled</module>
 		<module>mini2Dx-uats</module>
@@ -122,6 +143,25 @@
 						<source>1.6</source>
 						<target>1.6</target>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>2.16</version>
+					<executions>
+						<execution>
+							<id>integration-test</id>
+							<goals>
+								<goal>integration-test</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>verify</id>
+							<goals>
+								<goal>verify</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>

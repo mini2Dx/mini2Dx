@@ -1,4 +1,4 @@
-package org.mini2Dx.injection;
+package org.mini2Dx.injection.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
