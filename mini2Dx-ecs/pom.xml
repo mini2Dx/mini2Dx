@@ -5,7 +5,7 @@
 		<groupId>org.mini2Dx</groupId>
 		<artifactId>mini2Dx-parent</artifactId>
 		<version>0.9-rc4-SNAPSHOT</version>
-		<relativePath>../mini2Dx-parent/pom.xml</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>mini2Dx-ecs</artifactId>
 	<packaging>jar</packaging>

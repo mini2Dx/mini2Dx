@@ -104,11 +104,11 @@
 	</reporting>
 
 	<modules>
-		<module>../mini2Dx-core</module>
-		<module>../mini2Dx-dependency-injection</module>
-		<module>../mini2Dx-ecs</module>
-		<module>../mini2Dx-tiled</module>
-		<module>../mini2Dx-uats</module>
+		<module>mini2Dx-core</module>
+		<module>mini2Dx-dependency-injection</module>
+		<module>mini2Dx-ecs</module>
+		<module>mini2Dx-tiled</module>
+		<module>mini2Dx-uats</module>
 	</modules>
 
 	<build>
