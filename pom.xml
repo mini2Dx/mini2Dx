@@ -4,7 +4,7 @@
 
 	<groupId>org.mini2Dx</groupId>
 	<artifactId>mini2Dx-parent</artifactId>
-	<version>0.9</version>
+	<version>0.9.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>mini2Dx-parent</name>
@@ -15,6 +15,14 @@
 		<android.version>4.1.1.4</android.version>
 		<android.maven.version>3.7.0</android.maven.version>
 	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>mini2Dx-nexus</id>
+			<name>mini2Dx-nexus</name>
+			<url>http://mini2dx.org/nexus/content/repositories/releases/</url>
+		</repository>
+	</distributionManagement>
 
 	<dependencies>
 		<!-- Testing -->
