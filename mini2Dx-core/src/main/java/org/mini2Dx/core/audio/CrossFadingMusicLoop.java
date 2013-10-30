@@ -27,8 +27,7 @@ import com.badlogic.gdx.files.FileHandle;
  */
 public class CrossFadingMusicLoop implements Runnable {
 	private Music currentTrack, nextTrack;
-	private float crossfadeTime, crossfadeDuration;
-	private boolean looping;
+	private long crossfadeTime, crossfadeDuration;
 	private ScheduledExecutorService scheduledExecutorService;
 	private ScheduledFuture<?> scheduledFuture;
 
@@ -42,14 +41,13 @@ public class CrossFadingMusicLoop implements Runnable {
 	 * @param timeUnit
 	 *            The {@link TimeUnit} for crossfadeTime
 	 */
-	public CrossFadingMusicLoop(FileHandle musicFile, int crossfadeTime,
+	public CrossFadingMusicLoop(FileHandle musicFile, long crossfadeTime,
 			long crossfadeDuration, TimeUnit timeUnit) {
 		this.currentTrack = Gdx.audio.newMusic(musicFile);
 		this.nextTrack = Gdx.audio.newMusic(musicFile);
 		this.crossfadeTime = timeUnit.toMillis(crossfadeTime);
 		this.crossfadeDuration = timeUnit.toMillis(crossfadeDuration);
 		this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
-		looping = false;
 	}
 
 	@Override
@@ -66,7 +64,6 @@ public class CrossFadingMusicLoop implements Runnable {
 	private void scheduleFadeIn() {
 		for (int i = 0; i < crossfadeDuration; i += 50) {
 			float volume = (i / crossfadeDuration);
-			System.out.println("FADE IN " + i + " " + volume);
 			scheduledExecutorService.schedule(new ScheduleFadeIn(volume), i,
 					TimeUnit.MILLISECONDS);
 		}
@@ -75,7 +72,6 @@ public class CrossFadingMusicLoop implements Runnable {
 	private void scheduleFadeOut() {
 		for (int i = 0; i < crossfadeDuration; i += 50) {
 			float volume = 1f - (i / crossfadeDuration);
-			System.out.println("FADE OUT " + i + " " + volume);
 			scheduledExecutorService.schedule(new ScheduleFadeOut(volume), i,
 					TimeUnit.MILLISECONDS);
 		}
