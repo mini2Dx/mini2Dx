@@ -45,21 +45,21 @@ public abstract class GameScreenEntity implements Entity, GameScreen {
 			ScreenManager<? extends GameScreen> screenManager, float delta) {
 		List<ScreenComponent> components = getComponents(ScreenComponent.class);
 		for(ScreenComponent component : components) {
-			component.update(gc, screenManager, delta);
+			component.update(gc, screenManager, this, delta);
 		}
 	}
 	
 	public void interpolateScreenComponents(GameContainer gc, float alpha) {
 		List<ScreenComponent> components = getComponents(ScreenComponent.class);
 		for(ScreenComponent component : components) {
-			component.interpolate(gc, alpha);
+			component.interpolate(gc, this, alpha);
 		}
 	}
 	
 	public void renderScreenComponents(GameContainer gc, Graphics g) {
 		List<ScreenComponent> components = getComponents(ScreenComponent.class);
 		for(ScreenComponent component : components) {
-			component.render(gc, g);
+			component.render(gc, this, g);
 		}
 	}
 

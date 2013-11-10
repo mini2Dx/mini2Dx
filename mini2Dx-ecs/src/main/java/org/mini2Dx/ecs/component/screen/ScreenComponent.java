@@ -16,6 +16,7 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.ecs.component.Component;
+import org.mini2Dx.ecs.entity.GameScreenEntity;
 
 /**
  * A common interface for screen component implementations
@@ -28,19 +29,19 @@ public interface ScreenComponent extends Component {
 	 * @param delta The time since the last update in seconds
 	 */
 	public void update(GameContainer gc,
-			ScreenManager<? extends GameScreen> screenManager, float delta);
+			ScreenManager<? extends GameScreen> screenManager, GameScreenEntity owner, float delta);
 	
 	/**
 	 * Interpolate the screen component
 	 * @param game The {@link GameContainer} calling the interpolation
 	 * @param alpha The alpha value to use during interpolation
 	 */
-	public void interpolate(GameContainer gc, float alpha);
+	public void interpolate(GameContainer gc, GameScreenEntity owner, float alpha);
 	
 	/**
 	 * Render the screen component
 	 * @param game The {@link GameContainer} calling the render
 	 * @param g The {@link Graphics} context
 	 */
-	public void render(GameContainer gc, Graphics g);
+	public void render(GameContainer gc, GameScreenEntity owner, Graphics g);
 }
