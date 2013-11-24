@@ -113,8 +113,19 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		return rotation;
 	}
 
-	private void setRotation(float degrees) {
-		rotation = degrees % 360;
+	@Override
+	public void setRotation(float degrees) {
+		setRotationAround(topLeft, degrees);
+	}
+	
+	@Override
+	public void setRotationAround(Point center, float degrees) {
+		degrees = degrees % 360;
+		performRotation(center, -rotation);
+		rotation = degrees;
+		performRotation(center, rotation);
+		recalculateMinMax();
+		notifyPositionChangeListeners();
 	}
 
 	@Override
@@ -125,7 +136,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	@Override
 	public void rotateAround(Point center, float degrees) {
 		performRotation(center, degrees);
-		setRotation(rotation + degrees);
+		rotation += (degrees % 360);
 		recalculateMinMax();
 		notifyPositionChangeListeners();
 	}

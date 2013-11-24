@@ -31,6 +31,10 @@ public interface Parallelogram extends Shape {
 	
 	public void rotateAround(Point center, float degrees);
 	
+	public void setRotation(float degrees);
+	
+	public void setRotationAround(Point center, float degrees);
+	
 	public boolean intersects(LineSegment lineSegment);
 	
 	public boolean intersects(Parallelogram parallelogram);
