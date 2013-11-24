@@ -21,27 +21,113 @@ import org.mini2Dx.core.geom.Point;
  */
 public interface Parallelogram extends Shape {
 
+	/**
+	 * Returns the width of the shape
+	 * 
+	 * @return
+	 */
 	public float getWidth();
 
+	/**
+	 * Returns the height of the shape
+	 * 
+	 * @return
+	 */
 	public float getHeight();
-	
+
+	/**
+	 * Returns the current rotation of the shape in degrees
+	 * 
+	 * @return
+	 */
 	public float getRotation();
-	
-	public void rotate(float degrees);
-	
-	public void rotateAround(Point center, float degrees);
-	
+
+	/**
+	 * Sets the current rotation of the shape around its top-left corner
+	 * 
+	 * Note: Rotates around the top-left corner
+	 * 
+	 * @param degrees
+	 *            The rotation angle in degrees
+	 */
 	public void setRotation(float degrees);
-	
+
+	/**
+	 * Sets the current rotation of the shape around a center point
+	 * 
+	 * @param center
+	 *            The center point to rotate around
+	 * @param degrees
+	 *            The rotation angle in degrees
+	 */
 	public void setRotationAround(Point center, float degrees);
-	
+
+	/**
+	 * Rotates the shape around its top-left corner by the specified degrees
+	 * adding to its existing rotation
+	 * 
+	 * @param degrees
+	 *            The rotation in degrees
+	 */
+	public void rotate(float degrees);
+
+	/**
+	 * Rotates the shape around a center point by the specified degrees adding
+	 * to its existing rotation
+	 * 
+	 * @param degrees
+	 *            The rotation in degrees
+	 */
+	public void rotateAround(Point center, float degrees);
+
+	/**
+	 * Returns if this shape intersects a specified {@link LineSegment}
+	 * 
+	 * @param lineSegment
+	 *            The {@link LineSegment} to test for intersection
+	 * @return True if an intersection occurs
+	 */
 	public boolean intersects(LineSegment lineSegment);
-	
+
+	/**
+	 * Returns if this shape intersects a specified {@link Parallelogram}
+	 * 
+	 * @param parallelogram
+	 *            The {@link Parallelogram} to test for intersection
+	 * @return True if an intersection occurs
+	 */
 	public boolean intersects(Parallelogram parallelogram);
-	
+
+	/**
+	 * Returns if this shape intersects a specified rectangle dimensions
+	 * 
+	 * @param x
+	 *            The x coordinate of the rectangle
+	 * @param y
+	 *            The y coordinate of the rectangle
+	 * @param width
+	 *            The width of the rectangle
+	 * @param height
+	 *            The height of the rectangle
+	 * @return True if an intersection occurs
+	 */
 	public boolean intersects(float x, float y, float width, float height);
-	
+
+	/**
+	 * Returns if the specified {@link Parallelogram} is contained within this
+	 * one
+	 * 
+	 * @param parallelogram The {@link Parallelogram} to test
+	 * @return True if it is within this shape
+	 */
 	public boolean contains(Parallelogram parallelogram);
-	
+
+	/**
+	 * Returns if the specified {@link Positionable} is contained within this
+	 * shape
+	 * 
+	 * @param positionable The {@link Positionable} to test
+	 * @return True if it is within this shape
+	 */
 	public boolean contains(Positionable positionable);
 }

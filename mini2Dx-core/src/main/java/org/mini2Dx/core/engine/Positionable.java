@@ -18,13 +18,47 @@ package org.mini2Dx.core.engine;
  * @author Thomas Cashman
  */
 public interface Positionable {
+	/**
+	 * Returns the x coordinate of this object
+	 * 
+	 * @return 0 by default
+	 */
 	public float getX();
 
+	/**
+	 * Returns the y coordinate of this object
+	 * 
+	 * @return 0 by default
+	 */
 	public float getY();
-	
+
+	/**
+	 * Returns this distance between this object's x,y coordinates and the
+	 * provided {@link Positionable}'s xy coordinates
+	 * 
+	 * @param positionable
+	 *            The {@link Positionable} to retrieve the distance from
+	 * @return 0 if the xy coordinates are the same
+	 */
 	public float getDistanceTo(Positionable positionable);
-	
-	public <T extends Positionable> void addPostionChangeListener(PositionChangeListener<T> listener);
-	
-	public <T extends Positionable> void removePositionChangeListener(PositionChangeListener<T> listener);
+
+	/**
+	 * Adds a {@link PositionChangeListener} to be notified of coordinate
+	 * changes
+	 * 
+	 * @param listener
+	 *            The {@link PositionChangeListener} to add
+	 */
+	public <T extends Positionable> void addPostionChangeListener(
+			PositionChangeListener<T> listener);
+
+	/**
+	 * Removes a {@link PositionChangeListener} to stop it being notified of
+	 * coordinate changes
+	 * 
+	 * @param listener
+	 *            The {@link PositionChangeListener} to remove
+	 */
+	public <T extends Positionable> void removePositionChangeListener(
+			PositionChangeListener<T> listener);
 }

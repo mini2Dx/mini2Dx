@@ -17,6 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.mini2Dx.core.engine.Parallelogram;
 import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
+import org.mini2Dx.core.engine.Shape;
 import org.mini2Dx.core.graphics.Graphics;
 
 /**
@@ -33,10 +34,20 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	private float minX, minY, maxX, maxY;
 	private List<PositionChangeListener> positionChangleListeners;
 
+	/**
+	 * Default constructor. Creates a {@link Rectangle} at 0,0 with a width and height of 1
+	 */
 	public Rectangle() {
 		this(0, 0, 1, 1);
 	}
 
+	/**
+	 * Constructor
+	 * @param x The x coordinate of the {@link Rectangle}
+	 * @param y The y coordinate of the {@link Rectangle}
+	 * @param width The width of the {@link Rectangle}
+	 * @param height The height of the {@link Rectangle}
+	 */
 	public Rectangle(float x, float y, float width, float height) {
 		super(x, y, width, height);
 		topLeft = new Point(x, y);
@@ -78,11 +89,17 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 			maxY = p.getY();
 	}
 
+	/**
+	 * @see Positionable#getDistanceTo(Positionable)
+	 */
 	@Override
 	public float getDistanceTo(Positionable positionable) {
 		return 0;
 	}
 
+	/**
+	 * @see Positionable#addPostionChangeListener(PositionChangeListener)
+	 */
 	@Override
 	public <T extends Positionable> void addPostionChangeListener(
 			PositionChangeListener<T> listener) {
@@ -92,6 +109,9 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		positionChangleListeners.add(listener);
 	}
 
+	/**
+	 * @see Positionable#removePositionChangeListener(PositionChangeListener)
+	 */
 	@Override
 	public <T extends Positionable> void removePositionChangeListener(
 			PositionChangeListener<T> listener) {
@@ -108,16 +128,25 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		}
 	}
 
+	/**
+	 * @see Parallelogram#getRotation()
+	 */
 	@Override
 	public float getRotation() {
 		return rotation;
 	}
 
+	/**
+	 * @see Parallelogram#setRotation(float)
+	 */
 	@Override
 	public void setRotation(float degrees) {
 		setRotationAround(topLeft, degrees);
 	}
 	
+	/**
+	 * @see Parallelogram#setRotationAround(Point, float)
+	 */
 	@Override
 	public void setRotationAround(Point center, float degrees) {
 		degrees = degrees % 360;
@@ -128,11 +157,17 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		notifyPositionChangeListeners();
 	}
 
+	/**
+	 * @see Parallelogram#rotate(float)
+	 */
 	@Override
 	public void rotate(float degrees) {
 		rotateAround(topLeft, degrees);
 	}
 
+	/**
+	 * @see Parallelogram#rotateAround(Point, float)
+	 */
 	@Override
 	public void rotateAround(Point center, float degrees) {
 		performRotation(center, degrees);
@@ -154,6 +189,9 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		super.setY(topLeft.y);
 	}
 
+	/**
+	 * @see Parallelogram#intersects(LineSegment)
+	 */
 	@Override
 	public boolean intersects(LineSegment lineSegment) {
 		if (lineSegment.intersectsLineSegment(topLeft.x, topLeft.y,
@@ -175,6 +213,11 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		return false;
 	}
 
+	/**
+	 * Returns if the specified {@link Rectangle} intersects this one
+	 * @param rectangle The {@link Rectangle} to test for intersection
+	 * @return True if the {@link Rectangle}s intersect
+	 */
 	public boolean intersects(Rectangle rectangle) {
 		boolean xAxisOverlaps = true;
 		boolean yAxisOverlaps = true;
@@ -191,6 +234,9 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		return xAxisOverlaps && yAxisOverlaps;
 	}
 
+	/**
+	 * @see Parallelogram#intersects(Parallelogram)
+	 */
 	@Override
 	public boolean intersects(Parallelogram parallelogram) {
 		if (parallelogram instanceof Rectangle) {
@@ -204,6 +250,9 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		}
 	}
 
+	/**
+	 * @see Parallelogram#intersects(float, float, float, float)
+	 */
 	@Override
 	public boolean intersects(float x, float y, float width, float height) {
 		Rectangle rect = new Rectangle(x, y, width, height);
@@ -222,6 +271,9 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		return new Rectangle(newX, newY, newWidth, newHeight);
 	}
 
+	/**
+	 * @see Parallelogram#contains(Parallelogram)
+	 */
 	@Override
 	public boolean contains(Parallelogram parallelogram) {
 		if (parallelogram instanceof Rectangle) {
@@ -235,12 +287,18 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		}
 	}
 
+	/**
+	 * @see Parallelogram#contains(Parallelogram)
+	 */
 	public boolean contains(Rectangle rectangle) {
 		return contains(rectangle.topLeft) && contains(rectangle.topRight)
 				&& contains(rectangle.bottomLeft)
 				&& contains(rectangle.bottomRight);
 	}
 
+	/**
+	 * @see Parallelogram#contains(Positionable)
+	 */
 	@Override
 	public boolean contains(Positionable positionable) {
 		performRotation(topLeft, -rotation);
@@ -261,11 +319,17 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		return result;
 	}
 
+	/**
+	 * @see Shape#getNumberOfSides()
+	 */
 	@Override
 	public int getNumberOfSides() {
 		return 4;
 	}
 
+	/**
+	 * @see Shape#draw(Graphics)
+	 */
 	@Override
 	public void draw(Graphics g) {
 		if (rotation == 0f) {
@@ -345,26 +409,50 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		notifyPositionChangeListeners();
 	}
 
+	/**
+	 * Returns the x coordinate of the center of this {@link Rectangle}
+	 * @return
+	 */
 	public float getCenterX() {
 		return center.x;
 	}
 
+	/**
+	 * Returns the y coordinate of the center of this {@link Rectangle}
+	 * @return
+	 */
 	public float getCenterY() {
 		return center.y;
 	}
 
+	/**
+	 * Returns the least x coordinate this {@link Rectangle}
+	 * @return
+	 */
 	public float getMinX() {
 		return minX;
 	}
 
+	/**
+	 * Returns the least y coordinate this {@link Rectangle}
+	 * @return
+	 */
 	public float getMinY() {
 		return minY;
 	}
 
+	/**
+	 * Returns the greatest x coordinate this {@link Rectangle}
+	 * @return
+	 */
 	public float getMaxX() {
 		return maxX;
 	}
 
+	/**
+	 * Returns the greatest y coordinate this {@link Rectangle}
+	 * @return
+	 */
 	public float getMaxY() {
 		return maxY;
 	}
