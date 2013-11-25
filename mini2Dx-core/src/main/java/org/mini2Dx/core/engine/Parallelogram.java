@@ -34,6 +34,18 @@ public interface Parallelogram extends Shape {
 	 * @return
 	 */
 	public float getHeight();
+	
+	/**
+	 * Returns the greatest x coordinate of this shape
+	 * @return
+	 */
+	public float getMaxX();
+	
+	/**
+	 * Returns the greatest y coordinate of this shape
+	 * @return
+	 */
+	public float getMaxY();
 
 	/**
 	 * Returns the current rotation of the shape in degrees
