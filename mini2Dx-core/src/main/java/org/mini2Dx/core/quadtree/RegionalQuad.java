@@ -148,44 +148,57 @@ public class RegionalQuad<T extends Parallelogram> extends
 
 	public List<Quad<T>> getQuadsFor(T object) {
 		List<Quad<T>> result = new ArrayList<Quad<T>>(1);
+		getQuadsFor(object, result);
+		return result;
+	}
+	
+	private void getQuadsFor(T object, List<Quad<T>> result) {
 		if (childQuads != null) {
 			for (int x = 0; x < 2; x++) {
 				for (int y = 0; y < 2; y++) {
 					if(childQuads[x][y].contains(object)) {
-						result.addAll(childQuads[x][y].getQuadsFor(object));
+						childQuads[x][y].getQuadsFor(object, result);
 					}
 				}
 			}
 		} else {
 			result.add(this);
 		}
-		return result;
 	}
 
 	public List<Quad<T>> getQuadsFor(LineSegment line) {
 		List<Quad<T>> result = new ArrayList<Quad<T>>(1);
+		getQuadsFor(line, result);
+		return result;
+	}
+	
+	private void getQuadsFor(LineSegment line, List<Quad<T>> result) {
 		if (childQuads != null) {
 			for (int x = 0; x < 2; x++) {
 				for (int y = 0; y < 2; y++) {
 					if (line.intersects(childQuads[x][y])) {
-						result.addAll(childQuads[x][y].getQuadsFor(line));
+						childQuads[x][y].getQuadsFor(line, result);
 					}
 				}
 			}
 		} else if (line.intersects(this)) {
 			result.add(this);
 		}
-		return result;
 	}
 
 	public List<T> getIntersectionsFor(LineSegment line) {
 		List<T> result = new ArrayList<T>(1);
+		getIntersectionsFor(line, result);
+		return result;
+	}
+	
+	private void getIntersectionsFor(LineSegment line, List<T> result) {
 		if (childQuads != null) {
 			for (int x = 0; x < 2; x++) {
 				for (int y = 0; y < 2; y++) {
 					if (line.intersects(childQuads[x][y])) {
-						result.addAll(childQuads[x][y]
-								.getIntersectionsFor(line));
+						childQuads[x][y]
+								.getIntersectionsFor(line, result);
 					}
 				}
 			}
@@ -196,7 +209,6 @@ public class RegionalQuad<T extends Parallelogram> extends
 				}
 			}
 		}
-		return result;
 	}
 
 	@Override
