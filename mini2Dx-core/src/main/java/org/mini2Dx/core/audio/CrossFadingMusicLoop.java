@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  * Implements a loopable music track and crossfades into itself
@@ -30,6 +31,7 @@ public class CrossFadingMusicLoop implements Runnable {
 	private long crossfadeTime, crossfadeDuration;
 	private ScheduledExecutorService scheduledExecutorService;
 	private ScheduledFuture<?> scheduledFuture;
+	private float targetVolume = 1f;
 
 	/**
 	 * Constructor
@@ -63,7 +65,7 @@ public class CrossFadingMusicLoop implements Runnable {
 
 	private void scheduleFadeIn() {
 		for (int i = 0; i < crossfadeDuration; i += 50) {
-			float volume = (i / crossfadeDuration);
+			float volume = MathUtils.clamp((i / crossfadeDuration), 0f, targetVolume) ;
 			scheduledExecutorService.schedule(new ScheduleFadeIn(volume), i,
 					TimeUnit.MILLISECONDS);
 		}
@@ -71,7 +73,7 @@ public class CrossFadingMusicLoop implements Runnable {
 
 	private void scheduleFadeOut() {
 		for (int i = 0; i < crossfadeDuration; i += 50) {
-			float volume = 1f - (i / crossfadeDuration);
+			float volume = MathUtils.clamp(1f - (i / crossfadeDuration), 0f, targetVolume) ;
 			scheduledExecutorService.schedule(new ScheduleFadeOut(volume), i,
 					TimeUnit.MILLISECONDS);
 		}
@@ -81,6 +83,7 @@ public class CrossFadingMusicLoop implements Runnable {
 	 * Starts playing the loop
 	 */
 	public void play() {
+		currentTrack.setVolume(targetVolume);
 		currentTrack.play();
 		long time = (long) crossfadeTime;
 		scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(this,
@@ -122,6 +125,13 @@ public class CrossFadingMusicLoop implements Runnable {
 		}
 		currentTrack.dispose();
 		nextTrack.dispose();
+	}
+	
+	public void setVolume(float volume) {
+		targetVolume = volume;
+		if(currentTrack.isPlaying()) {
+			currentTrack.setVolume(targetVolume);
+		}
 	}
 
 	private class ScheduleFadeOut implements Runnable {
