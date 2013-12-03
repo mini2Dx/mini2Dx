@@ -14,12 +14,16 @@ package org.mini2Dx.uats.common;
 import org.mini2Dx.core.game.BasicGame;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.Mini2DxGame;
+import org.mini2Dx.core.graphics.Animation;
 import org.mini2Dx.core.graphics.Graphics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 /**
  * A {@link GameContainer} that allows visual user acceptance testing of
@@ -31,6 +35,9 @@ public class GraphicsUAT extends BasicGame {
 	private int playerX, playerY;
 	private float scaleX, scaleY;
 	private int rotation;
+	
+	private Sprite sprite;
+	private Animation<Sprite> animation;
 
 	@Override
 	public void initialise() {
@@ -39,6 +46,13 @@ public class GraphicsUAT extends BasicGame {
 		scaleX = 2f;
 		scaleY = 2f;
 		rotation = 0;
+		
+		sprite = new Sprite(new Texture(Gdx.files.internal("tank.png")));
+		sprite.flip(false, true);
+		sprite.setPosition(512, 0);
+		
+		animation = new Animation<Sprite>();
+		animation.addFrame(sprite, 1000);
 	}
 
 	@Override
@@ -81,6 +95,12 @@ public class GraphicsUAT extends BasicGame {
 		g.fillCircle(128, 160, 32);
 		
 		g.drawString("Hello, world!", 0, 256);
+		
+		g.scale(0.5f, 0.5f);
+		g.drawSprite(sprite);
+		g.drawSprite(sprite, 512, 64);
+		
+		animation.draw(g, 512, 128);
 	}
 
 	@Override
