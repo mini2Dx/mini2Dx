@@ -210,6 +210,31 @@ public class RegionalQuad<T extends Parallelogram> extends
 			}
 		}
 	}
+	
+	public List<T> getIntersectionsFor(Rectangle rectangle) {
+		List<T> result = new ArrayList<T>(1);
+		getIntersectionsFor(rectangle, result);
+		return result;
+	}
+	
+	private void getIntersectionsFor(Rectangle rectangle, List<T> result) {
+		if (childQuads != null) {
+			for (int x = 0; x < 2; x++) {
+				for (int y = 0; y < 2; y++) {
+					if (rectangle.intersects(childQuads[x][y])) {
+						childQuads[x][y]
+								.getIntersectionsFor(rectangle, result);
+					}
+				}
+			}
+		} else if (rectangle.intersects(this)) {
+			for (T value : values) {
+				if (value.intersects(rectangle)) {
+					result.add(value);
+				}
+			}
+		}
+	}
 
 	@Override
 	public List<T> getValues() {

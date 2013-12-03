@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.mini2Dx.core.engine.Parallelogram;
 import org.mini2Dx.core.geom.LineSegment;
+import org.mini2Dx.core.geom.Rectangle;
 
 /**
  * Implements a {@link QuadTree} which contains regions. Each region can contain
@@ -74,6 +75,15 @@ public class RegionalQuadTree<T extends Parallelogram> implements QuadTree<T>, Q
 	 */
 	public List<T> getIntersectionsFor(LineSegment line) {
 		return rootQuad.getIntersectionsFor(line);
+	}
+	
+	/**
+	 * Returns all elements which intersect a {@link Rectangle}
+	 * @param line The {@link Rectangle}
+	 * @return An empty {@link List} if the {@link Rectangle} does not intersect any elements
+	 */
+	public List<T> getIntersectionsFor(Rectangle rectangle) {
+		return rootQuad.getIntersectionsFor(rectangle);
 	}
 
 	@Override
