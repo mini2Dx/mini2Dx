@@ -20,9 +20,8 @@ import java.util.Map;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.math.MathUtils;
 
@@ -34,6 +33,7 @@ import com.badlogic.gdx.math.MathUtils;
 public class TiledMap implements TiledParserListener {
 	private Orientation orientation;
 	private int width, height, tileWidth, tileHeight;
+	private Color backgroundColor;
 	protected List<Tileset> tilesets;
 	protected List<TileLayer> tileLayers;
 	protected List<TiledObjectGroup> objectGroups;
@@ -102,7 +102,7 @@ public class TiledMap implements TiledParserListener {
 								Tileset tileset = tilesets.get(i);
 								if (tileset.contains(tileId)) {
 									layerCache.add(
-											tileset.getTileImage(tileId),
+											tileset.getTile(tileId).getTileImage(),
 											tileRenderX, tileRenderY);
 									break;
 								}
@@ -297,12 +297,15 @@ public class TiledMap implements TiledParserListener {
 	}
 
 	@Override
-	public void onBeginParsing(String orientation, int width, int height,
+	public void onBeginParsing(String orientation, Color backgroundColor, int width, int height,
 			int tileWidth, int tileHeight) {
 		try {
 			this.orientation = Orientation.valueOf(orientation.toUpperCase());
 		} catch (Exception e) {
 			this.orientation = Orientation.UNKNOWN;
+		}
+		if(backgroundColor != null) {
+			this.backgroundColor = backgroundColor;
 		}
 		this.width = width;
 		this.height = height;
@@ -316,8 +319,7 @@ public class TiledMap implements TiledParserListener {
 	}
 
 	@Override
-	public void onTilePropertyParsed(int tileId, String propertyName,
-			String value) {
+	public void onTilePropertiesParsed(Tile tile) {
 
 	}
 
@@ -457,5 +459,13 @@ public class TiledMap implements TiledParserListener {
 	 */
 	public List<TiledObjectGroup> getObjectGroups() {
 		return objectGroups;
+	}
+
+	/**
+	 * Returns the background {@link Color} of the map
+	 * @return null by default
+	 */
+	public Color getBackgroundColor() {
+		return backgroundColor;
 	}
 }

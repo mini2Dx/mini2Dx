@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="10" height="8" tilewidth="32" tileheight="32">
+<map version="1.0" orientation="orthogonal" width="10" height="8" tilewidth="32" tileheight="32" backgroundcolor="#0000ff">
  <properties>
-  <property name="testProperty" value="SUCCESS"/>
+  <property name="testMapProperty" value="SUCCESS"/>
  </properties>
  <tileset firstgid="1" name="tileset1" tilewidth="32" tileheight="32">
+  <properties>
+   <property name="testTilesetProperty" value="SUCCESS"/>
+  </properties>
   <image source="tileset.png" width="512" height="512"/>
+  <tile id="0">
+   <properties>
+    <property name="testTileProperty" value="SUCCESS"/>
+   </properties>
+  </tile>
+  <tile id="52">
+   <properties>
+    <property name="testTileProperty" value="SUCCESS"/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="Ground" width="10" height="8">
   <data encoding="base64" compression="zlib">
@@ -12,6 +25,9 @@
   </data>
  </layer>
  <layer name="Collisions" width="10" height="8">
+  <properties>
+   <property name="testLayerProperty" value="SUCCESS"/>
+  </properties>
   <data encoding="base64" compression="zlib">
    eJxjYBhcYCmRarCp6wLibiL0zwLi2aQ4Cg8AAPlLBDo=
   </data>

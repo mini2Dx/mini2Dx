@@ -22,7 +22,12 @@ import java.util.Map;
 public class TileLayer {
 	private String name;
 	private int [][] tiles;
+	private boolean visible;
 	private Map<String, String> properties;
+	
+	public TileLayer(int width, int height) {
+		tiles = new int[width][height];
+	}
 	
 	/**
 	 * Returns if the layer contains the specified property
@@ -93,12 +98,11 @@ public class TileLayer {
 		tiles[x][y] = id;
 	}
 
-	/**
-	 * Sets the dimensions of this layer
-	 * @param width The width in tiles
-	 * @param height The height in tiles
-	 */
-	public void setDimensions(int width, int height) {
-		tiles = new int[width][height];
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 }

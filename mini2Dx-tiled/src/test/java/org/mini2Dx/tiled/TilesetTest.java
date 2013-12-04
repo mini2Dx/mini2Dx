@@ -13,175 +13,166 @@ package org.mini2Dx.tiled;
 
 import junit.framework.Assert;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Unit tests for {@link Tileset}
- *
+ * 
  * @author Thomas Cashman
  */
 public class TilesetTest {
 	private Tileset tileset;
-	
-	@Before
-	public void setup() {
-		tileset = new Tileset();
-		tileset.setTileWidth(32);
-		tileset.setTileHeight(32);
-		tileset.setWidth(128);
-		tileset.setHeight(128);
-		tileset.setFirstGid(1);
-	}
-	
+
 	@Test
 	public void testLastGidWithoutSpacing() {
-		tileset.calculateLastGid();
+		tileset = new Tileset(128, 128, 32, 32, 0, 0, 1);
 		Assert.assertEquals(true, tileset.contains(16));
 		Assert.assertEquals(false, tileset.contains(17));
 	}
-	
+
 	@Test
 	public void testLastGidWithSpacing() {
-		tileset.setSpacing(4);
-		tileset.calculateLastGid();
+		tileset = new Tileset(128, 128, 32, 32, 4, 0, 1);
 		Assert.assertEquals(true, tileset.contains(9));
 		Assert.assertEquals(false, tileset.contains(10));
 	}
-	
+
 	@Test
 	public void testGetTileX() {
+		tileset = new Tileset(128, 128, 32, 32, 0, 0, 1);
 		Assert.assertEquals(0, tileset.getTileX(1));
 		Assert.assertEquals(0, tileset.getTileX(5));
-		tileset.setFirstGid(28);
+		tileset = new Tileset(128, 128, 32, 32, 0, 0, 28);
 		Assert.assertEquals(0, tileset.getTileX(28));
 		Assert.assertEquals(0, tileset.getTileX(32));
 	}
-	
+
 	@Test
 	public void testGetTileXWithSpacing() {
-		tileset.setSpacing(4);
-		
+		tileset = new Tileset(128, 128, 32, 32, 4, 0, 1);
+
 		Assert.assertEquals(0, tileset.getTileX(1));
 		Assert.assertEquals(0, tileset.getTileX(4));
 		Assert.assertEquals(1, tileset.getTileX(5));
-		tileset.setFirstGid(28);
+
+		tileset = new Tileset(128, 128, 32, 32, 4, 0, 28);
 		Assert.assertEquals(0, tileset.getTileX(28));
 		Assert.assertEquals(0, tileset.getTileX(31));
 		Assert.assertEquals(1, tileset.getTileX(32));
 	}
-	
+
 	@Test
 	public void testGetTileXWithMargin() {
-		tileset.setMargin(4);
-		
+		tileset = new Tileset(128, 128, 32, 32, 0, 4, 1);
+
 		Assert.assertEquals(0, tileset.getTileX(1));
 		Assert.assertEquals(0, tileset.getTileX(4));
 		Assert.assertEquals(1, tileset.getTileX(5));
-		tileset.setFirstGid(28);
+
+		tileset = new Tileset(128, 128, 32, 32, 0, 4, 28);
 		Assert.assertEquals(0, tileset.getTileX(28));
 		Assert.assertEquals(0, tileset.getTileX(31));
 		Assert.assertEquals(1, tileset.getTileX(32));
 	}
-	
+
 	@Test
 	public void testGetTileY() {
+		tileset = new Tileset(128, 128, 32, 32, 0, 0, 1);
+
 		Assert.assertEquals(0, tileset.getTileY(1));
 		Assert.assertEquals(1, tileset.getTileY(5));
-		tileset.setFirstGid(28);
+
+		tileset = new Tileset(128, 128, 32, 32, 0, 0, 28);
 		Assert.assertEquals(0, tileset.getTileY(28));
 		Assert.assertEquals(1, tileset.getTileY(32));
 	}
-	
+
 	@Test
 	public void testGetTileYWithSpacing() {
-		tileset.setSpacing(4);
-		
+		tileset = new Tileset(128, 128, 32, 32, 4, 0, 1);
+
 		Assert.assertEquals(0, tileset.getTileY(1));
 		Assert.assertEquals(1, tileset.getTileY(5));
-		tileset.setFirstGid(28);
+
+		tileset = new Tileset(128, 128, 32, 32, 4, 0, 28);
 		Assert.assertEquals(0, tileset.getTileY(28));
 		Assert.assertEquals(1, tileset.getTileY(32));
 	}
-	
+
 	@Test
 	public void testGetTileYWithMargin() {
-		tileset.setMargin(4);
-		
+		tileset = new Tileset(128, 128, 32, 32, 0, 4, 1);
+
 		Assert.assertEquals(0, tileset.getTileY(1));
 		Assert.assertEquals(1, tileset.getTileY(5));
-		tileset.setFirstGid(28);
+
+		tileset = new Tileset(128, 128, 32, 32, 0, 4, 28);
 		Assert.assertEquals(0, tileset.getTileY(28));
 		Assert.assertEquals(1, tileset.getTileY(32));
 	}
-	
+
 	@Test
 	public void testGetWidthInTiles() {
+		tileset = new Tileset(128, 128, 32, 32, 0, 0, 1);
 		Assert.assertEquals(4, tileset.getWidthInTiles());
-		tileset.setWidth(96);
+		tileset = new Tileset(96, 128, 32, 32, 0, 0, 1);
 		Assert.assertEquals(3, tileset.getWidthInTiles());
 	}
-	
+
 	@Test
 	public void testGetWidthInTilesWithSpacing() {
-		tileset.setSpacing(4);
-		
+		tileset = new Tileset(128, 128, 32, 32, 4, 0, 1);
 		Assert.assertEquals(3, tileset.getWidthInTiles());
-		tileset.setWidth(96);
+		tileset = new Tileset(96, 128, 32, 32, 4, 0, 1);
 		Assert.assertEquals(2, tileset.getWidthInTiles());
 	}
-	
+
 	@Test
 	public void testGetWidthInTilesWithMargin() {
-		tileset.setMargin(4);
-		
+		tileset = new Tileset(128, 128, 32, 32, 0, 4, 1);
+
 		Assert.assertEquals(3, tileset.getWidthInTiles());
-		tileset.setWidth(96);
+		tileset = new Tileset(96, 128, 32, 32, 0, 4, 1);
 		Assert.assertEquals(2, tileset.getWidthInTiles());
 	}
-	
+
 	@Test
 	public void testGetWidthInTilesWithSpacingAndMargin() {
-		tileset.setSpacing(4);
-		tileset.setMargin(16);
-		
+		tileset = new Tileset(128, 128, 32, 32, 4, 16, 1);
 		Assert.assertEquals(2, tileset.getWidthInTiles());
-		tileset.setWidth(96);
+		tileset = new Tileset(96, 128, 32, 32, 4, 16, 1);
 		Assert.assertEquals(1, tileset.getWidthInTiles());
 	}
-	
+
 	@Test
 	public void testGetHeightInTiles() {
+		tileset = new Tileset(128, 128, 32, 32, 0, 0, 1);
 		Assert.assertEquals(4, tileset.getHeightInTiles());
-		tileset.setHeight(96);
+		tileset = new Tileset(128, 96, 32, 32, 0, 0, 1);
 		Assert.assertEquals(3, tileset.getHeightInTiles());
 	}
-	
+
 	@Test
 	public void testGetHeightInTilesWithSpacing() {
-		tileset.setSpacing(4);
-		
+		tileset = new Tileset(128, 128, 32, 32, 4, 0, 1);
 		Assert.assertEquals(3, tileset.getHeightInTiles());
-		tileset.setHeight(96);
+		tileset = new Tileset(128, 96, 32, 32, 4, 0, 1);
 		Assert.assertEquals(2, tileset.getHeightInTiles());
 	}
-	
+
 	@Test
 	public void testGetHeightInTilesWithMargin() {
-		tileset.setMargin(4);
-		
+		tileset = new Tileset(128, 128, 32, 32, 0, 4, 1);
 		Assert.assertEquals(3, tileset.getHeightInTiles());
-		tileset.setHeight(96);
+		tileset = new Tileset(128, 96, 32, 32, 0, 4, 1);
 		Assert.assertEquals(2, tileset.getHeightInTiles());
 	}
-	
+
 	@Test
 	public void testGetHeightInTilesWithSpacingAndMargin() {
-		tileset.setSpacing(4);
-		tileset.setMargin(16);
-		
+		tileset = new Tileset(128, 128, 32, 32, 4, 16, 1);
 		Assert.assertEquals(2, tileset.getHeightInTiles());
-		tileset.setHeight(96);
+		tileset = new Tileset(128, 96, 32, 32, 4, 16, 1);
 		Assert.assertEquals(1, tileset.getHeightInTiles());
 	}
 }

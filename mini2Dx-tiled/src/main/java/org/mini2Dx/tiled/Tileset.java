@@ -11,15 +11,17 @@
  */
 package org.mini2Dx.tiled;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -28,14 +30,69 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * @author Thomas Cashman
  */
 public class Tileset {
-	private TextureRegion[][] tiles;
+	private Tile[][] tiles;
 	private String name, tilesetImagePath, transparentColorValue;
 	private int width, height;
 	private int tileWidth, tileHeight;
 	private int spacing, margin;
 	private int firstGid;
 	private int lastGid = Integer.MAX_VALUE;
-	private int widthInTiles = -1, heightInTiles = -1;
+	private int widthInTiles, heightInTiles;
+	private Map<String, String> properties;
+	
+	public Tileset(int width, int height, int tileWidth, int tileHeight, int spacing, int margin, int firstGid) {
+		this.width = width;
+		this.height = height;
+		this.tileWidth = tileWidth;
+		this.tileHeight = tileHeight;
+		this.spacing = spacing;
+		this.margin = margin;
+		this.firstGid = firstGid;
+		this.widthInTiles = -1;
+		this.heightInTiles = -1;
+		
+		calculateLastGid();
+		tiles = new Tile[getWidthInTiles()][getHeightInTiles()];
+		for(int x = 0; x < getWidthInTiles(); x++) {
+			for(int y = 0; y < getHeightInTiles(); y++) {
+				tiles[x][y] = new Tile();
+				tiles[x][y].setTileId(this.getTileId(x, y));
+			}
+		}
+	}
+	
+	/**
+	 * Returns if the tileset contains the specified property
+	 * @param propertyName The property name to search for
+	 * @return True if the tileset contains the property
+	 */
+	public boolean containsProperty(String propertyName) {
+		if(properties == null)
+			return false;
+		return properties.containsKey(propertyName);
+	}
+
+	/**
+	 * Returns the value of a specified property
+	 * @param propertyName The property name to search for
+	 * @return Null if there is no such property
+	 */
+	public String getProperty(String propertyName) {
+		if(properties == null)
+			return null;
+		return properties.get(propertyName);
+	}
+	
+	/**
+	 * Sets the value of a specified property
+	 * @param propertyName The property name to set the value for
+	 * @param value The value of the property to set
+	 */
+	public void setProperty(String propertyName, String value) {
+		if(properties == null)
+			properties = new HashMap<String, String>();
+		properties.put(propertyName, value);
+	}
 
 	/**
 	 * Draws a tile to the {@link Graphics} context
@@ -52,7 +109,7 @@ public class Tileset {
 	public void drawTile(Graphics g, int tileId, int renderX, int renderY) {
 		int tileX = getTileX(tileId);
 		int tileY = getTileY(tileId);
-		g.drawTextureRegion(tiles[tileX][tileY], renderX, renderY);
+		tiles[tileX][tileY].draw(g, renderX, renderY); 
 	}
 
 	/**
@@ -68,22 +125,31 @@ public class Tileset {
 	public void drawTileset(Graphics g, int renderX, int renderY) {
 		for (int y = 0; y < getHeightInTiles(); y++) {
 			for (int x = 0; x < getWidthInTiles(); x++) {
-				g.drawTextureRegion(tiles[x][y],
-						renderX + (x * getTileWidth()), renderY
-								+ (y * getTileHeight()));
+				tiles[x][y].draw(g, renderX + (x * getTileWidth()), renderY
+						+ (y * getTileHeight())); 
 			}
 		}
 	}
 	
 	/**
-	 * Returns the {@link TextureRegion} for a given tile id
+	 * Returns the {@link Tile} for a given tile id
 	 * @param tileId The tile id to look up
-	 * @return The tile image
+	 * @return The {@link Tile}
 	 */
-	public TextureRegion getTileImage(int tileId) {
+	public Tile getTile(int tileId) {
 		int tileX = getTileX(tileId);
 		int tileY = getTileY(tileId);
 		return tiles[tileX][tileY];
+	}
+	
+	/**
+	 * Returns the {@link Tile} for a given tile coordinate on the tileset
+	 * @param x The x coordinate in tiles
+	 * @param y The y coordinate in tiles
+	 * @return The {@link Tile}
+	 */
+	public Tile getTile(int x, int y) {
+		return tiles[x][y];
 	}
 
 	/**
@@ -92,7 +158,7 @@ public class Tileset {
 	 * @return True if loaded
 	 */
 	public boolean isTextureLoaded() {
-		return tiles != null;
+		return tiles[0][0].getTileImage() != null;
 	}
 
 	/**
@@ -112,17 +178,15 @@ public class Tileset {
 			pixmap.dispose();
 		}
 		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		calculateLastGid();
-		tiles = new TextureRegion[getWidthInTiles()][getHeightInTiles()];
 
 		for (int x = 0; x < getWidthInTiles(); x++) {
 			for (int y = 0; y < getHeightInTiles(); y++) {
 				int tileX = margin + (x * spacing) + (x * tileWidth);
 				int tileY = margin + (y * spacing) + (y * tileHeight);
-				TextureRegion tile = new TextureRegion(texture, tileX, tileY,
+				TextureRegion tileImage = new TextureRegion(texture, tileX, tileY,
 						tileWidth, tileHeight);
-				tile.flip(false, true);
-				tiles[x][y] = tile;
+				tileImage.flip(false, true);
+				tiles[x][y].setTileImage(tileImage);
 			}
 		}
 	}
@@ -151,7 +215,7 @@ public class Tileset {
 		return result;
 	}
 	
-	public void calculateLastGid() {
+	private void calculateLastGid() {
 		lastGid = (getWidthInTiles() * getHeightInTiles()) + firstGid - 1;
 	}
 
@@ -164,6 +228,16 @@ public class Tileset {
 	 */
 	public boolean contains(int tileId) {
 		return tileId >= firstGid && tileId <= lastGid;
+	}
+	
+	/**
+	 * Returns the tile ID for a given tile within this tileset
+	 * @param x The x coordinate of the tile on the tileset
+	 * @param y The y coordinate of the tile on the tileset
+	 * @return The tile ID
+	 */
+	public int getTileId(int x, int y) {
+		return firstGid + (y * getWidthInTiles()) + x;
 	}
 
 	/**
@@ -247,34 +321,12 @@ public class Tileset {
 	}
 
 	/**
-	 * Sets the width of this tileset in pixels
-	 * 
-	 * @param width
-	 *            The width in pixels
-	 */
-	public void setWidth(int width) {
-		this.width = width;
-		widthInTiles = -1;
-	}
-
-	/**
 	 * Returns the height of this tileset in pixels
 	 * 
 	 * @return
 	 */
 	public int getHeight() {
 		return height;
-	}
-
-	/**
-	 * Sets the height of this tileset in pixels
-	 * 
-	 * @param height
-	 *            The height in pixels
-	 */
-	public void setHeight(int height) {
-		this.height = height;
-		heightInTiles = -1;
 	}
 
 	/**
@@ -287,34 +339,12 @@ public class Tileset {
 	}
 
 	/**
-	 * Sets the width of each tile in pixels
-	 * 
-	 * @param tileWidth
-	 *            The width in pixels
-	 */
-	public void setTileWidth(int tileWidth) {
-		this.tileWidth = tileWidth;
-		widthInTiles = -1;
-	}
-
-	/**
 	 * Returns the height of each tile in pixels
 	 * 
 	 * @return
 	 */
 	public int getTileHeight() {
 		return tileHeight;
-	}
-
-	/**
-	 * Sets the height of each tile in pixels
-	 * 
-	 * @param tileHeight
-	 *            The height in pixels
-	 */
-	public void setTileHeight(int tileHeight) {
-		this.tileHeight = tileHeight;
-		heightInTiles = -1;
 	}
 
 	/**
@@ -327,18 +357,6 @@ public class Tileset {
 	}
 
 	/**
-	 * Sets the internal spacing between each tile
-	 * 
-	 * @param spacing
-	 *            The spacing in pixels
-	 */
-	public void setSpacing(int spacing) {
-		this.spacing = spacing;
-		widthInTiles = -1;
-		heightInTiles = -1;
-	}
-
-	/**
 	 * Returns the margin at the borders of the tileset
 	 * 
 	 * @return The margin in pixels
@@ -346,19 +364,7 @@ public class Tileset {
 	public int getMargin() {
 		return margin;
 	}
-
-	/**
-	 * Sets the margin at the borders of the tileset
-	 * 
-	 * @param margin
-	 *            The margin in pixels
-	 */
-	public void setMargin(int margin) {
-		this.margin = margin;
-		widthInTiles = -1;
-		heightInTiles = -1;
-	}
-
+	
 	/**
 	 * Returns the first GID {@see
 	 * <a>https://github.com/bjorn/tiled/wiki/TMX-Map-Format</a>}
@@ -367,16 +373,6 @@ public class Tileset {
 	 */
 	public int getFirstGid() {
 		return firstGid;
-	}
-
-	/**
-	 * Sets the first GID {@see
-	 * <a>https://github.com/bjorn/tiled/wiki/TMX-Map-Format</a>}
-	 * 
-	 * @param firstGid
-	 */
-	public void setFirstGid(int firstGid) {
-		this.firstGid = firstGid;
 	}
 
 	/**

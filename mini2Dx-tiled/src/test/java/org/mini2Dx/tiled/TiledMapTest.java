@@ -34,10 +34,30 @@ public class TiledMapTest {
 				.getContextClassLoader().getResource("simple.tmx").getFile());
 		tiledMap = new TiledMap(file, false);
 	}
+	
+	@Test
+	public void testGetBackgroundColor() {
+		Assert.assertNotNull(tiledMap.getBackgroundColor());
+	}
 
 	@Test
-	public void testGetProperty() {
-		Assert.assertEquals("SUCCESS", tiledMap.getProperty("testProperty"));
+	public void testGetMapProperty() {
+		Assert.assertEquals("SUCCESS", tiledMap.getProperty("testMapProperty"));
+	}
+	
+	@Test
+	public void testGetLayerProperty() {
+		Assert.assertEquals("SUCCESS", tiledMap.getTileLayer("Collisions").getProperty("testLayerProperty"));
+	}
+	
+	@Test
+	public void testGetTilesetProperty() {
+		Assert.assertEquals("SUCCESS", tiledMap.getTilesets().get(0).getProperty("testTilesetProperty"));
+	}
+	
+	@Test
+	public void testGetTileProperty() {
+		Assert.assertEquals("SUCCESS", tiledMap.getTilesets().get(0).getTile(0, 0).getProperty("testTileProperty"));
 	}
 
 	@Test
@@ -96,10 +116,10 @@ public class TiledMapTest {
 		TiledObject obj = group.getObjects().get(0);
 		Assert.assertEquals(true, obj.containsProperty("testProperty"));
 		Assert.assertEquals("SUCCESS", obj.getProperty("testProperty"));
-		Assert.assertEquals(32, obj.getX());
-		Assert.assertEquals(64, obj.getY());
-		Assert.assertEquals(16, obj.getWidth());
-		Assert.assertEquals(24, obj.getHeight());
+		Assert.assertEquals(32f, obj.getX());
+		Assert.assertEquals(64f, obj.getY());
+		Assert.assertEquals(16f, obj.getWidth());
+		Assert.assertEquals(24f, obj.getHeight());
 	}
 
 }

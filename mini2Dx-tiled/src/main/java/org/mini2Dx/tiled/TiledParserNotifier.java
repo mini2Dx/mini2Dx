@@ -14,22 +14,46 @@ package org.mini2Dx.tiled;
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * An common interface to parser listeners
+ * A common interface to notify {@link TiledParserListener}s
  * 
  * @author Thomas Cashman
  */
-public interface TiledParserListener {
+public interface TiledParserNotifier {
+	/**
+	 * Adds a listener to be notified of parsing results
+	 * 
+	 * @param listener
+	 *            The {@link TiledParserListener} to be added
+	 */
+	public void addListener(TiledParserListener tiledParserListener);
 
-	public void onBeginParsing(String orientation, Color backgroundColor,
+	/**
+	 * Removes a listener from being notified of parsing results
+	 * 
+	 * @param listener
+	 *            The {@link TiledParserListener} to be removed
+	 */
+	public void removeListener(TiledParserListener tiledParserListener);
+
+	/**
+	 * Notify all {@link TiledParserListener}s that parsing has begun
+	 * @param orientation The map orientation
+	 * @param backgroundColor The map background color
+	 * @param width
+	 * @param height
+	 * @param tileWidth
+	 * @param tileHeight
+	 */
+	public void notifyBeginParsing(String orientation, Color backgroundColor,
 			int width, int height, int tileWidth, int tileHeight);
 
-	public void onMapPropertyParsed(String propertyName, String value);
+	public void notifyMapPropertyParsed(String propertyName, String value);
 
-	public void onTilePropertiesParsed(Tile tile);
+	public void notifyTilePropertyParsed(Tile tile);
 
-	public void onTilesetParsed(Tileset parsedTileset);
+	public void notifyTilesetParsed(Tileset parsedTileset);
 
-	public void onTileLayerParsed(TileLayer parsedLayer);
+	public void notifyTileLayerParsed(TileLayer parsedLayer);
 
-	public void onObjectGroupParsed(TiledObjectGroup parsedObjectGroup);
+	public void notifyObjectGroupParsed(TiledObjectGroup parsedObjectGroup);
 }

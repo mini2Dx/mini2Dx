@@ -14,38 +14,36 @@ package org.mini2Dx.tiled;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.mini2Dx.core.graphics.Graphics;
+
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 /**
- * Represents an object loaded from a {@link TiledMap}
- *
+ * Represents a tileset tile
+ * 
  * @author Thomas Cashman
  */
-public class TiledObject {
-	private String name;
-	private String type;
-	private String polyline, polygon;
-	private float x, y, width, height;
-	private boolean visible;
-	private int gid;
+public class Tile {
+	private int tileId;
+	private TextureRegion tileImage;
+	
 	private Map<String, String> properties;
 	
-	public TiledObject(float x, float y, float width, float height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+	public void draw(Graphics g, int renderX, int renderY) {
+		g.drawTextureRegion(tileImage, renderX, renderY);
 	}
 	
 	/**
-	 * Returns if the object contains the specified property
+	 * Returns if the layer contains the specified property
 	 * @param propertyName The property name to search for
-	 * @return True if the object contains the property
+	 * @return True if the layer contains the property
 	 */
 	public boolean containsProperty(String propertyName) {
 		if(properties == null)
 			return false;
 		return properties.containsKey(propertyName);
 	}
-	
+
 	/**
 	 * Returns the value of a specified property
 	 * @param propertyName The property name to search for
@@ -67,108 +65,20 @@ public class TiledObject {
 			properties = new HashMap<String, String>();
 		properties.put(propertyName, value);
 	}
-	
-	/**
-	 * Returns the name of this object
-	 * @return
-	 */
-	public String getName() {
-		return name;
-	}
-	
-	/**
-	 * Sets the name of this object
-	 * @param name The name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	/**
-	 * Returns the type of this object
-	 * @return
-	 */
-	public String getType() {
-		return type;
-	}
-	
-	/**
-	 * Sets the type of this object
-	 * @param type
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	/**
-	 * Returns the x coordinate of this object in pixels
-	 * @return
-	 */
-	public float getX() {
-		return x;
-	}
-	
-	/**
-	 * Returns the y coordinate of this object in pixels
-	 * @return
-	 */
-	public float getY() {
-		return y;
-	}
-	
-	/**
-	 * Returns the width of this object in pixels
-	 * @return
-	 */
-	public float getWidth() {
-		return width;
-	}
-	
-	/**
-	 * Returns the height of this object in pixels
-	 * @return
-	 */
-	public float getHeight() {
-		return height;
-	}
-	
-	/**
-	 * Returns the GID of this object
-	 * @return
-	 */
-	public int getGid() {
-		return gid;
-	}
-	
-	/**
-	 * Sets the GID of this object
-	 * @param gid
-	 */
-	public void setGid(int gid) {
-		this.gid = gid;
+
+	public int getTileId() {
+		return tileId;
 	}
 
-	public String getPolyline() {
-		return polyline;
+	public void setTileId(int tileId) {
+		this.tileId = tileId;
 	}
 
-	public void setPolyline(String polyline) {
-		this.polyline = polyline;
+	public TextureRegion getTileImage() {
+		return tileImage;
 	}
 
-	public String getPolygon() {
-		return polygon;
-	}
-
-	public void setPolygon(String polygon) {
-		this.polygon = polygon;
-	}
-
-	public boolean isVisible() {
-		return visible;
-	}
-
-	public void setVisible(boolean visible) {
-		this.visible = visible;
+	public void setTileImage(TextureRegion tileImage) {
+		this.tileImage = tileImage;
 	}
 }
