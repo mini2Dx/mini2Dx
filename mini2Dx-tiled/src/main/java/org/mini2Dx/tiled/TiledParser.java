@@ -118,6 +118,7 @@ public class TiledParser implements TiledParserNotifier {
 			int spacing = element.getIntAttribute("spacing", 0);
 			int margin = element.getIntAttribute("margin", 0);
 			String source = element.getAttribute("source", null);
+			String transparentColor = element.get("trans", null);
 
 			String imageSource = "";
 			int imageWidth = 0, imageHeight = 0;
@@ -153,6 +154,7 @@ public class TiledParser implements TiledParserNotifier {
 			Tileset tileset = new Tileset(imageWidth, imageHeight, tileWidth,
 					tileHeight, spacing, margin, firstGid);
 			tileset.setName(name);
+			tileset.setTransparentColorValue(transparentColor);
 			tileset.setTilesetImagePath(imageSource);
 
 			loadTileProperties(tileset, firstGid,
