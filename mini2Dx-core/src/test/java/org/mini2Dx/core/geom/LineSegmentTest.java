@@ -11,7 +11,6 @@
  */
 package org.mini2Dx.core.geom;
 
-import static org.junit.Assert.*;
 import junit.framework.Assert;
 
 import org.junit.Test;

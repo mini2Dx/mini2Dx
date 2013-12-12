@@ -11,63 +11,233 @@
  */
 package org.mini2Dx.core.quadtree;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.mini2Dx.core.engine.Parallelogram;
 import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
+import org.mini2Dx.core.geom.LineSegment;
+import org.mini2Dx.core.geom.Rectangle;
 
 /**
- * A common interface to {@link Quad} implementations within a {@link QuadTree}
- * implementation
+ * Implements a point quad
+ * 
+ * @see <a
+ *      href="http://en.wikipedia.org/wiki/Quadtree#Point_quadtree">Wikipedia:
+ *      Point Quad Tree</a>
  * 
  * @author Thomas Cashman
  */
-public interface Quad<T extends Positionable> extends PositionChangeListener<T> {
+public class Quad<T extends Positionable> extends Rectangle implements
+		PositionChangeListener<T> {
+	private static final long serialVersionUID = -2034928347848875105L;
 
-	/**
-	 * Returns all elements within this {@link Quad}
-	 * 
-	 * If this {@link Quad} contains child {@link Quad}s then this will return
-	 * all elements recursively within the children
-	 * 
-	 * @return An empty {@link List} if this {@link Quad} contains no elements
-	 */
-	public List<T> getValues();
+	protected Quad<T> parent;
+	protected Quad<T> topLeft, topRight, bottomLeft, bottomRight;
+	protected List<T> elements;
+	protected int elementLimitPerQuad;
 
-	/**
-	 * Returns the maximum number of elements per {@link Quad}
-	 * 
-	 * @return
-	 */
-	public int getElementLimit();
+	public Quad(int elementLimitPerQuad, float x, float y, float width,
+			float height) {
+		super(x, y, width, height);
+		this.elementLimitPerQuad = elementLimitPerQuad;
+		elements = new CopyOnWriteArrayList<T>();
+	}
 
-	/**
-	 * Returns the number of elements within this {@link Quad}
-	 * 
-	 * @return 0 if there are no elements within this {@link Quad}
-	 */
-	public int getNumberOfElements();
+	public Quad(Quad<T> parent, float x, float y, float width, float height) {
+		this(parent.getElementLimitPerQuad(), x, y, width, height);
+		this.parent = parent;
+	}
 
-	/**
-	 * Returns the {@link Quad} this {@link Quad} is contained in
-	 * 
-	 * @return Null if this is the root {@link Quad}
-	 */
-	public Quad<T> getParent();
+	public boolean add(T element) {
+		if (element == null)
+			return false;
 
-	/**
-	 * Adds an element to this {@link Quad}
-	 * 
-	 * @param object
-	 *            The element to be added
-	 */
-	public void add(T object);
+		if (!this.contains(element)) {
+			return false;
+		}
 
-	/**
-	 * Removes an element from this {@link Quad}
-	 * 
-	 * @param object
-	 *            The element to be removed
-	 */
-	public void remove(T object);
+		if (topLeft != null) {
+			return addElementToChild(element);
+		}
+		return addElement(element);
+	}
+
+	protected boolean addElement(T element) {
+		elements.add(element);
+		element.addPostionChangeListener(this);
+
+		if (elements.size() > elementLimitPerQuad) {
+			subdivide();
+		}
+		return true;
+	}
+
+	protected boolean addElementToChild(T element) {
+		if (topLeft.add(element))
+			return true;
+		if (topRight.add(element))
+			return true;
+		if (bottomLeft.add(element))
+			return true;
+		if (bottomRight.add(element))
+			return true;
+		return false;
+	}
+
+	protected void subdivide() {
+		float halfWidth = width / 2f;
+		float halfHeight = height / 2f;
+
+		topLeft = new Quad<T>(this, x, y, halfWidth, halfHeight);
+		topRight = new Quad<T>(this, x + halfWidth, y, halfWidth, halfHeight);
+		bottomLeft = new Quad<T>(this, x, y + halfHeight, halfWidth, halfHeight);
+		bottomRight = new Quad<T>(this, x + halfWidth, y + halfHeight,
+				halfWidth, halfHeight);
+
+		for (int i = elements.size() - 1; i >= 0; i--) {
+			T element = elements.get(i);
+			remove(element);
+			addElementToChild(element);
+		}
+		elements = null;
+	}
+
+	public boolean remove(T element) {
+		if (element == null)
+			return false;
+
+		if (!this.contains(element)) {
+			return false;
+		}
+
+		if (topLeft != null) {
+			return removeElementFromChild(element);
+		}
+		return removeElement(element);
+	}
+
+	protected boolean removeElementFromChild(T element) {
+		if (topLeft.remove(element))
+			return true;
+		if (topRight.remove(element))
+			return true;
+		if (bottomLeft.remove(element))
+			return true;
+		if (bottomRight.remove(element))
+			return true;
+		return false;
+	}
+
+	protected boolean removeElement(T element) {
+		boolean result = elements.remove(element);
+		element.removePositionChangeListener(this);
+		return result;
+	}
+
+	public List<T> getElementsWithinRegion(Parallelogram parallelogram) {
+		List<T> result = new ArrayList<T>();
+		getElementsWithinRegion(result, parallelogram);
+		return result;
+	}
+
+	protected void getElementsWithinRegion(Collection<T> result,
+			Parallelogram parallelogram) {
+		if (topLeft != null) {
+			topLeft.getElementsWithinRegion(result, parallelogram);
+			topRight.getElementsWithinRegion(result, parallelogram);
+			bottomLeft.getElementsWithinRegion(result, parallelogram);
+			bottomRight.getElementsWithinRegion(result, parallelogram);
+		} else {
+			for (int i = 0; i < elements.size(); i++) {
+				T element = elements.get(i);
+				if (element != null && parallelogram.contains(element)) {
+					result.add(element);
+				}
+			}
+		}
+	}
+
+	public List<T> getElementsIntersectingLineSegment(LineSegment lineSegment) {
+		List<T> result = new ArrayList<T>();
+		getElementsIntersectingLineSegment(result, lineSegment);
+		return result;
+	}
+
+	protected void getElementsIntersectingLineSegment(Collection<T> result,
+			LineSegment lineSegment) {
+		if (topLeft != null) {
+			if (topLeft.intersects(lineSegment))
+				topLeft.getElementsIntersectingLineSegment(result, lineSegment);
+			if (topRight.intersects(lineSegment))
+				topRight.getElementsIntersectingLineSegment(result, lineSegment);
+			if (bottomLeft.intersects(lineSegment))
+				bottomLeft.getElementsIntersectingLineSegment(result,
+						lineSegment);
+			if (bottomRight.intersects(lineSegment))
+				bottomRight.getElementsIntersectingLineSegment(result,
+						lineSegment);
+		} else {
+			for (int i = 0; i < elements.size(); i++) {
+				T element = elements.get(i);
+				if (element != null
+						&& lineSegment.contains(element.getX(), element.getY())) {
+					result.add(element);
+				}
+			}
+		}
+	}
+
+	public List<T> getElements() {
+		List<T> result = new ArrayList<T>();
+		getElements(result);
+		return result;
+	}
+
+	private void getElements(List<T> result) {
+		if (topLeft != null) {
+			topLeft.getElements(result);
+			topRight.getElements(result);
+			bottomLeft.getElements(result);
+			bottomRight.getElements(result);
+		} else {
+			result.addAll(elements);
+		}
+	}
+
+	public int getTotalQuads() {
+		if (topLeft != null) {
+			int result = topLeft.getTotalQuads();
+			result += topRight.getTotalQuads();
+			result += bottomLeft.getTotalQuads();
+			result += bottomRight.getTotalQuads();
+			return result;
+		} else {
+			return 1;
+		}
+	}
+
+	@Override
+	public void positionChanged(T moved) {
+		if (this.contains(moved))
+			return;
+
+		remove(moved);
+
+		if (parent == null)
+			return;
+
+		parent.add(moved);
+	}
+
+	public Quad<T> getParent() {
+		return parent;
+	}
+
+	public int getElementLimitPerQuad() {
+		return elementLimitPerQuad;
+	}
 }

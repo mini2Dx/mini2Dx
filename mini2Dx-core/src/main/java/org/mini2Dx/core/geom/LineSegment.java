@@ -79,6 +79,11 @@ public class LineSegment {
 	 *         point B
 	 */
 	public boolean contains(float x, float y) {
+		if(pointA.getX() == x && pointA.getY() == y)
+			return true;
+		if(pointB.getX() == x && pointB.getY() == y)
+			return true;
+		
 		Point p3 = new Point(x, y);
 		return p3.isOnLineBetween(pointA, pointB);
 	}
