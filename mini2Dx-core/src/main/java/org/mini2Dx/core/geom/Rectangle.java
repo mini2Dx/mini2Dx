@@ -11,8 +11,10 @@
  */
 package org.mini2Dx.core.geom;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.mini2Dx.core.engine.Parallelogram;
 import org.mini2Dx.core.engine.PositionChangeListener;
@@ -32,7 +34,8 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	private float rotation;
 	Point topLeft, topRight, bottomLeft, bottomRight, center;
 	private float minX, minY, maxX, maxY;
-	private List<PositionChangeListener> positionChangleListeners;
+	private List<PositionChangeListener> positionChangeListeners;
+	private Lock positionChangeListenerLock;
 
 	/**
 	 * Default constructor. Creates a {@link Rectangle} at 0,0 with a width and height of 1
@@ -50,6 +53,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	 */
 	public Rectangle(float x, float y, float width, float height) {
 		super(x, y, width, height);
+		positionChangeListenerLock = new ReentrantLock();
 		topLeft = new Point(x, y);
 		topRight = new Point(x + width, y);
 		bottomLeft = new Point(x, y + height);
@@ -103,10 +107,12 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	@Override
 	public <T extends Positionable> void addPostionChangeListener(
 			PositionChangeListener<T> listener) {
-		if (positionChangleListeners == null) {
-			positionChangleListeners = new CopyOnWriteArrayList<PositionChangeListener>();
+		positionChangeListenerLock.lock();
+		if (positionChangeListeners == null) {
+			positionChangeListeners = new ArrayList<PositionChangeListener>(1);
 		}
-		positionChangleListeners.add(listener);
+		positionChangeListeners.add(listener);
+		positionChangeListenerLock.unlock();
 	}
 
 	/**
@@ -115,16 +121,21 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	@Override
 	public <T extends Positionable> void removePositionChangeListener(
 			PositionChangeListener<T> listener) {
-		if (positionChangleListeners != null) {
-			positionChangleListeners.remove(listener);
+		if (positionChangeListeners != null) {
+			positionChangeListenerLock.lock();
+			positionChangeListeners.remove(listener);
+			positionChangeListenerLock.unlock();
 		}
 	}
 
 	private void notifyPositionChangeListeners() {
-		if (positionChangleListeners != null) {
-			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
+		if (positionChangeListeners != null) {
+			positionChangeListenerLock.lock();
+			for (int i = positionChangeListeners.size() - 1; i >= 0; i--) {
+				PositionChangeListener listener = positionChangeListeners.get(i);
 				listener.positionChanged(this);
 			}
+			positionChangeListenerLock.unlock();
 		}
 	}
 
@@ -177,6 +188,9 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	}
 
 	private void performRotation(Point center, float degrees) {
+		if(degrees == 0)
+			return;
+		
 		topRight.rotateAround(center, degrees);
 		bottomLeft.rotateAround(center, degrees);
 		bottomRight.rotateAround(center, degrees);
@@ -302,21 +316,28 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	@Override
 	public boolean contains(Positionable positionable) {
 		performRotation(topLeft, -rotation);
-		boolean result = true;
-
-		float px = positionable.getX();
-		float py = positionable.getY();
-
-		if (px < getX())
-			result = false;
-		if (py < getY())
-			result = false;
-		if (px > getX() + getWidth())
-			result = false;
-		if (py > getY() + getHeight())
-			result = false;
+		
+		Point point = new Point(positionable.getX(), positionable.getY());
+		point.rotateAround(topLeft, -rotation);
+		
+		float thisX = getX();
+		float thisY = getY();
+		
 		performRotation(topLeft, rotation);
-		return result;
+
+		if (point.x < thisX) {
+			return false;
+		}
+		if (point.y < thisY) {
+			return false;
+		}
+		if (point.x > thisX + getWidth()) {
+			return false;
+		}
+		if (point.y > thisY + getHeight()) {
+			return false;
+		}
+		return true;
 	}
 
 	/**

@@ -45,7 +45,7 @@ public class RegionQuadTest {
 	public void testRemove() {
 		Random random = new Random();
 		List<Rectangle> rectangles = new ArrayList<Rectangle>();
-		for(int i = 0; i < 100; i++) {
+		for(int i = 0; i < 1000; i++) {
 			rectangles.add(new Rectangle(random.nextInt(96), random.nextInt(96), random.nextInt(32), random.nextInt(32)));
 		}
 		

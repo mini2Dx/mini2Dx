@@ -119,9 +119,9 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 	
 	@Override
 	public List<T> getElementsWithinRegion(Parallelogram parallelogram) {
-		Set<T> result = new HashSet<T>();
+		List<T> result = new ArrayList<T>();
 		getElementsWithinRegion(result, parallelogram);
-		return new ArrayList<T>(result);
+		return result;
 	}
 	
 	@Override
@@ -136,7 +136,7 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 			if(bottomRight.contains(parallelogram) || bottomRight.intersects(parallelogram))
 				bottomRight.getElementsWithinRegion(result, parallelogram);
 		}
-		for(int i = 0; i < elements.size(); i++) {
+		for (int i = elements.size() - 1; i >= 0; i--) {
 			T element = elements.get(i);
 			if(element == null)
 				continue;
@@ -148,9 +148,9 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 	
 	@Override
 	public List<T> getElementsIntersectingLineSegment(LineSegment lineSegment) {
-		Set<T> result = new HashSet<T>();
+		List<T> result = new ArrayList<T>();
 		getElementsIntersectingLineSegment(result, lineSegment);
-		return new ArrayList<T>(result);
+		return result;
 	}
 	
 	@Override
@@ -165,7 +165,7 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 			if(bottomRight.intersects(lineSegment))
 				bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
 		}
-		for(int i = 0; i < elements.size(); i++) {
+		for (int i = elements.size() - 1; i >= 0; i--) {
 			T element = elements.get(i);
 			if(element != null && element.intersects(lineSegment)) {
 				result.add(element);

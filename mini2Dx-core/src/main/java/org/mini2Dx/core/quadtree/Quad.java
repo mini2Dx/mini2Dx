@@ -44,7 +44,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 			float height) {
 		super(x, y, width, height);
 		this.elementLimitPerQuad = elementLimitPerQuad;
-		elements = new CopyOnWriteArrayList<T>();
+		elements = new ArrayList<T>(1);
 	}
 
 	public Quad(Quad<T> parent, float x, float y, float width, float height) {
@@ -70,7 +70,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 		elements.add(element);
 		element.addPostionChangeListener(this);
 
-		if (elements.size() > elementLimitPerQuad) {
+		if (elements.size() > elementLimitPerQuad && width > 1f && height > 1f) {
 			subdivide();
 		}
 		return true;
@@ -99,8 +99,8 @@ public class Quad<T extends Positionable> extends Rectangle implements
 				halfWidth, halfHeight);
 
 		for (int i = elements.size() - 1; i >= 0; i--) {
-			T element = elements.get(i);
-			remove(element);
+			T element = elements.remove(i);
+			element.removePositionChangeListener(this);
 			addElementToChild(element);
 		}
 		elements = null;
@@ -152,7 +152,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 			bottomLeft.getElementsWithinRegion(result, parallelogram);
 			bottomRight.getElementsWithinRegion(result, parallelogram);
 		} else {
-			for (int i = 0; i < elements.size(); i++) {
+			for (int i = elements.size() - 1; i >= 0; i--) {
 				T element = elements.get(i);
 				if (element != null && parallelogram.contains(element)) {
 					result.add(element);
@@ -181,7 +181,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 				bottomRight.getElementsIntersectingLineSegment(result,
 						lineSegment);
 		} else {
-			for (int i = 0; i < elements.size(); i++) {
+			for (int i = elements.size() - 1; i >= 0; i--) {
 				T element = elements.get(i);
 				if (element != null
 						&& lineSegment.contains(element.getX(), element.getY())) {

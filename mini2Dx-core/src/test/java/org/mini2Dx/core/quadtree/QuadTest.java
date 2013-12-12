@@ -53,12 +53,12 @@ public class QuadTest {
 	public void testRemove() {
 		Random random = new Random();
 		List<Point> points = new ArrayList<Point>();
-		for(int i = 0; i < 100; i++) {
+		for(int i = 0; i < 1000; i++) {
 			points.add(new Point(random.nextInt(128), random.nextInt(128)));
 		}
 		
 		for(int i = 0; i < points.size(); i++) {
-			rootQuad.add(points.get(i));
+			Assert.assertEquals(true, rootQuad.add(points.get(i)));
 			Assert.assertEquals(i + 1, rootQuad.getElements().size());
 		}
 		

@@ -11,8 +11,10 @@
  */
 package org.mini2Dx.core.geom;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
@@ -29,25 +31,32 @@ import com.badlogic.gdx.math.Vector2;
 public class Point extends Vector2 implements Positionable {
 	private static final long serialVersionUID = 3773673953486445831L;
 
-	private List<PositionChangeListener> positionChangleListeners;
+	private List<PositionChangeListener> positionChangeListeners;
+	private Lock positionChangeListenerLock;
 
 	public Point() {
 		super();
+		this.positionChangeListenerLock = new ReentrantLock();
 	}
 
 	public Point(float x, float y) {
 		super(x, y);
+		this.positionChangeListenerLock = new ReentrantLock();
 	}
 
 	public Point(Point point) {
 		super(point);
+		this.positionChangeListenerLock = new ReentrantLock();
 	}
 	
 	private void notifyPositionChangeListeners() {
-		if (positionChangleListeners != null) {
-			for (PositionChangeListener<Positionable> listener : positionChangleListeners) {
+		if (positionChangeListeners != null) {
+			positionChangeListenerLock.lock();
+			for (int i = positionChangeListeners.size() - 1; i >= 0; i--) {
+				PositionChangeListener<Positionable> listener = positionChangeListeners.get(i);
 				listener.positionChanged(this);
 			}
+			positionChangeListenerLock.unlock();
 		}
 	}
 
@@ -60,6 +69,9 @@ public class Point extends Vector2 implements Positionable {
 	 *            The angle to rotate by in degrees
 	 */
 	public void rotateAround(Point center, float degrees) {
+		if(degrees == 0)
+			return;
+		
 		float cos = MathUtils.cosDeg(degrees);
 		float sin = MathUtils.sinDeg(degrees);
 		
@@ -108,17 +120,21 @@ public class Point extends Vector2 implements Positionable {
 	@Override
 	public <T extends Positionable> void addPostionChangeListener(
 			PositionChangeListener<T> listener) {
-		if (positionChangleListeners == null) {
-			positionChangleListeners = new CopyOnWriteArrayList<PositionChangeListener>();
+		positionChangeListenerLock.lock();
+		if (positionChangeListeners == null) {
+			positionChangeListeners = new ArrayList<PositionChangeListener>(1);
 		}
-		positionChangleListeners.add(listener);
+		positionChangeListeners.add(listener);
+		positionChangeListenerLock.unlock();
 	}
 
 	@Override
 	public <T extends Positionable> void removePositionChangeListener(
 			PositionChangeListener<T> listener) {
-		if (positionChangleListeners != null) {
-			positionChangleListeners.remove(listener);
+		if (positionChangeListeners != null) {
+			positionChangeListenerLock.lock();
+			positionChangeListeners.remove(listener);
+			positionChangeListenerLock.unlock();
 		}
 	}
 
