@@ -144,7 +144,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 		return result;
 	}
 
-	protected void getElementsWithinRegion(Collection<T> result,
+	public void getElementsWithinRegion(Collection<T> result,
 			Parallelogram parallelogram) {
 		if (topLeft != null) {
 			topLeft.getElementsWithinRegion(result, parallelogram);
@@ -167,7 +167,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 		return result;
 	}
 
-	protected void getElementsIntersectingLineSegment(Collection<T> result,
+	public void getElementsIntersectingLineSegment(Collection<T> result,
 			LineSegment lineSegment) {
 		if (topLeft != null) {
 			if (topLeft.intersects(lineSegment))
@@ -225,7 +225,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 		if (this.contains(moved))
 			return;
 
-		remove(moved);
+		removeElement(moved);
 
 		if (parent == null)
 			return;

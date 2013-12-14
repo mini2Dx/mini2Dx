@@ -125,7 +125,7 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 	}
 	
 	@Override
-	protected void getElementsWithinRegion(Collection<T> result, Parallelogram parallelogram) {
+	public void getElementsWithinRegion(Collection<T> result, Parallelogram parallelogram) {
 		if(topLeft != null) {
 			if(topLeft.contains(parallelogram) || topLeft.intersects(parallelogram))
 				topLeft.getElementsWithinRegion(result, parallelogram);
@@ -154,7 +154,7 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 	}
 	
 	@Override
-	protected void getElementsIntersectingLineSegment(Collection<T> result, LineSegment lineSegment) {
+	public void getElementsIntersectingLineSegment(Collection<T> result, LineSegment lineSegment) {
 		if(topLeft != null) {
 			if(topLeft.intersects(lineSegment))
 				topLeft.getElementsIntersectingLineSegment(result, lineSegment);
@@ -195,7 +195,7 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 		if(this.contains(moved) || this.intersects(moved))
 			return;
 		
-		remove(moved);
+		removeElement(moved);
 		
 		if(parent == null)
 			return;
