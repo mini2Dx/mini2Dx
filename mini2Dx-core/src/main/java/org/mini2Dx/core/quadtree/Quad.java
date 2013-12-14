@@ -227,10 +227,13 @@ public class Quad<T extends Positionable> extends Rectangle implements
 
 		removeElement(moved);
 
-		if (parent == null)
-			return;
-
-		parent.add(moved);
+		Quad<T> parentQuad = parent;
+		while (parentQuad != null) {
+			if(parentQuad.add(moved)) {
+				return;
+			}
+			parentQuad = parentQuad.getParent();
+		}
 	}
 
 	public Quad<T> getParent() {

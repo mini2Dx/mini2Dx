@@ -196,10 +196,13 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 			return;
 		
 		removeElement(moved);
-		
-		if(parent == null)
-			return;
-		
-		parent.add(moved);
+
+		Quad<T> parentQuad = parent;
+		while (parentQuad != null) {
+			if(parentQuad.add(moved)) {
+				return;
+			}
+			parentQuad = parentQuad.getParent();
+		}
 	}
 }
