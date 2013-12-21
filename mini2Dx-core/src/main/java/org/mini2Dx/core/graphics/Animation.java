@@ -27,6 +27,7 @@ public class Animation<T extends Sprite> {
 	private int currentFrameIndex;
 	private float elapsed;
 	private boolean looping;
+	private float rotation;
 
 	/**
 	 * Constructor
@@ -104,7 +105,9 @@ public class Animation<T extends Sprite> {
 	 *            The y coordinate to render at
 	 */
 	public void draw(Graphics g, float x, float y) {
-		g.drawSprite(getCurrentFrame(), x, y);
+		T sprite = getCurrentFrame();
+		sprite.setRotation(rotation);
+		g.drawSprite(sprite, x, y);
 	}
 	
 	/**
@@ -161,5 +164,30 @@ public class Animation<T extends Sprite> {
 	 */
 	public void setLooping(boolean looping) {
 		this.looping = looping;
+	}
+	
+	/**
+	 * Increases/decreases the rotation of all frames
+	 * @param degrees The amount in degrees to rotate by
+	 */
+	public void rotate(float degrees) {
+		this.rotation += degrees;
+		this.rotation = rotation % 360f;
+	}
+
+	/**
+	 * Returns the rotation of all frames
+	 * @return The rotation in degrees
+	 */
+	public float getRotation() {
+		return rotation;
+	}
+
+	/**
+	 * Sets the rotation of all frames
+	 * @param rotation The rotation in degrees
+	 */
+	public void setRotation(float rotation) {
+		this.rotation = rotation % 360f;
 	}
 }
