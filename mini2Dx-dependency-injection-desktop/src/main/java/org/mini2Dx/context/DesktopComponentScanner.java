@@ -19,12 +19,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.mini2Dx.context.ComponentScanner;
 import org.mini2Dx.injection.annotation.Prototype;
 import org.mini2Dx.injection.annotation.Singleton;
+import org.reflections.Reflections;
 
 /**
  * Standard JVM implementation of {@link ComponentScanner}
@@ -35,22 +36,21 @@ import org.mini2Dx.injection.annotation.Singleton;
 public class DesktopComponentScanner implements ComponentScanner {
 	private List<Class<?>> singletonClasses;
 	private List<Class<?>> prototypeClasses;
-	private ClassLoader classLoader;
 
 	/**
 	 * Constructor
 	 */
 	public DesktopComponentScanner() {
-		classLoader = Thread.currentThread().getContextClassLoader();
 		singletonClasses = new ArrayList<Class<?>>();
 		prototypeClasses = new ArrayList<Class<?>>();
 	}
 
 	/**
-	 * Scans multiple packages recursively for {@link Singleton} and {@link Prototype}
-	 * annotated classes
+	 * Scans multiple packages recursively for {@link Singleton} and
+	 * {@link Prototype} annotated classes
 	 * 
-	 * @param packageNames  The package name to scan through, e.g. org.mini2Dx.component
+	 * @param packageNames
+	 *            The package name to scan through, e.g. org.mini2Dx.component
 	 * @throws IOException
 	 */
 	public void scan(String[] packageNames) throws IOException {
@@ -63,101 +63,19 @@ public class DesktopComponentScanner implements ComponentScanner {
 	 * Scans a package recursively for {@link Singleton} and {@link Prototype}
 	 * annotated classes
 	 * 
-	 * @param packageName The package name to scan through, e.g. org.mini2Dx.component
+	 * @param packageName
+	 *            The package name to scan through, e.g. org.mini2Dx.component
 	 * @throws IOException
 	 */
 	private void scan(String packageName) throws IOException {
-		String path = packageName.replace('.', '/');
-		Enumeration<URL> resources = classLoader.getResources(path);
-		if (resources == null)
-			return;
+		Reflections reflections = new Reflections(packageName);
+		Set<Class<?>> singletons = reflections
+				.getTypesAnnotatedWith(Singleton.class);
+		singletonClasses.addAll(singletons);
 
-		while (resources.hasMoreElements()) {
-			String filePath = resources.nextElement().getFile();
-
-			/* Workaround for Windows-based OS */
-			if (filePath.indexOf("%20") > 0)
-				filePath = filePath.replaceAll("%20", " ");
-
-			if (filePath == null)
-				continue;
-
-			if (isFilePathForJar(filePath)) {
-				filePath = convertFilePathToJarPath(filePath);
-				addClassesFromJar(filePath, packageName);
-			} else {
-				addClassesFromDirectory(new File(filePath), packageName);
-			}
-		}
-	}
-
-	private boolean isFilePathForJar(String filePath) {
-		return ((filePath.indexOf("!") > 0) & (filePath.indexOf(".jar") > 0));
-	}
-
-	private String convertFilePathToJarPath(String filePath) {
-		String jarPath = filePath.substring(0, filePath.indexOf("!"))
-				.substring(filePath.indexOf(":") + 1);
-		if (jarPath.indexOf(":") >= 0)
-			jarPath = jarPath.substring(1);
-		return jarPath;
-	}
-
-	private void addClassesFromJar(String jarPath, String packageName)
-			throws IOException {
-		JarInputStream jarFile = new JarInputStream(
-				new FileInputStream(jarPath));
-		JarEntry jarEntry = jarFile.getNextJarEntry();
-
-		while (jarEntry != null) {
-			String className = jarEntry.getName();
-			if (className.endsWith(".class")) {
-				className = stripFilenameExtension(className);
-				if (className.startsWith(packageName)) {
-					checkClassForAnnotations(className);
-				}
-			}
-			jarEntry = jarFile.getNextJarEntry();
-		}
-		jarFile.close();
-	}
-
-	private void addClassesFromDirectory(File directory, String packageName) {
-		if (directory.exists()) {
-			for (File file : directory.listFiles()) {
-				if (file.isFile() && file.getPath().endsWith(".class")) {
-					String name = packageName + '.'
-							+ stripFilenameExtension(file.getName());
-					checkClassForAnnotations(name);
-				} else if (file.isDirectory()) {
-					addClassesFromDirectory(file,
-							packageName + "." + file.getName());
-				}
-			}
-		}
-	}
-
-	private void checkClassForAnnotations(String className) {
-		try {
-			className = className.replace('/', '.');
-			Class<?> clazz = Class.forName(className);
-			Annotation annotation = clazz.getAnnotation(Singleton.class);
-			if (annotation != null) {
-				singletonClasses.add(clazz);
-				return;
-			}
-
-			annotation = clazz.getAnnotation(Prototype.class);
-			if (annotation != null) {
-				prototypeClasses.add(clazz);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private String stripFilenameExtension(String className) {
-		return className.substring(0, className.indexOf('.'));
+		Set<Class<?>> prototypes = reflections
+				.getTypesAnnotatedWith(Prototype.class);
+		prototypeClasses.addAll(prototypes);
 	}
 
 	public List<Class<?>> getSingletonClasses() {

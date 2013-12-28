@@ -19,6 +19,10 @@
 			<artifactId>mini2Dx-dependency-injection</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.mini2Dx</groupId>
 			<artifactId>mini2Dx-dependency-injection</artifactId>
 			<type>test-jar</type>

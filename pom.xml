@@ -120,6 +120,13 @@
 				<artifactId>commons-lang3</artifactId>
 				<version>3.1</version>
 			</dependency>
+			
+			<!-- Reflections for Desktop Component Scan -->
+			<dependency>
+         		<groupId>org.reflections</groupId>
+         		<artifactId>reflections</artifactId>
+         		<version>0.9.9-RC1</version>
+     		</dependency>
 		</dependencies>
 	</dependencyManagement>
 
