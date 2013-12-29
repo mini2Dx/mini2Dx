@@ -14,13 +14,15 @@ package org.mini2Dx.core.quadtree;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.mini2Dx.core.engine.Parallelogram;
 import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Rectangle;
+import org.mini2Dx.core.graphics.Graphics;
+
+import com.badlogic.gdx.graphics.Color;
 
 /**
  * Implements a point quad
@@ -33,6 +35,9 @@ import org.mini2Dx.core.geom.Rectangle;
  */
 public class Quad<T extends Positionable> extends Rectangle implements
 		PositionChangeListener<T> {
+	public static Color QUAD_COLOR = new Color(1f, 0f, 0f, 0.5f);
+	public static Color ELEMENT_COLOR = new Color(0f, 0f, 1f, 0.5f);
+	
 	private static final long serialVersionUID = -2034928347848875105L;
 
 	protected Quad<T> parent;
@@ -50,6 +55,26 @@ public class Quad<T extends Positionable> extends Rectangle implements
 	public Quad(Quad<T> parent, float x, float y, float width, float height) {
 		this(parent.getElementLimitPerQuad(), x, y, width, height);
 		this.parent = parent;
+	}
+	
+	public void render(Graphics g) {
+		Color tmp = g.getColor();
+		g.setColor(QUAD_COLOR);
+		g.drawShape(this);
+		g.setColor(tmp);
+		if(topLeft != null) {
+			topLeft.render(g);
+			topRight.render(g);
+			bottomLeft.render(g);
+			bottomRight.render(g);
+		}
+		
+		tmp = g.getColor();
+		g.setColor(ELEMENT_COLOR);
+		for(T element : elements) {
+			g.fillRect(element.getX(), element.getY(), 1f, 1f);
+		}
+		g.setColor(tmp);
 	}
 
 	public boolean add(T element) {

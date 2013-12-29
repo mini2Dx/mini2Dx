@@ -19,6 +19,9 @@ import java.util.Set;
 
 import org.mini2Dx.core.engine.Parallelogram;
 import org.mini2Dx.core.geom.LineSegment;
+import org.mini2Dx.core.graphics.Graphics;
+
+import com.badlogic.gdx.graphics.Color;
 
 /**
  * Implements a region quad
@@ -37,6 +40,27 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 	
 	public RegionQuad(RegionQuad<T> parent, float x, float y, float width, float height) {
 		super(parent, x, y, width, height);
+	}
+	
+	@Override
+	public void render(Graphics g) {
+		Color tmp = g.getColor();
+		g.setColor(QUAD_COLOR);
+		g.drawShape(this);
+		g.setColor(tmp);
+		if(topLeft != null) {
+			topLeft.render(g);
+			topRight.render(g);
+			bottomLeft.render(g);
+			bottomRight.render(g);
+		}
+		
+		tmp = g.getColor();
+		g.setColor(ELEMENT_COLOR);
+		for(T element : elements) {
+			g.drawShape(element);
+		}
+		g.setColor(tmp);
 	}
 
 	@Override
