@@ -45,20 +45,22 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 	@Override
 	public void render(Graphics g) {
 		Color tmp = g.getColor();
-		g.setColor(QUAD_COLOR);
-		g.drawShape(this);
-		g.setColor(tmp);
+
 		if(topLeft != null) {
 			topLeft.render(g);
 			topRight.render(g);
 			bottomLeft.render(g);
 			bottomRight.render(g);
+		} else {
+			g.setColor(QUAD_COLOR);
+			g.drawRect(x, y, width, height);
+			g.setColor(tmp);
 		}
 		
 		tmp = g.getColor();
 		g.setColor(ELEMENT_COLOR);
 		for(T element : elements) {
-			g.drawShape(element);
+			g.drawRect(element.getX(), element.getY(), element.getWidth(), element.getHeight());
 		}
 		g.setColor(tmp);
 	}

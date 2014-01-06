@@ -59,14 +59,17 @@ public class Quad<T extends Positionable> extends Rectangle implements
 	
 	public void render(Graphics g) {
 		Color tmp = g.getColor();
-		g.setColor(QUAD_COLOR);
-		g.drawShape(this);
-		g.setColor(tmp);
+
 		if(topLeft != null) {
 			topLeft.render(g);
 			topRight.render(g);
 			bottomLeft.render(g);
 			bottomRight.render(g);
+		} else {
+			g.setColor(QUAD_COLOR);
+			g.drawShape(this);
+			g.drawRect(x, y, width, height);
+			g.setColor(tmp);
 		}
 		
 		tmp = g.getColor();
