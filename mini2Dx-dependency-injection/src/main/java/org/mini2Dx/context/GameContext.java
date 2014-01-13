@@ -59,6 +59,8 @@ public class GameContext {
 
 	public static <T> T getBean(Class<T> clazz) {
 		String classKey = Bean.getClassKey(clazz);
+		if(beans == null)
+			return null;
 		if(!beans.containsKey(classKey))
 			return null;
 		return (T) beans.get(classKey).getInstance();
