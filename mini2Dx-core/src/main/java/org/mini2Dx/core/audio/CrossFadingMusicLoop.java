@@ -94,11 +94,13 @@ public class CrossFadingMusicLoop implements Runnable {
 	 * Stops playing the loop
 	 */
 	public void stop() {
-		scheduledFuture.cancel(false);
-		while (!scheduledFuture.isDone()) {
-			try {
-				Thread.sleep(1);
-			} catch (Exception e) {
+		if(scheduledFuture != null) {
+			scheduledFuture.cancel(false);
+			while (!scheduledFuture.isDone()) {
+				try {
+					Thread.sleep(1);
+				} catch (Exception e) {
+				}
 			}
 		}
 		currentTrack.stop();
