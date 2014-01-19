@@ -56,7 +56,7 @@ public interface Entity {
 	 * @param clazz
 	 *            The {@link Class} to search for
 	 */
-	public <T extends Component> void removeAllComponentsOfType(Class<T> clazz);
+	public <T extends Component> List<T> removeAllComponentsOfType(Class<T> clazz);
 
 	/**
 	 * Adds an {@link EntityListener} to this {@link Entity}

@@ -151,7 +151,7 @@ public class UUIDEntity implements Entity {
 	 *            The {@link Class} to search for
 	 */
 	@Override
-	public <T extends Component> void removeAllComponentsOfType(Class<T> clazz) {
+	public <T extends Component> List<T> removeAllComponentsOfType(Class<T> clazz) {
 		String key = getClassKey(clazz);
 		List<T> componentsRemoved = components.remove(key);
 		checkConsistency(key, clazz);
@@ -163,6 +163,7 @@ public class UUIDEntity implements Entity {
 				}
 			}
 		}
+		return componentsRemoved;
 	}
 
 	/**

@@ -54,4 +54,15 @@ public class EntityTest {
 		Assert.assertEquals(1, results3.size());
 		Assert.assertEquals(testComponent1, results3.get(0));
 	}
+	
+	@Test
+	public void testRemoveAllComponentsOfType() {
+		entity.addComponent(testComponent1);
+		entity.addComponent(testComponent1);
+		entity.addComponent(testComponent2);
+		entity.addComponent(testComponent2);
+		
+		List<TestComponent1> componentsRemoved = entity.removeAllComponentsOfType(TestComponent1.class);
+		Assert.assertEquals(2, componentsRemoved.size());
+	}
 }

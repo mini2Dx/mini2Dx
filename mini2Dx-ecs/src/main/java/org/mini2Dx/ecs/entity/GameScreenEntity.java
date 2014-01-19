@@ -145,7 +145,7 @@ public abstract class GameScreenEntity implements Entity, GameScreen {
 	}
 
 	@Override
-	public <T extends Component> void removeAllComponentsOfType(Class<T> clazz) {
+	public <T extends Component> List<T> removeAllComponentsOfType(Class<T> clazz) {
 		String key = getClassKey(clazz);
 		List<T> componentsRemoved = components.remove(key);
 		checkConsistency(key, clazz);
@@ -157,6 +157,7 @@ public abstract class GameScreenEntity implements Entity, GameScreen {
 				}
 			}
 		}
+		return componentsRemoved;
 	}
 
 	@Override
