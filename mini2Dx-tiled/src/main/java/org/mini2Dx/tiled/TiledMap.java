@@ -388,6 +388,20 @@ public class TiledMap implements TiledParserListener {
 		}
 		return -1;
 	}
+	
+	/**
+	 * Returns the {@link Tile} for the given tile ID
+	 * @param tileId The tile ID to search for
+	 * @return Null if there is no {@link Tile} with the given ID
+	 */
+	public Tile getTile(int tileId) {
+		for(int i = 0; i < tilesets.size(); i++) {
+			if(tilesets.get(i).contains(tileId)) {
+				return tilesets.get(i).getTile(tileId);
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Returns the {@link Orientation} of this map
