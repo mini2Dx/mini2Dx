@@ -154,6 +154,14 @@ public class UUIDEntity implements Entity {
 	public <T extends Component> List<T> removeAllComponentsOfType(Class<T> clazz) {
 		String key = getClassKey(clazz);
 		List<T> componentsRemoved = components.remove(key);
+		
+		if(componentsRemoved == null)
+			return null;
+		
+		for (T component : componentsRemoved) {
+			removeSuperclassInterfaces(component);
+		}
+		
 		checkConsistency(key, clazz);
 
 		if (listeners != null) {
