@@ -70,6 +70,7 @@ public class Animation<T extends Sprite> {
 	 */
 	public void restart() {
 		currentFrameIndex = 0;
+		elapsed = 0f;
 	}
 
 	/**
