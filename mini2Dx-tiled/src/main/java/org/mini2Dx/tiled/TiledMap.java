@@ -197,6 +197,30 @@ public class TiledMap implements TiledParserListener {
 		drawLayer(g, tileLayers.get(layer), x, y, startTileX, startTileY,
 				width, height);
 	}
+	
+	/**
+	 * Developers can override this method which is called before a layer is rendered
+	 * 
+	 * To prevent the layer from rendering, return false from this method.
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context used for rendering
+	 * @param layer
+	 *            The {@link TileLayer} which was just rendered
+	 * @param startTileX
+	 *            The x coordinate in tiles where rendering started
+	 * @param startTileY
+	 *            The y coordinate in tiles where rendering started
+	 * @param width
+	 *            The amount of tiles that were rendered along the X axis
+	 * @param height
+	 *            The amount of tiles that were rendered along the Y axis
+	 * @return True if the layer should be rendered
+	 */
+	protected boolean preLayerRendered(Graphics g, TileLayer layer, int startTileX,
+			int startTileY, int width, int height) {
+		return true;
+	}
 
 	/**
 	 * Developers can override this method to implement sprite rendering
@@ -221,6 +245,9 @@ public class TiledMap implements TiledParserListener {
 
 	private void drawLayer(Graphics g, TileLayer layer, int renderX,
 			int renderY, int startTileX, int startTileY, int width, int height) {
+		if(!preLayerRendered(g, layer, startTileX, startTileY, width, height))
+			return;
+		
 		int startTileRenderX = (startTileX * getTileWidth());
 		int startTileRenderY = (startTileY * getTileHeight());
 		
