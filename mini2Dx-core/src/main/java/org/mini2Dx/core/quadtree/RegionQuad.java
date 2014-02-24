@@ -215,20 +215,4 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 		}
 		result.addAll(elements);
 	}
-	
-	@Override
-	public void positionChanged(T moved) {
-		if(this.contains(moved) || this.intersects(moved))
-			return;
-		
-		removeElement(moved);
-
-		Quad<T> parentQuad = parent;
-		while (parentQuad != null) {
-			if(parentQuad.add(moved)) {
-				return;
-			}
-			parentQuad = parentQuad.getParent();
-		}
-	}
 }

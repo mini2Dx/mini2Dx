@@ -114,6 +114,31 @@ public class RectangleTest implements PositionChangeListener<Rectangle> {
 	}
 	
 	@Test
+	public void testContainsParallelogram() {
+		rectangle1 = new Rectangle(0, 0, 50, 50);
+		rectangle2 = new Rectangle(50, 50, 50, 50);
+		
+		Assert.assertEquals(false, rectangle1.contains(rectangle2));
+		Assert.assertEquals(false, rectangle2.contains(rectangle1));
+		
+		rectangle2 = new Rectangle(25, 25, 50, 50);
+		Assert.assertEquals(false, rectangle1.contains(rectangle2));
+		Assert.assertEquals(false, rectangle2.contains(rectangle1));
+		
+		rectangle2 = new Rectangle(0, 0, 25, 25);
+		Assert.assertEquals(true, rectangle1.contains(rectangle2));
+		Assert.assertEquals(false, rectangle2.contains(rectangle1));
+		
+		rectangle2 = new Rectangle(15, 15, 25, 25);
+		Assert.assertEquals(true, rectangle1.contains(rectangle2));
+		Assert.assertEquals(false, rectangle2.contains(rectangle1));
+		
+		rectangle2 = new Rectangle(48, 48, 25, 25);
+		Assert.assertEquals(false, rectangle1.contains(rectangle2));
+		Assert.assertEquals(false, rectangle2.contains(rectangle1));
+	}
+	
+	@Test
 	public void testIntersectsLineSegement() {
 		rectangle1 = new Rectangle(2, 2, 4, 4);
 		LineSegment segment = new LineSegment(0, 0, 10, 10);
