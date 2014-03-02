@@ -32,13 +32,14 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		Parallelogram {
 	private static final long serialVersionUID = 4016090439885217620L;
 	private float rotation;
-	Point topLeft, topRight, bottomLeft, bottomRight, center;
+	Point topLeft, topRight, bottomLeft, bottomRight, center, rotationalCenter;
 	private float minX, minY, maxX, maxY;
 	private List<PositionChangeListener> positionChangeListeners;
 	private Lock positionChangeListenerLock;
 
 	/**
-	 * Default constructor. Creates a {@link Rectangle} at 0,0 with a width and height of 1
+	 * Default constructor. Creates a {@link Rectangle} at 0,0 with a width and
+	 * height of 1
 	 */
 	public Rectangle() {
 		this(0, 0, 1, 1);
@@ -46,10 +47,15 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 
 	/**
 	 * Constructor
-	 * @param x The x coordinate of the {@link Rectangle}
-	 * @param y The y coordinate of the {@link Rectangle}
-	 * @param width The width of the {@link Rectangle}
-	 * @param height The height of the {@link Rectangle}
+	 * 
+	 * @param x
+	 *            The x coordinate of the {@link Rectangle}
+	 * @param y
+	 *            The y coordinate of the {@link Rectangle}
+	 * @param width
+	 *            The width of the {@link Rectangle}
+	 * @param height
+	 *            The height of the {@link Rectangle}
 	 */
 	public Rectangle(float x, float y, float width, float height) {
 		super(x, y, width, height);
@@ -59,6 +65,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		bottomLeft = new Point(x, y + height);
 		bottomRight = new Point(x + width, y + height);
 		center = new Point(x + (width / 2f), y + (height / 2f));
+		rotationalCenter = topLeft;
 		recalculateMinMax();
 	}
 
@@ -132,7 +139,8 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		if (positionChangeListeners != null) {
 			positionChangeListenerLock.lock();
 			for (int i = positionChangeListeners.size() - 1; i >= 0; i--) {
-				PositionChangeListener listener = positionChangeListeners.get(i);
+				PositionChangeListener listener = positionChangeListeners
+						.get(i);
 				listener.positionChanged(this);
 			}
 			positionChangeListenerLock.unlock();
@@ -154,16 +162,17 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	public void setRotation(float degrees) {
 		setRotationAround(topLeft, degrees);
 	}
-	
+
 	/**
 	 * @see Parallelogram#setRotationAround(Point, float)
 	 */
 	@Override
 	public void setRotationAround(Point center, float degrees) {
 		degrees = degrees % 360;
-		performRotation(center, -rotation);
+		performRotation(-rotation);
 		rotation = degrees;
-		performRotation(center, rotation);
+		rotationalCenter = center;
+		performRotation(rotation);
 		recalculateMinMax();
 		notifyPositionChangeListeners();
 	}
@@ -181,23 +190,24 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	 */
 	@Override
 	public void rotateAround(Point center, float degrees) {
-		performRotation(center, degrees);
+		rotationalCenter = center;
+		performRotation(degrees);
 		rotation += (degrees % 360);
 		recalculateMinMax();
 		notifyPositionChangeListeners();
 	}
 
-	private void performRotation(Point center, float degrees) {
-		if(degrees == 0)
+	private void performRotation(float degrees) {
+		if (degrees == 0)
 			return;
-		
-		topRight.rotateAround(center, degrees);
-		bottomLeft.rotateAround(center, degrees);
-		bottomRight.rotateAround(center, degrees);
-		this.center.rotateAround(center, degrees);
 
-		if (!center.equals(topLeft)) {
-			topLeft.rotateAround(center, degrees);
+		topRight.rotateAround(rotationalCenter, degrees);
+		bottomLeft.rotateAround(rotationalCenter, degrees);
+		bottomRight.rotateAround(rotationalCenter, degrees);
+		this.center.rotateAround(rotationalCenter, degrees);
+
+		if (!rotationalCenter.equals(topLeft)) {
+			topLeft.rotateAround(rotationalCenter, degrees);
 		}
 		super.setX(topLeft.x);
 		super.setY(topLeft.y);
@@ -229,7 +239,9 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 
 	/**
 	 * Returns if the specified {@link Rectangle} intersects this one
-	 * @param rectangle The {@link Rectangle} to test for intersection
+	 * 
+	 * @param rectangle
+	 *            The {@link Rectangle} to test for intersection
 	 * @return True if the {@link Rectangle}s intersect
 	 */
 	public boolean intersects(Rectangle rectangle) {
@@ -315,15 +327,15 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	 */
 	@Override
 	public boolean contains(Positionable positionable) {
-		performRotation(topLeft, -rotation);
-		
+		performRotation(-rotation);
+
 		Point point = new Point(positionable.getX(), positionable.getY());
 		point.rotateAround(topLeft, -rotation);
-		
+
 		float thisX = getX();
 		float thisY = getY();
-		
-		performRotation(topLeft, rotation);
+
+		performRotation(rotation);
 
 		if (point.x < thisX) {
 			return false;
@@ -357,81 +369,85 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 			g.drawRect(topLeft.x, topLeft.y, width, height);
 			return;
 		}
-
-		// TODO: Draw rotated rectangle
+		g.drawLineSegment(topLeft.x, topLeft.y, topRight.x, topRight.y);
+		g.drawLineSegment(topRight.x, topRight.y, bottomRight.x, bottomRight.y);
+		g.drawLineSegment(bottomLeft.x, bottomLeft.y, bottomRight.x,
+				bottomRight.y);
+		g.drawLineSegment(topLeft.x, topLeft.y, bottomLeft.x, bottomLeft.y);
 	}
 
 	@Override
 	public void set(float x, float y, float width, float height) {
-		performRotation(topLeft, -rotation);
+		performRotation(-rotation);
 		super.set(x, y, width, height);
 		recalculateCoordinates();
-		performRotation(topLeft, rotation);
+		performRotation(rotation);
 		recalculateMinMax();
 		notifyPositionChangeListeners();
 	}
 
 	public void set(Rectangle rectangle) {
-		performRotation(topLeft, -rotation);
+		performRotation(-rotation);
 		super.set(rectangle);
 		recalculateCoordinates();
-		performRotation(topLeft, rotation);
+		performRotation(rotation);
 		recalculateMinMax();
 		notifyPositionChangeListeners();
 	}
 
 	@Override
 	public void set(com.badlogic.gdx.math.Rectangle rectangle) {
-		performRotation(topLeft, -rotation);
+		performRotation(-rotation);
 		super.set(rectangle);
 		recalculateCoordinates();
-		performRotation(topLeft, rotation);
+		performRotation(rotation);
 		recalculateMinMax();
 		notifyPositionChangeListeners();
 	}
 
 	@Override
 	public void setX(float x) {
-		performRotation(topLeft, -rotation);
+		performRotation(-rotation);
 		super.setX(x);
 		recalculateCoordinates();
-		performRotation(topLeft, rotation);
+		performRotation(rotation);
 		recalculateMinMax();
 		notifyPositionChangeListeners();
 	}
 
 	@Override
 	public void setY(float y) {
-		performRotation(topLeft, -rotation);
+		performRotation(-rotation);
 		super.setY(y);
 		recalculateCoordinates();
-		performRotation(topLeft, rotation);
+		performRotation(rotation);
 		recalculateMinMax();
 		notifyPositionChangeListeners();
 	}
 
 	@Override
 	public void setWidth(float width) {
-		performRotation(topLeft, -rotation);
+		performRotation(-rotation);
 		super.setWidth(width);
 		recalculateCoordinates();
-		performRotation(topLeft, rotation);
+		performRotation(rotation);
 		recalculateMinMax();
 		notifyPositionChangeListeners();
 	}
 
 	@Override
 	public void setHeight(float height) {
-		performRotation(topLeft, -rotation);
+		performRotation(-rotation);
 		super.setHeight(height);
 		recalculateCoordinates();
-		performRotation(topLeft, rotation);
+		performRotation(rotation);
 		recalculateMinMax();
 		notifyPositionChangeListeners();
 	}
 
 	/**
 	 * Returns the x coordinate of the center of this {@link Rectangle}
+	 * 
 	 * @return
 	 */
 	public float getCenterX() {
@@ -440,6 +456,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 
 	/**
 	 * Returns the y coordinate of the center of this {@link Rectangle}
+	 * 
 	 * @return
 	 */
 	public float getCenterY() {
@@ -448,6 +465,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 
 	/**
 	 * Returns the least x coordinate this {@link Rectangle}
+	 * 
 	 * @return
 	 */
 	public float getMinX() {
@@ -456,6 +474,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 
 	/**
 	 * Returns the least y coordinate this {@link Rectangle}
+	 * 
 	 * @return
 	 */
 	public float getMinY() {
@@ -464,6 +483,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 
 	/**
 	 * Returns the greatest x coordinate this {@link Rectangle}
+	 * 
 	 * @return
 	 */
 	public float getMaxX() {
@@ -472,6 +492,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 
 	/**
 	 * Returns the greatest y coordinate this {@link Rectangle}
+	 * 
 	 * @return
 	 */
 	public float getMaxY() {

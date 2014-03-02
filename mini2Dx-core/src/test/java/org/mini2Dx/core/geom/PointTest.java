@@ -48,4 +48,19 @@ public class PointTest {
 		Assert.assertEquals(false, point1.isOnLineBetween(point2, point3));
 		Assert.assertEquals(false, point2.isOnLineBetween(point3, point1));
 	}
+	
+	@Test
+	public void testRotateAround() {
+		point1.set(0, 0);
+		point2.set(10, 0);
+		
+		point2.rotateAround(point1, 90f);
+		Assert.assertEquals(10f, point2.getY());
+		
+		point1.set(10, 0);
+		point2.set(20, 0);
+		
+		point2.rotateAround(point1, 90f);
+		Assert.assertEquals(10f, point2.getY());
+	}
 }

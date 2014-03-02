@@ -104,7 +104,11 @@ public class GraphicsUAT extends BasicGame {
 		g.drawSprite(sprite);
 		g.drawSprite(sprite, 512, 64);
 		
+		g.drawLineSegment(512, 128, 620, 160);
+		
 		animation.draw(g, 512, 128);
+		
+		g.drawLineSegment(512, 160, 620, 224);
 	}
 
 	@Override

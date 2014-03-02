@@ -72,16 +72,15 @@ public class Point extends Vector2 implements Positionable {
 		if(degrees == 0)
 			return;
 		
-		float cos = MathUtils.cosDeg(degrees);
-		float sin = MathUtils.sinDeg(degrees);
+		float cos = MathUtils.cos(degrees * MathUtils.degreesToRadians);
+		float sin = MathUtils.sin(degrees * MathUtils.degreesToRadians);
 		
-		x -= center.x;
-		y -= center.y;
-		
-		float newX = x * cos - y * sin;
-		float newY = x * sin + y * cos;
+		float newX =  (cos * (x - center.x) -
+	            sin * (y - center.y) + center.x);
+		float newY = (sin * (x - center.x) +
+	            cos * (y - center.y) + center.y);
 
-		set(newX + center.x, newY + center.y);
+		set(newX, newY);
 	}
 
 	/**
