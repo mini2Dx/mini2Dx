@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
  * Unit tests for {@link Graphics}
@@ -30,6 +31,7 @@ public class GraphicsTest {
 	private Mockery mockery;
 	
 	private SpriteBatch spriteBatch;
+	private ShapeRenderer shapeRenderer;
 	private Graphics graphics;
 	
 	@Before
@@ -37,6 +39,7 @@ public class GraphicsTest {
 		mockery = new Mockery();
 		mockery.setImposteriser(ClassImposteriser.INSTANCE);
 		spriteBatch = mockery.mock(SpriteBatch.class);
+		shapeRenderer = mockery.mock(ShapeRenderer.class);
 		
 		mockery.checking(new Expectations() {
 			{
@@ -45,7 +48,7 @@ public class GraphicsTest {
 			}
 		});
 		
-		graphics = new Graphics(spriteBatch);
+		graphics = new Graphics(spriteBatch, shapeRenderer);
 	}
 
 	@Test

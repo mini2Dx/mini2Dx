@@ -24,6 +24,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -37,6 +39,7 @@ public class Graphics {
 	private Color color, backgroundColor, tint, defaultTint;
 	private SpriteBatch spriteBatch;
 	private ShapeTextureCache colorTextureCache;
+	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 	private BitmapFont font;
 
@@ -46,11 +49,13 @@ public class Graphics {
 	private float currentWidth, currentHeight;
 
 	private int lineHeight;
-	private boolean rendering;
+	private boolean rendering, renderingShapes;
 	private Rectangle clip;
 
-	public Graphics(SpriteBatch spriteBatch) {
+	public Graphics(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
 		this.spriteBatch = spriteBatch;
+		this.shapeRenderer = shapeRenderer;
+		
 		defaultTint = spriteBatch.getColor();
 		if (defaultTint != null) {
 			font = new BitmapFont(true);
@@ -98,6 +103,28 @@ public class Graphics {
 	public void postRender() {
 		endRendering();
 		resetTransformations();
+	}
+	
+	/**
+	 * Renders a line segment to the window in the current {@link Color} with the
+	 * set line height
+	 * 
+	 * @param x1 X coordinate of point A
+	 * @param y1 Y coordinate of point A
+	 * @param x2 X coordinate of point B
+	 * @param y2 Y coordinate of point B
+	 */
+	public void drawLineSegment(float x1, float y1, float x2, float y2) {
+		beginRendering();
+		endRendering();
+		
+		/* TODO: Move all shape rendering over to using ShapeRenderer */
+		renderingShapes = true;
+		shapeRenderer.begin(ShapeType.Line);
+		shapeRenderer.setColor(color);
+		shapeRenderer.line(x1, y1, x2, y2);
+		
+		beginRendering();
 	}
 
 	/**
@@ -486,12 +513,16 @@ public class Graphics {
 		if (rendering) {
 			undoTransformations();
 			spriteBatch.end();
+			if(renderingShapes) {
+				shapeRenderer.end();
+			}
 
 			if (clip != null) {
 				Gdx.gl.glDisable(GL10.GL_STENCIL_TEST);
 			}
 		}
 		rendering = false;
+		renderingShapes = false;
 	}
 
 	/**
@@ -516,6 +547,7 @@ public class Graphics {
 		camera.update();
 		
 		spriteBatch.setProjectionMatrix(camera.combined);
+		shapeRenderer.setProjectionMatrix(camera.combined);
 	}
 
 	/**

@@ -16,6 +16,7 @@ import org.mini2Dx.core.graphics.Graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
  * Base class for mini2Dx game containers. All games using mini2Dx must extend
@@ -31,6 +32,7 @@ public abstract class GameContainer implements Screen {
 	protected int width, height;
 	protected Graphics graphics;
 	protected SpriteBatch spriteBatch;
+	protected ShapeRenderer shapeRenderer;
 	private boolean isInitialised = false;
 	
 	/**
@@ -85,7 +87,9 @@ public abstract class GameContainer implements Screen {
 	 */
 	protected void preinit() {
 		this.spriteBatch = new SpriteBatch();
-		this.graphics = new Graphics(spriteBatch);
+		this.shapeRenderer = new ShapeRenderer();
+		
+		this.graphics = new Graphics(spriteBatch, shapeRenderer);
 	}
 	
 	/**
