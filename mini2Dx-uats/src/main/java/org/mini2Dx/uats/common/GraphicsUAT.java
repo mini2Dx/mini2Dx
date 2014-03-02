@@ -53,11 +53,15 @@ public class GraphicsUAT extends BasicGame {
 		
 		animation = new Animation<Sprite>();
 		animation.addFrame(sprite, 1000);
+		animation.setOriginX(sprite.getWidth() / 2f);
+		animation.setOriginY(0f);
 	}
 
 	@Override
 	public void update(float delta) {
 		rotation += 180f * delta;
+		
+		animation.setRotation(rotation);
 	}
 	
 	@Override

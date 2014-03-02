@@ -28,6 +28,8 @@ public class Animation<T extends Sprite> {
 	private float elapsed;
 	private boolean looping;
 	private float rotation;
+	private float originX;
+	private float originY;
 
 	/**
 	 * Constructor
@@ -51,6 +53,8 @@ public class Animation<T extends Sprite> {
 	public void addFrame(T frame, float duration) {
 		durations.add(duration);
 		frames.add(frame);
+		originX = frame.getOriginX();
+		originY = frame.getOriginY();
 	}
 
 	/**
@@ -107,8 +111,10 @@ public class Animation<T extends Sprite> {
 	 */
 	public void draw(Graphics g, float x, float y) {
 		T sprite = getCurrentFrame();
+		sprite.setOrigin(originX, originY);
 		sprite.setRotation(rotation);
 		g.drawSprite(sprite, x, y);
+		sprite.setRotation(0f);
 	}
 	
 	/**
@@ -190,5 +196,21 @@ public class Animation<T extends Sprite> {
 	 */
 	public void setRotation(float rotation) {
 		this.rotation = rotation % 360f;
+	}
+
+	public float getOriginX() {
+		return originX;
+	}
+
+	public void setOriginX(float originX) {
+		this.originX = originX;
+	}
+
+	public float getOriginY() {
+		return originY;
+	}
+
+	public void setOriginY(float originY) {
+		this.originY = originY;
 	}
 }
