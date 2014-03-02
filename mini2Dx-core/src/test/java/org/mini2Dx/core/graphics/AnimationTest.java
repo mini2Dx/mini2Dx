@@ -13,6 +13,10 @@ package org.mini2Dx.core.graphics;
 
 import junit.framework.Assert;
 
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,21 +29,41 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
  */
 public class AnimationTest {
 	private Animation<Sprite> animation;
+	private Mockery mockery;
+	
+	private Sprite sprite;
 
 	@Before
 	public void setup() {
+		mockery = new Mockery();
+		mockery.setImposteriser(ClassImposteriser.INSTANCE);
+		sprite = mockery.mock(Sprite.class);
+		mockery.checking(new Expectations(){
+			{
+				exactly(5).of(sprite).getOriginX();
+				will(returnValue(1f));
+				exactly(5).of(sprite).getOriginY();
+				will(returnValue(1f));
+			}
+		});
+		
 		animation = new Animation<Sprite>();
 
 		for (int i = 0; i < 5; i++) {
-			animation.addFrame(null, 0.5f);
+			animation.addFrame(sprite, 0.5f);
 		}
 		
 		Assert.assertEquals(0, animation.getCurrentFrameIndex());
 		Assert.assertEquals(5, animation.getNumberOfFrames());
 	}
+	
+	@After
+	public void teardown() {
+		mockery.assertIsSatisfied();
+	}
 
 	@Test
-	public void testUpdateByLessThanOneFrame() {
+	public void testUpdateByLessThanOneFrame() {		
 		Assert.assertEquals(0, animation.getCurrentFrameIndex());
 		animation.update(0.1f);
 		Assert.assertEquals(0, animation.getCurrentFrameIndex());
