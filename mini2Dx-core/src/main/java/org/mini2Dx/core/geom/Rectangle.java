@@ -69,6 +69,25 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		recalculateMinMax();
 	}
 
+	/**
+	 * Renders this {@link Rectangle} and the {@link LineSegment}s between each
+	 * of its point and its rotational center
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context to render to
+	 */
+	public void debug(Graphics g) {
+		this.draw(g);
+		g.drawLineSegment(topLeft.x, topLeft.y, rotationalCenter.x,
+				rotationalCenter.y);
+		g.drawLineSegment(topRight.x, topRight.y, rotationalCenter.x,
+				rotationalCenter.y);
+		g.drawLineSegment(bottomLeft.x, bottomLeft.y, rotationalCenter.x,
+				rotationalCenter.y);
+		g.drawLineSegment(bottomRight.x, bottomRight.y, rotationalCenter.x,
+				rotationalCenter.y);
+	}
+
 	private void recalculateCoordinates() {
 		topLeft.set(x, y);
 		topRight.set(x + width, y);
