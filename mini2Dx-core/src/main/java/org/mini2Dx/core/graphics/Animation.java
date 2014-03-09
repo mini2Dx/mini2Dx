@@ -14,6 +14,7 @@ package org.mini2Dx.core.graphics;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 /**
@@ -30,6 +31,7 @@ public class Animation<T extends Sprite> {
 	private float rotation;
 	private float originX;
 	private float originY;
+	private Color tint;
 
 	/**
 	 * Constructor
@@ -53,6 +55,8 @@ public class Animation<T extends Sprite> {
 	public void addFrame(T frame, float duration) {
 		durations.add(duration);
 		frames.add(frame);
+		if(tint == null)
+			tint = frame.getColor();
 		originX = frame.getOriginX();
 		originY = frame.getOriginY();
 	}
@@ -113,6 +117,7 @@ public class Animation<T extends Sprite> {
 		T sprite = getCurrentFrame();
 		sprite.setOrigin(originX, originY);
 		sprite.setRotation(rotation);
+		sprite.setColor(tint);
 		g.drawSprite(sprite, x, y);
 		sprite.setRotation(0f);
 	}
@@ -198,19 +203,69 @@ public class Animation<T extends Sprite> {
 		this.rotation = rotation % 360f;
 	}
 
+	/**
+	 * Returns the {@link Color} tint applied to each frame
+	 * @return
+	 */
+	public Color getTint() {
+		return tint;
+	}
+
+	/**
+	 * Sets the {@link Color} tint applied to each frame
+	 * @param tint
+	 */
+	public void setTint(Color tint) {
+		if(tint == null)
+			return;
+		this.tint = tint;
+	}
+
+	/**
+	 * Returns the origin X coordinate to be applied to each frame
+	 * @return
+	 */
 	public float getOriginX() {
 		return originX;
 	}
 
+	/**
+	 * Sets the origin X coordinate to be applied to each frame
+	 * @param originX
+	 */
 	public void setOriginX(float originX) {
 		this.originX = originX;
 	}
 
+	/**
+	 * Returns the origin Y coordinate to be applied to each frame
+	 * @return
+	 */
 	public float getOriginY() {
 		return originY;
 	}
 
+	/**
+	 * Sets the origin Y coordinate to be applied to each frame
+	 * @param originY
+	 */
 	public void setOriginY(float originY) {
 		this.originY = originY;
+	}
+	
+	/**
+	 * Returns if this animation has finished
+	 * 
+	 * If this is a looping animation, this method always returns false
+	 * 
+	 * @return True if animation has finished
+	 */
+	public boolean isFinished() {
+		if(looping) {
+			return false;
+		}
+		if(currentFrameIndex != frames.size() - 1)
+			return false;
+		return elapsed >= durations.get(currentFrameIndex);
 	}
 }

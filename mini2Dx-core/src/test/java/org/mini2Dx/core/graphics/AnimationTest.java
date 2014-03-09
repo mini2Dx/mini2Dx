@@ -20,6 +20,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 /**
@@ -44,6 +45,8 @@ public class AnimationTest {
 				will(returnValue(1f));
 				exactly(5).of(sprite).getOriginY();
 				will(returnValue(1f));
+				exactly(1).of(sprite).getColor();
+				will(returnValue(Color.WHITE));
 			}
 		});
 		
