@@ -17,6 +17,7 @@ import org.mini2Dx.core.geom.Rectangle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -48,6 +49,8 @@ public class Graphics {
 	private float rotation, rotationX, rotationY;
 	private float currentWidth, currentHeight;
 
+	private int defaultBlendSrcFunc = GL20.GL_SRC_ALPHA,
+			defaultBlendDstFunc = GL20.GL_ONE_MINUS_SRC_ALPHA;
 	private int lineHeight;
 	private boolean rendering, renderingShapes;
 	private Rectangle clip;
@@ -55,7 +58,7 @@ public class Graphics {
 	public Graphics(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
 		this.spriteBatch = spriteBatch;
 		this.shapeRenderer = shapeRenderer;
-		
+
 		defaultTint = spriteBatch.getColor();
 		if (defaultTint != null) {
 			font = new BitmapFont(true);
@@ -103,27 +106,32 @@ public class Graphics {
 	public void postRender() {
 		endRendering();
 		resetTransformations();
+		spriteBatch.setBlendFunction(defaultBlendSrcFunc, defaultBlendDstFunc);
 	}
-	
+
 	/**
-	 * Renders a line segment to the window in the current {@link Color} with the
-	 * set line height
+	 * Renders a line segment to the window in the current {@link Color} with
+	 * the set line height
 	 * 
-	 * @param x1 X coordinate of point A
-	 * @param y1 Y coordinate of point A
-	 * @param x2 X coordinate of point B
-	 * @param y2 Y coordinate of point B
+	 * @param x1
+	 *            X coordinate of point A
+	 * @param y1
+	 *            Y coordinate of point A
+	 * @param x2
+	 *            X coordinate of point B
+	 * @param y2
+	 *            Y coordinate of point B
 	 */
 	public void drawLineSegment(float x1, float y1, float x2, float y2) {
 		beginRendering();
 		endRendering();
-		
+
 		/* TODO: Move all shape rendering over to using ShapeRenderer */
 		renderingShapes = true;
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(color);
 		shapeRenderer.line(x1, y1, x2, y2);
-		
+
 		beginRendering();
 	}
 
@@ -269,10 +277,12 @@ public class Graphics {
 				textureRegion.getRegionWidth(),
 				textureRegion.getRegionHeight(), 1f, 1f, 0);
 	}
-	
+
 	/**
 	 * Draws an instance of {@link Shape}
-	 * @param shape The implementation of {@link Shape} to draw
+	 * 
+	 * @param shape
+	 *            The implementation of {@link Shape} to draw
 	 */
 	public void drawShape(Shape shape) {
 		shape.draw(this);
@@ -307,7 +317,7 @@ public class Graphics {
 		float oldY = sprite.getY();
 		Color oldTint = sprite.getColor();
 
-		if(tint != null)
+		if (tint != null)
 			sprite.setColor(tint);
 		sprite.setPosition(x, y);
 		sprite.draw(spriteBatch);
@@ -471,6 +481,44 @@ public class Graphics {
 	}
 
 	/**
+	 * Enables blending during rendering
+	 */
+	public void enabledBlending() {
+		spriteBatch.enableBlending();
+	}
+
+	/**
+	 * Disables blending during rendering
+	 */
+	public void disableBlending() {
+		spriteBatch.disableBlending();
+	}
+
+	/**
+	 * Sets the blend function to be applied
+	 * 
+	 * <a href=
+	 * "http://lessie2d.tumblr.com/post/28673280483/opengl-blend-function-cheat-sheet-well-this-is"
+	 * >OpenGL Blend Function Cheatsheet</a>
+	 * 
+	 * @param srcFunc
+	 *            Source GL function
+	 * @param dstFunc
+	 *            Destination GL function
+	 */
+	public void setBlendFunction(int srcFunc, int dstFunc) {
+		spriteBatch.setBlendFunction(srcFunc, dstFunc);
+	}
+
+	/**
+	 * Immediately flushes everything rendered rather than waiting until the end
+	 * of rendering
+	 */
+	public void flush() {
+		spriteBatch.flush();
+	}
+
+	/**
 	 * This method allows for translation, scaling, etc. to be set before the
 	 * {@link SpriteBatch} begins
 	 */
@@ -513,7 +561,7 @@ public class Graphics {
 		if (rendering) {
 			undoTransformations();
 			spriteBatch.end();
-			if(renderingShapes) {
+			if (renderingShapes) {
 				shapeRenderer.end();
 			}
 
@@ -528,24 +576,23 @@ public class Graphics {
 	/**
 	 * Applies all translation, scaling and rotation to the {@link SpriteBatch}
 	 */
-	private void applyTransformations() {	
+	private void applyTransformations() {
 		float viewportWidth = MathUtils.round(currentWidth / scaleX);
 		float viewportHeight = MathUtils.round(currentHeight / scaleY);
-		
+
 		camera.setToOrtho(true, viewportWidth, viewportHeight);
-		
+
 		if (translationX != 0f || translationY != 0f) {
-			camera.translate(translationX,
-					translationY);
+			camera.translate(translationX, translationY);
 		}
 		camera.update();
-		
+
 		if (rotation != 0f) {
 			camera.rotateAround(new Vector3(rotationX, rotationY, 0),
 					new Vector3(0, 0, 1), -rotation);
 		}
 		camera.update();
-		
+
 		spriteBatch.setProjectionMatrix(camera.combined);
 		shapeRenderer.setProjectionMatrix(camera.combined);
 	}
@@ -554,16 +601,15 @@ public class Graphics {
 	 * Cleans up all translations, scaling and rotation
 	 */
 	private void undoTransformations() {
-		
+
 		if (rotation != 0f) {
-		camera.rotateAround(new Vector3(rotationX, rotationY, 0), new Vector3(
-				0, 0, 1), rotation);
+			camera.rotateAround(new Vector3(rotationX, rotationY, 0),
+					new Vector3(0, 0, 1), rotation);
 		}
 		camera.update();
-		
+
 		if (translationX != 0f || translationY != 0f) {
-			camera.translate(-translationX,
-					-translationY);
+			camera.translate(-translationX, -translationY);
 		}
 		camera.update();
 	}
@@ -672,7 +718,7 @@ public class Graphics {
 	public float getTranslationY() {
 		return translationY;
 	}
-	
+
 	public float getRotation() {
 		return rotation;
 	}
@@ -684,7 +730,7 @@ public class Graphics {
 	public float getRotationY() {
 		return rotationY;
 	}
-	
+
 	public Matrix4 getProjectionMatrix() {
 		return camera.combined.cpy();
 	}
