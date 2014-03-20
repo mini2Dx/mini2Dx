@@ -44,8 +44,8 @@ public class BlendingUAT extends BasicGame {
 		//g.drawTexture(texture, 0, 0);
 		
 		/* Render shadow over everything */
-		g.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		Color shadow = new Color(1, 1, 1, 0.5f);
+		g.setBlendFunction(GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		Color shadow = new Color(1, 1, 1, 0.9f);
 		g.setColor(shadow);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		
