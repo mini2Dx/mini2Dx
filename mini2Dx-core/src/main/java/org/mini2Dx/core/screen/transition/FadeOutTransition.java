@@ -67,8 +67,8 @@ public class FadeOutTransition implements Transition {
 	@Override
 	public void update(GameContainer gc, float delta) {
 		color.a += (delta * 1.0f) / duration;
-		if (color.a > 1) {
-			color.a = 1;
+		if (color.a > 1f) {
+			color.a = 1f;
 		}
 	}
 

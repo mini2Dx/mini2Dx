@@ -56,7 +56,7 @@ public class FadeInTransition implements Transition {
 	 */
 	public FadeInTransition(Color color, float duration) {
 		this.color = color;
-		this.color.a = 0f;
+		this.color.a = 1f;
 		this.duration = duration;
 	}
 
