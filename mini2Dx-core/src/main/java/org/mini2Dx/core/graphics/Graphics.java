@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
@@ -43,6 +44,7 @@ public class Graphics {
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 	private BitmapFont font;
+	private ShaderProgram defaultShader;
 
 	private float translationX, translationY;
 	private float scaleX, scaleY;
@@ -98,6 +100,10 @@ public class Graphics {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_STENCIL_BUFFER_BIT);
 
 		rendering = false;
+		
+		if(defaultShader == null) {
+			defaultShader = SpriteBatch.createDefaultShader();
+		}
 	}
 
 	/**
@@ -106,6 +112,7 @@ public class Graphics {
 	public void postRender() {
 		endRendering();
 		resetTransformations();
+		spriteBatch.setShader(defaultShader);
 		spriteBatch.setBlendFunction(defaultBlendSrcFunc, defaultBlendDstFunc);
 	}
 
@@ -492,6 +499,21 @@ public class Graphics {
 	 */
 	public void disableBlending() {
 		spriteBatch.disableBlending();
+	}
+	
+	/**
+	 * Applies a {@link ShaderProgram} to this instance
+	 * @param shaderProgram The {@link ShaderProgram} to apply
+	 */
+	public void setShaderProgram(ShaderProgram shaderProgram) {
+		spriteBatch.setShader(shaderProgram);
+	}
+	
+	/**
+	 * Clears the {@link ShaderProgram} applied to this instance
+	 */
+	public void clearShaderProgram() {
+		spriteBatch.setShader(defaultShader);
 	}
 
 	/**
