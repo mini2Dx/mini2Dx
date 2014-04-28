@@ -1,6 +1,8 @@
 mini2Dx
 =======
 
+[![Build Status](http://mini2dx.org/jenkins/job/mini2Dx/badge/icon)](http://mini2dx.org/jenkins/job/mini2Dx/)
+
 A high-level game development API for LibGDX inspired by Slick
 
 *   [Official Website](http://mini2Dx.org/)
