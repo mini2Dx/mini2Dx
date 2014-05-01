@@ -17,6 +17,10 @@ import org.mini2Dx.ecs.component.Component;
  * An implementation of {@link Component} for testing purposes
  * @author Thomas Cashman
  */
-public class TestComponent2 implements Component {
+public class TestComponent2 extends Component {
+
+	public TestComponent2(String name) {
+		super(name);
+	}
 
 }

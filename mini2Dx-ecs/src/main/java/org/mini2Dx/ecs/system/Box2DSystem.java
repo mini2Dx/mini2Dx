@@ -12,6 +12,7 @@
 package org.mini2Dx.ecs.system;
 
 import java.util.List;
+import java.util.SortedSet;
 
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
@@ -54,7 +55,7 @@ public abstract class Box2DSystem extends UUIDSystem {
 
 	@Override
 	public void update(UUIDEntity entity, GameContainer gc, float delta) {
-		List<PositionTracker> positionTrackers = entity
+		SortedSet<PositionTracker> positionTrackers = entity
 				.getComponents(PositionTracker.class);
 		for (PositionTracker tracker : positionTrackers) {
 			tracker.update();
@@ -63,7 +64,7 @@ public abstract class Box2DSystem extends UUIDSystem {
 
 	@Override
 	public void interpolate(UUIDEntity entity, GameContainer gc, float alpha) {
-		List<PositionTracker> positionTrackers = entity
+		SortedSet<PositionTracker> positionTrackers = entity
 				.getComponents(PositionTracker.class);
 		for (PositionTracker tracker : positionTrackers) {
 			tracker.interpolate(alpha);
@@ -72,7 +73,7 @@ public abstract class Box2DSystem extends UUIDSystem {
 
 	@Override
 	public void render(UUIDEntity entity, GameContainer gc, Graphics g) {
-		List<PositionTracker> positionTrackers = entity
+		SortedSet<PositionTracker> positionTrackers = entity
 				.getComponents(PositionTracker.class);
 		for (PositionTracker tracker : positionTrackers) {
 			render(entity, tracker.getBody(), tracker.getRenderX(),
@@ -102,8 +103,8 @@ public abstract class Box2DSystem extends UUIDSystem {
 	@Override
 	public void removeEntity(UUIDEntity entity) {
 		super.removeEntity(entity);
-		List<Body> bodies = entity.getComponents(Body.class);
-		List<Joint> joints = entity.getComponents(Joint.class);
+		SortedSet<Body> bodies = entity.getComponents(Body.class);
+		SortedSet<Joint> joints = entity.getComponents(Joint.class);
 		for (Body body : bodies) {
 			world.destroyBody(body);
 		}

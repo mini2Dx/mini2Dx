@@ -22,13 +22,16 @@ import com.badlogic.gdx.physics.box2d.Body;
  * 
  * @author Thomas Cashman
  */
-public class PositionTracker implements Component {
+public class PositionTracker extends Component {
+	public static final String NAME = "positionTracker";
+	
 	private Point currentPosition;
 	private Point previousPosition;
 	private Point renderPosition;
 	private Body body;
 
 	public PositionTracker(Body body) {
+		super(NAME);
 		this.body = body;
 		Vector2 position = body.getPosition();
 		currentPosition = new Point(position.x, position.y);

@@ -11,186 +11,96 @@
  */
 package org.mini2Dx.ecs.entity;
 
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.SortedSet;
 
+import org.mini2Dx.core.engine.Positionable;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
-import org.mini2Dx.core.screen.Transition;
-import org.mini2Dx.ecs.component.Component;
-import org.mini2Dx.ecs.component.screen.ScreenComponent;
-import org.mini2Dx.ecs.game.EntityComponentSystemGame;
+import org.mini2Dx.ecs.component.screen.RenderableComponent;
+import org.mini2Dx.ecs.component.screen.UpdatableComponent;
 
 /**
  * An implementation of {@link Entity} that also implements {@link GameScreen}
  * 
+ * This {@link Entity} will update/interpolate/render its children first followed by
+ * any {@link UpdatableComponent}s/{@link RenderableComponent}s it possesses
+ * 
  * @author Thomas Cashman
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
-public abstract class GameScreenEntity implements Entity, GameScreen {
+public abstract class GameScreenEntity extends UUIDEntity implements Entity, GameScreen {
 	private int id;
-	private Map<String, List> components;
-	private List<EntityListener> listeners;
 
 	public GameScreenEntity(int id) {
+		super();
 		this.id = id;
-		components = new ConcurrentHashMap<String, List>();
 	}
-	
-	public void updateScreenComponents(GameContainer gc,
+
+	@Override
+	public void update(GameContainer gc,
 			ScreenManager<? extends GameScreen> screenManager, float delta) {
-		List<ScreenComponent> components = getComponents(ScreenComponent.class);
-		for(ScreenComponent component : components) {
-			component.update(gc, screenManager, this, delta);
-		}
-	}
-	
-	public void interpolateScreenComponents(GameContainer gc, float alpha) {
-		List<ScreenComponent> components = getComponents(ScreenComponent.class);
-		for(ScreenComponent component : components) {
-			component.interpolate(gc, this, alpha);
-		}
-	}
-	
-	public void renderScreenComponents(GameContainer gc, Graphics g) {
-		List<ScreenComponent> components = getComponents(ScreenComponent.class);
-		for(ScreenComponent component : components) {
-			component.render(gc, this, g);
-		}
-	}
-
-	@Override
-	public void addComponent(Component component) {
-		Class clazz = component.getClass();
-
-		String key = getClassKey(clazz);
-		checkConsistency(key, clazz);
-		components.get(key).add(component);
-
-		for (Class interfaceClass : clazz.getInterfaces()) {
-			key = getClassKey(interfaceClass);
-			checkConsistency(key, interfaceClass);
-			components.get(key).add(component);
-		}
-		
-		addSuperclassInterfaces(component);
-
-		if (listeners != null) {
-			for (EntityListener listener : listeners) {
-				listener.componentAdded(this, component);
+		List<Entity> entities = getChildren();
+		for (int i = 0; i < entities.size(); i++) {
+			SortedSet<UpdatableComponent> components = entities.get(i)
+					.getComponents(UpdatableComponent.class);
+			Iterator<UpdatableComponent> iterator = components.iterator();
+			while (iterator.hasNext()) {
+				UpdatableComponent component = iterator.next();
+				component.update(gc, delta);
 			}
 		}
-	}
-	
-	private void addSuperclassInterfaces(Component component) {
-		Class clazz = component.getClass().getSuperclass();
-		
-		while(clazz != null) {
-			String key;
-			for (Class interfaceClass : clazz.getInterfaces()) {
-				key = getClassKey(interfaceClass);
-				checkConsistency(key, interfaceClass);
-				components.get(key).add(component);
-			}
-			clazz = clazz.getSuperclass();
+
+		SortedSet<UpdatableComponent> components = getComponents(UpdatableComponent.class);
+		Iterator<UpdatableComponent> iterator = components.iterator();
+		while (iterator.hasNext()) {
+			UpdatableComponent component = iterator.next();
+			component.update(gc, delta);
 		}
 	}
 
 	@Override
-	public <T> List<T> getComponents(Class<T> clazz) {
-		String key = getClassKey(clazz);
-		checkConsistency(key, clazz);
-		return components.get(key);
-	}
-
-	@Override
-	public void removeComponent(Component component) {
-		Class clazz = component.getClass();
-
-		String key = getClassKey(clazz);
-		checkConsistency(key, clazz);
-		components.get(key).remove(component);
-
-		for (Class interfaceClass : clazz.getInterfaces()) {
-			key = getClassKey(interfaceClass);
-			checkConsistency(key, interfaceClass);
-			components.get(key).remove(component);
-		}
-		
-		removeSuperclassInterfaces(component);
-
-		if (listeners != null) {
-			for (EntityListener listener : listeners) {
-				listener.componentRemoved(this, component);
+	public void interpolate(GameContainer gc, float alpha) {
+		List<Entity> entities = getChildren();
+		for (int i = 0; i < entities.size(); i++) {
+			SortedSet<UpdatableComponent> components = entities.get(i)
+					.getComponents(UpdatableComponent.class);
+			Iterator<UpdatableComponent> iterator = components.iterator();
+			while (iterator.hasNext()) {
+				UpdatableComponent component = iterator.next();
+				component.interpolate(gc, alpha);
 			}
 		}
-	}
-	
-	private void removeSuperclassInterfaces(Component component) {
-		Class clazz = component.getClass().getSuperclass();
-		
-		while(clazz != null) {
-			String key;
-			for (Class interfaceClass : clazz.getInterfaces()) {
-				key = getClassKey(interfaceClass);
-				checkConsistency(key, interfaceClass);
-				components.get(key).remove(component);
-			}
-			clazz = clazz.getSuperclass();
+
+		SortedSet<UpdatableComponent> components = getComponents(UpdatableComponent.class);
+		Iterator<UpdatableComponent> iterator = components.iterator();
+		while (iterator.hasNext()) {
+			UpdatableComponent component = iterator.next();
+			component.interpolate(gc, alpha);
 		}
 	}
 
 	@Override
-	public <T extends Component> List<T> removeAllComponentsOfType(Class<T> clazz) {
-		String key = getClassKey(clazz);
-		List<T> componentsRemoved = components.remove(key);
-		
-		if(componentsRemoved == null)
-			return null;
-		
-		for (T component : componentsRemoved) {
-			removeSuperclassInterfaces(component);
-		}
-		
-		checkConsistency(key, clazz);
-
-		if (listeners != null) {
-			for (T component : componentsRemoved) {
-				for (EntityListener listener : listeners) {
-					listener.componentRemoved(this, component);
-				}
+	public void render(GameContainer gc, Graphics g) {
+		List<Entity> entities = getChildren();
+		for (int i = 0; i < entities.size(); i++) {
+			SortedSet<RenderableComponent> components = entities.get(i)
+					.getComponents(RenderableComponent.class);
+			Iterator<RenderableComponent> iterator = components.iterator();
+			while (iterator.hasNext()) {
+				RenderableComponent component = iterator.next();
+				component.render(gc, g);
 			}
 		}
-		return componentsRemoved;
-	}
 
-	@Override
-	public void addEntityListener(EntityListener listener) {
-		if (listeners == null) {
-			listeners = new CopyOnWriteArrayList<EntityListener>();
+		SortedSet<RenderableComponent> components = getComponents(RenderableComponent.class);
+		Iterator<RenderableComponent> iterator = components.iterator();
+		while (iterator.hasNext()) {
+			RenderableComponent component = iterator.next();
+			component.render(gc, g);
 		}
-		listeners.add(listener);
-	}
-
-	@Override
-	public void removeEntityListener(EntityListener listener) {
-		if (listeners != null) {
-			listeners.remove(listener);
-		}
-	}
-
-	private <T> void checkConsistency(String key, Class<T> clazz) {
-		if (!components.containsKey(key)) {
-			components.put(key, new CopyOnWriteArrayList<T>());
-		}
-	}
-
-	private String getClassKey(Class<?> clazz) {
-		return clazz.getName();
 	}
 
 	@Override

@@ -12,6 +12,7 @@
 package org.mini2Dx.ecs.entity;
 
 import java.util.List;
+import java.util.SortedSet;
 
 import org.mini2Dx.ecs.component.Component;
 
@@ -23,6 +24,24 @@ import org.mini2Dx.ecs.component.Component;
  */
 public interface Entity {
 	/**
+	 * Adds a {@link Entity} as a child of this {@link Entity}
+	 * @param child The {@link Entity} to be added as a child
+	 */
+	public void addChild(Entity child);
+	
+	/**
+	 * Removes a {@link Entity} as a child of this {@link Entity}
+	 * @param child The {@link Entity} to be removed
+	 */
+	public void removeChild(Entity child);
+	
+	/**
+	 * Returns the list of child {@link Entity} objects attached to this {@link Entity}
+	 * @return An empty {@link List} if there are no children of this {@link Entity}
+	 */
+	public List<Entity> getChildren();
+	
+	/**
 	 * Adds a {@link Component} to this {@link Entity} and notifies any attached
 	 * {@link EntityListener}s of this addition
 	 * 
@@ -30,6 +49,15 @@ public interface Entity {
 	 *            An instance of {@link Component}
 	 */
 	public void addComponent(Component component);
+
+	/**
+	 * Returns the first {@link Component} of this {@link Entity} that
+	 * implements the specified class
+	 * 
+	 * @param clazz The {@link Class} to search for
+	 * @return Null if no such {@link Component} exists
+	 */
+	public <T> T getComponent(Class<T> clazz);
 
 	/**
 	 * Returns all {@link Component}s that implement the specified the class or
@@ -40,7 +68,7 @@ public interface Entity {
 	 * @return An empty {@link List} if no such {@link Component}s are attached
 	 *         to this {@link Entity}
 	 */
-	public <T> List<T> getComponents(Class<T> clazz);
+	public <T> SortedSet<T> getComponents(Class<T> clazz);
 
 	/**
 	 * Removes the specified {@link Component} from this {@link Entity}
@@ -56,7 +84,8 @@ public interface Entity {
 	 * @param clazz
 	 *            The {@link Class} to search for
 	 */
-	public <T extends Component> List<T> removeAllComponentsOfType(Class<T> clazz);
+	public <T extends Component> SortedSet<T> removeAllComponentsOfType(
+			Class<T> clazz);
 
 	/**
 	 * Adds an {@link EntityListener} to this {@link Entity}

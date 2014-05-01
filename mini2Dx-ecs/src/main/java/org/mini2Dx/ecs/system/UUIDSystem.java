@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.ecs.entity.Entity;
 import org.mini2Dx.ecs.entity.UUIDEntity;
 
 /**
@@ -45,6 +46,10 @@ public abstract class UUIDSystem implements System<UUIDEntity> {
 	@Override
 	public void removeEntity(UUIDEntity entity) {
 		entities.remove(entity.getUUID());
+	}
+	
+	public Entity getEntity(UUID uuid) {
+		return entities.get(uuid);
 	}
 
 	@Override

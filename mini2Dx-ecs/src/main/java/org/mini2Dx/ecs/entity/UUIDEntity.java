@@ -11,24 +11,28 @@
  */
 package org.mini2Dx.ecs.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.mini2Dx.ecs.component.Component;
 
 /**
- * Implements an entity as part of the Entity-Component-System pattern
+ * An implementation of {@link Entity} that is idenitified by a {@link UUID}
  * 
  * @author Thomas Cashman
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class UUIDEntity implements Entity {
 	private UUID uuid;
-	private Map<String, List> components;
+	private Map<String, SortedSet> components;
 	private List<EntityListener> listeners;
+	private List<Entity> children;
 
 	/**
 	 * Constructs an {@link UUIDEntity} with a random {@link UUID}
@@ -44,15 +48,44 @@ public class UUIDEntity implements Entity {
 	 *            The {@link UUID} to associate with this {@link UUIDEntity}
 	 */
 	public UUIDEntity(UUID uuid) {
-		components = new ConcurrentHashMap<String, List>();
+		components = new ConcurrentHashMap<String, SortedSet>();
+		children = new ArrayList<Entity>();
+
 		this.uuid = uuid;
 	}
 
+	@Override
+	public void addChild(Entity child) {
+		children.add(child);
+	}
+
+	@Override
+	public void removeChild(Entity child) {
+		children.remove(child);
+	}
+
+	@Override
+	public List<Entity> getChildren() {
+		return children;
+	}
+
+	@Override
+	public <T> T getComponent(Class<T> clazz) {
+		String key = getClassKey(clazz);
+		checkConsistency(key, clazz);
+		SortedSet<T> components = this.components.get(key);
+		if (components.size() > 0) {
+			return components.first();
+		}
+		return null;
+	}
+
 	/**
-	 * Adds a {@link Component} to this {@link UUIDEntity} and notifies any attached
-	 * {@link EntityListener}s of this addition
+	 * Adds a {@link Component} to this {@link UUIDEntity} and notifies any
+	 * attached {@link EntityListener}s of this addition
 	 * 
-	 * @param component An instance of {@link Component}
+	 * @param component
+	 *            An instance of {@link Component}
 	 */
 	@Override
 	public void addComponent(Component component) {
@@ -62,25 +95,32 @@ public class UUIDEntity implements Entity {
 		checkConsistency(key, clazz);
 		components.get(key).add(component);
 
-		for (Class interfaceClass : clazz.getInterfaces()) {
-			key = getClassKey(interfaceClass);
-			checkConsistency(key, interfaceClass);
-			components.get(key).add(component);
-		}
-		
-		addSuperclassInterfaces(component);
+		addInterfaces(component);
+		addSuperclasses(component);
 
 		if (listeners != null) {
 			for (EntityListener listener : listeners) {
 				listener.componentAdded(this, component);
 			}
 		}
+		component.setEntity(this);
 	}
-	
-	private void addSuperclassInterfaces(Component component) {
+
+	private void addSuperclasses(Component component) {
 		Class clazz = component.getClass().getSuperclass();
-		
-		while(clazz != null) {
+
+		while (clazz != null) {
+			String key = getClassKey(clazz);
+			checkConsistency(key, clazz);
+			components.get(key).add(component);
+			clazz = clazz.getSuperclass();
+		}
+	}
+
+	private void addInterfaces(Component component) {
+		Class clazz = component.getClass();
+
+		while (clazz != null) {
 			String key;
 			for (Class interfaceClass : clazz.getInterfaces()) {
 				key = getClassKey(interfaceClass);
@@ -92,12 +132,16 @@ public class UUIDEntity implements Entity {
 	}
 
 	/**
-	 * Returns all {@link Component}s that implement the specified the class or interface
-	 * @param clazz The {@link Class} to search for
-	 * @return An empty {@link List} if no such {@link Component}s are attached to this {@link UUIDEntity}
+	 * Returns all {@link Component}s that implement the specified the class or
+	 * interface
+	 * 
+	 * @param clazz
+	 *            The {@link Class} to search for
+	 * @return An empty {@link List} if no such {@link Component}s are attached
+	 *         to this {@link UUIDEntity}
 	 */
 	@Override
-	public <T> List<T> getComponents(Class<T> clazz) {
+	public <T> SortedSet<T> getComponents(Class<T> clazz) {
 		String key = getClassKey(clazz);
 		checkConsistency(key, clazz);
 		return components.get(key);
@@ -105,7 +149,9 @@ public class UUIDEntity implements Entity {
 
 	/**
 	 * Removes the specified {@link Component} from this {@link UUIDEntity}
-	 * @param component The {@link Component} to remove
+	 * 
+	 * @param component
+	 *            The {@link Component} to remove
 	 */
 	@Override
 	public void removeComponent(Component component) {
@@ -115,26 +161,66 @@ public class UUIDEntity implements Entity {
 		checkConsistency(key, clazz);
 		components.get(key).remove(component);
 
-		for (Class interfaceClass : clazz.getInterfaces()) {
-			key = getClassKey(interfaceClass);
-			checkConsistency(key, interfaceClass);
-			components.get(key).remove(component);
-		}
-		
-		removeSuperclassInterfaces(component);
+		removeInterfaces(component);
+		removeSuperclasses(component);
+		removeChildClasses(component);
 
 		if (listeners != null) {
 			for (EntityListener listener : listeners) {
 				listener.componentRemoved(this, component);
 			}
 		}
+		component.setEntity(null);
 	}
 	
-	private void removeSuperclassInterfaces(Component component) {
+	private void removeSuperclasses(Component component) {
 		Class clazz = component.getClass().getSuperclass();
-		
-		while(clazz != null) {
+
+		while (clazz != null) {
+			String key = getClassKey(clazz);
+			checkConsistency(key, clazz);
+			components.get(key).remove(component);
+			clazz = clazz.getSuperclass();
+		}
+	}
+
+	private void removeInterfaces(Component component) {
+		Class clazz = component.getClass();
+
+		while (clazz != null) {
 			String key;
+			for (Class interfaceClass : clazz.getInterfaces()) {
+				key = getClassKey(interfaceClass);
+				checkConsistency(key, interfaceClass);
+				components.get(key).remove(component);
+			}
+			clazz = clazz.getSuperclass();
+		}
+	}
+
+	private void removeChildClasses(Component component) {
+		Class componentClass = component.getClass();
+		for(String key : components.keySet()) {
+			try {
+				Class rootClass = Class.forName(key);
+				Class clazz = rootClass;
+				while(clazz != null) {
+					if(clazz.equals(componentClass)) {
+						removeChildClasses(rootClass, component);
+						break;
+					}
+					clazz = clazz.getSuperclass();
+				}
+			} catch(Exception e) {}
+		}
+	}
+	
+	private void removeChildClasses(Class clazz, Component component) {
+		while(clazz != null) {
+			String key = getClassKey(clazz);
+			checkConsistency(key, clazz);
+			components.get(key).remove(component);
+			
 			for (Class interfaceClass : clazz.getInterfaces()) {
 				key = getClassKey(interfaceClass);
 				checkConsistency(key, interfaceClass);
@@ -151,17 +237,21 @@ public class UUIDEntity implements Entity {
 	 *            The {@link Class} to search for
 	 */
 	@Override
-	public <T extends Component> List<T> removeAllComponentsOfType(Class<T> clazz) {
+	public <T extends Component> SortedSet<T> removeAllComponentsOfType(
+			Class<T> clazz) {
 		String key = getClassKey(clazz);
-		List<T> componentsRemoved = components.remove(key);
-		
-		if(componentsRemoved == null)
+		SortedSet<T> componentsRemoved = components.remove(key);
+
+		if (componentsRemoved == null)
 			return null;
-		
+
 		for (T component : componentsRemoved) {
-			removeSuperclassInterfaces(component);
+			removeInterfaces(component);
+			removeSuperclasses(component);
+			removeChildClasses(component);
+			component.setEntity(null);
 		}
-		
+
 		checkConsistency(key, clazz);
 
 		if (listeners != null) {
@@ -203,7 +293,7 @@ public class UUIDEntity implements Entity {
 
 	private <T> void checkConsistency(String key, Class<T> clazz) {
 		if (!components.containsKey(key)) {
-			components.put(key, new CopyOnWriteArrayList<T>());
+			components.put(key, new ConcurrentSkipListSet<T>());
 		}
 	}
 

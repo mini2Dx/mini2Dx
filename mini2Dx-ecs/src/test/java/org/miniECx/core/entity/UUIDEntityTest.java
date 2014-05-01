@@ -11,12 +11,14 @@
  */
 package org.miniECx.core.entity;
 
-import java.util.List;
+import java.util.Iterator;
+import java.util.SortedSet;
 
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.ecs.component.Component;
 import org.mini2Dx.ecs.entity.UUIDEntity;
 import org.miniECx.core.test.TestComponent1;
 import org.miniECx.core.test.TestComponent2;
@@ -25,7 +27,7 @@ import org.miniECx.core.test.TestComponent2;
  * Unit tests for {@link UUIDEntity}
  * @author Thomas Cashman
  */
-public class EntityTest {
+public class UUIDEntityTest {
 	private UUIDEntity entity;
 	private TestComponent1 testComponent1;
 	private TestComponent2 testComponent2;
@@ -34,35 +36,65 @@ public class EntityTest {
 	public void setup() {
 		entity = new UUIDEntity();
 		testComponent1 = new TestComponent1();
-		testComponent2 = new TestComponent2();
+		testComponent2 = new TestComponent2("test");
 	}
 
 	@Test
 	public void testAddGetComponent() {
+		Assert.assertNull(testComponent1.getEntity());
+		Assert.assertNull(testComponent2.getEntity());
+		
 		entity.addComponent(testComponent1);
+		Assert.assertEquals(entity, testComponent1.getEntity());
+		
 		entity.addComponent(testComponent2);
+		Assert.assertEquals(entity, testComponent2.getEntity());
 		
-		List<TestComponent1> results1 = entity.getComponents(TestComponent1.class);
+		SortedSet<TestComponent1> results1 = entity.getComponents(TestComponent1.class);
 		Assert.assertEquals(1, results1.size());
-		Assert.assertEquals(testComponent1, results1.get(0));
+		Assert.assertEquals(testComponent1, results1.first());
 		
-		List<TestComponent2> results2 = entity.getComponents(TestComponent2.class);
+		SortedSet<TestComponent2> results2 = entity.getComponents(TestComponent2.class);
 		Assert.assertEquals(1, results2.size());
-		Assert.assertEquals(testComponent2, results2.get(0));
+		Assert.assertEquals(testComponent2, results2.first());
 		
-		List<Runnable> results3 = entity.getComponents(Runnable.class);
+		SortedSet<Runnable> results3 = entity.getComponents(Runnable.class);
 		Assert.assertEquals(1, results3.size());
-		Assert.assertEquals(testComponent1, results3.get(0));
+		Assert.assertEquals(testComponent1, results3.first());
 	}
 	
 	@Test
 	public void testRemoveAllComponentsOfType() {
-		entity.addComponent(testComponent1);
-		entity.addComponent(testComponent1);
-		entity.addComponent(testComponent2);
-		entity.addComponent(testComponent2);
+		Assert.assertNull(testComponent1.getEntity());
+		Assert.assertNull(testComponent2.getEntity());
 		
-		List<TestComponent1> componentsRemoved = entity.removeAllComponentsOfType(TestComponent1.class);
+		entity.addComponent(testComponent1);
+		entity.addComponent(testComponent2);
+		entity.addComponent(new TestComponent2("test2"));
+		
+		SortedSet<TestComponent2> componentsRemoved = entity.removeAllComponentsOfType(TestComponent2.class);
 		Assert.assertEquals(2, componentsRemoved.size());
+		
+		Iterator<TestComponent2> iterator = componentsRemoved.iterator();
+		while(iterator.hasNext()) {
+			TestComponent2 component = iterator.next();
+			Assert.assertNull(component.getEntity());
+		}
+	}
+	
+	@Test
+	public void testRemoveAllComponentsOfTypeWithSubclass() {
+		Assert.assertNull(testComponent1.getEntity());
+		Assert.assertNull(testComponent2.getEntity());
+		
+		entity.addComponent(testComponent1);
+		entity.addComponent(testComponent2);
+		entity.addComponent(new TestComponent2("test2"));
+		
+		SortedSet<Component> componentsRemoved = entity.removeAllComponentsOfType(Component.class);
+		Assert.assertEquals(3, componentsRemoved.size());
+		
+		Assert.assertEquals(0, entity.getComponents(TestComponent1.class).size());
+		Assert.assertEquals(0, entity.getComponents(TestComponent2.class).size());
 	}
 }
