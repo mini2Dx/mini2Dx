@@ -88,7 +88,7 @@ public class PriorityComponent extends Component {
 	}
 	
 	public int compareTo(PriorityComponent o) {
-		int result = Integer.compare(o.getPriority(), getPriority());
+		int result = Integer.valueOf(o.getPriority()).compareTo(Integer.valueOf(getPriority()));
 		if(result == 0)  {
 			return o.getName().compareTo(getName());
 		}
