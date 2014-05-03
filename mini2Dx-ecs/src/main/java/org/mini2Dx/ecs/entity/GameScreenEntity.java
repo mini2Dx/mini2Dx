@@ -26,12 +26,16 @@ import org.mini2Dx.ecs.component.screen.UpdatableComponent;
 /**
  * An implementation of {@link Entity} that also implements {@link GameScreen}
  * 
- * This {@link Entity} will update/interpolate/render its children first followed by
- * any {@link UpdatableComponent}s/{@link RenderableComponent}s it possesses
+ * This {@link Entity} will update/interpolate/render in a depth-first order,
+ * i.e. it will find the deepest descendant in the tree and execute
+ * update/interpolate/render on the {@link UpdatableComponent}s/
+ * {@link RenderableComponent}s of that first before traversing up the tree
+ * until it reaches this entity
  * 
  * @author Thomas Cashman
  */
-public abstract class GameScreenEntity extends UUIDEntity implements Entity, GameScreen {
+public abstract class GameScreenEntity extends UUIDEntity implements Entity,
+		GameScreen {
 	private int id;
 
 	public GameScreenEntity(int id) {
@@ -42,18 +46,18 @@ public abstract class GameScreenEntity extends UUIDEntity implements Entity, Gam
 	@Override
 	public void update(GameContainer gc,
 			ScreenManager<? extends GameScreen> screenManager, float delta) {
-		List<Entity> entities = getChildren();
+		update(this, gc, screenManager, delta);
+	}
+
+	private void update(Entity entity, GameContainer gc,
+			ScreenManager<? extends GameScreen> screenManager, float delta) {
+		List<Entity> entities = entity.getChildren();
 		for (int i = 0; i < entities.size(); i++) {
-			SortedSet<UpdatableComponent> components = entities.get(i)
-					.getComponents(UpdatableComponent.class);
-			Iterator<UpdatableComponent> iterator = components.iterator();
-			while (iterator.hasNext()) {
-				UpdatableComponent component = iterator.next();
-				component.update(gc, delta);
-			}
+			update(entities.get(i), gc, screenManager, delta);
 		}
 
-		SortedSet<UpdatableComponent> components = getComponents(UpdatableComponent.class);
+		SortedSet<UpdatableComponent> components = entity
+				.getComponents(UpdatableComponent.class);
 		Iterator<UpdatableComponent> iterator = components.iterator();
 		while (iterator.hasNext()) {
 			UpdatableComponent component = iterator.next();
@@ -63,18 +67,17 @@ public abstract class GameScreenEntity extends UUIDEntity implements Entity, Gam
 
 	@Override
 	public void interpolate(GameContainer gc, float alpha) {
-		List<Entity> entities = getChildren();
+		interpolate(this, gc, alpha);
+	}
+
+	private void interpolate(Entity entity, GameContainer gc, float alpha) {
+		List<Entity> entities = entity.getChildren();
 		for (int i = 0; i < entities.size(); i++) {
-			SortedSet<UpdatableComponent> components = entities.get(i)
-					.getComponents(UpdatableComponent.class);
-			Iterator<UpdatableComponent> iterator = components.iterator();
-			while (iterator.hasNext()) {
-				UpdatableComponent component = iterator.next();
-				component.interpolate(gc, alpha);
-			}
+			interpolate(entities.get(i), gc, alpha);
 		}
 
-		SortedSet<UpdatableComponent> components = getComponents(UpdatableComponent.class);
+		SortedSet<UpdatableComponent> components = entity
+				.getComponents(UpdatableComponent.class);
 		Iterator<UpdatableComponent> iterator = components.iterator();
 		while (iterator.hasNext()) {
 			UpdatableComponent component = iterator.next();
@@ -84,18 +87,17 @@ public abstract class GameScreenEntity extends UUIDEntity implements Entity, Gam
 
 	@Override
 	public void render(GameContainer gc, Graphics g) {
-		List<Entity> entities = getChildren();
+		render(this, gc, g);
+	}
+
+	private void render(Entity entity, GameContainer gc, Graphics g) {
+		List<Entity> entities = entity.getChildren();
 		for (int i = 0; i < entities.size(); i++) {
-			SortedSet<RenderableComponent> components = entities.get(i)
-					.getComponents(RenderableComponent.class);
-			Iterator<RenderableComponent> iterator = components.iterator();
-			while (iterator.hasNext()) {
-				RenderableComponent component = iterator.next();
-				component.render(gc, g);
-			}
+			render(entities.get(i), gc, g);
 		}
 
-		SortedSet<RenderableComponent> components = getComponents(RenderableComponent.class);
+		SortedSet<RenderableComponent> components = entity
+				.getComponents(RenderableComponent.class);
 		Iterator<RenderableComponent> iterator = components.iterator();
 		while (iterator.hasNext()) {
 			RenderableComponent component = iterator.next();
