@@ -104,6 +104,7 @@ public class UUIDEntity implements Entity {
 			}
 		}
 		component.setEntity(this);
+		component.onAddToEntity();
 	}
 
 	private void addSuperclasses(Component component) {

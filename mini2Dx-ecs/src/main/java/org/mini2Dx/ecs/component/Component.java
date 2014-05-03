@@ -33,6 +33,15 @@ public class Component implements Comparable<Component> {
 	public Component(String name) {
 		this.name = name;
 	}
+	
+	/**
+	 * Called when this {@link Component} is added to an {@link Entity}
+	 * 
+	 * By default this does nothing, can be overridden by developer
+	 */
+	public void onAddToEntity() {
+		
+	}
 
 	public <T extends Component> T getComponent(Class<T> clazz) {
 		if(entity == null)
