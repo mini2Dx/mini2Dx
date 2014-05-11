@@ -111,9 +111,36 @@ public class TiledMap implements TiledParserListener {
 		}
 		return result;
 	}
+	
+	/**
+	 * Returns the total amount of {@link Tileset}s loaded
+	 * @return 0 if none are loaded
+	 */
+	public int getTotalTilesetsLoaded() {
+		int result = 0;
+		for (int i = 0; i < tilesets.size(); i++) {
+			if (tilesets.get(i).isTextureLoaded()) {
+				result++;
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Loads a specific {@link Tileset}
+	 * @param tilesetIndex
+	 */
+	public void loadTileset(int tilesetIndex) {
+		if(tilesetIndex < 0 || tilesetIndex >= tilesets.size()) {
+			throw new RuntimeException("No such tileset with index " + tilesetIndex);
+		}
+		if (!tilesets.get(tilesetIndex).isTextureLoaded()) {
+			tilesets.get(tilesetIndex).loadTexture(fileHandle.parent());
+		}
+	}
 
 	/**
-	 * Loads the tilesets for this map if they are not already loaded
+	 * Loads all {@link Tileset}s for this map if they are not already loaded
 	 */
 	public void loadTilesets() {
 		for (int i = 0; i < tilesets.size(); i++) {
