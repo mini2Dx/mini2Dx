@@ -46,7 +46,7 @@ public class Component implements Comparable<Component> {
 	public <T extends Component> T getComponent(Class<T> clazz) {
 		if(entity == null)
 			return null;
-		return entity.getComponent(clazz);
+		return (T) entity.getComponent(clazz);
 	}
 	
 	public <T extends Component> T getComponent(String name, Class<T> clazz) {
@@ -72,7 +72,7 @@ public class Component implements Comparable<Component> {
 	private <T extends Component> T getComponentInEntityDescendants(Entity entity, Class<T> clazz) {
 		List<Entity> childEntities = entity.getChildren();
 		for(int i = 0; i < childEntities.size(); i++) {
-			T result = childEntities.get(i).getComponent(clazz);
+			T result = (T) childEntities.get(i).getComponent(clazz);
 			if(result != null) {
 				return result;
 			}

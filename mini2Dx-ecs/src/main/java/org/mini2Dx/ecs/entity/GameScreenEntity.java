@@ -14,8 +14,8 @@ package org.mini2Dx.ecs.entity;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.UUID;
 
-import org.mini2Dx.core.engine.Positionable;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.GameScreen;
@@ -34,12 +34,11 @@ import org.mini2Dx.ecs.component.screen.UpdatableComponent;
  * 
  * @author Thomas Cashman
  */
-public abstract class GameScreenEntity extends UUIDEntity implements Entity,
-		GameScreen {
+public abstract class GameScreenEntity extends StringEntity implements GameScreen {
 	private int id;
 
 	public GameScreenEntity(int id) {
-		super();
+		super("gameScreenEntity-" + id);
 		this.id = id;
 	}
 
@@ -49,9 +48,9 @@ public abstract class GameScreenEntity extends UUIDEntity implements Entity,
 		update(this, gc, screenManager, delta);
 	}
 
-	private void update(Entity entity, GameContainer gc,
+	private void update(Entity<String> entity, GameContainer gc,
 			ScreenManager<? extends GameScreen> screenManager, float delta) {
-		List<Entity> entities = entity.getChildren();
+		List<Entity<String>> entities = entity.getChildren();
 		for (int i = 0; i < entities.size(); i++) {
 			update(entities.get(i), gc, screenManager, delta);
 		}
@@ -70,8 +69,8 @@ public abstract class GameScreenEntity extends UUIDEntity implements Entity,
 		interpolate(this, gc, alpha);
 	}
 
-	private void interpolate(Entity entity, GameContainer gc, float alpha) {
-		List<Entity> entities = entity.getChildren();
+	private void interpolate(Entity<String> entity, GameContainer gc, float alpha) {
+		List<Entity<String>> entities = entity.getChildren();
 		for (int i = 0; i < entities.size(); i++) {
 			interpolate(entities.get(i), gc, alpha);
 		}
@@ -90,8 +89,8 @@ public abstract class GameScreenEntity extends UUIDEntity implements Entity,
 		render(this, gc, g);
 	}
 
-	private void render(Entity entity, GameContainer gc, Graphics g) {
-		List<Entity> entities = entity.getChildren();
+	private void render(Entity<String> entity, GameContainer gc, Graphics g) {
+		List<Entity<String>> entities = entity.getChildren();
 		for (int i = 0; i < entities.size(); i++) {
 			render(entities.get(i), gc, g);
 		}

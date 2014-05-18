@@ -22,24 +22,30 @@ import org.mini2Dx.ecs.component.Component;
  * 
  * @author Thomas Cashman
  */
-public interface Entity {
+public interface Entity<K> {
+	/**
+	 * Returns the unique identifier for this {@link Entity}
+	 * @return An instance of <K>
+	 */
+	public K getEntityId();
+	
 	/**
 	 * Adds a {@link Entity} as a child of this {@link Entity}
 	 * @param child The {@link Entity} to be added as a child
 	 */
-	public void addChild(Entity child);
+	public void addChild(Entity<K> child);
 	
 	/**
 	 * Removes a {@link Entity} as a child of this {@link Entity}
 	 * @param child The {@link Entity} to be removed
 	 */
-	public void removeChild(Entity child);
+	public void removeChild(Entity<K> child);
 	
 	/**
 	 * Returns the list of child {@link Entity} objects attached to this {@link Entity}
 	 * @return An empty {@link List} if there are no children of this {@link Entity}
 	 */
-	public List<Entity> getChildren();
+	public List<Entity<K>> getChildren();
 	
 	/**
 	 * Adds a {@link Component} to this {@link Entity} and notifies any attached

@@ -40,15 +40,15 @@ public abstract class UUIDSystem implements System<UUIDEntity> {
 
 	@Override
 	public void addEntity(UUIDEntity entity) {
-		entities.put(entity.getUUID(), entity);
+		entities.put(entity.getEntityId(), entity);
 	}
 
 	@Override
 	public void removeEntity(UUIDEntity entity) {
-		entities.remove(entity.getUUID());
+		entities.remove(entity.getEntityId());
 	}
 	
-	public Entity getEntity(UUID uuid) {
+	public Entity<UUID> getEntity(UUID uuid) {
 		return entities.get(uuid);
 	}
 
