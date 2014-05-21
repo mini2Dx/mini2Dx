@@ -28,31 +28,16 @@ import org.mini2Dx.ecs.entity.GameScreenEntity;
  * 
  * @author Thomas Cashman
  */
-public class ScreenManagerSystem implements System<GameScreenEntity>,
+public class ScreenManagerSystem extends System<GameScreenEntity> implements
 		ScreenManager<GameScreenEntity> {
-	private Map<Integer, GameScreenEntity> gameScreens;
 	protected GameScreenEntity currentScreen, nextScreen;
 	protected Transition transitionIn, transitionOut;
 	private boolean isDebugging;
-
-	public ScreenManagerSystem() {
-		gameScreens = new ConcurrentHashMap<Integer, GameScreenEntity>();
-	}
-
-	@Override
-	public void addEntity(GameScreenEntity entity) {
-		gameScreens.put(entity.getId(), entity);
-	}
-
-	@Override
-	public void removeEntity(GameScreenEntity entity) {
-		gameScreens.remove(entity.getId());
-	}
 	
 	@Override
 	public void initialise(GameContainer gc) {
-		for(Integer key : gameScreens.keySet()) {
-			gameScreens.get(key).initialise(gc);
+		for(Integer key : entities.keySet()) {
+			entities.get(key).initialise(gc);
 		}
 	}
 
@@ -138,7 +123,7 @@ public class ScreenManagerSystem implements System<GameScreenEntity>,
 		this.transitionIn = transitionIn;
 		this.transitionOut = transitionOut;
 
-		this.nextScreen = gameScreens.get(id);
+		this.nextScreen = getEntity(id);
 		this.transitionOut.initialise(currentScreen, nextScreen);
 
 		if (currentScreen != null) {
@@ -156,7 +141,7 @@ public class ScreenManagerSystem implements System<GameScreenEntity>,
 
 	@Override
 	public GameScreenEntity getGameScreen(int id) {
-		return gameScreens.get(id);
+		return getEntity(id);
 	}
 
 	@Override

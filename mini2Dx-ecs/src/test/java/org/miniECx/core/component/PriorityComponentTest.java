@@ -11,7 +11,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.ecs.component.PriorityComponent;
-import org.mini2Dx.ecs.entity.UUIDEntity;
+import org.mini2Dx.ecs.entity.Entity;
 
 /**
  *
@@ -20,11 +20,11 @@ import org.mini2Dx.ecs.entity.UUIDEntity;
  */
 public class PriorityComponentTest {
 	private PriorityComponent [] components;
-	private UUIDEntity entity;
+	private Entity entity;
 	
 	@Before
 	public void setUp() {
-		entity = new UUIDEntity();
+		entity = new Entity();
 		
 		components = new PriorityComponent[100];
 		for(int i = 0; i < components.length; i++) {

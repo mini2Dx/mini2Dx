@@ -23,6 +23,7 @@ import org.mini2Dx.ecs.entity.Entity;
  * @author Thomas Cashman
  */
 public class Component implements Comparable<Component> {
+	private int componentTypeId;
 	private String name;
 	private Entity entity;
 	
@@ -32,6 +33,7 @@ public class Component implements Comparable<Component> {
 	 */
 	public Component(String name) {
 		this.name = name;
+		componentTypeId = ComponentTypeIdAllocator.getId(getClass());
 	}
 	
 	/**
@@ -161,5 +163,9 @@ public class Component implements Comparable<Component> {
 	@Override
 	public int compareTo(Component o) {
 		return name.compareTo(o.name);
+	}
+
+	public int getComponentTypeId() {
+		return componentTypeId;
 	}
 }

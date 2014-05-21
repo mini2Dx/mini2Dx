@@ -20,6 +20,7 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
+import org.mini2Dx.ecs.component.ComponentTypeIdAllocator;
 import org.mini2Dx.ecs.component.screen.RenderableComponent;
 import org.mini2Dx.ecs.component.screen.UpdatableComponent;
 
@@ -34,12 +35,14 @@ import org.mini2Dx.ecs.component.screen.UpdatableComponent;
  * 
  * @author Thomas Cashman
  */
-public abstract class GameScreenEntity extends StringEntity implements GameScreen {
-	private int id;
-
+public abstract class GameScreenEntity extends Entity implements GameScreen {
+	private int updatableComponentTypeId;
+	private int renderableComponentTypeId;
+	
 	public GameScreenEntity(int id) {
-		super("gameScreenEntity-" + id);
-		this.id = id;
+		super(id);
+		updatableComponentTypeId = ComponentTypeIdAllocator.getId(UpdatableComponent.class);
+		renderableComponentTypeId = ComponentTypeIdAllocator.getId(RenderableComponent.class);
 	}
 
 	@Override
@@ -48,15 +51,15 @@ public abstract class GameScreenEntity extends StringEntity implements GameScree
 		update(this, gc, screenManager, delta);
 	}
 
-	private void update(Entity<String> entity, GameContainer gc,
+	private void update(Entity entity, GameContainer gc,
 			ScreenManager<? extends GameScreen> screenManager, float delta) {
-		List<Entity<String>> entities = entity.getChildren();
+		List<Entity> entities = entity.getChildren();
 		for (int i = 0; i < entities.size(); i++) {
 			update(entities.get(i), gc, screenManager, delta);
 		}
 
 		SortedSet<UpdatableComponent> components = entity
-				.getComponents(UpdatableComponent.class);
+				.getComponents(updatableComponentTypeId);
 		Iterator<UpdatableComponent> iterator = components.iterator();
 		while (iterator.hasNext()) {
 			UpdatableComponent component = iterator.next();
@@ -69,14 +72,14 @@ public abstract class GameScreenEntity extends StringEntity implements GameScree
 		interpolate(this, gc, alpha);
 	}
 
-	private void interpolate(Entity<String> entity, GameContainer gc, float alpha) {
-		List<Entity<String>> entities = entity.getChildren();
+	private void interpolate(Entity entity, GameContainer gc, float alpha) {
+		List<Entity> entities = entity.getChildren();
 		for (int i = 0; i < entities.size(); i++) {
 			interpolate(entities.get(i), gc, alpha);
 		}
 
 		SortedSet<UpdatableComponent> components = entity
-				.getComponents(UpdatableComponent.class);
+				.getComponents(updatableComponentTypeId);
 		Iterator<UpdatableComponent> iterator = components.iterator();
 		while (iterator.hasNext()) {
 			UpdatableComponent component = iterator.next();
@@ -89,23 +92,18 @@ public abstract class GameScreenEntity extends StringEntity implements GameScree
 		render(this, gc, g);
 	}
 
-	private void render(Entity<String> entity, GameContainer gc, Graphics g) {
-		List<Entity<String>> entities = entity.getChildren();
+	private void render(Entity entity, GameContainer gc, Graphics g) {
+		List<Entity> entities = entity.getChildren();
 		for (int i = 0; i < entities.size(); i++) {
 			render(entities.get(i), gc, g);
 		}
 
 		SortedSet<RenderableComponent> components = entity
-				.getComponents(RenderableComponent.class);
+				.getComponents(renderableComponentTypeId);
 		Iterator<RenderableComponent> iterator = components.iterator();
 		while (iterator.hasNext()) {
 			RenderableComponent component = iterator.next();
 			component.render(gc, g);
 		}
-	}
-
-	@Override
-	public int getId() {
-		return id;
 	}
 }

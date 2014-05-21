@@ -19,22 +19,22 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.ecs.component.Component;
-import org.mini2Dx.ecs.entity.UUIDEntity;
+import org.mini2Dx.ecs.entity.Entity;
 import org.miniECx.core.test.TestComponent1;
 import org.miniECx.core.test.TestComponent2;
 
 /**
- * Unit tests for {@link UUIDEntity}
+ * Unit tests for {@link Entity}
  * @author Thomas Cashman
  */
-public class UUIDEntityTest {
-	private UUIDEntity entity;
+public class EntityTest {
+	private Entity entity;
 	private TestComponent1 testComponent1;
 	private TestComponent2 testComponent2;
 	
 	@Before
 	public void setup() {
-		entity = new UUIDEntity();
+		entity = new Entity();
 		testComponent1 = new TestComponent1();
 		testComponent2 = new TestComponent2("test");
 	}

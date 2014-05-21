@@ -11,12 +11,11 @@
  */
 package org.mini2Dx.ecs.system;
 
-import java.util.List;
 import java.util.SortedSet;
 
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.ecs.entity.UUIDEntity;
+import org.mini2Dx.ecs.entity.Entity;
 import org.mini2Dx.ecs.physics.PositionTracker;
 
 import com.badlogic.gdx.physics.box2d.Body;
@@ -28,7 +27,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * 
  * @author Thomas Cashman
  */
-public abstract class Box2DSystem extends UUIDSystem {
+public abstract class Box2DSystem<T extends Entity> extends System<T> {
 	private World world;
 	private int velocityIterations, positionIterations;
 
@@ -50,11 +49,26 @@ public abstract class Box2DSystem extends UUIDSystem {
 	@Override
 	public void update(GameContainer gc, float delta) {
 		world.step(delta, velocityIterations, positionIterations);
-		super.update(gc, delta);
+		for(Entity entity : entities.values()) {
+			update(entity, gc, delta);
+		}
+	}
+	
+	@Override
+	public void interpolate(GameContainer gc, float alpha) {
+		for(Entity entity : entities.values()) {
+			interpolate(entity, gc, alpha);
+		}
 	}
 
 	@Override
-	public void update(UUIDEntity entity, GameContainer gc, float delta) {
+	public void render(GameContainer gc, Graphics g) {
+		for(Entity entity : entities.values()) {
+			render(entity, gc, g);
+		}
+	}
+
+	public void update(Entity entity, GameContainer gc, float delta) {
 		SortedSet<PositionTracker> positionTrackers = entity
 				.getComponents(PositionTracker.class);
 		for (PositionTracker tracker : positionTrackers) {
@@ -62,8 +76,7 @@ public abstract class Box2DSystem extends UUIDSystem {
 		}
 	}
 
-	@Override
-	public void interpolate(UUIDEntity entity, GameContainer gc, float alpha) {
+	public void interpolate(Entity entity, GameContainer gc, float alpha) {
 		SortedSet<PositionTracker> positionTrackers = entity
 				.getComponents(PositionTracker.class);
 		for (PositionTracker tracker : positionTrackers) {
@@ -71,8 +84,7 @@ public abstract class Box2DSystem extends UUIDSystem {
 		}
 	}
 
-	@Override
-	public void render(UUIDEntity entity, GameContainer gc, Graphics g) {
+	public void render(Entity entity, GameContainer gc, Graphics g) {
 		SortedSet<PositionTracker> positionTrackers = entity
 				.getComponents(PositionTracker.class);
 		for (PositionTracker tracker : positionTrackers) {
@@ -97,11 +109,11 @@ public abstract class Box2DSystem extends UUIDSystem {
 	 * @param g
 	 *            The current {@link Graphics} context
 	 */
-	public abstract void render(UUIDEntity entity, Body body, float renderX,
+	public abstract void render(Entity entity, Body body, float renderX,
 			float renderY, GameContainer gc, Graphics g);
 
 	@Override
-	public void removeEntity(UUIDEntity entity) {
+	public void removeEntity(T entity) {
 		super.removeEntity(entity);
 		SortedSet<Body> bodies = entity.getComponents(Body.class);
 		SortedSet<Joint> joints = entity.getComponents(Joint.class);
@@ -116,5 +128,4 @@ public abstract class Box2DSystem extends UUIDSystem {
 	public World getWorld() {
 		return world;
 	}
-
 }

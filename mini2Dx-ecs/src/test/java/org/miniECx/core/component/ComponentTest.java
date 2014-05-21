@@ -16,7 +16,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.ecs.component.Component;
-import org.mini2Dx.ecs.entity.UUIDEntity;
+import org.mini2Dx.ecs.entity.Entity;
 import org.miniECx.core.test.TestComponent1;
 import org.miniECx.core.test.TestComponent2;
 
@@ -28,17 +28,17 @@ import org.miniECx.core.test.TestComponent2;
 public class ComponentTest {
 	private TestComponent1 component;
 	private TestComponent2 component2;
-	private UUIDEntity entity, childEntity;
+	private Entity entity, childEntity;
 	
 	@Before
 	public void setUp() {
 		component = new TestComponent1();
 		component2 = new TestComponent2("test");
 		
-		entity = new UUIDEntity();
+		entity = new Entity();
 		entity.addComponent(component);
 		
-		childEntity = new UUIDEntity();
+		childEntity = new Entity();
 		entity.addChild(childEntity);
 	}
 

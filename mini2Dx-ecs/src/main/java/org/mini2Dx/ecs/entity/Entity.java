@@ -13,8 +13,12 @@ package org.mini2Dx.ecs.entity;
 
 import java.util.List;
 import java.util.SortedSet;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.mini2Dx.ecs.component.Component;
+import org.mini2Dx.ecs.component.ComponentStore;
+import org.mini2Dx.ecs.component.ConcurrentComponentStore;
 
 /**
  * A common interface for Entity implementations within the
@@ -22,48 +26,80 @@ import org.mini2Dx.ecs.component.Component;
  * 
  * @author Thomas Cashman
  */
-public interface Entity<K> {
-	/**
-	 * Returns the unique identifier for this {@link Entity}
-	 * @return An instance of <K>
-	 */
-	public K getEntityId();
+public class Entity implements ComponentStore {
+	private int id;
+	private UUID uuid;
+	private ComponentStore componentStore;
+	private List<EntityListener> listeners;
+	private List<Entity> children;
 	
 	/**
-	 * Adds a {@link Entity} as a child of this {@link Entity}
-	 * @param child The {@link Entity} to be added as a child
+	 * Creates a new {@link Entity} with an ID
 	 */
-	public void addChild(Entity<K> child);
+	public Entity() {
+		this.id = EntityIdAllocator.allocate();
+		initialise();
+	}
 	
 	/**
-	 * Removes a {@link Entity} as a child of this {@link Entity}
-	 * @param child The {@link Entity} to be removed
+	 * Creates a new {@link Entity} with a specific ID.
+	 * @param id The ID to allocate this {@link Entity}
 	 */
-	public void removeChild(Entity<K> child);
+	public Entity(int id) {
+		this.id = id;
+		initialise();
+	}
+	
+	private void initialise() {
+		uuid = UUID.randomUUID();
+		componentStore = new ConcurrentComponentStore();
+		children = new CopyOnWriteArrayList<Entity>();
+	}
 	
 	/**
-	 * Returns the list of child {@link Entity} objects attached to this {@link Entity}
-	 * @return An empty {@link List} if there are no children of this {@link Entity}
+	 * Destroys this {@link Entity} and deallocates its ID
 	 */
-	public List<Entity<K>> getChildren();
+	public void destroy() {
+		EntityIdAllocator.deallocate(id);
+	}
 	
+	public void addChild(Entity child) {
+		children.add(child);
+	}
+
+	public void removeChild(Entity child) {
+		children.remove(child);
+	}
+
+	public List<Entity> getChildren() {
+		return children;
+	}
+
+	@Override
+	public <T> T getComponent(Class<T> clazz) {
+		return componentStore.getComponent(clazz);
+	}
+
 	/**
-	 * Adds a {@link Component} to this {@link Entity} and notifies any attached
-	 * {@link EntityListener}s of this addition
+	 * Adds a {@link Component} to this {@link UUIDEntity} and notifies any
+	 * attached {@link EntityListener}s of this addition
 	 * 
 	 * @param component
 	 *            An instance of {@link Component}
 	 */
-	public void addComponent(Component component);
+	@Override
+	public void addComponent(Component component) {
+		componentStore.addComponent(component);
 
-	/**
-	 * Returns the first {@link Component} of this {@link Entity} that
-	 * implements the specified class
-	 * 
-	 * @param clazz The {@link Class} to search for
-	 * @return Null if no such {@link Component} exists
-	 */
-	public <T> T getComponent(Class<T> clazz);
+		component.setEntity(this);
+		component.onAddToEntity();
+
+		if (listeners != null) {
+			for (EntityListener listener : listeners) {
+				listener.componentAdded(this, component);
+			}
+		}
+	}
 
 	/**
 	 * Returns all {@link Component}s that implement the specified the class or
@@ -72,17 +108,30 @@ public interface Entity<K> {
 	 * @param clazz
 	 *            The {@link Class} to search for
 	 * @return An empty {@link List} if no such {@link Component}s are attached
-	 *         to this {@link Entity}
+	 *         to this {@link UUIDEntity}
 	 */
-	public <T> SortedSet<T> getComponents(Class<T> clazz);
+	@Override
+	public <T> SortedSet<T> getComponents(Class<T> clazz) {
+		return componentStore.getComponents(clazz);
+	}
 
 	/**
-	 * Removes the specified {@link Component} from this {@link Entity}
+	 * Removes the specified {@link Component} from this {@link UUIDEntity}
 	 * 
 	 * @param component
 	 *            The {@link Component} to remove
 	 */
-	public void removeComponent(Component component);
+	@Override
+	public void removeComponent(Component component) {
+		componentStore.removeComponent(component);
+
+		if (listeners != null) {
+			for (EntityListener listener : listeners) {
+				listener.componentRemoved(this, component);
+			}
+		}
+		component.setEntity(null);
+	}
 
 	/**
 	 * Removes all {@link Component}s that implement a specific type
@@ -90,22 +139,77 @@ public interface Entity<K> {
 	 * @param clazz
 	 *            The {@link Class} to search for
 	 */
+	@Override
 	public <T extends Component> SortedSet<T> removeAllComponentsOfType(
-			Class<T> clazz);
+			Class<T> clazz) {
+		SortedSet<T> componentsRemoved = componentStore.removeAllComponentsOfType(clazz);
+
+		if (listeners != null) {
+			for (T component : componentsRemoved) {
+				for (EntityListener listener : listeners) {
+					listener.componentRemoved(this, component);
+				}
+			}
+		}
+		return componentsRemoved;
+	}
+	
+
+	@Override
+	public <T> T getComponent(int componentTypeId) {
+		return componentStore.getComponent(componentTypeId);
+	}
+
+	@Override
+	public <T> SortedSet<T> getComponents(int componentTypeId) {
+		return componentStore.getComponents(componentTypeId);
+	}
+
+	@Override
+	public <T extends Component> SortedSet<T> removeAllComponentsOfType(
+			int componentTypeId) {
+		SortedSet<T> componentsRemoved = componentStore.removeAllComponentsOfType(componentTypeId);
+
+		if (listeners != null) {
+			for (T component : componentsRemoved) {
+				for (EntityListener listener : listeners) {
+					listener.componentRemoved(this, component);
+				}
+			}
+		}
+		return componentsRemoved;
+	}
 
 	/**
-	 * Adds an {@link EntityListener} to this {@link Entity}
+	 * Adds an {@link EntityListener} to this {@link UUIDEntity}
 	 * 
 	 * @param listener
 	 *            The {@link EntityListener} to add
 	 */
-	public void addEntityListener(EntityListener listener);
+	public void addEntityListener(EntityListener listener) {
+		if (listeners == null) {
+			listeners = new CopyOnWriteArrayList<EntityListener>();
+		}
+		listeners.add(listener);
+	}
 
 	/**
-	 * Removes an {@link EntityListener} from this {@link Entity}
+	 * Removes an {@link EntityListener} from this {@link UUIDEntity}
 	 * 
 	 * @param listener
 	 *            The {@link EntityListener} to be removed
 	 */
-	public void removeEntityListener(EntityListener listener);
+	public void removeEntityListener(EntityListener listener) {
+		if (listeners != null) {
+			listeners.remove(listener);
+		}
+	}
+
+	public UUID getUUID() {
+		return uuid;
+	}
+
+	public int getId() {
+		return id;
+	}
 }

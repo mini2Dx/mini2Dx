@@ -11,64 +11,92 @@
  */
 package org.mini2Dx.ecs.system;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ecs.entity.Entity;
-import org.mini2Dx.ecs.entity.UUIDEntity;
 
 /**
- * A common interface for implementing {@link System}s as part of the Entity-Component-System pattern
+ * A common class for implementing {@link System}s as part of the Entity-Component-System pattern
  * @author Thomas Cashman
  */
-public interface System<T extends Entity> {
+public abstract class System<T extends Entity> {
+	protected Map<Integer, T> entities;
+	protected boolean isDebugging;
+	
+	public System() {
+		entities = new ConcurrentHashMap<Integer, T>();
+		isDebugging = false;
+	}
+	
 	/**
 	 * Adds an {@link Entity} to the {@link System}
 	 * @param entity The {@link Entity} to be added
 	 */
-	public void addEntity(T entity);
+	public void addEntity(T entity) {
+		entities.put(entity.getId(), entity);
+	}
 	
 	/**
 	 * Removes an {@link Entity} from the {@link System}
 	 * @param entity The {@link UUIDEntity} to be removed
 	 */
-	public void removeEntity(T entity);
+	public void removeEntity(T entity) {
+		entities.remove(entity.getId());
+	}
+	
+	/**
+	 * Returns the {@link Entity} with the given ID
+	 * @param id The entity ID
+	 * @return Null if there is no such {@link Entity}
+	 */
+	public T getEntity(int id) {
+		return entities.get(id);
+	}
 	
 	/**
 	 * Initialise the {@link System}
 	 * @param gc The {@link GameContainer} calling initialise
 	 */
-	public void initialise(GameContainer gc);
+	public abstract void initialise(GameContainer gc);
 	
 	/**
 	 * Update the {@link System}
 	 * @param gc The {@link GameContainer} calling update
 	 * @param delta The time in seconds since the last update
 	 */
-	public void update(GameContainer gc, float delta);
+	public abstract void update(GameContainer gc, float delta);
 	
 	/**
 	 * Interpolate the {@link System}
 	 * @param gc The {@link GameContainer} calling interpolate
 	 * @param alpha The alpha value to use during interpolation
 	 */
-	public void interpolate(GameContainer gc, float alpha);
+	public abstract void interpolate(GameContainer gc, float alpha);
 	
 	/**
 	 * Render the {@link System}
 	 * @param gc The {@link GameContainer} calling render
 	 * @param g The {@link Graphics} instance
 	 */
-	public void render(GameContainer gc, Graphics g);
+	public abstract void render(GameContainer gc, Graphics g);
 	
 	/**
 	 * Returns if this {@link System} is debugging
 	 * @return True if debugging
 	 */
-	public boolean isDebugging();
+	public boolean isDebugging() {
+		return isDebugging;
+	}
 	
 	/**
 	 * Sets whether or not this {@link System} is in debug mode
 	 * @param debugging True if debugging
 	 */
-	public void setDebugging(boolean debugging);
+	public void setDebugging(boolean debugging) {
+		this.isDebugging = debugging;
+	}
 }
