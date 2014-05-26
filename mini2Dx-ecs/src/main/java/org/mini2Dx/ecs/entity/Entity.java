@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ecs.entity;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.UUID;
@@ -78,6 +79,16 @@ public class Entity implements ComponentStore {
 	@Override
 	public <T> T getComponent(Class<T> clazz) {
 		return componentStore.getComponent(clazz);
+	}
+	
+	@Override
+	public <T extends Component> T getComponent(String name, Class<T> clazz) {
+		return componentStore.getComponent(name, clazz);
+	}
+	
+	@Override
+	public <T extends Component> T getComponent(String name, int componentTypeId) {
+		return componentStore.getComponent(name, componentTypeId);
 	}
 
 	/**

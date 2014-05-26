@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ecs.component;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -25,6 +26,10 @@ public interface ComponentStore {
 	public <T> T getComponent(Class<T> clazz);
 	
 	public <T> T getComponent(int componentTypeId);
+	
+	public <T extends Component> T getComponent(String name, int componentTypeId);
+	
+	public <T extends Component> T getComponent(String name, Class<T> clazz);
 
 	/**
 	 * Adds a {@link Component} to this {@link UUIDEntity} and notifies any
@@ -44,7 +49,7 @@ public interface ComponentStore {
 	 *         to this {@link UUIDEntity}
 	 */
 	public <T> SortedSet<T> getComponents(int componentTypeId);
-
+	
 	/**
 	 * Returns all {@link Component}s that implement the specified the class or
 	 * interface

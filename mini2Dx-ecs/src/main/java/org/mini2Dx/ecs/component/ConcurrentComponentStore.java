@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ecs.component;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -45,6 +46,32 @@ public class ConcurrentComponentStore implements ComponentStore {
 	@Override
 	public <T> T getComponent(Class<T> clazz) {
 		return getComponent(ComponentTypeIdAllocator.getId(clazz));
+	}
+	
+	@Override
+	public <T extends Component> T getComponent(String name, int componentTypeId) {
+		SortedSet<T> components = getComponents(componentTypeId);
+		Iterator<T> iterator = components.iterator();
+		while(iterator.hasNext()) {
+			T component = iterator.next();
+			if(component.getName().equals(name)) {
+				return component;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public <T extends Component> T getComponent(String name, Class<T> clazz) {
+		SortedSet<T> components = getComponents(clazz);
+		Iterator<T> iterator = components.iterator();
+		while(iterator.hasNext()) {
+			T component = iterator.next();
+			if(component.getName().equals(name)) {
+				return component;
+			}
+		}
+		return null;
 	}
 
 	/**

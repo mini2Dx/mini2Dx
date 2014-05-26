@@ -54,15 +54,13 @@ public class Component implements Comparable<Component> {
 	public <T extends Component> T getComponent(String name, Class<T> clazz) {
 		if(entity == null)
 			return null;
-		SortedSet<T> components = entity.getComponents(clazz);
-		Iterator<T> iterator = components.iterator();
-		while(iterator.hasNext()) {
-			T component = iterator.next();
-			if(component.getName().equals(name)) {
-				return component;
-			}
-		}
-		return null;
+		return entity.getComponent(name, clazz);
+	}
+	
+	public <T extends Component> T getComponent(String name, int componentTypeId) {
+		if(entity == null)
+			return null;
+		return entity.getComponent(name, componentTypeId);
 	}
 	
 	public <T extends Component> SortedSet<T> getComponents(Class<T> clazz) {
