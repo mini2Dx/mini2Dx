@@ -7,13 +7,21 @@
 		<version>0.9.3-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<artifactId>mini2Dx-ecs</artifactId>
+	<artifactId>mini2Dx-ecs-integration</artifactId>
 	<packaging>jar</packaging>
 
 	<name>mini2Dx-ecs</name>
 	<url>http://www.mini2dx.org</url>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.mini2Dx</groupId>
+			<artifactId>mini2Dx-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mini2Dx</groupId>
+			<artifactId>mini2Dx-ecs</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

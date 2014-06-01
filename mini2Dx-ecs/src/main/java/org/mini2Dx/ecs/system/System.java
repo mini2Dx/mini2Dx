@@ -12,11 +12,8 @@
 package org.mini2Dx.ecs.system;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ecs.entity.Entity;
 
 /**
@@ -58,31 +55,10 @@ public abstract class System<T extends Entity> {
 	}
 	
 	/**
-	 * Initialise the {@link System}
-	 * @param gc The {@link GameContainer} calling initialise
+	 * Updates all {@link Entity}s in the system
+	 * @param delta The time since the last update
 	 */
-	public abstract void initialise(GameContainer gc);
-	
-	/**
-	 * Update the {@link System}
-	 * @param gc The {@link GameContainer} calling update
-	 * @param delta The time in seconds since the last update
-	 */
-	public abstract void update(GameContainer gc, float delta);
-	
-	/**
-	 * Interpolate the {@link System}
-	 * @param gc The {@link GameContainer} calling interpolate
-	 * @param alpha The alpha value to use during interpolation
-	 */
-	public abstract void interpolate(GameContainer gc, float alpha);
-	
-	/**
-	 * Render the {@link System}
-	 * @param gc The {@link GameContainer} calling render
-	 * @param g The {@link Graphics} instance
-	 */
-	public abstract void render(GameContainer gc, Graphics g);
+	public abstract void update(float delta);
 	
 	/**
 	 * Returns if this {@link System} is debugging

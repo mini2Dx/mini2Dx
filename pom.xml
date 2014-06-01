@@ -148,6 +148,7 @@
 		<module>mini2Dx-dependency-injection-desktop</module>
 		<module>mini2Dx-dependency-injection-android</module>
 		<module>mini2Dx-ecs</module>
+		<module>mini2Dx-ecs-integration</module>
 		<module>mini2Dx-tiled</module>
 		<module>mini2Dx-uats</module>
 	</modules>

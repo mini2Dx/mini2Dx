@@ -16,6 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.ecs.system.GameSystem;
 import org.mini2Dx.ecs.system.System;
 
 /**
@@ -26,60 +27,60 @@ import org.mini2Dx.ecs.system.System;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class EntityComponentSystemGame extends GameContainer {
-	private List<System> systems;
+	private List<GameSystem> systems;
 
 	@Override
 	protected void preinit() {
 		super.preinit();
-		systems = new CopyOnWriteArrayList<System>();
+		systems = new CopyOnWriteArrayList<GameSystem>();
 	}
 	
 	@Override
 	protected void postinit() {
-		for (System system : systems) {
+		for (GameSystem system : systems) {
 			system.initialise(this);
 		}
 	}
 
 	@Override
 	public void update(float delta) {
-		for (System system : systems) {
+		for (GameSystem system : systems) {
 			system.update(this, delta);
 		}
 	}
 
 	@Override
 	public void interpolate(float alpha) {
-		for (System system : systems) {
+		for (GameSystem system : systems) {
 			system.interpolate(this, alpha);
 		}
 	}
 
 	@Override
 	public void render(Graphics g) {
-		for (System system : systems) {
+		for (GameSystem system : systems) {
 			system.render(this, g);
 		}
 	}
 
 	/**
-	 * Adds a {@link System} to be handled by this
+	 * Adds a {@link GameSystem} to be handled by this
 	 * {@link EntityComponentSystemGame}
 	 * 
 	 * @param system
-	 *            An implementation of {@link System} to be added
+	 *            An implementation of {@link GameSystem} to be added
 	 */
-	public void addSystem(System system) {
+	public void addSystem(GameSystem system) {
 		systems.add(system);
 	}
 
 	/**
-	 * Removes a {@link System} from this {@link EntityComponentSystemGame}
+	 * Removes a {@link GameSystem} from this {@link EntityComponentSystemGame}
 	 * 
 	 * @param system
-	 *            An implementation of {@link System} to be removed
+	 *            An implementation of {@link GameSystem} to be removed
 	 */
-	public void removeSystem(System system) {
+	public void removeSystem(GameSystem system) {
 		systems.remove(system);
 	}
 }

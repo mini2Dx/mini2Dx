@@ -11,9 +11,6 @@
  */
 package org.mini2Dx.ecs.system;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.GameScreen;
@@ -28,7 +25,7 @@ import org.mini2Dx.ecs.entity.GameScreenEntity;
  * 
  * @author Thomas Cashman
  */
-public class ScreenManagerSystem extends System<GameScreenEntity> implements
+public class ScreenManagerSystem extends GameSystem<GameScreenEntity> implements
 		ScreenManager<GameScreenEntity> {
 	protected GameScreenEntity currentScreen, nextScreen;
 	protected Transition transitionIn, transitionOut;

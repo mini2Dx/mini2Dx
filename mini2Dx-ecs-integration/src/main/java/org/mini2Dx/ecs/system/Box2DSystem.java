@@ -27,7 +27,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * 
  * @author Thomas Cashman
  */
-public abstract class Box2DSystem<T extends Entity> extends System<T> {
+public abstract class Box2DSystem<T extends Entity> extends GameSystem<T> {
 	private World world;
 	private int velocityIterations, positionIterations;
 
