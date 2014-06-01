@@ -14,12 +14,15 @@ package org.mini2Dx.ecs.entity;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.mini2Dx.ecs.component.Component;
 import org.mini2Dx.ecs.component.ComponentStore;
-import org.mini2Dx.ecs.component.ConcurrentComponentStore;
+import org.mini2Dx.ecs.component.ComponentTypeIdAllocator;
+import org.mini2Dx.ecs.component.DefaultComponentStore;
+import org.omg.CORBA.OMGVMCID;
 
 /**
  * A common interface for Entity implementations within the
@@ -35,7 +38,7 @@ public class Entity implements ComponentStore {
 	private List<Entity> children;
 	
 	/**
-	 * Creates a new {@link Entity} with an ID
+	 * Creates a new {@link Entity} with a generated ID and a {@link DefaultComponentStore}
 	 */
 	public Entity() {
 		this.id = EntityIdAllocator.allocate();
@@ -43,7 +46,7 @@ public class Entity implements ComponentStore {
 	}
 	
 	/**
-	 * Creates a new {@link Entity} with a specific ID.
+	 * Creates a new {@link Entity} with a specific ID and a {@link DefaultComponentStore}
 	 * @param id The ID to allocate this {@link Entity}
 	 */
 	public Entity(int id) {
@@ -51,9 +54,30 @@ public class Entity implements ComponentStore {
 		initialise();
 	}
 	
+	/**
+	 * Creates a new {@link Entity} with a generated ID with a specific {@link ComponentStore} implementaton
+	 * @param componentStore The {@link ComponentStore} implementation to use
+	 */
+	public Entity(ComponentStore componentStore) {
+		this.id = EntityIdAllocator.allocate();
+		initialise();
+		this.componentStore = componentStore;
+	}
+	
+	/**
+	 * Creates a new {@link Entity} with a specific ID and {@link ComponentStore} implementation
+	 * @param id The ID to allocate this {@link Entity}
+	 * @param componentStore The {@link ComponentStore} implementation to use
+	 */
+	public Entity(int id, ComponentStore componentStore) {
+		this.id = id;
+		initialise();
+		this.componentStore = componentStore;
+	}
+	
 	private void initialise() {
 		uuid = UUID.randomUUID();
-		componentStore = new ConcurrentComponentStore();
+		componentStore = new DefaultComponentStore();
 		children = new CopyOnWriteArrayList<Entity>();
 	}
 	
@@ -189,6 +213,86 @@ public class Entity implements ComponentStore {
 			}
 		}
 		return componentsRemoved;
+	}
+
+	public <T extends Component> T getComponentInDescendants(Class<T> clazz) {
+		return getComponentInEntityDescendants(this, ComponentTypeIdAllocator.getId(clazz));
+	}
+
+	public <T extends Component> T getComponentInDescendants(int componentTypeId) {
+		return getComponentInEntityDescendants(this, componentTypeId);
+	}
+	
+	
+	public <T extends Component> T getComponentInDescendants(String name, Class<T> clazz) {
+		return getComponentInEntityDescendants(this, name, ComponentTypeIdAllocator.getId(clazz));
+	}
+	
+	public <T extends Component> T getComponentInDescendants(String name, int componentTypeId) {
+		return getComponentInEntityDescendants(this, name, componentTypeId);
+	}
+	
+	public <T extends Component> SortedSet<T> getComponentsInDescendants(Class<T> clazz) {
+		SortedSet<T> result = new TreeSet<T>();
+		getComponentsInEntityDescendants(result, this, ComponentTypeIdAllocator.getId(clazz));
+		return result;
+	}
+	
+	public <T extends Component> SortedSet<T> getComponentsInDescendants(int componentTypeId) {
+		SortedSet<T> result = new TreeSet<T>();
+		getComponentsInEntityDescendants(result, this, componentTypeId);
+		return result;
+	}
+	
+	private <T extends Component> T getComponentInEntityDescendants(Entity entity, int componentTypeId) {
+		List<Entity> childEntities = entity.getChildren();
+		for(int i = 0; i < childEntities.size(); i++) {
+			T result = (T) childEntities.get(i).getComponent(componentTypeId);
+			if(result != null) {
+				return result;
+			}
+		}
+		for(int i = 0; i < childEntities.size(); i++) {
+			T result = getComponentInEntityDescendants(childEntities.get(i), componentTypeId);
+			if(result != null) {
+				return result;
+			}
+		}
+		return null;
+	}
+	
+	private <T extends Component> T getComponentInEntityDescendants(Entity entity, String name, int componentTypeId) {
+		List<Entity> childEntities = entity.getChildren();
+		for(int i = 0; i < childEntities.size(); i++) {
+			SortedSet<T> components = childEntities.get(i).getComponents(componentTypeId);
+			Iterator<T> iterator = components.iterator();
+			while(iterator.hasNext()) {
+				T component = iterator.next();
+				if(component != null && component.getName().equals(name)) {
+					return component;
+				}
+			}
+		}
+		for(int i = 0; i < childEntities.size(); i++) {
+			T result = getComponentInEntityDescendants(childEntities.get(i), name, componentTypeId);
+			if(result != null) {
+				return result;
+			}
+		}
+		return null;
+	}
+	
+	private <T extends Component> void getComponentsInEntityDescendants(SortedSet<T> result, Entity entity, int componentTypeId) {
+		List<Entity> childEntities = entity.getChildren();
+		for(int i = 0; i < childEntities.size(); i++) {
+			SortedSet<T> components = childEntities.get(i).getComponents(componentTypeId);
+			if(components != null && components.size() > 0) {
+				result.addAll(components);
+			}
+		}
+		for(int i = 0; i < childEntities.size(); i++) {
+			getComponentsInEntityDescendants(result, childEntities.get(i), componentTypeId);
+		}
 	}
 
 	/**

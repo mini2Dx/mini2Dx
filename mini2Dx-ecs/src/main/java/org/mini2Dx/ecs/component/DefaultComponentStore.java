@@ -26,10 +26,10 @@ import org.mini2Dx.ecs.entity.EntityListener;
  * 
  * @author Thomas Cashman
  */
-public class ConcurrentComponentStore implements ComponentStore {
+public class DefaultComponentStore implements ComponentStore {
 	private Map<Integer, SortedSet> components;
 
-	public ConcurrentComponentStore() {
+	public DefaultComponentStore() {
 		components = new ConcurrentHashMap<Integer, SortedSet>();
 	}
 

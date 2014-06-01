@@ -11,7 +11,6 @@
  */
 package org.mini2Dx.ecs.component;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 

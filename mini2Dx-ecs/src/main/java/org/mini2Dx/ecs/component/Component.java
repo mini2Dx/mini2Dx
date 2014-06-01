@@ -69,75 +69,29 @@ public class Component implements Comparable<Component> {
 		return entity.getComponents(clazz);
 	}
 	
-	private <T extends Component> T getComponentInEntityDescendants(Entity entity, Class<T> clazz) {
-		List<Entity> childEntities = entity.getChildren();
-		for(int i = 0; i < childEntities.size(); i++) {
-			T result = (T) childEntities.get(i).getComponent(clazz);
-			if(result != null) {
-				return result;
-			}
-		}
-		for(int i = 0; i < childEntities.size(); i++) {
-			T result = getComponentInEntityDescendants(childEntities.get(i), clazz);
-			if(result != null) {
-				return result;
-			}
-		}
-		return null;
-	}
-	
 	public <T extends Component> T getComponentInDescendants(Class<T> clazz) {
-		if(entity == null)
-			return null;
-		return getComponentInEntityDescendants(entity, clazz);
+		return entity.getComponentInDescendants(clazz);
+	}
+
+	public <T extends Component> T getComponentInDescendants(int componentTypeId) {
+		return entity.getComponentInDescendants(componentTypeId);
 	}
 	
-	private <T extends Component> T getComponentInEntityDescendants(Entity entity, String name, Class<T> clazz) {
-		List<Entity> childEntities = entity.getChildren();
-		for(int i = 0; i < childEntities.size(); i++) {
-			SortedSet<T> components = childEntities.get(i).getComponents(clazz);
-			Iterator<T> iterator = components.iterator();
-			while(iterator.hasNext()) {
-				T component = iterator.next();
-				if(component != null && component.getName().equals(name)) {
-					return component;
-				}
-			}
-		}
-		for(int i = 0; i < childEntities.size(); i++) {
-			T result = getComponentInEntityDescendants(childEntities.get(i), name, clazz);
-			if(result != null) {
-				return result;
-			}
-		}
-		return null;
-	}
 	
 	public <T extends Component> T getComponentInDescendants(String name, Class<T> clazz) {
-		if(entity == null)
-			return null;
-		return getComponentInEntityDescendants(entity, name, clazz);
+		return entity.getComponentInDescendants(name, clazz);
 	}
 	
-	private <T extends Component> void getComponentsInEntityDescendants(SortedSet<T> result, Entity entity, Class<T> clazz) {
-		List<Entity> childEntities = entity.getChildren();
-		for(int i = 0; i < childEntities.size(); i++) {
-			SortedSet<T> components = childEntities.get(i).getComponents(clazz);
-			if(components != null && components.size() > 0) {
-				result.addAll(components);
-			}
-		}
-		for(int i = 0; i < childEntities.size(); i++) {
-			getComponentsInEntityDescendants(result, childEntities.get(i), clazz);
-		}
+	public <T extends Component> T getComponentInDescendants(String name, int componentTypeId) {
+		return entity.getComponentInDescendants(name, componentTypeId);
 	}
 	
 	public <T extends Component> SortedSet<T> getComponentsInDescendants(Class<T> clazz) {
-		SortedSet<T> result = new TreeSet<T>();
-		if(entity != null) {
-			getComponentsInEntityDescendants(result, entity, clazz);
-		}
-		return result;
+		return entity.getComponentsInDescendants(clazz);
+	}
+	
+	public <T extends Component> SortedSet<T> getComponentsInDescendants(int componentTypeId) {
+		return entity.getComponentsInDescendants(componentTypeId);
 	}
 	
 	public void destroy() {
