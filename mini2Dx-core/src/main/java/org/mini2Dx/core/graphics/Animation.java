@@ -89,6 +89,10 @@ public class Animation<T extends Sprite> {
 	 */
 	public void update(float delta) {
 		elapsed += delta;
+		
+		if(durations.size() == 0)
+			return;
+		
 		float duration = durations.get(currentFrameIndex);
 		while (elapsed >= duration) {
 			elapsed = elapsed - duration;
@@ -114,6 +118,9 @@ public class Animation<T extends Sprite> {
 	 *            The y coordinate to render at
 	 */
 	public void draw(Graphics g, float x, float y) {
+		if(currentFrameIndex >= frames.size())
+			return;
+		
 		T sprite = getCurrentFrame();
 		sprite.setOrigin(originX, originY);
 		sprite.setRotation(rotation);
