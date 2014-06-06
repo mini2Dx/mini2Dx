@@ -22,6 +22,7 @@ import org.mini2Dx.ecs.component.Component;
 import org.mini2Dx.ecs.entity.Entity;
 import org.miniECx.core.test.TestComponent1;
 import org.miniECx.core.test.TestComponent2;
+import org.miniECx.core.test.TestComponent3;
 
 /**
  * Unit tests for {@link Entity}
@@ -31,12 +32,14 @@ public class EntityTest {
 	private Entity entity;
 	private TestComponent1 testComponent1;
 	private TestComponent2 testComponent2;
+	private TestComponent3 testComponent3;
 	
 	@Before
 	public void setup() {
 		entity = new Entity();
 		testComponent1 = new TestComponent1();
 		testComponent2 = new TestComponent2("test");
+		testComponent3 = new TestComponent3("test-test");
 	}
 
 	@Test
@@ -61,6 +64,11 @@ public class EntityTest {
 		SortedSet<Runnable> results3 = entity.getComponents(Runnable.class);
 		Assert.assertEquals(1, results3.size());
 		Assert.assertEquals(testComponent1, results3.first());
+		
+		entity.addComponent(testComponent3);
+		results2 = entity.getComponents(TestComponent2.class);
+		Assert.assertEquals(2, results2.size());
+		Assert.assertEquals(testComponent2, results2.first());
 	}
 	
 	@Test
