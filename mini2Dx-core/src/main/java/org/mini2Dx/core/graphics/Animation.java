@@ -31,7 +31,7 @@ public class Animation<T extends Sprite> {
 	private float rotation;
 	private float originX;
 	private float originY;
-	private Color tint;
+	private Color color;
 
 	/**
 	 * Constructor
@@ -55,8 +55,8 @@ public class Animation<T extends Sprite> {
 	public void addFrame(T frame, float duration) {
 		durations.add(duration);
 		frames.add(frame);
-		if(tint == null)
-			tint = frame.getColor();
+		if(color == null)
+			color = frame.getColor();
 		originX = frame.getOriginX();
 		originY = frame.getOriginY();
 	}
@@ -124,7 +124,7 @@ public class Animation<T extends Sprite> {
 		T sprite = getCurrentFrame();
 		sprite.setOrigin(originX, originY);
 		sprite.setRotation(rotation);
-		sprite.setColor(tint);
+		sprite.setColor(color);
 		g.drawSprite(sprite, x, y);
 		sprite.setRotation(0f);
 	}
@@ -214,18 +214,33 @@ public class Animation<T extends Sprite> {
 	 * Returns the {@link Color} tint applied to each frame
 	 * @return
 	 */
-	public Color getTint() {
-		return tint;
+	public Color getColor() {
+		return color;
 	}
 
 	/**
 	 * Sets the {@link Color} tint applied to each frame
-	 * @param tint
+	 * @param color
 	 */
-	public void setTint(Color tint) {
-		if(tint == null)
+	public void setColor(Color color) {
+		if(color == null)
 			return;
-		this.tint = tint;
+		this.color = color;
+	}
+	
+	/**
+	 * Sets the {@link Color} tint applied to each frame
+	 * @param r The red value (0f - 1f)
+	 * @param g The green value (0f - 1f)
+	 * @param b The blue value (0f - 1f)
+	 * @param a The alpha value (0f - 1f)
+	 */
+	public void setColor(float r, float g, float b, float a) {
+		if(color == null) {
+			color = new Color(r, g, b, a);
+		} else {
+			color.set(r, g, b, a);
+		}
 	}
 
 	/**
