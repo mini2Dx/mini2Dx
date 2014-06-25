@@ -11,8 +11,6 @@
  */
 package org.mini2Dx.ecs.component;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -22,6 +20,7 @@ import org.mini2Dx.ecs.entity.Entity;
  * A common interface for implementing {@link Component}s as part of the Entity-Component-System pattern
  * @author Thomas Cashman
  */
+@SuppressWarnings("unchecked")
 public class Component implements Comparable<Component> {
 	private int componentTypeId;
 	private String name;
@@ -51,6 +50,12 @@ public class Component implements Comparable<Component> {
 		return (T) entity.getComponent(clazz);
 	}
 	
+	public <T extends Component> T getComponent(int componentTypeId) {
+		if(entity == null)
+			return null;
+		return (T) entity.getComponent(componentTypeId);
+	}
+	
 	public <T extends Component> T getComponent(String name, Class<T> clazz) {
 		if(entity == null)
 			return null;
@@ -67,6 +72,12 @@ public class Component implements Comparable<Component> {
 		if(entity == null)
 			return new TreeSet<T>();
 		return entity.getComponents(clazz);
+	}
+	
+	public <T extends Component> SortedSet<T> getComponents(int componentTypeId) {
+		if(entity == null)
+			return new TreeSet<T>();
+		return entity.getComponents(componentTypeId);
 	}
 	
 	public <T extends Component> T getComponentInDescendants(Class<T> clazz) {
