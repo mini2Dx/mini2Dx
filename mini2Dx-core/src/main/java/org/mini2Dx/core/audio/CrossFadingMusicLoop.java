@@ -144,6 +144,20 @@ public class CrossFadingMusicLoop implements Runnable {
 		}
 	}
 	
+	public void fadeOutAndStop(long duration) {
+		fadeOut(duration);
+		scheduledExecutorService.schedule(new ScheduleStop(), duration, TimeUnit.MILLISECONDS);
+	}
+	
+	public class ScheduleStop implements Runnable {
+
+		@Override
+		public void run() {
+			stop();
+		}
+		
+	}
+	
 	private class ScheduleFadeOut implements Runnable {
 		private float volume;
 		
