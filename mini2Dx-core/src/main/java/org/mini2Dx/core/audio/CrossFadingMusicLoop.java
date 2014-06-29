@@ -59,22 +59,22 @@ public class CrossFadingMusicLoop implements Runnable {
 		Music tempTrack = currentTrack;
 		currentTrack = nextTrack;
 		nextTrack = tempTrack;
-		scheduleFadeIn();
-		scheduleFadeOut();
+		scheduleCrossFadeIn();
+		scheduleCrossFadeOut();
 	}
 
-	private void scheduleFadeIn() {
+	private void scheduleCrossFadeIn() {
 		for (int i = 0; i < crossfadeDuration; i += 50) {
-			float volume = MathUtils.clamp((i / crossfadeDuration), 0f, targetVolume) ;
-			scheduledExecutorService.schedule(new ScheduleFadeIn(volume), i,
+			float volume = MathUtils.clamp((Float.valueOf(i) / Float.valueOf(crossfadeDuration)), 0f, targetVolume) ;
+			scheduledExecutorService.schedule(new ScheduleCrossFadeIn(volume), i,
 					TimeUnit.MILLISECONDS);
 		}
 	}
 
-	private void scheduleFadeOut() {
+	private void scheduleCrossFadeOut() {
 		for (int i = 0; i < crossfadeDuration; i += 50) {
-			float volume = MathUtils.clamp(1f - (i / crossfadeDuration), 0f, targetVolume) ;
-			scheduledExecutorService.schedule(new ScheduleFadeOut(volume), i,
+			float volume = MathUtils.clamp(1f - (Float.valueOf(i) / Float.valueOf(crossfadeDuration)), 0f, targetVolume) ;
+			scheduledExecutorService.schedule(new ScheduleCrossFadeOut(volume), i,
 					TimeUnit.MILLISECONDS);
 		}
 	}
@@ -135,11 +135,34 @@ public class CrossFadingMusicLoop implements Runnable {
 			currentTrack.setVolume(targetVolume);
 		}
 	}
-
+	
+	public void fadeOut(long duration) {
+		for(long i = 0; i < duration; i += 50) {
+			float volume = MathUtils.clamp(1f - (Float.valueOf(i) / Float.valueOf(duration)), 0f, 1f);
+			scheduledExecutorService.schedule(new ScheduleFadeOut(volume), i,
+					TimeUnit.MILLISECONDS);
+		}
+	}
+	
 	private class ScheduleFadeOut implements Runnable {
 		private float volume;
-
+		
 		public ScheduleFadeOut(float volume) {
+			this.volume = volume;
+		}
+
+		@Override
+		public void run() {
+			targetVolume = volume;
+			currentTrack.setVolume(volume);
+		}
+		
+	}
+
+	private class ScheduleCrossFadeOut implements Runnable {
+		private float volume;
+
+		public ScheduleCrossFadeOut(float volume) {
 			this.volume = volume;
 		}
 
@@ -148,10 +171,10 @@ public class CrossFadingMusicLoop implements Runnable {
 		}
 	}
 
-	private class ScheduleFadeIn implements Runnable {
+	private class ScheduleCrossFadeIn implements Runnable {
 		private float volume;
 
-		public ScheduleFadeIn(float volume) {
+		public ScheduleCrossFadeIn(float volume) {
 			this.volume = volume;
 		}
 
