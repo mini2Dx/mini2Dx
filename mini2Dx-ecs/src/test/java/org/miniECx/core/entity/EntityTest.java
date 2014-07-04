@@ -72,6 +72,33 @@ public class EntityTest {
 	}
 	
 	@Test
+	public void testRemoveComponentWithGetByName() {
+		entity.addComponent(testComponent1);
+		entity.addComponent(testComponent2);
+		entity.addComponent(testComponent3);
+		
+		Assert.assertEquals(testComponent1, entity.getComponent(testComponent1.getComponentTypeId()));
+		Assert.assertEquals(testComponent2, entity.getComponent(testComponent2.getComponentTypeId()));
+		Assert.assertEquals(testComponent3, entity.getComponent(testComponent3.getComponentTypeId()));
+		
+		Assert.assertEquals(testComponent1, entity.getComponent(testComponent1.getName(), testComponent1.getComponentTypeId()));
+		Assert.assertEquals(testComponent2, entity.getComponent(testComponent2.getName(), testComponent2.getComponentTypeId()));
+		Assert.assertEquals(testComponent3, entity.getComponent(testComponent3.getName(), testComponent2.getComponentTypeId()));
+	
+		entity.removeComponent(testComponent2);
+		Assert.assertEquals(testComponent3, entity.getComponent(testComponent3.getName(), testComponent2.getComponentTypeId()));
+		Assert.assertEquals(testComponent3, entity.getComponent(testComponent3.getName(), testComponent3.getComponentTypeId()));
+	
+		Assert.assertNull(entity.getComponent(testComponent2.getName(), testComponent2.getComponentTypeId()));
+	
+		entity.addComponent(testComponent2);
+		entity.addComponent(testComponent3);
+		
+		entity.removeComponent(testComponent3);
+		Assert.assertEquals(testComponent2, entity.getComponent(testComponent2.getName(), testComponent2.getComponentTypeId()));
+	}
+	
+	@Test
 	public void testRemoveAllComponentsOfType() {
 		Assert.assertNull(testComponent1.getEntity());
 		Assert.assertNull(testComponent2.getEntity());

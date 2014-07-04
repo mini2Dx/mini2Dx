@@ -28,9 +28,11 @@ import org.mini2Dx.ecs.entity.EntityListener;
  */
 public class DefaultComponentStore implements ComponentStore {
 	private Map<Integer, SortedSet> components;
+	private Map<Integer, Map<String, Object>> componentsByName;
 
 	public DefaultComponentStore() {
 		components = new ConcurrentHashMap<Integer, SortedSet>();
+		componentsByName = new ConcurrentHashMap<Integer, Map<String,Object>>();
 	}
 
 	@Override
@@ -50,11 +52,26 @@ public class DefaultComponentStore implements ComponentStore {
 	
 	@Override
 	public <T extends Component> T getComponent(String name, int componentTypeId) {
+		if(!componentsByName.containsKey(componentTypeId)) {
+			componentsByName.put(componentTypeId, new ConcurrentHashMap<String, Object>());
+		}
+		
+		Map<String, Object> cache = componentsByName.get(componentTypeId);
+		if(cache == null) {
+			cache = new ConcurrentHashMap<String, Object>();
+			componentsByName.put(componentTypeId, cache);
+		}
+		
+		if(cache.containsKey(name)) {
+			return (T) cache.get(name);
+		}
+		
 		SortedSet<T> components = getComponents(componentTypeId);
 		Iterator<T> iterator = components.iterator();
 		while(iterator.hasNext()) {
 			T component = iterator.next();
 			if(component.getName().equals(name)) {
+				cache.put(name, component);
 				return component;
 			}
 		}
@@ -63,15 +80,7 @@ public class DefaultComponentStore implements ComponentStore {
 
 	@Override
 	public <T extends Component> T getComponent(String name, Class<T> clazz) {
-		SortedSet<T> components = getComponents(clazz);
-		Iterator<T> iterator = components.iterator();
-		while(iterator.hasNext()) {
-			T component = iterator.next();
-			if(component.getName().equals(name)) {
-				return component;
-			}
-		}
-		return null;
+		return getComponent(name, ComponentTypeIdAllocator.getId(clazz));
 	}
 
 	/**
@@ -147,6 +156,8 @@ public class DefaultComponentStore implements ComponentStore {
 		Class clazz = component.getClass();
 
 		int componentTypeId = component.getComponentTypeId();
+		componentsByName.remove(componentTypeId);
+		
 		checkConsistency(componentTypeId);
 		components.get(componentTypeId).remove(component);
 
@@ -160,6 +171,7 @@ public class DefaultComponentStore implements ComponentStore {
 
 		while (clazz != null) {
 			int componentTypeId = ComponentTypeIdAllocator.getId(clazz);
+			componentsByName.remove(componentTypeId);
 			checkConsistency(componentTypeId);
 			components.get(componentTypeId).remove(component);
 			clazz = clazz.getSuperclass();
@@ -174,6 +186,7 @@ public class DefaultComponentStore implements ComponentStore {
 			Class interfaceClass : clazz.getInterfaces()) {
 				int componentTypeId = ComponentTypeIdAllocator
 						.getId(interfaceClass);
+				componentsByName.remove(componentTypeId);
 				checkConsistency(componentTypeId);
 				components.get(componentTypeId).remove(component);
 			}
@@ -188,6 +201,7 @@ public class DefaultComponentStore implements ComponentStore {
 				Class clazz = Class.forName(key);
 				if (clazz.equals(componentClass)) {
 					int componentTypeId = ComponentTypeIdAllocator.getId(clazz);
+					componentsByName.remove(componentTypeId);
 					components.get(componentTypeId).remove(component);
 					removeChildClassInterfaces(clazz, component);
 				}
@@ -202,6 +216,7 @@ public class DefaultComponentStore implements ComponentStore {
 			Class interfaceClass : clazz.getInterfaces()) {
 				int componentTypeId = ComponentTypeIdAllocator
 						.getId(interfaceClass);
+				componentsByName.remove(componentTypeId);
 				checkConsistency(componentTypeId);
 				components.get(componentTypeId).remove(component);
 			}
@@ -219,6 +234,7 @@ public class DefaultComponentStore implements ComponentStore {
 	public <T extends Component> SortedSet<T> removeAllComponentsOfType(
 			Class<T> clazz) {
 		int componentTypeId = ComponentTypeIdAllocator.getId(clazz);
+		componentsByName.remove(componentTypeId);
 		return removeAllComponentsOfType(componentTypeId);
 	}
 

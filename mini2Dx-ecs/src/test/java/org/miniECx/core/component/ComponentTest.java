@@ -115,5 +115,4 @@ public class ComponentTest {
 		Assert.assertEquals(true, component.getName() != null);
 		Assert.assertEquals(true, component.getName().length() > 0);
 	}
-
 }
