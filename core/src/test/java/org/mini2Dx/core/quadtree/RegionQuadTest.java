@@ -37,8 +37,7 @@ public class RegionQuadTest {
 		Random random = new Random();
 		for(int i = 0; i < 100; i++) {
 			Rectangle rect = new Rectangle(random.nextInt(96), random.nextInt(96), 32f, 32f);
-			boolean added = rootQuad.add(rect);
-			System.out.println(added + " " + rect);
+			Assert.assertEquals(true, rootQuad.add(rect));
 			Assert.assertEquals(i + 1, rootQuad.getElements().size());
 		}
 	}
