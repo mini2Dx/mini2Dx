@@ -8,3 +8,5 @@ target/
 release.properties
 rebel.xml
 bin/
+.gradle
+build/

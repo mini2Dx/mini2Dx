@@ -1,0 +1,143 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven { url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/' }
+    }
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
+        classpath 'com.android.tools.build:gradle:0.10+'
+        classpath 'com.github.jtakakura:gradle-robovm-plugin:0.0.10'
+    }
+}
+
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+
+	group = 'org.mini2Dx'
+    version = '1.0.0-SNAPSHOT'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    }
+}
+
+project(":" + rootProject.name + "-core") {
+    apply plugin: "java"
+
+    dependencies {
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
+        compile "com.badlogicgames.box2dlights:box2dlights:1.2"
+        compile "org.apache.commons:commons-lang3:$langVersion"
+        
+        testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+    }
+}
+
+project(":" + rootProject.name + "-dependency-injection") {
+    apply plugin: "java"
+
+    dependencies {
+        compile "commons-beanutils:commons-beanutils:$beanutilsVersion"
+        
+        testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+    }
+}
+
+project(":" + rootProject.name + "-dependency-injection-android") {
+    apply plugin: "java"
+
+    dependencies {
+    	compile project(":" + rootProject.name + "-dependency-injection")
+    	
+    	compile files(fileTree(dir: 'libs', includes: ['*.jar']))
+    }
+}
+
+project(":" + rootProject.name + "-dependency-injection-desktop") {
+    apply plugin: "java"
+
+    dependencies {
+        compile project(":" + rootProject.name + "-dependency-injection")
+
+		compile "org.reflections:reflections:$reflectionsVersion"
+		
+		testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+		testCompile project(":" + rootProject.name + "-dependency-injection").sourceSets.test.output
+    }
+}
+
+project(":" + rootProject.name + "-ecs") {
+    apply plugin: "java"
+
+    dependencies {
+    	testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+    }
+}
+
+project(":" + rootProject.name + "-ecs-integration") {
+    apply plugin: "java"
+
+    dependencies {
+        compile project(":" + rootProject.name + "-core")
+        compile project(":" + rootProject.name + "-ecs")
+        
+        testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+    }
+}
+
+project(":" + rootProject.name + "-tiled") {
+    apply plugin: "java"
+
+    dependencies {
+		compile project(":" + rootProject.name + "-core")
+		
+		testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+    }
+}
+
+project(":" + rootProject.name + "-uats") {
+    apply plugin: "java"
+
+    dependencies {
+    	compile project(":" + rootProject.name + "-core")
+    	compile project(":" + rootProject.name + "-tiled")
+    
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
+        
+        testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+    }
+}
+
+tasks.eclipse.doLast {
+    delete ".project"
+}
