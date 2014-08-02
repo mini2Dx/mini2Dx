@@ -11,3 +11,4 @@ bin/
 .gradle
 build/
 *.lock
+_site/
