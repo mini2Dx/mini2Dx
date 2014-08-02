@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2014, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,13 +17,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.tiled.exception.TiledException;
+import org.mini2Dx.tiled.exception.TiledParsingException;
+import org.mini2Dx.tiled.exception.UnsupportedOrientationException;
+import org.mini2Dx.tiled.renderer.OrthogonalTileLayerRenderer;
+import org.mini2Dx.tiled.renderer.TileLayerRenderer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteCache;
-import com.badlogic.gdx.math.MathUtils;
 
 /**
  * An implementation of a parsed map from Tiled.
@@ -34,6 +37,7 @@ import com.badlogic.gdx.math.MathUtils;
  * @author Thomas Cashman
  */
 public class TiledMap implements TiledParserListener {
+	private String orientationValue;
 	private Orientation orientation;
 	private int width, height, tileWidth, tileHeight;
 	private Color backgroundColor;
@@ -41,11 +45,9 @@ public class TiledMap implements TiledParserListener {
 	protected List<TileLayer> tileLayers;
 	protected List<TiledObjectGroup> objectGroups;
 	private Map<String, String> properties;
-	private boolean loadTilesetsAndLayerCaches = true;
 	private FileHandle fileHandle;
 
-	private SpriteCache layerCache;
-	private Map<TileLayer, Integer> layerCacheIds;
+	private TileLayerRenderer tileLayerRenderer;
 
 	/**
 	 * Constructs an empty map
@@ -54,8 +56,6 @@ public class TiledMap implements TiledParserListener {
 		tilesets = new ArrayList<Tileset>();
 		tileLayers = new ArrayList<TileLayer>();
 		objectGroups = new ArrayList<TiledObjectGroup>();
-		layerCacheIds = new HashMap<TileLayer, Integer>();
-		this.loadTilesetsAndLayerCaches = false;
 	}
 
 	/**
@@ -63,11 +63,11 @@ public class TiledMap implements TiledParserListener {
 	 * 
 	 * @param fileHandle
 	 *            A {@link FileHandle} to a .tmx file
-	 * @throws IOException
-	 *             Thrown if the map file could not be parsed
+	 * @throws TiledException
+	 *             Thrown if there were issues with the loaded map
 	 */
-	public TiledMap(FileHandle fileHandle) throws IOException {
-		this(fileHandle, true);
+	public TiledMap(FileHandle fileHandle) throws TiledException {
+		this(fileHandle, true, false);
 	}
 
 	/**
@@ -75,25 +75,42 @@ public class TiledMap implements TiledParserListener {
 	 * 
 	 * @param fileHandle
 	 *            A {@link FileHandle} to a .tmx file
-	 * @param loadTilesetsAndLayerCaches
+	 * @param loadTilesets
 	 *            True if the tileset images should be loaded and the map
 	 *            pre-rendered
-	 * @throws IOException
-	 *             Thrown if the map file could not be parsed
+	 * @throws TiledException
+	 *             Thrown if there were issues with the loaded map
 	 */
-	public TiledMap(FileHandle fileHandle, boolean loadTilesetsAndLayerCaches)
-			throws IOException {
+	public TiledMap(FileHandle fileHandle, boolean loadTilesets,
+			boolean cacheLayers) throws TiledException {
 		this();
-		this.loadTilesetsAndLayerCaches = loadTilesetsAndLayerCaches;
 		this.fileHandle = fileHandle;
 
-		TiledParser parser = new TiledParser();
-		parser.addListener(this);
-		parser.parse(fileHandle);
+		try {
+			TiledParser parser = new TiledParser();
+			parser.addListener(this);
+			parser.parse(fileHandle);
+		} catch (IOException e) {
+			throw new TiledParsingException(e);
+		}
 
-		if (loadTilesetsAndLayerCaches) {
+		if (loadTilesets) {
 			loadTilesets();
-			loadLayerCaches();
+		}
+
+		switch (orientation) {
+		case ISOMETRIC:
+			// TODO: Add renderer for isometric maps
+			break;
+		case ORTHOGONAL:
+			tileLayerRenderer = new OrthogonalTileLayerRenderer(this, cacheLayers);
+			break;
+		case STAGGERED:
+			// TODO: Add renderer for hexagonal maps
+			break;
+		case UNKNOWN:
+		default:
+			throw new UnsupportedOrientationException(orientationValue);
 		}
 	}
 
@@ -111,9 +128,10 @@ public class TiledMap implements TiledParserListener {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Returns the total amount of {@link Tileset}s loaded
+	 * 
 	 * @return 0 if none are loaded
 	 */
 	public int getTotalTilesetsLoaded() {
@@ -125,14 +143,16 @@ public class TiledMap implements TiledParserListener {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Loads a specific {@link Tileset}
+	 * 
 	 * @param tilesetIndex
 	 */
 	public void loadTileset(int tilesetIndex) {
-		if(tilesetIndex < 0 || tilesetIndex >= tilesets.size()) {
-			throw new RuntimeException("No such tileset with index " + tilesetIndex);
+		if (tilesetIndex < 0 || tilesetIndex >= tilesets.size()) {
+			throw new RuntimeException("No such tileset with index "
+					+ tilesetIndex);
 		}
 		if (!tilesets.get(tilesetIndex).isTextureLoaded()) {
 			tilesets.get(tilesetIndex).loadTexture(fileHandle.parent());
@@ -147,55 +167,6 @@ public class TiledMap implements TiledParserListener {
 			if (!tilesets.get(i).isTextureLoaded()) {
 				tilesets.get(i).loadTexture(fileHandle.parent());
 			}
-		}
-	}
-
-	/**
-	 * Returns if the layer caches have been loaded
-	 * 
-	 * @return True if the map has been pre-rendered
-	 */
-	public boolean isLayerCachesLoaded() {
-		return layerCache != null;
-	}
-
-	/**
-	 * Loads the layers caches if they are not already loaded
-	 */
-	public void loadLayerCaches() {
-		if(!isTilesetsLoaded()) {
-			throw new RuntimeException("Tilesets need to be loaded before calling loadLayerCaches()");
-		}
-		
-		if (layerCache != null) {
-			return;
-		}
-		layerCache = new SpriteCache(getWidth() * getHeight()
-				* tileLayers.size(), true);
-		for (int layer = 0; layer < tileLayers.size(); layer++) {
-			layerCache.beginCache();
-			for (int y = 0; y < getHeight(); y++) {
-				for (int x = 0; x < getWidth(); x++) {
-					int tileId = tileLayers.get(layer).getTileId(x, y);
-
-					if (tileId > 0) {
-						int tileRenderX = x * getTileWidth();
-						int tileRenderY = y * getTileHeight();
-
-						for (int i = 0; i < tilesets.size(); i++) {
-							Tileset tileset = tilesets.get(i);
-							if (tileset.contains(tileId)) {
-								layerCache.add(tileset.getTile(tileId)
-										.getTileImage(), tileRenderX,
-										tileRenderY);
-								break;
-							}
-						}
-					}
-				}
-			}
-			int layerCacheId = layerCache.endCache();
-			layerCacheIds.put(tileLayers.get(layer), layerCacheId);
 		}
 	}
 
@@ -242,15 +213,16 @@ public class TiledMap implements TiledParserListener {
 	 *            The x tile coordinate in the map to start from
 	 * @param startTileY
 	 *            The y tile coordinate in the map to start from
-	 * @param width
+	 * @param widthInTiles
 	 *            The amount of tiles across the x axis to render
-	 * @param height
+	 * @param heightInTiles
 	 *            The amount of tiles across the y axis to render
 	 */
 	public void draw(Graphics g, int x, int y, int startTileX, int startTileY,
-			int width, int height) {
+			int widthInTiles, int heightInTiles) {
 		for (int i = 0; i < tileLayers.size(); i++) {
-			draw(g, x, y, startTileX, startTileY, width, height, i);
+			draw(g, x, y, startTileX, startTileY, widthInTiles, heightInTiles,
+					i);
 		}
 	}
 
@@ -268,17 +240,17 @@ public class TiledMap implements TiledParserListener {
 	 *            The x tile coordinate in the map to start from
 	 * @param startTileY
 	 *            The y tile coordinate in the map to start from
-	 * @param width
+	 * @param widthInTiles
 	 *            The amount of tiles across the x axis to render
-	 * @param height
+	 * @param heightInTiles
 	 *            The amount of tiles across the y axis to render
 	 * @param layer
 	 *            The layer index to render
 	 */
 	public void draw(Graphics g, int x, int y, int startTileX, int startTileY,
-			int width, int height, int layer) {
+			int widthInTiles, int heightInTiles, int layer) {
 		drawLayer(g, tileLayers.get(layer), x, y, startTileX, startTileY,
-				width, height);
+				widthInTiles, heightInTiles);
 	}
 
 	/**
@@ -295,14 +267,14 @@ public class TiledMap implements TiledParserListener {
 	 *            The x coordinate in tiles where rendering started
 	 * @param startTileY
 	 *            The y coordinate in tiles where rendering started
-	 * @param width
+	 * @param widthInTiles
 	 *            The amount of tiles that were rendered along the X axis
-	 * @param height
+	 * @param heightInTiles
 	 *            The amount of tiles that were rendered along the Y axis
 	 * @return True if the layer should be rendered
 	 */
 	protected boolean preLayerRendered(Graphics g, TileLayer layer,
-			int startTileX, int startTileY, int width, int height) {
+			int startTileX, int startTileY, int widthInTiles, int heightInTiles) {
 		return true;
 	}
 
@@ -317,54 +289,34 @@ public class TiledMap implements TiledParserListener {
 	 *            The x coordinate in tiles where rendering started
 	 * @param startTileY
 	 *            The y coordinate in tiles where rendering started
-	 * @param width
+	 * @param widthInTiles
 	 *            The amount of tiles that were rendered along the X axis
-	 * @param height
+	 * @param heightInTiles
 	 *            The amount of tiles that were rendered along the Y axis
 	 */
 	protected void onLayerRendered(Graphics g, TileLayer layer, int startTileX,
-			int startTileY, int width, int height) {
+			int startTileY, int widthInTiles, int heightInTiles) {
 
 	}
 
 	private void drawLayer(Graphics g, TileLayer layer, int renderX,
-			int renderY, int startTileX, int startTileY, int width, int height) {
-		if (!preLayerRendered(g, layer, startTileX, startTileY, width, height))
+			int renderY, int startTileX, int startTileY, int widthInTiles,
+			int heightInTiles) {
+		if (!isTilesetsLoaded()) {
+			Gdx.app.error(TiledMap.class.getSimpleName(),
+					"Attempting to render TiledMap without its tilesets loaded");
 			return;
-
-		int startTileRenderX = (startTileX * getTileWidth());
-		int startTileRenderY = (startTileY * getTileHeight());
-
-		int tileRenderX = MathUtils.round(renderX - startTileRenderX);
-		int tileRenderY = MathUtils.round(renderY - startTileRenderY);
-
-		Rectangle existingClip = g.removeClip();
-		Rectangle newClip = new Rectangle(startTileRenderX, startTileRenderY,
-				width * getTileWidth(), height * getTileHeight());
-
-		g.translate(-tileRenderX, -tileRenderY);
-
-		if (existingClip != null) {
-			if (existingClip.intersects(newClip)) {
-				g.setClip(existingClip.intersection(newClip));
-			} else {
-				g.setClip(existingClip);
-			}
-		} else {
-			g.setClip(newClip);
 		}
 
-		int layerCacheId = layerCacheIds.get(layer);
-		g.drawSpriteCache(layerCache, layerCacheId);
+		if (!preLayerRendered(g, layer, startTileX, startTileY, widthInTiles,
+				heightInTiles))
+			return;
 
-		g.removeClip();
-		g.translate(tileRenderX, tileRenderY);
+		tileLayerRenderer.drawLayer(g, layer, renderX, renderY, startTileX,
+				startTileY, widthInTiles, heightInTiles);
 
-		if (existingClip != null)
-			g.setClip(existingClip.getX(), existingClip.getY(),
-					existingClip.getWidth(), existingClip.getHeight());
-
-		onLayerRendered(g, layer, startTileX, startTileY, width, height);
+		onLayerRendered(g, layer, startTileX, startTileY, widthInTiles,
+				heightInTiles);
 	}
 
 	/**
@@ -410,6 +362,7 @@ public class TiledMap implements TiledParserListener {
 	@Override
 	public void onBeginParsing(String orientation, Color backgroundColor,
 			int width, int height, int tileWidth, int tileHeight) {
+		this.orientationValue = orientation;
 		try {
 			this.orientation = Orientation.valueOf(orientation.toUpperCase());
 		} catch (Exception e) {
@@ -436,17 +389,18 @@ public class TiledMap implements TiledParserListener {
 
 	@Override
 	public void onTilesetParsed(Tileset parsedTileset) {
-		this.tilesets.add(parsedTileset);
+		tilesets.add(parsedTileset);
 	}
 
 	@Override
 	public void onTileLayerParsed(TileLayer parsedLayer) {
-		this.tileLayers.add(parsedLayer);
+		parsedLayer.setIndex(tileLayers.size());
+		tileLayers.add(parsedLayer);
 	}
 
 	@Override
 	public void onObjectGroupParsed(TiledObjectGroup parsedObjectGroup) {
-		this.objectGroups.add(parsedObjectGroup);
+		objectGroups.add(parsedObjectGroup);
 	}
 
 	/**
@@ -511,6 +465,15 @@ public class TiledMap implements TiledParserListener {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Releases any resources used by this TiledMap
+	 */
+	public void dispose() {
+		if (tileLayerRenderer != null) {
+			tileLayerRenderer.dispose();
+		}
 	}
 
 	/**
@@ -592,5 +555,14 @@ public class TiledMap implements TiledParserListener {
 	 */
 	public Color getBackgroundColor() {
 		return backgroundColor;
+	}
+
+	/**
+	 * Sets the {@link TileLayerRenderer} implementation to use for rendering
+	 * 
+	 * @param tileLayerRenderer The {@link TileLayerRenderer} to use
+	 */
+	public void setTileLayerRenderer(TileLayerRenderer tileLayerRenderer) {
+		this.tileLayerRenderer = tileLayerRenderer;
 	}
 }

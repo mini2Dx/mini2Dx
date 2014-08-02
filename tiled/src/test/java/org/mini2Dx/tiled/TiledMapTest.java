@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2014, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,12 +11,11 @@
  */
 package org.mini2Dx.tiled;
 
-import java.io.IOException;
-
 import junit.framework.Assert;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mini2Dx.tiled.exception.TiledException;
 
 import com.badlogic.gdx.files.FileHandle;
 
@@ -29,10 +28,10 @@ public class TiledMapTest {
 	private static TiledMap tiledMap;
 
 	@BeforeClass
-	public static void loadMap() throws IOException {
+	public static void loadMap() throws TiledException {
 		FileHandle file = new FileHandle(Thread.currentThread()
 				.getContextClassLoader().getResource("simple.tmx").getFile());
-		tiledMap = new TiledMap(file, false);
+		tiledMap = new TiledMap(file, false, false);
 	}
 	
 	@Test

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2014, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,12 +11,11 @@
  */
 package org.mini2Dx.uats.common;
 
-import java.io.IOException;
-
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.Mini2DxGame;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.tiled.TiledMap;
+import org.mini2Dx.tiled.exception.TiledException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -25,11 +24,10 @@ import com.badlogic.gdx.graphics.Color;
 
 /**
  * A {@link GameContainer} that allows visual user acceptance testing of
- * {@link TiledMap} rendering
- *
+ * {@link TiledMap} rendering with layer caching enabled
  * @author Thomas Cashman
  */
-public class TiledMapUAT extends GameContainer {
+public class TiledMapWithCachingUAT extends GameContainer {
 	private TiledMap tiledMap;
 
 	@Override
@@ -43,8 +41,8 @@ public class TiledMapUAT extends GameContainer {
 	@Override
 	public void initialise() {
 		try {
-			tiledMap = new TiledMap(Gdx.files.classpath("simple.tmx"));
-		} catch (IOException e) {
+			tiledMap = new TiledMap(Gdx.files.classpath("simple.tmx"), true, true);
+		} catch (TiledException e) {
 			e.printStackTrace();
 		}
 	}
@@ -78,11 +76,11 @@ public class TiledMapUAT extends GameContainer {
 
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.title = "mini2Dx - TiledMap Verification Test";
+		cfg.title = "mini2Dx - TiledMap With Caching Verification Test";
 		cfg.width = 800;
 		cfg.height = 800;
 		cfg.stencil = 8;
 		cfg.vSyncEnabled = true;
-		new LwjglApplication(new Mini2DxGame(new TiledMapUAT()), cfg);
+		new LwjglApplication(new Mini2DxGame(new TiledMapWithCachingUAT()), cfg);
 	}
 }

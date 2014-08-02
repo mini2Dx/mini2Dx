@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2014, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,50 +20,78 @@ import java.util.Map;
  * @author Thomas Cashman
  */
 public class TileLayer {
+	private int index;
 	private String name;
-	private int [][] tiles;
+	private int[][] tiles;
 	private boolean visible;
 	private Map<String, String> properties;
-	
+
 	public TileLayer(int width, int height) {
 		tiles = new int[width][height];
 	}
-	
+
 	/**
 	 * Returns if the layer contains the specified property
-	 * @param propertyName The property name to search for
+	 * 
+	 * @param propertyName
+	 *            The property name to search for
 	 * @return True if the layer contains the property
 	 */
 	public boolean containsProperty(String propertyName) {
-		if(properties == null)
+		if (properties == null)
 			return false;
 		return properties.containsKey(propertyName);
 	}
 
 	/**
 	 * Returns the value of a specified property
-	 * @param propertyName The property name to search for
+	 * 
+	 * @param propertyName
+	 *            The property name to search for
 	 * @return Null if there is no such property
 	 */
 	public String getProperty(String propertyName) {
-		if(properties == null)
+		if (properties == null)
 			return null;
 		return properties.get(propertyName);
 	}
-	
+
 	/**
 	 * Sets the value of a specified property
-	 * @param propertyName The property name to set the value for
-	 * @param value The value of the property to set
+	 * 
+	 * @param propertyName
+	 *            The property name to set the value for
+	 * @param value
+	 *            The value of the property to set
 	 */
 	public void setProperty(String propertyName, String value) {
-		if(properties == null)
+		if (properties == null)
 			properties = new HashMap<String, String>();
 		properties.put(propertyName, value);
 	}
-	
+
+	/**
+	 * Returns the index in the {@link TiledMap} of this layer
+	 * 
+	 * @return The index of the layer
+	 */
+	public int getIndex() {
+		return index;
+	}
+
+	/**
+	 * Sets the index in the {@link TiledMap} of this layer
+	 * 
+	 * @param index
+	 *            The index of the layer
+	 */
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
 	/**
 	 * Returns the name of this layer
+	 * 
 	 * @return Null if there is no name
 	 */
 	public String getName() {
@@ -72,27 +100,36 @@ public class TileLayer {
 
 	/**
 	 * Sets the name of this layer
-	 * @param name The name to set
+	 * 
+	 * @param name
+	 *            The name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Returns the tile id at a given coordinate on the layer
-	 * @param x The x coordinate in tiles
-	 * @param y The y coordinate in tiles
+	 * 
+	 * @param x
+	 *            The x coordinate in tiles
+	 * @param y
+	 *            The y coordinate in tiles
 	 * @return 0 if there is no tile
 	 */
 	public int getTileId(int x, int y) {
 		return tiles[x][y];
 	}
-	
+
 	/**
 	 * Sets the tile id at a given coordinate on the layer
-	 * @param x The x coordinate in tiles
-	 * @param y The y coordinate in tiles
-	 * @param id 0 if there is no tile
+	 * 
+	 * @param x
+	 *            The x coordinate in tiles
+	 * @param y
+	 *            The y coordinate in tiles
+	 * @param id
+	 *            0 if there is no tile
 	 */
 	public void setTileId(int x, int y, int id) {
 		tiles[x][y] = id;

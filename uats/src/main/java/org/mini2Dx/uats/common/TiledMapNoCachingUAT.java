@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2014, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,11 +24,11 @@ import com.badlogic.gdx.graphics.Color;
 
 /**
  * A {@link GameContainer} that allows visual user acceptance testing of
- * {@link Graphics} clipping functionality
- * 
+ * {@link TiledMap} rendering with layer caching disabled
+ *
  * @author Thomas Cashman
  */
-public class ClippingUAT extends GameContainer {
+public class TiledMapNoCachingUAT extends GameContainer {
 	private TiledMap tiledMap;
 
 	@Override
@@ -42,7 +42,7 @@ public class ClippingUAT extends GameContainer {
 	@Override
 	public void initialise() {
 		try {
-			tiledMap = new TiledMap(Gdx.files.classpath("simple.tmx"));
+			tiledMap = new TiledMap(Gdx.files.classpath("simple.tmx"), true, false);
 		} catch (TiledException e) {
 			e.printStackTrace();
 		}
@@ -60,32 +60,28 @@ public class ClippingUAT extends GameContainer {
 	public void render(Graphics g) {
 		g.setBackgroundColor(Color.WHITE);
 		g.setColor(Color.RED);
+		
+		tiledMap.draw(g, 0, 0);
+		
+		tiledMap.getTilesets().get(0).drawTileset(g, tiledMap.getWidth() * tiledMap.getTileWidth() + 32, 0);
+		
+		g.scale(1.25f,1.25f);
+		g.rotate(5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 2);
 
-		g.setClip(0f, 0f, 64f, 64f);
-		//Should draw first four tiles in top left corner
-		tiledMap.draw(g, 0, 0);
-		g.removeClip();
+		tiledMap.draw(g, 0, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 2, 1, 1, 4, 8);
 		
-		g.setClip(0f, 192f, 64f, 64f);
-		//Should draw four tiles from bottom left corner of map
-		tiledMap.draw(g, 0, 0);
-		g.removeClip();
-		
-		//Should draw whole map
-		tiledMap.draw(g, 96, 0);
-		
-		//Should only draw part of text
-		g.setClip(0, 256, 64, 64);
-		g.drawString("Hello, world!", 0, 256);
+		g.rotate(-5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 2);
+		g.scale(0.8f,0.8f);
+		tiledMap.draw(g, 32, tiledMap.getHeight() * tiledMap.getTileHeight(), 1, 1, 4, 8);
 	}
 
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.title = "mini2Dx - Clipping Verification Test";
+		cfg.title = "mini2Dx - TiledMap No Caching Verification Test";
 		cfg.width = 800;
-		cfg.height = 600;
+		cfg.height = 800;
 		cfg.stencil = 8;
 		cfg.vSyncEnabled = true;
-		new LwjglApplication(new Mini2DxGame(new ClippingUAT()), cfg);
+		new LwjglApplication(new Mini2DxGame(new TiledMapNoCachingUAT()), cfg);
 	}
 }

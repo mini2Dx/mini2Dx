@@ -10,3 +10,4 @@ rebel.xml
 bin/
 .gradle
 build/
+*.lock
