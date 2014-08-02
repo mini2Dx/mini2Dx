@@ -756,6 +756,14 @@ public class Graphics {
 		return camera.combined.cpy();
 	}
 
+	public float getCurrentWidth() {
+		return currentWidth;
+	}
+
+	public float getCurrentHeight() {
+		return currentHeight;
+	}
+
 	@Override
 	public String toString() {
 		return "Graphics [color=" + color + ", backgroundColor="
