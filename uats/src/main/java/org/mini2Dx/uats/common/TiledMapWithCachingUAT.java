@@ -81,6 +81,8 @@ public class TiledMapWithCachingUAT extends GameContainer {
 		cfg.height = 800;
 		cfg.stencil = 8;
 		cfg.vSyncEnabled = true;
+		cfg.foregroundFPS = 0;
+		cfg.backgroundFPS = 0;
 		new LwjglApplication(new Mini2DxGame(new TiledMapWithCachingUAT()), cfg);
 	}
 }
