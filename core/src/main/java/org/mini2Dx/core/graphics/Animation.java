@@ -32,6 +32,8 @@ public class Animation<T extends Sprite> {
 	private float originX;
 	private float originY;
 	private Color color;
+	private boolean flipX;
+	private boolean flipY;
 
 	/**
 	 * Constructor
@@ -125,6 +127,7 @@ public class Animation<T extends Sprite> {
 		sprite.setOrigin(originX, originY);
 		sprite.setRotation(rotation);
 		sprite.setColor(color);
+		sprite.setFlip(flipX, flipY);
 		g.drawSprite(sprite, x, y);
 		sprite.setRotation(0f);
 	}
@@ -273,6 +276,48 @@ public class Animation<T extends Sprite> {
 	 */
 	public void setOriginY(float originY) {
 		this.originY = originY;
+	}
+	
+	/**
+	 * Sets the flipX and flipY to the current frame
+	 * @param flipX
+	 * @param flipY
+	 */
+	public void flip(boolean flipX, boolean flipY) {
+		this.flipX = flipX;
+		this.flipY = flipY;
+	}
+	
+	/**
+	 * Sets the flipX to the current frame
+	 * @param flipX
+	 */
+	public void setFlipX(boolean flipX) {
+		this.flipX = flipX;
+	}
+	
+	/**
+	 * Sets the flipY to the current frame
+	 * @param flipY
+	 */
+	public void setFlipY(boolean flipY) {
+		this.flipY = flipY;
+	}
+	
+	/**
+	 * Returns the flipX of the current frame
+	 * @return
+	 */
+	public boolean getFlipX() {
+		return flipX;
+	}
+	
+	/**
+	 * Returns the flipY of the current frame
+	 * @return
+	 */
+	public boolean getFlipY() {
+		return flipY;
 	}
 	
 	/**
