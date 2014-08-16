@@ -18,4 +18,14 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 		}
 		return add(array, item);
 	}
+	
+	public static <T> int getNumberOfElements(T[] array) {
+		int result = 0;
+		for(int i = 0; i < array.length; i++) {
+			if(array[i] != null) {
+				result++;
+			}
+		}
+		return result;
+	}
 }
