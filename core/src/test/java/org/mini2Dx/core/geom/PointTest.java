@@ -31,6 +31,55 @@ public class PointTest {
 	}
 	
 	@Test
+	public void testEquals() {
+		point1.set(0f, 0f);
+		point2.set(0f, 0f);
+		
+		Assert.assertEquals(true, point1.equals(point2));
+		
+		point2.set(0.1f, 0f);
+		Assert.assertEquals(false, point1.equals(point2));
+		
+		point2.set(0f, 0.1f);
+		Assert.assertEquals(false, point1.equals(point2));
+		
+		point2.set(0.1f, 0.1f);
+		Assert.assertEquals(false, point1.equals(point2));
+		
+		point2.set(1f, 1f);
+		Assert.assertEquals(false, point1.equals(point2));
+	}
+	
+	@Test
+	public void testEqualsWithDelta() {
+		point1.set(0f, 0f);
+		point2.set(0f, 0f);
+		
+		Assert.assertEquals(true, point1.equals(point2, 0.1f));
+		
+		point2.set(0.1f, 0f);
+		Assert.assertEquals(true, point1.equals(point2, 0.1f));
+		
+		point2.set(0.11f, 0f);
+		Assert.assertEquals(false, point1.equals(point2, 0.1f));
+		
+		point2.set(0f, 0.1f);
+		Assert.assertEquals(true, point1.equals(point2, 0.1f));
+		
+		point2.set(0f, 0.11f);
+		Assert.assertEquals(false, point1.equals(point2, 0.1f));
+		
+		point2.set(0.1f, 0.1f);
+		Assert.assertEquals(true, point1.equals(point2, 0.1f));
+		
+		point2.set(0.11f, 0.11f);
+		Assert.assertEquals(false, point1.equals(point2, 0.1f));
+		
+		point2.set(1f, 1f);
+		Assert.assertEquals(false, point1.equals(point2, 0.1f));
+	}
+	
+	@Test
 	public void testInBetween() {
 		point1.set(0, 0);
 		point2.set(10, 0);

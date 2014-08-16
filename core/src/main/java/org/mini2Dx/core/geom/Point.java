@@ -48,12 +48,13 @@ public class Point extends Vector2 implements Positionable {
 		super(point);
 		this.positionChangeListenerLock = new ReentrantLock();
 	}
-	
+
 	private void notifyPositionChangeListeners() {
 		if (positionChangeListeners != null) {
 			positionChangeListenerLock.lock();
 			for (int i = positionChangeListeners.size() - 1; i >= 0; i--) {
-				PositionChangeListener<Positionable> listener = positionChangeListeners.get(i);
+				PositionChangeListener<Positionable> listener = positionChangeListeners
+						.get(i);
 				listener.positionChanged(this);
 			}
 			positionChangeListenerLock.unlock();
@@ -69,16 +70,14 @@ public class Point extends Vector2 implements Positionable {
 	 *            The angle to rotate by in degrees
 	 */
 	public void rotateAround(Point center, float degrees) {
-		if(degrees == 0)
+		if (degrees == 0)
 			return;
-		
+
 		float cos = MathUtils.cos(degrees * MathUtils.degreesToRadians);
 		float sin = MathUtils.sin(degrees * MathUtils.degreesToRadians);
-		
-		float newX =  (cos * (x - center.x) -
-	            sin * (y - center.y) + center.x);
-		float newY = (sin * (x - center.x) +
-	            cos * (y - center.y) + center.y);
+
+		float newX = (cos * (x - center.x) - sin * (y - center.y) + center.x);
+		float newY = (sin * (x - center.x) + cos * (y - center.y) + center.y);
 
 		set(newX, newY);
 	}
@@ -111,9 +110,30 @@ public class Point extends Vector2 implements Positionable {
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Determines if another {@link Point} is exactly equal to this one
+	 * 
+	 * @param p
+	 *            The {@link Point} to compare to
+	 * @return True if both {@link Point}s x and y are exactly equal
+	 */
 	public boolean equals(Point p) {
 		return x == p.x && y == p.y;
+	}
+
+	/**
+	 * Determines if another {@link Point} are nearly equal. A delta of 0.1
+	 * means 0.0 and 0.1 would be considered equal but 0.0 and 0.11 would not.
+	 * 
+	 * @param p
+	 *            The {@link Point} to compare to
+	 * @param delta
+	 *            The amount of error to allow for.
+	 * @return True if the two points are equal allowing for a certain margin of error
+	 */
+	public boolean equals(Point p, float delta) {
+		return Math.abs(x - p.x) <= delta && Math.abs(y - p.y) <= delta;
 	}
 
 	@Override
