@@ -142,4 +142,12 @@ public class TileLayer {
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
+	
+	public int getWidth() {
+		return tiles.length;
+	}
+	
+	public int getHeight() {
+		return tiles[0].length;
+	}
 }
