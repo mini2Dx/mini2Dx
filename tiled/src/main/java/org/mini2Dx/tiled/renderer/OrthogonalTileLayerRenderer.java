@@ -113,9 +113,9 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 			int renderY, int startTileX, int startTileY, int widthInTiles,
 			int heightInTiles) {
 		for (int y = startTileY; y < startTileY + heightInTiles
-				&& y < tiledMap.getHeight(); y++) {
+				&& y < layer.getHeight(); y++) {
 			for (int x = startTileX; x < startTileX + widthInTiles
-					&& x < tiledMap.getWidth(); x++) {
+					&& x < layer.getWidth(); x++) {
 				int tileId = layer.getTileId(x, y);
 
 				if (tileId > 0) {
@@ -153,9 +153,9 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 			int heightInTiles) {
 		layerCache.beginCache();
 		for (int y = startTileY; y < startTileY + heightInTiles
-				&& y < tiledMap.getHeight(); y++) {
+				&& y < layer.getHeight(); y++) {
 			for (int x = startTileX; x < startTileX + widthInTiles
-					&& x < tiledMap.getWidth(); x++) {
+					&& x < layer.getWidth(); x++) {
 				int tileId = layer.getTileId(x, y);
 
 				if (tileId > 0) {
