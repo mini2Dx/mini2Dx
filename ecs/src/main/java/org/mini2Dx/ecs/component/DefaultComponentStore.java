@@ -18,6 +18,7 @@ import java.util.SortedSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import org.cliffc.high_scale_lib.NonBlockingHashMap;
 import org.mini2Dx.ecs.entity.EntityListener;
 
 /**
@@ -31,8 +32,8 @@ public class DefaultComponentStore implements ComponentStore {
 	private Map<Integer, Map<String, Object>> componentsByName;
 
 	public DefaultComponentStore() {
-		components = new ConcurrentHashMap<Integer, SortedSet>();
-		componentsByName = new ConcurrentHashMap<Integer, Map<String,Object>>();
+		components = new NonBlockingHashMap<Integer, SortedSet>();
+		componentsByName = new NonBlockingHashMap<Integer, Map<String,Object>>();
 	}
 
 	@Override

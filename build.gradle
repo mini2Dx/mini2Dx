@@ -86,6 +86,8 @@ project(":" + rootProject.name + "-ecs") {
     apply plugin: "java"
 
     dependencies {
+    	compile "com.boundary:high-scale-lib:$highScaleVersion"
+    
     	testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
