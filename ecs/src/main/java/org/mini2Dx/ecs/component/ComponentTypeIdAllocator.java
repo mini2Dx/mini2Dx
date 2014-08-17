@@ -12,8 +12,9 @@
 package org.mini2Dx.ecs.component;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.cliffc.high_scale_lib.NonBlockingHashMap;
 
 /**
  * Allocates unique IDs for {@link Component} classes
@@ -21,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Thomas Cashman
  */
 public class ComponentTypeIdAllocator {
-	static Map<String, Integer> IDENTIFIERS = new ConcurrentHashMap<String, Integer>();
+	static Map<String, Integer> IDENTIFIERS = new NonBlockingHashMap<String, Integer>();
 	private static AtomicInteger NEXT_ID = new AtomicInteger(0);
 	
 	public static <T> int getId(Class<T> clazz) {

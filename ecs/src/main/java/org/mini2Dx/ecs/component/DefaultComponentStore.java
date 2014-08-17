@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.cliffc.high_scale_lib.NonBlockingHashMap;
@@ -54,12 +53,12 @@ public class DefaultComponentStore implements ComponentStore {
 	@Override
 	public <T extends Component> T getComponent(String name, int componentTypeId) {
 		if(!componentsByName.containsKey(componentTypeId)) {
-			componentsByName.put(componentTypeId, new ConcurrentHashMap<String, Object>());
+			componentsByName.put(componentTypeId, new NonBlockingHashMap<String, Object>());
 		}
 		
 		Map<String, Object> cache = componentsByName.get(componentTypeId);
 		if(cache == null) {
-			cache = new ConcurrentHashMap<String, Object>();
+			cache = new NonBlockingHashMap<String, Object>();
 			componentsByName.put(componentTypeId, cache);
 		}
 		

@@ -14,6 +14,7 @@ package org.mini2Dx.ecs.system;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.cliffc.high_scale_lib.NonBlockingHashMap;
 import org.mini2Dx.ecs.entity.Entity;
 
 /**
@@ -25,7 +26,7 @@ public abstract class System<T extends Entity> {
 	protected boolean isDebugging;
 	
 	public System() {
-		entities = new ConcurrentHashMap<Integer, T>();
+		entities = new NonBlockingHashMap<Integer, T>();
 		isDebugging = false;
 	}
 	
