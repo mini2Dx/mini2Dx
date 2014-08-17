@@ -34,8 +34,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		Parallelogram {
 	private static final long serialVersionUID = 4016090439885217620L;
 	private float rotation;
-	Point topLeft, topRight, bottomLeft, bottomRight, center, rotationalCenter,
-			tmp;
+	Point topLeft, topRight, bottomLeft, bottomRight, center, rotationalCenter;
 	private float minX, minY, maxX, maxY;
 	private List<PositionChangeListener> positionChangeListeners;
 	private Lock positionChangeListenerLock;
@@ -69,7 +68,6 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		bottomRight = new Point(x + width, y + height);
 		center = new Point(x + (width / 2f), y + (height / 2f));
 		rotationalCenter = topLeft;
-		tmp = new Point();
 		recalculateMinMax();
 	}
 
@@ -346,10 +344,10 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	 * @see Parallelogram#contains(Parallelogram)
 	 */
 	public boolean contains(Rectangle rectangle) {
-		return contains((Positionable) rectangle.topLeft)
-				&& contains((Positionable) rectangle.topRight)
-				&& contains((Positionable) rectangle.bottomLeft)
-				&& contains((Positionable) rectangle.bottomRight);
+		return contains(rectangle.topLeft)
+				&& contains(rectangle.topRight)
+				&& contains(rectangle.bottomLeft)
+				&& contains(rectangle.bottomRight);
 	}
 
 	@Override
@@ -365,49 +363,28 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 
 	@Override
 	public boolean contains(float x, float y) {
-		tmp.set(x, y);
-		return contains((Positionable) tmp);
+		return triangleContains(x, y, topLeft, topRight, bottomLeft)
+				|| triangleContains(x, y, bottomLeft, topRight, bottomRight);
 	}
 
 	@Override
 	public boolean contains(Vector2 point) {
-		tmp.set(point);
-		return contains((Positionable) tmp);
+		return contains(point.x, point.y);
 	}
 
-	/**
-	 * @see Parallelogram#containsPositionable(Positionable)
-	 */
-	@Override
-	public boolean contains(Positionable positionable) {
-		performRotation(-rotation);
+	private boolean triangleContains(float x, float y, Point p1, Point p2,
+			Point p3) {
+		boolean b1, b2, b3;
 
-		tmp.set(positionable.getX(), positionable.getY());
-		tmp.rotateAround(topLeft, -rotation);
+		b1 = sign(x, y, p1, p2) < 0.0f;
+		b2 = sign(x, y, p2, p3) < 0.0f;
+		b3 = sign(x, y, p3, p1) < 0.0f;
 
-		float thisX = getX();
-		float thisY = getY();
+		return ((b1 == b2) && (b2 == b3));
+	}
 
-		performRotation(rotation);
-
-		if (tmp.x < thisX) {
-			tmp.rotateAround(topLeft, rotation);
-			return false;
-		}
-		if (tmp.y < thisY) {
-			tmp.rotateAround(topLeft, rotation);
-			return false;
-		}
-		if (tmp.x > thisX + getWidth()) {
-			tmp.rotateAround(topLeft, rotation);
-			return false;
-		}
-		if (tmp.y > thisY + getHeight()) {
-			tmp.rotateAround(topLeft, rotation);
-			return false;
-		}
-		tmp.rotateAround(topLeft, rotation);
-		return true;
+	private float sign(float x, float y, Point p1, Point p2) {
+		return (x - p2.x) * (p1.y - p2.y) - (p1.x - p2.x) * (y - p2.y);
 	}
 
 	/**
@@ -465,7 +442,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		notifyPositionChangeListeners();
 		return this;
 	}
-	
+
 	@Override
 	public Rectangle setPosition(float x, float y) {
 		performRotation(-rotation);
@@ -476,7 +453,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		notifyPositionChangeListeners();
 		return this;
 	}
-	
+
 	@Override
 	public Rectangle setPosition(Vector2 position) {
 		performRotation(-rotation);
@@ -531,7 +508,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		notifyPositionChangeListeners();
 		return this;
 	}
-	
+
 	@Override
 	public Rectangle setSize(float width, float height) {
 		performRotation(-rotation);
@@ -542,7 +519,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		notifyPositionChangeListeners();
 		return this;
 	}
-	
+
 	@Override
 	public Rectangle setSize(float sizeXY) {
 		performRotation(-rotation);

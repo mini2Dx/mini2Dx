@@ -84,7 +84,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 		if (element == null)
 			return false;
 
-		if (!this.contains(element)) {
+		if (!this.contains(element.getX(), element.getY())) {
 			return false;
 		}
 
@@ -138,7 +138,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 		if (element == null)
 			return false;
 
-		if (!this.contains(element)) {
+		if (!this.contains(element.getX(), element.getY())) {
 			return false;
 		}
 
@@ -182,7 +182,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 		} else {
 			for (int i = elements.size() - 1; i >= 0; i--) {
 				T element = elements.get(i);
-				if (element != null && parallelogram.contains(element)) {
+				if (element != null && parallelogram.contains(element.getX(), element.getY())) {
 					result.add(element);
 				}
 			}
@@ -250,7 +250,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 
 	@Override
 	public void positionChanged(T moved) {
-		if (this.contains(moved))
+		if (this.contains(moved.getX(), moved.getY()))
 			return;
 
 		removeElement(moved);

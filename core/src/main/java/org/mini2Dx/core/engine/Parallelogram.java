@@ -133,13 +133,14 @@ public interface Parallelogram extends Shape {
 	 * @return True if it is within this shape
 	 */
 	public boolean contains(Parallelogram parallelogram);
-
+	
+	
 	/**
-	 * Returns if the specified {@link Positionable} is contained within this
-	 * shape
+	 * Returns if the specified coordinates are contained within this {@link Parallelogram}
 	 * 
-	 * @param positionable The {@link Positionable} to test
-	 * @return True if it is within this shape
+	 * @param x The x coordinate
+	 * @param y The y coordinate
+	 * @return  True if the coordinate is within this shape
 	 */
-	public boolean contains(Positionable positionable);
+	public boolean contains(float x, float y);
 }

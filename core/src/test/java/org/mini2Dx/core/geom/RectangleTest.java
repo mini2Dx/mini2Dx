@@ -153,6 +153,33 @@ public class RectangleTest implements PositionChangeListener<Rectangle> {
 	}
 	
 	@Test
+	public void testContainsPoint() {
+		rectangle1 = new Rectangle(0, 0, 50, 50);
+		Point point = new Point(5, 1);
+		
+		Assert.assertEquals(true, rectangle1.contains(point));
+		
+		point.set(5, -1);
+		Assert.assertEquals(false, rectangle1.contains(point));
+		
+		point.set(51, 1);
+		Assert.assertEquals(false, rectangle1.contains(point));
+		
+		point.set(5, 51);
+		Assert.assertEquals(false, rectangle1.contains(point));
+		
+		point.set(-5, 1);
+		Assert.assertEquals(false, rectangle1.contains(point));
+		
+		point.set(5, 1);
+		rectangle1.rotate(45f);
+		Assert.assertEquals(false, rectangle1.contains(point));
+		
+		point.set(-5, 1);
+		Assert.assertEquals(false, rectangle1.contains(point));
+	}
+	
+	@Test
 	public void testContainsParallelogram() {
 		rectangle1 = new Rectangle(0, 0, 50, 50);
 		rectangle2 = new Rectangle(50, 50, 50, 50);
