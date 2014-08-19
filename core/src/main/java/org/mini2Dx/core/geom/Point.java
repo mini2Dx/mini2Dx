@@ -112,28 +112,28 @@ public class Point extends Vector2 implements Positionable {
 	}
 
 	/**
-	 * Determines if another {@link Point} is exactly equal to this one
+	 * Determines if another {@link Vector2} is exactly equal to this one
 	 * 
-	 * @param p
-	 *            The {@link Point} to compare to
-	 * @return True if both {@link Point}s x and y are exactly equal
+	 * @param v
+	 *            The {@link Vector2} to compare to
+	 * @return True if both {@link Vector2}s x and y are exactly equal
 	 */
-	public boolean equals(Point p) {
-		return x == p.x && y == p.y;
+	public boolean equals(Vector2 v) {
+		return x == v.x && y == v.y;
 	}
 
 	/**
-	 * Determines if another {@link Point} are nearly equal. A delta of 0.1
+	 * Determines if a {@link Vector2} are nearly equal. A delta of 0.1
 	 * means 0.0 and 0.1 would be considered equal but 0.0 and 0.11 would not.
 	 * 
-	 * @param p
-	 *            The {@link Point} to compare to
+	 * @param v
+	 *            The {@link Vector2} to compare to
 	 * @param delta
 	 *            The amount of error to allow for.
 	 * @return True if the two points are equal allowing for a certain margin of error
 	 */
-	public boolean equals(Point p, float delta) {
-		return Math.abs(x - p.x) <= delta && Math.abs(y - p.y) <= delta;
+	public boolean equals(Vector2 v, float delta) {
+		return Math.abs(x - v.x) <= delta && Math.abs(y - v.y) <= delta;
 	}
 
 	@Override
