@@ -249,6 +249,26 @@ public class Graphics {
 			font.draw(spriteBatch, text, x, y);
 		}
 	}
+	
+	/**
+	 * Draws a string to the window, automatically wrapping it to a specified width
+	 * 
+	 * @param text
+	 *            The {@link String} to draw
+	 * @param x
+	 *            The x coordinate to draw at
+	 * @param y
+	 *            The y coordinate to draw at
+	 * @param wrapWidth
+	 * 			  The width the {@link String} is automatically wrapped to
+	 */
+	public void drawString(String text, float x, float y, float wrapWidth) {
+		if (font != null) {
+			beginRendering();
+			font.setColor(color);
+			font.drawWrapped(spriteBatch, text, x, y, wrapWidth);
+		}
+	}
 
 	/**
 	 * Draws a texture to this graphics context
