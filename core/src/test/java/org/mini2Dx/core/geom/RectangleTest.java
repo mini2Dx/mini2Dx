@@ -240,6 +240,15 @@ public class RectangleTest implements PositionChangeListener<Rectangle> {
 	}
 	
 	@Test
+	public void testIntersectsSameRectangle() {
+		rectangle1 = new Rectangle(0f, 0f, 32f, 32f);
+		rectangle2 = new Rectangle(0f, 0f, 32f, 32f);
+
+		Assert.assertEquals(true, rectangle1.intersects(rectangle2));
+		Assert.assertEquals(true, rectangle2.intersects(rectangle1));
+	}
+	
+	@Test
 	public void testIntersectsRotatedRectangle() {
 		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
 		rectangle2 = new Rectangle(100f, 50f, 75f, 40f);
