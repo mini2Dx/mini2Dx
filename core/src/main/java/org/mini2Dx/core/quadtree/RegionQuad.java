@@ -77,8 +77,11 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 		if (topLeft == null) {
 			return addElement(element);
 		}
-		if(!addElementToChild(element)) {
-			return addElement(element);
+		if(addElementToChild(element)) {
+			return true;
+		}
+		if(!addElement(element)) {
+			return false;
 		}
 		return true;
 	}
@@ -86,20 +89,16 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 	@Override
 	protected boolean addElementToChild(T element) {
 		if(topLeft.contains(element)) {
-			topLeft.add(element);
-			return true;
+			return topLeft.add(element);
 		} 
 		if(topRight.contains(element)) {
-			topRight.add(element);
-			return true;
+			return topRight.add(element);
 		}
 		if(bottomLeft.contains(element)) {
-			bottomLeft.add(element);
-			return true;
+			return bottomLeft.add(element);
 		}
 		if(bottomRight.contains(element)) {
-			bottomRight.add(element);
-			return true;
+			return bottomRight.add(element);
 		}
 		return false;
 	}
@@ -134,13 +133,13 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 			return false;
 		}
 		
+		if(removeElement(element)) {
+			return true;
+		}
 		if(topLeft == null) {
-			return removeElement(element);
+			return false;
 		}
-		if(!removeElementFromChild(element)) {
-			return removeElement(element);
-		}
-		return true;
+		return removeElementFromChild(element);
 	}
 	
 	@Override
@@ -201,12 +200,12 @@ public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 	
 	@Override
 	public List<T> getElements() {
-		Set<T> result = new HashSet<T>();
+		List<T> result = new ArrayList<T>();
 		getElements(result);
 		return new ArrayList<T>(result);
 	}
 	
-	private void getElements(Set<T> result) {
+	private void getElements(List<T> result) {
 		if(topLeft != null) {
 			((RegionQuad<T>) topLeft).getElements(result);
 			((RegionQuad<T>) topRight).getElements(result);

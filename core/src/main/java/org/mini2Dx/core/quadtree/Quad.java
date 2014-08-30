@@ -117,6 +117,10 @@ public class Quad<T extends Positionable> extends Rectangle implements
 	}
 
 	protected void subdivide() {
+		if(topLeft != null) {
+			return;
+		}
+		
 		float halfWidth = width / 2f;
 		float halfHeight = height / 2f;
 
