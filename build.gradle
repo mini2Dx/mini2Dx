@@ -23,13 +23,13 @@ subprojects {
 		repositories {
 			mavenDeployer {
 				repository(url: "http://maven.mini2dx.org/content/repositories/releases") {
-					if(project.hasProperty('mavenUser')) {
-						authentication(userName: project.property('mavenUser'), password: project.property('mavenPassword'))
+					if(project.hasProperty('mini2DxMavenUser')) {
+						authentication(userName: project.property('mini2DxMavenUser'), password: project.property('mini2DxMavenPassword'))
 					}
     			}
     			snapshotRepository(url: "http://maven.mini2dx.org/content/repositories/snapshots") {
-    				if(project.hasProperty('mavenUser')) {
-    					authentication(userName: project.property('mavenUser'), password: project.property('mavenPassword'))
+    				if(project.hasProperty('mini2DxMavenUser')) {
+    					authentication(userName: project.property('mini2DxMavenUser'), password: project.property('mini2DxMavenPassword'))
     				}
     			}
 			}
