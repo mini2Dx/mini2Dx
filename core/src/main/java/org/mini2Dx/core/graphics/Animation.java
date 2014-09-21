@@ -108,6 +108,25 @@ public class Animation<T extends Sprite> {
 			duration = durations.get(currentFrameIndex);
 		}
 	}
+	
+	/**
+	 * Draws the current frame of the animation
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context available for rendering
+	 */
+	public void draw(Graphics g) {
+		if(currentFrameIndex >= frames.size())
+			return;
+		
+		T sprite = getCurrentFrame();
+		sprite.setOrigin(originX, originY);
+		sprite.setRotation(rotation);
+		sprite.setColor(color);
+		sprite.setFlip(flipX, flipY);
+		g.drawSprite(sprite);
+		sprite.setRotation(0f);
+	}
 
 	/**
 	 * Draws the current frame of the animation
