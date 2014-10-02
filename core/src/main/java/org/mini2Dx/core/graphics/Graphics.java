@@ -111,8 +111,8 @@ public class Graphics {
 	public void postRender() {
 		endRendering();
 		resetTransformations();
-		spriteBatch.setShader(defaultShader);
-		spriteBatch.setBlendFunction(defaultBlendSrcFunc, defaultBlendDstFunc);
+		clearShaderProgram();
+		clearBlendFunction();
 	}
 
 	/**
@@ -549,6 +549,13 @@ public class Graphics {
 	 */
 	public void setBlendFunction(int srcFunc, int dstFunc) {
 		spriteBatch.setBlendFunction(srcFunc, dstFunc);
+	}
+	
+	/**
+	 * Resets the blend function to its default
+	 */
+	public void clearBlendFunction() {
+		spriteBatch.setBlendFunction(defaultBlendSrcFunc, defaultBlendDstFunc);
 	}
 
 	/**
