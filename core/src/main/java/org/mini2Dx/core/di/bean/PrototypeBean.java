@@ -9,37 +9,61 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.game;
+package org.mini2Dx.core.di.bean;
 
-import org.mini2Dx.core.M2Dx;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
 
-import com.badlogic.gdx.Game;
+import org.apache.commons.beanutils.BeanUtils;
 
 /**
- * An abstract implementation of {@link Game} for launching mini2Dx games
+ * An implementation of {@link Bean} based on the
+ * {@link <a href="http://en.wikipedia.org/wiki/Prototype_pattern">prototype pattern</a>}
  * 
  * @author Thomas Cashman
  */
-public abstract class Mini2DxGame extends Game {
-	private GameContainer gameContainer;
+public class PrototypeBean extends Bean implements Runnable {
+	private static final int MAXIMUM_PREPARED_PROTOTYPES = 3;
 
-	/**
-	 * Constructor
-	 * @param gc The {@link GameContainer} which implements the developer's game
-	 */
-	public Mini2DxGame(GameContainer gc) {
-		this.gameContainer = gc;
+	private Object bean;
+	private BlockingQueue<Object> prototypes;
+	private ExecutorService executorService;
+
+	public PrototypeBean(Object bean, ExecutorService executorService) {
+		this.bean = bean;
+		this.executorService = executorService;
+		prototypes = new ArrayBlockingQueue<Object>(MAXIMUM_PREPARED_PROTOTYPES);
 	}
-	
-	/**
-	 * Initialises {@link M2Dx} with platform-specific implementations
-	 */
-	protected abstract void initialiseM2Dx();
 
 	@Override
-	public void create() {
-		initialiseM2Dx();
-		this.setScreen(gameContainer);
+	public Object getInstance() {
+		Object result = null;
+		try {
+			result = prototypes.take();
+			executorService.submit(this);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			result = null;
+		}
+		return result;
 	}
 
+	public static Object duplicate(Object object)
+			throws IllegalAccessException, InstantiationException,
+			InvocationTargetException, NoSuchMethodException {
+		return BeanUtils.cloneBean(object);
+	}
+
+	@Override
+	public void run() {
+		try {
+			while (prototypes.size() < MAXIMUM_PREPARED_PROTOTYPES) {
+				prototypes.offer(PrototypeBean.duplicate(bean));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

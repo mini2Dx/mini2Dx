@@ -8,8 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.mini2Dx.core.audio.CrossFadingMusicLoop;
 import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.core.game.Mini2DxGame;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.desktop.DesktopMini2DxGame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -69,7 +69,7 @@ public class CrossFadingMusicLoopUAT extends GameContainer {
 		cfg.vSyncEnabled = true;
 		cfg.foregroundFPS = 0;
 		cfg.backgroundFPS = 0;
-		new LwjglApplication(new Mini2DxGame(new CrossFadingMusicLoopUAT()),
+		new LwjglApplication(new DesktopMini2DxGame(new CrossFadingMusicLoopUAT()),
 				cfg);
 	}
 }

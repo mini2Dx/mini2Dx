@@ -9,37 +9,45 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.game;
+package org.mini2Dx.core.di.dummy;
 
-import org.mini2Dx.core.M2Dx;
-
-import com.badlogic.gdx.Game;
+import org.mini2Dx.core.di.annotation.Autowired;
+import org.mini2Dx.core.di.annotation.Prototype;
 
 /**
- * An abstract implementation of {@link Game} for launching mini2Dx games
- * 
+ * A dummy bean for testing dependency injection
+ *
  * @author Thomas Cashman
  */
-public abstract class Mini2DxGame extends Game {
-	private GameContainer gameContainer;
-
-	/**
-	 * Constructor
-	 * @param gc The {@link GameContainer} which implements the developer's game
-	 */
-	public Mini2DxGame(GameContainer gc) {
-		this.gameContainer = gc;
+@Prototype
+public class TestBean {
+	private Integer intField;
+	@Autowired
+	private TestDependency dependency;
+	@Autowired(required = false)
+	private TestInterface interfaceField;
+	
+	public Integer getIntField() {
+		return intField;
 	}
 	
-	/**
-	 * Initialises {@link M2Dx} with platform-specific implementations
-	 */
-	protected abstract void initialiseM2Dx();
-
-	@Override
-	public void create() {
-		initialiseM2Dx();
-		this.setScreen(gameContainer);
+	public void setIntField(Integer intField) {
+		this.intField = intField;
+	}
+	
+	public TestDependency getDependency() {
+		return dependency;
+	}
+	
+	public void setDependency(TestDependency dependency) {
+		this.dependency = dependency;
 	}
 
+	public TestInterface getInterfaceField() {
+		return interfaceField;
+	}
+
+	public void setInterfaceField(TestInterface interfaceField) {
+		this.interfaceField = interfaceField;
+	}
 }

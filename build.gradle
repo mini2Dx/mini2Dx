@@ -51,6 +51,8 @@ subprojects {
 		langVersion="3.1"
 		reflectionsVersion="0.9.9-RC1"
 		highScaleVersion="1.0.6"
+		simpleXmlVersion="2.7.1"
+		
 		junitVersion="4.8.1"
 		jmockVersion="2.5.1"
 		
@@ -74,18 +76,8 @@ project(":" + rootProject.name + "-core") {
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         compile "com.badlogicgames.box2dlights:box2dlights:1.2"
-        compile "org.apache.commons:commons-lang3:$langVersion"
         
-        testCompile "junit:junit:$junitVersion"
-		testCompile "org.jmock:jmock-junit4:$jmockVersion"
-		testCompile "org.jmock:jmock-legacy:$jmockVersion"
-    }
-}
-
-project(":" + rootProject.name + "-dependency-injection") {
-    apply plugin: "java"
-
-    dependencies {
+        compile "org.apache.commons:commons-lang3:$langVersion"
         compile "commons-beanutils:commons-beanutils:$beanutilsVersion"
         
         testCompile "junit:junit:$junitVersion"
@@ -94,28 +86,46 @@ project(":" + rootProject.name + "-dependency-injection") {
     }
 }
 
-project(":" + rootProject.name + "-dependency-injection-android") {
+project(":" + rootProject.name + "-desktop") {
     apply plugin: "java"
-
+    
     dependencies {
-    	compile project(":" + rootProject.name + "-dependency-injection")
+    	compile project(":" + rootProject.name + "-core")
     	
-    	compile files(fileTree(dir: 'libs', includes: ['*.jar']))
+    	compile "org.reflections:reflections:$reflectionsVersion"
+    	compile "org.simpleframework:simple-xml:$simpleXmlVersion"
+    	
+    	testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+		testCompile project(":" + rootProject.name + "-core").sourceSets.test.output
     }
 }
 
-project(":" + rootProject.name + "-dependency-injection-desktop") {
+project(":" + rootProject.name + "-android") {
     apply plugin: "java"
-
+    
     dependencies {
-        compile project(":" + rootProject.name + "-dependency-injection")
-
-		compile "org.reflections:reflections:$reflectionsVersion"
-		
-		testCompile "junit:junit:$junitVersion"
+    	compile project(":" + rootProject.name + "-core")
+    	
+    	compile files(fileTree(dir: 'libs', includes: ['*.jar']))
+    	
+    	testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
-		testCompile project(":" + rootProject.name + "-dependency-injection").sourceSets.test.output
+		testCompile project(":" + rootProject.name + "-core").sourceSets.test.output
+    }
+}
+
+project(":" + rootProject.name + "-ios") {
+    apply plugin: "java"
+    
+    dependencies {
+    	compile project(":" + rootProject.name + "-core")
+    	
+    	testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
     }
 }
 
@@ -160,7 +170,7 @@ project(":" + rootProject.name + "-uats") {
     apply plugin: "java"
 
     dependencies {
-    	compile project(":" + rootProject.name + "-core")
+    	compile project(":" + rootProject.name + "-desktop")
     	compile project(":" + rootProject.name + "-tiled")
     
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"

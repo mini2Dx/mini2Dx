@@ -12,8 +12,8 @@
 package org.mini2Dx.uats.common;
 
 import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.core.game.Mini2DxGame;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.desktop.DesktopMini2DxGame;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.exception.TiledException;
 
@@ -83,6 +83,6 @@ public class TiledMapWithCachingUAT extends GameContainer {
 		cfg.vSyncEnabled = true;
 		cfg.foregroundFPS = 0;
 		cfg.backgroundFPS = 0;
-		new LwjglApplication(new Mini2DxGame(new TiledMapWithCachingUAT()), cfg);
+		new LwjglApplication(new DesktopMini2DxGame(new TiledMapWithCachingUAT()), cfg);
 	}
 }

@@ -9,37 +9,33 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.game;
+package org.mini2Dx.core.di;
 
-import org.mini2Dx.core.M2Dx;
+import java.io.IOException;
+import java.util.List;
 
-import com.badlogic.gdx.Game;
+import org.mini2Dx.core.di.annotation.Prototype;
+import org.mini2Dx.core.di.annotation.Singleton;
 
 /**
- * An abstract implementation of {@link Game} for launching mini2Dx games
+ * A common interface to component scanning implementations.
+ * 
+ * Scans packages for classes annotated with {@link Singleton} and
+ * {@link Prototype}
  * 
  * @author Thomas Cashman
  */
-public abstract class Mini2DxGame extends Game {
-	private GameContainer gameContainer;
-
+public interface ComponentScanner {
 	/**
-	 * Constructor
-	 * @param gc The {@link GameContainer} which implements the developer's game
+	 * Scans multiple packages recursively for {@link Singleton} and {@link Prototype}
+	 * annotated classes
+	 * 
+	 * @param packageNames  The package name to scan through, e.g. org.mini2Dx.component
+	 * @throws IOException
 	 */
-	public Mini2DxGame(GameContainer gc) {
-		this.gameContainer = gc;
-	}
-	
-	/**
-	 * Initialises {@link M2Dx} with platform-specific implementations
-	 */
-	protected abstract void initialiseM2Dx();
+	public void scan(String[] packageNames) throws IOException, NullPointerException, ClassNotFoundException;
 
-	@Override
-	public void create() {
-		initialiseM2Dx();
-		this.setScreen(gameContainer);
-	}
+	public List<Class<?>> getSingletonClasses();
 
+	public List<Class<?>> getPrototypeClasses();
 }

@@ -13,9 +13,9 @@ package org.mini2Dx.uats.common;
 
 import org.mini2Dx.core.game.BasicGame;
 import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.core.game.Mini2DxGame;
 import org.mini2Dx.core.graphics.Animation;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.desktop.DesktopMini2DxGame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -149,6 +149,6 @@ public class GraphicsUAT extends BasicGame {
 		cfg.vSyncEnabled = true;
 		cfg.foregroundFPS = 0;
 		cfg.backgroundFPS = 0;
-		new LwjglApplication(new Mini2DxGame(new GraphicsUAT()), cfg);
+		new LwjglApplication(new DesktopMini2DxGame(new GraphicsUAT()), cfg);
 	}
 }
