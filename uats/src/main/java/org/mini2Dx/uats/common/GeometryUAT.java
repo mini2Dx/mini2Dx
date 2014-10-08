@@ -109,6 +109,6 @@ public class GeometryUAT extends BasicGame {
 		cfg.vSyncEnabled = true;
 		cfg.foregroundFPS = 0;
 		cfg.backgroundFPS = 0;
-		new LwjglApplication(new DesktopMini2DxGame(new GeometryUAT()), cfg);
+		new LwjglApplication(new DesktopMini2DxGame("org.mini2Dx.uats.common.GeometryUAT", new GeometryUAT()), cfg);
 	}
 }

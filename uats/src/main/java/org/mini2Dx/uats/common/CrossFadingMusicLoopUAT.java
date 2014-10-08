@@ -69,7 +69,7 @@ public class CrossFadingMusicLoopUAT extends GameContainer {
 		cfg.vSyncEnabled = true;
 		cfg.foregroundFPS = 0;
 		cfg.backgroundFPS = 0;
-		new LwjglApplication(new DesktopMini2DxGame(new CrossFadingMusicLoopUAT()),
+		new LwjglApplication(new DesktopMini2DxGame("org.mini2Dx.uats.common.CrossFadingMusicUAT", new CrossFadingMusicLoopUAT()),
 				cfg);
 	}
 }

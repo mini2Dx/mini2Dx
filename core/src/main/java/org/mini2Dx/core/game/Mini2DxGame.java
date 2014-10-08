@@ -22,23 +22,27 @@ import com.badlogic.gdx.Game;
  */
 public abstract class Mini2DxGame extends Game {
 	private GameContainer gameContainer;
+	private final String gameIdentifier;
 
 	/**
 	 * Constructor
+	 * @param gameIdentifier A reverse domain for your application (e.g. org.mini2Dx.example.gamename)
 	 * @param gc The {@link GameContainer} which implements the developer's game
 	 */
-	public Mini2DxGame(GameContainer gc) {
+	public Mini2DxGame(String gameIdentifier, GameContainer gc) {
 		this.gameContainer = gc;
+		this.gameIdentifier = gameIdentifier;
 	}
 	
 	/**
 	 * Initialises {@link M2Dx} with platform-specific implementations
+	 * @param gameIdentifier TODO
 	 */
-	protected abstract void initialiseM2Dx();
+	protected abstract void initialiseM2Dx(String gameIdentifier);
 
 	@Override
 	public void create() {
-		initialiseM2Dx();
+		initialiseM2Dx(gameIdentifier);
 		this.setScreen(gameContainer);
 	}
 

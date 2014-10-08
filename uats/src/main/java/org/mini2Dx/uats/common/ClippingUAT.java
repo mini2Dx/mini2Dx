@@ -88,6 +88,6 @@ public class ClippingUAT extends GameContainer {
 		cfg.vSyncEnabled = true;
 		cfg.foregroundFPS = 0;
 		cfg.backgroundFPS = 0;
-		new LwjglApplication(new DesktopMini2DxGame(new ClippingUAT()), cfg);
+		new LwjglApplication(new DesktopMini2DxGame("org.mini2Dx.uats.common.ClippingUAT", new ClippingUAT()), cfg);
 	}
 }

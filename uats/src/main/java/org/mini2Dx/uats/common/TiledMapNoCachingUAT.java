@@ -84,6 +84,6 @@ public class TiledMapNoCachingUAT extends GameContainer {
 		cfg.vSyncEnabled = true;
 		cfg.foregroundFPS = 0;
 		cfg.backgroundFPS = 0;
-		new LwjglApplication(new DesktopMini2DxGame(new TiledMapNoCachingUAT()), cfg);
+		new LwjglApplication(new DesktopMini2DxGame("org.mini2Dx.uats.common.TiledMapNoCachingUAT", new TiledMapNoCachingUAT()), cfg);
 	}
 }

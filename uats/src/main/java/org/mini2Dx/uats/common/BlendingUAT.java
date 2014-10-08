@@ -70,6 +70,6 @@ public class BlendingUAT extends BasicGame {
 		cfg.vSyncEnabled = true;
 		cfg.foregroundFPS = 0;
 		cfg.backgroundFPS = 0;
-		new LwjglApplication(new DesktopMini2DxGame(new BlendingUAT()), cfg);
+		new LwjglApplication(new DesktopMini2DxGame("org.mini2Dx.uats.common.BlendingUAT", new BlendingUAT()), cfg);
 	}
 }

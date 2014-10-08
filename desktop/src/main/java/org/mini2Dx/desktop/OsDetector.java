@@ -9,31 +9,52 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.android;
-
-import org.mini2Dx.android.di.AndroidDependencyInjection;
-import org.mini2Dx.core.M2Dx;
-import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.core.game.Mini2DxGame;
-
-import android.content.Context;
+package org.mini2Dx.desktop;
 
 /**
- * Android implementation of {@link Mini2DxGame}
- *
+ * Determines the desktop's operating system
+ * @see {@link http://www.mkyong.com/java/how-to-detect-os-in-java-systemgetpropertyosname/}
  * @author Thomas Cashman
  */
-public class AndroidMini2DxGame extends Mini2DxGame {
-	private Context applicationContext;
+public class OsDetector {
+	private static final String OS = System.getProperty("os.name").toLowerCase();
+	private static Os os;
 	
-	public AndroidMini2DxGame(Context applicationContext, String gameIdentifier, GameContainer gc) {
-		super(gameIdentifier, gc);
-		this.applicationContext = applicationContext;
+	public static Os getOs() {
+		if(os == null) {
+			os = determineOs();
+		}
+		return os;
 	}
-
-	@Override
-	protected void initialiseM2Dx(String gameIdentifier) {
-		M2Dx.di = new AndroidDependencyInjection(applicationContext);
+	
+	private static Os determineOs() {
+		if(OS.indexOf("win") >= 0) {
+			return Os.WINDOWS;
+		}
+		if(OS.indexOf("mac") >= 0) {
+			return Os.MAC;
+		}
+		if(OS.indexOf("nix") >= 0) {
+			return Os.UNIX;
+		}
+		if(OS.indexOf("nux") >= 0) {
+			return Os.UNIX;
+		}
+		if(OS.indexOf("aix") >= 0) {
+			return Os.UNIX;
+		}
+		return Os.UNKNOWN;
 	}
-
+	
+	public static boolean isWindows() {
+		return getOs() == Os.WINDOWS;
+	}
+ 
+	public static boolean isMac() {
+		return getOs() == Os.MAC;
+	}
+ 
+	public static boolean isUnix() {
+		return getOs() == Os.UNIX;
+	}
 }

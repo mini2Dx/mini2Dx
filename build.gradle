@@ -52,6 +52,7 @@ subprojects {
 		reflectionsVersion="0.9.9-RC1"
 		highScaleVersion="1.0.6"
 		simpleXmlVersion="2.7.1"
+		gsonVersion="2.3"
 		
 		junitVersion="4.8.1"
 		jmockVersion="2.5.1"
@@ -92,8 +93,18 @@ project(":" + rootProject.name + "-desktop") {
     dependencies {
     	compile project(":" + rootProject.name + "-core")
     	
+    	compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
+    	
     	compile "org.reflections:reflections:$reflectionsVersion"
     	compile "org.simpleframework:simple-xml:$simpleXmlVersion"
+    	compile "com.google.code.gson:gson:$gsonVersion"
     	
     	testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
