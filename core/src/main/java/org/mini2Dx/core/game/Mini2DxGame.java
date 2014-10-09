@@ -11,7 +11,7 @@
  */
 package org.mini2Dx.core.game;
 
-import org.mini2Dx.core.M2Dx;
+import org.mini2Dx.core.Mdx;
 
 import com.badlogic.gdx.Game;
 
@@ -35,7 +35,7 @@ public abstract class Mini2DxGame extends Game {
 	}
 	
 	/**
-	 * Initialises {@link M2Dx} with platform-specific implementations
+	 * Initialises {@link Mdx} with platform-specific implementations
 	 * @param gameIdentifier TODO
 	 */
 	protected abstract void initialiseM2Dx(String gameIdentifier);

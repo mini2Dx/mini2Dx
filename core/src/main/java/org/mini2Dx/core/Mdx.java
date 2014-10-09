@@ -20,7 +20,7 @@ import com.badlogic.gdx.Gdx;
  *
  * @author Thomas Cashman
  */
-public class M2Dx extends Gdx {
+public class Mdx extends Gdx {
 
 	/**
 	 * 

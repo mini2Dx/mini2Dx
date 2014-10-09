@@ -13,7 +13,7 @@ package org.mini2Dx.desktop.data;
 
 import java.nio.file.Paths;
 
-import org.mini2Dx.core.M2Dx;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.data.Data;
 import org.mini2Dx.desktop.OsDetector;
 import org.simpleframework.xml.Serializer;
@@ -43,17 +43,17 @@ public class DesktopData implements Data {
     private String getSaveDirectoryForGame(String gameIdentifier) {
         switch (OsDetector.getOs()) {
         case WINDOWS:
-            return Paths.get(M2Dx.files.getExternalStoragePath(), "AppData", "Roaming", gameIdentifier).toAbsolutePath().toString();
+            return Paths.get(Mdx.files.getExternalStoragePath(), "AppData", "Roaming", gameIdentifier).toAbsolutePath().toString();
         case MAC:
-            return Paths.get(M2Dx.files.getExternalStoragePath(), "Library", "Application Support", gameIdentifier).toAbsolutePath()
+            return Paths.get(Mdx.files.getExternalStoragePath(), "Library", "Application Support", gameIdentifier).toAbsolutePath()
                     .toString();
         case UNIX:
             if (gameIdentifier.contains(".")) {
                 gameIdentifier = gameIdentifier.substring(gameIdentifier.indexOf('.') + 1);
             }
-            return Paths.get(M2Dx.files.getExternalStoragePath(), "." + gameIdentifier).toAbsolutePath().toString();
+            return Paths.get(Mdx.files.getExternalStoragePath(), "." + gameIdentifier).toAbsolutePath().toString();
         default:
-            return Paths.get(M2Dx.files.getLocalStoragePath()).toAbsolutePath().toString();
+            return Paths.get(Mdx.files.getLocalStoragePath()).toAbsolutePath().toString();
         }
     }
 
@@ -129,7 +129,7 @@ public class DesktopData implements Data {
     
     @Override
     public void wipe() throws Exception {
-        FileHandle directory = M2Dx.files.external(saveDirectory);
+        FileHandle directory = Mdx.files.external(saveDirectory);
         if(!directory.exists()) {
             return;
         }
@@ -138,7 +138,7 @@ public class DesktopData implements Data {
     }
     
     private void ensureDataDirectoryExists() {
-        FileHandle directory = M2Dx.files.external(saveDirectory);
+        FileHandle directory = Mdx.files.external(saveDirectory);
         if(directory.exists()) {
             return;
         }
@@ -160,7 +160,7 @@ public class DesktopData implements Data {
     }
 
     private FileHandle resolve(String[] filepath) {
-        return M2Dx.files.external(Paths.get(saveDirectory, filepath).toString());
+        return Mdx.files.external(Paths.get(saveDirectory, filepath).toString());
     }
 
     public String getSaveDirectory() {

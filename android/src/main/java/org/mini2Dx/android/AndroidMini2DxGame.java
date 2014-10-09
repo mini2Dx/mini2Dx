@@ -12,7 +12,7 @@
 package org.mini2Dx.android;
 
 import org.mini2Dx.android.di.AndroidDependencyInjection;
-import org.mini2Dx.core.M2Dx;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.Mini2DxGame;
 
@@ -33,7 +33,7 @@ public class AndroidMini2DxGame extends Mini2DxGame {
 
 	@Override
 	protected void initialiseM2Dx(String gameIdentifier) {
-		M2Dx.di = new AndroidDependencyInjection(applicationContext);
+		Mdx.di = new AndroidDependencyInjection(applicationContext);
 	}
 
 }

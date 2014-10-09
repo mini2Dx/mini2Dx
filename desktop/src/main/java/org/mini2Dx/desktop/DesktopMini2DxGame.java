@@ -11,7 +11,7 @@
  */
 package org.mini2Dx.desktop;
 
-import org.mini2Dx.core.M2Dx;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.Mini2DxGame;
 import org.mini2Dx.desktop.data.DesktopData;
@@ -30,8 +30,8 @@ public class DesktopMini2DxGame extends Mini2DxGame {
 
 	@Override
 	protected void initialiseM2Dx(String gameIdentifier) {
-		M2Dx.di = new DesktopDependencyInjection();
-		M2Dx.data = new DesktopData(gameIdentifier);
+		Mdx.di = new DesktopDependencyInjection();
+		Mdx.data = new DesktopData(gameIdentifier);
 	}
 
 }

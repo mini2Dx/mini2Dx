@@ -14,7 +14,7 @@ import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mini2Dx.core.M2Dx;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.data.dummy.TestChildObject;
 import org.mini2Dx.core.data.dummy.TestParentObject;
 
@@ -37,7 +37,7 @@ public class DesktopDataTest {
     
     @Before
     public void setUp() {
-        M2Dx.files = new LwjglFiles();
+        Mdx.files = new LwjglFiles();
         desktopData = new DesktopData(TEST_IDENTIFIER);
         
         createTestObjects();
