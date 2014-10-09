@@ -34,7 +34,7 @@ public class DependencyInjection {
 		this.componentScanner = componentScanner;
 	}
 
-	public void scan(String[] packageNames) throws Exception {
+	public void scan(String... packageNames) throws Exception {
 		componentScanner.scan(packageNames);
 
 		Map<String, Object> singletons = new HashMap<String, Object>();
