@@ -4,13 +4,11 @@
 package org.mini2Dx.core.data.dummy;
 
 import org.mini2Dx.core.data.annotation.Field;
-import org.mini2Dx.core.data.annotation.Root;
 
 /**
  *
  * @author Thomas Cashman
  */
-@Root
 public class TestChildObject {
     @Field
     private int intValue;

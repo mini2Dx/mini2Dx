@@ -7,13 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.mini2Dx.core.data.annotation.Field;
-import org.mini2Dx.core.data.annotation.Root;
 
 /**
  *
  * @author Thomas Cashman
  */
-@Root
 public class TestParentObject {
     @Field
     private int intValue;
