@@ -11,10 +11,7 @@
  */
 package org.mini2Dx.desktop.data;
 
-import java.lang.annotation.Annotation;
-
 import org.mini2Dx.core.data.annotation.Field;
-import org.mini2Dx.core.data.annotation.Root;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -26,7 +23,6 @@ import com.google.gson.FieldAttributes;
  * @author Thomas Cashman
  */
 public class GsonExclusionStrategy implements ExclusionStrategy {
-    private final Class<Root> classAnnotation = Root.class;
     private final Class<Field> fieldAnnotation = Field.class;
     
     @Override

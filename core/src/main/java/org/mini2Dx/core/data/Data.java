@@ -3,6 +3,8 @@
  */
 package org.mini2Dx.core.data;
 
+import org.mini2Dx.core.data.annotation.Field;
+
 /**
  * Common interface for reading/writing game data, e.g. game saves, preferences,
  * etc.
@@ -12,7 +14,7 @@ package org.mini2Dx.core.data;
  * developer will be automatically placed inside the pre-determined data
  * location.
  * 
- * Note: Objects must use {@link Field} and {@link Root} annotations to be
+ * Note: Objects must use {@link Field} annotations to be
  * serialized/deserialized properly
  * 
  * @author Thomas Cashman
