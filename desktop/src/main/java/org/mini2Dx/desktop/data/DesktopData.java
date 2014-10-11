@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.desktop.data;
 
+import java.io.StringWriter;
 import java.nio.file.Paths;
 
 import org.mini2Dx.core.Mdx;
@@ -71,7 +72,10 @@ public class DesktopData implements Data {
             throw new Exception("No file path specified");
         }
         ensureDirectoryExistsForFile(filepath);
-        serializer.write(object, resolve(filepath).write(false));
+        StringWriter writer = new StringWriter();
+        serializer.write(object, writer);
+        resolve(filepath).writeString(writer.toString(), false);
+        writer.flush();
     }
 
     @Override
@@ -129,7 +133,7 @@ public class DesktopData implements Data {
     
     @Override
     public void wipe() throws Exception {
-        FileHandle directory = Mdx.files.external(saveDirectory);
+        FileHandle directory = Mdx.files.absolute(saveDirectory);
         if(!directory.exists()) {
             return;
         }
@@ -138,7 +142,7 @@ public class DesktopData implements Data {
     }
     
     private void ensureDataDirectoryExists() {
-        FileHandle directory = Mdx.files.external(saveDirectory);
+        FileHandle directory = Mdx.files.absolute(saveDirectory);
         if(directory.exists()) {
             return;
         }
@@ -160,7 +164,7 @@ public class DesktopData implements Data {
     }
 
     private FileHandle resolve(String[] filepath) {
-        return Mdx.files.external(Paths.get(saveDirectory, filepath).toString());
+        return Mdx.files.absolute(Paths.get(saveDirectory, filepath).toString());
     }
 
     public String getSaveDirectory() {
