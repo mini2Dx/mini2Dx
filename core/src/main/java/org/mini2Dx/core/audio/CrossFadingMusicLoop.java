@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.core.audio;
 
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -22,178 +23,161 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
 
 /**
- * Implements a loopable music track and crossfades into itself
+ * Implements a loopable music track and crossfades into itself.
+ * 
+ * Note: It is required to call {@link #update()} each frame when using this
+ * object
  * 
  * @author Thomas Cashman
  */
-public class CrossFadingMusicLoop implements Runnable {
-	private Music currentTrack, nextTrack;
-	private long crossfadeTime, crossfadeDuration;
-	private ScheduledExecutorService scheduledExecutorService;
-	private ScheduledFuture<?> scheduledFuture;
-	private float targetVolume = 1f;
+public class CrossFadingMusicLoop {
+    private final float crossfadeTime, crossfadeDuration;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param musicFile
-	 *            The {@link FileHandle} for the music to be looped
-	 * @param crossfadeTime
-	 *            The time at which the crossfade begins at the end of the track
-	 * @param timeUnit
-	 *            The {@link TimeUnit} for crossfadeTime
-	 */
-	public CrossFadingMusicLoop(FileHandle musicFile, long crossfadeTime,
-			long crossfadeDuration, TimeUnit timeUnit) {
-		this.currentTrack = Gdx.audio.newMusic(musicFile);
-		this.nextTrack = Gdx.audio.newMusic(musicFile);
-		this.crossfadeTime = timeUnit.toMillis(crossfadeTime);
-		this.crossfadeDuration = timeUnit.toMillis(crossfadeDuration);
-		this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
-	}
+    private Music currentTrack, nextTrack;
+    private volatile boolean playing;
+    private volatile float targetVolume = 1f;
+    private float cursor;
+    private long previousTimestamp;
 
-	@Override
-	public void run() {
-		nextTrack.play();
-		nextTrack.setVolume(0f);
-		Music tempTrack = currentTrack;
-		currentTrack = nextTrack;
-		nextTrack = tempTrack;
-		scheduleCrossFadeIn();
-		scheduleCrossFadeOut();
-	}
+    private ScheduledExecutorService scheduledExecutorService;
 
-	private void scheduleCrossFadeIn() {
-		for (int i = 0; i < crossfadeDuration; i += 50) {
-			float volume = MathUtils.clamp((Float.valueOf(i) / Float.valueOf(crossfadeDuration)), 0f, targetVolume) ;
-			scheduledExecutorService.schedule(new ScheduleCrossFadeIn(volume), i,
-					TimeUnit.MILLISECONDS);
-		}
-	}
+    /**
+     * Constructor
+     * 
+     * @param musicFile
+     *            The {@link FileHandle} for the music to be looped
+     * @param crossfadeTime
+     *            The time (in seconds) at which the crossfade begins at the end
+     *            of the track
+     * @param crossfadeDuration
+     *            The duration of the crossfade in seconds
+     */
+    public CrossFadingMusicLoop(FileHandle musicFile, float crossfadeTime, float crossfadeDuration) {
+        this.currentTrack = Gdx.audio.newMusic(musicFile);
+        this.nextTrack = Gdx.audio.newMusic(musicFile);
+        this.crossfadeTime = crossfadeTime;
+        this.crossfadeDuration = crossfadeDuration;
 
-	private void scheduleCrossFadeOut() {
-		for (int i = 0; i < crossfadeDuration; i += 50) {
-			float volume = MathUtils.clamp(1f - (Float.valueOf(i) / Float.valueOf(crossfadeDuration)), 0f, targetVolume) ;
-			scheduledExecutorService.schedule(new ScheduleCrossFadeOut(volume), i,
-					TimeUnit.MILLISECONDS);
-		}
-	}
+        scheduledExecutorService = Executors.newScheduledThreadPool(1);
+    }
 
-	/**
-	 * Starts playing the loop
-	 */
-	public void play() {
-		currentTrack.setVolume(targetVolume);
-		currentTrack.play();
-		long time = (long) crossfadeTime;
-		scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(this,
-				time, time, TimeUnit.MILLISECONDS);
-	}
+    /**
+     * Updates the crossfading of the track
+     */
+    public void update() {
+        if (playing && !currentTrack.isPlaying()) {
+            currentTrack.setVolume(targetVolume);
+            currentTrack.play();
+            previousTimestamp = System.currentTimeMillis();
+        }
+        if (!playing && currentTrack.isPlaying()) {
+            currentTrack.stop();
+            nextTrack.stop();
+        }
+        long timestamp = System.currentTimeMillis();
+        cursor += (timestamp - previousTimestamp) / 1000f;
+        previousTimestamp = timestamp;
 
-	/**
-	 * Stops playing the loop
-	 */
-	public void stop() {
-		if(scheduledFuture != null) {
-			scheduledFuture.cancel(false);
-			while (!scheduledFuture.isDone()) {
-				try {
-					Thread.sleep(1);
-				} catch (Exception e) {
-				}
-			}
-		}
-		currentTrack.stop();
-		nextTrack.stop();
-		scheduledFuture = null;
-	}
+        if (cursor < crossfadeTime) {
+            currentTrack.setVolume(targetVolume);
+        } else {
+            fadeInNextTrack();
+            fadeOutCurrentTrack();
+        }
 
-	/**
-	 * Returns if the loop is playing
-	 * 
-	 * @return True if playing
-	 */
-	public boolean isPlaying() {
-		return scheduledFuture != null;
-	}
+        if (cursor >= crossfadeTime + crossfadeDuration) {
+            cursor -= crossfadeTime + crossfadeDuration;
+            Music tmpTrack = currentTrack;
+            currentTrack = nextTrack;
+            nextTrack = tmpTrack;
+        }
+    }
 
-	/**
-	 * Cleans up resources. To be called when this instance is no longer needed.
-	 */
-	public void dispose() {
-		if (isPlaying()) {
-			throw new RuntimeException(
-					"Cannot dispose of a music instance that is currently playing");
-		}
-		currentTrack.dispose();
-		nextTrack.dispose();
-	}
-	
-	public void setVolume(float volume) {
-		targetVolume = volume;
-		if(currentTrack.isPlaying()) {
-			currentTrack.setVolume(targetVolume);
-		}
-	}
-	
-	public void fadeOut(long duration) {
-		for(long i = 0; i < duration; i += 50) {
-			float volume = MathUtils.clamp(1f - (Float.valueOf(i) / Float.valueOf(duration)), 0f, 1f);
-			scheduledExecutorService.schedule(new ScheduleFadeOut(volume), i,
-					TimeUnit.MILLISECONDS);
-		}
-	}
-	
-	public void fadeOutAndStop(long duration) {
-		fadeOut(duration);
-		scheduledExecutorService.schedule(new ScheduleStop(), duration, TimeUnit.MILLISECONDS);
-	}
-	
-	public class ScheduleStop implements Runnable {
+    private void fadeInNextTrack() {
+        float trackTargetVolume = MathUtils.clamp((Float.valueOf(cursor - crossfadeTime) / Float.valueOf(crossfadeDuration)), 0f,
+                targetVolume);
+        nextTrack.setVolume(trackTargetVolume);
+        if (!nextTrack.isPlaying()) {
+            nextTrack.play();
+        }
+    }
 
-		@Override
-		public void run() {
-			stop();
-		}
-		
-	}
-	
-	private class ScheduleFadeOut implements Runnable {
-		private float volume;
-		
-		public ScheduleFadeOut(float volume) {
-			this.volume = volume;
-		}
+    private void fadeOutCurrentTrack() {
+        float trackTargetVolume = MathUtils.clamp(1f - (Float.valueOf(cursor - crossfadeTime) / Float.valueOf(crossfadeDuration)), 0f,
+                targetVolume);
+        currentTrack.setVolume(trackTargetVolume);
+    }
 
-		@Override
-		public void run() {
-			targetVolume = volume;
-			currentTrack.setVolume(volume);
-		}
-		
-	}
+    /**
+     * Starts playing the loop
+     */
+    public void play() {
+        playing = true;
+    }
 
-	private class ScheduleCrossFadeOut implements Runnable {
-		private float volume;
+    /**
+     * Stops playing the loop
+     */
+    public void stop() {
+        playing = false;
+    }
 
-		public ScheduleCrossFadeOut(float volume) {
-			this.volume = volume;
-		}
+    /**
+     * Returns if the loop is playing
+     * 
+     * @return True if playing
+     */
+    public boolean isPlaying() {
+        return playing;
+    }
 
-		public void run() {
-			nextTrack.setVolume(volume);
-		}
-	}
+    /**
+     * Cleans up resources. To be called when this instance is no longer needed.
+     */
+    public void dispose() {
+        if (isPlaying()) {
+            throw new RuntimeException("Cannot dispose of a music instance that is currently playing");
+        }
+        currentTrack.dispose();
+        nextTrack.dispose();
+        scheduledExecutorService.shutdown();
+    }
 
-	private class ScheduleCrossFadeIn implements Runnable {
-		private float volume;
+    public void setVolume(float volume) {
+        targetVolume = volume;
+    }
 
-		public ScheduleCrossFadeIn(float volume) {
-			this.volume = volume;
-		}
+    public void fadeOut(long duration) {
+        for (long i = 0; i < duration; i += 50) {
+            float volume = MathUtils.clamp(1f - (Float.valueOf(i) / Float.valueOf(duration)), 0f, 1f);
+            scheduledExecutorService.schedule(new ScheduleFadeOut(volume), i, TimeUnit.MILLISECONDS);
+        }
+    }
 
-		public void run() {
-			currentTrack.setVolume(volume);
-		}
-	}
+    public void fadeOutAndStop(long duration) {
+        fadeOut(duration);
+        scheduledExecutorService.schedule(new ScheduleStop(), duration, TimeUnit.MILLISECONDS);
+    }
+
+    public class ScheduleStop implements Runnable {
+
+        @Override
+        public void run() {
+            stop();
+        }
+
+    }
+
+    private class ScheduleFadeOut implements Runnable {
+        private float volume;
+
+        public ScheduleFadeOut(float volume) {
+            this.volume = volume;
+        }
+
+        @Override
+        public void run() {
+            targetVolume = volume;
+        }
+    }
 }

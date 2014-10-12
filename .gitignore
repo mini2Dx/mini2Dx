@@ -12,3 +12,5 @@ bin/
 build/
 *.lock
 _site/
+
+uats/src/main/resources/crossfade.ogg
