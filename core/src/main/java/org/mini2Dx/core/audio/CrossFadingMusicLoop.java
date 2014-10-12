@@ -70,9 +70,12 @@ public class CrossFadingMusicLoop {
             currentTrack.play();
             previousTimestamp = System.currentTimeMillis();
         }
-        if (!playing && currentTrack.isPlaying()) {
-            currentTrack.stop();
-            nextTrack.stop();
+        if (!playing) {
+            if(currentTrack.isPlaying()) {
+                currentTrack.stop();
+                nextTrack.stop();
+            }
+            return;
         }
         long timestamp = System.currentTimeMillis();
         cursor += (timestamp - previousTimestamp) / 1000f;
@@ -137,6 +140,12 @@ public class CrossFadingMusicLoop {
     public void dispose() {
         if (isPlaying()) {
             throw new RuntimeException("Cannot dispose of a music instance that is currently playing");
+        }
+        if(currentTrack.isPlaying()) {
+            currentTrack.stop();
+        }
+        if(nextTrack.isPlaying()) {
+            nextTrack.stop();
         }
         currentTrack.dispose();
         nextTrack.dispose();
