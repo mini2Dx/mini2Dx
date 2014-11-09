@@ -21,6 +21,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  * A {@link GameContainer} that allows visual user acceptance testing of
@@ -29,61 +30,84 @@ import com.badlogic.gdx.graphics.Color;
  * @author Thomas Cashman
  */
 public class TiledMapNoCachingUAT extends GameContainer {
-	private TiledMap tiledMap;
+    private TiledMap tiledMap;
 
-	@Override
-	public void pause() {
-	}
+    @Override
+    public void pause() {
+    }
 
-	@Override
-	public void resume() {
-	}
+    @Override
+    public void resume() {
+    }
 
-	@Override
-	public void initialise() {
-		try {
-			tiledMap = new TiledMap(Gdx.files.classpath("simple.tmx"), true, false);
-		} catch (TiledException e) {
-			e.printStackTrace();
-		}
-	}
+    @Override
+    public void initialise() {
+        try {
+            tiledMap = new TiledMap(Gdx.files.classpath("simple.tmx"), true, false);
+        } catch (TiledException e) {
+            e.printStackTrace();
+        }
+    }
 
-	@Override
-	public void update(float delta) {
-	}
-	
-	@Override
-	public void interpolate(float alpha) {
-	}
+    @Override
+    public void update(float delta) {
+    }
 
-	@Override
-	public void render(Graphics g) {
-		g.setBackgroundColor(Color.WHITE);
-		g.setColor(Color.RED);
-		
-		tiledMap.draw(g, 0, 0);
-		
-		tiledMap.getTilesets().get(0).drawTileset(g, tiledMap.getWidth() * tiledMap.getTileWidth() + 32, 0);
-		
-		g.scale(1.25f,1.25f);
-		g.rotate(5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 2);
+    @Override
+    public void interpolate(float alpha) {
+    }
 
-		tiledMap.draw(g, 0, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 2, 1, 1, 4, 8);
-		
-		g.rotate(-5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 2);
-		g.scale(0.8f,0.8f);
-		tiledMap.draw(g, 32, tiledMap.getHeight() * tiledMap.getTileHeight(), 1, 1, 4, 8);
-	}
+    @Override
+    public void render(Graphics g) {
+        g.setBackgroundColor(Color.WHITE);
+        g.setColor(Color.RED);
 
-	public static void main(String[] args) {
-		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.title = "mini2Dx - TiledMap No Caching Verification Test";
-		cfg.width = 800;
-		cfg.height = 800;
-		cfg.stencil = 8;
-		cfg.vSyncEnabled = true;
-		cfg.foregroundFPS = 0;
-		cfg.backgroundFPS = 0;
-		new LwjglApplication(new DesktopMini2DxGame("org.mini2Dx.uats.common.TiledMapNoCachingUAT", new TiledMapNoCachingUAT()), cfg);
-	}
+        renderFullMapInTopLeftCorner(g);
+        renderPartOfMapUnderTopLeftMap(g);
+        renderFirstTilesetInTopRightCorner(g);
+        renderScaledAndRotatedMapInBottomRightCorner(g);
+        renderTranslatedFullMapInBottomLeftCorner(g);
+    }
+    
+    private void renderFullMapInTopLeftCorner(Graphics g) {
+        tiledMap.draw(g, 0, 0);
+    }
+    
+    private void renderFirstTilesetInTopRightCorner(Graphics g) {
+        tiledMap.getTilesets().get(0).drawTileset(g, tiledMap.getWidth() * tiledMap.getTileWidth() + 32, 0);
+    }
+    
+    private void renderScaledAndRotatedMapInBottomRightCorner(Graphics g) {
+        g.scale(1.25f, 1.25f);
+        g.rotate(5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 1.5f);
+
+        //Render rotated map in bottom right corner
+        tiledMap.draw(g, tiledMap.getWidth() * tiledMap.getTileWidth(), MathUtils.round((tiledMap.getHeight() * tiledMap.getTileHeight()) * 1.5f), 1, 1, 4, 8);
+
+        g.rotate(-5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 1.5f);
+        g.scale(0.8f, 0.8f);
+    }
+    
+    private void renderPartOfMapUnderTopLeftMap(Graphics g) {
+        tiledMap.draw(g, 32, tiledMap.getHeight() * tiledMap.getTileHeight(), 1, 1, 4, 8);
+    }
+    
+    private void renderTranslatedFullMapInBottomLeftCorner(Graphics g) {
+        int mapWidthInPixels = tiledMap.getWidth() * tiledMap.getTileWidth();
+        g.translate(mapWidthInPixels, 0);
+        tiledMap.draw(g, mapWidthInPixels, (tiledMap.getHeight() * tiledMap.getTileHeight()) + (8 * tiledMap.getTileHeight()));
+        g.translate(-mapWidthInPixels, 0);
+    }
+
+    public static void main(String[] args) {
+        LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
+        cfg.title = "mini2Dx - TiledMap No Caching Verification Test";
+        cfg.width = 800;
+        cfg.height = 800;
+        cfg.stencil = 8;
+        cfg.vSyncEnabled = true;
+        cfg.foregroundFPS = 0;
+        cfg.backgroundFPS = 0;
+        new LwjglApplication(new DesktopMini2DxGame("org.mini2Dx.uats.common.TiledMapNoCachingUAT", new TiledMapNoCachingUAT()), cfg);
+    }
 }
