@@ -97,6 +97,9 @@ public class CrossFadingMusicLoop {
     }
 
     private void fadeInNextTrack() {
+        if(!playing) {
+            return;
+        }
         float trackTargetVolume = MathUtils.clamp((Float.valueOf(cursor - crossfadeTime) / Float.valueOf(crossfadeDuration)), 0f,
                 targetVolume);
         nextTrack.setVolume(trackTargetVolume);
