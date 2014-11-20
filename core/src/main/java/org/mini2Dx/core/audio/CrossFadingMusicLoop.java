@@ -164,7 +164,7 @@ public class CrossFadingMusicLoop {
     }
 
     public void fadeOutAndStop(long duration) {
-        fadeOut(duration);
+        fadeOut(duration - 50);
         scheduledExecutorService.schedule(new ScheduleStop(), duration, TimeUnit.MILLISECONDS);
     }
 
