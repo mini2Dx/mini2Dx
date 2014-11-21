@@ -75,6 +75,9 @@ public class CrossFadingMusicLoop {
                 currentTrack.stop();
                 nextTrack.stop();
             }
+            if(nextTrack.isPlaying()) {
+                nextTrack.stop();
+            }
             return;
         }
         long timestamp = System.currentTimeMillis();
@@ -97,13 +100,10 @@ public class CrossFadingMusicLoop {
     }
 
     private void fadeInNextTrack() {
-        if(!playing) {
-            return;
-        }
         float trackTargetVolume = MathUtils.clamp((Float.valueOf(cursor - crossfadeTime) / Float.valueOf(crossfadeDuration)), 0f,
                 targetVolume);
         nextTrack.setVolume(trackTargetVolume);
-        if (!nextTrack.isPlaying()) {
+        if (!nextTrack.isPlaying() && playing) {
             nextTrack.play();
         }
     }
@@ -168,7 +168,7 @@ public class CrossFadingMusicLoop {
 
     public void fadeOutAndStop(long duration) {
         fadeOut(duration - 50);
-        scheduledExecutorService.schedule(new ScheduleStop(), duration, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.schedule(new ScheduleStop(), duration + 50, TimeUnit.MILLISECONDS);
     }
 
     public class ScheduleStop implements Runnable {
