@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.data.Data;
-import org.mini2Dx.desktop.OsDetector;
+import org.mini2Dx.core.util.OsDetector;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
