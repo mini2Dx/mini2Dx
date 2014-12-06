@@ -11,7 +11,6 @@
  */
 package org.mini2Dx.core.geom;
 
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Represents a geometric line
@@ -30,7 +29,6 @@ public class Line extends LineSegment {
 
 	@Override
 	public boolean contains(float x, float y) {
-		return com.badlogic.gdx.math.Intersector.distanceLinePoint(pointA, pointB,
-				new Vector2(x, y)) == 0;
+		return com.badlogic.gdx.math.Intersector.distanceLinePoint(pointA.x, pointA.y, pointB.x, pointB.y, x, y) == 0;
 	}
 }
