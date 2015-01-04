@@ -723,8 +723,6 @@ public class Graphics {
 
 	/**
 	 * Sets the background {@link Color} to be used
-	 * 
-	 * @return
 	 */
 	public void setBackgroundColor(Color backgroundColor) {
 		if (backgroundColor != null)

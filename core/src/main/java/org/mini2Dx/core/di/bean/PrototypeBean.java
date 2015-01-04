@@ -20,7 +20,7 @@ import org.apache.commons.beanutils.BeanUtils;
 
 /**
  * An implementation of {@link Bean} based on the
- * {@link <a href="http://en.wikipedia.org/wiki/Prototype_pattern">prototype pattern</a>}
+ * <a href="http://en.wikipedia.org/wiki/Prototype_pattern">prototype pattern</a>
  */
 public class PrototypeBean extends Bean implements Runnable {
 	private static final int MAXIMUM_PREPARED_PROTOTYPES = 3;

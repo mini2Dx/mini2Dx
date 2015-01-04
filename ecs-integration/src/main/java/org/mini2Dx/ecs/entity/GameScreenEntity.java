@@ -14,7 +14,6 @@ package org.mini2Dx.ecs.entity;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
-import java.util.UUID;
 
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;

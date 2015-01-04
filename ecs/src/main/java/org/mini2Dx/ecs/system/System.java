@@ -12,7 +12,6 @@
 package org.mini2Dx.ecs.system;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.cliffc.high_scale_lib.NonBlockingHashMap;
 import org.mini2Dx.ecs.entity.Entity;
@@ -39,7 +38,7 @@ public abstract class System<T extends Entity> {
 	
 	/**
 	 * Removes an {@link Entity} from the {@link System}
-	 * @param entity The {@link UUIDEntity} to be removed
+	 * @param entity The {@link Entity} to be removed
 	 */
 	public void removeEntity(T entity) {
 		entities.remove(entity.getId());

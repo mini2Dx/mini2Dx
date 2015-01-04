@@ -418,7 +418,7 @@ public class TiledParser implements TiledParserNotifier {
 	/**
 	 * Adds a listener to be notified of parsing results
 	 * 
-	 * @param listener
+	 * @param tiledParserListener
 	 *            The {@link TiledParserListener} to be added
 	 */
 	@Override
@@ -429,7 +429,7 @@ public class TiledParser implements TiledParserNotifier {
 	/**
 	 * Removes a listener from being notified of parsing results
 	 * 
-	 * @param listener
+	 * @param tiledParserListener
 	 *            The {@link TiledParserListener} to be removed
 	 */
 	@Override

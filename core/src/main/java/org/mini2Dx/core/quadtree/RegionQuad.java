@@ -13,9 +13,7 @@ package org.mini2Dx.core.quadtree;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.mini2Dx.core.engine.Parallelogram;
 import org.mini2Dx.core.geom.LineSegment;

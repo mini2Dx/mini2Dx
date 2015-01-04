@@ -20,7 +20,7 @@ public interface TiledParserNotifier {
 	/**
 	 * Adds a listener to be notified of parsing results
 	 * 
-	 * @param listener
+	 * @param tiledParserListener
 	 *            The {@link TiledParserListener} to be added
 	 */
 	public void addListener(TiledParserListener tiledParserListener);
@@ -28,7 +28,7 @@ public interface TiledParserNotifier {
 	/**
 	 * Removes a listener from being notified of parsing results
 	 * 
-	 * @param listener
+	 * @param tiledParserListener
 	 *            The {@link TiledParserListener} to be removed
 	 */
 	public void removeListener(TiledParserListener tiledParserListener);

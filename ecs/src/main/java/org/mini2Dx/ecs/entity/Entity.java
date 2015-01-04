@@ -22,7 +22,6 @@ import org.mini2Dx.ecs.component.Component;
 import org.mini2Dx.ecs.component.ComponentStore;
 import org.mini2Dx.ecs.component.ComponentTypeIdAllocator;
 import org.mini2Dx.ecs.component.DefaultComponentStore;
-import org.omg.CORBA.OMGVMCID;
 
 /**
  * A common interface for Entity implementations within the
@@ -114,7 +113,7 @@ public class Entity implements ComponentStore {
 	}
 
 	/**
-	 * Adds a {@link Component} to this {@link UUIDEntity} and notifies any
+	 * Adds a {@link Component} to this {@link Entity} and notifies any
 	 * attached {@link EntityListener}s of this addition
 	 * 
 	 * @param component
@@ -141,7 +140,7 @@ public class Entity implements ComponentStore {
 	 * @param clazz
 	 *            The {@link Class} to search for
 	 * @return An empty {@link List} if no such {@link Component}s are attached
-	 *         to this {@link UUIDEntity}
+	 *         to this {@link Entity}
 	 */
 	@Override
 	public <T> SortedSet<T> getComponents(Class<T> clazz) {
@@ -149,7 +148,7 @@ public class Entity implements ComponentStore {
 	}
 
 	/**
-	 * Removes the specified {@link Component} from this {@link UUIDEntity}
+	 * Removes the specified {@link Component} from this {@link Entity}
 	 * 
 	 * @param component
 	 *            The {@link Component} to remove
@@ -294,7 +293,7 @@ public class Entity implements ComponentStore {
 	}
 
 	/**
-	 * Adds an {@link EntityListener} to this {@link UUIDEntity}
+	 * Adds an {@link EntityListener} to this {@link Entity}
 	 * 
 	 * @param listener
 	 *            The {@link EntityListener} to add
@@ -307,7 +306,7 @@ public class Entity implements ComponentStore {
 	}
 
 	/**
-	 * Removes an {@link EntityListener} from this {@link UUIDEntity}
+	 * Removes an {@link EntityListener} from this {@link Entity}
 	 * 
 	 * @param listener
 	 *            The {@link EntityListener} to be removed

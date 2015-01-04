@@ -13,7 +13,7 @@ package org.mini2Dx.core.di.bean;
 
 
 /**
- * An implementation of {@link Bean} based on the {@link <a href="http://en.wikipedia.org/wiki/Singleton_pattern">singleton pattern</a>}
+ * An implementation of {@link Bean} based on the <a href="http://en.wikipedia.org/wiki/Singleton_pattern">singleton pattern</a>
  */
 public class SingletonBean extends Bean {
 	private Object bean;

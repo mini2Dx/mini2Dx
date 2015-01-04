@@ -18,6 +18,7 @@ import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.cliffc.high_scale_lib.NonBlockingHashMap;
+import org.mini2Dx.ecs.entity.Entity;
 import org.mini2Dx.ecs.entity.EntityListener;
 
 /**
@@ -82,7 +83,7 @@ public class DefaultComponentStore implements ComponentStore {
 	}
 
 	/**
-	 * Adds a {@link Component} to this {@link UUIDEntity} and notifies any
+	 * Adds a {@link Component} to this {@link Entity} and notifies any
 	 * attached {@link EntityListener}s of this addition
 	 * 
 	 * @param component
@@ -136,7 +137,7 @@ public class DefaultComponentStore implements ComponentStore {
 	 * @param clazz
 	 *            The {@link Class} to search for
 	 * @return An empty {@link List} if no such {@link Component}s are attached
-	 *         to this {@link UUIDEntity}
+	 *         to this {@link Entity}
 	 */
 	@Override
 	public <T> SortedSet<T> getComponents(Class<T> clazz) {
@@ -144,7 +145,7 @@ public class DefaultComponentStore implements ComponentStore {
 	}
 
 	/**
-	 * Removes the specified {@link Component} from this {@link UUIDEntity}
+	 * Removes the specified {@link Component} from this {@link Entity}
 	 * 
 	 * @param component
 	 *            The {@link Component} to remove

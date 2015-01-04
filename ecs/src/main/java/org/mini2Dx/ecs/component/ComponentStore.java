@@ -14,6 +14,7 @@ package org.mini2Dx.ecs.component;
 import java.util.List;
 import java.util.SortedSet;
 
+import org.mini2Dx.ecs.entity.Entity;
 import org.mini2Dx.ecs.entity.EntityListener;
 
 /**
@@ -30,7 +31,7 @@ public interface ComponentStore {
 	public <T extends Component> T getComponent(String name, Class<T> clazz);
 
 	/**
-	 * Adds a {@link Component} to this {@link UUIDEntity} and notifies any
+	 * Adds a {@link Component} to this {@link Entity} and notifies any
 	 * attached {@link EntityListener}s of this addition
 	 * 
 	 * @param component
@@ -44,7 +45,7 @@ public interface ComponentStore {
 	 * 
 	 * @param componentTypeId The unique identifier of the component type
 	 * @return An empty {@link List} if no such {@link Component}s are attached
-	 *         to this {@link UUIDEntity}
+	 *         to this {@link Entity}
 	 */
 	public <T> SortedSet<T> getComponents(int componentTypeId);
 	
@@ -55,12 +56,12 @@ public interface ComponentStore {
 	 * @param clazz
 	 *            The {@link Class} to search for
 	 * @return An empty {@link List} if no such {@link Component}s are attached
-	 *         to this {@link UUIDEntity}
+	 *         to this {@link Entity}
 	 */
 	public <T> SortedSet<T> getComponents(Class<T> clazz);
 
 	/**
-	 * Removes the specified {@link Component} from this {@link UUIDEntity}
+	 * Removes the specified {@link Component} from this {@link Entity}
 	 * 
 	 * @param component
 	 *            The {@link Component} to remove

@@ -364,8 +364,8 @@ public class Tileset {
 	}
 	
 	/**
-	 * Returns the first GID {@see
-	 * <a>https://github.com/bjorn/tiled/wiki/TMX-Map-Format</a>}
+	 * Returns the first GID. See:
+	 * <a href="https://github.com/bjorn/tiled/wiki/TMX-Map-Format">TMX Map Format</a>
 	 * 
 	 * @return
 	 */

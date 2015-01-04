@@ -17,7 +17,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ecs.system.GameSystem;
-import org.mini2Dx.ecs.system.System;
 
 /**
  * An implementation of {@link GameContainer} based on the

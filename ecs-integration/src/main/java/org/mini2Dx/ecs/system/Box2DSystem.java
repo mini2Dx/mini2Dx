@@ -92,10 +92,10 @@ public abstract class Box2DSystem<T extends Entity> extends GameSystem<T> {
 	}
 
 	/**
-	 * Render a Box2D {@link Body} associated with an {@link UUIDEntity}
+	 * Render a Box2D {@link Body} associated with an {@link Entity}
 	 * 
 	 * @param entity
-	 *            The {@link UUIDEntity} the {@link Body} belongs to
+	 *            The {@link Entity} the {@link Body} belongs to
 	 * @param body
 	 *            The {@link Body} to be rendered
 	 * @param renderX

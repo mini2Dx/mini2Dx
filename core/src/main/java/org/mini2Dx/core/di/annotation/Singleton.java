@@ -17,7 +17,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a class as a {@link <a href="http://en.wikipedia.org/wiki/Singleton_pattern">singleton</a>} bean
+ * Marks a class as a <a href="http://en.wikipedia.org/wiki/Singleton_pattern">singleton</a> bean
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
