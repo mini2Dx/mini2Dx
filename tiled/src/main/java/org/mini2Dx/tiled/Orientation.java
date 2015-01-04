@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,8 +13,6 @@ package org.mini2Dx.tiled;
 
 /**
  * Represents the possible orientations of a {@link TiledMap}
- *
- * @author Thomas Cashman
  */
 public enum Orientation {
 	ORTHOGONAL, ISOMETRIC, STAGGERED, UNKNOWN

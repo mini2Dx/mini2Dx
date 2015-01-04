@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,8 +23,6 @@ import org.mini2Dx.ecs.entity.Entity;
  * 
  * The main benefit of this is when using {@link Component#getComponents(Class)}
  * that the results will be returned sorted by their priority.
- *
- * @author Thomas Cashman
  */
 public class PriorityComponent extends Component {
 	private int priority;

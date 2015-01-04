@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,8 +21,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 /**
  * Base class for mini2Dx game containers. All games using mini2Dx must extend
  * this.
- * 
- * @author Thomas Cashman
  */
 public abstract class GameContainer implements Screen {
 	private static final float MAXIMUM_DELTA = (1f / 60f);

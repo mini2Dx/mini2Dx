@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,7 +18,6 @@ import org.junit.Test;
 
 /**
  * Implements unit tests for {@link Point}
- * @author Thomas Cashman
  */
 public class PointTest {
 	private Point point1, point2, point3;

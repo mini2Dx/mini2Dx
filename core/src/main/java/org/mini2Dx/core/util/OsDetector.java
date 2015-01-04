@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,13 +11,14 @@
  */
 package org.mini2Dx.core.util;
 
+
 /**
- * Determines the desktop's operating system
- * @see {@link http://www.mkyong.com/java/how-to-detect-os-in-java-systemgetpropertyosname/}
- * @author Thomas Cashman
+ * Determines the current operating system
  */
 public class OsDetector {
-	private static final String OS = System.getProperty("os.name").toLowerCase();
+	private static final String DESKTOP_OS = System.getProperty("os.name") != null ? System.getProperty("os.name").toLowerCase() : null;
+	private static final String ANDROID_OS = System.getProperty("java.runtime.name") != null ? System.getProperty("java.runtime.name").toLowerCase() : null;
+	private static final String IOS = System.getProperty("java.runtime.name");
 	private static Os os;
 	
 	public static Os getOs() {
@@ -28,21 +29,33 @@ public class OsDetector {
 	}
 	
 	private static Os determineOs() {
-		if(OS.indexOf("win") >= 0) {
-			return Os.WINDOWS;
-		}
-		if(OS.indexOf("mac") >= 0) {
-			return Os.MAC;
-		}
-		if(OS.indexOf("nix") >= 0) {
-			return Os.UNIX;
-		}
-		if(OS.indexOf("nux") >= 0) {
-			return Os.UNIX;
-		}
-		if(OS.indexOf("aix") >= 0) {
-			return Os.UNIX;
-		}
+	    if(DESKTOP_OS != null) {
+	        if(DESKTOP_OS.indexOf("win") >= 0) {
+	            return Os.WINDOWS;
+	        }
+	        if(DESKTOP_OS.indexOf("mac") >= 0) {
+	            return Os.MAC;
+	        }
+	        if(DESKTOP_OS.indexOf("nix") >= 0) {
+	            return Os.UNIX;
+	        }
+	        if(DESKTOP_OS.indexOf("nux") >= 0) {
+	            return Os.UNIX;
+	        }
+	        if(DESKTOP_OS.indexOf("aix") >= 0) {
+	            return Os.UNIX;
+	        }
+	    }
+	    if(ANDROID_OS != null) {
+	        if(ANDROID_OS.indexOf("android") >= 0) {
+                return Os.WINDOWS;
+            }
+	    }
+	    if(IOS != null) {
+	        if(IOS.indexOf("robovm") >= 0) {
+	            return Os.IOS;
+	        }
+	    }
 		return Os.UNKNOWN;
 	}
 	
@@ -56,5 +69,13 @@ public class OsDetector {
  
 	public static boolean isUnix() {
 		return getOs() == Os.UNIX;
+	}
+	
+	public static boolean isAndroid() {
+	    return getOs() == Os.ANDROID;
+	}
+	
+	public static boolean isIOS() {
+	    return getOs() == Os.IOS;
 	}
 }

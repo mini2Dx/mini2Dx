@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -28,8 +28,6 @@ import dalvik.system.DexFile;
 
 /**
  * Android implementation of {@link ComponentScanner}
- * 
- * @author Thomas Cashman
  */
 public class AndroidComponentScanner implements ComponentScanner {
 	private static final String TAG = AndroidComponentScanner.class

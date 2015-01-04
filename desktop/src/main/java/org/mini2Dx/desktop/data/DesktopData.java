@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -14,20 +14,18 @@ package org.mini2Dx.desktop.data;
 import java.io.StringWriter;
 import java.nio.file.Paths;
 
-import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.data.Data;
 import org.mini2Dx.core.util.OsDetector;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
  * Desktop implementation of {@link Data}
- * 
- * @author Thomas Cashman
  */
 public class DesktopData implements Data {
     private final String saveDirectory;
@@ -44,17 +42,17 @@ public class DesktopData implements Data {
     private String getSaveDirectoryForGame(String gameIdentifier) {
         switch (OsDetector.getOs()) {
         case WINDOWS:
-            return Paths.get(Mdx.files.getExternalStoragePath(), "AppData", "Roaming", gameIdentifier).toAbsolutePath().toString();
+            return Paths.get(Gdx.files.getExternalStoragePath(), "AppData", "Roaming", gameIdentifier).toAbsolutePath().toString();
         case MAC:
-            return Paths.get(Mdx.files.getExternalStoragePath(), "Library", "Application Support", gameIdentifier).toAbsolutePath()
+            return Paths.get(Gdx.files.getExternalStoragePath(), "Library", "Application Support", gameIdentifier).toAbsolutePath()
                     .toString();
         case UNIX:
             if (gameIdentifier.contains(".")) {
                 gameIdentifier = gameIdentifier.substring(gameIdentifier.indexOf('.') + 1);
             }
-            return Paths.get(Mdx.files.getExternalStoragePath(), "." + gameIdentifier).toAbsolutePath().toString();
+            return Paths.get(Gdx.files.getExternalStoragePath(), "." + gameIdentifier).toAbsolutePath().toString();
         default:
-            return Paths.get(Mdx.files.getLocalStoragePath()).toAbsolutePath().toString();
+            return Paths.get(Gdx.files.getLocalStoragePath()).toAbsolutePath().toString();
         }
     }
 
@@ -133,7 +131,7 @@ public class DesktopData implements Data {
     
     @Override
     public void wipe() throws Exception {
-        FileHandle directory = Mdx.files.absolute(saveDirectory);
+        FileHandle directory = Gdx.files.absolute(saveDirectory);
         if(!directory.exists()) {
             return;
         }
@@ -142,7 +140,7 @@ public class DesktopData implements Data {
     }
     
     private void ensureDataDirectoryExists() {
-        FileHandle directory = Mdx.files.absolute(saveDirectory);
+        FileHandle directory = Gdx.files.absolute(saveDirectory);
         if(directory.exists()) {
             return;
         }
@@ -164,7 +162,7 @@ public class DesktopData implements Data {
     }
 
     private FileHandle resolve(String[] filepath) {
-        return Mdx.files.absolute(Paths.get(saveDirectory, filepath).toString());
+        return Gdx.files.absolute(Paths.get(saveDirectory, filepath).toString());
     }
 
     public String getSaveDirectory() {

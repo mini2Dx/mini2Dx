@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,8 +18,6 @@ import org.mini2Dx.core.graphics.Graphics;
  * A common interface to {@link GameScreen} transition implementations
  * 
  * NOTE: Based on Slick implementation by Kevin Glass
- *
- * @author Thomas Cashman
  */
 public interface Transition {
 	

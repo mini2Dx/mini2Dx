@@ -8,8 +8,7 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ecs.entity.Entity;
 
 /**
- *
- * @author Thomas Cashman
+ * Abstract class for implementing a game using {@link System}
  */
 public abstract class GameSystem<T extends Entity> extends System<T> {
 	/**

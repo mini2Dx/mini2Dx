@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -14,8 +14,6 @@ package org.mini2Dx.core.geom;
 
 /**
  * Represents a segement of a line (the space between two points )
- * 
- * @author Thomas Cashman
  */
 public class LineSegment {
 	private Point intersection;

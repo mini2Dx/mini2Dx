@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,8 +21,6 @@ import org.mini2Dx.core.screen.Transition;
  * An implementation of {@link GameContainer} that allows for separation of a
  * game into multiple {@link GameScreen}s and provides support for
  * {@link Transition}s between such screens via a {@link ScreenManager}
- * 
- * @author Thomas Cashman
  */
 public abstract class ScreenBasedGame extends GameContainer {
 	private ScreenManager<GameScreen> screenManager;

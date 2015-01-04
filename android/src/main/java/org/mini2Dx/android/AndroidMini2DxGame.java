@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.android;
 
+import org.mini2Dx.android.data.AndroidData;
 import org.mini2Dx.android.di.AndroidDependencyInjection;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
@@ -20,8 +21,6 @@ import android.content.Context;
 
 /**
  * Android implementation of {@link Mini2DxGame}
- *
- * @author Thomas Cashman
  */
 public class AndroidMini2DxGame extends Mini2DxGame {
 	private Context applicationContext;
@@ -34,6 +33,7 @@ public class AndroidMini2DxGame extends Mini2DxGame {
 	@Override
 	protected void initialiseM2Dx(String gameIdentifier) {
 		Mdx.di = new AndroidDependencyInjection(applicationContext);
+		Mdx.data = new AndroidData();
 	}
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,7 +17,6 @@ import org.mini2Dx.tiled.TiledMap;
 
 /**
  * Wraps an {@link IOException} thrown when parsing a {@link TiledMap}
- * @author Thomas Cashman
  */
 public class TiledParsingException extends TiledException {
 	private static final long serialVersionUID = 1862285613748397369L;

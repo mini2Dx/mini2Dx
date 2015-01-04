@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,8 +22,6 @@ import org.miniECx.core.test.TestComponent2;
 
 /**
  * Unit tests for {@link Component}
- *
- * @author Thomas Cashman
  */
 public class ComponentTest {
 	private TestComponent1 component;

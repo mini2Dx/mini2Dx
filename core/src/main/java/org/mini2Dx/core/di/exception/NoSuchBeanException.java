@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,8 +13,6 @@ package org.mini2Dx.core.di.exception;
 
 /**
  * Thrown when a required dependency is not registered with a repository
- *
- * @author Thomas Cashman
  */
 public class NoSuchBeanException extends BeanException {
 	private static final long serialVersionUID = -8414274790485861098L;

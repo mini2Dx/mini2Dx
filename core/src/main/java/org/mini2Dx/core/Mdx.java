@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,24 +13,28 @@ package org.mini2Dx.core;
 
 import org.mini2Dx.core.data.Data;
 import org.mini2Dx.core.di.DependencyInjection;
-
-import com.badlogic.gdx.Gdx;
+import org.mini2Dx.core.util.Os;
+import org.mini2Dx.core.util.OsDetector;
 
 /**
- *
- * @author Thomas Cashman
+ * Mini2Dx utility classes
  */
-public class Mdx extends Gdx {
+public class Mdx {
 
 	/**
-	 * 
+	 * Interface for reading/writing game data, e.g. save games, preferences
 	 */
 	public static Data data;
 	
 	/**
-	 * 
+	 * Dependency injection
 	 */
 	public static DependencyInjection di;
+	
+	/**
+	 * Returns the current operating system
+	 */
+	public static Os os = OsDetector.getOs();
 	
 	/**
 	 * 

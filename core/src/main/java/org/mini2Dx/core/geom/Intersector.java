@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -16,9 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * Provides implementations for detecting intersections between geom package objects.
  * 
- * Note: This exists because LibGDX implementations don't work and have no unit tests.
- * 
- * @author Thomas Cashman
+ * Note: This exists because LibGDX implementations weren't accurate
  */
 public class Intersector {
 	public static boolean intersectLines(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection) {

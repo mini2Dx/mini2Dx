@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,8 +13,6 @@ package org.mini2Dx.core.di.exception;
 
 /**
  * Thrown when a bean fails to initialise
- *
- * @author Thomas Cashman
  */
 public class BeanInitialisationException extends BeanException {
 	private static final long serialVersionUID = -4525166692000428401L;

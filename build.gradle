@@ -133,6 +133,8 @@ project(":" + rootProject.name + "-ios") {
     
     dependencies {
     	compile project(":" + rootProject.name + "-core")
+        
+        compile "org.reflections:reflections:$reflectionsVersion"
     	
     	testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"

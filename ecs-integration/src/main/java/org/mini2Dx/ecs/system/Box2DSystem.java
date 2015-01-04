@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,8 +24,6 @@ import com.badlogic.gdx.physics.box2d.World;
 
 /**
  * Wrap Box2D into an implementation of {@link System}
- * 
- * @author Thomas Cashman
  */
 public abstract class Box2DSystem<T extends Entity> extends GameSystem<T> {
 	private World world;

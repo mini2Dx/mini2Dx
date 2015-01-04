@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,8 +27,6 @@ import com.badlogic.gdx.graphics.Color;
  * Implements a region quad
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Quadtree#The_region_quadtree">Wikipedia: Region Quad Tree</a>
- * 
- * @author Thomas Cashman
  */
 public class RegionQuad<T extends Parallelogram> extends Quad<T> {
 	private static final long serialVersionUID = -2417612178966065600L;

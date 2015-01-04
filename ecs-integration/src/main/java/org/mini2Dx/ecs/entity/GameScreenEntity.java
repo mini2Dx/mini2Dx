@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, mini2Dx Project
+ * Copyright (c) 2015, mini2Dx Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -32,8 +32,6 @@ import org.mini2Dx.ecs.component.screen.UpdatableComponent;
  * update/interpolate/render on the {@link UpdatableComponent}s/
  * {@link RenderableComponent}s of that first before traversing up the tree
  * until it reaches this entity
- * 
- * @author Thomas Cashman
  */
 public abstract class GameScreenEntity extends Entity implements GameScreen {
 	private int updatableComponentTypeId;
