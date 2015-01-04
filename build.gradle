@@ -17,7 +17,7 @@ subprojects {
     apply plugin: "maven"
 
 	group = 'org.mini2Dx'
-    version = '0.10.0'
+    version = '0.10.1-SNAPSHOT'
     
     uploadArchives {
 		repositories {
@@ -199,4 +199,10 @@ project(":" + rootProject.name + "-uats") {
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
     }
+}
+
+task docs(type: Javadoc) {
+    source subprojects.collect {project -> project.sourceSets.main.allJava }
+    classpath = files(subprojects.collect {project -> project.sourceSets.main.compileClasspath})
+    destinationDir = new File(projectDir, 'docs')
 }
