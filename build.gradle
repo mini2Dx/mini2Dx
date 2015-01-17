@@ -17,7 +17,7 @@ subprojects {
     apply plugin: "maven"
 
 	group = 'org.mini2Dx'
-    version = '0.10.1'
+    version = '0.10.2-SNAPSHOT'
     
     uploadArchives {
 		repositories {
