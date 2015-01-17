@@ -24,190 +24,206 @@ import com.badlogic.gdx.graphics.Color;
 /**
  * Implements a region quad
  * 
- * @see <a href="http://en.wikipedia.org/wiki/Quadtree#The_region_quadtree">Wikipedia: Region Quad Tree</a>
+ * @see <a
+ *      href="http://en.wikipedia.org/wiki/Quadtree#The_region_quadtree">Wikipedia:
+ *      Region Quad Tree</a>
  */
 public class RegionQuad<T extends Parallelogram> extends Quad<T> {
-	private static final long serialVersionUID = -2417612178966065600L;
-	
-	public RegionQuad(int elementLimit, float x, float y, float width,
-			float height) {
-		super(elementLimit, x, y, width, height);
-	}
-	
-	public RegionQuad(RegionQuad<T> parent, float x, float y, float width, float height) {
-		super(parent, x, y, width, height);
-	}
-	
-	@Override
-	public void render(Graphics g) {
-		Color tmp = g.getColor();
+    private static final long serialVersionUID = -2417612178966065600L;
 
-		if(topLeft != null) {
-			topLeft.render(g);
-			topRight.render(g);
-			bottomLeft.render(g);
-			bottomRight.render(g);
-		} else {
-			g.setColor(QUAD_COLOR);
-			g.drawRect(x, y, width, height);
-			g.setColor(tmp);
-		}
-		
-		tmp = g.getColor();
-		g.setColor(ELEMENT_COLOR);
-		for(T element : elements) {
-			g.drawRect(element.getX(), element.getY(), element.getWidth(), element.getHeight());
-		}
-		g.setColor(tmp);
-	}
+    public RegionQuad(int elementLimit, float x, float y, float width, float height) {
+        super(elementLimit, x, y, width, height);
+    }
 
-	@Override
-	public boolean add(T element) {
-		if (element == null)
-			return false;
+    public RegionQuad(RegionQuad<T> parent, float x, float y, float width, float height) {
+        super(parent, x, y, width, height);
+    }
 
-		if (!this.intersects(element) && !this.contains(element)) {
-			return false;
-		}
+    @Override
+    public void render(Graphics g) {
+        Color tmp = g.getColor();
 
-		if (topLeft == null) {
-			return addElement(element);
-		}
-		if(addElementToChild(element)) {
-			return true;
-		}
-		if(!addElement(element)) {
-			return false;
-		}
-		return true;
-	}
-	
-	@Override
-	protected boolean addElementToChild(T element) {
-		if(topLeft.contains(element)) {
-			return topLeft.add(element);
-		} 
-		if(topRight.contains(element)) {
-			return topRight.add(element);
-		}
-		if(bottomLeft.contains(element)) {
-			return bottomLeft.add(element);
-		}
-		if(bottomRight.contains(element)) {
-			return bottomRight.add(element);
-		}
-		return false;
-	}
-	
-	@Override
-	protected void subdivide() {
-		if(topLeft != null)
-			return;
-		
-		float halfWidth = width / 2f;
-		float halfHeight = height / 2f;
+        if (topLeft != null) {
+            topLeft.render(g);
+            topRight.render(g);
+            bottomLeft.render(g);
+            bottomRight.render(g);
+        } else {
+            g.setColor(QUAD_COLOR);
+            g.drawRect(x, y, width, height);
+            g.setColor(tmp);
+        }
 
-		topLeft = new RegionQuad<T>(this, x, y, halfWidth, halfHeight);
-		topRight = new RegionQuad<T>(this, x + halfWidth, y, halfWidth, halfHeight);
-		bottomLeft = new RegionQuad<T>(this, x, y + halfHeight, halfWidth, halfHeight);
-		bottomRight = new RegionQuad<T>(this, x + halfWidth, y + halfHeight,
-				halfWidth, halfHeight);
+        tmp = g.getColor();
+        g.setColor(ELEMENT_COLOR);
+        for (T element : elements) {
+            g.drawRect(element.getX(), element.getY(), element.getWidth(), element.getHeight());
+        }
+        g.setColor(tmp);
+    }
 
-		for (int i = elements.size() - 1; i >= 0; i--) {
-			if(addElementToChild(elements.get(i))) {
-				removeElement(elements.get(i));
-			}
-		}
-	}
-	
-	@Override
-	public boolean remove(T element) {
-		if (element == null)
-			return false;
+    @Override
+    public boolean add(T element) {
+        if (element == null)
+            return false;
 
-		if (!this.intersects(element) && !this.contains(element)) {
-			return false;
-		}
-		
-		if(removeElement(element)) {
-			return true;
-		}
-		if(topLeft == null) {
-			return false;
-		}
-		return removeElementFromChild(element);
-	}
-	
-	@Override
-	public List<T> getElementsWithinRegion(Parallelogram parallelogram) {
-		List<T> result = new ArrayList<T>();
-		getElementsWithinRegion(result, parallelogram);
-		return result;
-	}
-	
-	@Override
-	public void getElementsWithinRegion(Collection<T> result, Parallelogram parallelogram) {
-		if(topLeft != null) {
-			if(topLeft.contains(parallelogram) || topLeft.intersects(parallelogram))
-				topLeft.getElementsWithinRegion(result, parallelogram);
-			if(topRight.contains(parallelogram) || topRight.intersects(parallelogram))
-				topRight.getElementsWithinRegion(result, parallelogram);
-			if(bottomLeft.contains(parallelogram) || bottomLeft.intersects(parallelogram))
-				bottomLeft.getElementsWithinRegion(result, parallelogram);
-			if(bottomRight.contains(parallelogram) || bottomRight.intersects(parallelogram))
-				bottomRight.getElementsWithinRegion(result, parallelogram);
-		}
-		for (int i = elements.size() - 1; i >= 0; i--) {
-			T element = elements.get(i);
-			if(element == null)
-				continue;
-			if(parallelogram.contains(element) || parallelogram.intersects(element)) {
-				result.add(element);
-			}
-		}
-	}
-	
-	@Override
-	public List<T> getElementsIntersectingLineSegment(LineSegment lineSegment) {
-		List<T> result = new ArrayList<T>();
-		getElementsIntersectingLineSegment(result, lineSegment);
-		return result;
-	}
-	
-	@Override
-	public void getElementsIntersectingLineSegment(Collection<T> result, LineSegment lineSegment) {
-		if(topLeft != null) {
-			if(topLeft.intersects(lineSegment))
-				topLeft.getElementsIntersectingLineSegment(result, lineSegment);
-			if(topRight.intersects(lineSegment))
-				topRight.getElementsIntersectingLineSegment(result, lineSegment);
-			if(bottomLeft.intersects(lineSegment))
-				bottomLeft.getElementsIntersectingLineSegment(result, lineSegment);
-			if(bottomRight.intersects(lineSegment))
-				bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
-		}
-		for (int i = elements.size() - 1; i >= 0; i--) {
-			T element = elements.get(i);
-			if(element != null && element.intersects(lineSegment)) {
-				result.add(element);
-			}
-		}
-	}
-	
-	@Override
-	public List<T> getElements() {
-		List<T> result = new ArrayList<T>();
-		getElements(result);
-		return new ArrayList<T>(result);
-	}
-	
-	private void getElements(List<T> result) {
-		if(topLeft != null) {
-			((RegionQuad<T>) topLeft).getElements(result);
-			((RegionQuad<T>) topRight).getElements(result);
-			((RegionQuad<T>) bottomLeft).getElements(result);
-			((RegionQuad<T>) bottomRight).getElements(result);
-		}
-		result.addAll(elements);
-	}
+        if (!this.intersects(element) && !this.contains(element)) {
+            return false;
+        }
+
+        if (topLeft == null) {
+            return addElement(element);
+        }
+        if (addElementToChild(element)) {
+            return true;
+        }
+        if (!addElement(element)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    protected boolean addElementToChild(T element) {
+        if (topLeft.contains(element)) {
+            return topLeft.add(element);
+        }
+        if (topRight.contains(element)) {
+            return topRight.add(element);
+        }
+        if (bottomLeft.contains(element)) {
+            return bottomLeft.add(element);
+        }
+        if (bottomRight.contains(element)) {
+            return bottomRight.add(element);
+        }
+        return false;
+    }
+
+    @Override
+    protected void subdivide() {
+        if (topLeft != null)
+            return;
+
+        float halfWidth = width / 2f;
+        float halfHeight = height / 2f;
+
+        topLeft = new RegionQuad<T>(this, x, y, halfWidth, halfHeight);
+        topRight = new RegionQuad<T>(this, x + halfWidth, y, halfWidth, halfHeight);
+        bottomLeft = new RegionQuad<T>(this, x, y + halfHeight, halfWidth, halfHeight);
+        bottomRight = new RegionQuad<T>(this, x + halfWidth, y + halfHeight, halfWidth, halfHeight);
+
+        for (int i = elements.size() - 1; i >= 0; i--) {
+            if (addElementToChild(elements.get(i))) {
+                removeElement(elements.get(i));
+            }
+        }
+    }
+
+    @Override
+    public boolean remove(T element) {
+        if (element == null)
+            return false;
+
+        if (!this.intersects(element) && !this.contains(element)) {
+            return false;
+        }
+
+        if (removeElement(element)) {
+            return true;
+        }
+        if (topLeft == null) {
+            return false;
+        }
+        return removeElementFromChild(element);
+    }
+
+    @Override
+    public List<T> getElementsWithinRegion(Parallelogram parallelogram) {
+        List<T> result = new ArrayList<T>();
+        getElementsWithinRegion(result, parallelogram);
+        return result;
+    }
+
+    @Override
+    public void getElementsWithinRegion(Collection<T> result, Parallelogram parallelogram) {
+        if (topLeft != null) {
+            if (topLeft.contains(parallelogram) || topLeft.intersects(parallelogram))
+                topLeft.getElementsWithinRegion(result, parallelogram);
+            if (topRight.contains(parallelogram) || topRight.intersects(parallelogram))
+                topRight.getElementsWithinRegion(result, parallelogram);
+            if (bottomLeft.contains(parallelogram) || bottomLeft.intersects(parallelogram))
+                bottomLeft.getElementsWithinRegion(result, parallelogram);
+            if (bottomRight.contains(parallelogram) || bottomRight.intersects(parallelogram))
+                bottomRight.getElementsWithinRegion(result, parallelogram);
+        }
+        for (int i = elements.size() - 1; i >= 0; i--) {
+            T element = elements.get(i);
+            if (element == null)
+                continue;
+            if (parallelogram.contains(element) || parallelogram.intersects(element)) {
+                result.add(element);
+            }
+        }
+    }
+
+    @Override
+    public List<T> getElementsIntersectingLineSegment(LineSegment lineSegment) {
+        List<T> result = new ArrayList<T>();
+        getElementsIntersectingLineSegment(result, lineSegment);
+        return result;
+    }
+
+    @Override
+    public void getElementsIntersectingLineSegment(Collection<T> result, LineSegment lineSegment) {
+        if (topLeft != null) {
+            if (topLeft.intersects(lineSegment))
+                topLeft.getElementsIntersectingLineSegment(result, lineSegment);
+            if (topRight.intersects(lineSegment))
+                topRight.getElementsIntersectingLineSegment(result, lineSegment);
+            if (bottomLeft.intersects(lineSegment))
+                bottomLeft.getElementsIntersectingLineSegment(result, lineSegment);
+            if (bottomRight.intersects(lineSegment))
+                bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
+        }
+        for (int i = elements.size() - 1; i >= 0; i--) {
+            T element = elements.get(i);
+            if (element != null && element.intersects(lineSegment)) {
+                result.add(element);
+            }
+        }
+    }
+
+    @Override
+    public List<T> getElements() {
+        List<T> result = new ArrayList<T>();
+        getElements(result);
+        return new ArrayList<T>(result);
+    }
+
+    private void getElements(List<T> result) {
+        if (topLeft != null) {
+            ((RegionQuad<T>) topLeft).getElements(result);
+            ((RegionQuad<T>) topRight).getElements(result);
+            ((RegionQuad<T>) bottomLeft).getElements(result);
+            ((RegionQuad<T>) bottomRight).getElements(result);
+        }
+        result.addAll(elements);
+    }
+
+    @Override
+    public void positionChanged(T moved) {
+        if (this.contains(moved))
+            return;
+
+        removeElement(moved);
+
+        Quad<T> parentQuad = parent;
+        while (parentQuad != null) {
+            if (parentQuad.add(moved)) {
+                return;
+            }
+            parentQuad = parentQuad.getParent();
+        }
+    }
 }
