@@ -124,7 +124,16 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	 */
 	@Override
 	public float getDistanceTo(Positionable positionable) {
-		return 0;
+	    float topLeftDist = topLeft.getDistanceTo(positionable);
+	    float bottomLeftDist = bottomLeft.getDistanceTo(positionable);
+	    float topRightDist = topRight.getDistanceTo(positionable);
+	    float bottomRightDist = bottomRight.getDistanceTo(positionable);
+	    
+	    float result = topLeftDist;
+	    result = Math.min(result, topRightDist);
+	    result = Math.min(result, bottomLeftDist);
+	    result = Math.min(result, bottomRightDist);
+		return result;
 	}
 
 	/**
