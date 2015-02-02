@@ -11,23 +11,32 @@
  */
 package org.mini2Dx.ecs.component;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.cliffc.high_scale_lib.NonBlockingHashMap;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Allocates unique IDs for {@link Component} classes
  */
 public class ComponentTypeIdAllocator {
-	static Map<String, Integer> IDENTIFIERS = new NonBlockingHashMap<String, Integer>();
+    static ReadWriteLock lock = new ReentrantReadWriteLock();
+	static Map<String, Integer> IDENTIFIERS = new HashMap<String, Integer>();
 	private static AtomicInteger NEXT_ID = new AtomicInteger(0);
 	
 	public static <T> int getId(Class<T> clazz) {
 		String key = clazz.getName();
+	    lock.readLock().lock();
 		if(!IDENTIFIERS.containsKey(clazz.getName())) {
+		    lock.readLock().unlock();
+		    lock.writeLock().lock();
 			IDENTIFIERS.put(key, NEXT_ID.incrementAndGet());
+			lock.readLock().lock();
+			lock.writeLock().unlock();
 		}
-		return IDENTIFIERS.get(key);
+		int result = IDENTIFIERS.get(key);
+        lock.readLock().unlock();
+        return result;
 	}
 }
