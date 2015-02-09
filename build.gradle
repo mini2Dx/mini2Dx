@@ -15,9 +15,13 @@ subprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
     apply plugin: "maven"
+    apply plugin: "java"
+    
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
 
 	group = 'org.mini2Dx'
-    version = '0.10.3'
+    version = '0.10.4-SNAPSHOT'
     
     uploadArchives {
 		repositories {
@@ -68,8 +72,6 @@ subprojects {
 }
 
 project(":" + rootProject.name + "-core") {
-    apply plugin: "java"
-
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
@@ -88,8 +90,6 @@ project(":" + rootProject.name + "-core") {
 }
 
 project(":" + rootProject.name + "-desktop") {
-    apply plugin: "java"
-    
     dependencies {
     	compile project(":" + rootProject.name + "-core")
     	
@@ -114,8 +114,6 @@ project(":" + rootProject.name + "-desktop") {
 }
 
 project(":" + rootProject.name + "-android") {
-    apply plugin: "java"
-    
     dependencies {
     	compile project(":" + rootProject.name + "-core")
     	
@@ -129,8 +127,6 @@ project(":" + rootProject.name + "-android") {
 }
 
 project(":" + rootProject.name + "-ios") {
-    apply plugin: "java"
-    
     dependencies {
     	compile project(":" + rootProject.name + "-core")
         
@@ -143,8 +139,6 @@ project(":" + rootProject.name + "-ios") {
 }
 
 project(":" + rootProject.name + "-ecs") {
-    apply plugin: "java"
-
     dependencies {
     	testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
@@ -153,8 +147,6 @@ project(":" + rootProject.name + "-ecs") {
 }
 
 project(":" + rootProject.name + "-ecs-integration") {
-    apply plugin: "java"
-
     dependencies {
         compile project(":" + rootProject.name + "-core")
         compile project(":" + rootProject.name + "-ecs")
@@ -166,8 +158,6 @@ project(":" + rootProject.name + "-ecs-integration") {
 }
 
 project(":" + rootProject.name + "-tiled") {
-    apply plugin: "java"
-
     dependencies {
 		compile project(":" + rootProject.name + "-core")
 		
@@ -178,8 +168,6 @@ project(":" + rootProject.name + "-tiled") {
 }
 
 project(":" + rootProject.name + "-uats") {
-    apply plugin: "java"
-
     dependencies {
     	compile project(":" + rootProject.name + "-desktop")
     	compile project(":" + rootProject.name + "-tiled")
