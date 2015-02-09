@@ -40,7 +40,7 @@ public class CrossFadingMusicLoopUAT extends GameContainer {
 
     @Override
     public void initialise() {
-        musicLoop = new CrossFadingMusicLoop(Gdx.files.classpath("crossfade.ogg"), 81.1618f, 10f);
+        musicLoop = new CrossFadingMusicLoop(Gdx.files.classpath("crossfade.ogg"), 43.02452f, 5f);
     }
 
     @Override

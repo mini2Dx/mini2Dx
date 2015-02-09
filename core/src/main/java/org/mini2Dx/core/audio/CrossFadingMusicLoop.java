@@ -27,6 +27,8 @@ import com.badlogic.gdx.math.MathUtils;
  * object
  */
 public class CrossFadingMusicLoop {
+    private static final float ONE_SECOND_IN_NANOSECONDS = 1000000000f;
+    
     private final float crossfadeTime, crossfadeDuration;
 
     private Music currentTrack, nextTrack;
@@ -64,7 +66,7 @@ public class CrossFadingMusicLoop {
         if (playing && !currentTrack.isPlaying()) {
             currentTrack.setVolume(targetVolume);
             currentTrack.play();
-            previousTimestamp = System.currentTimeMillis();
+            previousTimestamp = System.nanoTime();
         }
         if (!playing) {
             if(currentTrack.isPlaying()) {
@@ -73,8 +75,8 @@ public class CrossFadingMusicLoop {
             }
             return;
         }
-        long timestamp = System.currentTimeMillis();
-        cursor += (timestamp - previousTimestamp) / 1000f;
+        long timestamp = System.nanoTime();
+        cursor += (timestamp - previousTimestamp) / ONE_SECOND_IN_NANOSECONDS;
         previousTimestamp = timestamp;
 
         if (cursor < crossfadeTime) {
@@ -93,7 +95,7 @@ public class CrossFadingMusicLoop {
     }
 
     private void fadeInNextTrack() {
-        float trackTargetVolume = MathUtils.clamp((Float.valueOf(cursor - crossfadeTime) / Float.valueOf(crossfadeDuration)), 0f,
+        float trackTargetVolume = MathUtils.clamp(((cursor - crossfadeTime) / crossfadeDuration), 0f,
                 targetVolume);
         nextTrack.setVolume(trackTargetVolume);
         if (!nextTrack.isPlaying() && playing) {
@@ -102,7 +104,7 @@ public class CrossFadingMusicLoop {
     }
 
     private void fadeOutCurrentTrack() {
-        float trackTargetVolume = MathUtils.clamp(1f - (Float.valueOf(cursor - crossfadeTime) / Float.valueOf(crossfadeDuration)), 0f,
+        float trackTargetVolume = MathUtils.clamp(1f - ((cursor - crossfadeTime) / crossfadeDuration), 0f,
                 targetVolume);
         currentTrack.setVolume(trackTargetVolume);
     }
@@ -152,16 +154,17 @@ public class CrossFadingMusicLoop {
         targetVolume = volume;
     }
 
-    public void fadeOut(long duration) {
-        for (long i = 0; i < duration; i += 50) {
-            float volume = MathUtils.clamp(1f - (Float.valueOf(i) / Float.valueOf(duration)), 0f, 1f);
+    public void fadeOut(float duration) {
+        long durationInMilliseconds = MathUtils.round(duration * 1000f);
+        for (long i = 0; i < durationInMilliseconds; i += 50) {
+            float volume = MathUtils.clamp(1f - (Float.valueOf(i) / Float.valueOf(durationInMilliseconds)), 0f, 1f);
             scheduledExecutorService.schedule(new ScheduleFadeOut(volume), i, TimeUnit.MILLISECONDS);
         }
     }
 
-    public void fadeOutAndStop(long duration) {
-        fadeOut(duration - 50);
-        scheduledExecutorService.schedule(new ScheduleStop(), duration, TimeUnit.MILLISECONDS);
+    public void fadeOutAndStop(float duration) {
+        fadeOut(duration - 0.05f);
+        scheduledExecutorService.schedule(new ScheduleStop(), MathUtils.round(duration * 1000f), TimeUnit.MILLISECONDS);
     }
 
     public class ScheduleStop implements Runnable {
