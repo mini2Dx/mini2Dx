@@ -21,7 +21,7 @@ subprojects {
     targetCompatibility = 1.7
 
 	group = 'org.mini2Dx'
-    version = '0.10.5'
+    version = '0.10.6-SNAPSHOT'
     
     uploadArchives {
 		repositories {
