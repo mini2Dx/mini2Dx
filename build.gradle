@@ -48,13 +48,12 @@ subprojects {
     }
     
     ext {
-    	gdxVersion="1.5.2"
-		roboVMVersion="1.0.0-beta-01"
+    	gdxVersion="1.5.4"
+		roboVMVersion="1.0.0-beta-04"
 		androidVersion="4.4"
 		beanutilsVersion="1.8.3"
 		langVersion="3.1"
 		reflectionsVersion="0.9.9-RC1"
-		highScaleVersion="1.0.6"
 		simpleXmlVersion="2.7.1"
 		gsonVersion="2.3"
 		
