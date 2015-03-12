@@ -107,11 +107,19 @@ public class UATSelectionScreen implements GameScreen {
     
     private void updateMobileMenu(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
             float delta) {
-        
+        if(Gdx.input.justTouched()) {
+            
+        }
     }
     
     private void renderMobileMenu(GameContainer gc, Graphics g) {
-        
+        float lineHeight = g.getFont().getLineHeight();
+        g.drawString("1. Blending UAT", 32, 32);
+        g.drawString("2. Clipping UAT", 32, 32 + lineHeight + 4);
+        g.drawString("3. Geometry UAT", 32, 32 + (lineHeight * 2) + 8);
+        g.drawString("4. Graphics UAT", 32, 32 + (lineHeight * 3) + 12);
+        g.drawString("5. TiledMap (No Caching) UAT", 32, 32 + (lineHeight * 4) + 16);
+        g.drawString("6. TiledMap (With Caching) UAT", 32, 32 + (lineHeight * 5) + 20);
     }
 
     @Override

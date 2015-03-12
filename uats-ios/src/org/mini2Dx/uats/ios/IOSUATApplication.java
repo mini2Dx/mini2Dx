@@ -11,9 +11,28 @@
  */
 package org.mini2Dx.uats.ios;
 
+import org.mini2Dx.ios.IOSMini2DxGame;
+import org.mini2Dx.uats.util.UATApplication;
+import org.robovm.apple.foundation.NSAutoreleasePool;
+import org.robovm.apple.uikit.UIApplication;
+
+import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
+import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
+
 /**
  * Main entry point for iOS UAT app
  */
-public class IOSUATApplication {
+public class IOSUATApplication extends IOSApplication.Delegate {
+    @Override
+    protected IOSApplication createApplication() {
+        IOSApplicationConfiguration config = new IOSApplicationConfiguration();
+        return new IOSApplication(new IOSMini2DxGame("org.mini2Dx.uats", new UATApplication()), config);
+    }
 
+    public static void main(String[] argv) {
+        NSAutoreleasePool pool = new NSAutoreleasePool();
+        UIApplication.main(argv, null, IOSUATApplication.class);
+        pool.close();
+    }
 }
+

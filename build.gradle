@@ -125,11 +125,14 @@ project(":" + rootProject.name + "-android") {
     }
 }
 
-project(":" + rootProject.name + "-ios") {
+project(":" + rootProject.name + "-ios") {    
     dependencies {
     	compile project(":" + rootProject.name + "-core")
         
         compile "org.reflections:reflections:$reflectionsVersion"
+        compile "org.robovm:robovm-rt:${roboVMVersion}"
+        compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
+        compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
     	
     	testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
@@ -150,15 +153,6 @@ project(":" + rootProject.name + "-tiled") {
 project(":" + rootProject.name + "-uats") {
     dependencies {
     	compile project(":" + rootProject.name + "-tiled")
-    
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
         
         testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
@@ -189,9 +183,20 @@ project(":" + rootProject.name + "-uats-android") {
 }
 
 project(":" + rootProject.name + "-uats-ios") {
+    apply plugin: "robovm"
+    
+    configurations { natives }
+    
+    eclipse.project {
+        natures 'org.robovm.eclipse.RoboVMNature'
+    }
+    
     dependencies {
         compile project(":" + rootProject.name + "-uats")
         compile project(":" + rootProject.name + "-ios")
+        
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
         
         testCompile "junit:junit:$junitVersion"
         testCompile "org.jmock:jmock-junit4:$jmockVersion"
