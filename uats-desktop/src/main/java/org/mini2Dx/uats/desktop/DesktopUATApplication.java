@@ -11,6 +11,10 @@
  */
 package org.mini2Dx.uats.desktop;
 
+import org.mini2Dx.desktop.DesktopMini2DxGame;
+import org.mini2Dx.uats.util.UATApplication;
+
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 /**
@@ -19,13 +23,13 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 public class DesktopUATApplication {
     public static void main(String[] args) {
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-        cfg.title = "mini2Dx - Graphics Verification Test";
+        cfg.title = "mini2Dx - User Acceptance Tests";
         cfg.width = 800;
         cfg.height = 600;
         cfg.stencil = 8;
         cfg.vSyncEnabled = true;
         cfg.foregroundFPS = 0;
         cfg.backgroundFPS = 0;
-        //new LwjglApplication(new DesktopMini2DxGame("org.mini2Dx.uats.common.BlendingUAT", new BlendingUAT()), cfg);
+        new LwjglApplication(new DesktopMini2DxGame("org.mini2Dx.uats", new UATApplication()), cfg);
     }
 }

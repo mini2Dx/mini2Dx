@@ -17,6 +17,9 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
+import org.mini2Dx.core.screen.transition.FadeInTransition;
+import org.mini2Dx.core.screen.transition.FadeOutTransition;
+import org.mini2Dx.uats.util.UATSelectionScreen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -29,7 +32,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
  * {@link Graphics} functionality
  */
 public class GraphicsUAT implements GameScreen {
-    private static final int SCREEN_ID = 4;
+    public static final int SCREEN_ID = 4;
     
 	private int playerX, playerY;
 	private float scaleX, scaleY;
@@ -59,7 +62,7 @@ public class GraphicsUAT implements GameScreen {
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
             float delta) {
-        detectKeyPress();
+        detectKeyPress(screenManager);
         rotation += 180f * delta;
         
         animation.setRotation(rotation);
@@ -112,7 +115,7 @@ public class GraphicsUAT implements GameScreen {
         g.drawLineSegment(512, 160, 620, 224);
     }
     
-    public void detectKeyPress() {
+    public void detectKeyPress(ScreenManager<? extends GameScreen> screenManager) {
         if(Gdx.input.isKeyJustPressed(Keys.RIGHT)) {
             playerX++;
         } else if(Gdx.input.isKeyJustPressed(Keys.LEFT)) {
@@ -129,6 +132,8 @@ public class GraphicsUAT implements GameScreen {
             scaleY--;
         } else if(Gdx.input.isKeyJustPressed(Keys.R)) {
             rotation++;
+        } else if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+            screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
         }
     }
 

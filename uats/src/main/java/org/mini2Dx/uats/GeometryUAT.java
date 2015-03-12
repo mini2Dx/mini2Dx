@@ -18,6 +18,9 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
+import org.mini2Dx.core.screen.transition.FadeInTransition;
+import org.mini2Dx.core.screen.transition.FadeOutTransition;
+import org.mini2Dx.uats.util.UATSelectionScreen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -52,7 +55,7 @@ public class GeometryUAT implements GameScreen {
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
             float delta) {
-        detectKeyPress();
+        detectKeyPress(screenManager);
         rotation += 180f * delta;
 
         rect.set(playerX * 32f, playerY * 32f, 128, 128);
@@ -70,7 +73,7 @@ public class GeometryUAT implements GameScreen {
         rect.draw(g);
     }
     
-    public void detectKeyPress() {
+    public void detectKeyPress(ScreenManager<? extends GameScreen> screenManager) {
         if(Gdx.input.isKeyJustPressed(Keys.RIGHT)) {
             playerX++;
         } else if(Gdx.input.isKeyJustPressed(Keys.LEFT)) {
@@ -95,6 +98,8 @@ public class GeometryUAT implements GameScreen {
             originX--;
         } else if(Gdx.input.isKeyJustPressed(Keys.D)) {
             originX++;
+        } else if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+            screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
         }
     }
 
