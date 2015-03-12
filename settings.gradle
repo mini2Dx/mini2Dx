@@ -1,3 +1,3 @@
-include "android", "core", "desktop", "ios", "ecs", "ecs-integration", "tiled", "uats"
+include "android", "core", "desktop", "ios", "tiled", "uats", "uats-desktop", "uats-android", "uats-ios"
 rootProject.name = 'mini2Dx'
 rootProject.children.each { it.name = rootProject.name + "-" + it.name }

@@ -137,25 +137,6 @@ project(":" + rootProject.name + "-ios") {
     }
 }
 
-project(":" + rootProject.name + "-ecs") {
-    dependencies {
-    	testCompile "junit:junit:$junitVersion"
-		testCompile "org.jmock:jmock-junit4:$jmockVersion"
-		testCompile "org.jmock:jmock-legacy:$jmockVersion"
-    }
-}
-
-project(":" + rootProject.name + "-ecs-integration") {
-    dependencies {
-        compile project(":" + rootProject.name + "-core")
-        compile project(":" + rootProject.name + "-ecs")
-        
-        testCompile "junit:junit:$junitVersion"
-		testCompile "org.jmock:jmock-junit4:$jmockVersion"
-		testCompile "org.jmock:jmock-legacy:$jmockVersion"
-    }
-}
-
 project(":" + rootProject.name + "-tiled") {
     dependencies {
 		compile project(":" + rootProject.name + "-core")
@@ -168,7 +149,6 @@ project(":" + rootProject.name + "-tiled") {
 
 project(":" + rootProject.name + "-uats") {
     dependencies {
-    	compile project(":" + rootProject.name + "-desktop")
     	compile project(":" + rootProject.name + "-tiled")
     
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
@@ -183,6 +163,39 @@ project(":" + rootProject.name + "-uats") {
         testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+    }
+}
+
+project(":" + rootProject.name + "-uats-desktop") {
+    dependencies {
+        compile project(":" + rootProject.name + "-uats")
+        compile project(":" + rootProject.name + "-desktop")
+        
+        testCompile "junit:junit:$junitVersion"
+        testCompile "org.jmock:jmock-junit4:$jmockVersion"
+        testCompile "org.jmock:jmock-legacy:$jmockVersion"
+    }
+}
+
+project(":" + rootProject.name + "-uats-android") {
+    dependencies {
+        compile project(":" + rootProject.name + "-uats")
+        compile project(":" + rootProject.name + "-android")
+        
+        testCompile "junit:junit:$junitVersion"
+        testCompile "org.jmock:jmock-junit4:$jmockVersion"
+        testCompile "org.jmock:jmock-legacy:$jmockVersion"
+    }
+}
+
+project(":" + rootProject.name + "-uats-ios") {
+    dependencies {
+        compile project(":" + rootProject.name + "-uats")
+        compile project(":" + rootProject.name + "-ios")
+        
+        testCompile "junit:junit:$junitVersion"
+        testCompile "org.jmock:jmock-junit4:$jmockVersion"
+        testCompile "org.jmock:jmock-legacy:$jmockVersion"
     }
 }
 
