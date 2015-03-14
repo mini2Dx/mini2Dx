@@ -11,10 +11,24 @@
  */
 package org.mini2Dx.uats.android;
 
+import org.mini2Dx.android.AndroidMini2DxGame;
+import org.mini2Dx.uats.util.UATApplication;
+
+import android.os.Bundle;
+
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 /**
  * Main entry point for Android UAT app
  */
-public class AndroidUATApplication {
-
+public class AndroidUATApplication extends AndroidApplication {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+        config.stencil = 8;
+        initialize(new AndroidMini2DxGame(getApplicationContext(), "", new UATApplication()),
+                config);
+    }
 }

@@ -1,12 +1,13 @@
 buildscript {
     repositories {
+    	mavenLocal()
         mavenCentral()
-        mavenLocal()
         maven { url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/' }
+        jcenter()
     }
     dependencies {
-        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
-        classpath 'com.android.tools.build:gradle:0.10+'
+		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+        classpath 'com.android.tools.build:gradle:1.0.0'
         classpath 'org.robovm:robovm-gradle-plugin:1.0.0-beta-04'
     }
 }
@@ -15,10 +16,6 @@ subprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
     apply plugin: "maven"
-    apply plugin: "java"
-    
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
 
 	group = 'org.mini2Dx'
     version = '0.11.0-SNAPSHOT'
@@ -71,12 +68,16 @@ subprojects {
 }
 
 project(":" + rootProject.name + "-core") {
+	apply plugin: "java"
+	    
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         compile "com.badlogicgames.box2dlights:box2dlights:1.2"
         
         compile "org.apache.commons:commons-lang3:$langVersion"
@@ -89,6 +90,11 @@ project(":" + rootProject.name + "-core") {
 }
 
 project(":" + rootProject.name + "-desktop") {
+    apply plugin: "java"
+    
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
     dependencies {
     	compile project(":" + rootProject.name + "-core")
     	
@@ -99,7 +105,6 @@ project(":" + rootProject.name + "-desktop") {
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
     	
     	compile "org.reflections:reflections:$reflectionsVersion"
     	compile "org.simpleframework:simple-xml:$simpleXmlVersion"
@@ -113,10 +118,17 @@ project(":" + rootProject.name + "-desktop") {
 }
 
 project(":" + rootProject.name + "-android") {
+	apply plugin: "java"
+
     dependencies {
     	compile project(":" + rootProject.name + "-core")
     	
     	compile files(fileTree(dir: 'libs', includes: ['*.jar']))
+        
+        compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
     	
     	testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
@@ -126,6 +138,11 @@ project(":" + rootProject.name + "-android") {
 }
 
 project(":" + rootProject.name + "-ios") {    
+    apply plugin: "java"
+    
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
     dependencies {
     	compile project(":" + rootProject.name + "-core")
         
@@ -141,6 +158,8 @@ project(":" + rootProject.name + "-ios") {
 }
 
 project(":" + rootProject.name + "-tiled") {
+    apply plugin: "java"
+
     dependencies {
 		compile project(":" + rootProject.name + "-core")
 		
@@ -151,39 +170,56 @@ project(":" + rootProject.name + "-tiled") {
 }
 
 project(":" + rootProject.name + "-uats") {
+    apply plugin: "java"
+        
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
     dependencies {
     	compile project(":" + rootProject.name + "-tiled")
-        
-        testCompile "junit:junit:$junitVersion"
-		testCompile "org.jmock:jmock-junit4:$jmockVersion"
-		testCompile "org.jmock:jmock-legacy:$jmockVersion"
     }
 }
 
 project(":" + rootProject.name + "-uats-desktop") {
+    apply plugin: "java"
+    
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
     dependencies {
         compile project(":" + rootProject.name + "-uats")
         compile project(":" + rootProject.name + "-desktop")
-        
-        testCompile "junit:junit:$junitVersion"
-        testCompile "org.jmock:jmock-junit4:$jmockVersion"
-        testCompile "org.jmock:jmock-legacy:$jmockVersion"
     }
 }
 
 project(":" + rootProject.name + "-uats-android") {
+    apply plugin: "android"
+    
+    ext {
+    	appName = 'mini2Dx-uats'
+    }
+    
+    configurations { natives }
+    
     dependencies {
         compile project(":" + rootProject.name + "-uats")
         compile project(":" + rootProject.name + "-android")
         
-        testCompile "junit:junit:$junitVersion"
-        testCompile "org.jmock:jmock-junit4:$jmockVersion"
-        testCompile "org.jmock:jmock-legacy:$jmockVersion"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi"
+        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
+        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
     }
 }
 
 project(":" + rootProject.name + "-uats-ios") {
+    apply plugin: "java"
     apply plugin: "robovm"
+    
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
     
     configurations { natives }
     
@@ -197,15 +233,15 @@ project(":" + rootProject.name + "-uats-ios") {
         
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
-        
-        testCompile "junit:junit:$junitVersion"
-        testCompile "org.jmock:jmock-junit4:$jmockVersion"
-        testCompile "org.jmock:jmock-legacy:$jmockVersion"
     }
 }
 
-task docs(type: Javadoc) {
-    source subprojects.collect {project -> project.sourceSets.main.allJava }
-    classpath = files(subprojects.collect {project -> project.sourceSets.main.compileClasspath})
-    destinationDir = new File(projectDir, 'docs')
+//task docs(type: Javadoc) {
+//    source subprojects.collect {project -> project.sourceSets.main.allJava }
+//    classpath = files(subprojects.collect {project -> project.sourceSets.main.compileClasspath})
+//    destinationDir = new File(projectDir, 'docs')
+//}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2'
 }
