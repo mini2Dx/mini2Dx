@@ -8,7 +8,7 @@ buildscript {
     dependencies {
 		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
         classpath 'com.android.tools.build:gradle:1.0.0'
-        classpath 'org.robovm:robovm-gradle-plugin:1.0.0-beta-04'
+        classpath 'org.robovm:robovm-gradle-plugin:1.0.0'
     }
 }
 
@@ -45,8 +45,8 @@ subprojects {
     }
     
     ext {
-    	gdxVersion="1.5.4"
-		roboVMVersion="1.0.0-beta-04"
+    	gdxVersion="1.5.5"
+		roboVMVersion="1.0.0"
 		androidVersion="4.4"
 		beanutilsVersion="1.8.3"
 		langVersion="3.1"
@@ -75,10 +75,8 @@ project(":" + rootProject.name + "-core") {
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-        compile "com.badlogicgames.box2dlights:box2dlights:1.2"
         
         compile "org.apache.commons:commons-lang3:$langVersion"
         compile "commons-beanutils:commons-beanutils:$beanutilsVersion"
@@ -100,7 +98,6 @@ project(":" + rootProject.name + "-desktop") {
     	
     	compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
@@ -126,7 +123,6 @@ project(":" + rootProject.name + "-android") {
     	compile files(fileTree(dir: 'libs', includes: ['*.jar']))
         
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
     	
@@ -208,9 +204,6 @@ project(":" + rootProject.name + "-uats-android") {
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
     }
 }
 
@@ -232,7 +225,6 @@ project(":" + rootProject.name + "-uats-ios") {
         compile project(":" + rootProject.name + "-ios")
         
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
     }
 }
 
