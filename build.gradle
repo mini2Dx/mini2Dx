@@ -165,6 +165,18 @@ project(":" + rootProject.name + "-tiled") {
     }
 }
 
+project(":" + rootProject.name + "-ui") {
+	apply plugin: "java"
+
+	dependencies {
+		compile project(":" + rootProject.name + "-core")
+		
+		testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+	}
+}
+
 project(":" + rootProject.name + "-uats") {
     apply plugin: "java"
         
@@ -173,6 +185,7 @@ project(":" + rootProject.name + "-uats") {
 
     dependencies {
     	compile project(":" + rootProject.name + "-tiled")
+		compile project(":" + rootProject.name + "-ui")
     }
 }
 
