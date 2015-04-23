@@ -15,8 +15,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.mini2Dx.core.engine.Parallelogram;
+import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.geom.LineSegment;
+import org.mini2Dx.core.geom.Parallelogram;
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.graphics.Color;
@@ -28,7 +29,7 @@ import com.badlogic.gdx.graphics.Color;
  *      href="http://en.wikipedia.org/wiki/Quadtree#The_region_quadtree">Wikipedia:
  *      Region Quad Tree</a>
  */
-public class RegionQuad<T extends Parallelogram> extends Quad<T> {
+public class RegionQuad<T extends CollisionBox> extends Quad<T> {
     private static final long serialVersionUID = -2417612178966065600L;
 
     public RegionQuad(int elementLimit, float x, float y, float width, float height) {

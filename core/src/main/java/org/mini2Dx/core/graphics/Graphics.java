@@ -11,8 +11,8 @@
  */
 package org.mini2Dx.core.graphics;
 
-import org.mini2Dx.core.engine.Shape;
 import org.mini2Dx.core.geom.Rectangle;
+import org.mini2Dx.core.geom.Shape;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

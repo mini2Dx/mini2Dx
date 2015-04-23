@@ -9,7 +9,7 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.geom;
+package org.mini2Dx.core.engine.geom;
 
 import java.util.Random;
 
@@ -18,31 +18,42 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.engine.PositionChangeListener;
-
-import com.badlogic.gdx.math.MathUtils;
+import org.mini2Dx.core.geom.LineSegment;
+import org.mini2Dx.core.geom.Point;
 
 /**
- * Unit tests for {@link Rectangle}
+ * Unit tests for {@link CollisionBox}
+ * @author Thomas Cashman
  */
-public class RectangleTest {
-	private Rectangle rectangle1, rectangle2;
+public class CollisionBoxTest implements PositionChangeListener<CollisionBox> {
+	private CollisionBox rectangle1, rectangle2;
+	private boolean notificationReceived;
+
+	@Before
+	public void setup() {
+		notificationReceived = false;
+	}
 
 	@Test
 	public void testRectangleDefaultConstructor() {
-		rectangle1 = new Rectangle();
+		rectangle1 = new CollisionBox();
+		rectangle1.addPostionChangeListener(this);
 		Assert.assertEquals(0f, rectangle1.getX());
 		Assert.assertEquals(0f, rectangle1.getY());
 		Assert.assertEquals(1f, rectangle1.getWidth());
 		Assert.assertEquals(1f, rectangle1.getHeight());
+		Assert.assertEquals(false, notificationReceived);
 	}
 
 	@Test
 	public void testRectangle() {
-		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
+		rectangle1 = new CollisionBox(100f, 100f, 50f, 50f);
+		rectangle1.addPostionChangeListener(this);
 		Assert.assertEquals(100f, rectangle1.getX());
 		Assert.assertEquals(100f, rectangle1.getY());
 		Assert.assertEquals(50f, rectangle1.getWidth());
 		Assert.assertEquals(50f, rectangle1.getHeight());
+		Assert.assertEquals(false, notificationReceived);
 	}
 	
 	@Test
@@ -51,7 +62,7 @@ public class RectangleTest {
 		for(int i = 0; i < 1000; i++) {
 			float x = random.nextInt();
 			float y = random.nextInt();
-			rectangle1 = new Rectangle(x, y, 50f, 50f);
+			rectangle1 = new CollisionBox(x, y, 50f, 50f);
 			Assert.assertEquals(x, rectangle1.getX());
 			Assert.assertEquals(y, rectangle1.getY());
 			Assert.assertEquals(50f, rectangle1.getWidth());
@@ -61,78 +72,67 @@ public class RectangleTest {
 
 	@Test
 	public void testSetX() {
-		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
+		rectangle1 = new CollisionBox(100f, 100f, 50f, 50f);
+		rectangle1.addPostionChangeListener(this);
 		rectangle1.setX(200f);
 		Assert.assertEquals(200f, rectangle1.getX());
 		Assert.assertEquals(100f, rectangle1.getY());
 		Assert.assertEquals(50f, rectangle1.getWidth());
 		Assert.assertEquals(50f, rectangle1.getHeight());
+		Assert.assertEquals(true, notificationReceived);
 	}
 
 	@Test
 	public void testSetY() {
-		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
+		rectangle1 = new CollisionBox(100f, 100f, 50f, 50f);
+		rectangle1.addPostionChangeListener(this);
 		rectangle1.setY(200f);
 		Assert.assertEquals(100f, rectangle1.getX());
 		Assert.assertEquals(200f, rectangle1.getY());
 		Assert.assertEquals(50f, rectangle1.getWidth());
 		Assert.assertEquals(50f, rectangle1.getHeight());
+		Assert.assertEquals(true, notificationReceived);
 	}
 
 	@Test
 	public void testSetWidth() {
-		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
+		rectangle1 = new CollisionBox(100f, 100f, 50f, 50f);
+		rectangle1.addPostionChangeListener(this);
 		rectangle1.setWidth(100f);
 		Assert.assertEquals(100f, rectangle1.getX());
 		Assert.assertEquals(100f, rectangle1.getY());
 		Assert.assertEquals(100f, rectangle1.getWidth());
 		Assert.assertEquals(50f, rectangle1.getHeight());
+		Assert.assertEquals(true, notificationReceived);
 	}
 
 	@Test
 	public void testSetHeight() {
-		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
+		rectangle1 = new CollisionBox(100f, 100f, 50f, 50f);
+		rectangle1.addPostionChangeListener(this);
 		rectangle1.setHeight(100f);
 		Assert.assertEquals(100f, rectangle1.getX());
 		Assert.assertEquals(100f, rectangle1.getY());
 		Assert.assertEquals(50f, rectangle1.getWidth());
 		Assert.assertEquals(100f, rectangle1.getHeight());
+		Assert.assertEquals(true, notificationReceived);
 	}
 
 	@Test
 	public void testSetFloatFloatFloatFloat() {
-		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
+		rectangle1 = new CollisionBox(100f, 100f, 50f, 50f);
+		rectangle1.addPostionChangeListener(this);
 		rectangle1.set(0f, 0f, 50f, 50f);
 		Assert.assertEquals(0f, rectangle1.getX());
 		Assert.assertEquals(0f, rectangle1.getY());
 		Assert.assertEquals(50f, rectangle1.getWidth());
 		Assert.assertEquals(50f, rectangle1.getHeight());
-	}
-	
-	@Test
-	public void testRotateAround() {
-		rectangle1 = new Rectangle(0f, 0f, 10f, 10f);
-		rectangle1.rotateAround(new Point(0f, 0f), 90f);
-		
-		Assert.assertEquals(0f, rectangle1.topLeft.x);
-		Assert.assertEquals(0f, rectangle1.topLeft.y);
-		
-		Assert.assertEquals(0, MathUtils.round(rectangle1.topRight.x));
-		Assert.assertEquals(10, MathUtils.round(rectangle1.topRight.y));
-		
-		Assert.assertEquals(0, MathUtils.round(rectangle1.topRight.x));
-		Assert.assertEquals(10, MathUtils.round(rectangle1.topRight.y));
-		
-		Assert.assertEquals(-10, MathUtils.round(rectangle1.bottomRight.x));
-		Assert.assertEquals(10, MathUtils.round(rectangle1.bottomRight.y));
-		
-		Assert.assertEquals(-10, MathUtils.round(rectangle1.bottomLeft.x));
-		Assert.assertEquals(0, MathUtils.round(rectangle1.bottomLeft.y));
+		Assert.assertEquals(true, notificationReceived);
 	}
 	
 	@Test
 	public void testContainsPoint() {
-		rectangle1 = new Rectangle(0, 0, 50, 50);
+		rectangle1 = new CollisionBox(0, 0, 50, 50);
 		Point point = new Point(5, 1);
 		
 		Assert.assertEquals(true, rectangle1.contains(point));
@@ -159,37 +159,37 @@ public class RectangleTest {
 	
 	@Test
 	public void testContainsParallelogram() {
-		rectangle1 = new Rectangle(0, 0, 50, 50);
-		rectangle2 = new Rectangle(50, 50, 50, 50);
+		rectangle1 = new CollisionBox(0, 0, 50, 50);
+		rectangle2 = new CollisionBox(50, 50, 50, 50);
 		
 		Assert.assertEquals(false, rectangle1.contains(rectangle2));
 		Assert.assertEquals(false, rectangle2.contains(rectangle1));
 		
-		rectangle2 = new Rectangle(25, 25, 50, 50);
+		rectangle2 = new CollisionBox(25, 25, 50, 50);
 		Assert.assertEquals(false, rectangle1.contains(rectangle2));
 		Assert.assertEquals(false, rectangle2.contains(rectangle1));
 		
-		rectangle2 = new Rectangle(0, 0, 25, 25);
+		rectangle2 = new CollisionBox(0, 0, 25, 25);
 		Assert.assertEquals(true, rectangle1.contains(rectangle2));
 		Assert.assertEquals(false, rectangle2.contains(rectangle1));
 		
-		rectangle2 = new Rectangle(15, 15, 25, 25);
+		rectangle2 = new CollisionBox(15, 15, 25, 25);
 		Assert.assertEquals(true, rectangle1.contains(rectangle2));
 		Assert.assertEquals(false, rectangle2.contains(rectangle1));
 		
-		rectangle2 = new Rectangle(48, 48, 25, 25);
+		rectangle2 = new CollisionBox(48, 48, 25, 25);
 		Assert.assertEquals(false, rectangle1.contains(rectangle2));
 		Assert.assertEquals(false, rectangle2.contains(rectangle1));
 		
-		rectangle1 = new Rectangle(0, 0, 128, 128);
-		rectangle2 = new Rectangle(42, 72, 32, 32);
+		rectangle1 = new CollisionBox(0, 0, 128, 128);
+		rectangle2 = new CollisionBox(42, 72, 32, 32);
 		Assert.assertEquals(true, rectangle1.contains(rectangle2));
 		Assert.assertEquals(false, rectangle2.contains(rectangle1));
 	}
 	
 	@Test
 	public void testIntersectsLineSegement() {
-		rectangle1 = new Rectangle(2, 2, 4, 4);
+		rectangle1 = new CollisionBox(2, 2, 4, 4);
 		LineSegment segment = new LineSegment(0, 0, 10, 10);
 		
 		Assert.assertEquals(true, rectangle1.intersects(segment));
@@ -198,20 +198,20 @@ public class RectangleTest {
 		
 		Assert.assertEquals(false, rectangle1.intersects(segment));
 		
-		rectangle1 = new Rectangle(96, 0, 32, 32);
+		rectangle1 = new CollisionBox(96, 0, 32, 32);
 		segment = new LineSegment(0, 0, 128, 128);
 		Assert.assertEquals(false, rectangle1.intersects(segment));
 	}
 
 	@Test
 	public void testIntersectsRectangle() {
-		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
-		rectangle2 = new Rectangle(50f, 50f, 100f, 100f);
+		rectangle1 = new CollisionBox(100f, 100f, 50f, 50f);
+		rectangle2 = new CollisionBox(50f, 50f, 100f, 100f);
 
 		Assert.assertEquals(true, rectangle1.intersects(rectangle2));
 		Assert.assertEquals(true, rectangle2.intersects(rectangle1));
 
-		rectangle2 = new Rectangle(0f, 0f, 50f, 50f);
+		rectangle2 = new CollisionBox(0f, 0f, 50f, 50f);
 
 		Assert.assertEquals(false, rectangle1.intersects(rectangle2));
 		Assert.assertEquals(false, rectangle2.intersects(rectangle1));
@@ -219,8 +219,8 @@ public class RectangleTest {
 	
 	@Test
 	public void testIntersectsSameRectangle() {
-		rectangle1 = new Rectangle(0f, 0f, 32f, 32f);
-		rectangle2 = new Rectangle(0f, 0f, 32f, 32f);
+		rectangle1 = new CollisionBox(0f, 0f, 32f, 32f);
+		rectangle2 = new CollisionBox(0f, 0f, 32f, 32f);
 
 		Assert.assertEquals(true, rectangle1.intersects(rectangle2));
 		Assert.assertEquals(true, rectangle2.intersects(rectangle1));
@@ -228,8 +228,8 @@ public class RectangleTest {
 	
 	@Test
 	public void testIntersectsRotatedRectangle() {
-		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
-		rectangle2 = new Rectangle(100f, 50f, 75f, 40f);
+		rectangle1 = new CollisionBox(100f, 100f, 50f, 50f);
+		rectangle2 = new CollisionBox(100f, 50f, 75f, 40f);
 		
 		Assert.assertEquals(false, rectangle1.intersects(rectangle2));
 		Assert.assertEquals(false, rectangle2.intersects(rectangle1));
@@ -242,7 +242,7 @@ public class RectangleTest {
 
 	@Test
 	public void testIntersectsLineWhenNotRotated() {
-		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
+		rectangle1 = new CollisionBox(100f, 100f, 50f, 50f);
 		LineSegment line = new LineSegment(0, 100, 0, 200);
 
 		for (float x = 0; x < rectangle1.getX(); x++) {
@@ -285,4 +285,10 @@ public class RectangleTest {
 			Assert.assertEquals(false, rectangle1.intersects(line));
 		}
 	}
+
+	@Override
+	public void positionChanged(CollisionBox moved) {
+		notificationReceived = true;
+	}
 }
+

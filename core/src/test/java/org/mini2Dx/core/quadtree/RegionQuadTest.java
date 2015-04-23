@@ -19,31 +19,31 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.geom.LineSegment;
-import org.mini2Dx.core.geom.Rectangle;
 
 /**
  * Unit tests for {@link RegionQuad}
  */
 public class RegionQuadTest {
-	private RegionQuad<Rectangle> rootQuad;
-	private Rectangle rectangle1, rectangle2, rectangle3, rectangle4;
+	private RegionQuad<CollisionBox> rootQuad;
+	private CollisionBox box1, box2, box3, box4;
 	
 	@Before
 	public void setup() {
-		rootQuad = new RegionQuad<Rectangle>(2, 0, 0, 128, 128);
+		rootQuad = new RegionQuad<CollisionBox>(2, 0, 0, 128, 128);
 		
-		rectangle1 = new Rectangle(0, 0, 32, 32);
-		rectangle2 = new Rectangle(96, 0, 32, 32);
-		rectangle3 = new Rectangle(0, 96, 32, 32);
-		rectangle4 = new Rectangle(96, 96, 32, 32);
+		box1 = new CollisionBox(0, 0, 32, 32);
+		box2 = new CollisionBox(96, 0, 32, 32);
+		box3 = new CollisionBox(0, 96, 32, 32);
+		box4 = new CollisionBox(96, 96, 32, 32);
 	}
 	
 	@Test
 	public void testAdd() {
 		Random random = new Random();
 		for(int i = 0; i < 100; i++) {
-			Rectangle rect = new Rectangle(random.nextInt(96), random.nextInt(96), 32f, 32f);
+			CollisionBox rect = new CollisionBox(random.nextInt(96), random.nextInt(96), 32f, 32f);
 			Assert.assertEquals(true, rootQuad.add(rect));
 			Assert.assertEquals(i + 1, rootQuad.getElements().size());
 		}
@@ -52,122 +52,122 @@ public class RegionQuadTest {
 	@Test
 	public void testRemove() {
 		Random random = new Random();
-		List<Rectangle> rectangles = new ArrayList<Rectangle>();
+		List<CollisionBox> CollisionBoxs = new ArrayList<CollisionBox>();
 		for(int i = 0; i < 1000; i++) {
-			rectangles.add(new Rectangle(random.nextInt(96), random.nextInt(96), random.nextInt(32), random.nextInt(32)));
+			CollisionBoxs.add(new CollisionBox(random.nextInt(96), random.nextInt(96), random.nextInt(32), random.nextInt(32)));
 		}
 		
-		for(int i = 0; i < rectangles.size(); i++) {
-			rootQuad.add(rectangles.get(i));
+		for(int i = 0; i < CollisionBoxs.size(); i++) {
+			rootQuad.add(CollisionBoxs.get(i));
 			Assert.assertEquals(i + 1, rootQuad.getElements().size());
 		}
 		
-		for(int i = rectangles.size() - 1; i >= 0 ; i--) {
+		for(int i = CollisionBoxs.size() - 1; i >= 0 ; i--) {
 			Assert.assertEquals(i + 1, rootQuad.getElements().size());
-			rootQuad.remove(rectangles.get(i));
+			rootQuad.remove(CollisionBoxs.get(i));
 			Assert.assertEquals(i, rootQuad.getElements().size());
 		}
 	}
 	
 	@Test
 	public void testSubdivide() {
-		rootQuad.add(rectangle1);
+		rootQuad.add(box1);
 		Assert.assertEquals(1, rootQuad.getElements().size());
 		Assert.assertEquals(1, rootQuad.getTotalQuads());
 		
-		rootQuad.add(rectangle2);
+		rootQuad.add(box2);
 		Assert.assertEquals(2, rootQuad.getElements().size());
 		Assert.assertEquals(1, rootQuad.getTotalQuads());
 		
-		rootQuad.add(rectangle3);
+		rootQuad.add(box3);
 		Assert.assertEquals(3, rootQuad.getElements().size());
 		Assert.assertEquals(4, rootQuad.getTotalQuads());
 		
-		rootQuad.add(rectangle4);
+		rootQuad.add(box4);
 		Assert.assertEquals(4, rootQuad.getElements().size());
 		Assert.assertEquals(4, rootQuad.getTotalQuads());
 		
-		rootQuad.add(new Rectangle(24, 24, 2, 2));
+		rootQuad.add(new CollisionBox(24, 24, 2, 2));
 		Assert.assertEquals(5, rootQuad.getElements().size());
 		Assert.assertEquals(4, rootQuad.getTotalQuads());
 		
-		rootQuad.add(new Rectangle(48, 48, 32, 32));
+		rootQuad.add(new CollisionBox(48, 48, 32, 32));
 		Assert.assertEquals(6, rootQuad.getElements().size());
 		Assert.assertEquals(4, rootQuad.getTotalQuads());
 		
-		rootQuad.add(new Rectangle(12, 48, 8, 8));
+		rootQuad.add(new CollisionBox(12, 48, 8, 8));
 		Assert.assertEquals(7, rootQuad.getElements().size());
 		Assert.assertEquals(7, rootQuad.getTotalQuads());
 	}
 	
 	@Test
 	public void testGetElementsWithinRegion() {
-		rootQuad.add(rectangle1);
-		rootQuad.add(rectangle2);
-		rootQuad.add(rectangle3);
-		rootQuad.add(rectangle4);
+		rootQuad.add(box1);
+		rootQuad.add(box2);
+		rootQuad.add(box3);
+		rootQuad.add(box4);
 		
-		List<Rectangle> rectangles = rootQuad.getElementsWithinRegion(new Rectangle(48, 48, 32, 32));
-		Assert.assertEquals(0, rectangles.size());
+		List<CollisionBox> CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(48, 48, 32, 32));
+		Assert.assertEquals(0, CollisionBoxs.size());
 		
-		Rectangle rectangle5 = new Rectangle(24, 24, 2, 2);
-		Rectangle rectangle6 = new Rectangle(48, 48, 32, 32);
-		Rectangle rectangle7 = new Rectangle(12, 48, 8, 8);
+		CollisionBox CollisionBox5 = new CollisionBox(24, 24, 2, 2);
+		CollisionBox CollisionBox6 = new CollisionBox(48, 48, 32, 32);
+		CollisionBox CollisionBox7 = new CollisionBox(12, 48, 8, 8);
 		
-		rootQuad.add(rectangle5);
-		rootQuad.add(rectangle6);
-		rootQuad.add(rectangle7);
+		rootQuad.add(CollisionBox5);
+		rootQuad.add(CollisionBox6);
+		rootQuad.add(CollisionBox7);
 		
-		rectangles = rootQuad.getElementsWithinRegion(new Rectangle(0, 0, 128, 128));
-		Assert.assertEquals(rootQuad.getElements().size(), rectangles.size());
+		CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(0, 0, 128, 128));
+		Assert.assertEquals(rootQuad.getElements().size(), CollisionBoxs.size());
 		
-		rectangles = rootQuad.getElementsWithinRegion(new Rectangle(33, 33, 32, 32));
-		Assert.assertEquals(1, rectangles.size());
-		Assert.assertEquals(rectangle6, rectangles.get(0));
+		CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(33, 33, 32, 32));
+		Assert.assertEquals(1, CollisionBoxs.size());
+		Assert.assertEquals(CollisionBox6, CollisionBoxs.get(0));
 		
-		rectangles = rootQuad.getElementsWithinRegion(new Rectangle(0, 0, 64, 64));
-		Assert.assertEquals(4, rectangles.size());
-		Assert.assertEquals(true, rectangles.contains(rectangle1));
-		Assert.assertEquals(true, rectangles.contains(rectangle5));
-		Assert.assertEquals(true, rectangles.contains(rectangle6));
-		Assert.assertEquals(true, rectangles.contains(rectangle7));
+		CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(0, 0, 64, 64));
+		Assert.assertEquals(4, CollisionBoxs.size());
+		Assert.assertEquals(true, CollisionBoxs.contains(box1));
+		Assert.assertEquals(true, CollisionBoxs.contains(CollisionBox5));
+		Assert.assertEquals(true, CollisionBoxs.contains(CollisionBox6));
+		Assert.assertEquals(true, CollisionBoxs.contains(CollisionBox7));
 		
-		rectangles = rootQuad.getElementsWithinRegion(new Rectangle(16, 16, 24, 24));
-		Assert.assertEquals(2, rectangles.size());
-		Assert.assertEquals(true, rectangles.contains(rectangle1));
-		Assert.assertEquals(true, rectangles.contains(rectangle5));
+		CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(16, 16, 24, 24));
+		Assert.assertEquals(2, CollisionBoxs.size());
+		Assert.assertEquals(true, CollisionBoxs.contains(box1));
+		Assert.assertEquals(true, CollisionBoxs.contains(CollisionBox5));
 		
-		rectangles = rootQuad.getElementsWithinRegion(new Rectangle(12, 40, 48, 8));
-		Assert.assertEquals(2, rectangles.size());
-		Assert.assertEquals(true, rectangles.contains(rectangle6));
-		Assert.assertEquals(true, rectangles.contains(rectangle7));
+		CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(12, 40, 48, 8));
+		Assert.assertEquals(2, CollisionBoxs.size());
+		Assert.assertEquals(true, CollisionBoxs.contains(CollisionBox6));
+		Assert.assertEquals(true, CollisionBoxs.contains(CollisionBox7));
 	}
 	
 	@Test
 	public void testGetElementsIntersectingLineSegment() {
-		rootQuad.add(rectangle1);
-		rootQuad.add(rectangle2);
-		rootQuad.add(rectangle3);
-		rootQuad.add(rectangle4);
+		rootQuad.add(box1);
+		rootQuad.add(box2);
+		rootQuad.add(box3);
+		rootQuad.add(box4);
 		
-		List<Rectangle> rectangles = rootQuad.getElementsIntersectingLineSegment(new LineSegment(0,  0, 128, 128));
-		Assert.assertEquals(2, rectangles.size());
-		Assert.assertEquals(true, rectangles.contains(rectangle1));
-		Assert.assertEquals(true, rectangles.contains(rectangle4));
+		List<CollisionBox> CollisionBoxs = rootQuad.getElementsIntersectingLineSegment(new LineSegment(0,  0, 128, 128));
+		Assert.assertEquals(2, CollisionBoxs.size());
+		Assert.assertEquals(true, CollisionBoxs.contains(box1));
+		Assert.assertEquals(true, CollisionBoxs.contains(box4));
 		
-		Rectangle rectangle5 = new Rectangle(24, 24, 2, 2);
-		Rectangle rectangle6 = new Rectangle(48, 48, 32, 32);
-		Rectangle rectangle7 = new Rectangle(12, 48, 8, 8);
+		CollisionBox CollisionBox5 = new CollisionBox(24, 24, 2, 2);
+		CollisionBox CollisionBox6 = new CollisionBox(48, 48, 32, 32);
+		CollisionBox CollisionBox7 = new CollisionBox(12, 48, 8, 8);
 		
-		rootQuad.add(rectangle5);
-		rootQuad.add(rectangle6);
-		rootQuad.add(rectangle7);
+		rootQuad.add(CollisionBox5);
+		rootQuad.add(CollisionBox6);
+		rootQuad.add(CollisionBox7);
 		
-		rectangles = rootQuad.getElementsIntersectingLineSegment(new LineSegment(0,  0, 128, 128));
-		Assert.assertEquals(4, rectangles.size());
-		Assert.assertEquals(true, rectangles.contains(rectangle1));
-		Assert.assertEquals(true, rectangles.contains(rectangle4));
-		Assert.assertEquals(true, rectangles.contains(rectangle5));
-		Assert.assertEquals(true, rectangles.contains(rectangle6));
+		CollisionBoxs = rootQuad.getElementsIntersectingLineSegment(new LineSegment(0,  0, 128, 128));
+		Assert.assertEquals(4, CollisionBoxs.size());
+		Assert.assertEquals(true, CollisionBoxs.contains(box1));
+		Assert.assertEquals(true, CollisionBoxs.contains(box4));
+		Assert.assertEquals(true, CollisionBoxs.contains(CollisionBox5));
+		Assert.assertEquals(true, CollisionBoxs.contains(CollisionBox6));
 	}
 }

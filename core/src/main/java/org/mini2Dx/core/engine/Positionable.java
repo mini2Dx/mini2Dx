@@ -15,7 +15,7 @@ package org.mini2Dx.core.engine;
  * A common interface for objects that can be positioned with an x and y
  * coordinate
  */
-public interface Positionable {
+public interface Positionable extends Updatable {
 	/**
 	 * Returns the x coordinate of this object
 	 * 

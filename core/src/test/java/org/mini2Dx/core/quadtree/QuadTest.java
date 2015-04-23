@@ -19,31 +19,31 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.engine.geom.CollisionPoint;
 import org.mini2Dx.core.geom.LineSegment;
-import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Rectangle;
 
 /**
  * Unit tests for {@link Quad}
  */
 public class QuadTest {
-	private Quad<Point> rootQuad;
-	private Point point1, point2, point3, point4;
+	private Quad<CollisionPoint> rootQuad;
+	private CollisionPoint point1, point2, point3, point4;
 
 	@Before
 	public void setup() {
-		rootQuad = new Quad<Point>(2, 0, 0, 128, 128);
-		point1 = new Point(0, 0);
-		point2 = new Point(128, 0);
-		point3 = new Point(0, 128);
-		point4 = new Point(128, 128);
+		rootQuad = new Quad<CollisionPoint>(2, 0, 0, 128, 128);
+		point1 = new CollisionPoint(0, 0);
+		point2 = new CollisionPoint(128, 0);
+		point3 = new CollisionPoint(0, 128);
+		point4 = new CollisionPoint(128, 128);
 	}
 	
 	@Test
 	public void testAdd() {
 		Random random = new Random();
 		for(int i = 0; i < 100; i++) {
-			rootQuad.add(new Point(random.nextInt(128), random.nextInt(128)));
+			rootQuad.add(new CollisionPoint(random.nextInt(128), random.nextInt(128)));
 			Assert.assertEquals(i + 1, rootQuad.getElements().size());
 		}
 	}
@@ -51,19 +51,19 @@ public class QuadTest {
 	@Test
 	public void testRemove() {
 		Random random = new Random();
-		List<Point> points = new ArrayList<Point>();
+		List<CollisionPoint> CollisionPoints = new ArrayList<CollisionPoint>();
 		for(int i = 0; i < 1000; i++) {
-			points.add(new Point(random.nextInt(128), random.nextInt(128)));
+			CollisionPoints.add(new CollisionPoint(random.nextInt(128), random.nextInt(128)));
 		}
 		
-		for(int i = 0; i < points.size(); i++) {
-			Assert.assertEquals(true, rootQuad.add(points.get(i)));
+		for(int i = 0; i < CollisionPoints.size(); i++) {
+			Assert.assertEquals(true, rootQuad.add(CollisionPoints.get(i)));
 			Assert.assertEquals(i + 1, rootQuad.getElements().size());
 		}
 		
-		for(int i = points.size() - 1; i >= 0 ; i--) {
+		for(int i = CollisionPoints.size() - 1; i >= 0 ; i--) {
 			Assert.assertEquals(i + 1, rootQuad.getElements().size());
-			rootQuad.remove(points.get(i));
+			rootQuad.remove(CollisionPoints.get(i));
 			Assert.assertEquals(i, rootQuad.getElements().size());
 		}
 	}
@@ -82,10 +82,10 @@ public class QuadTest {
 		rootQuad.add(point4);
 		Assert.assertEquals(4, rootQuad.getElements().size());
 		Assert.assertEquals(4, rootQuad.getTotalQuads());
-		rootQuad.add(new Point(32, 32));
+		rootQuad.add(new CollisionPoint(32, 32));
 		Assert.assertEquals(5, rootQuad.getElements().size());
 		Assert.assertEquals(4, rootQuad.getTotalQuads());
-		rootQuad.add(new Point(48, 48));
+		rootQuad.add(new CollisionPoint(48, 48));
 		Assert.assertEquals(6, rootQuad.getElements().size());
 		Assert.assertEquals(7, rootQuad.getTotalQuads());
 	}
@@ -97,32 +97,32 @@ public class QuadTest {
 		rootQuad.add(point3);
 		rootQuad.add(point4);
 		
-		List<Point> points = rootQuad.getElementsWithinRegion(new Rectangle(0, 0, 64, 64));
-		Assert.assertEquals(1, points.size());
-		Assert.assertEquals(point1, points.get(0));
+		List<CollisionPoint> CollisionPoints = rootQuad.getElementsWithinRegion(new Rectangle(0, 0, 64, 64));
+		Assert.assertEquals(1, CollisionPoints.size());
+		Assert.assertEquals(point1, CollisionPoints.get(0));
 		
-		points = rootQuad.getElementsWithinRegion(new Rectangle(64, 0, 64, 64));
-		Assert.assertEquals(1, points.size());
-		Assert.assertEquals(point2, points.get(0));
+		CollisionPoints = rootQuad.getElementsWithinRegion(new Rectangle(64, 0, 64, 64));
+		Assert.assertEquals(1, CollisionPoints.size());
+		Assert.assertEquals(point2, CollisionPoints.get(0));
 		
-		points = rootQuad.getElementsWithinRegion(new Rectangle(0, 64, 64, 64));
-		Assert.assertEquals(1, points.size());
-		Assert.assertEquals(point3, points.get(0));
+		CollisionPoints = rootQuad.getElementsWithinRegion(new Rectangle(0, 64, 64, 64));
+		Assert.assertEquals(1, CollisionPoints.size());
+		Assert.assertEquals(point3, CollisionPoints.get(0));
 		
-		points = rootQuad.getElementsWithinRegion(new Rectangle(64, 64, 64, 64));
-		Assert.assertEquals(1, points.size());
-		Assert.assertEquals(point4, points.get(0));
+		CollisionPoints = rootQuad.getElementsWithinRegion(new Rectangle(64, 64, 64, 64));
+		Assert.assertEquals(1, CollisionPoints.size());
+		Assert.assertEquals(point4, CollisionPoints.get(0));
 		
-		Point point5 = new Point(32, 32);
-		Point point6 = new Point(48, 48);
-		rootQuad.add(point5);
-		rootQuad.add(point6);
+		CollisionPoint CollisionPoint5 = new CollisionPoint(32, 32);
+		CollisionPoint CollisionPoint6 = new CollisionPoint(48, 48);
+		rootQuad.add(CollisionPoint5);
+		rootQuad.add(CollisionPoint6);
 		
-		points = rootQuad.getElementsWithinRegion(new Rectangle(0, 0, 64, 64));
-		Assert.assertEquals(3, points.size());
-		Assert.assertEquals(true, points.contains(point1));
-		Assert.assertEquals(true, points.contains(point5));
-		Assert.assertEquals(true, points.contains(point6));
+		CollisionPoints = rootQuad.getElementsWithinRegion(new Rectangle(0, 0, 64, 64));
+		Assert.assertEquals(3, CollisionPoints.size());
+		Assert.assertEquals(true, CollisionPoints.contains(point1));
+		Assert.assertEquals(true, CollisionPoints.contains(CollisionPoint5));
+		Assert.assertEquals(true, CollisionPoints.contains(CollisionPoint6));
 	}
 	
 	@Test
@@ -132,10 +132,10 @@ public class QuadTest {
 		rootQuad.add(point3);
 		rootQuad.add(point4);
 		
-		List<Point> points = rootQuad.getElementsIntersectingLineSegment(new LineSegment(0, 0, 128, 128));
-		Assert.assertEquals(true, points.contains(point1));
-		Assert.assertEquals(false, points.contains(point2));
-		Assert.assertEquals(false, points.contains(point3));
-		Assert.assertEquals(true, points.contains(point4));
+		List<CollisionPoint> CollisionPoints = rootQuad.getElementsIntersectingLineSegment(new LineSegment(0, 0, 128, 128));
+		Assert.assertEquals(true, CollisionPoints.contains(point1));
+		Assert.assertEquals(false, CollisionPoints.contains(point2));
+		Assert.assertEquals(false, CollisionPoints.contains(point3));
+		Assert.assertEquals(true, CollisionPoints.contains(point4));
 	}
 }

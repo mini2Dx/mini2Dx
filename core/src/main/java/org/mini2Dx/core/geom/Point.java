@@ -11,12 +11,6 @@
  */
 package org.mini2Dx.core.geom;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
 
 import com.badlogic.gdx.math.MathUtils;
@@ -26,37 +20,27 @@ import com.badlogic.gdx.math.Vector2;
  * Extends {@link Vector2} with some utility methods
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class Point extends Vector2 implements Positionable {
+public class Point extends Vector2 {
 	private static final long serialVersionUID = 3773673953486445831L;
-
-	private List<PositionChangeListener> positionChangeListeners;
-	private Lock positionChangeListenerLock;
 
 	public Point() {
 		super();
-		this.positionChangeListenerLock = new ReentrantLock();
 	}
 
 	public Point(float x, float y) {
 		super(x, y);
-		this.positionChangeListenerLock = new ReentrantLock();
 	}
 
 	public Point(Point point) {
 		super(point);
-		this.positionChangeListenerLock = new ReentrantLock();
 	}
-
-	private void notifyPositionChangeListeners() {
-		if (positionChangeListeners != null) {
-			positionChangeListenerLock.lock();
-			for (int i = positionChangeListeners.size() - 1; i >= 0; i--) {
-				PositionChangeListener<Positionable> listener = positionChangeListeners
-						.get(i);
-				listener.positionChanged(this);
-			}
-			positionChangeListenerLock.unlock();
-		}
+	
+	public float getDistanceTo(Point point) {
+		return this.dst(point.getX(), point.getY());
+	}
+	
+	public float getDistanceTo(float x, float y) {
+		return this.dst(x, y);
 	}
 
 	/**
@@ -134,47 +118,12 @@ public class Point extends Vector2 implements Positionable {
 		return Math.abs(x - v.x) <= delta && Math.abs(y - v.y) <= delta;
 	}
 
-	@Override
-	public <T extends Positionable> void addPostionChangeListener(
-			PositionChangeListener<T> listener) {
-		positionChangeListenerLock.lock();
-		if (positionChangeListeners == null) {
-			positionChangeListeners = new ArrayList<PositionChangeListener>(1);
-		}
-		positionChangeListeners.add(listener);
-		positionChangeListenerLock.unlock();
-	}
-
-	@Override
-	public <T extends Positionable> void removePositionChangeListener(
-			PositionChangeListener<T> listener) {
-		if (positionChangeListeners != null) {
-			positionChangeListenerLock.lock();
-			positionChangeListeners.remove(listener);
-			positionChangeListenerLock.unlock();
-		}
-	}
-
-	@Override
-	public float getDistanceTo(Positionable positionable) {
-		return this.dst(positionable.getX(), positionable.getY());
-	}
-
-	@Override
 	public float getX() {
 		return this.x;
 	}
 
-	@Override
 	public float getY() {
 		return this.y;
-	}
-
-	@Override
-	public Vector2 set(float x, float y) {
-		super.set(x, y);
-		notifyPositionChangeListeners();
-		return this;
 	}
 
 	@Override
@@ -183,22 +132,8 @@ public class Point extends Vector2 implements Positionable {
 	}
 
 	@Override
-	public Vector2 add(float x, float y) {
-		super.add(x, y);
-		notifyPositionChangeListeners();
-		return this;
-	}
-
-	@Override
 	public Vector2 add(Vector2 v) {
 		return add(v.x, v.y);
-	}
-
-	@Override
-	public Vector2 sub(float x, float y) {
-		super.sub(x, y);
-		notifyPositionChangeListeners();
-		return this;
 	}
 
 	@Override

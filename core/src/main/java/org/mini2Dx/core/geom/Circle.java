@@ -11,14 +11,10 @@
  */
 package org.mini2Dx.core.geom;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
-import org.mini2Dx.core.engine.Shape;
 import org.mini2Dx.core.graphics.Graphics;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -26,8 +22,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Circle implements Shape {
 	private Vector2 center;
-	private int radius;
-	private List<PositionChangeListener> positionChangleListeners;
+	private float radius;
 	
 	public Circle(int radius) {
 		center = new Vector2();
@@ -38,14 +33,25 @@ public class Circle implements Shape {
 		center = new Vector2(centerX, centerY);
 		this.radius = radius;
 	}
+	
+	public Circle lerp(Circle target, float alpha) {
+		final float inverseAlpha = 1.0f - alpha;
+		center.x = (center.x * inverseAlpha) + (target.getX() * alpha);
+		center.y = (center.y * inverseAlpha) + (target.getY() * alpha);
+		radius = (radius * inverseAlpha) + (target.getRadius() * alpha);
+		return this;
+	}
 
 	public boolean intersects(Circle circle) {
 		return center.dst(circle.center) <= radius + circle.radius;
 	}
 
-	@Override
-	public float getDistanceTo(Positionable positionable) {
-		float result = center.dst(positionable.getX(), positionable.getY());
+	public float getDistanceTo(Point point) {
+		return getDistanceTo(point.getX(), point.getY());
+	}
+	
+	public float getDistanceTo(float x, float y) {
+		float result = center.dst(x, y);
 		if(result <= radius) {
 			return 0f;
 		}
@@ -59,64 +65,39 @@ public class Circle implements Shape {
 
 	@Override
 	public void draw(Graphics g) {
-		g.drawCircle(center.x, center.y, radius);
-	}
-
-	@Override
-	public <T extends Positionable> void addPostionChangeListener(
-			PositionChangeListener<T> listener) {
-		if (positionChangleListeners == null) {
-			positionChangleListeners = new CopyOnWriteArrayList<PositionChangeListener>();
-		}
-		positionChangleListeners.add(listener);
-	}
-
-	@Override
-	public <T extends Positionable> void removePositionChangeListener(
-			PositionChangeListener<T> listener) {
-		if (positionChangleListeners != null) {
-			positionChangleListeners.remove(listener);
-		}
+		g.drawCircle(center.x, center.y, MathUtils.round(radius));
 	}
 	
-	private void notifyPositionChanged() {
-		if(positionChangleListeners != null) {
-			for(PositionChangeListener<Circle> listener : positionChangleListeners) {
-				listener.positionChanged(this);
-			}
-		}
+	public void set(Circle circle) {
+		setCenter(circle.getX(), circle.getY());
+		setRadius(circle.getRadius());
 	}
 
-	@Override
 	public float getX() {
 		return center.x;
 	}
 
-	@Override
 	public float getY() {
 		return center.y;
 	}
 	
 	public void setX(float x) {
 		center.set(x, center.y);
-		notifyPositionChanged();
 	}
 	
 	public void setY(float y) {
 		center.set(center.x, y);
-		notifyPositionChanged();
 	}
 	
 	public void setCenter(float x, float y) {
 		center.set(x, y);
-		notifyPositionChanged();
 	}
 
-	public int getRadius() {
+	public float getRadius() {
 		return radius;
 	}
 
-	public void setRadius(int radius) {
+	public void setRadius(float radius) {
 		this.radius = radius;
 	}
 }
