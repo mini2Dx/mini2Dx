@@ -25,25 +25,29 @@ import org.mini2Dx.core.geom.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- *
+ * An implementation of {@link Rectangle} that allows for interpolation. Game
+ * objects can use this class to move around the game world and retrieve the
+ * appropriate rendering coordinates after interpolating between the previous
+ * and current position.
+ * 
  * @author Thomas Cashman
  */
 public class CollisionBox extends Rectangle implements Positionable {
 	private static final long serialVersionUID = -8217730724587578266L;
-	
+
 	private List<PositionChangeListener> positionChangeListeners;
 	private ReadWriteLock positionChangeListenerLock;
-	
+
 	private Rectangle previousRectangle;
 	private Rectangle renderRectangle;
-	
+
 	public CollisionBox() {
 		super();
 		positionChangeListenerLock = new ReentrantReadWriteLock();
 		previousRectangle = new Rectangle();
 		renderRectangle = new Rectangle();
 	}
-	
+
 	public CollisionBox(float x, float y, float width, float height) {
 		super(x, y, width, height);
 		positionChangeListenerLock = new ReentrantReadWriteLock();
@@ -94,30 +98,94 @@ public class CollisionBox extends Rectangle implements Positionable {
 		}
 		positionChangeListenerLock.readLock().lock();
 		for (int i = positionChangeListeners.size() - 1; i >= 0; i--) {
-			PositionChangeListener listener = positionChangeListeners
-					.get(i);
+			PositionChangeListener listener = positionChangeListeners.get(i);
 			listener.positionChanged(this);
 		}
 		positionChangeListenerLock.readLock().unlock();
 	}
-	
+
 	@Override
 	public void setRotationAround(Point center, float degrees) {
 		super.setRotationAround(center, degrees);
 		notifyPositionChangeListeners();
 	}
-	
+
 	@Override
 	public void rotateAround(Point center, float degrees) {
 		super.rotateAround(center, degrees);
 		notifyPositionChangeListeners();
 	}
-	
+
 	@Override
 	public float getDistanceTo(Positionable positionable) {
 		return getDistanceTo(positionable.getX(), positionable.getY());
 	}
-	
+
+	/**
+	 * Sets the current x and y coordinate to the specified x and y and force updates the
+	 * rendering bounds to match
+	 * 
+	 * @param x
+	 *            The x coordinate to set
+	 * @param y
+	 *            The y coordinate to set
+	 */
+	public void forceTo(float x, float y) {
+		forceTo(x, y, getWidth(), getHeight());
+	}
+
+	/**
+	 * Sets the current bounds to the specified bounds and force updates the
+	 * rendering bounds to match
+	 * 
+	 * @param x
+	 *            The x coordinate to set
+	 * @param y
+	 *            The y coordinate to set
+	 * @param width
+	 *            The width to set
+	 * @param height
+	 *            The height to set
+	 */
+	public void forceTo(float x, float y, float width, float height) {
+		boolean notifyPositionListeners = x != getX() || y != getY();
+		
+		super.set(x, y, width, height);
+		previousRectangle.set(x, y, width, height);
+		renderRectangle.set(previousRectangle);
+		
+		if(!notifyPositionListeners) {
+			return;
+		}
+		notifyPositionChangeListeners();
+	}
+
+	/**
+	 * Sets the current width to the specified width and force updates the
+	 * rendering bounds to match
+	 * 
+	 * @param width
+	 *            The width to set
+	 */
+	public void forceToWidth(float width) {
+		super.setWidth(width);
+		previousRectangle.set(this);
+		renderRectangle.set(this);
+	}
+
+	/**
+	 * Sets the current height to the specified height and force updates the
+	 * rendering bounds to match
+	 * 
+	 * @param height
+	 *            The height to set
+	 */
+	public void forceToHeight(float height) {
+		super.setHeight(height);
+		previousRectangle.set(this);
+		renderRectangle.set(this);
+	}
+
 	@Override
 	public Rectangle set(float x, float y, float width, float height) {
 		super.set(x, y, width, height);
@@ -192,5 +260,25 @@ public class CollisionBox extends Rectangle implements Positionable {
 		super.setSize(sizeXY);
 		notifyPositionChangeListeners();
 		return this;
+	}
+
+	public float getRenderX() {
+		return renderRectangle.getX();
+	}
+
+	public float getRenderY() {
+		return renderRectangle.getY();
+	}
+
+	public float getRenderWidth() {
+		return renderRectangle.getWidth();
+	}
+
+	public float getRenderHeight() {
+		return renderRectangle.getHeight();
+	}
+
+	public float getRenderRotation() {
+		return renderRectangle.getRotation();
 	}
 }
