@@ -1,12 +1,16 @@
 import org.apache.tools.ant.taskdefs.condition.Os
 
 boolean hasAndroidSdk() {
-	def androidExecPath = new ByteArrayOutputStream()
-	exec {
-		commandLine 'which', 'android'
-		standardOutput = androidExecPath
+	try {
+		def androidExecPath = new ByteArrayOutputStream()
+		exec {
+			commandLine 'which', 'android'
+			standardOutput = androidExecPath
+		}
+		return androidExecPath.toString() != null && androidExecPath.toString().trim().length() > 0;
+	} catch (all) {
+		return false
 	}
-	return androidExecPath.toString() != null && androidExecPath.toString().trim().length() > 0;
 }
 
 include "core", "desktop", "tiled", "uats", "uats-desktop"
