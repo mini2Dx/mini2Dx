@@ -18,7 +18,6 @@ import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
-import org.mini2Dx.core.util.OsDetector;
 import org.mini2Dx.uats.BlendingUAT;
 import org.mini2Dx.uats.ClippingUAT;
 import org.mini2Dx.uats.GeometryUAT;
@@ -36,27 +35,15 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class UATSelectionScreen implements GameScreen {
     public static final int SCREEN_ID = 0;
+    
 
     @Override
     public void initialise(GameContainer gc) {
-        
     }
 
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
             float delta) {
-        switch(OsDetector.getOs()) {
-        case ANDROID:
-        case IOS:
-            updateMobileMenu(gc, screenManager, delta);
-            break;
-        case WINDOWS:
-        case MAC:
-        case UNIX:
-        case UNKNOWN:
-            updateDesktopMenu(screenManager, delta);
-            break;
-        }
     }
 
     @Override
@@ -71,19 +58,6 @@ public class UATSelectionScreen implements GameScreen {
         
         g.setBackgroundColor(Color.WHITE);
         g.setColor(Color.BLUE);
-        
-        switch(OsDetector.getOs()) {
-        case ANDROID:
-        case IOS:
-            renderMobileMenu(gc, g);
-            break;
-        case WINDOWS:
-        case MAC:
-        case UNIX:
-        case UNKNOWN:
-            renderDesktopMenu(gc, g);
-            break;
-        }
     }
     
     private void updateDesktopMenu(ScreenManager<? extends GameScreen> screenManager,
@@ -150,5 +124,4 @@ public class UATSelectionScreen implements GameScreen {
     public int getId() {
         return SCREEN_ID;
     }
-
 }
