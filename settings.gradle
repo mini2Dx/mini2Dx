@@ -1,3 +1,23 @@
-include "android", "core", "desktop", "ios", "tiled", "ui", "uats", "uats-desktop", "uats-android", "uats-ios"
+import org.apache.tools.ant.taskdefs.condition.Os
+
+boolean hasAndroidSdk() {
+	def androidExecPath = new ByteArrayOutputStream()
+	exec {
+		commandLine 'which', 'android'
+		standardOutput = androidExecPath
+	}
+	return androidExecPath.toString() != null && androidExecPath.toString().trim().length() > 0;
+}
+
+include "core", "desktop", "tiled", "uats", "uats-desktop"
+
+if (hasAndroidSdk()) {
+	include "android", "uats-android"
+}
+
+if (Os.isFamily(Os.FAMILY_MAC)) {
+	include "ios", "uats-ios"
+}
+
 rootProject.name = 'mini2Dx'
 rootProject.children.each { it.name = rootProject.name + "-" + it.name }

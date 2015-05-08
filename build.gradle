@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 buildscript {
     repositories {
     	mavenLocal()
@@ -18,7 +20,7 @@ subprojects {
     apply plugin: "maven"
 
 	group = 'org.mini2Dx'
-    version = '0.11.0-SNAPSHOT'
+    version = '1.0.0-SNAPSHOT'
     
     uploadArchives {
 		repositories {
@@ -99,7 +101,6 @@ project(":" + rootProject.name + "-desktop") {
     	compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
     	
@@ -111,45 +112,6 @@ project(":" + rootProject.name + "-desktop") {
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
 		testCompile project(":" + rootProject.name + "-core").sourceSets.test.output
-    }
-}
-
-project(":" + rootProject.name + "-android") {
-	apply plugin: "java"
-
-    dependencies {
-    	compile project(":" + rootProject.name + "-core")
-    	
-    	compile files(fileTree(dir: 'libs', includes: ['*.jar']))
-        
-        compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
-    	
-    	testCompile "junit:junit:$junitVersion"
-		testCompile "org.jmock:jmock-junit4:$jmockVersion"
-		testCompile "org.jmock:jmock-legacy:$jmockVersion"
-		testCompile project(":" + rootProject.name + "-core").sourceSets.test.output
-    }
-}
-
-project(":" + rootProject.name + "-ios") {    
-    apply plugin: "java"
-    
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-
-    dependencies {
-    	compile project(":" + rootProject.name + "-core")
-        
-        compile "org.reflections:reflections:$reflectionsVersion"
-        compile "org.robovm:robovm-rt:${roboVMVersion}"
-        compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
-        compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
-    	
-    	testCompile "junit:junit:$junitVersion"
-		testCompile "org.jmock:jmock-junit4:$jmockVersion"
-		testCompile "org.jmock:jmock-legacy:$jmockVersion"
     }
 }
 
@@ -165,18 +127,6 @@ project(":" + rootProject.name + "-tiled") {
     }
 }
 
-project(":" + rootProject.name + "-ui") {
-	apply plugin: "java"
-
-	dependencies {
-		compile project(":" + rootProject.name + "-core")
-		
-		testCompile "junit:junit:$junitVersion"
-		testCompile "org.jmock:jmock-junit4:$jmockVersion"
-		testCompile "org.jmock:jmock-legacy:$jmockVersion"
-	}
-}
-
 project(":" + rootProject.name + "-uats") {
     apply plugin: "java"
         
@@ -185,7 +135,6 @@ project(":" + rootProject.name + "-uats") {
 
     dependencies {
     	compile project(":" + rootProject.name + "-tiled")
-		compile project(":" + rootProject.name + "-ui")
     }
 }
 
@@ -201,44 +150,87 @@ project(":" + rootProject.name + "-uats-desktop") {
     }
 }
 
-project(":" + rootProject.name + "-uats-android") {
-    apply plugin: "android"
-    
-    ext {
-    	appName = 'mini2Dx-uats'
-    }
-    
-    configurations { natives }
-    
-    dependencies {
-        compile project(":" + rootProject.name + "-uats")
-        compile project(":" + rootProject.name + "-android")
-        
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
-    }
+if (hasAndroidSdk()) {
+	project(":" + rootProject.name + "-android") {
+		apply plugin: "java"
+	
+		dependencies {
+			compile project(":" + rootProject.name + "-core")
+			
+			compile files(fileTree(dir: 'libs', includes: ['*.jar']))
+			
+			compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+			compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+			compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
+			
+			testCompile "junit:junit:$junitVersion"
+			testCompile "org.jmock:jmock-junit4:$jmockVersion"
+			testCompile "org.jmock:jmock-legacy:$jmockVersion"
+			testCompile project(":" + rootProject.name + "-core").sourceSets.test.output
+		}
+	}
+	
+	project(":" + rootProject.name + "-uats-android") {
+		apply plugin: "android"
+		
+		ext {
+			appName = 'mini2Dx-uats'
+		}
+		
+		configurations { natives }
+		
+		dependencies {
+			compile project(":" + rootProject.name + "-uats")
+			compile project(":" + rootProject.name + "-android")
+			
+			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
+			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+		}
+	}
 }
 
-project(":" + rootProject.name + "-uats-ios") {
-    apply plugin: "java"
-    apply plugin: "robovm"
-    
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-    
-    configurations { natives }
-    
-    eclipse.project {
-        natures 'org.robovm.eclipse.RoboVMNature'
-    }
-    
-    dependencies {
-        compile project(":" + rootProject.name + "-uats")
-        compile project(":" + rootProject.name + "-ios")
-        
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
-    }
+if (Os.isFamily(Os.FAMILY_MAC)) {
+	project(":" + rootProject.name + "-ios") {
+		apply plugin: "java"
+		
+		sourceCompatibility = 1.7
+		targetCompatibility = 1.7
+	
+		dependencies {
+			compile project(":" + rootProject.name + "-core")
+			
+			compile "org.reflections:reflections:$reflectionsVersion"
+			compile "org.robovm:robovm-rt:${roboVMVersion}"
+			compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
+			compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
+			
+			testCompile "junit:junit:$junitVersion"
+			testCompile "org.jmock:jmock-junit4:$jmockVersion"
+			testCompile "org.jmock:jmock-legacy:$jmockVersion"
+		}
+	}
+	
+	project(":" + rootProject.name + "-uats-ios") {
+		apply plugin: "java"
+		apply plugin: "robovm"
+		
+		sourceCompatibility = 1.7
+		targetCompatibility = 1.7
+		
+		configurations { natives }
+		
+		eclipse.project {
+			natures 'org.robovm.eclipse.RoboVMNature'
+		}
+		
+		dependencies {
+			compile project(":" + rootProject.name + "-uats")
+			compile project(":" + rootProject.name + "-ios")
+			
+			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+		}
+	}
 }
 
 //task docs(type: Javadoc) {
@@ -249,4 +241,13 @@ project(":" + rootProject.name + "-uats-ios") {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2'
+}
+
+boolean hasAndroidSdk() {
+	def androidExecPath = new ByteArrayOutputStream()
+	exec {
+		commandLine 'which', 'android'
+		standardOutput = androidExecPath
+	}
+	return androidExecPath.toString() != null && androidExecPath.toString().trim().length() > 0;
 }
