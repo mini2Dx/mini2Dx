@@ -97,8 +97,8 @@ public class Graphics {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
 
 		rendering = false;
-		
-		if(defaultShader == null) {
+
+		if (defaultShader == null) {
 			defaultShader = SpriteBatch.createDefaultShader();
 		}
 	}
@@ -247,9 +247,10 @@ public class Graphics {
 			font.draw(spriteBatch, text, x, y);
 		}
 	}
-	
+
 	/**
-	 * Draws a string to the window, automatically wrapping it to a specified width
+	 * Draws a string to the window, automatically wrapping it to a specified
+	 * width
 	 * 
 	 * @param text
 	 *            The {@link String} to draw
@@ -258,7 +259,7 @@ public class Graphics {
 	 * @param y
 	 *            The y coordinate to draw at
 	 * @param wrapWidth
-	 * 			  The width the {@link String} is automatically wrapped to
+	 *            The width the {@link String} is automatically wrapped to
 	 */
 	public void drawString(String text, float x, float y, float wrapWidth) {
 		if (font != null) {
@@ -279,10 +280,29 @@ public class Graphics {
 	 *            The y coordinate to draw at
 	 */
 	public void drawTexture(Texture texture, float x, float y) {
+		drawTexture(texture, x, y, texture.getWidth(), texture.getHeight());
+	}
+
+	/**
+	 * 
+	 * @param texture
+	 *            The {@link Texture} to draw
+	 * @param x
+	 *            The x coordinate to draw at
+	 * @param y
+	 *            The y coordinate to draw at
+	 * @param width
+	 *            The width to draw the texture (this can stretch/shrink the
+	 *            texture if not matching the texture's width)
+	 * @param height
+	 *            The height to draw the texture (this can stretch/shrink the
+	 *            texture if not matching the texture's height)
+	 */
+	public void drawTexture(Texture texture, float x, float y, float width,
+			float height) {
 		beginRendering();
-		spriteBatch.draw(texture, x, y, 0, 0, texture.getWidth(),
-				texture.getHeight(), 1f, 1f, 0, 0, 0, texture.getWidth(),
-				texture.getHeight(), false, false);
+		spriteBatch.draw(texture, x, y, 0, 0, width, height, 1f, 1f, 0, 0, 0,
+				texture.getWidth(), texture.getHeight(), false, true);
 	}
 
 	/**
@@ -296,10 +316,28 @@ public class Graphics {
 	 *            The y coordinate to draw at
 	 */
 	public void drawTextureRegion(TextureRegion textureRegion, float x, float y) {
+		drawTextureRegion(textureRegion, x, y, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+	}
+	
+	/**
+	 * Draws a texture region to this graphics context
+	 * 
+	 * @param textureRegion
+	 *            The {@link TextureRegion} to draw
+	 * @param x
+	 *            The x coordinate to draw at
+	 * @param y
+	 *            The y coordinate to draw at
+	 * @param width
+	 *            The width to draw the region (this can stretch/shrink the
+	 *            texture if not matching the region's width)
+	 * @param height
+	 *            The height to draw the region (this can stretch/shrink the
+	 *            texture if not matching the region's height)
+	 */
+	public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height) {
 		beginRendering();
-		spriteBatch.draw(textureRegion, x, y, 0, 0,
-				textureRegion.getRegionWidth(),
-				textureRegion.getRegionHeight(), 1f, 1f, 0);
+		spriteBatch.draw(textureRegion, x, y, 0f, 0f, width, height, 1f, 1f, 0f);
 	}
 
 	/**
@@ -517,15 +555,17 @@ public class Graphics {
 	public void disableBlending() {
 		spriteBatch.disableBlending();
 	}
-	
+
 	/**
 	 * Applies a {@link ShaderProgram} to this instance
-	 * @param shaderProgram The {@link ShaderProgram} to apply
+	 * 
+	 * @param shaderProgram
+	 *            The {@link ShaderProgram} to apply
 	 */
 	public void setShaderProgram(ShaderProgram shaderProgram) {
 		spriteBatch.setShader(shaderProgram);
 	}
-	
+
 	/**
 	 * Clears the {@link ShaderProgram} applied to this instance
 	 */
@@ -548,7 +588,7 @@ public class Graphics {
 	public void setBlendFunction(int srcFunc, int dstFunc) {
 		spriteBatch.setBlendFunction(srcFunc, dstFunc);
 	}
-	
+
 	/**
 	 * Resets the blend function to its default
 	 */

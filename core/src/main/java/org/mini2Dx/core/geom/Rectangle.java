@@ -205,7 +205,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	}
 
 	private void performRotation(float degrees) {
-		if (degrees == 0)
+		if (degrees == 0f)
 			return;
 
 		topRight.rotateAround(rotationalCenter, degrees);
