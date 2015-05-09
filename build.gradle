@@ -162,6 +162,8 @@ if (hasAndroidSdk()) {
 			compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 			compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
 			compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
+			compile "org.simpleframework:simple-xml:$simpleXmlVersion"
+			compile "com.google.code.gson:gson:$gsonVersion"
 			
 			testCompile "junit:junit:$junitVersion"
 			testCompile "org.jmock:jmock-junit4:$jmockVersion"
@@ -245,6 +247,11 @@ task wrapper(type: Wrapper) {
 
 boolean hasAndroidSdk() {
 	try {
+		def androidHome = "$System.env.ANDROID_HOME"
+		if(androidHome != null && androidHome.length() > 0) {
+			return true;
+		}
+		
 		def androidExecPath = new ByteArrayOutputStream()
 		exec {
 			commandLine 'which', 'android'
