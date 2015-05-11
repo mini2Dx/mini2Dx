@@ -9,32 +9,15 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.desktop.data;
-
-import org.mini2Dx.core.data.annotation.Field;
-
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
+package org.mini2Dx.core.serialization;
 
 /**
- * Excludes fields that do not have mini2Dx annotations during Gson-based
- * serialization
+ * Thrown when a required field has a null value during serialization
  */
-public class GsonExclusionStrategy implements ExclusionStrategy {
-    private final Class<Field> fieldAnnotation = Field.class;
-    
-    @Override
-    public boolean shouldSkipField(FieldAttributes f) {
-        Field field = f.getAnnotation(fieldAnnotation);
-        if (field == null) {
-            return true;
-        }
-        return false;
-    }
+public class RequiredFieldException extends SerializationException {
+	private static final long serialVersionUID = 7417382284940976911L;
 
-    @Override
-    public boolean shouldSkipClass(Class<?> clazz) {
-        return false;
-    }
-
+	public RequiredFieldException(Class<?> clazz, String fieldName) {
+		super("Field '" + fieldName + "' requires a value during reading/writing of class '" + clazz.getName() + "'");
+	}
 }

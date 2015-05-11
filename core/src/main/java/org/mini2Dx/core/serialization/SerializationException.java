@@ -9,35 +9,20 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core;
-
-import org.mini2Dx.core.di.DependencyInjection;
-import org.mini2Dx.core.playerdata.PlayerData;
-import org.mini2Dx.core.util.Os;
-import org.mini2Dx.core.util.OsDetector;
+package org.mini2Dx.core.serialization;
 
 /**
- * Mini2Dx utility classes
+ * An exception thrown during serialization
+ * @author Thomas Cashman
  */
-public class Mdx {
+public class SerializationException extends Exception {
+	private static final long serialVersionUID = -217347760026419138L;
 
-	/**
-	 * Interface for reading/writing player data, e.g. save games, preferences
-	 */
-	public static PlayerData playerData;
+	public SerializationException(String message) {
+		super(message);
+	}
 	
-	/**
-	 * Dependency injection
-	 */
-	public static DependencyInjection di;
-	
-	/**
-	 * Returns the current operating system
-	 */
-	public static Os os = OsDetector.getOs();
-	
-	/**
-	 * 
-	 */
-	public static String gameIdentifier;
+	public SerializationException(Exception e) {
+		super(e);
+	}
 }

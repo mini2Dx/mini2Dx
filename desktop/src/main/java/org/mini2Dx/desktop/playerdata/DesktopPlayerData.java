@@ -9,34 +9,33 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.desktop.data;
+package org.mini2Dx.desktop.playerdata;
 
 import java.io.StringWriter;
 import java.nio.file.Paths;
 
-import org.mini2Dx.core.data.Data;
+import org.mini2Dx.core.playerdata.PlayerData;
+import org.mini2Dx.core.serialization.JsonSerializer;
 import org.mini2Dx.core.util.OsDetector;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
- * Desktop implementation of {@link Data}
+ * Desktop implementation of {@link PlayerData}
  */
-public class DesktopData implements Data {
+public class DesktopPlayerData implements PlayerData {
     private final String saveDirectory;
-    private final Serializer serializer;
-    private final Gson gson;
+    private final Serializer xmlSerializer;
+    private final JsonSerializer jsonSerializer;
 
-    public DesktopData(String gameIdentifier) {
+    public DesktopPlayerData(String gameIdentifier) {
         saveDirectory = getSaveDirectoryForGame(gameIdentifier);
 
-        serializer = new Persister();
-        gson = new GsonBuilder().setExclusionStrategies(new GsonExclusionStrategy()).serializeNulls().create();
+        xmlSerializer = new Persister();
+        jsonSerializer = new JsonSerializer();
     }
 
     private String getSaveDirectoryForGame(String gameIdentifier) {
@@ -61,7 +60,7 @@ public class DesktopData implements Data {
         if (filepath.length == 0) {
             throw new Exception("No file path specified");
         }
-        return serializer.read(clazz, resolve(filepath).read());
+        return xmlSerializer.read(clazz, resolve(filepath).read());
     }
 
     @Override
@@ -71,7 +70,7 @@ public class DesktopData implements Data {
         }
         ensureDirectoryExistsForFile(filepath);
         StringWriter writer = new StringWriter();
-        serializer.write(object, writer);
+        xmlSerializer.write(object, writer);
         resolve(filepath).writeString(writer.toString(), false);
         writer.flush();
     }
@@ -81,7 +80,7 @@ public class DesktopData implements Data {
         if (filepath.length == 0) {
             throw new Exception("No file path specified");
         }
-        return gson.fromJson(resolve(filepath).readString(), clazz);
+        return jsonSerializer.fromJson(resolve(filepath).readString(), clazz);
     }
 
     @Override
@@ -89,7 +88,7 @@ public class DesktopData implements Data {
         if (filepath.length == 0) {
             throw new Exception("No file path specified");
         }
-        resolve(filepath).writeString(gson.toJson(object), false);
+        resolve(filepath).writeString(jsonSerializer.toJson(object), false);
     }
 
     @Override

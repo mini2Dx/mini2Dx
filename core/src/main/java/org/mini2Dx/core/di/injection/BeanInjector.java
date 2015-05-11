@@ -54,13 +54,11 @@ public class BeanInjector {
 		Map<String, Bean> result = new HashMap<String, Bean>();
 
 		for (String key : singletons.keySet()) {
-			System.out.println("Singleton found : " + key);
 			Object object = singletons.get(key);
 			result.put(key, new SingletonBean(object));
 		}
 
 		for (String key : prototypes.keySet()) {
-			System.out.println("Prototype found : " + key);
 			Object object = prototypes.get(key);
 			PrototypeBean prototypeBean = new PrototypeBean(object,
 					prototypeExecutorService);

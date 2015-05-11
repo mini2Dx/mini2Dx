@@ -54,7 +54,6 @@ subprojects {
 		langVersion="3.1"
 		reflectionsVersion="0.9.9-RC1"
 		simpleXmlVersion="2.7.1"
-		gsonVersion="2.3"
 		
 		junitVersion="4.8.1"
 		jmockVersion="2.5.1"
@@ -106,7 +105,6 @@ project(":" + rootProject.name + "-desktop") {
     	
     	compile "org.reflections:reflections:$reflectionsVersion"
     	compile "org.simpleframework:simple-xml:$simpleXmlVersion"
-    	compile "com.google.code.gson:gson:$gsonVersion"
     	
     	testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
@@ -162,8 +160,6 @@ if (hasAndroidSdk()) {
 			compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 			compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
 			compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
-			compile "org.simpleframework:simple-xml:$simpleXmlVersion"
-			compile "com.google.code.gson:gson:$gsonVersion"
 			
 			testCompile "junit:junit:$junitVersion"
 			testCompile "org.jmock:jmock-junit4:$jmockVersion"

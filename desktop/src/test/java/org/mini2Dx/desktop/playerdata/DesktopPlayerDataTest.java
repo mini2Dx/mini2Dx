@@ -9,7 +9,7 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.desktop.data;
+package org.mini2Dx.desktop.playerdata;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,30 +22,31 @@ import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mini2Dx.core.data.dummy.TestChildObject;
-import org.mini2Dx.core.data.dummy.TestParentObject;
+import org.mini2Dx.core.serialization.dummy.TestChildObject;
+import org.mini2Dx.core.serialization.dummy.TestParentObject;
+import org.mini2Dx.desktop.playerdata.DesktopPlayerData;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 
 /**
- * Unit tests for {@link DesktopData}
+ * Unit tests for {@link DesktopPlayerData}
  */
-public class DesktopDataTest {
+public class DesktopPlayerDataTest {
     private static final String TEST_IDENTIFIER = "org.mini2Dx.testgame";
     private static final String XML_FILENAME = "test.xml";
     private static final String JSON_FILENAME = "test.json";
     
     private static final String MAP_KEY = "test";
     
-    private DesktopData desktopData;
+    private DesktopPlayerData desktopData;
     private TestParentObject expectedParentObject;
     private TestChildObject expectedChildObject;
     
     @Before
     public void setUp() {
         Gdx.files = new LwjglFiles();
-        desktopData = new DesktopData(TEST_IDENTIFIER);
+        desktopData = new DesktopPlayerData(TEST_IDENTIFIER);
         
         createTestObjects();
     }
@@ -128,5 +129,9 @@ public class DesktopDataTest {
         expectedChildObject = new TestChildObject();
         expectedChildObject.setIntValue(random.nextInt() + 1);
         expectedParentObject.setChildObject(expectedChildObject);
+        
+        expectedParentObject.setChildren(new ArrayList<TestChildObject>());
+        expectedParentObject.setIntArrayValue(new int [] { 0, 1, 2 });
+        expectedParentObject.setStringArrayValue(new String [] { "item1", "item2" });
     }
 }
