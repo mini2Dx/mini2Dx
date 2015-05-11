@@ -1,7 +1,8 @@
-language: java
-jdk:
-  - oraclejdk8
-  - oraclejdk7
+language: android
+android:
+  components:
+    - build-tools-20.0.0
+    - android-20
 notifications:
   webhooks:
     urls:
