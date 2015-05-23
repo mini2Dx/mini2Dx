@@ -17,6 +17,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Base class for mini2Dx game containers. All games using mini2Dx must extend
@@ -55,6 +57,21 @@ public abstract class GameContainer implements Screen {
 	 * @param g The {@link Graphics} context available for rendering
 	 */
 	public abstract void render(Graphics g);
+	
+	
+	/**
+	 * Called when the game window changes dimensions. 
+	 * On mobile devices this is called when the screen is rotated.
+	 * 
+	 * @param width The new game window width
+	 * @param height The new game window height
+	 */
+	public abstract void onResize(int width, int height);
+	
+	
+	public abstract void onPause();
+	
+	public abstract void onResume();
 
 	@Override
 	public void render(float delta) {
@@ -82,13 +99,13 @@ public abstract class GameContainer implements Screen {
 	}
 	
 	/**
-	 * Called when the game window changes dimensions. 
-	 * On mobile devices this is called when the screen is rotated.
-	 * 
-	 * @param width The new game window width
-	 * @param height The new game window height
+	 * Creates a LibGDX using the internal {@link Graphics} context
+	 * @param viewport The {@link Viewport} to be applied
+	 * @return An instance of {@link Stage}
 	 */
-	public abstract void onResize(int width, int height);
+	public Stage createStage(Viewport viewport) {
+		return new Stage(viewport, spriteBatch);
+	}
 	
 	/**
 	 * Internal pre-initialisation code
@@ -135,10 +152,6 @@ public abstract class GameContainer implements Screen {
 	public void resume() {
 		onResume();
 	}
-	
-	public abstract void onPause();
-	
-	public abstract void onResume();
 
 	public int getWidth() {
 		return width;

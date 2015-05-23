@@ -20,6 +20,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Library;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
@@ -30,7 +33,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Implements graphics rendering functionality
@@ -409,6 +414,12 @@ public class Graphics {
 		sprite.setColor(oldTint);
 	}
 
+	/**
+	 * Draws a {@link SpriteCache}
+	 * 
+	 * @param spriteCache The {@link SpriteCache} to draw
+	 * @param cacheId The cacheId to draw
+	 */
 	public void drawSpriteCache(SpriteCache spriteCache, int cacheId) {
 		beginRendering();
 		spriteCache.getProjectionMatrix().set(
@@ -420,6 +431,15 @@ public class Graphics {
 		spriteCache.begin();
 		spriteCache.draw(cacheId);
 		spriteCache.end();
+	}
+	
+	/**
+	 * Draws an instance of a LibGDX {@link Stage}
+	 * @param stage The {@link Stage} to be drawn to screen
+	 */
+	public void drawStage(Stage stage) {
+		endRendering();
+		stage.draw();
 	}
 
 	/**
