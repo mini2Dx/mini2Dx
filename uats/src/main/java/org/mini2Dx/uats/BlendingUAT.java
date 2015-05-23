@@ -13,9 +13,9 @@ package org.mini2Dx.uats;
 
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
-import org.mini2Dx.core.screen.Transition;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import org.mini2Dx.uats.util.UATSelectionScreen;
@@ -31,7 +31,7 @@ import com.badlogic.gdx.math.MathUtils;
  * A {@link GameScreen} that allows visual user acceptance testing of
  * {@link Graphics} alpha blending functionality
  */
-public class BlendingUAT implements GameScreen {
+public class BlendingUAT extends BasicGameScreen {
     public static final int SCREEN_ID = 1;
     
 	private Sprite sprite;
@@ -67,22 +67,6 @@ public class BlendingUAT implements GameScreen {
         /* Render the scene */
         g.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
         g.drawSprite(sprite);
-    }
-
-    @Override
-    public void preTransitionIn(Transition transitionIn) {
-    }
-
-    @Override
-    public void postTransitionIn(Transition transitionIn) {
-    }
-
-    @Override
-    public void preTransitionOut(Transition transitionOut) {
-    }
-
-    @Override
-    public void postTransitionOut(Transition transitionOut) {
     }
 
     @Override

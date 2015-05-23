@@ -43,5 +43,4 @@ public abstract class Mini2DxGame extends Game {
 		initialiseM2Dx(gameIdentifier);
 		this.setScreen(gameContainer);
 	}
-
 }

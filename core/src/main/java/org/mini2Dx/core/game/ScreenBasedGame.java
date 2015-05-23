@@ -32,12 +32,6 @@ public abstract class ScreenBasedGame extends GameContainer {
 	 * @return The {@link GameScreen} identifier via {@link GameScreen}.getId()
 	 */
 	public abstract int getInitialScreenId();
-	
-	@Override
-	public void pause() {}
-
-	@Override
-	public void resume() {}
 
 	@Override
 	public void update(float delta) {
@@ -52,6 +46,21 @@ public abstract class ScreenBasedGame extends GameContainer {
 	@Override
 	public void render(Graphics g) {
 		screenManager.render(this, g);
+	}
+	
+	@Override
+	public void onResize(int width, int height) {
+		screenManager.onResize(width, height);
+	}
+	
+	@Override
+	public void onPause() {
+		screenManager.onPause();
+	}
+
+	@Override
+	public void onResume() {
+		screenManager.onResume();
 	}
 
 	/**

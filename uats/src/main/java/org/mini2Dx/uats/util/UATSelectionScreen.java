@@ -14,6 +14,7 @@ package org.mini2Dx.uats.util;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
@@ -34,7 +35,7 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Thomas Cashman
  */
-public class UATSelectionScreen implements GameScreen {
+public class UATSelectionScreen extends BasicGameScreen {
     public static final int SCREEN_ID = 0;
     
     private int previousUat = -1;

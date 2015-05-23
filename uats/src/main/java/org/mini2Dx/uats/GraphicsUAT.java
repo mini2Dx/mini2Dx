@@ -14,6 +14,7 @@ package org.mini2Dx.uats;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Animation;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
@@ -31,7 +32,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
  * A {@link GameScreen} that allows visual user acceptance testing of
  * {@link Graphics} functionality
  */
-public class GraphicsUAT implements GameScreen {
+public class GraphicsUAT extends BasicGameScreen {
     public static final int SCREEN_ID = 4;
     
 	private int playerX, playerY;

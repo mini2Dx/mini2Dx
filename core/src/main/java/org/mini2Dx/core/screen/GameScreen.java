@@ -46,6 +46,26 @@ public interface GameScreen {
 	public void render(GameContainer gc, Graphics g);
 	
 	/**
+	 * Called when the game window's dimensions changes. 
+	 * On mobile devices this is called when the screen is rotated.
+	 * 
+	 * @param width The new game window width
+	 * @param height The new game window height
+	 */
+	public void onResize(int width, int height);
+	
+	/**
+	 * Called when the game window is no longer active or visible.
+	 * On
+	 */
+	public void onPause();
+
+	/**
+	 * Called when the game window becomes active or visible again
+	 */
+	public void onResume();
+	
+	/**
 	 * Called before the transition in
 	 * @param transitionIn The {@link Transition} in to this screen
 	 */

@@ -13,6 +13,7 @@ package org.mini2Dx.uats;
 
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
@@ -30,7 +31,7 @@ import com.badlogic.gdx.math.MathUtils;
  * A {@link GameScreen} that allows visual user acceptance testing of
  * {@link TiledMap} rendering with layer caching disabled
  */
-public class TiledMapNoCachingUAT implements GameScreen {
+public class TiledMapNoCachingUAT extends BasicGameScreen {
     public static final int SCREEN_ID = 5;
     
     private TiledMap tiledMap;

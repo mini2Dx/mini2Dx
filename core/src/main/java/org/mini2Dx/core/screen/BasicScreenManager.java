@@ -129,4 +129,28 @@ public class BasicScreenManager<T extends GameScreen> implements
 	public boolean isTransitioning() {
 		return transitionIn != null || transitionOut != null;
 	}
+
+	@Override
+	public void onResize(int width, int height) {
+		if(currentScreen == null) {
+			return;
+		}
+		currentScreen.onResize(width, height);
+	}
+	
+	@Override
+	public void onPause() {
+		if(currentScreen == null) {
+			return;
+		}
+		currentScreen.onPause();
+	}
+
+	@Override
+	public void onResume() {
+		if(currentScreen == null) {
+			return;
+		}
+		currentScreen.onResume();
+	}
 }

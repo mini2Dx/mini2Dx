@@ -52,6 +52,12 @@ public interface ScreenManager<T extends GameScreen> {
 	 */
 	public void render(GameContainer gc, Graphics g);
 	
+	public void onResize(int width, int height);
+	
+	public void onPause();
+
+	public void onResume();
+	
 	/**
 	 * Begins a transition to a new {@link GameScreen}
 	 * 

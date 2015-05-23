@@ -15,6 +15,7 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
@@ -30,7 +31,7 @@ import com.badlogic.gdx.graphics.Color;
  * A {@link GameScreen} that allows visual user acceptance testing of
  * Geometry classes and their rendering
  */
-public class GeometryUAT implements GameScreen {
+public class GeometryUAT extends BasicGameScreen {
     public static final int SCREEN_ID = 3;
     
 	private int playerX, playerY, originX, originY;

@@ -78,7 +78,17 @@ public abstract class GameContainer implements Screen {
 	public void resize(int width, int height) {
 		this.width = width;
 		this.height = height;
+		onResize(width, height);
 	}
+	
+	/**
+	 * Called when the game window changes dimensions. 
+	 * On mobile devices this is called when the screen is rotated.
+	 * 
+	 * @param width The new game window width
+	 * @param height The new game window height
+	 */
+	public abstract void onResize(int width, int height);
 	
 	/**
 	 * Internal pre-initialisation code
@@ -115,6 +125,20 @@ public abstract class GameContainer implements Screen {
 	@Override
 	public void hide() {
 	}
+	
+	@Override
+	public void pause() {
+		onPause();
+	}
+
+	@Override
+	public void resume() {
+		onResume();
+	}
+	
+	public abstract void onPause();
+	
+	public abstract void onResume();
 
 	public int getWidth() {
 		return width;
