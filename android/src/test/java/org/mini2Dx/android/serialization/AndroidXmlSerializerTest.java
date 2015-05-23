@@ -9,30 +9,20 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.ios;
+package org.mini2Dx.android.serialization;
 
-import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.core.game.Mini2DxGame;
-import org.mini2Dx.ios.di.IOSDependencyInjection;
-import org.mini2Dx.ios.playerdata.IOSPlayerData;
-import org.mini2Dx.ios.serialization.IOSXmlSerializer;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
- * iOS implementation of {@link Mini2DxGame}
- *
- * @author Thomas Cashman
+ * User acceptance tests for {@link AndroidXmlSerializer}
  */
-public class IOSMini2DxGame extends Mini2DxGame {
-	public IOSMini2DxGame(String gameIdentifier, GameContainer gc) {
-		super(gameIdentifier, gc);
+//@RunWith(RobolectricGradleTestRunner.class)
+//@Config(constants=BuildConfig.class)
+public class AndroidXmlSerializerTest {
+	@Test
+	@Ignore
+	public void testXmlSerialization() {
+		//TODO: Need to figure out how to run a test through Robolectric
 	}
-
-	@Override
-	protected void initialiseM2Dx(String gameIdentifier) {
-		Mdx.di = new IOSDependencyInjection();
-		Mdx.playerData = new IOSPlayerData();
-		Mdx.xml = new IOSXmlSerializer();
-	}
-
 }

@@ -16,6 +16,7 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.Mini2DxGame;
 import org.mini2Dx.desktop.di.DesktopDependencyInjection;
 import org.mini2Dx.desktop.playerdata.DesktopPlayerData;
+import org.mini2Dx.desktop.serialization.DesktopXmlSerializer;
 
 /**
  * Desktop implementation of {@link Mini2DxGame}
@@ -30,6 +31,7 @@ public class DesktopMini2DxGame extends Mini2DxGame {
 	protected void initialiseM2Dx(String gameIdentifier) {
 		Mdx.di = new DesktopDependencyInjection();
 		Mdx.playerData = new DesktopPlayerData(gameIdentifier);
+		Mdx.xml = new DesktopXmlSerializer();
 	}
 
 }

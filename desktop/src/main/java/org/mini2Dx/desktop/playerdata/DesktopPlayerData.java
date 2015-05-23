@@ -14,6 +14,7 @@ package org.mini2Dx.desktop.playerdata;
 import java.io.StringWriter;
 import java.nio.file.Paths;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.playerdata.PlayerData;
 import org.mini2Dx.core.serialization.JsonSerializer;
 import org.mini2Dx.core.util.OsDetector;
@@ -35,7 +36,7 @@ public class DesktopPlayerData implements PlayerData {
         saveDirectory = getSaveDirectoryForGame(gameIdentifier);
 
         xmlSerializer = new Persister();
-        jsonSerializer = new JsonSerializer();
+        jsonSerializer = Mdx.json;
     }
 
     private String getSaveDirectoryForGame(String gameIdentifier) {

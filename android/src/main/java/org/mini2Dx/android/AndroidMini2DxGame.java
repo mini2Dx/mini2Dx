@@ -13,6 +13,7 @@ package org.mini2Dx.android;
 
 import org.mini2Dx.android.di.AndroidDependencyInjection;
 import org.mini2Dx.android.playerdata.AndroidPlayerData;
+import org.mini2Dx.android.serialization.AndroidXmlSerializer;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.Mini2DxGame;
@@ -34,6 +35,7 @@ public class AndroidMini2DxGame extends Mini2DxGame {
 	protected void initialiseM2Dx(String gameIdentifier) {
 		Mdx.di = new AndroidDependencyInjection(applicationContext);
 		Mdx.playerData = new AndroidPlayerData();
+		Mdx.xml = new AndroidXmlSerializer();
 	}
 
 }

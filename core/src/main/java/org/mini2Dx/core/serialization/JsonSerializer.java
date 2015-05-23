@@ -29,19 +29,39 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 
 /**
- * Serializes objects to/from JSON based on mini2Dx annotations
+ * Serializes objects to/from JSON based on {@link org.mini2Dx.core.serialization.annotation.Field} annotations
  */
+@SuppressWarnings("unchecked")
 public class JsonSerializer {
-
+	/**
+	 * Reads a JSON document and converts it into an object of the specified type
+	 * @param json The JSON document
+	 * @param clazz The {@link Class} to convert the document to
+	 * @return The object deserialized from JSON
+	 * @throws SerializationException Thrown when the data is invalid
+	 */
 	public <T> T fromJson(String json, Class<T> clazz)
 			throws SerializationException {
 		return deserialize(new JsonReader().parse(json), clazz);
 	}
 
+	/**
+	 * Writes a JSON document by searching the object for {@link org.mini2Dx.core.serialization.annotation.Field} annotations
+	 * @param object The object to convert to JSON
+	 * @return The object serialized as JSON
+	 * @throws SerializationException Thrown when the object is invalid
+	 */
 	public <T> String toJson(T object) throws SerializationException {
 		return toJson(object, false);
 	}
 
+	/**
+	 * Writes a JSON document by searching the object for {@link org.mini2Dx.core.serialization.annotation.Field} annotations
+	 * @param object The object to convert to JSON
+	 * @param prettyPrint Set to true if the JSON should be prettified
+	 * @return The object serialized as JSON
+	 * @throws SerializationException Thrown when the object is invalid
+	 */
 	public <T> String toJson(T object, boolean prettyPrint)
 			throws SerializationException {
 		StringWriter writer = new StringWriter();
@@ -317,10 +337,11 @@ public class JsonSerializer {
 		try {
 			Map map = (Map) (clazz.isInterface() ? new HashMap()
 					: ClassReflection.newInstance(clazz));
+			Class<?> keyClass = field.getElementType(0);
 			Class<?> valueClass = field.getElementType(1);
 
 			for (int i = 0; i < value.size; i++) {
-				map.put(value.get(i).name,
+				map.put(parseMapKey(value.get(i).name, keyClass),
 						deserialize(value.get(i), valueClass));
 			}
 			field.set(targetObject, map);
@@ -360,5 +381,33 @@ public class JsonSerializer {
 			return true;
 		}
 		return false;
+	}
+	
+	private <T> T parseMapKey(String value, Class<T> clazz) {
+		if (clazz.equals(Boolean.TYPE) || clazz.equals(Boolean.class)) {
+			return (T) new Boolean(value);
+		}
+		if (clazz.equals(Byte.TYPE) || clazz.equals(Byte.class)) {
+			return (T) new Byte(value);
+		}
+		if (clazz.equals(Character.TYPE) || clazz.equals(Character.class)) {
+			return (T) new Character(value.charAt(0));
+		}
+		if (clazz.equals(Double.TYPE) || clazz.equals(Double.class)) {
+			return (T) new Double(value);
+		}
+		if (clazz.equals(Float.TYPE) || clazz.equals(Float.class)) {
+			return (T) new Float(value);
+		}
+		if (clazz.equals(Integer.TYPE) || clazz.equals(Integer.class)) {
+			return (T) new Integer(value);
+		}
+		if (clazz.equals(Long.TYPE) || clazz.equals(Long.class)) {
+			return (T) new Long(value);
+		}
+		if (clazz.equals(Short.TYPE) || clazz.equals(Short.class)) {
+			return (T) new Short(value);
+		}
+		return (T) value;
 	}
 }

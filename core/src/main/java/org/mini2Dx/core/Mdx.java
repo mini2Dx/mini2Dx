@@ -13,6 +13,8 @@ package org.mini2Dx.core;
 
 import org.mini2Dx.core.di.DependencyInjection;
 import org.mini2Dx.core.playerdata.PlayerData;
+import org.mini2Dx.core.serialization.JsonSerializer;
+import org.mini2Dx.core.serialization.XmlSerializer;
 import org.mini2Dx.core.util.Os;
 import org.mini2Dx.core.util.OsDetector;
 
@@ -37,7 +39,17 @@ public class Mdx {
 	public static Os os = OsDetector.getOs();
 	
 	/**
-	 * 
+	 * JSON serialization
+	 */
+	public static JsonSerializer json = new JsonSerializer();
+	
+	/**
+	 * XML serialization
+	 */
+	public static XmlSerializer xml;
+	
+	/**
+	 * This game's unique identifier for app stores
 	 */
 	public static String gameIdentifier;
 }
