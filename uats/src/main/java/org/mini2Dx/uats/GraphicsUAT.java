@@ -132,7 +132,7 @@ public class GraphicsUAT implements GameScreen {
             scaleY--;
         } else if(Gdx.input.isKeyJustPressed(Keys.R)) {
             rotation++;
-        } else if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+        } else if(Gdx.input.justTouched()) {
             screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
         }
     }

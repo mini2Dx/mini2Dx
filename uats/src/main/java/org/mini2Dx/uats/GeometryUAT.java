@@ -98,7 +98,7 @@ public class GeometryUAT implements GameScreen {
             originX--;
         } else if(Gdx.input.isKeyJustPressed(Keys.D)) {
             originX++;
-        } else if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+        } else if(Gdx.input.justTouched()) {
             screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
         }
     }

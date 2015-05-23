@@ -23,7 +23,6 @@ import org.mini2Dx.tiled.exception.TiledException;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -47,7 +46,7 @@ public class TiledMapWithCachingUAT implements GameScreen {
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
             float delta) {
-        if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+    	if(Gdx.input.justTouched()) {
             screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
         }
     }

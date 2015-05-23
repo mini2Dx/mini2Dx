@@ -21,7 +21,6 @@ import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -46,7 +45,7 @@ public class BlendingUAT implements GameScreen {
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
             float delta) {
-        if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+        if(Gdx.input.justTouched()) {
             screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
         }
     }

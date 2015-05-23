@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.uats.util;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.GameScreen;
@@ -36,6 +37,7 @@ import com.badlogic.gdx.graphics.Color;
 public class UATSelectionScreen implements GameScreen {
     public static final int SCREEN_ID = 0;
     
+    private int previousUat = -1;
 
     @Override
     public void initialise(GameContainer gc) {
@@ -44,6 +46,15 @@ public class UATSelectionScreen implements GameScreen {
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
             float delta) {
+    	switch(Mdx.os) {
+        case ANDROID:
+        case IOS:
+        	updateMobileMenu(gc, screenManager, delta);
+        	break;
+        default:
+        	updateDesktopMenu(screenManager, delta);
+        	break;
+        }
     }
 
     @Override
@@ -55,6 +66,16 @@ public class UATSelectionScreen implements GameScreen {
         g.clearBlendFunction();
         g.clearShaderProgram();
         g.removeClip();
+        
+        switch(Mdx.os) {
+        case ANDROID:
+        case IOS:
+        	renderMobileMenu(gc, g);
+        	break;
+        default:
+        	renderDesktopMenu(gc, g);
+        	break;
+        }
         
         g.setBackgroundColor(Color.WHITE);
         g.setColor(Color.BLUE);
@@ -79,29 +100,27 @@ public class UATSelectionScreen implements GameScreen {
     
     private void renderDesktopMenu(GameContainer gc, Graphics g) {
         float lineHeight = g.getFont().getLineHeight();
-        g.drawString("1. Blending UAT", 32, 32);
-        g.drawString("2. Clipping UAT", 32, 32 + lineHeight + 4);
-        g.drawString("3. Geometry UAT", 32, 32 + (lineHeight * 2) + 8);
-        g.drawString("4. Graphics UAT", 32, 32 + (lineHeight * 3) + 12);
-        g.drawString("5. TiledMap (No Caching) UAT", 32, 32 + (lineHeight * 4) + 16);
-        g.drawString("6. TiledMap (With Caching) UAT", 32, 32 + (lineHeight * 5) + 20);
+        g.drawString("Detected platform: " + Mdx.os, 32, 32);
+        g.drawString("1. Blending UAT", 32, 64);
+        g.drawString("2. Clipping UAT", 32, 64 + lineHeight + 4);
+        g.drawString("3. Geometry UAT", 32, 64 + (lineHeight * 2) + 8);
+        g.drawString("4. Graphics UAT", 32, 64 + (lineHeight * 3) + 12);
+        g.drawString("5. TiledMap (No Caching) UAT", 32, 64 + (lineHeight * 4) + 16);
+        g.drawString("6. TiledMap (With Caching) UAT", 32, 64 + (lineHeight * 5) + 20);
     }
     
     private void updateMobileMenu(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
             float delta) {
-        if(Gdx.input.justTouched()) {
-            
-        }
+    	if(Gdx.input.justTouched()) {
+    		previousUat = previousUat < 6 ? previousUat + 1 : 0;
+    		screenManager.enterGameScreen(previousUat, new FadeOutTransition(), new FadeInTransition());
+    	}
     }
     
     private void renderMobileMenu(GameContainer gc, Graphics g) {
         float lineHeight = g.getFont().getLineHeight();
-        g.drawString("1. Blending UAT", 32, 32);
-        g.drawString("2. Clipping UAT", 32, 32 + lineHeight + 4);
-        g.drawString("3. Geometry UAT", 32, 32 + (lineHeight * 2) + 8);
-        g.drawString("4. Graphics UAT", 32, 32 + (lineHeight * 3) + 12);
-        g.drawString("5. TiledMap (No Caching) UAT", 32, 32 + (lineHeight * 4) + 16);
-        g.drawString("6. TiledMap (With Caching) UAT", 32, 32 + (lineHeight * 5) + 20);
+        g.drawString("Detected platform: " + Mdx.os, 32, 32);
+        g.drawString("Touch screen for next UAT", 32, 64);
     }
 
     @Override
