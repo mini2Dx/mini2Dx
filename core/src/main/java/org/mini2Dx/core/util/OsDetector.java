@@ -17,8 +17,7 @@ package org.mini2Dx.core.util;
  */
 public class OsDetector {
 	private static final String DESKTOP_OS = System.getProperty("os.name") != null ? System.getProperty("os.name").toLowerCase() : null;
-	private static final String ANDROID_OS = System.getProperty("java.runtime.name") != null ? System.getProperty("java.runtime.name").toLowerCase() : null;
-	private static final String IOS = System.getProperty("java.runtime.name");
+	private static final String JAVA_RUNTIME = System.getProperty("java.runtime.name") != null ? System.getProperty("java.runtime.name").toLowerCase() : "";
 	private static Os os;
 	
 	public static Os getOs() {
@@ -29,6 +28,9 @@ public class OsDetector {
 	}
 	
 	private static Os determineOs() {
+		if(JAVA_RUNTIME.contains("android")) {
+            return Os.ANDROID;
+        }
 	    if(DESKTOP_OS != null) {
 	        if(DESKTOP_OS.indexOf("win") >= 0) {
 	            return Os.WINDOWS;
@@ -46,16 +48,9 @@ public class OsDetector {
 	            return Os.UNIX;
 	        }
 	    }
-	    if(ANDROID_OS != null) {
-	        if(ANDROID_OS.indexOf("android") >= 0) {
-                return Os.WINDOWS;
-            }
-	    }
-	    if(IOS != null) {
-	        if(IOS.indexOf("robovm") >= 0) {
-	            return Os.IOS;
-	        }
-	    }
+	    if(!JAVA_RUNTIME.contains("android")) {
+            return Os.IOS;
+        }
 		return Os.UNKNOWN;
 	}
 	
