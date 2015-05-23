@@ -30,9 +30,9 @@ public class IOSMini2DxGame extends Mini2DxGame {
 
 	@Override
 	protected void initialiseM2Dx(String gameIdentifier) {
+		Mdx.xml = new IOSXmlSerializer();
 		Mdx.di = new IOSDependencyInjection();
 		Mdx.playerData = new IOSPlayerData();
-		Mdx.xml = new IOSXmlSerializer();
 	}
 
 }

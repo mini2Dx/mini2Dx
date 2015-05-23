@@ -36,11 +36,11 @@ public interface PlayerData {
      *            The path to the XML file. This will be resolved as a path
      *            within the game data location.
      * @return The resulting object
-     * @throws Exception
+     * @throws PlayerDataException
      *             Thrown if the XML is invalid, the file does not exist or the
      *             game data location cannot be accessed.
      */
-    public <T> T readXml(Class<T> clazz, String... filepath) throws Exception;
+    public <T> T readXml(Class<T> clazz, String... filepath) throws PlayerDataException;
 
     /**
      * Writes an object as XML to a file. Note the object must use the mini2Dx
@@ -51,11 +51,11 @@ public interface PlayerData {
      * @param filepath
      *            The path to the XML file. This will be resolved as a path
      *            within the game data location.
-     * @throws Exception
+     * @throws PlayerDataException
      *             Thrown if the game data location cannot be accessed or the
      *             data cannot be written to the file.
      */
-    public <T> void writeXml(T object, String... filepath) throws Exception;
+    public <T> void writeXml(T object, String... filepath) throws PlayerDataException;
 
     /**
      * Converts JSON from a file into an object. Note the object must use the
@@ -67,11 +67,11 @@ public interface PlayerData {
      *            The path to the JSON file. This will be resolved as a path
      *            within the game data location.
      * @return The resulting object
-     * @throws Exception
+     * @throws PlayerDataException
      *             Thrown if the XML is invalid, the file does not exist or the
      *             game data location cannot be accessed.
      */
-    public <T> T readJson(Class<T> clazz, String... filepath) throws Exception;
+    public <T> T readJson(Class<T> clazz, String... filepath) throws PlayerDataException;
 
     /**
      * Writes an object as JSON to a file. Note the object must use the mini2Dx
@@ -82,11 +82,11 @@ public interface PlayerData {
      * @param filepath
      *            The path to the JSON file. This will be resolved as a path
      *            within the game data location.
-     * @throws Exception
+     * @throws PlayerDataException
      *             Thrown if the game data location cannot be accessed or the
      *             data cannot be written to the file.
      */
-    public <T> void writeJson(T object, String... filepath) throws Exception;
+    public <T> void writeJson(T object, String... filepath) throws PlayerDataException;
 
     /**
      * Checks if the file exists in the game data location
@@ -94,10 +94,10 @@ public interface PlayerData {
      * @param filepath
      *            The path to the file within the game data location
      * @return True if the file exists
-     * @throws Exception
+     * @throws PlayerDataException
      *             Thrown if the game data location cannot be accessed
      */
-    public boolean hasFile(String... filepath) throws Exception;
+    public boolean hasFile(String... filepath) throws PlayerDataException;
 
     /**
      * Checks if the directory exists in the game data location
@@ -105,28 +105,28 @@ public interface PlayerData {
      * @param path
      *            The path to the directory within the game data location
      * @return True if the file exists
-     * @throws Exception
+     * @throws PlayerDataException
      *             Thrown if the game data location cannot be accessed
      */
-    public boolean hasDirectory(String... path) throws Exception;
+    public boolean hasDirectory(String... path) throws PlayerDataException;
 
     /**
      * Creates a directory within in the game data location
      * 
      * @param path
      *            The path to the directory within the game data location
-     * @throws Exception
+     * @throws PlayerDataException
      *             Thrown if the game data location cannot be accessed or the
      *             directory could not be created
      */
-    public void createDirectory(String... path) throws Exception;
+    public void createDirectory(String... path) throws PlayerDataException;
 
     /**
      * Wipes all data within the game data location
      * 
-     * @throws Exception
+     * @throws PlayerDataException
      *             Thrown if the game data location cannot be accessed or the
      *             data could not be wiped
      */
-    public void wipe() throws Exception;
+    public void wipe() throws PlayerDataException;
 }

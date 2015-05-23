@@ -33,9 +33,9 @@ public class AndroidMini2DxGame extends Mini2DxGame {
 
 	@Override
 	protected void initialiseM2Dx(String gameIdentifier) {
+		Mdx.xml = new AndroidXmlSerializer();
 		Mdx.di = new AndroidDependencyInjection(applicationContext);
 		Mdx.playerData = new AndroidPlayerData();
-		Mdx.xml = new AndroidXmlSerializer();
 	}
 
 }

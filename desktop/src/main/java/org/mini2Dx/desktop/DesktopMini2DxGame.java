@@ -29,9 +29,9 @@ public class DesktopMini2DxGame extends Mini2DxGame {
 
 	@Override
 	protected void initialiseM2Dx(String gameIdentifier) {
+		Mdx.xml = new DesktopXmlSerializer();
 		Mdx.di = new DesktopDependencyInjection();
 		Mdx.playerData = new DesktopPlayerData(gameIdentifier);
-		Mdx.xml = new DesktopXmlSerializer();
 	}
 
 }

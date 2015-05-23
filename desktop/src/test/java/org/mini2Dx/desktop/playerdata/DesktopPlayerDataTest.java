@@ -22,9 +22,12 @@ import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.serialization.JsonSerializer;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
 import org.mini2Dx.desktop.playerdata.DesktopPlayerData;
+import org.mini2Dx.desktop.serialization.DesktopXmlSerializer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
@@ -46,6 +49,8 @@ public class DesktopPlayerDataTest {
     @Before
     public void setUp() {
         Gdx.files = new LwjglFiles();
+        Mdx.json = new JsonSerializer();
+        Mdx.xml = new DesktopXmlSerializer();
         desktopData = new DesktopPlayerData(TEST_IDENTIFIER);
         
         createTestObjects();

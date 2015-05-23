@@ -11,52 +11,143 @@
  */
 package org.mini2Dx.ios.playerdata;
 
-import org.mini2Dx.core.exception.NotYetImplementedException;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.playerdata.PlayerData;
+import org.mini2Dx.core.playerdata.PlayerDataException;
+import org.mini2Dx.core.serialization.SerializationException;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 /**
  * iOS implementation of {@link PlayerData}
  */
 public class IOSPlayerData implements PlayerData {
 
-    @Override
-    public <T> T readXml(Class<T> clazz, String... filepath) throws Exception {
-        throw new NotYetImplementedException();
-    }
+	@Override
+	public <T> T readXml(Class<T> clazz, String... filepath)
+			throws PlayerDataException {
+		if (filepath.length == 0) {
+			throw new PlayerDataException("No file path specified");
+		}
+		try {
+			return Mdx.xml.fromXml(new InputStreamReader(resolve(filepath).read()), clazz);
+		} catch (SerializationException e) {
+			throw new PlayerDataException(e);
+		}
+	}
 
-    @Override
-    public <T> void writeXml(T object, String... filepath) throws Exception {
-        throw new NotYetImplementedException();
-    }
+	@Override
+	public <T> void writeXml(T object, String... filepath)
+			throws PlayerDataException {
+		if (filepath.length == 0) {
+			throw new PlayerDataException("No file path specified");
+		}
+		try {
+			ensureDirectoryExistsForFile(filepath);
+			StringWriter writer = new StringWriter();
+			Mdx.xml.toXml(object, writer);
+			resolve(filepath).writeString(writer.toString(), false);
+			writer.flush();
+		} catch (SerializationException e) {
+			throw new PlayerDataException(e);
+		}
+	}
 
-    @Override
-    public <T> T readJson(Class<T> clazz, String... filepath) throws Exception {
-        throw new NotYetImplementedException();
-    }
+	@Override
+	public <T> T readJson(Class<T> clazz, String... filepath)
+			throws PlayerDataException {
+		if (filepath.length == 0) {
+			throw new PlayerDataException("No file path specified");
+		}
+		try {
+			return Mdx.json.fromJson(resolve(filepath).readString(), clazz);
+		} catch (SerializationException e) {
+			throw new PlayerDataException(e);
+		}
+	}
 
-    @Override
-    public <T> void writeJson(T object, String... filepath) throws Exception {
-        throw new NotYetImplementedException();
-    }
+	@Override
+	public <T> void writeJson(T object, String... filepath)
+			throws PlayerDataException {
+		if (filepath.length == 0) {
+			throw new PlayerDataException("No file path specified");
+		}
+		try {
+			resolve(filepath).writeString(Mdx.json.toJson(object), false);
+		} catch (SerializationException e) {
+			throw new PlayerDataException(e);
+		}
+	}
 
-    @Override
-    public boolean hasFile(String... filepath) throws Exception {
-        throw new NotYetImplementedException();
-    }
+	@Override
+	public boolean hasFile(String... filepath) throws PlayerDataException {
+		if (filepath.length == 0) {
+			throw new PlayerDataException("No file path specified");
+		}
+		FileHandle file = resolve(filepath);
+		if (file.exists()) {
+			return !file.isDirectory();
+		}
+		return false;
+	}
 
-    @Override
-    public boolean hasDirectory(String... path) throws Exception {
-        throw new NotYetImplementedException();
-    }
+	@Override
+	public boolean hasDirectory(String... path) throws PlayerDataException {
+		if (path.length == 0) {
+			throw new PlayerDataException("No path specified");
+		}
+		FileHandle directoryHandle = resolve(path);
+		if (directoryHandle.exists()) {
+			return directoryHandle.isDirectory();
+		}
+		return false;
+	}
 
-    @Override
-    public void createDirectory(String... path) throws Exception {
-        throw new NotYetImplementedException();
-    }
+	@Override
+	public void createDirectory(String... path) throws PlayerDataException {
+		if (path.length == 0) {
+			throw new PlayerDataException("No path specified");
+		}
+		FileHandle directory = resolve(path);
+		if (directory.exists()) {
+			return;
+		}
+		directory.mkdirs();
+	}
 
-    @Override
-    public void wipe() throws Exception {
-        throw new NotYetImplementedException();
-    }
+	@Override
+	public void wipe() throws PlayerDataException {
+		FileHandle directory = Gdx.files.local("./");
+		if (!directory.exists()) {
+			return;
+		}
+		directory.emptyDirectory();
+	}
 
+	private void ensureDirectoryExistsForFile(String... filepath) {
+		FileHandle file = resolve(filepath);
+		if (file.exists()) {
+			return;
+		}
+		FileHandle parent = file.parent();
+		if (parent.exists()) {
+			return;
+		}
+		parent.mkdirs();
+	}
+
+	private FileHandle resolve(String[] filepath) {
+		String path = "";
+		for (int i = 0; i < filepath.length; i++) {
+			path += filepath[i];
+			if (path.length() < filepath.length - 1) {
+				path += "/";
+			}
+		}
+		return Gdx.files.local(path);
+	}
 }
