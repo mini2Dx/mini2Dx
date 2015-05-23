@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 
 /**
  * Implements graphics rendering functionality
@@ -241,15 +242,16 @@ public class Graphics {
 	 *            The y coordinate to draw at
 	 */
 	public void drawString(String text, float x, float y) {
-		if (font != null) {
-			beginRendering();
-			font.setColor(color);
-			font.draw(spriteBatch, text, x, y);
+		if (font == null) {
+			return;
 		}
+		beginRendering();
+		font.setColor(color);
+		font.draw(spriteBatch, text, x, y);
 	}
 
 	/**
-	 * Draws a string to the window, automatically wrapping it to a specified
+	 * Draws a string to the window, automatically wrapping it within a specified
 	 * width
 	 * 
 	 * @param text
@@ -258,15 +260,35 @@ public class Graphics {
 	 *            The x coordinate to draw at
 	 * @param y
 	 *            The y coordinate to draw at
-	 * @param wrapWidth
-	 *            The width the {@link String} is automatically wrapped to
+	 * @param targetWidth
+	 *            The width to render the {@link String} at. Note: The string will automatically wrapped if it is longer.
 	 */
-	public void drawString(String text, float x, float y, float wrapWidth) {
-		if (font != null) {
-			beginRendering();
-			font.setColor(color);
-			font.drawWrapped(spriteBatch, text, x, y, wrapWidth);
+	public void drawString(String text, float x, float y, float targetWidth) {
+		drawString(text, x, y, targetWidth, Align.left);
+	}
+	
+	/**
+	 * Draws a string to the window, automatically wrapping it within a specified
+	 * width and aligning it to the left, center or right of the width
+	 * 
+	 * @param text
+	 *            The {@link String} to draw
+	 * @param x
+	 *            The x coordinate to draw at
+	 * @param y
+	 *            The y coordinate to draw at
+	 * @param targetWidth
+	 *            The width to render the {@link String} at. Note: The string will automatically wrapped if it is longer.
+	 * @param horizontalAlign
+	 * 			  The horizontal alignment. Note: Use {@link Align} to retrieve the appropriate value.
+	 */
+	public void drawString(String text, float x, float y, float targetWidth, int horizontalAlign) {
+		if (font == null) {
+			return;
 		}
+		beginRendering();
+		font.setColor(color);
+		font.draw(spriteBatch, text, x, y, targetWidth, horizontalAlign, true);
 	}
 
 	/**
