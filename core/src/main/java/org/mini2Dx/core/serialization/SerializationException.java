@@ -13,7 +13,6 @@ package org.mini2Dx.core.serialization;
 
 /**
  * An exception thrown during serialization
- * @author Thomas Cashman
  */
 public class SerializationException extends Exception {
 	private static final long serialVersionUID = -217347760026419138L;
