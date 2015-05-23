@@ -567,7 +567,7 @@ public class Graphics {
 	/**
 	 * Enables blending during rendering
 	 */
-	public void enabledBlending() {
+	public void enableBlending() {
 		spriteBatch.enableBlending();
 	}
 

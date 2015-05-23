@@ -56,25 +56,16 @@ public class BlendingUAT implements GameScreen {
 
     @Override
     public void render(GameContainer gc, Graphics g) {
-        g.setBackgroundColor(Color.BLACK);
-        //g.drawTexture(texture, 0, 0);
-        
-        /* Render shadow over everything */
-        g.setBlendFunction(GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        Color shadow = new Color(1, 1, 1, 0.9f);
-        g.setColor(shadow);
-        g.fillRect(0, 0, g.getCurrentWidth(), g.getCurrentHeight());
+        g.setBackgroundColor(new Color(0.01f, 0.01f, 0.01f, 1f));
         
         /* Render lights to alpha mask */
-        Gdx.gl.glColorMask(false, false, false, true);
-        g.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        g.setColor(new Color(1f, 1f, 1f, 1f));
+        g.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+        g.setColor(new Color(0.8f, 0.8f, 0.8f, 1f));
         g.fillCircle(sprite.getWidth() / 2f, sprite.getHeight() / 2f, MathUtils.round(sprite.getWidth() / 6f));
         g.flush();
         
         /* Render the scene */
-        Gdx.gl.glColorMask(true, true, true, true);   
-        g.setBlendFunction(GL20.GL_DST_ALPHA, GL20.GL_DST_ALPHA);
+        g.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
         g.drawSprite(sprite);
     }
 
