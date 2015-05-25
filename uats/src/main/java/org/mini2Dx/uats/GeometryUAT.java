@@ -21,6 +21,7 @@ import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
+import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
 import com.badlogic.gdx.Gdx;
@@ -32,8 +33,6 @@ import com.badlogic.gdx.graphics.Color;
  * Geometry classes and their rendering
  */
 public class GeometryUAT extends BasicGameScreen {
-    public static final int SCREEN_ID = 3;
-    
 	private int playerX, playerY, originX, originY;
 	private float scaleX, scaleY;
 	private int rotation;
@@ -122,6 +121,6 @@ public class GeometryUAT extends BasicGameScreen {
 
     @Override
     public int getId() {
-        return SCREEN_ID;
+    	return ScreenIds.getScreenId(GeometryUAT.class);
     }
 }

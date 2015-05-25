@@ -441,6 +441,15 @@ public class Graphics {
 		endRendering();
 		stage.draw();
 	}
+	
+	/**
+	 * Draws a {@link ParticleEffect} or {@link PooledParticleEffect} to screen
+	 * @param effect The effect to be drawn
+	 */
+	public void drawParticleEffect(ParticleEffect effect) {
+		beginRendering();
+		effect.render(spriteBatch);
+	}
 
 	/**
 	 * Rotates the canvas by the provided degrees around the provided point

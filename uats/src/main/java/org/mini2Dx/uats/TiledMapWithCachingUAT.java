@@ -21,6 +21,7 @@ import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.exception.TiledException;
+import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
 import com.badlogic.gdx.Gdx;
@@ -31,8 +32,6 @@ import com.badlogic.gdx.graphics.Color;
  * {@link TiledMap} rendering with layer caching enabled
  */
 public class TiledMapWithCachingUAT extends BasicGameScreen {
-    public static final int SCREEN_ID = 6;
-    
 	private TiledMap tiledMap;
 
     @Override
@@ -93,6 +92,6 @@ public class TiledMapWithCachingUAT extends BasicGameScreen {
 
     @Override
     public int getId() {
-        return SCREEN_ID;
+        return ScreenIds.getScreenId(TiledMapWithCachingUAT.class);
     }
 }

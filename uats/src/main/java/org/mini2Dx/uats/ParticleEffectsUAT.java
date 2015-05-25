@@ -13,89 +13,87 @@ package org.mini2Dx.uats;
 
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.graphics.ParticleEffect;
+import org.mini2Dx.core.graphics.ParticleEffectPool;
+import org.mini2Dx.core.graphics.PooledParticleEffect;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
-import org.mini2Dx.core.screen.Transition;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
-import org.mini2Dx.tiled.TiledMap;
-import org.mini2Dx.tiled.exception.TiledException;
 import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 
 /**
- * A {@link GameScreen} that allows visual user acceptance testing of
- * {@link Graphics} clipping functionality
+ * A {@link GameScreen} that allows visual user acceptance testing of {@link ParticleEffect}s
  */
-public class ClippingUAT extends BasicGameScreen {
-	private TiledMap tiledMap;
+public class ParticleEffectsUAT extends BasicGameScreen {
+	private ParticleEffect prototype;
+	private ParticleEffectPool pool;
+	private Array<PooledParticleEffect> effects;
+	
+	private float timer = -1f;
 
-    @Override
-    public void initialise(GameContainer gc) {
-        try {
-            tiledMap = new TiledMap(Gdx.files.classpath("simple.tmx"));
-        } catch (TiledException e) {
-            e.printStackTrace();
-        }
-    }
+	@Override
+	public void initialise(GameContainer gc) {		
+		prototype = new ParticleEffect();
+		prototype.load(Gdx.files.internal("explosion.p"), Gdx.files.internal("particles"));
+		prototype.setPosition(gc.getWidth() / 2f, gc.getHeight() / 2f);
+		prototype.start();
+		
+		pool = new ParticleEffectPool(prototype, 0, 70);
+		effects = new Array<PooledParticleEffect>();
+	}
 
-    @Override
-    public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
-            float delta) {
-    	if(Gdx.input.justTouched()) {
+	@Override
+	public void update(GameContainer gc,
+			ScreenManager<? extends GameScreen> screenManager, float delta) {
+		timer -= delta;
+		if(timer < 0f) {
+			PooledParticleEffect effect = pool.obtain();
+			float x = MathUtils.random() * gc.getWidth();
+			float y = MathUtils.random() * gc.getHeight();
+			effect.setPosition(x, y);
+			System.out.println("Spawning effect at " + x + "," + y);
+			effects.add(effect);
+			timer = 1f;
+		}
+		
+		for(PooledParticleEffect effect : effects) {
+			effect.update(gc, delta);
+			if(effect.isComplete()) {
+				effects.removeValue(effect, true);
+				effect.free();
+			}
+		}
+		
+		if(Gdx.input.justTouched()) {
             screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
         }
-    }
+	}
 
-    @Override
-    public void interpolate(GameContainer gc, float alpha) {
-    }
+	@Override
+	public void interpolate(GameContainer gc, float alpha) {
+		for(PooledParticleEffect effect : effects) {
+			effect.interpolate(gc, alpha);
+		}
+	}
 
-    @Override
-    public void render(GameContainer gc, Graphics g) {
-        g.setBackgroundColor(Color.WHITE);
-        g.setColor(Color.RED);
+	@Override
+	public void render(GameContainer gc, Graphics g) {
+		g.setBackgroundColor(Color.BLACK);
+		for(PooledParticleEffect effect : effects) {
+			g.drawParticleEffect(effect);
+		}
+	}
 
-        g.setClip(0f, 0f, 64f, 64f);
-        //Should draw first four tiles in top left corner
-        tiledMap.draw(g, 0, 0);
-        g.removeClip();
-        
-        g.setClip(0f, 192f, 64f, 64f);
-        //Should draw four tiles from bottom left corner of map
-        tiledMap.draw(g, 0, 0);
-        g.removeClip();
-        
-        //Should draw whole map
-        tiledMap.draw(g, 96, 0);
-        
-        //Should only draw part of text
-        g.setClip(0, 256, 64, 64);
-        g.drawString("Hello, world!", 0, 256);
-    }
-
-    @Override
-    public void preTransitionIn(Transition transitionIn) {
-    }
-
-    @Override
-    public void postTransitionIn(Transition transitionIn) {
-    }
-
-    @Override
-    public void preTransitionOut(Transition transitionOut) {
-    }
-
-    @Override
-    public void postTransitionOut(Transition transitionOut) {
-    }
-
-    @Override
-    public int getId() {
-    	return ScreenIds.getScreenId(ClippingUAT.class);
-    }
+	@Override
+	public int getId() {
+		return ScreenIds.getScreenId(ParticleEffectsUAT.class);
+	}
 }

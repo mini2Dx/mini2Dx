@@ -24,6 +24,7 @@ import org.mini2Dx.uats.BlendingUAT;
 import org.mini2Dx.uats.ClippingUAT;
 import org.mini2Dx.uats.GeometryUAT;
 import org.mini2Dx.uats.GraphicsUAT;
+import org.mini2Dx.uats.ParticleEffectsUAT;
 import org.mini2Dx.uats.TiledMapNoCachingUAT;
 import org.mini2Dx.uats.TiledMapWithCachingUAT;
 
@@ -85,17 +86,19 @@ public class UATSelectionScreen extends BasicGameScreen {
     private void updateDesktopMenu(ScreenManager<? extends GameScreen> screenManager,
             float delta) {
         if(Gdx.input.isKeyJustPressed(Keys.NUM_1)) {
-            screenManager.enterGameScreen(BlendingUAT.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
+            screenManager.enterGameScreen(ScreenIds.getScreenId(BlendingUAT.class), new FadeOutTransition(), new FadeInTransition());
         } else if(Gdx.input.isKeyJustPressed(Keys.NUM_2)) {
-            screenManager.enterGameScreen(ClippingUAT.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
+            screenManager.enterGameScreen(ScreenIds.getScreenId(ClippingUAT.class), new FadeOutTransition(), new FadeInTransition());
         } else if(Gdx.input.isKeyJustPressed(Keys.NUM_3)) {
-            screenManager.enterGameScreen(GeometryUAT.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
+            screenManager.enterGameScreen(ScreenIds.getScreenId(GeometryUAT.class), new FadeOutTransition(), new FadeInTransition());
         } else if(Gdx.input.isKeyJustPressed(Keys.NUM_4)) {
-            screenManager.enterGameScreen(GraphicsUAT.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
+            screenManager.enterGameScreen(ScreenIds.getScreenId(GraphicsUAT.class), new FadeOutTransition(), new FadeInTransition());
         } else if(Gdx.input.isKeyJustPressed(Keys.NUM_5)) {
-            screenManager.enterGameScreen(TiledMapNoCachingUAT.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
+            screenManager.enterGameScreen(ScreenIds.getScreenId(TiledMapNoCachingUAT.class), new FadeOutTransition(), new FadeInTransition());
         } else if(Gdx.input.isKeyJustPressed(Keys.NUM_6)) {
-            screenManager.enterGameScreen(TiledMapWithCachingUAT.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
+            screenManager.enterGameScreen(ScreenIds.getScreenId(TiledMapWithCachingUAT.class), new FadeOutTransition(), new FadeInTransition());
+        } else if(Gdx.input.isKeyJustPressed(Keys.NUM_7)) {
+            screenManager.enterGameScreen(ScreenIds.getScreenId(ParticleEffectsUAT.class), new FadeOutTransition(), new FadeInTransition());
         }
     }
     
@@ -108,12 +111,13 @@ public class UATSelectionScreen extends BasicGameScreen {
         g.drawString("4. Graphics UAT", 32, 64 + (lineHeight * 3) + 12);
         g.drawString("5. TiledMap (No Caching) UAT", 32, 64 + (lineHeight * 4) + 16);
         g.drawString("6. TiledMap (With Caching) UAT", 32, 64 + (lineHeight * 5) + 20);
+        g.drawString("7. Particle Effects UAT", 32, 64 + (lineHeight * 6) + 24);
     }
     
     private void updateMobileMenu(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
             float delta) {
     	if(Gdx.input.justTouched()) {
-    		previousUat = previousUat < 6 ? previousUat + 1 : 0;
+    		previousUat = previousUat < 7 ? previousUat + 1 : 0;
     		screenManager.enterGameScreen(previousUat, new FadeOutTransition(), new FadeInTransition());
     	}
     }

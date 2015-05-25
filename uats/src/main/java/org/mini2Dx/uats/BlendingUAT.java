@@ -18,6 +18,7 @@ import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
+import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
 import com.badlogic.gdx.Gdx;
@@ -32,8 +33,6 @@ import com.badlogic.gdx.math.MathUtils;
  * {@link Graphics} alpha blending functionality
  */
 public class BlendingUAT extends BasicGameScreen {
-    public static final int SCREEN_ID = 1;
-    
 	private Sprite sprite;
 
     @Override
@@ -71,6 +70,6 @@ public class BlendingUAT extends BasicGameScreen {
 
     @Override
     public int getId() {
-        return SCREEN_ID;
+        return ScreenIds.getScreenId(BlendingUAT.class);
     }
 }

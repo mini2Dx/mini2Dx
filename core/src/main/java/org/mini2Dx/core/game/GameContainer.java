@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * this.
  */
 public abstract class GameContainer implements Screen {
-	private static final float MAXIMUM_DELTA = (1f / 60f);
+	public static final float MAXIMUM_DELTA = (1f / 60f);
 	
 	private float accumulator = 0f;
 	private float targetDelta = 0.01f;

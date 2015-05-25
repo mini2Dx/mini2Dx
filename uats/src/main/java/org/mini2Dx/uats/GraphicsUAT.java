@@ -20,6 +20,7 @@ import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
+import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
 import com.badlogic.gdx.Gdx;
@@ -33,8 +34,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
  * {@link Graphics} functionality
  */
 public class GraphicsUAT extends BasicGameScreen {
-    public static final int SCREEN_ID = 4;
-    
 	private int playerX, playerY;
 	private float scaleX, scaleY;
 	private int rotation;
@@ -156,6 +155,6 @@ public class GraphicsUAT extends BasicGameScreen {
 
     @Override
     public int getId() {
-        return SCREEN_ID;
+        return ScreenIds.getScreenId(GraphicsUAT.class);
     }
 }

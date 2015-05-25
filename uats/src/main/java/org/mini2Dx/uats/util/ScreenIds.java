@@ -11,35 +11,24 @@
  */
 package org.mini2Dx.uats.util;
 
-import org.mini2Dx.core.game.ScreenBasedGame;
-import org.mini2Dx.uats.BlendingUAT;
-import org.mini2Dx.uats.ClippingUAT;
-import org.mini2Dx.uats.GeometryUAT;
-import org.mini2Dx.uats.GraphicsUAT;
-import org.mini2Dx.uats.ParticleEffectsUAT;
-import org.mini2Dx.uats.TiledMapNoCachingUAT;
-import org.mini2Dx.uats.TiledMapWithCachingUAT;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.mini2Dx.core.screen.GameScreen;
 
 /**
- *
- * @author Thomas Cashman
+ * Auto-generate IDs for each {@link GameScreen} in the UAT project
  */
-public class UATApplication extends ScreenBasedGame {
-    
-    @Override
-    public void initialise() {
-        addScreen(new UATSelectionScreen());
-        addScreen(new BlendingUAT());
-        addScreen(new ClippingUAT());
-        addScreen(new GeometryUAT());
-        addScreen(new GraphicsUAT());
-        addScreen(new TiledMapNoCachingUAT());
-        addScreen(new TiledMapWithCachingUAT());
-        addScreen(new ParticleEffectsUAT());
-    }
-
-    @Override
-    public int getInitialScreenId() {
-        return 0;
-    }
+public class ScreenIds {
+	private static AtomicInteger counter = new AtomicInteger(1);
+	private static Map<String, Integer> screenIds = new ConcurrentHashMap<String, Integer>();
+	
+	public static int getScreenId(Class<?> clazz) {
+		String key = clazz.getName();
+		if(!screenIds.containsKey(key)) {
+			screenIds.put(key, counter.getAndIncrement());
+		}
+		return screenIds.get(clazz.getName());
+	}
 }
