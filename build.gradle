@@ -9,7 +9,7 @@ buildscript {
     }
     dependencies {
 		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:1.2.3'
         classpath 'org.robovm:robovm-gradle-plugin:1.2.0'
     }
 }
@@ -47,7 +47,7 @@ subprojects {
     }
     
     ext {
-    	gdxVersion="1.6.0"
+    	gdxVersion="1.6.1"
 		roboVMVersion="1.2.0"
 		androidVersion="4.4"
 		beanutilsVersion="1.8.3"
@@ -202,6 +202,7 @@ if (Os.isFamily(Os.FAMILY_MAC)) {
 			compile "org.robovm:robovm-rt:${roboVMVersion}"
 			compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
 			compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
+			compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
 			
 			testCompile "junit:junit:$junitVersion"
 			testCompile "org.jmock:jmock-junit4:$jmockVersion"
@@ -225,8 +226,6 @@ if (Os.isFamily(Os.FAMILY_MAC)) {
 		dependencies {
 			compile project(":" + rootProject.name + "-uats")
 			compile project(":" + rootProject.name + "-ios")
-			
-			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
 		}
 	}
 }
@@ -238,7 +237,7 @@ if (Os.isFamily(Os.FAMILY_MAC)) {
 //}
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.2'
+    gradleVersion = '2.4'
 }
 
 boolean hasAndroidSdk() {
