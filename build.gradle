@@ -68,9 +68,15 @@ subprojects {
 	}
 }
 
-project(":" + rootProject.name + "-core") {
+def docProjects() {
+	subprojects.findAll { !it.name.contains('uat') }
+}
+
+configure(docProjects()) {
 	apply plugin: "java"
-	    
+}
+
+project(":" + rootProject.name + "-core") {
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
 
@@ -89,8 +95,6 @@ project(":" + rootProject.name + "-core") {
 }
 
 project(":" + rootProject.name + "-desktop") {
-    apply plugin: "java"
-    
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
 
@@ -114,8 +118,6 @@ project(":" + rootProject.name + "-desktop") {
 }
 
 project(":" + rootProject.name + "-tiled") {
-    apply plugin: "java"
-
     dependencies {
 		compile project(":" + rootProject.name + "-core")
 		
@@ -134,6 +136,13 @@ project(":" + rootProject.name + "-uats") {
     dependencies {
     	compile project(":" + rootProject.name + "-tiled")
     }
+	
+	task docs(type: Javadoc) {
+		source docProjects().collect {p -> p.sourceSets.main.allJava }
+		classpath = files(docProjects().collect {p -> p.sourceSets.main.compileClasspath})
+		destinationDir = new File(project.parent.projectDir, 'docs')
+	}
+	docs.dependsOn docProjects().build
 }
 
 project(":" + rootProject.name + "-uats-desktop") {
@@ -150,8 +159,6 @@ project(":" + rootProject.name + "-uats-desktop") {
 
 if (hasAndroidSdk()) {
 	project(":" + rootProject.name + "-android") {
-		apply plugin: "java"
-	
 		dependencies {
 			compile project(":" + rootProject.name + "-core")
 			
@@ -190,8 +197,6 @@ if (hasAndroidSdk()) {
 
 if (Os.isFamily(Os.FAMILY_MAC)) {
 	project(":" + rootProject.name + "-ios") {
-		apply plugin: "java"
-		
 		sourceCompatibility = 1.7
 		targetCompatibility = 1.7
 	
@@ -229,12 +234,6 @@ if (Os.isFamily(Os.FAMILY_MAC)) {
 		}
 	}
 }
-
-//task docs(type: Javadoc) {
-//    source subprojects.collect {project -> project.sourceSets.main.allJava }
-//    classpath = files(subprojects.collect {project -> project.sourceSets.main.compileClasspath})
-//    destinationDir = new File(projectDir, 'docs')
-//}
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.4'
