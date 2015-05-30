@@ -49,6 +49,14 @@ public class CollisionCircle extends Circle implements Positionable {
 		renderCircle = new Circle(centerX, centerY, radius);
 	}
 	
+	/**
+	 * This method needs to be called at the start of each frame
+	 * before any changes are made to this object
+	 */
+	public void preUpdate() {
+		previousCircle.set(this);
+	}
+	
 	@Override
 	public void update(GameContainer gc, float delta) {
 	}

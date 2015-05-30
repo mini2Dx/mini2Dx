@@ -59,6 +59,14 @@ public class CollisionPoint extends Point implements Positionable {
 		renderPosition = new Point(point);
 	}
 	
+	/**
+	 * This method needs to be called at the start of each frame
+	 * before any changes are made to this object
+	 */
+	public void preUpdate() {
+		previousPosition.set(this);
+	}
+	
 	@Override
 	public void update(GameContainer gc, float delta) {
 	}

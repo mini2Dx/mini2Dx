@@ -52,6 +52,14 @@ public class CollisionBox extends Rectangle implements Positionable {
 		previousRectangle = new Rectangle(x, y, width, height);
 		renderRectangle = new Rectangle(x, y, width, height);
 	}
+	
+	/**
+	 * This method needs to be called at the start of each frame
+	 * before any changes are made to this object
+	 */
+	public void preUpdate() {
+		previousRectangle.set(this);
+	}
 
 	@Override
 	public void update(GameContainer gc, float delta) {
