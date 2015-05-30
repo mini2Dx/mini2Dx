@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 /**
  * Implements an animation with frames of variable or fixed duration
