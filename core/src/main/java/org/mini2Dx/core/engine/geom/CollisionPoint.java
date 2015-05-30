@@ -24,8 +24,10 @@ import org.mini2Dx.core.geom.Point;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- *
- * @author Thomas Cashman
+ * An implementation of {@link Point} that allows for interpolation. Game
+ * objects can use this class to move around the game world and retrieve the
+ * appropriate rendering coordinates after interpolating between the previous
+ * and current position.
  */
 public class CollisionPoint extends Point implements Positionable {
 	private static final long serialVersionUID = -7752697723641315393L;

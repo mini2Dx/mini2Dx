@@ -29,8 +29,6 @@ import com.badlogic.gdx.math.Vector2;
  * objects can use this class to move around the game world and retrieve the
  * appropriate rendering coordinates after interpolating between the previous
  * and current position.
- * 
- * @author Thomas Cashman
  */
 public class CollisionBox extends Rectangle implements Positionable {
 	private static final long serialVersionUID = -8217730724587578266L;

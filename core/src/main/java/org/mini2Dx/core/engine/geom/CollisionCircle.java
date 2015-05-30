@@ -22,8 +22,10 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Circle;
 
 /**
- *
- * @author Thomas Cashman
+ * An implementation of {@link Circle} that allows for interpolation. Game
+ * objects can use this class to move around the game world and retrieve the
+ * appropriate rendering coordinates after interpolating between the previous
+ * and current position.
  */
 public class CollisionCircle extends Circle implements Positionable {
 	
