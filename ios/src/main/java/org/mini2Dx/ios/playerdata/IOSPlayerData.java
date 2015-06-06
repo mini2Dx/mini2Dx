@@ -82,6 +82,45 @@ public class IOSPlayerData implements PlayerData {
 			throw new PlayerDataException(e);
 		}
 	}
+	
+	@Override
+	public String readString(String... filepath) throws PlayerDataException {
+		if (filepath.length == 0) {
+			throw new PlayerDataException("No file path specified");
+		}
+		try {
+			FileHandle file = resolve(filepath);
+			return file.readString();
+		} catch (Exception e) {
+			throw new PlayerDataException(e);
+		}
+	}
+
+	@Override
+	public void writeString(String content, String... filepath)
+			throws PlayerDataException {
+		if (filepath.length == 0) {
+			throw new PlayerDataException("No file path specified");
+		}
+		try {
+			FileHandle file = resolve(filepath);
+			file.writeString(content, false);
+		} catch (Exception e) {
+			throw new PlayerDataException(e);
+		}
+	}
+
+	@Override
+	public boolean delete(String... path) throws PlayerDataException {
+		if (path.length == 0) {
+			throw new PlayerDataException("No file path specified");
+		}
+		FileHandle file = resolve(path);
+		if(file.isDirectory()) {
+			return file.deleteDirectory();
+		}
+		return file.delete();
+	}
 
 	@Override
 	public boolean hasFile(String... filepath) throws PlayerDataException {

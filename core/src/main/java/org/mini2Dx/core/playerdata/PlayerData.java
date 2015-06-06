@@ -27,6 +27,32 @@ import org.mini2Dx.core.serialization.annotation.Field;
  */
 public interface PlayerData {
     /**
+     * Reads the contents of a file in the player data location into a {@link String}
+     * 
+     * @param filepath
+     *            The path to the file. This will be resolved as a path
+     *            within the game data location.
+     * @return A string containing the contents of the file
+     * @throws PlayerDataException
+     *             Thrown if the file does not exist
+     */
+    public String readString(String... filepath) throws PlayerDataException;
+    
+    /**
+     * Writes a {@link String} to a file in the player data location
+     * 
+     * @param content
+     *            The {@link String} to be written to the file
+     * @param filepath
+     *            The path to the file. This will be resolved as a path
+     *            within the game data location.
+     * @throws PlayerDataException
+     *             Thrown if the game data location cannot be accessed or the
+     *             data cannot be written to the file.
+     */
+    public void writeString(String content, String... filepath) throws PlayerDataException;
+	
+    /**
      * Converts XML from a file into an object. Note the object must use the
      * mini2Dx data annotations.
      * 
@@ -120,6 +146,18 @@ public interface PlayerData {
      *             directory could not be created
      */
     public void createDirectory(String... path) throws PlayerDataException;
+    
+    /**
+     * Deletes a file or directory within in the game data location
+     * 
+     * @param path
+     *            The path to the file or directory within the game data location
+     * @throws PlayerDataException
+     *             Thrown if the game data location cannot be accessed or the
+     *             file/directory could not be deleted
+     * @return True if the file or directory was deleted successfully
+     */
+    public boolean delete(String... path) throws PlayerDataException;
 
     /**
      * Wipes all data within the game data location

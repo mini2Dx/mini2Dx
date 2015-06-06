@@ -11,7 +11,6 @@
  */
 package org.mini2Dx.core.playerdata;
 
-import org.mini2Dx.core.serialization.SerializationException;
 
 /**
  * Thrown when an error occurs during {@link PlayerData} operations
@@ -23,7 +22,7 @@ public class PlayerDataException extends Exception {
 		super(message);
 	}
 	
-	public PlayerDataException(SerializationException exception) {
+	public PlayerDataException(Exception exception) {
 		super(exception.getMessage(), exception);
 	}
 }
