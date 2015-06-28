@@ -87,9 +87,13 @@ public class CollisionPoint extends Point implements Positionable {
 		}
 		positionChangeListenerLock.readLock().lock();
 		for (int i = positionChangeListeners.size() - 1; i >= 0; i--) {
-			PositionChangeListener<Positionable> listener = positionChangeListeners
-				.get(i);
+			if(i >= positionChangeListeners.size()) {
+				i = positionChangeListeners.size() - 1;
+			}
+			PositionChangeListener listener = positionChangeListeners.get(i);
+			positionChangeListenerLock.readLock().unlock();
 			listener.positionChanged(this);
+			positionChangeListenerLock.readLock().lock();
 		}
 		positionChangeListenerLock.readLock().unlock();
 	}

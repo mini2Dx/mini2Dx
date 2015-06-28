@@ -93,30 +93,36 @@ public class CollisionCircle extends Circle implements Positionable {
 		positionChangeListenerLock.writeLock().unlock();
 	}
 	
-	private void notifyPositionChanged() {
-		if(positionChangeListeners == null) {
+	private void notifyPositionChangeListeners() {
+		if (positionChangeListeners == null) {
 			return;
 		}
 		positionChangeListenerLock.readLock().lock();
-		for(PositionChangeListener<Positionable> listener : positionChangeListeners) {
+		for (int i = positionChangeListeners.size() - 1; i >= 0; i--) {
+			if(i >= positionChangeListeners.size()) {
+				i = positionChangeListeners.size() - 1;
+			}
+			PositionChangeListener listener = positionChangeListeners.get(i);
+			positionChangeListenerLock.readLock().unlock();
 			listener.positionChanged(this);
+			positionChangeListenerLock.readLock().lock();
 		}
 		positionChangeListenerLock.readLock().unlock();
 	}
 
 	public void setX(float x) {
 		super.setX(x);
-		notifyPositionChanged();
+		notifyPositionChangeListeners();
 	}
 	
 	public void setY(float y) {
 		super.setY(y);
-		notifyPositionChanged();
+		notifyPositionChangeListeners();
 	}
 	
 	public void setCenter(float x, float y) {
 		super.setCenter(x, y);
-		notifyPositionChanged();
+		notifyPositionChangeListeners();
 	}
 	
 	public float getRenderX() {

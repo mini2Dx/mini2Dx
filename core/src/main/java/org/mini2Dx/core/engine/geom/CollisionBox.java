@@ -13,7 +13,6 @@ package org.mini2Dx.core.engine.geom;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.mini2Dx.core.engine.PositionChangeListener;
@@ -34,7 +33,7 @@ public class CollisionBox extends Rectangle implements Positionable {
 	private static final long serialVersionUID = -8217730724587578266L;
 
 	private List<PositionChangeListener> positionChangeListeners;
-	private ReadWriteLock positionChangeListenerLock;
+	private ReentrantReadWriteLock positionChangeListenerLock;
 
 	private Rectangle previousRectangle;
 	private Rectangle renderRectangle;
@@ -104,8 +103,13 @@ public class CollisionBox extends Rectangle implements Positionable {
 		}
 		positionChangeListenerLock.readLock().lock();
 		for (int i = positionChangeListeners.size() - 1; i >= 0; i--) {
+			if(i >= positionChangeListeners.size()) {
+				i = positionChangeListeners.size() - 1;
+			}
 			PositionChangeListener listener = positionChangeListeners.get(i);
+			positionChangeListenerLock.readLock().unlock();
 			listener.positionChanged(this);
+			positionChangeListenerLock.readLock().lock();
 		}
 		positionChangeListenerLock.readLock().unlock();
 	}
