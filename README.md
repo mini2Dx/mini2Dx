@@ -6,7 +6,15 @@ mini2Dx
 
 A high-level game development API for LibGDX inspired by Slick
 
-*   [Official Website](http://mini2Dx.org/)
-*   [Wiki](https://github.com/tomcashman/mini2Dx/wiki)
-*   [Javadoc](http://javadoc.mini2dx.org/)
-*   [Downloads](http://downloads.mini2dx.org/)
+*   [Website](http://mini2Dx.org/)
+*   [Wiki](https://github.com/mini2Dx/mini2Dx/wiki)
+*   [Javadoc](http://mini2dx.org/learn/javadoc/)
+*   [Downloads](http://mini2dx.org/mini2dx/latest-release/)
+
+## Goals
+
+The main objective of mini2Dx is to provide a beginner-friendly, master-ready framework for rapidly prototyping and building 2D games in Java.
+
+## Contributing
+
+See the [Contributing Page](http://mini2dx.org/contribute/)
