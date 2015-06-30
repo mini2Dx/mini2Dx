@@ -1,0 +1,5 @@
+[1.0.1]
+- Fixed reentering issues with position listener locks
+
+[1.0.0]
+- Initial release
