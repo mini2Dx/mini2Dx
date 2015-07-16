@@ -10,7 +10,7 @@ buildscript {
     dependencies {
 		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
         classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath 'org.robovm:robovm-gradle-plugin:1.2.0'
+        classpath 'org.robovm:robovm-gradle-plugin:1.5.0'
     }
 }
 
@@ -47,12 +47,12 @@ subprojects {
     }
     
     ext {
-    	gdxVersion="1.6.1"
-		roboVMVersion="1.2.0"
+    	gdxVersion="1.6.4"
+		roboVMVersion="1.5.0"
 		androidVersion="4.4"
 		beanutilsVersion="1.8.3"
 		langVersion="3.1"
-		reflectionsVersion="0.9.9-RC1"
+		reflectionsVersion="0.9.10"
 		simpleXmlVersion="2.7.1"
 		
 		junitVersion="4.8.1"
