@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="10" height="8" tilewidth="32" tileheight="32" backgroundcolor="#0000ff">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="10" height="8" tilewidth="32" tileheight="32" backgroundcolor="#0000ff" nextobjectid="2">
  <properties>
   <property name="testMapProperty" value="SUCCESS"/>
  </properties>
@@ -29,7 +29,7 @@
    <property name="testLayerProperty" value="SUCCESS"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJxjYBhcYCmRarCp6wLibiL0zwLi2aQ4Cg8AAPlLBDo=
+   eJxjYBhcYCmRarCpWwbFhACx6ogBABiCBIg=
   </data>
  </layer>
  <layer name="Higher" width="10" height="8">
@@ -37,8 +37,8 @@
    eJxjYCAd7AfiA0g0LnAeiC8g0bjAfSB+gEQPJQAAXPgJuw==
   </data>
  </layer>
- <objectgroup name="Objects" width="10" height="8">
-  <object name="test" x="32" y="64" width="16" height="24">
+ <objectgroup name="Objects">
+  <object id="1" name="test" x="32" y="64" width="16" height="24">
    <properties>
     <property name="testProperty" value="SUCCESS"/>
    </properties>

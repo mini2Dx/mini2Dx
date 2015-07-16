@@ -416,6 +416,19 @@ public class TiledMap implements TiledParserListener {
 		}
 		return null;
 	}
+	
+	/**
+	 * Returns the {@link TileLayer} at the given index
+	 * 
+	 * @param index The index of the layer
+	 * @return Null if the index is out of bounds
+	 */
+	public TileLayer getTileLayer(int index) {
+		if(index < 0 || index >= tileLayers.size()) {
+			return null;
+		}
+		return tileLayers.get(index);
+	}
 
 	/**
 	 * Returns the {@link TiledObjectGroup} with the given name
@@ -463,6 +476,18 @@ public class TiledMap implements TiledParserListener {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns the {@link Tile} at the given coordinate on a specific layer
+	 * 
+	 * @param x The x coordinate (in tiles)
+	 * @param y The y coordinate (in tiles)
+	 * @param layer The layer index
+	 * @return Null if there is no {@link Tile}
+	 */
+	public Tile getTile(int x, int y, int layer) {
+		return getTile(tileLayers.get(layer).getTileId(x, y));
 	}
 
 	/**
