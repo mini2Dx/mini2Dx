@@ -1,4 +1,5 @@
 [1.1.0]
+- Updated to libGDX 1.6.4, roboVM 1.5.0 and reflections 0.9.10
 - Added utility classes for extracting collision data from TiledMap instances
 
 [1.0.1]
