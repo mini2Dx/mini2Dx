@@ -7,7 +7,7 @@
   <properties>
    <property name="testTilesetProperty" value="SUCCESS"/>
   </properties>
-  <image source="tileset.png" width="512" height="512"/>
+  <image source="orthogonal_tileset.png" width="512" height="512"/>
   <tile id="0">
    <properties>
     <property name="testTileProperty" value="SUCCESS"/>

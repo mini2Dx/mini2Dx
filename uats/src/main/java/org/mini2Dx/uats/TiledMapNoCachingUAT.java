@@ -38,7 +38,7 @@ public class TiledMapNoCachingUAT extends BasicGameScreen {
     @Override
     public void initialise(GameContainer gc) {
         try {
-            tiledMap = new TiledMap(Gdx.files.classpath("simple.tmx"), true, false);
+            tiledMap = new TiledMap(Gdx.files.classpath("orthogonal.tmx"), true, false);
         } catch (TiledException e) {
             e.printStackTrace();
         }

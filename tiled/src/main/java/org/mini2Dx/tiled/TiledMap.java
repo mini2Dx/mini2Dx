@@ -97,13 +97,16 @@ public class TiledMap implements TiledParserListener {
 		}
 
 		switch (orientation) {
-		case ISOMETRIC:
-			// TODO: Add renderer for isometric maps
-			break;
 		case ORTHOGONAL:
 			tileLayerRenderer = new OrthogonalTileLayerRenderer(this, cacheLayers);
 			break;
-		case STAGGERED:
+		case ISOMETRIC_NORMAL:
+			// TODO: Add renderer for isometric maps
+			break;
+		case ISOMETRIC_STAGGERED:
+			// TODO: Add renderer for isometric maps
+			break;
+		case HEXAGONAL_STAGGERED:
 			// TODO: Add renderer for hexagonal maps
 			break;
 		case UNKNOWN:
