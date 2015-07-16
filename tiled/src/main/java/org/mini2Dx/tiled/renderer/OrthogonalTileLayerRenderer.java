@@ -176,6 +176,9 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 
 	@Override
 	public void dispose() {
+		if(layerCache == null) {
+			return;
+		}
 		layerCache.dispose();
 	}
 
