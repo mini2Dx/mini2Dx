@@ -24,9 +24,10 @@ import org.mini2Dx.uats.BlendingUAT;
 import org.mini2Dx.uats.ClippingUAT;
 import org.mini2Dx.uats.GeometryUAT;
 import org.mini2Dx.uats.GraphicsUAT;
+import org.mini2Dx.uats.IsometricTiledMapUAT;
 import org.mini2Dx.uats.ParticleEffectsUAT;
-import org.mini2Dx.uats.TiledMapNoCachingUAT;
-import org.mini2Dx.uats.TiledMapWithCachingUAT;
+import org.mini2Dx.uats.OrthogonalTiledMapNoCachingUAT;
+import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -94,10 +95,12 @@ public class UATSelectionScreen extends BasicGameScreen {
         } else if(Gdx.input.isKeyJustPressed(Keys.NUM_4)) {
             screenManager.enterGameScreen(ScreenIds.getScreenId(GraphicsUAT.class), new FadeOutTransition(), new FadeInTransition());
         } else if(Gdx.input.isKeyJustPressed(Keys.NUM_5)) {
-            screenManager.enterGameScreen(ScreenIds.getScreenId(TiledMapNoCachingUAT.class), new FadeOutTransition(), new FadeInTransition());
+            screenManager.enterGameScreen(ScreenIds.getScreenId(OrthogonalTiledMapNoCachingUAT.class), new FadeOutTransition(), new FadeInTransition());
         } else if(Gdx.input.isKeyJustPressed(Keys.NUM_6)) {
-            screenManager.enterGameScreen(ScreenIds.getScreenId(TiledMapWithCachingUAT.class), new FadeOutTransition(), new FadeInTransition());
+            screenManager.enterGameScreen(ScreenIds.getScreenId(OrthogonalTiledMapWithCachingUAT.class), new FadeOutTransition(), new FadeInTransition());
         } else if(Gdx.input.isKeyJustPressed(Keys.NUM_7)) {
+            screenManager.enterGameScreen(ScreenIds.getScreenId(IsometricTiledMapUAT.class), new FadeOutTransition(), new FadeInTransition());
+        } else if(Gdx.input.isKeyJustPressed(Keys.NUM_8)) {
             screenManager.enterGameScreen(ScreenIds.getScreenId(ParticleEffectsUAT.class), new FadeOutTransition(), new FadeInTransition());
         }
     }
@@ -109,9 +112,10 @@ public class UATSelectionScreen extends BasicGameScreen {
         g.drawString("2. Clipping UAT", 32, 64 + lineHeight + 4);
         g.drawString("3. Geometry UAT", 32, 64 + (lineHeight * 2) + 8);
         g.drawString("4. Graphics UAT", 32, 64 + (lineHeight * 3) + 12);
-        g.drawString("5. TiledMap (No Caching) UAT", 32, 64 + (lineHeight * 4) + 16);
-        g.drawString("6. TiledMap (With Caching) UAT", 32, 64 + (lineHeight * 5) + 20);
-        g.drawString("7. Particle Effects UAT", 32, 64 + (lineHeight * 6) + 24);
+        g.drawString("5. Orthogonal TiledMap (No Caching) UAT", 32, 64 + (lineHeight * 4) + 16);
+        g.drawString("6. Orthogonal TiledMap (With Caching) UAT", 32, 64 + (lineHeight * 5) + 20);
+        g.drawString("7. Isometric TiledMap (No Caching) UAT", 32, 64 + (lineHeight * 6) + 24);
+        g.drawString("8. Particle Effects UAT", 32, 64 + (lineHeight * 7) + 28);
     }
     
     private void updateMobileMenu(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,

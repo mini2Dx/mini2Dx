@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="isometric" renderorder="right-down" width="10" height="10" tilewidth="128" tileheight="64" nextobjectid="1">
- <tileset firstgid="1" name="tileset" tilewidth="128" tileheight="128">
-  <image source="isometric_tileset.png" width="1024" height="896"/>
+<map version="1.0" orientation="isometric" renderorder="right-down" width="10" height="10" tilewidth="64" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="tileset" tilewidth="64" tileheight="64">
+  <image source="isometric_tileset.png" width="512" height="448"/>
  </tileset>
  <layer name="Ground" width="10" height="10">
   <data encoding="base64" compression="zlib">
-   eJxjYWBgYAFiESBmBmI2IGbEgiXxqGNCYstgUceEZhYTVA0x9hJSx0SkOmLMYyLBXnzqmLCYSax5AJnrAdk=
+   eJxjYWBgYAFiESBmBmI2IGbEglnwqGMioI4JzSwmAuYRay+y3dQwj5A/iDWPCYuZxJoHAF5jAaw=
   </data>
  </layer>
  <layer name="Collisions" width="10" height="10">
   <data encoding="base64" compression="zlib">
-   eJxjYEAFJgy4gQ4SWx+IzdDwKKAcAADlxwFo
+   eJxjYEAFFgy4gRYSWx+ITdHwKKAcAADjxwFm
   </data>
  </layer>
 </map>

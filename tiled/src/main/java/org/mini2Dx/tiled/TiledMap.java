@@ -21,6 +21,7 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.tiled.exception.TiledException;
 import org.mini2Dx.tiled.exception.TiledParsingException;
 import org.mini2Dx.tiled.exception.UnsupportedOrientationException;
+import org.mini2Dx.tiled.renderer.IsometricTileLayerRenderer;
 import org.mini2Dx.tiled.renderer.OrthogonalTileLayerRenderer;
 import org.mini2Dx.tiled.renderer.TileLayerRenderer;
 
@@ -100,8 +101,8 @@ public class TiledMap implements TiledParserListener {
 		case ORTHOGONAL:
 			tileLayerRenderer = new OrthogonalTileLayerRenderer(this, cacheLayers);
 			break;
-		case ISOMETRIC_NORMAL:
-			// TODO: Add renderer for isometric maps
+		case ISOMETRIC:
+			tileLayerRenderer = new IsometricTileLayerRenderer(this, cacheLayers);
 			break;
 		case ISOMETRIC_STAGGERED:
 			// TODO: Add renderer for isometric maps

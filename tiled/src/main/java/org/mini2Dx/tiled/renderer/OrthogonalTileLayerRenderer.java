@@ -31,8 +31,8 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 	private SpriteCache layerCache;
 	private Map<Integer, Integer> layerCacheIds;
 
-	private boolean cacheLayers;
-	private TiledMap tiledMap;
+	private final boolean cacheLayers;
+	private final TiledMap tiledMap;
 
 	public OrthogonalTileLayerRenderer(TiledMap tiledMap, boolean cacheLayers) {
 		this.cacheLayers = cacheLayers;
@@ -116,30 +116,32 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 					&& x < layer.getWidth(); x++) {
 				int tileId = layer.getTileId(x, y);
 
-				if (tileId > 0) {
-					int tileRenderX = x * tiledMap.getTileWidth();
-					int tileRenderY = y * tiledMap.getTileHeight();
-					
-					if(tileRenderX < g.getTranslationX() - (tiledMap.getTileWidth() * 2)) {
-						continue;
-					}
-					if(tileRenderY < g.getTranslationY() - (tiledMap.getTileHeight() * 2)) {
-						continue;
-					}
-					if(tileRenderX > g.getTranslationX() + g.getCurrentWidth()) {
-						continue;
-					}
-					if(tileRenderY > g.getTranslationY() + g.getCurrentHeight()) {
-						continue;
-					}
+				if (tileId < 1) {
+					continue;
+				}
+				
+				int tileRenderX = x * tiledMap.getTileWidth();
+				int tileRenderY = y * tiledMap.getTileHeight();
+				
+				if(tileRenderX < g.getTranslationX() - (tiledMap.getTileWidth() * 2)) {
+					continue;
+				}
+				if(tileRenderY < g.getTranslationY() - (tiledMap.getTileHeight() * 2)) {
+					continue;
+				}
+				if(tileRenderX > g.getTranslationX() + g.getCurrentWidth()) {
+					continue;
+				}
+				if(tileRenderY > g.getTranslationY() + g.getCurrentHeight()) {
+					continue;
+				}
 
-					for (int i = 0; i < tiledMap.getTilesets().size(); i++) {
-						Tileset tileset = tiledMap.getTilesets().get(i);
-						if (tileset.contains(tileId)) {
-							g.drawTextureRegion(tileset.getTile(tileId)
-									.getTileImage(), tileRenderX, tileRenderY);
-							break;
-						}
+				for (int i = 0; i < tiledMap.getTilesets().size(); i++) {
+					Tileset tileset = tiledMap.getTilesets().get(i);
+					if (tileset.contains(tileId)) {
+						g.drawTextureRegion(tileset.getTile(tileId)
+								.getTileImage(), tileRenderX, tileRenderY);
+						break;
 					}
 				}
 			}
