@@ -358,8 +358,11 @@ public class Graphics {
 	 *            texture if not matching the region's height)
 	 */
 	public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height) {
+		if (!textureRegion.isFlipY()) {
+			textureRegion.flip(false, true);
+		}
 		beginRendering();
-		spriteBatch.draw(textureRegion, x, y + height, 0f, 0f, width, -height, 1f, 1f, 0f);
+		spriteBatch.draw(textureRegion, x, y, 0f, 0f, width, height, 1f, 1f, 0f);
 	}
 
 	/**
