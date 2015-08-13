@@ -12,7 +12,6 @@
 package org.mini2Dx.core.graphics;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Wraps {@link com.badlogic.gdx.graphics.g2d.Sprite} to auto-flip
@@ -26,7 +25,6 @@ public class Sprite extends com.badlogic.gdx.graphics.g2d.Sprite {
 	 */
 	public Sprite() {
 		super();
-		flip(false, true);
 	}
 
 	/**
@@ -34,8 +32,7 @@ public class Sprite extends com.badlogic.gdx.graphics.g2d.Sprite {
 	 * of the texture.
 	 */
 	public Sprite(Texture texture) {
-		super(texture);
-		flip(false, true);
+		this(texture, texture.getWidth(), texture.getHeight());
 	}
 
 	/**
@@ -50,8 +47,7 @@ public class Sprite extends com.badlogic.gdx.graphics.g2d.Sprite {
 	 *            sprite when drawn.
 	 */
 	public Sprite(Texture texture, int srcWidth, int srcHeight) {
-		super(texture, srcWidth, srcHeight);
-		flip(false, true);
+		this(texture, 0, 0, srcWidth, srcHeight);
 	}
 
 	/**
@@ -70,7 +66,7 @@ public class Sprite extends com.badlogic.gdx.graphics.g2d.Sprite {
 	public Sprite(Texture texture, int srcX, int srcY, int srcWidth,
 			int srcHeight) {
 		super(texture, srcX, srcY, srcWidth, srcHeight);
-		flip(false, true);
+		setFlip(false, true);
 	}
 
 	/**
@@ -80,7 +76,6 @@ public class Sprite extends com.badlogic.gdx.graphics.g2d.Sprite {
 	 */
 	public Sprite(TextureRegion region) {
 		super(region);
-		flip(false, true);
 	}
 
 	/**
@@ -99,7 +94,6 @@ public class Sprite extends com.badlogic.gdx.graphics.g2d.Sprite {
 	public Sprite(TextureRegion region, int srcX, int srcY, int srcWidth,
 			int srcHeight) {
 		super(region, srcX, srcY, srcWidth, srcHeight);
-		flip(false, true);
 	}
 
 	/** Creates a sprite that is a copy in every way of the specified sprite. */

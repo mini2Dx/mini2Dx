@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.graphics.TextureRegion;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -22,7 +23,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * A tileset loaded with a {@link TiledMap}
@@ -183,7 +183,6 @@ public class Tileset {
 				int tileY = margin + (y * spacing) + (y * tileHeight);
 				TextureRegion tileImage = new TextureRegion(texture, tileX, tileY,
 						tileWidth, tileHeight);
-				tileImage.flip(false, true);
 				tiles[x][y].setTileImage(tileImage);
 			}
 		}

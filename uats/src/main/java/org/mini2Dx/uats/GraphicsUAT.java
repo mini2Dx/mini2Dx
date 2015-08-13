@@ -15,6 +15,7 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Animation;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
+import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
@@ -38,7 +39,9 @@ public class GraphicsUAT extends BasicGameScreen {
 	private float scaleX, scaleY;
 	private int rotation;
 	
-	private Sprite sprite;
+	private Texture texture;
+	private TextureRegion textureRegion;
+	private Sprite spriteWithTexture, spriteWithTextureRegion;
 	private Animation<Sprite> animation;
 
     @Override
@@ -49,13 +52,17 @@ public class GraphicsUAT extends BasicGameScreen {
         scaleY = 2f;
         rotation = 0;
         
-        sprite = new Sprite(new Texture(Gdx.files.internal("tank.png")));
-        sprite.flip(false, true);
-        sprite.setPosition(512, 0);
+        texture = new Texture(Gdx.files.internal("tank.png"));
+        textureRegion = new TextureRegion(texture);
+        
+        spriteWithTexture = new Sprite(texture);
+        spriteWithTexture.setPosition(512, 0);
+        
+        spriteWithTextureRegion = new Sprite(textureRegion);
         
         animation = new Animation<Sprite>();
-        animation.addFrame(sprite, 1000);
-        animation.setOriginX(sprite.getWidth() / 2f);
+        animation.addFrame(new Sprite(texture), 1000);
+        animation.setOriginX(spriteWithTexture.getWidth() / 2f);
         animation.setOriginY(0f);
     }
 
@@ -105,12 +112,15 @@ public class GraphicsUAT extends BasicGameScreen {
         g.drawString("Hello, world!", 0, 256);
         
         g.scale(0.5f, 0.5f);
-        g.drawSprite(sprite);
-        g.drawSprite(sprite, 512, 64);
+        g.drawSprite(spriteWithTexture);
+        g.drawSprite(spriteWithTexture, 512, 64);
+        g.drawTexture(texture, 512, 128);
+        g.drawTextureRegion(textureRegion, 512, 192);
         
         g.drawLineSegment(512, 128, 620, 160);
         
-        animation.draw(g, 512, 128);
+        animation.draw(g, 512, 256);
+        g.drawSprite(spriteWithTextureRegion, 512, 320);
         
         g.drawLineSegment(512, 160, 620, 224);
     }
