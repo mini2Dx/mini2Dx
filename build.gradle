@@ -79,6 +79,10 @@ configure(docProjects()) {
 project(":" + rootProject.name + "-core") {
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
+    
+    configurations {
+	    testOutput.extendsFrom (testCompile)
+	}
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -92,6 +96,15 @@ project(":" + rootProject.name + "-core") {
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
     }
+    
+	task testJar(type: Jar, dependsOn: testClasses) {
+	    from sourceSets.test.output
+	    classifier = 'test'
+	}
+    
+    artifacts {
+	    testOutput testJar
+	}
 }
 
 project(":" + rootProject.name + "-desktop") {
@@ -113,7 +126,7 @@ project(":" + rootProject.name + "-desktop") {
     	testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
-		testCompile project(":" + rootProject.name + "-core").sourceSets.test.output
+		testCompile project(path: ":" + rootProject.name + "-core", configuration: 'testOutput')
     }
 }
 
@@ -171,7 +184,7 @@ if (hasAndroidSdk()) {
 			testCompile "junit:junit:$junitVersion"
 			testCompile "org.jmock:jmock-junit4:$jmockVersion"
 			testCompile "org.jmock:jmock-legacy:$jmockVersion"
-			testCompile project(":" + rootProject.name + "-core").sourceSets.test.output
+			testCompile project(path: ":" + rootProject.name + "-core", configuration: 'testOutput')
 		}
 	}
 	
