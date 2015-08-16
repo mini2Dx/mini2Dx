@@ -1,6 +1,10 @@
+[1.2.0]
+- (#28) Added artemis-odb integration
+- (#35) Added mini2Dx TextureRegion wrapper class
+
 [1.1.0]
 - Updated to libGDX 1.6.4, roboVM 1.5.0 and reflections 0.9.10
-- Added isometric Tiled map support
+- (#25) Added isometric Tiled map support
 - Added utility classes for extracting collision data from TiledMap instances
 - Fixed exception when disposing orthogonal TiledMaps that do not use caching
 
