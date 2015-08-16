@@ -54,6 +54,7 @@ subprojects {
 		langVersion="3.1"
 		reflectionsVersion="0.9.10"
 		simpleXmlVersion="2.7.1"
+		artemisVersion="0.11.3"
 		
 		junitVersion="4.8.1"
 		jmockVersion="2.5.1"
@@ -133,6 +134,17 @@ project(":" + rootProject.name + "-desktop") {
 project(":" + rootProject.name + "-tiled") {
     dependencies {
 		compile project(":" + rootProject.name + "-core")
+		
+		testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+    }
+}
+
+project(":" + rootProject.name + "-artemis-odb") {
+    dependencies {
+		compile project(":" + rootProject.name + "-core")
+		compile "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
 		
 		testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"

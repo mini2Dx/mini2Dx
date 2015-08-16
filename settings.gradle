@@ -18,7 +18,7 @@ boolean hasAndroidSdk() {
 	}
 }
 
-include "core", "desktop", "tiled", "uats", "uats-desktop"
+include "core", "desktop", "tiled", "artemis-odb", "uats", "uats-desktop"
 
 if (hasAndroidSdk()) {
 	include "android", "uats-android"
