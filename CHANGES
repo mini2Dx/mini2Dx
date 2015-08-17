@@ -1,6 +1,7 @@
 [1.2.0]
 - (#28) Added artemis-odb integration
-- (#35) Added mini2Dx TextureRegion wrapper class
+- (#35) Added TextureRegion wrapper class
+- Added forceTo(x, y) method to CollisionPoint and CollisionCircle
 
 [1.1.0]
 - Updated to libGDX 1.6.4, roboVM 1.5.0 and reflections 0.9.10

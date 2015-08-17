@@ -109,6 +109,28 @@ public class CollisionCircle extends Circle implements Positionable {
 		}
 		positionChangeListenerLock.readLock().unlock();
 	}
+	
+	/**
+	 * Sets the current x and y coordinate to the specified x and y and force updates the
+	 * rendering position to match
+	 * 
+	 * @param x
+	 *            The x coordinate to set
+	 * @param y
+	 *            The y coordinate to set
+	 */
+	public void forceTo(float x, float y) {
+		boolean notifyPositionListeners = x != getX() || y != getY();
+		
+		super.setCenter(x, y);
+		previousCircle.setCenter(x, y);
+		renderCircle.setCenter(x, y);
+		
+		if(!notifyPositionListeners) {
+			return;
+		}
+		notifyPositionChangeListeners();
+	}
 
 	public void setX(float x) {
 		super.setX(x);

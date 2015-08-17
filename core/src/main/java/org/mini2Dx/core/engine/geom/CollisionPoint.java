@@ -120,6 +120,28 @@ public class CollisionPoint extends Point implements Positionable {
 		positionChangeListenerLock.writeLock().unlock();
 	}
 	
+	/**
+	 * Sets the current x and y coordinate to the specified x and y and force updates the
+	 * rendering position to match
+	 * 
+	 * @param x
+	 *            The x coordinate to set
+	 * @param y
+	 *            The y coordinate to set
+	 */
+	public void forceTo(float x, float y) {
+		boolean notifyPositionListeners = x != getX() || y != getY();
+		
+		super.set(x, y);
+		previousPosition.set(x, y);
+		renderPosition.set(x, y);
+		
+		if(!notifyPositionListeners) {
+			return;
+		}
+		notifyPositionChangeListeners();
+	}
+	
 	@Override
 	public Vector2 set(float x, float y) {
 		super.set(x, y);
