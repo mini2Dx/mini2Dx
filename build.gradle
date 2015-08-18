@@ -266,17 +266,26 @@ task wrapper(type: Wrapper) {
 
 boolean hasAndroidSdk() {
 	try {
-		def androidHome = "$System.env.ANDROID_HOME"
+		def androidHome = "$sdk.dir"
+		if(androidHome != null && androidHome.length() > 0) {
+			return true;
+		}
+	
+		androidHome = "$System.env.ANDROID_HOME"
 		if(androidHome != null && androidHome.length() > 0) {
 			return true;
 		}
 		
-		def androidExecPath = new ByteArrayOutputStream()
-		exec {
-			commandLine 'which', 'android'
-			standardOutput = androidExecPath
+		if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+			return false;
+		} else {
+			def androidExecPath = new ByteArrayOutputStream()
+			exec {
+				commandLine 'which', 'android'
+				standardOutput = androidExecPath
+			}
+			return androidExecPath.toString() != null && androidExecPath.toString().trim().length() > 0;
 		}
-		return androidExecPath.toString() != null && androidExecPath.toString().trim().length() > 0;
 	} catch (all) {
 		return false
 	}
