@@ -2,6 +2,7 @@
 - (#28) Added artemis-odb integration
 - (#35) Added TextureRegion wrapper class
 - Added forceTo(x, y) method to CollisionPoint and CollisionCircle
+- Fixed tile image and id calculation for tilesets with margin and/or spacing
 
 [1.1.0]
 - Updated to libGDX 1.6.4, roboVM 1.5.0 and reflections 0.9.10
