@@ -270,23 +270,34 @@ boolean hasAndroidSdk() {
 		if(androidHome != null && androidHome.length() > 0) {
 			return true;
 		}
-	
-		androidHome = "$System.env.ANDROID_HOME"
+	} catch (all) {
+		println all
+	}
+	try {
+		def androidHome = "$System.env.ANDROID_HOME"
 		if(androidHome != null && androidHome.length() > 0) {
 			return true;
 		}
-		
+	} catch (all) {
+		println all
+	}
+	
+	try {
+		def androidExecPath = new ByteArrayOutputStream()
 		if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-			return false;
+			exec {
+				commandLine 'where', 'android'
+				standardOutput = androidExecPath
+			}
 		} else {
-			def androidExecPath = new ByteArrayOutputStream()
 			exec {
 				commandLine 'which', 'android'
 				standardOutput = androidExecPath
 			}
-			return androidExecPath.toString() != null && androidExecPath.toString().trim().length() > 0;
 		}
+		return androidExecPath.toString() != null && androidExecPath.toString().trim().length() > 0;
 	} catch (all) {
-		return false
+		println all
 	}
+	return false
 }
