@@ -266,10 +266,11 @@ public class Tileset {
 	 */
 	public int getWidthInTiles() {
 		if (widthInTiles < 0) {
-			widthInTiles = (width - (margin * 2)) / tileWidth;
-
-			int xSpacing = (widthInTiles - 1) * spacing;
-			widthInTiles = (width - (margin * 2) - xSpacing) / tileWidth;
+			int result = 0;
+			for(int x = margin; x <= width - tileWidth; x += tileWidth + spacing) {
+				result++;
+			}
+			widthInTiles = result;
 		}
 		return widthInTiles;
 	}
@@ -281,10 +282,11 @@ public class Tileset {
 	 */
 	public int getHeightInTiles() {
 		if (heightInTiles < 0) {
-			heightInTiles = (height - (margin * 2)) / tileHeight;
-
-			int ySpacing = (heightInTiles - 1) * spacing;
-			heightInTiles = (height - (margin * 2) - ySpacing) / tileHeight;
+			int result = 0;
+			for(int y = margin; y <= height - tileHeight; y += tileHeight + spacing) {
+				result++;
+			}
+			heightInTiles = result;
 		}
 		return heightInTiles;
 	}
