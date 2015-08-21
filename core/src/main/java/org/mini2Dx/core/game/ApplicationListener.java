@@ -9,30 +9,21 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.ios;
+package org.mini2Dx.core.game;
 
-import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.core.game.Mini2DxGame;
-import org.mini2Dx.ios.di.IOSDependencyInjection;
-import org.mini2Dx.ios.playerdata.IOSPlayerData;
-import org.mini2Dx.ios.serialization.IOSXmlSerializer;
+import com.badlogic.gdx.Application;
 
 /**
- * iOS implementation of {@link Mini2DxGame}
- *
- * @author Thomas Cashman
+ * Extends {@link com.badlogic.gdx.ApplicationListener} to add update and interpolate methods.<br />
+ * <br />
+ * An <code>ApplicationListener</code> is called when the {@link Application} is created, resumed, rendering, paused or destroyed.
+ * All methods are called in a thread that has the OpenGL context current. You can thus safely create and manipulate graphics
+ * resources.
  */
-public class IOSMini2DxGame extends Mini2DxGame {
-	public IOSMini2DxGame(String gameIdentifier, GameContainer gc) {
-		super(gameIdentifier, gc);
-	}
-
-	@Override
-	protected void initialiseM2Dx(String gameIdentifier) {
-		Mdx.xml = new IOSXmlSerializer();
-		Mdx.di = new IOSDependencyInjection();
-		Mdx.playerData = new IOSPlayerData();
-	}
-
+public interface ApplicationListener extends com.badlogic.gdx.ApplicationListener {
+	/** Called when the {@link Application} should update itself. */
+	public void update (float delta);
+	
+	/** Called when the {@link Application} should interpolate itself. */
+	public void interpolate (float alpha);
 }

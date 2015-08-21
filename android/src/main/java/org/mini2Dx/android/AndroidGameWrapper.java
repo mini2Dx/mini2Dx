@@ -9,29 +9,32 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.desktop;
+package org.mini2Dx.android;
 
+import org.mini2Dx.android.di.AndroidDependencyInjection;
+import org.mini2Dx.android.playerdata.AndroidPlayerData;
+import org.mini2Dx.android.serialization.AndroidXmlSerializer;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.core.game.Mini2DxGame;
-import org.mini2Dx.desktop.di.DesktopDependencyInjection;
-import org.mini2Dx.desktop.playerdata.DesktopPlayerData;
-import org.mini2Dx.desktop.serialization.DesktopXmlSerializer;
+import org.mini2Dx.core.game.GameWrapper;
+
+import android.content.Context;
 
 /**
- * Desktop implementation of {@link Mini2DxGame}
+ * Android implementation of {@link GameWrapper}
  */
-public class DesktopMini2DxGame extends Mini2DxGame {
+public class AndroidGameWrapper extends GameWrapper {
+	private final Context applicationContext;
 
-	public DesktopMini2DxGame(String gameIdentifier, GameContainer gc) {
-		super(gameIdentifier, gc);
+	public AndroidGameWrapper(Context applicationContext, GameContainer gc, String gameIdentifier) {
+		super(gc, gameIdentifier);
+		this.applicationContext = applicationContext;
 	}
 
 	@Override
-	protected void initialiseM2Dx(String gameIdentifier) {
-		Mdx.xml = new DesktopXmlSerializer();
-		Mdx.di = new DesktopDependencyInjection();
-		Mdx.playerData = new DesktopPlayerData(gameIdentifier);
+	public void initialise(String gameIdentifier) {
+		Mdx.xml = new AndroidXmlSerializer();
+		Mdx.di = new AndroidDependencyInjection(applicationContext);
+		Mdx.playerData = new AndroidPlayerData();
 	}
-
 }

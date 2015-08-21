@@ -15,6 +15,12 @@ A high-level game development API for LibGDX inspired by Slick
 
 The main objective of mini2Dx is to provide a beginner-friendly, master-ready framework for rapidly prototyping and building 2D games in Java.
 
+## License
+
+The project is licensed under the BSD 3-Clause License.
+
+However, some classes are based on LibGDX's code and are licensed under the Apache License Version 2.0 per LibGDX's license. Such classes are placed under ```com.badlogic.gdx``` packages.
+
 ## Contributing
 
 See the [Contributing Page](http://mini2dx.org/contribute/)

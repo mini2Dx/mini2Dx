@@ -11,9 +11,10 @@
  */
 package org.mini2Dx.uats.desktop;
 
-import org.mini2Dx.desktop.DesktopMini2DxGame;
+import org.mini2Dx.desktop.DesktopMini2DxConfig;
 import org.mini2Dx.uats.util.UATApplication;
 
+import com.badlogic.gdx.backends.lwjgl.DesktopMini2DxGame;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -22,14 +23,12 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
  */
 public class DesktopUATApplication {
     public static void main(String[] args) {
-        LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
+        DesktopMini2DxConfig cfg = new DesktopMini2DxConfig("org.mini2Dx.uats");
         cfg.title = "mini2Dx - User Acceptance Tests";
         cfg.width = 800;
         cfg.height = 600;
         cfg.stencil = 8;
         cfg.vSyncEnabled = true;
-        cfg.foregroundFPS = 0;
-        cfg.backgroundFPS = 0;
-        new LwjglApplication(new DesktopMini2DxGame("org.mini2Dx.uats", new UATApplication()), cfg);
+        new DesktopMini2DxGame(new UATApplication(), cfg);
     }
 }

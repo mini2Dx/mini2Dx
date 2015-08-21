@@ -24,7 +24,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * Base class for mini2Dx game containers. All games using mini2Dx must extend
  * this.
  */
-public abstract class GameContainer implements Screen {
+public abstract class GameContainer {
 	public static final float MAXIMUM_DELTA = (1f / 60f);
 	
 	private float accumulator = 0f;
@@ -73,25 +73,12 @@ public abstract class GameContainer implements Screen {
 	
 	public abstract void onResume();
 
-	@Override
-	public void render(float delta) {
-		if(delta > MAXIMUM_DELTA)
-			delta = MAXIMUM_DELTA;
-		
-		accumulator += delta;
-		
-		while(accumulator >= targetDelta) {
-			update(targetDelta);
-			accumulator -= targetDelta;
-		}
-		interpolate(accumulator / targetDelta);
-		
+	public void render() {
 		graphics.preRender(width, height);
 		render(graphics);
 		graphics.postRender();
 	}
-
-	@Override
+	
 	public void resize(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -121,9 +108,8 @@ public abstract class GameContainer implements Screen {
 	 * Internal post-initialisation code
 	 */
 	protected void postinit() {}
-
-	@Override
-	public void show() {
+	
+	public void start() {
 		this.width = Gdx.graphics.getWidth();
 		this.height = Gdx.graphics.getHeight();
 		
@@ -135,22 +121,8 @@ public abstract class GameContainer implements Screen {
 		}
 	}
 	
-	@Override
 	public void dispose() {
-	}
-
-	@Override
-	public void hide() {
-	}
-	
-	@Override
-	public void pause() {
-		onPause();
-	}
-
-	@Override
-	public void resume() {
-		onResume();
+		
 	}
 
 	public int getWidth() {

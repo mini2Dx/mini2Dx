@@ -9,23 +9,29 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.uats.android;
+package org.mini2Dx.desktop;
 
-import org.mini2Dx.android.AndroidMini2DxConfig;
-import org.mini2Dx.uats.util.UATApplication;
-
-import com.badlogic.gdx.backends.android.AndroidMini2DxGame;
-
-import android.os.Bundle;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.core.game.GameWrapper;
+import org.mini2Dx.desktop.di.DesktopDependencyInjection;
+import org.mini2Dx.desktop.playerdata.DesktopPlayerData;
+import org.mini2Dx.desktop.serialization.DesktopXmlSerializer;
 
 /**
- * Main entry point for Android UAT app
+ * Desktop implementation of {@link GameWrapper}
  */
-public class AndroidUATApplication extends AndroidMini2DxGame {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        AndroidMini2DxConfig config = new AndroidMini2DxConfig("");
-        initialize(new UATApplication(), config);
-    }
+public class DesktopGameWrapper extends GameWrapper {
+
+	public DesktopGameWrapper(GameContainer gc, String gameIdentifier) {
+		super(gc, gameIdentifier);
+	}
+
+	@Override
+	public void initialise(String gameIdentifier) {
+		Mdx.xml = new DesktopXmlSerializer();
+		Mdx.di = new DesktopDependencyInjection();
+		Mdx.playerData = new DesktopPlayerData(gameIdentifier);
+	}
+
 }

@@ -11,36 +11,85 @@
  */
 package org.mini2Dx.core.game;
 
-import org.mini2Dx.core.Mdx;
-
 import com.badlogic.gdx.Game;
 
 /**
  * An abstract implementation of {@link Game} for launching mini2Dx games
  */
-public abstract class Mini2DxGame extends Game {
-	private GameContainer gameContainer;
+public abstract class GameWrapper implements ApplicationListener {
+	private final GameContainer gameContainer;
 	private final String gameIdentifier;
 
 	/**
 	 * Constructor
-	 * @param gameIdentifier A reverse domain for your application (e.g. org.mini2Dx.example.gamename)
 	 * @param gc The {@link GameContainer} which implements the developer's game
 	 */
-	public Mini2DxGame(String gameIdentifier, GameContainer gc) {
+	public GameWrapper(GameContainer gc, String gameIdentifier) {
 		this.gameContainer = gc;
 		this.gameIdentifier = gameIdentifier;
 	}
 	
-	/**
-	 * Initialises {@link Mdx} with platform-specific implementations
-	 * @param gameIdentifier TODO
-	 */
-	protected abstract void initialiseM2Dx(String gameIdentifier);
-
+	public abstract void initialise(String gameIdentifier);
+	
 	@Override
 	public void create() {
-		initialiseM2Dx(gameIdentifier);
-		this.setScreen(gameContainer);
+		initialise(gameIdentifier);
+		gameContainer.start();
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		if(gameContainer == null) {
+			return;
+		}
+		gameContainer.resize(width, height);
+	}
+	
+	@Override
+	public void update(float delta) {
+		if(gameContainer == null) {
+			return;
+		}
+		gameContainer.update(delta);
+	}
+
+	@Override
+	public void interpolate(float alpha) {
+		if(gameContainer == null) {
+			return;
+		}
+		gameContainer.interpolate(alpha);
+	}
+
+	@Override
+	public void render() {
+		if(gameContainer == null) {
+			return;
+		}
+		gameContainer.render();
+	}
+
+	@Override
+	public void pause() {
+		if(gameContainer == null) {
+			return;
+		}
+		gameContainer.onPause();
+	}
+
+	@Override
+	public void resume() {
+		if(gameContainer == null) {
+			return;
+		}
+		gameContainer.onResume();
+	}
+
+	@Override
+	public void dispose() {
+		if(gameContainer == null) {
+			return;
+		}
+		gameContainer.dispose();
 	}
 }

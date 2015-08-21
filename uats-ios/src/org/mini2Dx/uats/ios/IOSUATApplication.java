@@ -11,22 +11,21 @@
  */
 package org.mini2Dx.uats.ios;
 
-import org.mini2Dx.ios.IOSMini2DxGame;
+import org.mini2Dx.ios.IOSMini2DxConfig;
 import org.mini2Dx.uats.util.UATApplication;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.uikit.UIApplication;
 
-import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
-import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
+import com.badlogic.gdx.backends.iosrobovm.IOSMini2DxGame;
 
 /**
  * Main entry point for iOS UAT app
  */
-public class IOSUATApplication extends IOSApplication.Delegate {
+public class IOSUATApplication extends IOSMini2DxGame.Delegate {
     @Override
-    protected IOSApplication createApplication() {
-        IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-        return new IOSApplication(new IOSMini2DxGame("org.mini2Dx.uats", new UATApplication()), config);
+    protected IOSMini2DxGame createApplication() {
+        IOSMini2DxConfig config = new IOSMini2DxConfig("org.mini2Dx.uats");
+        return new IOSMini2DxGame(new UATApplication(), config);
     }
 
     public static void main(String[] argv) {
