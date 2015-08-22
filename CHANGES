@@ -1,6 +1,8 @@
 [1.2.0]
 - (#28) Added artemis-odb integration
+- (#34) Fixed input not being polled if multiple updates occur in one frame
 - (#35) Added TextureRegion wrapper class
+- Added mini2Dx-specific game launcher classes
 - Added forceTo(x, y) method to CollisionPoint and CollisionCircle
 - Fixed tile image and id calculation for tilesets with margin and/or spacing
 
