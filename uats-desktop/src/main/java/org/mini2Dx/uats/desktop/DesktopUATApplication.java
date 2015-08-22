@@ -15,8 +15,6 @@ import org.mini2Dx.desktop.DesktopMini2DxConfig;
 import org.mini2Dx.uats.util.UATApplication;
 
 import com.badlogic.gdx.backends.lwjgl.DesktopMini2DxGame;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 /**
  * Main entry point for desktop UAT app
