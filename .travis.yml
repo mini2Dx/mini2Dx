@@ -3,6 +3,8 @@ android:
   components:
     - build-tools-20.0.0
     - android-20
+os:
+  - osx
 notifications:
   webhooks:
     urls:
