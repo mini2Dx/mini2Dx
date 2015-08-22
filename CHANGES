@@ -1,4 +1,5 @@
 [1.2.0]
+- Updated to libGDX 1.6.5 and roboVM 1.6.0
 - (#28) Added artemis-odb integration
 - (#34) Fixed input not being polled if multiple updates occur in one frame
 - (#35) Added TextureRegion wrapper class
