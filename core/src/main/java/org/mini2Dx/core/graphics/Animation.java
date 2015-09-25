@@ -120,7 +120,7 @@ public class Animation<T extends Sprite> {
 		sprite.setOrigin(originX, originY);
 		sprite.setRotation(rotation);
 		sprite.setColor(color);
-		sprite.setFlip(flipX, flipY);
+		sprite.setFlip(flipX, !flipY);
 		g.drawSprite(sprite);
 		sprite.setRotation(0f);
 	}
