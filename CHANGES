@@ -1,3 +1,6 @@
+[1.2.1]
+- (#39) Fixed Animation flipping Sprites by default
+
 [1.2.0]
 - Updated to libGDX 1.6.5 and roboVM 1.6.0
 - (#28) Added artemis-odb integration
