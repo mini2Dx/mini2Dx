@@ -4,7 +4,7 @@ android:
     - build-tools-20.0.0
     - android-20
 os:
-  - osx
+  - linux
 notifications:
   webhooks:
     urls:
