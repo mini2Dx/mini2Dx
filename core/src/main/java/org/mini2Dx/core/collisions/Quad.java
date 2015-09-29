@@ -185,6 +185,10 @@ public class Quad<T extends Positionable> extends Rectangle implements PositionC
 		if (topLeft == null) {
 			return false;
 		}
+		if (mergeWatermark <= 0) {
+			return false;
+		}
+		
 		int topLeftTotal = topLeft.getTotalElements();
 		if (topLeftTotal >= mergeWatermark) {
 			return false;
