@@ -92,6 +92,44 @@ public class QuadTest {
 	}
 	
 	@Test
+	public void testMerge() {
+		rootQuad = new Quad<CollisionPoint>(4, 3, 0, 0, 128, 128);
+		rootQuad.add(point1);
+		Assert.assertEquals(1, rootQuad.getTotalQuads());
+		rootQuad.add(point2);
+		rootQuad.add(point3);
+		rootQuad.add(point4);
+		rootQuad.add(new CollisionPoint(32, 32));
+		Assert.assertEquals(4, rootQuad.getTotalQuads());
+		rootQuad.remove(point4);
+		rootQuad.remove(point3);
+		rootQuad.remove(point2);
+		Assert.assertEquals(1, rootQuad.getTotalQuads());
+		Assert.assertEquals(2, rootQuad.getTotalElements());
+		Assert.assertEquals(true, rootQuad.getElements().contains(point1));
+	}
+	
+	@Test
+	public void testGetTotalElements() {
+		rootQuad.add(point1);
+		Assert.assertEquals(1, rootQuad.getTotalElements());
+		rootQuad.add(point2);
+		Assert.assertEquals(2, rootQuad.getTotalElements());
+		rootQuad.add(point3);
+		Assert.assertEquals(3, rootQuad.getTotalElements());
+		rootQuad.remove(point2);
+		Assert.assertEquals(2, rootQuad.getTotalElements());
+		rootQuad.add(point4);
+		Assert.assertEquals(3, rootQuad.getTotalElements());
+		rootQuad.add(point2);
+		Assert.assertEquals(4, rootQuad.getTotalElements());
+		rootQuad.add(new CollisionPoint(32, 32));
+		Assert.assertEquals(5, rootQuad.getTotalElements());
+		rootQuad.add(new CollisionPoint(48, 48));
+		Assert.assertEquals(6, rootQuad.getTotalElements());
+	}
+	
+	@Test
 	public void testGetElementsWithinRegion() {
 		rootQuad.add(point1);
 		rootQuad.add(point2);

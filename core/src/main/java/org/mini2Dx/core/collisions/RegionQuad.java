@@ -32,10 +32,49 @@ import com.badlogic.gdx.graphics.Color;
 public class RegionQuad<T extends CollisionBox> extends Quad<T> {
     private static final long serialVersionUID = -2417612178966065600L;
 
+    /**
+	 * Constructs a {@link RegionQuad} with a specified element limit and watermark
+	 * 
+	 * @param elementLimitPerQuad
+	 *            The maximum number of elements in a {@link RegionQuad} before it is split
+	 *            into 4 child quads
+	 * @param mergeWatermark
+	 *            When a parent {@link RegionQuad}'s total elements go lower than this mark,
+	 *            the child {@link RegionQuad}s will be merged back together
+	 * @param x The x coordinate of the {@link RegionQuad}
+	 * @param y The y coordiante of the {@link RegionQuad}
+	 * @param width The width of the {@link RegionQuad}
+	 * @param height The height of the {@link RegionQuad}
+	 */
+    public RegionQuad(int elementLimit, int mergeWatermark, float x, float y, float width, float height) {
+        super(elementLimit, mergeWatermark, x, y, width, height);
+    }
+    
+    /**
+	 * Constructs a {@link RegionQuad} with a specified element limit and no merging watermark. As elements
+	 * are removed, small sized child {@link RegionQuad}s will not be merged back together.
+	 * 
+	 * @param elementLimitPerQuad
+	 *            The maximum number of elements in a quad before it is split
+	 *            into 4 child {@link RegionQuad}s
+	 * @param x The x coordinate of the {@link RegionQuad}
+	 * @param y The y coordiante of the {@link RegionQuad}
+	 * @param width The width of the {@link RegionQuad}
+	 * @param height The height of the {@link RegionQuad}
+	 */
     public RegionQuad(int elementLimit, float x, float y, float width, float height) {
         super(elementLimit, x, y, width, height);
     }
 
+    /**
+	 * Constructs a {@link RegionQuad} as a child of another {@link RegionQuad}
+	 * 
+	 * @param parent The parent {@link RegionQuad}
+	 * @param x The x coordinate of the {@link RegionQuad}
+	 * @param y The y coordiante of the {@link RegionQuad}
+	 * @param width The width of the {@link RegionQuad}
+	 * @param height The height of the {@link RegionQuad}
+	 */
     public RegionQuad(RegionQuad<T> parent, float x, float y, float width, float height) {
         super(parent, x, y, width, height);
     }
@@ -71,6 +110,7 @@ public class RegionQuad<T extends CollisionBox> extends Quad<T> {
         if (!this.intersects(element) && !this.contains(element)) {
             return false;
         }
+        clearTotalElementsCache();
 
         if (topLeft == null) {
             return addElement(element);
@@ -129,6 +169,7 @@ public class RegionQuad<T extends CollisionBox> extends Quad<T> {
         if (!this.intersects(element) && !this.contains(element)) {
             return false;
         }
+        clearTotalElementsCache();
 
         if (removeElement(element)) {
             return true;
@@ -211,6 +252,23 @@ public class RegionQuad<T extends CollisionBox> extends Quad<T> {
         }
         result.addAll(elements);
     }
+    
+    @Override
+	public int getTotalElements() {
+		if(totalElementsCache >= 0) {
+			return totalElementsCache;
+		}
+		
+		totalElementsCache = 0;
+		if(topLeft != null) {
+			totalElementsCache = topLeft.getTotalElements();
+			totalElementsCache += topRight.getTotalElements();
+			totalElementsCache += bottomLeft.getTotalElements();
+			totalElementsCache += bottomRight.getTotalElements();
+		}
+		totalElementsCache += elements.size();
+		return totalElementsCache;
+	}
 
     @Override
     public void positionChanged(T moved) {

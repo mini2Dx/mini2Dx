@@ -27,38 +27,83 @@ import com.badlogic.gdx.graphics.Color;
 /**
  * Implements a point quad
  * 
- * @see <a
- *      href="http://en.wikipedia.org/wiki/Quadtree#Point_quadtree">Wikipedia:
- *      Point Quad Tree</a>
+ * @see <a href="http://en.wikipedia.org/wiki/Quadtree#Point_quadtree">
+ *      Wikipedia: Point Quad Tree</a>
  */
-public class Quad<T extends Positionable> extends Rectangle implements
-		PositionChangeListener<T> {
+public class Quad<T extends Positionable> extends Rectangle implements PositionChangeListener<T> {
 	public static Color QUAD_COLOR = new Color(1f, 0f, 0f, 0.5f);
 	public static Color ELEMENT_COLOR = new Color(0f, 0f, 1f, 0.5f);
-	
+
 	private static final long serialVersionUID = -2034928347848875105L;
 
 	protected Quad<T> parent;
 	protected Quad<T> topLeft, topRight, bottomLeft, bottomRight;
 	protected List<T> elements;
-	protected int elementLimitPerQuad;
+	protected final int elementLimitPerQuad;
+	protected final int mergeWatermark;
 
-	public Quad(int elementLimitPerQuad, float x, float y, float width,
-			float height) {
+	protected int totalElementsCache;
+
+	/**
+	 * Constructs a {@link Quad} with a specified element limit and watermark
+	 * 
+	 * @param elementLimitPerQuad
+	 *            The maximum number of elements in a quad before it is split
+	 *            into 4 child {@link Quad}s
+	 * @param mergeWatermark
+	 *            When a parent {@link Quad}'s total elements go lower than this mark,
+	 *            the child {@link Quad}s will be merged back together
+	 * @param x The x coordinate of the {@link Quad}
+	 * @param y The y coordiante of the {@link Quad}
+	 * @param width The width of the {@link Quad}
+	 * @param height The height of the {@link Quad}
+	 */
+	public Quad(int elementLimitPerQuad, int mergeWatermark, float x, float y, float width, float height) {
 		super(x, y, width, height);
+
+		if (mergeWatermark >= elementLimitPerQuad) {
+			throw new QuadWatermarkException(elementLimitPerQuad, mergeWatermark);
+		}
+
 		this.elementLimitPerQuad = elementLimitPerQuad;
+		this.mergeWatermark = mergeWatermark;
 		elements = new ArrayList<T>(elementLimitPerQuad);
 	}
 
+	/**
+	 * Constructs a {@link Quad} with a specified element limit and no merging watermark. As elements
+	 * are removed, small sized child {@link Quad}s will not be merged back together.
+	 * 
+	 * @param elementLimitPerQuad
+	 *            The maximum number of elements in a quad before it is split
+	 *            into 4 child {@link Quad}s
+	 * @param x The x coordinate of the {@link Quad}
+	 * @param y The y coordiante of the {@link Quad}
+	 * @param width The width of the {@link Quad}
+	 * @param height The height of the {@link Quad}
+	 */
+	public Quad(int elementLimitPerQuad, float x, float y, float width, float height) {
+		this(elementLimitPerQuad, 0, x, y, width, height);
+	}
+
+	/**
+	 * Constructs a {@link Quad} as a child of another {@link Quad}
+	 * 
+	 * @param parent The parent {@link Quad}
+	 * @param x The x coordinate of the {@link Quad}
+	 * @param y The y coordiante of the {@link Quad}
+	 * @param width The width of the {@link Quad}
+	 * @param height The height of the {@link Quad}
+	 */
 	public Quad(Quad<T> parent, float x, float y, float width, float height) {
-		this(parent.getElementLimitPerQuad(), x, y, width, height);
+		this(parent.getElementLimitPerQuad(), parent.getMergeWatermark(), x, y, width, height);
 		this.parent = parent;
 	}
-	
+
 	public void render(Graphics g) {
 		Color tmp = g.getColor();
 
-		if(topLeft != null) {
+		if (topLeft != null) {
 			topLeft.render(g);
 			topRight.render(g);
 			bottomLeft.render(g);
@@ -69,10 +114,10 @@ public class Quad<T extends Positionable> extends Rectangle implements
 			g.drawRect(x, y, width, height);
 			g.setColor(tmp);
 		}
-		
+
 		tmp = g.getColor();
 		g.setColor(ELEMENT_COLOR);
-		for(T element : elements) {
+		for (T element : elements) {
 			g.fillRect(element.getX(), element.getY(), 1f, 1f);
 		}
 		g.setColor(tmp);
@@ -85,6 +130,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 		if (!this.contains(element.getX(), element.getY())) {
 			return false;
 		}
+		clearTotalElementsCache();
 
 		if (topLeft != null) {
 			return addElementToChild(element);
@@ -115,18 +161,17 @@ public class Quad<T extends Positionable> extends Rectangle implements
 	}
 
 	protected void subdivide() {
-		if(topLeft != null) {
+		if (topLeft != null) {
 			return;
 		}
-		
+
 		float halfWidth = width / 2f;
 		float halfHeight = height / 2f;
 
 		topLeft = new Quad<T>(this, x, y, halfWidth, halfHeight);
 		topRight = new Quad<T>(this, x + halfWidth, y, halfWidth, halfHeight);
 		bottomLeft = new Quad<T>(this, x, y + halfHeight, halfWidth, halfHeight);
-		bottomRight = new Quad<T>(this, x + halfWidth, y + halfHeight,
-				halfWidth, halfHeight);
+		bottomRight = new Quad<T>(this, x + halfWidth, y + halfHeight, halfWidth, halfHeight);
 
 		for (int i = elements.size() - 1; i >= 0; i--) {
 			T element = elements.remove(i);
@@ -136,6 +181,57 @@ public class Quad<T extends Positionable> extends Rectangle implements
 		elements = null;
 	}
 
+	protected boolean isMergable() {
+		if (topLeft == null) {
+			return false;
+		}
+		int topLeftTotal = topLeft.getTotalElements();
+		if (topLeftTotal >= mergeWatermark) {
+			return false;
+		}
+
+		int topRightTotal = topRight.getTotalElements();
+		if (topRightTotal >= mergeWatermark) {
+			return false;
+		}
+
+		int bottomLeftTotal = bottomLeft.getTotalElements();
+		if (bottomLeftTotal >= mergeWatermark) {
+			return false;
+		}
+
+		int bottomRightTotal = bottomRight.getTotalElements();
+		if (bottomRightTotal >= mergeWatermark) {
+			return false;
+		}
+		return topLeftTotal + topRightTotal + bottomLeftTotal + bottomRightTotal < mergeWatermark;
+	}
+
+	protected void merge() {
+		if (topLeft == null) {
+			return;
+		}
+
+		elements = new ArrayList<>();
+		topLeft.getElements(elements);
+		topRight.getElements(elements);
+		bottomLeft.getElements(elements);
+		bottomRight.getElements(elements);
+
+		for (T element : elements) {
+			element.removePositionChangeListener(topLeft);
+			element.removePositionChangeListener(topRight);
+			element.removePositionChangeListener(bottomLeft);
+			element.removePositionChangeListener(bottomRight);
+			element.addPostionChangeListener(this);
+		}
+
+		topLeft = null;
+		topRight = null;
+		bottomLeft = null;
+		bottomRight = null;
+	}
+
 	public boolean remove(T element) {
 		if (element == null)
 			return false;
@@ -143,6 +239,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 		if (!this.contains(element.getX(), element.getY())) {
 			return false;
 		}
+		clearTotalElementsCache();
 
 		if (topLeft != null) {
 			return removeElementFromChild(element);
@@ -165,6 +262,13 @@ public class Quad<T extends Positionable> extends Rectangle implements
 	protected boolean removeElement(T element) {
 		boolean result = elements.remove(element);
 		element.removePositionChangeListener(this);
+
+		if (parent == null) {
+			return result;
+		}
+		if (parent.isMergable()) {
+			parent.merge();
+		}
 		return result;
 	}
 
@@ -174,8 +278,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 		return result;
 	}
 
-	public void getElementsWithinRegion(Collection<T> result,
-			Parallelogram parallelogram) {
+	public void getElementsWithinRegion(Collection<T> result, Parallelogram parallelogram) {
 		if (topLeft != null) {
 			topLeft.getElementsWithinRegion(result, parallelogram);
 			topRight.getElementsWithinRegion(result, parallelogram);
@@ -197,24 +300,20 @@ public class Quad<T extends Positionable> extends Rectangle implements
 		return result;
 	}
 
-	public void getElementsIntersectingLineSegment(Collection<T> result,
-			LineSegment lineSegment) {
+	public void getElementsIntersectingLineSegment(Collection<T> result, LineSegment lineSegment) {
 		if (topLeft != null) {
 			if (topLeft.intersects(lineSegment))
 				topLeft.getElementsIntersectingLineSegment(result, lineSegment);
 			if (topRight.intersects(lineSegment))
 				topRight.getElementsIntersectingLineSegment(result, lineSegment);
 			if (bottomLeft.intersects(lineSegment))
-				bottomLeft.getElementsIntersectingLineSegment(result,
-						lineSegment);
+				bottomLeft.getElementsIntersectingLineSegment(result, lineSegment);
 			if (bottomRight.intersects(lineSegment))
-				bottomRight.getElementsIntersectingLineSegment(result,
-						lineSegment);
+				bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
 		} else {
 			for (int i = elements.size() - 1; i >= 0; i--) {
 				T element = elements.get(i);
-				if (element != null
-						&& lineSegment.contains(element.getX(), element.getY())) {
+				if (element != null && lineSegment.contains(element.getX(), element.getY())) {
 					result.add(element);
 				}
 			}
@@ -250,6 +349,25 @@ public class Quad<T extends Positionable> extends Rectangle implements
 		}
 	}
 
+	public int getTotalElements() {
+		if (totalElementsCache >= 0) {
+			return totalElementsCache;
+		}
+		if (topLeft != null) {
+			totalElementsCache = topLeft.getTotalElements();
+			totalElementsCache += topRight.getTotalElements();
+			totalElementsCache += bottomLeft.getTotalElements();
+			totalElementsCache += bottomRight.getTotalElements();
+		} else {
+			totalElementsCache = elements.size();
+		}
+		return totalElementsCache;
+	}
+
+	protected void clearTotalElementsCache() {
+		totalElementsCache = -1;
+	}
+
 	@Override
 	public void positionChanged(T moved) {
 		if (this.contains(moved.getX(), moved.getY()))
@@ -259,7 +377,7 @@ public class Quad<T extends Positionable> extends Rectangle implements
 
 		Quad<T> parentQuad = parent;
 		while (parentQuad != null) {
-			if(parentQuad.add(moved)) {
+			if (parentQuad.add(moved)) {
 				return;
 			}
 			parentQuad = parentQuad.getParent();
@@ -272,5 +390,9 @@ public class Quad<T extends Positionable> extends Rectangle implements
 
 	public int getElementLimitPerQuad() {
 		return elementLimitPerQuad;
+	}
+
+	public int getMergeWatermark() {
+		return mergeWatermark;
 	}
 }

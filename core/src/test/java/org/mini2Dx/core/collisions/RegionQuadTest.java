@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.collisions.RegionQuad;
 import org.mini2Dx.core.engine.geom.CollisionBox;
+import org.mini2Dx.core.engine.geom.CollisionPoint;
 import org.mini2Dx.core.geom.LineSegment;
 
 /**
@@ -99,6 +100,44 @@ public class RegionQuadTest {
 		rootQuad.add(new CollisionBox(12, 48, 8, 8));
 		Assert.assertEquals(7, rootQuad.getElements().size());
 		Assert.assertEquals(7, rootQuad.getTotalQuads());
+	}
+	
+	@Test
+	public void testMerge() {
+		rootQuad = new RegionQuad<CollisionBox>(4, 3, 0, 0, 128, 128);
+		rootQuad.add(box1);
+		Assert.assertEquals(1, rootQuad.getTotalQuads());
+		rootQuad.add(box2);
+		rootQuad.add(box3);
+		rootQuad.add(box4);
+		rootQuad.add(new CollisionBox(24, 24, 2, 2));
+		Assert.assertEquals(4, rootQuad.getTotalQuads());
+		rootQuad.remove(box4);
+		rootQuad.remove(box3);
+		rootQuad.remove(box2);
+		Assert.assertEquals(1, rootQuad.getTotalQuads());
+		Assert.assertEquals(2, rootQuad.getTotalElements());
+		Assert.assertEquals(true, rootQuad.getElements().contains(box1));
+	}
+	
+	@Test
+	public void testGetTotalElements() {
+		rootQuad.add(box1);
+		Assert.assertEquals(1, rootQuad.getTotalElements());
+		rootQuad.add(box2);
+		Assert.assertEquals(2, rootQuad.getTotalElements());
+		rootQuad.add(box3);
+		Assert.assertEquals(3, rootQuad.getTotalElements());
+		rootQuad.remove(box2);
+		Assert.assertEquals(2, rootQuad.getTotalElements());
+		rootQuad.add(box4);
+		Assert.assertEquals(3, rootQuad.getTotalElements());
+		rootQuad.add(box2);
+		Assert.assertEquals(4, rootQuad.getTotalElements());
+		rootQuad.add(new CollisionBox(48, 48, 32, 32));
+		Assert.assertEquals(5, rootQuad.getTotalElements());
+		rootQuad.add(new CollisionBox(12, 48, 8, 8));
+		Assert.assertEquals(6, rootQuad.getTotalElements());
 	}
 	
 	@Test
