@@ -16,8 +16,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mini2Dx.core.collisions.Quad;
-import org.mini2Dx.core.collisions.RegionQuad;
+import org.mini2Dx.core.collisions.PointQuadTree;
+import org.mini2Dx.core.collisions.QuadTree;
+import org.mini2Dx.core.collisions.RegionQuadTree;
 import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.tiled.TiledMap;
@@ -50,7 +51,7 @@ public class TiledCollisionMapperTest {
 	@Test
 	public void testMapCollisionsByLayer() {
 		int collisionLayerIndex = tiledMap.getLayerIndex("Collisions");
-		Quad<CollisionBox> quadTree = new Quad<CollisionBox>(8, 0f, 0f,
+		QuadTree<CollisionBox> quadTree = new PointQuadTree<CollisionBox>(8, 0f, 0f,
 				tiledMap.getWidth() * tiledMap.getTileWidth(),
 				tiledMap.getHeight() * tiledMap.getTileHeight());
 
@@ -70,7 +71,7 @@ public class TiledCollisionMapperTest {
 
 	@Test
 	public void testMapCollisionsByObjectGroup() {
-		Quad<CollisionBox> quadTree = new Quad<CollisionBox>(8, 0f, 0f, tiledMap.getWidth() * tiledMap.getTileWidth(),
+		QuadTree<CollisionBox> quadTree = new PointQuadTree<CollisionBox>(8, 0f, 0f, tiledMap.getWidth() * tiledMap.getTileWidth(),
 				tiledMap.getHeight() * tiledMap.getTileHeight());
 		collisionBoxMapper.mapCollisionsByObjectGroup(quadTree, tiledMap, "Objects");
 
@@ -85,7 +86,7 @@ public class TiledCollisionMapperTest {
 	@Test
 	public void testMapAndMergeCollisionsByLayer() {
 		int collisionLayerIndex = tiledMap.getLayerIndex("Collisions");
-		RegionQuad<CollisionBox> quadTree = new RegionQuad<CollisionBox>(8, 0f, 0f,
+		RegionQuadTree<CollisionBox> quadTree = new RegionQuadTree<CollisionBox>(8, 0f, 0f,
 				tiledMap.getWidth() * tiledMap.getTileWidth(), tiledMap.getHeight() * tiledMap.getTileHeight());
 
 		collisionBoxMapper.mapAndMergeCollisionsByLayer(quadTree, tiledMap, collisionLayerIndex);
@@ -154,13 +155,13 @@ public class TiledCollisionMapperTest {
 		}
 	}
 
-	private void assertCollisionAt(int tileX, int tileY, Quad<?> quadTree, TiledMap tiledMap) {
+	private void assertCollisionAt(int tileX, int tileY, QuadTree<?> quadTree, TiledMap tiledMap) {
 		List<?> collisions = quadTree.getElementsWithinRegion(new Rectangle(tileX * tiledMap.getTileWidth(),
 				tileY * tiledMap.getTileHeight(), tiledMap.getTileWidth() - 1f, tiledMap.getTileHeight() - 1f));
 		Assert.assertEquals(1, collisions.size());
 	}
 
-	private CollisionBox getCollisionAt(int tileX, int tileY, RegionQuad<CollisionBox> quadTree, TiledMap tiledMap) {
+	private CollisionBox getCollisionAt(int tileX, int tileY, RegionQuadTree<CollisionBox> quadTree, TiledMap tiledMap) {
 		List<CollisionBox> collisions = quadTree.getElementsWithinRegion(new Rectangle(tileX * tiledMap.getTileWidth(),
 				tileY * tiledMap.getTileHeight(), tiledMap.getTileWidth() - 1f, tiledMap.getTileHeight() - 1f));
 		Assert.assertEquals(1, collisions.size());

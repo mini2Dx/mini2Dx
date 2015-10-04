@@ -15,50 +15,56 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Parallelogram;
+import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * Implements a point quad
+ * Implements a point quadtree
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Quadtree#Point_quadtree">
  *      Wikipedia: Point Quad Tree</a>
  */
-public class Quad<T extends Positionable> extends Rectangle implements PositionChangeListener<T> {
+public class PointQuadTree<T extends Positionable> extends Rectangle implements QuadTree<T> {
 	public static Color QUAD_COLOR = new Color(1f, 0f, 0f, 0.5f);
 	public static Color ELEMENT_COLOR = new Color(0f, 0f, 1f, 0.5f);
 
 	private static final long serialVersionUID = -2034928347848875105L;
 
-	protected Quad<T> parent;
-	protected Quad<T> topLeft, topRight, bottomLeft, bottomRight;
+	protected PointQuadTree<T> parent;
+	protected PointQuadTree<T> topLeft, topRight, bottomLeft, bottomRight;
 	protected List<T> elements;
 	protected final int elementLimitPerQuad;
 	protected final int mergeWatermark;
 
-	protected int totalElementsCache;
+	protected int totalElementsCache = -1;
 
 	/**
-	 * Constructs a {@link Quad} with a specified element limit and watermark
+	 * Constructs a {@link PointQuadTree} with a specified element limit and
+	 * watermark
 	 * 
 	 * @param elementLimitPerQuad
 	 *            The maximum number of elements in a quad before it is split
-	 *            into 4 child {@link Quad}s
+	 *            into 4 child {@link PointQuadTree}s
 	 * @param mergeWatermark
-	 *            When a parent {@link Quad}'s total elements go lower than this mark,
-	 *            the child {@link Quad}s will be merged back together
-	 * @param x The x coordinate of the {@link Quad}
-	 * @param y The y coordiante of the {@link Quad}
-	 * @param width The width of the {@link Quad}
-	 * @param height The height of the {@link Quad}
+	 *            When a parent {@link PointQuadTree}'s total elements go lower
+	 *            than this mark, the child {@link PointQuadTree}s will be
+	 *            merged back together
+	 * @param x
+	 *            The x coordinate of the {@link PointQuadTree}
+	 * @param y
+	 *            The y coordiante of the {@link PointQuadTree}
+	 * @param width
+	 *            The width of the {@link PointQuadTree}
+	 * @param height
+	 *            The height of the {@link PointQuadTree}
 	 */
-	public Quad(int elementLimitPerQuad, int mergeWatermark, float x, float y, float width, float height) {
+	public PointQuadTree(int elementLimitPerQuad, int mergeWatermark, float x, float y, float width, float height) {
 		super(x, y, width, height);
 
 		if (mergeWatermark >= elementLimitPerQuad) {
@@ -71,43 +77,54 @@ public class Quad<T extends Positionable> extends Rectangle implements PositionC
 	}
 
 	/**
-	 * Constructs a {@link Quad} with a specified element limit and no merging watermark. As elements
-	 * are removed, small sized child {@link Quad}s will not be merged back together.
+	 * Constructs a {@link PointQuadTree} with a specified element limit and no
+	 * merging watermark. As elements are removed, small sized child
+	 * {@link PointQuadTree}s will not be merged back together.
 	 * 
 	 * @param elementLimitPerQuad
 	 *            The maximum number of elements in a quad before it is split
-	 *            into 4 child {@link Quad}s
-	 * @param x The x coordinate of the {@link Quad}
-	 * @param y The y coordiante of the {@link Quad}
-	 * @param width The width of the {@link Quad}
-	 * @param height The height of the {@link Quad}
+	 *            into 4 child {@link PointQuadTree}s
+	 * @param x
+	 *            The x coordinate of the {@link PointQuadTree}
+	 * @param y
+	 *            The y coordiante of the {@link PointQuadTree}
+	 * @param width
+	 *            The width of the {@link PointQuadTree}
+	 * @param height
+	 *            The height of the {@link PointQuadTree}
 	 */
-	public Quad(int elementLimitPerQuad, float x, float y, float width, float height) {
+	public PointQuadTree(int elementLimitPerQuad, float x, float y, float width, float height) {
 		this(elementLimitPerQuad, 0, x, y, width, height);
 	}
 
 	/**
-	 * Constructs a {@link Quad} as a child of another {@link Quad}
+	 * Constructs a {@link PointQuadTree} as a child of another
+	 * {@link PointQuadTree}
 	 * 
-	 * @param parent The parent {@link Quad}
-	 * @param x The x coordinate of the {@link Quad}
-	 * @param y The y coordiante of the {@link Quad}
-	 * @param width The width of the {@link Quad}
-	 * @param height The height of the {@link Quad}
+	 * @param parent
+	 *            The parent {@link PointQuadTree}
+	 * @param x
+	 *            The x coordinate of the {@link PointQuadTree}
+	 * @param y
+	 *            The y coordiante of the {@link PointQuadTree}
+	 * @param width
+	 *            The width of the {@link PointQuadTree}
+	 * @param height
+	 *            The height of the {@link PointQuadTree}
 	 */
-	public Quad(Quad<T> parent, float x, float y, float width, float height) {
+	public PointQuadTree(PointQuadTree<T> parent, float x, float y, float width, float height) {
 		this(parent.getElementLimitPerQuad(), parent.getMergeWatermark(), x, y, width, height);
 		this.parent = parent;
 	}
 
-	public void render(Graphics g) {
+	public void debugRender(Graphics g) {
 		Color tmp = g.getColor();
 
 		if (topLeft != null) {
-			topLeft.render(g);
-			topRight.render(g);
-			bottomLeft.render(g);
-			bottomRight.render(g);
+			topLeft.debugRender(g);
+			topRight.debugRender(g);
+			bottomLeft.debugRender(g);
+			bottomRight.debugRender(g);
 		} else {
 			g.setColor(QUAD_COLOR);
 			g.drawShape(this);
@@ -168,10 +185,10 @@ public class Quad<T extends Positionable> extends Rectangle implements PositionC
 		float halfWidth = width / 2f;
 		float halfHeight = height / 2f;
 
-		topLeft = new Quad<T>(this, x, y, halfWidth, halfHeight);
-		topRight = new Quad<T>(this, x + halfWidth, y, halfWidth, halfHeight);
-		bottomLeft = new Quad<T>(this, x, y + halfHeight, halfWidth, halfHeight);
-		bottomRight = new Quad<T>(this, x + halfWidth, y + halfHeight, halfWidth, halfHeight);
+		topLeft = new PointQuadTree<T>(this, x, y, halfWidth, halfHeight);
+		topRight = new PointQuadTree<T>(this, x + halfWidth, y, halfWidth, halfHeight);
+		bottomLeft = new PointQuadTree<T>(this, x, y + halfHeight, halfWidth, halfHeight);
+		bottomRight = new PointQuadTree<T>(this, x + halfWidth, y + halfHeight, halfWidth, halfHeight);
 
 		for (int i = elements.size() - 1; i >= 0; i--) {
 			T element = elements.remove(i);
@@ -188,7 +205,7 @@ public class Quad<T extends Positionable> extends Rectangle implements PositionC
 		if (mergeWatermark <= 0) {
 			return false;
 		}
-		
+
 		int topLeftTotal = topLeft.getTotalElements();
 		if (topLeftTotal >= mergeWatermark) {
 			return false;
@@ -298,6 +315,43 @@ public class Quad<T extends Positionable> extends Rectangle implements PositionC
 		}
 	}
 
+	public List<T> getElementsContainingPoint(Point point) {
+		List<T> result = new ArrayList<T>();
+		getElementsContainingPoint(result, point);
+		return result;
+	}
+
+	public void getElementsContainingPoint(Collection<T> result, Point point) {
+		if (topLeft != null) {
+			if (topLeft.contains(point)) {
+				topLeft.getElementsContainingPoint(result, point);
+			}
+			if (topRight.contains(point)) {
+				topRight.getElementsContainingPoint(result, point);
+			}
+			if (bottomLeft.contains(point)) {
+				bottomLeft.getElementsContainingPoint(result, point);
+			}
+			if (bottomRight.contains(point)) {
+				bottomRight.getElementsContainingPoint(result, point);
+			}
+		} else {
+			for (int i = elements.size() - 1; i >= 0; i--) {
+				T element = elements.get(i);
+				if (element == null) {
+					continue;
+				}
+				if (element.getX() != point.x) {
+					continue;
+				}
+				if (element.getY() != point.y) {
+					continue;
+				}
+				result.add(element);
+			}
+		}
+	}
+
 	public List<T> getElementsIntersectingLineSegment(LineSegment lineSegment) {
 		List<T> result = new ArrayList<T>();
 		getElementsIntersectingLineSegment(result, lineSegment);
@@ -306,14 +360,22 @@ public class Quad<T extends Positionable> extends Rectangle implements PositionC
 
 	public void getElementsIntersectingLineSegment(Collection<T> result, LineSegment lineSegment) {
 		if (topLeft != null) {
-			if (topLeft.intersects(lineSegment))
+			if (topLeft.intersects(lineSegment) || topLeft.contains(lineSegment.getPointA())
+					|| topLeft.contains(lineSegment.getPointB())) {
 				topLeft.getElementsIntersectingLineSegment(result, lineSegment);
-			if (topRight.intersects(lineSegment))
+			}
+			if (topRight.intersects(lineSegment) || topRight.contains(lineSegment.getPointA())
+					|| topRight.contains(lineSegment.getPointB())) {
 				topRight.getElementsIntersectingLineSegment(result, lineSegment);
-			if (bottomLeft.intersects(lineSegment))
+			}
+			if (bottomLeft.intersects(lineSegment) || bottomLeft.contains(lineSegment.getPointA())
+					|| bottomLeft.contains(lineSegment.getPointB())) {
 				bottomLeft.getElementsIntersectingLineSegment(result, lineSegment);
-			if (bottomRight.intersects(lineSegment))
+			}
+			if (bottomRight.intersects(lineSegment) || bottomRight.contains(lineSegment.getPointA())
+					|| bottomRight.contains(lineSegment.getPointB())) {
 				bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
+			}
 		} else {
 			for (int i = elements.size() - 1; i >= 0; i--) {
 				T element = elements.get(i);
@@ -330,7 +392,7 @@ public class Quad<T extends Positionable> extends Rectangle implements PositionC
 		return result;
 	}
 
-	private void getElements(List<T> result) {
+	public void getElements(List<T> result) {
 		if (topLeft != null) {
 			topLeft.getElements(result);
 			topRight.getElements(result);
@@ -379,7 +441,7 @@ public class Quad<T extends Positionable> extends Rectangle implements PositionC
 
 		removeElement(moved);
 
-		Quad<T> parentQuad = parent;
+		QuadTree<T> parentQuad = parent;
 		while (parentQuad != null) {
 			if (parentQuad.add(moved)) {
 				return;
@@ -388,7 +450,7 @@ public class Quad<T extends Positionable> extends Rectangle implements PositionC
 		}
 	}
 
-	public Quad<T> getParent() {
+	public QuadTree<T> getParent() {
 		return parent;
 	}
 
@@ -398,5 +460,9 @@ public class Quad<T extends Positionable> extends Rectangle implements PositionC
 
 	public int getMergeWatermark() {
 		return mergeWatermark;
+	}
+
+	public boolean hasChildQuads() {
+		return topLeft != null;
 	}
 }

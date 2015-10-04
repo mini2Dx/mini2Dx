@@ -239,6 +239,6 @@ public class LineSegment {
 
 	@Override
 	public String toString() {
-		return "Line [pointA=" + pointA + ", pointB=" + pointB + "]";
+		return "LineSegment [pointA=" + pointA + ", pointB=" + pointB + "]";
 	}
 }

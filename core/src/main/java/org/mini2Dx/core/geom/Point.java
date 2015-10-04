@@ -105,7 +105,7 @@ public class Point extends Vector2 {
 	}
 
 	/**
-	 * Determines if a {@link Vector2} are nearly equal. A delta of 0.1
+	 * Determines if this and a {@link Vector2} are nearly equal. A delta of 0.1
 	 * means 0.0 and 0.1 would be considered equal but 0.0 and 0.11 would not.
 	 * 
 	 * @param v
@@ -115,7 +115,21 @@ public class Point extends Vector2 {
 	 * @return True if the two points are equal allowing for a certain margin of error
 	 */
 	public boolean equals(Vector2 v, float delta) {
-		return Math.abs(x - v.x) <= delta && Math.abs(y - v.y) <= delta;
+		return equals(v.x, v.y, delta);
+	}
+	
+	/**
+	 * Determines if a coordinate is nearly equal to this one. A delta of 0.1
+	 * means 0.0 and 0.1 would be considered equal but 0.0 and 0.11 would not.
+	 * 
+	 * @param x The x coordinate
+	 * @param y The y coordinate
+	 * @param delta
+	 *            The amount of error to allow for.
+	 * @return True if the two points are equal allowing for a certain margin of error
+	 */
+	public boolean equals(float x, float y, float delta) {
+		return Math.abs(this.x - x) <= delta && Math.abs(this.y - y) <= delta;
 	}
 
 	public float getX() {

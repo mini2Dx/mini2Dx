@@ -13,7 +13,7 @@ package org.mini2Dx.tiled.collisions;
 
 import java.util.List;
 
-import org.mini2Dx.core.collisions.Quad;
+import org.mini2Dx.core.collisions.QuadTree;
 import org.mini2Dx.core.engine.Positionable;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.TileLayer;
@@ -102,17 +102,17 @@ public class TiledCollisionMapper<T extends Positionable> {
 
 	/**
 	 * Extracts collisions in a {@link TiledMap} layer and adds them to a
-	 * {@link Quad} instance
+	 * {@link QuadTree} instance
 	 * 
 	 * @param quadTree
-	 *            The {@link Quad} instance to add collisions to
+	 *            The {@link QuadTree} instance to add collisions to
 	 * @param tiledMap
 	 *            The {@link TiledMap} to extract collisions from
 	 * @param layerIndex
 	 *            The index of the layer to extract collisions from. Each tile
 	 *            drawn in the layer is treated as a collision.
 	 */
-	public void mapCollisionsByLayer(Quad<T> quadTree, TiledMap tiledMap, int layerIndex) {
+	public void mapCollisionsByLayer(QuadTree<T> quadTree, TiledMap tiledMap, int layerIndex) {
 		TileLayer layer = tiledMap.getTileLayer(layerIndex);
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = 0; y < layer.getHeight(); y++) {
@@ -152,17 +152,17 @@ public class TiledCollisionMapper<T extends Positionable> {
 
 	/**
 	 * Extracts collisions in a {@link TiledMap} layer and adds them to a
-	 * {@link Quad} instance
+	 * {@link QuadTree} instance
 	 * 
 	 * @param quadTree
-	 *            The {@link Quad} instance to add collisions to
+	 *            The {@link QuadTree} instance to add collisions to
 	 * @param tiledMap
 	 *            The {@link TiledMap} to extract collisions from
 	 * @param layerName
 	 *            The name of the layer to extract collisions from. Each tile
 	 *            drawn in the layer is treated as a collision.
 	 */
-	public void mapCollisionsByLayer(Quad<T> quadTree, TiledMap tiledMap, String layerName) {
+	public void mapCollisionsByLayer(QuadTree<T> quadTree, TiledMap tiledMap, String layerName) {
 		mapCollisionsByLayer(quadTree, tiledMap, tiledMap.getLayerIndex(layerName));
 	}
 	
@@ -184,17 +184,17 @@ public class TiledCollisionMapper<T extends Positionable> {
 
 	/**
 	 * Extracts collisions in a {@link TiledMap} object group and adds them to a
-	 * {@link Quad} instance
+	 * {@link QuadTree} instance
 	 * 
 	 * @param quadTree
-	 *            The {@link Quad} instance to add collisions to
+	 *            The {@link QuadTree} instance to add collisions to
 	 * @param tiledMap
 	 *            The {@link TiledMap} to extract collisions from
 	 * @param groupName
 	 *            The name of the object group to extract collisions from. Each
 	 *            object is treated as a collision.
 	 */
-	public void mapCollisionsByObjectGroup(Quad<T> quadTree, TiledMap tiledMap, String groupName) {
+	public void mapCollisionsByObjectGroup(QuadTree<T> quadTree, TiledMap tiledMap, String groupName) {
 		TiledObjectGroup objectGroup = tiledMap.getObjectGroup(groupName);
 
 		for (TiledObject tiledObject : objectGroup.getObjects()) {
@@ -224,35 +224,35 @@ public class TiledCollisionMapper<T extends Positionable> {
 
 	/**
 	 * Extracts and merges collisions in a {@link TiledMap} layer and adds them
-	 * to a {@link Quad} instance. Tiles are determined as mergeable by the
+	 * to a {@link QuadTree} instance. Tiles are determined as mergeable by the
 	 * {@link TiledCollisionMerger} instance associated with this {@link TiledCollisionMapper}.
 	 * 
 	 * @param quadTree
-	 *            The {@link Quad} instance to add collisions to
+	 *            The {@link QuadTree} instance to add collisions to
 	 * @param tiledMap
 	 *            The {@link TiledMap} to extract collisions from
 	 * @param layerName
 	 *            The name of the layer to extract collisions from. Each tile
 	 *            drawn in the layer is treated as a collision.
 	 */
-	public void mapAndMergeCollisionsByLayer(Quad<T> quadTree, TiledMap tiledMap, String layerName) {
+	public void mapAndMergeCollisionsByLayer(QuadTree<T> quadTree, TiledMap tiledMap, String layerName) {
 		mapAndMergeCollisionsByLayer(quadTree, tiledMap, tiledMap.getLayerIndex(layerName));
 	}
 
 	/**
 	 * Extracts and merges collisions in a {@link TiledMap} layer and adds them
-	 * to a {@link Quad} instance. Tiles are determined as mergeable by the
+	 * to a {@link QuadTree} instance. Tiles are determined as mergeable by the
 	 * {@link TiledCollisionMerger} instance associated with this {@link TiledCollisionMapper}.
 	 * 
 	 * @param quadTree
-	 *            The {@link Quad} instance to add collisions to
+	 *            The {@link QuadTree} instance to add collisions to
 	 * @param tiledMap
 	 *            The {@link TiledMap} to extract collisions from
 	 * @param layerIndex
 	 *            The index of the layer to extract collisions from. Each tile
 	 *            drawn in the layer is treated as a collision.
 	 */
-	public void mapAndMergeCollisionsByLayer(Quad<T> quadTree, TiledMap tiledMap, int layerIndex) {
+	public void mapAndMergeCollisionsByLayer(QuadTree<T> quadTree, TiledMap tiledMap, int layerIndex) {
 		TileLayer layer = tiledMap.getTileLayer(layerIndex);
 		byte[][] collisions = mapCollisionsByLayer(tiledMap, layer);
 

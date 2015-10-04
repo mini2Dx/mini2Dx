@@ -34,6 +34,8 @@ public class RectangleTest {
 		Assert.assertEquals(0f, rectangle1.getY());
 		Assert.assertEquals(1f, rectangle1.getWidth());
 		Assert.assertEquals(1f, rectangle1.getHeight());
+		Assert.assertEquals(1f, rectangle1.getMaxX());
+		Assert.assertEquals(1f, rectangle1.getMaxY());
 	}
 
 	@Test
@@ -43,6 +45,8 @@ public class RectangleTest {
 		Assert.assertEquals(100f, rectangle1.getY());
 		Assert.assertEquals(50f, rectangle1.getWidth());
 		Assert.assertEquals(50f, rectangle1.getHeight());
+		Assert.assertEquals(150f, rectangle1.getMaxX());
+		Assert.assertEquals(150f, rectangle1.getMaxY());
 	}
 	
 	@Test
@@ -201,6 +205,17 @@ public class RectangleTest {
 		rectangle1 = new Rectangle(96, 0, 32, 32);
 		segment = new LineSegment(0, 0, 128, 128);
 		Assert.assertEquals(false, rectangle1.intersects(segment));
+		
+		rectangle1 = new Rectangle(0, 0, 32, 32);
+		Assert.assertEquals(true, rectangle1.intersects(new LineSegment(0f, 0f, -1f, -1f)));
+		Assert.assertEquals(true, rectangle1.intersects(new LineSegment(-1f, -1f, 0f, 0f)));
+		Assert.assertEquals(true, rectangle1.intersects(new LineSegment(0f, 0f, 1f, 1f)));
+		Assert.assertEquals(true, rectangle1.intersects(new LineSegment(1f, 1f, 0f, 0f)));
+		
+		Assert.assertEquals(true, rectangle1.intersects(new LineSegment(32f, 32f, 31f, 31f)));
+		Assert.assertEquals(true, rectangle1.intersects(new LineSegment(31f, 31f, 32f, 32f)));
+		Assert.assertEquals(true, rectangle1.intersects(new LineSegment(33f, 33f, 32f, 32f)));
+		Assert.assertEquals(true, rectangle1.intersects(new LineSegment(32f, 32f, 33f, 33f)));
 	}
 
 	@Test

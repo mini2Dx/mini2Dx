@@ -15,25 +15,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.mini2Dx.core.collisions.Quad;
 import org.mini2Dx.core.engine.geom.CollisionPoint;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Rectangle;
 
+import junit.framework.Assert;
+
 /**
- * Unit tests for {@link Quad}
+ * Unit tests for {@link PointQuadTree}
  */
-public class QuadTest {
-	private Quad<CollisionPoint> rootQuad;
+public class PointQuadTreeTest {
+	private QuadTree<CollisionPoint> rootQuad;
 	private CollisionPoint point1, point2, point3, point4;
 
 	@Before
 	public void setup() {
-		rootQuad = new Quad<CollisionPoint>(2, 0, 0, 128, 128);
+		rootQuad = new PointQuadTree<CollisionPoint>(2, 0, 0, 128, 128);
 		point1 = new CollisionPoint(0, 0);
 		point2 = new CollisionPoint(128, 0);
 		point3 = new CollisionPoint(0, 128);
@@ -93,7 +92,7 @@ public class QuadTest {
 	
 	@Test
 	public void testMerge() {
-		rootQuad = new Quad<CollisionPoint>(4, 3, 0, 0, 128, 128);
+		rootQuad = new PointQuadTree<CollisionPoint>(4, 3, 0, 0, 128, 128);
 		rootQuad.add(point1);
 		Assert.assertEquals(1, rootQuad.getTotalQuads());
 		rootQuad.add(point2);
