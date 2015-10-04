@@ -227,6 +227,15 @@ public class ConcurrentRegionQuadTreeTest {
 	}
 	
 	@Test
+	public void testGetElementsIntersectingLineSegmentWithNegativeBox() {
+		rootQuad = new ConcurrentRegionQuadTree<CollisionBox>(2, -128f, -128f, 256f, 256f);
+		rootQuad.add(new CollisionBox(-80f, -80f, 32f, 32f));
+		
+		List<CollisionBox> collisionBoxs = rootQuad.getElementsIntersectingLineSegment(new LineSegment(-83f, -84f, -83f, -85f));
+		Assert.assertEquals(0, collisionBoxs.size());
+	}
+	
+	@Test
 	public void testGetElementsContainingPoint() {
 		rootQuad.add(box1);
 		rootQuad.add(box2);
