@@ -10,7 +10,7 @@ buildscript {
     dependencies {
 		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
         classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath 'org.robovm:robovm-gradle-plugin:1.6.0'
+        classpath 'org.robovm:robovm-gradle-plugin:1.8.0'
     }
 }
 
@@ -47,13 +47,12 @@ subprojects {
     }
     
     ext {
-    	gdxVersion="1.6.5"
-		roboVMVersion="1.6.0"
+    	gdxVersion="1.7.0"
+		roboVMVersion="1.8.0"
 		androidVersion="4.4"
 		beanutilsVersion="1.8.3"
 		langVersion="3.1"
 		reflectionsVersion="0.9.10"
-		simpleXmlVersion="2.7.1"
 		artemisVersion="0.11.3"
 		
 		junitVersion="4.8.1"
@@ -122,7 +121,6 @@ project(":" + rootProject.name + "-desktop") {
         compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
     	
     	compile "org.reflections:reflections:$reflectionsVersion"
-    	compile "org.simpleframework:simple-xml:$simpleXmlVersion"
     	
     	testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"

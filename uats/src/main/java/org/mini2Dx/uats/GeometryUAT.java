@@ -68,6 +68,7 @@ public class GeometryUAT extends BasicGameScreen {
 
     @Override
     public void render(GameContainer gc, Graphics g) {
+    	g.scale(scaleX, scaleY);
         g.setBackgroundColor(Color.WHITE);
         g.setColor(Color.RED);
         rect.draw(g);

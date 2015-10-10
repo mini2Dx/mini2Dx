@@ -38,7 +38,6 @@ public class BlendingUAT extends BasicGameScreen {
     @Override
     public void initialise(GameContainer gc) {
         sprite = new Sprite(new Texture(Gdx.files.internal("unsealed.png")));
-        sprite.flip(false, true);
     }
 
     @Override

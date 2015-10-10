@@ -511,10 +511,6 @@ public class IOSMini2DxInput implements Input {
 	public void setCursorPosition (int x, int y) {
 	}
 
-	@Override
-	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
-	}
-
 	public void touchDown (long touches, UIEvent event) {
 		toTouchEvents(touches, event);
 		Gdx.graphics.requestRendering();
