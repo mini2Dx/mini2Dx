@@ -58,6 +58,10 @@ public class JsonSerializerTest {
 		parentObject.setChildren(new ArrayList<TestChildObject>());
 		parentObject.getChildren().add(new TestChildObject(35));
 		parentObject.getChildren().add(new TestChildObject(36));
+		
+		parentObject.setMapObjectValues(new HashMap<String, TestChildObject>());
+		parentObject.getMapObjectValues().put("key1", new TestChildObject(100));
+		parentObject.getMapObjectValues().put("key2", new TestChildObject(101));
 	}
 	
 	@Test

@@ -365,12 +365,10 @@ public class DesktopXmlSerializer implements XmlSerializer {
 					case "key":
 						xmlReader.next();
 						key = deserializeObject(xmlReader, "key", keyClass);
-						xmlReader.nextTag();
 						break;
 					case "value":
 						xmlReader.next();
 						value = deserializeObject(xmlReader, "value", valueClass);
-						xmlReader.nextTag();
 						break;
 					default:
 						finished = true;

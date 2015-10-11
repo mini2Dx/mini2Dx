@@ -138,5 +138,9 @@ public class DesktopPlayerDataTest {
         expectedParentObject.setChildren(new ArrayList<TestChildObject>());
         expectedParentObject.setIntArrayValue(new int [] { 0, 1, 2 });
         expectedParentObject.setStringArrayValue(new String [] { "item1", "item2" });
+        
+        expectedParentObject.setMapObjectValues(new HashMap<String, TestChildObject>());
+        expectedParentObject.getMapObjectValues().put("key1", new TestChildObject(100));
+        expectedParentObject.getMapObjectValues().put("key2", new TestChildObject(101));
     }
 }

@@ -49,6 +49,8 @@ public class TestParentObject {
     private TestChildObject optionalChildObject;
     @Field
     private List<TestChildObject> children;
+    @Field
+    private Map<String, TestChildObject> mapObjectValues;
     
     private int ignoredValue;
 
@@ -172,26 +174,34 @@ public class TestParentObject {
 		this.children = children;
 	}
 
+	public Map<String, TestChildObject> getMapObjectValues() {
+		return mapObjectValues;
+	}
+
+	public void setMapObjectValues(Map<String, TestChildObject> mapObjectValues) {
+		this.mapObjectValues = mapObjectValues;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (booleanValue ? 1231 : 1237);
 		result = prime * result + byteValue;
-		result = prime * result
-				+ ((childObject == null) ? 0 : childObject.hashCode());
+		result = prime * result + ((childObject == null) ? 0 : childObject.hashCode());
+		result = prime * result + ((children == null) ? 0 : children.hashCode());
 		result = prime * result + Float.floatToIntBits(floatValue);
+		result = prime * result + ignoredValue;
 		result = prime * result + Arrays.hashCode(intArrayValue);
 		result = prime * result + intValue;
-		result = prime * result
-				+ ((listValues == null) ? 0 : listValues.hashCode());
+		result = prime * result + ((listValues == null) ? 0 : listValues.hashCode());
 		result = prime * result + (int) (longValue ^ (longValue >>> 32));
-		result = prime * result
-				+ ((mapValues == null) ? 0 : mapValues.hashCode());
+		result = prime * result + ((mapObjectValues == null) ? 0 : mapObjectValues.hashCode());
+		result = prime * result + ((mapValues == null) ? 0 : mapValues.hashCode());
+		result = prime * result + ((optionalChildObject == null) ? 0 : optionalChildObject.hashCode());
 		result = prime * result + shortValue;
 		result = prime * result + Arrays.hashCode(stringArrayValue);
-		result = prime * result
-				+ ((stringValue == null) ? 0 : stringValue.hashCode());
+		result = prime * result + ((stringValue == null) ? 0 : stringValue.hashCode());
 		return result;
 	}
 
@@ -213,8 +223,14 @@ public class TestParentObject {
 				return false;
 		} else if (!childObject.equals(other.childObject))
 			return false;
-		if (Float.floatToIntBits(floatValue) != Float
-				.floatToIntBits(other.floatValue))
+		if (children == null) {
+			if (other.children != null)
+				return false;
+		} else if (!children.equals(other.children))
+			return false;
+		if (Float.floatToIntBits(floatValue) != Float.floatToIntBits(other.floatValue))
+			return false;
+		if (ignoredValue != other.ignoredValue)
 			return false;
 		if (!Arrays.equals(intArrayValue, other.intArrayValue))
 			return false;
@@ -227,10 +243,20 @@ public class TestParentObject {
 			return false;
 		if (longValue != other.longValue)
 			return false;
+		if (mapObjectValues == null) {
+			if (other.mapObjectValues != null)
+				return false;
+		} else if (!mapObjectValues.equals(other.mapObjectValues))
+			return false;
 		if (mapValues == null) {
 			if (other.mapValues != null)
 				return false;
 		} else if (!mapValues.equals(other.mapValues))
+			return false;
+		if (optionalChildObject == null) {
+			if (other.optionalChildObject != null)
+				return false;
+		} else if (!optionalChildObject.equals(other.optionalChildObject))
 			return false;
 		if (shortValue != other.shortValue)
 			return false;

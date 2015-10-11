@@ -14,12 +14,12 @@ package org.mini2Dx.core.serialization;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
+
+import junit.framework.Assert;
 
 /**
  * Utility class for {@link XmlSerializer} user acceptance tests
@@ -70,6 +70,12 @@ public abstract class XmlSerializerTest {
 		Assert.assertEquals(parentObject.getChildren().size(), result.getChildren().size());
 		for(int i = 0; i < parentObject.getChildren().size(); i++) {
 			Assert.assertEquals(parentObject.getChildren().get(i).getIntValue(), result.getChildren().get(i).getIntValue());
+		}
+		
+		Assert.assertEquals(parentObject.getMapObjectValues().size(), result.getMapObjectValues().size());
+		for(String key : parentObject.getMapObjectValues().keySet()) {
+			Assert.assertEquals(true, result.getMapObjectValues().containsKey(key));
+			Assert.assertEquals(parentObject.getMapObjectValues().get(key), result.getMapObjectValues().get(key));
 		}
 		
 		Assert.assertNotSame(parentObject.getIgnoredValue(), result.getIgnoredValue());
@@ -178,6 +184,10 @@ public abstract class XmlSerializerTest {
 		parentObject.setChildren(new ArrayList<TestChildObject>());
 		parentObject.getChildren().add(new TestChildObject(35));
 		parentObject.getChildren().add(new TestChildObject(36));
+		
+		parentObject.setMapObjectValues(new HashMap<String, TestChildObject>());
+		parentObject.getMapObjectValues().put("key1", new TestChildObject(100));
+		parentObject.getMapObjectValues().put("key2", new TestChildObject(101));
 		return parentObject;
 	}
 }
