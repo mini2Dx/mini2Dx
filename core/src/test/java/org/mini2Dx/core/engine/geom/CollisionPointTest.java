@@ -31,6 +31,13 @@ public class CollisionPointTest {
 	}
 	
 	@Test
+	public void testIdGeneration() {
+		Assert.assertEquals(true, point1.getId() != point2.getId());
+		Assert.assertEquals(true, point1.getId() != point3.getId());
+		Assert.assertEquals(true, point2.getId() != point3.getId());
+	}
+	
+	@Test
 	public void testEquals() {
 		point1.set(0f, 0f);
 		point2.set(0f, 0f);

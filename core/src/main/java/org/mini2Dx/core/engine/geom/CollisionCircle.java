@@ -29,7 +29,9 @@ import org.mini2Dx.core.geom.Circle;
  */
 public class CollisionCircle extends Circle implements Positionable {
 	
-	private ReadWriteLock positionChangeListenerLock;
+	private final long id;
+	private final ReadWriteLock positionChangeListenerLock;
+	
 	private List<PositionChangeListener> positionChangeListeners;
 	
 	private Circle previousCircle;
@@ -37,6 +39,8 @@ public class CollisionCircle extends Circle implements Positionable {
 	
 	public CollisionCircle(int radius) {
 		super(radius);
+		this.id = CollisionIdSequence.nextId();
+		
 		positionChangeListenerLock = new ReentrantReadWriteLock();
 		previousCircle = new Circle(radius);
 		renderCircle = new Circle(radius);
@@ -44,6 +48,8 @@ public class CollisionCircle extends Circle implements Positionable {
 	
 	public CollisionCircle(float centerX, float centerY, int radius) {
 		super(centerX, centerY, radius);
+		this.id = CollisionIdSequence.nextId();
+		
 		positionChangeListenerLock = new ReentrantReadWriteLock();
 		previousCircle = new Circle(centerX, centerY, radius);
 		renderCircle = new Circle(centerX, centerY, radius);
@@ -169,5 +175,9 @@ public class CollisionCircle extends Circle implements Positionable {
 
 	public float getPreviousRadius() {
 		return previousCircle.getRadius();
+	}
+
+	public long getId() {
+		return id;
 	}
 }

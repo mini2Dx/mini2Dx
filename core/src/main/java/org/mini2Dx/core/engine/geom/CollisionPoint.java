@@ -32,21 +32,22 @@ import com.badlogic.gdx.math.Vector2;
 public class CollisionPoint extends Point implements Positionable {
 	private static final long serialVersionUID = -7752697723641315393L;
 	
+	private final long id;
+	private final ReadWriteLock positionChangeListenerLock;
+	
 	private List<PositionChangeListener> positionChangeListeners;
-	private ReadWriteLock positionChangeListenerLock;
 	
 	private Point previousPosition;
 	private Point renderPosition;
 	
 	public CollisionPoint() {
-		super();
-		positionChangeListenerLock = new ReentrantReadWriteLock();
-		previousPosition = new Point();
-		renderPosition = new Point();
+		this(0f, 0f);
 	}
 
 	public CollisionPoint(float x, float y) {
 		super(x, y);
+		this.id = CollisionIdSequence.nextId();
+		
 		positionChangeListenerLock = new ReentrantReadWriteLock();
 		previousPosition = new Point(x, y);
 		renderPosition = new Point(x, y);
@@ -54,6 +55,8 @@ public class CollisionPoint extends Point implements Positionable {
 
 	public CollisionPoint(Point point) {
 		super(point);
+		this.id = CollisionIdSequence.nextId();
+		
 		positionChangeListenerLock = new ReentrantReadWriteLock();
 		previousPosition = new Point(point);
 		renderPosition = new Point(point);
@@ -169,5 +172,9 @@ public class CollisionPoint extends Point implements Positionable {
 	
 	public float getRenderY() {
 		return renderPosition.getY();
+	}
+
+	public long getId() {
+		return id;
 	}
 }

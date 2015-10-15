@@ -33,6 +33,13 @@ public class CollisionBoxTest implements PositionChangeListener<CollisionBox> {
 	public void setup() {
 		notificationReceived = false;
 	}
+	
+	@Test
+	public void testIdGeneration() {
+		rectangle1 = new CollisionBox();
+		rectangle2 = new CollisionBox();
+		Assert.assertEquals(true, rectangle1.getId() != rectangle2.getId());
+	}
 
 	@Test
 	public void testRectangleDefaultConstructor() {
