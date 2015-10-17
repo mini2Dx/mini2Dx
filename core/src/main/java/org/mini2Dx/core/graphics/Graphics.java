@@ -482,6 +482,18 @@ public class Graphics {
 		this.scaleX *= scaleX;
 		this.scaleY *= scaleY;
 	}
+	
+	/**
+	 * Resets scaling back to default values
+	 */
+	public void clearScaling() {
+		if (rendering) {
+			endRendering();
+		}
+		
+		scaleX = 1f;
+		scaleY = 1f;
+	}
 
 	/**
 	 * Moves the graphics context by a certain amount of the X and Y axis
