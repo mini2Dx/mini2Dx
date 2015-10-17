@@ -113,6 +113,9 @@ public class TiledCollisionMapper<T extends Positionable> {
 	 *            drawn in the layer is treated as a collision.
 	 */
 	public void mapCollisionsByLayer(QuadTree<T> quadTree, TiledMap tiledMap, int layerIndex) {
+		if(layerIndex < 0) {
+			return;
+		}
 		TileLayer layer = tiledMap.getTileLayer(layerIndex);
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = 0; y < layer.getHeight(); y++) {
@@ -138,6 +141,9 @@ public class TiledCollisionMapper<T extends Positionable> {
 	 *            drawn in the layer is treated as a collision.
 	 */
 	public void mapCollisionsByLayer(List<T> results, TiledMap tiledMap, int layerIndex) {
+		if(layerIndex < 0) {
+			return;
+		}
 		TileLayer layer = tiledMap.getTileLayer(layerIndex);
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = 0; y < layer.getHeight(); y++) {
@@ -196,6 +202,9 @@ public class TiledCollisionMapper<T extends Positionable> {
 	 */
 	public void mapCollisionsByObjectGroup(QuadTree<T> quadTree, TiledMap tiledMap, String groupName) {
 		TiledObjectGroup objectGroup = tiledMap.getObjectGroup(groupName);
+		if(objectGroup == null) {
+			return;
+		}
 
 		for (TiledObject tiledObject : objectGroup.getObjects()) {
 			quadTree.add(collisionFactory.createCollision(tiledObject));
@@ -216,6 +225,9 @@ public class TiledCollisionMapper<T extends Positionable> {
 	 */
 	public void mapCollisionsByObjectGroup(List<T> results, TiledMap tiledMap, String groupName) {
 		TiledObjectGroup objectGroup = tiledMap.getObjectGroup(groupName);
+		if(objectGroup == null) {
+			return;
+		}
 
 		for (TiledObject tiledObject : objectGroup.getObjects()) {
 			results.add(collisionFactory.createCollision(tiledObject));
@@ -253,6 +265,10 @@ public class TiledCollisionMapper<T extends Positionable> {
 	 *            drawn in the layer is treated as a collision.
 	 */
 	public void mapAndMergeCollisionsByLayer(QuadTree<T> quadTree, TiledMap tiledMap, int layerIndex) {
+		if(layerIndex < 0) {
+			return;
+		}
+		
 		TileLayer layer = tiledMap.getTileLayer(layerIndex);
 		byte[][] collisions = mapCollisionsByLayer(tiledMap, layer);
 
@@ -297,6 +313,10 @@ public class TiledCollisionMapper<T extends Positionable> {
 	 *            drawn in the layer is treated as a collision.
 	 */
 	public void mapAndMergeCollisionsByLayer(List<T> results, TiledMap tiledMap, int layerIndex) {
+		if(layerIndex < 0) {
+			return;
+		}
+		
 		TileLayer layer = tiledMap.getTileLayer(layerIndex);
 		byte[][] collisions = mapCollisionsByLayer(tiledMap, layer);
 

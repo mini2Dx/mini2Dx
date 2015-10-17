@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.tiled.collisions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -67,6 +68,20 @@ public class TiledCollisionMapperTest {
 		assertCollisionAt(2, 5, quadTree, tiledMap);
 		assertCollisionAt(1, 6, quadTree, tiledMap);
 		assertCollisionAt(2, 6, quadTree, tiledMap);
+	}
+	
+	@Test
+	public void testMapCollisionsByNonExistingLayer() {
+		List<CollisionBox> result = new ArrayList<CollisionBox>();
+		collisionBoxMapper.mapCollisionsByLayer(result, tiledMap, "NonExistingLayer");
+		Assert.assertEquals(0, result.size());
+	}
+	
+	@Test
+	public void testMapCollisionsByNonExistantObjectGroup() {
+		List<CollisionBox> result = new ArrayList<CollisionBox>();
+		collisionBoxMapper.mapCollisionsByObjectGroup(result, tiledMap, "NonExistingObjectGroup");
+		Assert.assertEquals(0, result.size());
 	}
 
 	@Test
