@@ -622,6 +622,14 @@ public class Graphics {
 	public void setShaderProgram(ShaderProgram shaderProgram) {
 		spriteBatch.setShader(shaderProgram);
 	}
+	
+	/**
+	 * Returns the currently applied {@link ShaderProgram}
+	 * @return
+	 */
+	public ShaderProgram getShaderProgram() {
+		return spriteBatch.getShader();
+	}
 
 	/**
 	 * Clears the {@link ShaderProgram} applied to this instance
