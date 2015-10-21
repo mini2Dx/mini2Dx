@@ -303,8 +303,24 @@ public class Graphics {
 	public void drawTexture(Texture texture, float x, float y) {
 		drawTexture(texture, x, y, texture.getWidth(), texture.getHeight());
 	}
+	
+	/**
+	 * Draws a texture to this graphics context
+	 * 
+	 * @param texture
+	 *            The {@link Texture} to draw
+	 * @param x
+	 *            The x coordinate to draw at
+	 * @param y
+	 *            The y coordinate to draw at
+	 * @param flipY True if the texture should be flipped vertically
+	 */
+	public void drawTexture(Texture texture, float x, float y, boolean flipY) {
+		drawTexture(texture, x, y, texture.getWidth(), texture.getHeight(), flipY);
+	}
 
 	/**
+	 * Draws a texture to this graphics context
 	 * 
 	 * @param texture
 	 *            The {@link Texture} to draw
@@ -321,9 +337,30 @@ public class Graphics {
 	 */
 	public void drawTexture(Texture texture, float x, float y, float width,
 			float height) {
+		drawTexture(texture, x, y, width, height, true);
+	}
+	
+	/**
+	 * 
+	 * @param texture
+	 *            The {@link Texture} to draw
+	 * @param x
+	 *            The x coordinate to draw at
+	 * @param y
+	 *            The y coordinate to draw at
+	 * @param width
+	 *            The width to draw the texture (this can stretch/shrink the
+	 *            texture if not matching the texture's width)
+	 * @param height
+	 *            The height to draw the texture (this can stretch/shrink the
+	 *            texture if not matching the texture's height)
+	 * @param flipY True if the texture should be flipped vertically
+	 */
+	public void drawTexture(Texture texture, float x, float y, float width,
+			float height, boolean flipY) {
 		beginRendering();
 		spriteBatch.draw(texture, x, y, 0, 0, width, height, 1f, 1f, 0, 0, 0,
-				texture.getWidth(), texture.getHeight(), false, true);
+				texture.getWidth(), texture.getHeight(), false, flipY);
 	}
 
 	/**
