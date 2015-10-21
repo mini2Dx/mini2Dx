@@ -60,12 +60,12 @@ public class RenderPipeline {
 		}
 	}
 	
-	public void add(RenderOperation stage) {
-		operations.add(stage);
+	public void add(RenderOperation operation) {
+		operations.add(operation);
 	}
 	
-	public void remove(RenderOperation stage) {
-		operations.remove(stage);
+	public void remove(RenderOperation operation) {
+		operations.remove(operation);
 	}
 
 	public boolean isOneWay() {

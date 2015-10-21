@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 public class ShaderProgramOperation implements RenderOperation {
 	private static final String LOGGING_TAG = ShaderProgramOperation.class.getSimpleName();
 
-	private final ShaderProgram shaderProgram;
+	protected final ShaderProgram shaderProgram;
 	private ShaderProgram previousProgram;
 	
 	public ShaderProgramOperation(FileHandle vertexShader, FileHandle fragmentShader) {
