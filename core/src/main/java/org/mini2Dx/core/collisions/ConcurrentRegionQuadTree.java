@@ -101,24 +101,13 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 	public void debugRender(Graphics g) {
 		Color tmp = g.getColor();
 
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
 			topLeft.debugRender(g);
-			topLeftLock.readLock().unlock();
-
-			topRightLock.readLock().lock();
 			topRight.debugRender(g);
-			topRightLock.readLock().unlock();
-
-			bottomLeftLock.readLock().lock();
 			bottomLeft.debugRender(g);
-			bottomLeftLock.readLock().unlock();
-
-			bottomRightLock.readLock().lock();
 			bottomRight.debugRender(g);
-			bottomRightLock.readLock().unlock();
 		} else {
-			topLeftLock.readLock().unlock();
 			g.setColor(QUAD_COLOR);
 			g.drawRect(x, y, width, height);
 			g.setColor(tmp);
@@ -129,97 +118,150 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 		for (T element : elements) {
 			g.drawRect(element.getX(), element.getY(), element.getWidth(), element.getHeight());
 		}
+		lock.readLock().unlock();
 		g.setColor(tmp);
+	}
+	
+	@Override
+	public void addAll(List<T> elements) {
+		if (elements == null || elements.isEmpty())
+			return;
+		
+		List<T> elementsWithinQuad = new ArrayList<T>();
+		for(T element : elements) {
+			if (this.contains(element) || this.intersects(element)) {
+				elementsWithinQuad.add(element);
+			}
+		}
+		clearTotalElementsCache();
+		
+		lock.writeLock().lock();
+		
+		if(topLeft != null) {
+			lock.readLock().lock();
+			lock.writeLock().unlock();
+			for(int i = elementsWithinQuad.size() - 1; i >= 0; i--) {
+				T element = elementsWithinQuad.get(i);
+				if (topLeft.add(element)) {
+					elementsWithinQuad.remove(i);
+					continue;
+				}
+				if (topRight.add(element)) {
+					elementsWithinQuad.remove(i);
+					continue;
+				}
+				if (bottomLeft.add(element)) {
+					elementsWithinQuad.remove(i);
+					continue;
+				}
+				if (bottomRight.add(element)) {
+					elementsWithinQuad.remove(i);
+					continue;
+				}
+			}
+			lock.readLock().unlock();
+			if(elementsWithinQuad.isEmpty()) {
+				return;
+			}
+			lock.writeLock().lock();
+		}
+		
+		this.elements.addAll(elementsWithinQuad);
+		for(T element : elementsWithinQuad) {
+			element.addPostionChangeListener(this);
+		}
+		int totalElements = this.elements.size();
+		lock.writeLock().unlock();
+		
+		if (totalElements > elementLimitPerQuad && width >= 2f && height >= 2f) {
+			subdivide();
+		}
 	}
 
 	@Override
 	public boolean add(T element) {
-		if (element == null)
+		if (element == null) {
 			return false;
+		}
 
 		if (!this.intersects(element) && !this.contains(element)) {
 			return false;
 		}
 		clearTotalElementsCache();
-
-		topLeftLock.readLock().lock();
-		if (topLeft == null) {
-			topLeftLock.readLock().unlock();
-			return addElement(element);
-		}
-		topLeftLock.readLock().unlock();
-
-		if (addElementToChild(element)) {
-			return true;
-		}
+		
 		if (!addElement(element)) {
 			return false;
 		}
 		return true;
 	}
+	
+	@Override
+	protected boolean addElement(T element) {
+		lock.writeLock().lock();
+		
+		//Another write may occur concurrently before this one
+		if(topLeft != null) {
+			lock.readLock().lock();
+			lock.writeLock().unlock();
+			boolean result = addElementToChild(element);
+			if(result) {
+				return true;
+			}
+			lock.writeLock().lock();
+		}
+		
+		elements.add(element);
+		element.addPostionChangeListener(this);
+
+		if (elements.size() > elementLimitPerQuad && width >= 2f && height >= 2f) {
+			subdivide();
+		}
+		lock.writeLock().unlock();
+		return true;
+	}
 
 	@Override
 	protected boolean addElementToChild(T element) {
-		topLeftLock.readLock().lock();
 		if (topLeft.contains(element)) {
-			topLeftLock.readLock().unlock();
-
-			topLeftLock.writeLock().lock();
 			boolean result = topLeft.add(element);
-			topLeftLock.writeLock().unlock();
+			lock.readLock().unlock();
 			return result;
 		}
-		topLeftLock.readLock().unlock();
-
-		topRightLock.readLock().lock();
 		if (topRight.contains(element)) {
-			topRightLock.readLock().unlock();
-
-			topRightLock.writeLock().lock();
 			boolean result = topRight.add(element);
-			topRightLock.writeLock().unlock();
+			lock.readLock().unlock();
 			return result;
 		}
-		topRightLock.readLock().unlock();
-
-		bottomLeftLock.readLock().lock();
 		if (bottomLeft.contains(element)) {
-			bottomLeftLock.readLock().unlock();
-
-			bottomLeftLock.writeLock().lock();
 			boolean result = bottomLeft.add(element);
-			bottomLeftLock.writeLock().unlock();
+			lock.readLock().unlock();
 			return result;
 		}
-		bottomLeftLock.readLock().unlock();
-
-		bottomRightLock.readLock().lock();
 		if (bottomRight.contains(element)) {
-			bottomRightLock.readLock().unlock();
-
-			bottomRightLock.writeLock().lock();
 			boolean result = bottomRight.add(element);
-			bottomRightLock.writeLock().unlock();
+			lock.readLock().unlock();
 			return result;
 		}
-		bottomRightLock.readLock().unlock();
-
+		lock.readLock().unlock();
 		return false;
 	}
 
 	@Override
 	protected void subdivide() {
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
-			topLeftLock.readLock().unlock();
+			lock.readLock().unlock();
 			return;
 		}
-		topLeftLock.readLock().unlock();
+		lock.readLock().unlock();
 
-		topLeftLock.writeLock().lock();
-		topRightLock.writeLock().lock();
-		bottomLeftLock.writeLock().lock();
-		bottomRightLock.writeLock().lock();
+		lock.writeLock().lock();
+		
+		//Another write may occur concurrently before this one
+		if (topLeft != null) {
+			lock.writeLock().unlock();
+			return;
+		}
 
 		float halfWidth = width / 2f;
 		float halfHeight = height / 2f;
@@ -230,15 +272,67 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 		bottomRight = new ConcurrentRegionQuadTree<T>(this, x + halfWidth, y + halfHeight, halfWidth, halfHeight);
 
 		for (int i = elements.size() - 1; i >= 0; i--) {
-			if (addElementToChild(elements.get(i))) {
-				removeElement(elements.get(i));
+			lock.readLock().lock();
+			T element = elements.get(i);
+			if (addElementToChild(element)) {
+				elements.remove(element);
+				element.removePositionChangeListener(this);
 			}
 		}
 
-		topLeftLock.writeLock().unlock();
-		topRightLock.writeLock().unlock();
-		bottomLeftLock.writeLock().unlock();
-		bottomRightLock.writeLock().unlock();
+		lock.writeLock().unlock();
+	}
+	
+	@Override
+	public void removeAll(List<T> elementsToRemove) {
+		if(elementsToRemove == null || elementsToRemove.isEmpty()) {
+			return;
+		}
+		clearTotalElementsCache();
+		
+		List<T> elementsWithinQuad = new ArrayList<T>();
+		for(T element : elementsToRemove) {
+			if(this.contains(element) || this.intersects(element)) {
+				elementsWithinQuad.add(element);
+			}
+		}
+		
+		lock.writeLock().lock();
+		if(topLeft != null) {
+			for(int i = elementsWithinQuad.size() - 1; i >= 0; i--) {
+				T element = elementsWithinQuad.get(i);
+				if (topLeft.remove(element)) {
+					elementsWithinQuad.remove(i);
+					continue;
+				}
+				if (topRight.remove(element)) {
+					elementsWithinQuad.remove(i);
+					continue;
+				}
+				if (bottomLeft.remove(element)) {
+					elementsWithinQuad.remove(i);
+					continue;
+				}
+				if (bottomRight.remove(element)) {
+					elementsWithinQuad.remove(i);
+					continue;
+				}
+			}
+		}
+		
+		elements.removeAll(elementsWithinQuad);
+		lock.writeLock().unlock();
+		
+		for(T element : elementsWithinQuad) {
+			element.removePositionChangeListener(this);
+		}
+		
+		if (parent == null) {
+			return;
+		}
+		if (parent.isMergable()) {
+			parent.merge();
+		}
 	}
 
 	@Override
@@ -250,18 +344,35 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 			return false;
 		}
 		clearTotalElementsCache();
-
-		if (removeElement(element)) {
-			return true;
+		return removeElement(element);
+	}
+	
+	@Override
+	protected boolean removeElement(T element) {
+		lock.writeLock().lock();
+		
+		//Another write may occur concurrently before this one
+		if(topLeft != null) {
+			lock.readLock().lock();
+			lock.writeLock().unlock();
+			boolean result = removeElementFromChild(element);
+			if(result) {
+				return true;
+			}
+			lock.writeLock().lock();
 		}
+		
+		boolean result = elements.remove(element);
+		lock.writeLock().unlock();
+		element.removePositionChangeListener(this);
 
-		topLeftLock.readLock().lock();
-		if (topLeft == null) {
-			topLeftLock.readLock().unlock();
-			return false;
+		if (parent == null) {
+			return result;
 		}
-		topLeftLock.readLock().unlock();
-		return removeElementFromChild(element);
+		if (parent.isMergable()) {
+			parent.merge();
+		}
+		return result;
 	}
 
 	@Override
@@ -273,32 +384,20 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 
 	@Override
 	public void getElementsWithinRegion(Collection<T> result, Parallelogram parallelogram) {
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
 			if (topLeft.contains(parallelogram) || topLeft.intersects(parallelogram)) {
 				topLeft.getElementsWithinRegion(result, parallelogram);
 			}
-			topLeftLock.readLock().unlock();
-
-			topRightLock.readLock().lock();
 			if (topRight.contains(parallelogram) || topRight.intersects(parallelogram)) {
 				topRight.getElementsWithinRegion(result, parallelogram);
 			}
-			topRightLock.readLock().unlock();
-
-			bottomLeftLock.readLock().lock();
 			if (bottomLeft.contains(parallelogram) || bottomLeft.intersects(parallelogram)) {
 				bottomLeft.getElementsWithinRegion(result, parallelogram);
 			}
-			bottomLeftLock.readLock().unlock();
-
-			bottomRightLock.readLock().lock();
 			if (bottomRight.contains(parallelogram) || bottomRight.intersects(parallelogram)) {
 				bottomRight.getElementsWithinRegion(result, parallelogram);
 			}
-			bottomRightLock.readLock().unlock();
-		} else {
-			topLeftLock.readLock().unlock();
 		}
 		for (int i = elements.size() - 1; i >= 0; i--) {
 			T element = elements.get(i);
@@ -308,6 +407,7 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 				result.add(element);
 			}
 		}
+		lock.readLock().unlock();
 	}
 
 	@Override
@@ -319,32 +419,20 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 
 	@Override
 	public void getElementsContainingPoint(Collection<T> result, Point point) {
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
 			if (topLeft.contains(point)) {
 				topLeft.getElementsContainingPoint(result, point);
 			}
-			topLeftLock.readLock().unlock();
-
-			topRightLock.readLock().lock();
 			if (topRight.contains(point)) {
 				topRight.getElementsContainingPoint(result, point);
 			}
-			topRightLock.readLock().unlock();
-
-			bottomLeftLock.readLock().lock();
 			if (bottomLeft.contains(point)) {
 				bottomLeft.getElementsContainingPoint(result, point);
 			}
-			bottomLeftLock.readLock().unlock();
-
-			bottomRightLock.readLock().lock();
 			if (bottomRight.contains(point)) {
 				bottomRight.getElementsContainingPoint(result, point);
 			}
-			bottomRightLock.readLock().unlock();
-		} else {
-			topLeftLock.readLock().unlock();
 		}
 		for (int i = elements.size() - 1; i >= 0; i--) {
 			T element = elements.get(i);
@@ -352,6 +440,7 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 				result.add(element);
 			}
 		}
+		lock.readLock().unlock();
 	}
 
 	@Override
@@ -363,36 +452,24 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 
 	@Override
 	public void getElementsIntersectingLineSegment(Collection<T> result, LineSegment lineSegment) {
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
 			if (topLeft.intersects(lineSegment) || topLeft.contains(lineSegment.getPointA())
 					|| topLeft.contains(lineSegment.getPointB())) {
 				topLeft.getElementsIntersectingLineSegment(result, lineSegment);
 			}
-			topLeftLock.readLock().unlock();
-
-			topRightLock.readLock().lock();
 			if (topRight.intersects(lineSegment) || topRight.contains(lineSegment.getPointA())
 					|| topRight.contains(lineSegment.getPointB())) {
 				topRight.getElementsIntersectingLineSegment(result, lineSegment);
 			}
-			topRightLock.readLock().unlock();
-
-			bottomLeftLock.readLock().lock();
 			if (bottomLeft.intersects(lineSegment) || bottomLeft.contains(lineSegment.getPointA())
 					|| bottomLeft.contains(lineSegment.getPointB())) {
 				bottomLeft.getElementsIntersectingLineSegment(result, lineSegment);
 			}
-			bottomLeftLock.readLock().unlock();
-
-			bottomRightLock.readLock().lock();
 			if (bottomRight.intersects(lineSegment) || bottomRight.contains(lineSegment.getPointA())
 					|| bottomRight.contains(lineSegment.getPointB())) {
 				bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
 			}
-			bottomRightLock.readLock().unlock();
-		} else {
-			topLeftLock.readLock().unlock();
 		}
 		for (int i = elements.size() - 1; i >= 0; i--) {
 			T element = elements.get(i);
@@ -400,6 +477,7 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 				result.add(element);
 			}
 		}
+		lock.readLock().unlock();
 	}
 
 	@Override
@@ -411,26 +489,15 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 
 	@Override
 	public void getElements(List<T> result) {
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
 			((ConcurrentRegionQuadTree<T>) topLeft).getElements(result);
-			topLeftLock.readLock().unlock();
-
-			topRightLock.readLock().lock();
 			((ConcurrentRegionQuadTree<T>) topRight).getElements(result);
-			topRightLock.readLock().unlock();
-
-			bottomLeftLock.readLock().lock();
 			((ConcurrentRegionQuadTree<T>) bottomLeft).getElements(result);
-			bottomLeftLock.readLock().unlock();
-
-			bottomRightLock.readLock().lock();
 			((ConcurrentRegionQuadTree<T>) bottomRight).getElements(result);
-			bottomRightLock.readLock().unlock();
-		} else {
-			topLeftLock.readLock().unlock();
 		}
 		result.addAll(elements);
+		lock.readLock().unlock();
 	}
 
 	@Override
@@ -441,26 +508,15 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 
 		totalElementsCache = 0;
 
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
 			totalElementsCache = topLeft.getTotalElements();
-			topLeftLock.readLock().unlock();
-
-			topRightLock.readLock().lock();
 			totalElementsCache += topRight.getTotalElements();
-			topRightLock.readLock().unlock();
-
-			bottomLeftLock.readLock().lock();
 			totalElementsCache += bottomLeft.getTotalElements();
-			bottomLeftLock.readLock().unlock();
-
-			bottomRightLock.readLock().lock();
 			totalElementsCache += bottomRight.getTotalElements();
-			bottomRightLock.readLock().unlock();
-		} else {
-			topLeftLock.readLock().unlock();
 		}
 		totalElementsCache += elements.size();
+		lock.readLock().unlock();
 		return totalElementsCache;
 	}
 

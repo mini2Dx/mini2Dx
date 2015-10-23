@@ -49,6 +49,17 @@ public class PointQuadTreeTest {
 	}
 	
 	@Test
+	public void testAddAll() {
+		Random random = new Random();
+		List<CollisionPoint> points = new ArrayList<CollisionPoint>();
+		for(int i = 0; i < 100; i++) {
+			points.add(new CollisionPoint(random.nextInt(128), random.nextInt(128)));
+		}
+		rootQuad.addAll(points);
+		Assert.assertEquals(points.size(), rootQuad.getTotalElements());
+	}
+	
+	@Test
 	public void testRemove() {
 		Random random = new Random();
 		List<CollisionPoint> CollisionPoints = new ArrayList<CollisionPoint>();
@@ -66,6 +77,19 @@ public class PointQuadTreeTest {
 			rootQuad.remove(CollisionPoints.get(i));
 			Assert.assertEquals(i, rootQuad.getElements().size());
 		}
+	}
+	
+	@Test
+	public void testRemoveAll() {
+		Random random = new Random();
+		List<CollisionPoint> points = new ArrayList<CollisionPoint>();
+		for(int i = 0; i < 100; i++) {
+			points.add(new CollisionPoint(random.nextInt(128), random.nextInt(128)));
+		}
+		rootQuad.addAll(points);
+		Assert.assertEquals(points.size(), rootQuad.getTotalElements());
+		rootQuad.removeAll(points);
+		Assert.assertEquals(0, rootQuad.getTotalElements());
 	}
 	
 	@Test

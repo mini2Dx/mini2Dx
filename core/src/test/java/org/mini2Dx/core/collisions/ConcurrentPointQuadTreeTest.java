@@ -17,6 +17,7 @@ import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.engine.geom.CollisionPoint;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Rectangle;
@@ -49,6 +50,17 @@ public class ConcurrentPointQuadTreeTest {
 	}
 	
 	@Test
+	public void testAddAll() {
+		Random random = new Random();
+		List<CollisionPoint> points = new ArrayList<CollisionPoint>();
+		for(int i = 0; i < 100; i++) {
+			points.add(new CollisionPoint(random.nextInt(128), random.nextInt(128)));
+		}
+		rootQuad.addAll(points);
+		Assert.assertEquals(points.size(), rootQuad.getTotalElements());
+	}
+	
+	@Test
 	public void testRemove() {
 		Random random = new Random();
 		List<CollisionPoint> CollisionPoints = new ArrayList<CollisionPoint>();
@@ -66,6 +78,19 @@ public class ConcurrentPointQuadTreeTest {
 			rootQuad.remove(CollisionPoints.get(i));
 			Assert.assertEquals(i, rootQuad.getElements().size());
 		}
+	}
+	
+	@Test
+	public void testRemoveAll() {
+		Random random = new Random();
+		List<CollisionPoint> points = new ArrayList<CollisionPoint>();
+		for(int i = 0; i < 100; i++) {
+			points.add(new CollisionPoint(random.nextInt(128), random.nextInt(128)));
+		}
+		rootQuad.addAll(points);
+		Assert.assertEquals(points.size(), rootQuad.getTotalElements());
+		rootQuad.removeAll(points);
+		Assert.assertEquals(0, rootQuad.getTotalElements());
 	}
 	
 	@Test
@@ -95,18 +120,24 @@ public class ConcurrentPointQuadTreeTest {
 		rootQuad = new ConcurrentPointQuadTree<CollisionPoint>(4, 3, 0, 0, 128, 128);
 		rootQuad.add(point1);
 		Assert.assertEquals(1, rootQuad.getTotalQuads());
-		rootQuad.add(point2);
-		rootQuad.add(point3);
-		rootQuad.add(point4);
-		rootQuad.add(new CollisionPoint(32, 32));
-		Assert.assertEquals(4, rootQuad.getTotalQuads());
-		Assert.assertEquals(5, rootQuad.getTotalElements());
-		rootQuad.remove(point4);
-		rootQuad.remove(point3);
-		rootQuad.remove(point2);
-		Assert.assertEquals(1, rootQuad.getTotalQuads());
-		Assert.assertEquals(2, rootQuad.getTotalElements());
-		Assert.assertEquals(true, rootQuad.getElements().contains(point1));
+		
+		CollisionPoint point5 = new CollisionPoint(32, 32);
+		
+		for(int i = 0; i < 5; i++) {
+			rootQuad.add(point2);
+			rootQuad.add(point3);
+			rootQuad.add(point4);
+			rootQuad.add(point5);
+			Assert.assertEquals(4, rootQuad.getTotalQuads());
+			Assert.assertEquals(5, rootQuad.getTotalElements());
+			rootQuad.remove(point4);
+			rootQuad.remove(point3);
+			rootQuad.remove(point2);
+			Assert.assertEquals(1, rootQuad.getTotalQuads());
+			Assert.assertEquals(2, rootQuad.getTotalElements());
+			Assert.assertEquals(true, rootQuad.getElements().contains(point1));
+			rootQuad.remove(point5);
+		}
 	}
 	
 	@Test

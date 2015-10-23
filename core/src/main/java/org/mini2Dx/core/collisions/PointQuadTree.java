@@ -139,6 +139,35 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		}
 		g.setColor(tmp);
 	}
+	
+	public void addAll(List<T> elementsToAdd) {
+		if(elementsToAdd == null || elementsToAdd.isEmpty()) {
+			return;
+		}
+		
+		List<T> elementsWithinQuad = new ArrayList<T>();
+		for(T element : elementsToAdd) {
+			if(this.contains(element.getX(), element.getY())) {
+				elementsWithinQuad.add(element);
+			}
+		}
+		
+		clearTotalElementsCache();
+		
+		if (topLeft != null) {
+			for(T element : elementsWithinQuad) {
+				addElementToChild(element);
+			}
+			return;
+		}
+		for(T element : elementsWithinQuad) {
+			elements.add(element);
+			element.addPostionChangeListener(this);
+		}
+		if (elements.size() > elementLimitPerQuad && width >= 2f && height >= 2f) {
+			subdivide();
+		}
+	}
 
 	public boolean add(T element) {
 		if (element == null)
@@ -240,9 +269,13 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		bottomRight.getElements(elements);
 
 		for (T element : elements) {
+			topLeft.elements.remove(element);
 			element.removePositionChangeListener(topLeft);
+			topRight.elements.remove(element);
 			element.removePositionChangeListener(topRight);
+			bottomLeft.elements.remove(element);
 			element.removePositionChangeListener(bottomLeft);
+			bottomRight.elements.remove(element);
 			element.removePositionChangeListener(bottomRight);
 			element.addPostionChangeListener(this);
 		}
@@ -251,6 +284,41 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		topRight = null;
 		bottomLeft = null;
 		bottomRight = null;
+	}
+	
+	public void removeAll(List<T> elementsToRemove) {
+		if(elementsToRemove == null || elementsToRemove.isEmpty()) {
+			return;
+		}
+		
+		List<T> elementsWithinQuad = new ArrayList<T>();
+		for(T element : elementsToRemove) {
+			if(this.contains(element.getX(), element.getY())) {
+				elementsWithinQuad.add(element);
+			}
+		}
+		
+		clearTotalElementsCache();
+		
+		if(topLeft != null) {
+			for(T element : elementsWithinQuad) {
+				removeElementFromChild(element);
+			}
+		}
+		if(elements == null) {
+			return;
+		}
+		elements.removeAll(elementsWithinQuad);
+		for(T element : elementsWithinQuad) {
+			element.removePositionChangeListener(this);
+		}
+		
+		if (parent == null) {
+			return;
+		}
+		if (parent.isMergable()) {
+			parent.merge();
+		}
 	}
 
 	public boolean remove(T element) {

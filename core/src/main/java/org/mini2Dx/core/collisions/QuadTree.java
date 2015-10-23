@@ -31,6 +31,10 @@ public interface QuadTree<T extends Positionable> extends PositionChangeListener
 	
 	public boolean remove(T element);
 	
+	public void addAll(List<T> elements);
+	
+	public void removeAll(List<T> elements);
+	
 	public List<T> getElementsWithinRegion(Parallelogram parallelogram);
 	
 	public void getElementsWithinRegion(Collection<T> result, Parallelogram parallelogram);

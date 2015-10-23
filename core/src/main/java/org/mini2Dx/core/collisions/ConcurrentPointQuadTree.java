@@ -14,7 +14,6 @@ package org.mini2Dx.core.collisions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -45,7 +44,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 
 	protected final int elementLimitPerQuad;
 	protected final int mergeWatermark;
-	protected final ReadWriteLock topLeftLock, topRightLock, bottomLeftLock, bottomRightLock;
+	protected final ReadWriteLock lock;
 
 	protected int totalElementsCache = -1;
 
@@ -79,12 +78,9 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 
 		this.elementLimitPerQuad = elementLimitPerQuad;
 		this.mergeWatermark = mergeWatermark;
-		this.topLeftLock = new ReentrantReadWriteLock(false);
-		this.topRightLock = new ReentrantReadWriteLock(false);
-		this.bottomLeftLock = new ReentrantReadWriteLock(false);
-		this.bottomRightLock = new ReentrantReadWriteLock(false);
+		this.lock = new ReentrantReadWriteLock(false);
 
-		elements = new CopyOnWriteArrayList<T>();
+		elements = new ArrayList<T>();
 	}
 
 	/**
@@ -131,24 +127,13 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 	public void debugRender(Graphics g) {
 		Color tmp = g.getColor();
 
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
 			topLeft.debugRender(g);
-			topLeftLock.readLock().unlock();
-
-			topRightLock.readLock().lock();
 			topRight.debugRender(g);
-			topRightLock.readLock().unlock();
-
-			bottomLeftLock.readLock().lock();
 			bottomLeft.debugRender(g);
-			bottomLeftLock.readLock().unlock();
-
-			bottomRightLock.readLock().lock();
 			bottomRight.debugRender(g);
-			bottomRightLock.readLock().unlock();
 		} else {
-			topLeftLock.readLock().unlock();
 			g.setColor(QUAD_COLOR);
 			g.drawShape(this);
 			g.drawRect(x, y, width, height);
@@ -161,6 +146,54 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 			g.fillRect(element.getX(), element.getY(), 1f, 1f);
 		}
 		g.setColor(tmp);
+		lock.readLock().unlock();
+	}
+	
+	public void addAll(List<T> elementsToAdd) {
+		if (elementsToAdd == null || elementsToAdd.isEmpty())
+			return;
+		clearTotalElementsCache();
+		
+		List<T> elementsWithinQuad = new ArrayList<T>();
+		for(T element : elementsToAdd) {
+			if (this.contains(element.getX(), element.getY())) {
+				elementsWithinQuad.add(element);
+			}
+		}
+		
+		lock.writeLock().lock();
+		
+		if(topLeft != null) {
+			lock.readLock().lock();
+			lock.writeLock().unlock();
+			for(T element : elementsWithinQuad) {
+				if (topLeft.add(element)) {
+					continue;
+				}
+				if (topRight.add(element)) {
+					continue;
+				}
+				if (bottomLeft.add(element)) {
+					continue;
+				}
+				if (bottomRight.add(element)) {
+					continue;
+				}
+			}
+			lock.readLock().unlock();
+			return;
+		}
+		
+		this.elements.addAll(elementsWithinQuad);
+		for(T element : elementsWithinQuad) {
+			element.addPostionChangeListener(this);
+		}
+		int totalElements = this.elements.size();
+		lock.writeLock().unlock();
+		
+		if (totalElements > elementLimitPerQuad && width >= 2f && height >= 2f) {
+			subdivide();
+		}
 	}
 
 	public boolean add(T element) {
@@ -171,70 +204,66 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 			return false;
 		}
 		clearTotalElementsCache();
-
-		topLeftLock.readLock().lock();
-		if (topLeft != null) {
-			topLeftLock.readLock().unlock();
-			return addElementToChild(element);
-		}
-		topLeftLock.readLock().unlock();
 		return addElement(element);
 	}
 
 	protected boolean addElement(T element) {
+		lock.writeLock().lock();
+		
+		//Another write may occur concurrently before this one
+		if(topLeft != null) {
+			lock.readLock().lock();
+			lock.writeLock().unlock();
+			return addElementToChild(element);
+		}
+		
 		elements.add(element);
 		element.addPostionChangeListener(this);
-
-		if (elements.size() > elementLimitPerQuad && width >= 2f && height >= 2f) {
+		int totalElements = elements.size();
+		lock.writeLock().unlock();
+		
+		if (totalElements > elementLimitPerQuad && width >= 2f && height >= 2f) {
 			subdivide();
 		}
 		return true;
 	}
 
 	protected boolean addElementToChild(T element) {
-		topLeftLock.writeLock().lock();
 		if (topLeft.add(element)) {
-			topLeftLock.writeLock().unlock();
+			lock.readLock().unlock();
 			return true;
 		}
-		topLeftLock.writeLock().unlock();
-
-		topRightLock.writeLock().lock();
 		if (topRight.add(element)) {
-			topRightLock.writeLock().unlock();
+			lock.readLock().unlock();
 			return true;
 		}
-		topRightLock.writeLock().unlock();
-
-		bottomLeftLock.writeLock().lock();
 		if (bottomLeft.add(element)) {
-			bottomLeftLock.writeLock().unlock();
+			lock.readLock().unlock();
 			return true;
 		}
-		bottomLeftLock.writeLock().unlock();
-
-		bottomRightLock.writeLock().lock();
 		if (bottomRight.add(element)) {
-			bottomRightLock.writeLock().unlock();
+			lock.readLock().unlock();
 			return true;
 		}
-		bottomRightLock.writeLock().unlock();
-
+		lock.readLock().unlock();
 		return false;
 	}
 
 	protected void subdivide() {
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
-			topLeftLock.readLock().unlock();
+			lock.readLock().unlock();
 			return;
 		}
-		topLeftLock.readLock().unlock();
+		lock.readLock().unlock();
 
-		topLeftLock.writeLock().lock();
-		topRightLock.writeLock().lock();
-		bottomLeftLock.writeLock().lock();
-		bottomRightLock.writeLock().lock();
+		lock.writeLock().lock();
+		
+		//Another write may occur concurrently before this one
+		if(topLeft != null) {
+			lock.writeLock().unlock();
+			return;
+		}
 
 		float halfWidth = width / 2f;
 		float halfHeight = height / 2f;
@@ -247,77 +276,75 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		for (int i = elements.size() - 1; i >= 0; i--) {
 			T element = elements.remove(i);
 			element.removePositionChangeListener(this);
+			lock.readLock().lock();
 			addElementToChild(element);
 		}
 
-		topLeftLock.writeLock().unlock();
-		topRightLock.writeLock().unlock();
-		bottomLeftLock.writeLock().unlock();
-		bottomRightLock.writeLock().unlock();
+		lock.writeLock().unlock();
 	}
 
 	protected boolean isMergable() {
 		if (mergeWatermark <= 0) {
 			return false;
 		}
-
-		topLeftLock.readLock().lock();
+		
+		lock.readLock().lock();
 		int topLeftTotal = topLeft.getTotalElements();
 		if (topLeftTotal >= mergeWatermark) {
-			topLeftLock.readLock().unlock();
+			lock.readLock().unlock();
 			return false;
 		}
-		topLeftLock.readLock().unlock();
-
-		topRightLock.readLock().lock();
+		
 		int topRightTotal = topRight.getTotalElements();
 		if (topRightTotal >= mergeWatermark) {
-			topRightLock.readLock().unlock();
+			lock.readLock().unlock();
 			return false;
 		}
-		topRightLock.readLock().unlock();
-
-		bottomLeftLock.readLock().lock();
+		
 		int bottomLeftTotal = bottomLeft.getTotalElements();
 		if (bottomLeftTotal >= mergeWatermark) {
-			bottomLeftLock.readLock().unlock();
+			lock.readLock().unlock();
 			return false;
 		}
-		bottomLeftLock.readLock().unlock();
 
-		bottomRightLock.readLock().lock();
 		int bottomRightTotal = bottomRight.getTotalElements();
 		if (bottomRightTotal >= mergeWatermark) {
-			bottomRightLock.readLock().unlock();
+			lock.readLock().unlock();
 			return false;
 		}
-		bottomRightLock.readLock().unlock();
 
+		lock.readLock().unlock();
 		return topLeftTotal + topRightTotal + bottomLeftTotal + bottomRightTotal < mergeWatermark;
 	}
 
 	protected void merge() {
-		topLeftLock.readLock().lock();
-		if (topLeft == null) {
-			topLeftLock.readLock().unlock();
+		if(topLeft == null) {
 			return;
 		}
-		topLeftLock.readLock().unlock();
-
-		topLeftLock.writeLock().lock();
-		topRightLock.writeLock().lock();
-		bottomLeftLock.writeLock().lock();
-		bottomRightLock.writeLock().lock();
+		lock.readLock().unlock();
+		
+		lock.writeLock().lock();
+		
+		//Another write may occur concurrently before this one
+		if(topLeft == null) {
+			lock.readLock().lock();
+			lock.writeLock().unlock();
+			return;
+		}
 
 		topLeft.getElements(elements);
 		topRight.getElements(elements);
 		bottomLeft.getElements(elements);
 		bottomRight.getElements(elements);
-
+		
 		for (T element : elements) {
+			topLeft.elements.remove(element);
 			element.removePositionChangeListener(topLeft);
+			topRight.elements.remove(element);
 			element.removePositionChangeListener(topRight);
+			bottomLeft.elements.remove(element);
 			element.removePositionChangeListener(bottomLeft);
+			bottomRight.elements.remove(element);
 			element.removePositionChangeListener(bottomRight);
 			element.addPostionChangeListener(this);
 		}
@@ -327,10 +354,59 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		bottomLeft = null;
 		bottomRight = null;
 
-		topLeftLock.writeLock().unlock();
-		topRightLock.writeLock().unlock();
-		bottomLeftLock.writeLock().unlock();
-		bottomRightLock.writeLock().unlock();
+		lock.writeLock().unlock();
+		lock.readLock().lock();
+	}
+	
+	public void removeAll(List<T> elementsToRemove) {
+		if(elementsToRemove == null || elementsToRemove.isEmpty()) {
+			return;
+		}
+		clearTotalElementsCache();
+		
+		List<T> elementsWithinQuad = new ArrayList<T>();
+		for(T element : elementsToRemove) {
+			if(this.contains(element.getX(), element.getY())) {
+				elementsWithinQuad.add(element);
+			}
+		}
+		
+		lock.writeLock().lock();
+		if(topLeft != null) {
+			for(int i = elementsWithinQuad.size() - 1; i >= 0; i--) {
+				T element = elementsWithinQuad.get(i);
+				if (topLeft.remove(element)) {
+					elementsWithinQuad.remove(i);
+					continue;
+				}
+				if (topRight.remove(element)) {
+					elementsWithinQuad.remove(i);
+					continue;
+				}
+				if (bottomLeft.remove(element)) {
+					elementsWithinQuad.remove(i);
+					continue;
+				}
+				if (bottomRight.remove(element)) {
+					elementsWithinQuad.remove(i);
+					continue;
+				}
+			}
+		}
+		
+		elements.removeAll(elementsWithinQuad);
+		lock.writeLock().unlock();
+		
+		for(T element : elementsWithinQuad) {
+			element.removePositionChangeListener(this);
+		}
+		
+		if (parent == null) {
+			return;
+		}
+		if (parent.isMergable()) {
+			parent.merge();
+		}
 	}
 
 	public boolean remove(T element) {
@@ -342,49 +418,47 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		}
 		clearTotalElementsCache();
 
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
-			topLeftLock.readLock().unlock();
 			return removeElementFromChild(element);
 		}
-		topLeftLock.readLock().unlock();
+		lock.readLock().unlock();
 		return removeElement(element);
 	}
 
 	protected boolean removeElementFromChild(T element) {
-		topLeftLock.writeLock().lock();
 		if (topLeft.remove(element)) {
-			topLeftLock.writeLock().unlock();
+			lock.readLock().unlock();
 			return true;
 		}
-		topLeftLock.writeLock().unlock();
-
-		topRightLock.writeLock().lock();
 		if (topRight.remove(element)) {
-			topRightLock.writeLock().unlock();
+			lock.readLock().unlock();
 			return true;
 		}
-		topRightLock.writeLock().unlock();
-
-		bottomLeftLock.writeLock().lock();
 		if (bottomLeft.remove(element)) {
-			bottomLeftLock.writeLock().unlock();
+			lock.readLock().unlock();
 			return true;
 		}
-		bottomLeftLock.writeLock().unlock();
-
-		bottomRightLock.writeLock().lock();
 		if (bottomRight.remove(element)) {
-			bottomRightLock.writeLock().unlock();
+			lock.readLock().unlock();
 			return true;
 		}
-		bottomRightLock.writeLock().unlock();
-
+		lock.readLock().unlock();
 		return false;
 	}
 
 	protected boolean removeElement(T element) {
+		lock.writeLock().lock();
+		
+		//Another write may occur concurrently before this one
+		if(topLeft != null) {
+			lock.readLock().lock();
+			lock.writeLock().unlock();
+			return removeElementFromChild(element);
+		}
+		
 		boolean result = elements.remove(element);
+		lock.writeLock().unlock();
 		element.removePositionChangeListener(this);
 
 		if (parent == null) {
@@ -403,24 +477,13 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 	}
 
 	public void getElementsWithinRegion(Collection<T> result, Parallelogram parallelogram) {
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
 			topLeft.getElementsWithinRegion(result, parallelogram);
-			topLeftLock.readLock().unlock();
-
-			topRightLock.readLock().lock();
 			topRight.getElementsWithinRegion(result, parallelogram);
-			topRightLock.readLock().unlock();
-
-			bottomLeftLock.readLock().lock();
 			bottomLeft.getElementsWithinRegion(result, parallelogram);
-			bottomLeftLock.readLock().unlock();
-
-			bottomRightLock.readLock().lock();
 			bottomRight.getElementsWithinRegion(result, parallelogram);
-			bottomRightLock.readLock().unlock();
 		} else {
-			topLeftLock.readLock().unlock();
 			for (int i = elements.size() - 1; i >= 0; i--) {
 				T element = elements.get(i);
 				if (element != null && parallelogram.contains(element.getX(), element.getY())) {
@@ -428,6 +491,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 				}
 			}
 		}
+		lock.readLock().unlock();
 	}
 
 	@Override
@@ -439,32 +503,21 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 
 	@Override
 	public void getElementsContainingPoint(Collection<T> result, Point point) {
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
 			if (topLeft.contains(point)) {
 				topLeft.getElementsContainingPoint(result, point);
 			}
-			topLeftLock.readLock().unlock();
-
-			topRightLock.readLock().lock();
 			if (topRight.contains(point)) {
 				topRight.getElementsContainingPoint(result, point);
 			}
-			topRightLock.readLock().unlock();
-
-			bottomLeftLock.readLock().lock();
 			if (bottomLeft.contains(point)) {
 				bottomLeft.getElementsContainingPoint(result, point);
 			}
-			bottomLeftLock.readLock().unlock();
-
-			bottomRightLock.readLock().lock();
 			if (bottomRight.contains(point)) {
 				bottomRight.getElementsContainingPoint(result, point);
 			}
-			bottomRightLock.readLock().unlock();
 		} else {
-			topLeftLock.readLock().unlock();
 			for (int i = elements.size() - 1; i >= 0; i--) {
 				T element = elements.get(i);
 				if (element == null) {
@@ -479,6 +532,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 				result.add(element);
 			}
 		}
+		lock.readLock().unlock();
 	}
 
 	public List<T> getElementsIntersectingLineSegment(LineSegment lineSegment) {
@@ -488,36 +542,25 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 	}
 
 	public void getElementsIntersectingLineSegment(Collection<T> result, LineSegment lineSegment) {
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
 			if (topLeft.intersects(lineSegment) || topLeft.contains(lineSegment.getPointA())
 					|| topLeft.contains(lineSegment.getPointB())) {
 				topLeft.getElementsIntersectingLineSegment(result, lineSegment);
 			}
-			topLeftLock.readLock().unlock();
-
-			topRightLock.readLock().lock();
 			if (topRight.intersects(lineSegment) || topRight.contains(lineSegment.getPointA())
 					|| topRight.contains(lineSegment.getPointB())) {
 				topRight.getElementsIntersectingLineSegment(result, lineSegment);
 			}
-			topRightLock.readLock().unlock();
-
-			bottomLeftLock.readLock().lock();
 			if (bottomLeft.intersects(lineSegment) || bottomLeft.contains(lineSegment.getPointA())
 					|| bottomLeft.contains(lineSegment.getPointB())) {
 				bottomLeft.getElementsIntersectingLineSegment(result, lineSegment);
 			}
-			bottomLeftLock.readLock().unlock();
-
-			bottomRightLock.readLock().lock();
 			if (bottomRight.intersects(lineSegment) || bottomRight.contains(lineSegment.getPointA())
 					|| bottomRight.contains(lineSegment.getPointB())) {
 				bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
 			}
-			bottomRightLock.readLock().unlock();
 		} else {
-			topLeftLock.readLock().unlock();
 			for (int i = elements.size() - 1; i >= 0; i--) {
 				T element = elements.get(i);
 				if (element != null && lineSegment.contains(element.getX(), element.getY())) {
@@ -525,6 +568,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 				}
 			}
 		}
+		lock.readLock().unlock();
 	}
 
 	public List<T> getElements() {
@@ -534,49 +578,29 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 	}
 
 	public void getElements(List<T> result) {
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
 			topLeft.getElements(result);
-			topLeftLock.readLock().unlock();
-
-			topRightLock.readLock().lock();
 			topRight.getElements(result);
-			topRightLock.readLock().unlock();
-
-			bottomLeftLock.readLock().lock();
 			bottomLeft.getElements(result);
-			bottomLeftLock.readLock().unlock();
-
-			bottomRightLock.readLock().lock();
 			bottomRight.getElements(result);
-			bottomRightLock.readLock().unlock();
 		} else {
-			topLeftLock.readLock().unlock();
 			result.addAll(elements);
 		}
+		lock.readLock().unlock();
 	}
 
 	public int getTotalQuads() {
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
 			int result = topLeft.getTotalQuads();
-			topLeftLock.readLock().unlock();
-
-			topRightLock.readLock().lock();
 			result += topRight.getTotalQuads();
-			topRightLock.readLock().unlock();
-
-			bottomLeftLock.readLock().lock();
 			result += bottomLeft.getTotalQuads();
-			bottomLeftLock.readLock().unlock();
-
-			bottomRightLock.readLock().lock();
 			result += bottomRight.getTotalQuads();
-			bottomRightLock.readLock().unlock();
-
+			lock.readLock().unlock();
 			return result;
 		} else {
-			topLeftLock.readLock().unlock();
+			lock.readLock().unlock();
 			return 1;
 		}
 	}
@@ -585,26 +609,16 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		if (totalElementsCache >= 0) {
 			return totalElementsCache;
 		}
-		topLeftLock.readLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
 			totalElementsCache = topLeft.getTotalElements();
-			topLeftLock.readLock().unlock();
-
-			topRightLock.readLock().lock();
 			totalElementsCache += topRight.getTotalElements();
-			topRightLock.readLock().unlock();
-
-			bottomLeftLock.readLock().lock();
 			totalElementsCache += bottomLeft.getTotalElements();
-			bottomLeftLock.readLock().unlock();
-
-			bottomRightLock.readLock().lock();
 			totalElementsCache += bottomRight.getTotalElements();
-			bottomRightLock.readLock().unlock();
 		} else {
-			topLeftLock.readLock().unlock();
 			totalElementsCache = elements.size();
 		}
+		lock.readLock().unlock();
 		return totalElementsCache;
 	}
 

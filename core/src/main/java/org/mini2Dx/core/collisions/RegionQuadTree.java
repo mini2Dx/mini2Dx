@@ -118,6 +118,32 @@ public class RegionQuadTree<T extends CollisionBox> extends PointQuadTree<T> {
 		}
 		g.setColor(tmp);
 	}
+	
+	@Override
+	public void addAll(List<T> elementsToAdd) {
+		if(elementsToAdd == null || elementsToAdd.isEmpty()) {
+			return;
+		}
+		clearTotalElementsCache();
+		
+		List<T> elementsWithinQuad = new ArrayList<T>();
+		for(T element : elementsToAdd) {
+			if (this.contains(element) || this.intersects(element)) {
+				elementsWithinQuad.add(element);
+			}
+		}
+		
+		for (T element : elementsWithinQuad) {
+			if(topLeft == null) {
+				addElement(element);
+				continue;
+			}
+			if(addElementToChild(element)) {
+				continue;
+			}
+			addElement(element);
+		}
+	}
 
 	@Override
 	public boolean add(T element) {
@@ -135,10 +161,7 @@ public class RegionQuadTree<T extends CollisionBox> extends PointQuadTree<T> {
 		if (addElementToChild(element)) {
 			return true;
 		}
-		if (!addElement(element)) {
-			return false;
-		}
-		return true;
+		return addElement(element);
 	}
 
 	@Override

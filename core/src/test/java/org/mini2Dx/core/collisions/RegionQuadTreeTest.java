@@ -42,12 +42,33 @@ public class RegionQuadTreeTest {
 	
 	@Test
 	public void testAdd() {
+		int totalElements = 100;
 		Random random = new Random();
-		for(int i = 0; i < 100; i++) {
+		long startTime = System.nanoTime();
+		for(int i = 0; i < totalElements; i++) {
 			CollisionBox rect = new CollisionBox(random.nextInt(96), random.nextInt(96), 32f, 32f);
 			Assert.assertEquals(true, rootQuad.add(rect));
-			Assert.assertEquals(i + 1, rootQuad.getElements().size());
+			Assert.assertEquals(i + 1, rootQuad.getTotalElements());
 		}
+		long duration = System.nanoTime() - startTime;
+		System.out.println("Took " + duration + "ns to add " + totalElements + " elements individually to " + RegionQuadTree.class.getSimpleName());
+	}
+	
+	@Test
+	public void testAddAll() {
+		int totalElements = 100;
+		Random random = new Random();
+		List<CollisionBox> rects = new ArrayList<CollisionBox>();
+		long startTime = System.nanoTime();
+		for(int i = 0; i < totalElements; i++) {
+			rects.add(new CollisionBox(random.nextInt(96), random.nextInt(96), 32f, 32f));
+		}
+		rects.add(new CollisionBox(-4f, -4f, 32f, 32f));
+		
+		rootQuad.addAll(rects);
+		long duration = System.nanoTime() - startTime;
+		System.out.println("Took " + duration + "ns to add " + totalElements + " elements in bulk to " + RegionQuadTree.class.getSimpleName());
+		Assert.assertEquals(rects.size(), rootQuad.getTotalElements());
 	}
 	
 	@Test
@@ -68,6 +89,19 @@ public class RegionQuadTreeTest {
 			rootQuad.remove(CollisionBoxs.get(i));
 			Assert.assertEquals(i, rootQuad.getElements().size());
 		}
+	}
+	
+	@Test
+	public void testRemoveAll() {
+		Random random = new Random();
+		List<CollisionBox> rects = new ArrayList<CollisionBox>();
+		for(int i = 0; i < 100; i++) {
+			rects.add(new CollisionBox(random.nextInt(96), random.nextInt(96), random.nextInt(32), random.nextInt(32)));
+		}
+		rootQuad.addAll(rects);
+		Assert.assertEquals(rects.size(), rootQuad.getTotalElements());
+		rootQuad.removeAll(rects);
+		Assert.assertEquals(0, rootQuad.getTotalElements());
 	}
 	
 	@Test
