@@ -4,6 +4,7 @@ boolean hasAndroidSdk() {
 	try {
 		def androidHome = "$sdk.dir"
 		if(androidHome != null && androidHome.length() > 0) {
+			println androidHome
 			return true;
 		}
 	} catch (all) {
@@ -11,7 +12,8 @@ boolean hasAndroidSdk() {
 	}
 	try {
 		def androidHome = "$System.env.ANDROID_HOME"
-		if(androidHome != null && androidHome.length() > 0) {
+		if(androidHome != null && androidHome.length() > 0 && !androidHome.contains('null')) {
+			println androidHome
 			return true;
 		}
 	} catch (all) {
@@ -21,10 +23,7 @@ boolean hasAndroidSdk() {
 	try {
 		def androidExecPath = new ByteArrayOutputStream()
 		if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-			exec {
-				commandLine 'where', 'android'
-				standardOutput = androidExecPath
-			}
+			return false
 		} else {
 			exec {
 				commandLine 'which', 'android'
