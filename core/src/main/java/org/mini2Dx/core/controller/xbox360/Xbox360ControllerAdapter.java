@@ -9,43 +9,58 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.uats.util;
+package org.mini2Dx.core.controller.xbox360;
 
-import org.mini2Dx.core.game.ScreenBasedGame;
-import org.mini2Dx.uats.BlendingUAT;
-import org.mini2Dx.uats.ClippingUAT;
-import org.mini2Dx.uats.ControllerMapping;
-import org.mini2Dx.uats.ControllerUAT;
-import org.mini2Dx.uats.GeometryUAT;
-import org.mini2Dx.uats.GraphicsUAT;
-import org.mini2Dx.uats.IsometricTiledMapUAT;
-import org.mini2Dx.uats.ParticleEffectsUAT;
-import org.mini2Dx.uats.OrthogonalTiledMapNoCachingUAT;
-import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
+import org.mini2Dx.core.controller.Xbox360Controller;
+import org.mini2Dx.core.controller.button.Xbox360Button;
 
 /**
- *
- * @author Thomas Cashman
+ * An overridable implementation of {@link Xbox360ControllerListener}
  */
-public class UATApplication extends ScreenBasedGame {
-    
-    @Override
-    public void initialise() {
-        addScreen(new UATSelectionScreen());
-        addScreen(new BlendingUAT());
-        addScreen(new ClippingUAT());
-        addScreen(new GeometryUAT());
-        addScreen(new GraphicsUAT());
-        addScreen(new OrthogonalTiledMapNoCachingUAT());
-        addScreen(new OrthogonalTiledMapWithCachingUAT());
-        addScreen(new IsometricTiledMapUAT());
-        addScreen(new ParticleEffectsUAT());
-        addScreen(new ControllerUAT());
-        addScreen(new ControllerMapping());
-    }
+public class Xbox360ControllerAdapter implements Xbox360ControllerListener {
 
-    @Override
-    public int getInitialScreenId() {
-        return 0;
-    }
+	@Override
+	public void disconnected(Xbox360Controller controller) {
+	}
+
+	@Override
+	public boolean buttonDown(Xbox360Controller controller, Xbox360Button button) {
+		return false;
+	}
+
+	@Override
+	public boolean buttonUp(Xbox360Controller controller, Xbox360Button button) {
+		return false;
+	}
+
+	@Override
+	public boolean leftTriggerMoved(Xbox360Controller controller, float value) {
+		return false;
+	}
+
+	@Override
+	public boolean rightTriggerMoved(Xbox360Controller controller, float value) {
+		return false;
+	}
+
+	@Override
+	public boolean leftStickXMoved(Xbox360Controller controller, float value) {
+		return false;
+	}
+
+	@Override
+	public boolean leftStickYMoved(Xbox360Controller controller, float value) {
+		return false;
+	}
+
+	@Override
+	public boolean rightStickXMoved(Xbox360Controller controller, float value) {
+		return false;
+	}
+
+	@Override
+	public boolean rightStickYMoved(Xbox360Controller controller, float value) {
+		return false;
+	}
+
 }

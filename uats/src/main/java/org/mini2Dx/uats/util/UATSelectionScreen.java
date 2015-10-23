@@ -22,6 +22,8 @@ import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import org.mini2Dx.uats.BlendingUAT;
 import org.mini2Dx.uats.ClippingUAT;
+import org.mini2Dx.uats.ControllerMapping;
+import org.mini2Dx.uats.ControllerUAT;
 import org.mini2Dx.uats.GeometryUAT;
 import org.mini2Dx.uats.GraphicsUAT;
 import org.mini2Dx.uats.IsometricTiledMapUAT;
@@ -102,6 +104,10 @@ public class UATSelectionScreen extends BasicGameScreen {
             screenManager.enterGameScreen(ScreenIds.getScreenId(IsometricTiledMapUAT.class), new FadeOutTransition(), new FadeInTransition());
         } else if(Gdx.input.isKeyJustPressed(Keys.NUM_8)) {
             screenManager.enterGameScreen(ScreenIds.getScreenId(ParticleEffectsUAT.class), new FadeOutTransition(), new FadeInTransition());
+        } else if(Gdx.input.isKeyJustPressed(Keys.NUM_9)) {
+            screenManager.enterGameScreen(ScreenIds.getScreenId(ControllerUAT.class), new FadeOutTransition(), new FadeInTransition());
+        } else if(Gdx.input.isKeyJustPressed(Keys.NUM_0)) {
+            screenManager.enterGameScreen(ScreenIds.getScreenId(ControllerMapping.class), new FadeOutTransition(), new FadeInTransition());
         }
     }
     
@@ -116,12 +122,14 @@ public class UATSelectionScreen extends BasicGameScreen {
         g.drawString("6. Orthogonal TiledMap (With Caching) UAT", 32, 64 + (lineHeight * 5) + 20);
         g.drawString("7. Isometric TiledMap (No Caching) UAT", 32, 64 + (lineHeight * 6) + 24);
         g.drawString("8. Particle Effects UAT", 32, 64 + (lineHeight * 7) + 28);
+        g.drawString("9. Controller UAT", 32, 64 + (lineHeight * 8) + 32);
+        g.drawString("0. Controller Mapping", 32, 64 + (lineHeight * 9) + 36);
     }
     
     private void updateMobileMenu(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
             float delta) {
     	if(Gdx.input.justTouched()) {
-    		previousUat = previousUat < 7 ? previousUat + 1 : 0;
+    		previousUat = previousUat < 9 ? previousUat + 1 : 0;
     		screenManager.enterGameScreen(previousUat, new FadeOutTransition(), new FadeInTransition());
     	}
     }

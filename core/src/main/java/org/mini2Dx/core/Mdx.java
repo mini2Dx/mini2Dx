@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.core;
 
+import org.mini2Dx.core.controller.ControllerMapping;
 import org.mini2Dx.core.di.DependencyInjection;
 import org.mini2Dx.core.playerdata.PlayerData;
 import org.mini2Dx.core.serialization.JsonSerializer;
@@ -22,7 +23,11 @@ import org.mini2Dx.core.util.OsDetector;
  * Mini2Dx utility classes
  */
 public class Mdx {
-
+	/**
+	 * Provides access to controller mappings
+	 */
+	public static ControllerMapping controllers = new ControllerMapping();
+	
 	/**
 	 * Interface for reading/writing player data, e.g. save games, preferences
 	 */

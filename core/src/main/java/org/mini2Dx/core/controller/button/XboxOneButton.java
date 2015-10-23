@@ -9,43 +9,29 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.uats.util;
-
-import org.mini2Dx.core.game.ScreenBasedGame;
-import org.mini2Dx.uats.BlendingUAT;
-import org.mini2Dx.uats.ClippingUAT;
-import org.mini2Dx.uats.ControllerMapping;
-import org.mini2Dx.uats.ControllerUAT;
-import org.mini2Dx.uats.GeometryUAT;
-import org.mini2Dx.uats.GraphicsUAT;
-import org.mini2Dx.uats.IsometricTiledMapUAT;
-import org.mini2Dx.uats.ParticleEffectsUAT;
-import org.mini2Dx.uats.OrthogonalTiledMapNoCachingUAT;
-import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
+package org.mini2Dx.core.controller.button;
 
 /**
  *
- * @author Thomas Cashman
  */
-public class UATApplication extends ScreenBasedGame {
-    
-    @Override
-    public void initialise() {
-        addScreen(new UATSelectionScreen());
-        addScreen(new BlendingUAT());
-        addScreen(new ClippingUAT());
-        addScreen(new GeometryUAT());
-        addScreen(new GraphicsUAT());
-        addScreen(new OrthogonalTiledMapNoCachingUAT());
-        addScreen(new OrthogonalTiledMapWithCachingUAT());
-        addScreen(new IsometricTiledMapUAT());
-        addScreen(new ParticleEffectsUAT());
-        addScreen(new ControllerUAT());
-        addScreen(new ControllerMapping());
-    }
-
-    @Override
-    public int getInitialScreenId() {
-        return 0;
-    }
+public enum XboxOneButton {
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	
+	MENU,
+	VIEW,
+	HOME,
+	
+	LEFT_STICK,
+	RIGHT_STICK,
+	
+	LEFT_SHOULDER,
+	RIGHT_SHOULDER,
+	
+	A,
+	B,
+	X,
+	Y
 }
