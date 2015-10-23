@@ -11,6 +11,9 @@
  */
 package org.mini2Dx.core.controller.xboxone;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mini2Dx.core.controller.XboxOneController;
 import org.mini2Dx.core.controller.button.XboxOneButton;
 
@@ -22,35 +25,36 @@ import com.badlogic.gdx.math.Vector3;
  * Windows bindings for Xbox One controller
  */
 public class WindowsXboxOneController extends XboxOneController {
-	public static final int BUTTON_UP = 0;
-	public static final int BUTTON_DOWN = 1;
-	public static final int BUTTON_LEFT = 2;
-	public static final int BUTTON_RIGHT = 3;
+	public static final int BUTTON_A = 0;
+	public static final int BUTTON_B = 1;
+	public static final int BUTTON_X = 2;
+	public static final int BUTTON_Y = 3;
 	
-	public static final int BUTTON_MENU = 4;
-	public static final int BUTTON_VIEW = 5;
+	public static final int BUTTON_LEFT_SHOULDER = 4;
+	public static final int BUTTON_RIGHT_SHOULDER = 5;
 	
-	public static final int BUTTON_LEFT_STICK = 6;
-	public static final int BUTTON_RIGHT_STICK = 7;
+	public static final int BUTTON_VIEW = 6;
+	public static final int BUTTON_MENU = 7;
 	
-	public static final int BUTTON_LEFT_SHOULDER = 8;
-	public static final int BUTTON_RIGHT_SHOULDER = 9;
+	public static final int BUTTON_LEFT_STICK = 8;
+	public static final int BUTTON_RIGHT_STICK = 9;
 	
-	public static final int BUTTON_HOME = 10;
+	//BUG: JInput does not detect home button
+	public static final int BUTTON_HOME = -1;
 	
-	public static final int BUTTON_A = 11;
-	public static final int BUTTON_B = 12;
-	public static final int BUTTON_X = 13;
-	public static final int BUTTON_Y = 14;
+	public static final int AXIS_LEFT_STICK_Y = 0;
+	public static final int AXIS_LEFT_STICK_X = 1;
 	
-	public static final int AXIS_LEFT_TRIGGER = 0;
-	public static final int AXIS_RIGHT_TRIGGER = 1;
+	public static final int AXIS_RIGHT_STICK_Y = 2;
+	public static final int AXIS_RIGHT_STICK_X = 3;
 	
-	public static final int AXIS_LEFT_STICK_X = 2;
-	public static final int AXIS_LEFT_STICK_Y = 3;
+	//BUG: JInput detects both triggers as same code
+	public static final int AXIS_LEFT_TRIGGER = 4;
+	public static final int AXIS_RIGHT_TRIGGER = 4;
 	
-	public static final int AXIS_RIGHT_STICK_X = 4;
-	public static final int AXIS_RIGHT_STICK_Y = 5;
+	public static final int POV_DIRECTIONS = 0;
+	
+	private boolean up, down, left, right;
 	
 	public WindowsXboxOneController(Controller controller) {
 		super(controller);
@@ -68,14 +72,6 @@ public class WindowsXboxOneController extends XboxOneController {
 	@Override
 	public boolean buttonDown(Controller controller, int buttonCode) {
 		switch(buttonCode) {
-		case BUTTON_UP:
-			return notifyButtonDown(XboxOneButton.UP);
-		case BUTTON_DOWN:
-			return notifyButtonDown(XboxOneButton.DOWN);
-		case BUTTON_LEFT:
-			return notifyButtonDown(XboxOneButton.LEFT);
-		case BUTTON_RIGHT:
-			return notifyButtonDown(XboxOneButton.RIGHT);
 		case BUTTON_MENU:
 			return notifyButtonDown(XboxOneButton.MENU);
 		case BUTTON_VIEW:
@@ -105,14 +101,6 @@ public class WindowsXboxOneController extends XboxOneController {
 	@Override
 	public boolean buttonUp(Controller controller, int buttonCode) {
 		switch(buttonCode) {
-		case BUTTON_UP:
-			return notifyButtonUp(XboxOneButton.UP);
-		case BUTTON_DOWN:
-			return notifyButtonUp(XboxOneButton.DOWN);
-		case BUTTON_LEFT:
-			return notifyButtonUp(XboxOneButton.LEFT);
-		case BUTTON_RIGHT:
-			return notifyButtonUp(XboxOneButton.RIGHT);
 		case BUTTON_MENU:
 			return notifyButtonUp(XboxOneButton.MENU);
 		case BUTTON_VIEW:
@@ -150,8 +138,6 @@ public class WindowsXboxOneController extends XboxOneController {
 			return notifyRightStickXMoved(value);
 		case AXIS_RIGHT_STICK_Y:
 			return notifyRightStickYMoved(value);
-		case AXIS_LEFT_TRIGGER:
-			return notifyLeftTriggerMoved(value);
 		case AXIS_RIGHT_TRIGGER:
 			return notifyRightTriggerMoved(value);
 		}
@@ -160,6 +146,176 @@ public class WindowsXboxOneController extends XboxOneController {
 
 	@Override
 	public boolean povMoved(Controller controller, int povCode, PovDirection value) {
+		switch(povCode) {
+		case POV_DIRECTIONS:
+			switch(value) {
+			case center:
+				if(up) {
+					notifyButtonUp(XboxOneButton.UP);
+					up = false;
+				}
+				if(down) {
+					notifyButtonUp(XboxOneButton.DOWN);
+					down = false;
+				}
+				if(left) {
+					notifyButtonUp(XboxOneButton.LEFT);
+					left = false;
+				}
+				if(right) {
+					notifyButtonUp(XboxOneButton.RIGHT);
+					right = false;
+				}
+				break;
+			case east:
+				if(up) {
+					notifyButtonUp(XboxOneButton.UP);
+					up = false;
+				}
+				if(down) {
+					notifyButtonUp(XboxOneButton.DOWN);
+					down = false;
+				}
+				if(left) {
+					notifyButtonUp(XboxOneButton.LEFT);
+					left = false;
+				}
+				if(!right) {
+					right = true;
+					notifyButtonDown(XboxOneButton.RIGHT);
+				}
+				break;
+			case north:
+				if(left) {
+					notifyButtonUp(XboxOneButton.LEFT);
+					left = false;
+				}
+				if(right) {
+					notifyButtonUp(XboxOneButton.RIGHT);
+					right = false;
+				}
+				if(down) {
+					notifyButtonUp(XboxOneButton.DOWN);
+					down = false;
+				}
+				if(!up) {
+					up = true;
+					notifyButtonDown(XboxOneButton.UP);
+				}
+				break;
+			case northEast:
+				if(left) {
+					notifyButtonUp(XboxOneButton.LEFT);
+					left = false;
+				}
+				if(down) {
+					notifyButtonUp(XboxOneButton.DOWN);
+					down = false;
+				}
+				if(!right) {
+					notifyButtonDown(XboxOneButton.RIGHT);
+					right = true;
+				}
+				if(!up) {
+					up = true;
+					notifyButtonDown(XboxOneButton.UP);
+				}
+				break;
+			case northWest:
+				if(right) {
+					notifyButtonUp(XboxOneButton.RIGHT);
+					right = false;
+				}
+				if(down) {
+					notifyButtonUp(XboxOneButton.DOWN);
+					down = false;
+				}
+				if(!left) {
+					notifyButtonDown(XboxOneButton.LEFT);
+					left = true;
+				}
+				if(!up) {
+					up = true;
+					notifyButtonDown(XboxOneButton.UP);
+				}
+				break;
+			case south:
+				if(left) {
+					notifyButtonUp(XboxOneButton.LEFT);
+					left = false;
+				}
+				if(right) {
+					notifyButtonUp(XboxOneButton.RIGHT);
+					right = false;
+				}
+				if(up) {
+					notifyButtonUp(XboxOneButton.UP);
+					up = false;
+				}
+				if(!down) {
+					notifyButtonDown(XboxOneButton.DOWN);
+					down = true;
+				}
+				break;
+			case southEast:
+				if(left) {
+					notifyButtonUp(XboxOneButton.LEFT);
+					left = false;
+				}
+				if(up) {
+					notifyButtonUp(XboxOneButton.UP);
+					up = false;
+				}
+				if(!right) {
+					notifyButtonDown(XboxOneButton.RIGHT);
+					right = true;
+				}
+				if(!down) {
+					notifyButtonDown(XboxOneButton.DOWN);
+					down = true;
+				}
+				break;
+			case southWest:
+				if(right) {
+					notifyButtonUp(XboxOneButton.RIGHT);
+					right = false;
+				}
+				if(up) {
+					notifyButtonUp(XboxOneButton.UP);
+					up = false;
+				}
+				if(!left) {
+					notifyButtonDown(XboxOneButton.LEFT);
+					left = true;
+				}
+				if(!down) {
+					notifyButtonDown(XboxOneButton.DOWN);
+					down = true;
+				}
+				break;
+			case west:
+				if(up) {
+					notifyButtonUp(XboxOneButton.UP);
+					up = false;
+				}
+				if(down) {
+					notifyButtonUp(XboxOneButton.DOWN);
+					down = false;
+				}
+				if(right) {
+					notifyButtonUp(XboxOneButton.LEFT);
+					right = false;
+				}
+				if(!left) {
+					left = true;
+					notifyButtonDown(XboxOneButton.LEFT);
+				}
+				break;
+			default:
+				break;
+			}
+			break;
+		}
 		return false;
 	}
 
