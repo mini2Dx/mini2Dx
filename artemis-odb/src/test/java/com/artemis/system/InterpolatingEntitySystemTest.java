@@ -63,8 +63,8 @@ public class InterpolatingEntitySystemTest extends InterpolatingEntitySystem {
 		
 		world.process();
 		
-		Assert.assertEquals(true, updatedIds.contains(entityWithComponent.id));
-		Assert.assertEquals(false, updatedIds.contains(entityWithoutComponent.id));
+		Assert.assertEquals(true, updatedIds.contains(entityWithComponent.getId()));
+		Assert.assertEquals(false, updatedIds.contains(entityWithoutComponent.getId()));
 	}
 	
 	@Test
@@ -87,8 +87,8 @@ public class InterpolatingEntitySystemTest extends InterpolatingEntitySystem {
 		world.process();
 		world.interpolate();
 		
-		Assert.assertEquals(true, interpolatedIds.contains(entityWithComponent.id));
-		Assert.assertEquals(false, interpolatedIds.contains(entityWithoutComponent.id));
+		Assert.assertEquals(true, interpolatedIds.contains(entityWithComponent.getId()));
+		Assert.assertEquals(false, interpolatedIds.contains(entityWithoutComponent.getId()));
 	}
 	
 	@Test
@@ -110,14 +110,14 @@ public class InterpolatingEntitySystemTest extends InterpolatingEntitySystem {
 	}
 
 	@Override
-	protected void update(Entity e, float delta) {
-		updatedIds.add(e.id);
+	protected void update(int entityId, float delta) {
+		updatedIds.add(entityId);
 		Assert.assertEquals(expectedDelta, delta);
 	}
 
 	@Override
-	protected void interpolate(Entity e, float alpha) {
-		interpolatedIds.add(e.id);
+	protected void interpolate(int entityId, float alpha) {
+		interpolatedIds.add(entityId);
 		Assert.assertEquals(expectedAlpha, alpha);
 	}
 }

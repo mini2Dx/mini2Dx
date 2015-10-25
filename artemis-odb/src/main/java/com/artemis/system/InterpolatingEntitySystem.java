@@ -23,7 +23,6 @@ import com.artemis.utils.IntBag;
  * Implements {@link EntitySystem} to add mini2Dx's update/interpolate methods
  */
 public abstract class InterpolatingEntitySystem extends EntitySystem {
-	private Entity flyweight;
 	private MdxWorld mdxWorld;
 	
 	private IntBag activeEntityBag;
@@ -37,18 +36,16 @@ public abstract class InterpolatingEntitySystem extends EntitySystem {
 		super(aspect);
 	}
 	
-	protected abstract void update(Entity e, float delta);
+	protected abstract void update(int entityId, float delta);
 	
-	protected abstract void interpolate(Entity e, float alpha);
+	protected abstract void interpolate(int entityId, float alpha);
 
 	@Override
 	protected void processSystem() {
 		activeEntityBag = subscription.getEntities();
 		activeEntityIds = activeEntityBag.getData();
-		Entity e = flyweight;
 		for (int i = 0, s = activeEntityBag.size(); s > i; i++) {
-			e.id = activeEntityIds[i];
-			update(e, world.delta);
+			update(activeEntityIds[i], world.delta);
 		}
 	}
 	
@@ -60,18 +57,15 @@ public abstract class InterpolatingEntitySystem extends EntitySystem {
 			return;
 		}
 		
-		Entity e = flyweight;
 		for (int i = 0, s = activeEntityBag.size(); s > i; i++) {
-			e.id = activeEntityIds[i];
-			interpolate(e, mdxWorld.alpha);
+			interpolate(activeEntityIds[i], mdxWorld.alpha);
 		}
 	}
 	
 	@Override
 	public void setWorld(World world) {
 		super.setWorld(world);
-		flyweight = createFlyweightEntity();
-		
+
 		if(world instanceof MdxWorld) {
 			this.mdxWorld = (MdxWorld) world;
 		}

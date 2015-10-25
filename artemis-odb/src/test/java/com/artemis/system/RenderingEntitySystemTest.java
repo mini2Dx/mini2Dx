@@ -68,8 +68,8 @@ public class RenderingEntitySystemTest extends RenderingEntitySystem {
 		world.process();
 		world.render(graphics);
 		
-		Assert.assertEquals(true, renderedIds.contains(entityWithComponent.id));
-		Assert.assertEquals(false, renderedIds.contains(entityWithoutComponent.id));
+		Assert.assertEquals(true, renderedIds.contains(entityWithComponent.getId()));
+		Assert.assertEquals(false, renderedIds.contains(entityWithoutComponent.getId()));
 	}
 	
 	@Test
@@ -89,8 +89,8 @@ public class RenderingEntitySystemTest extends RenderingEntitySystem {
 	}
 
 	@Override
-	protected void render(Entity e, Graphics g) {
-		renderedIds.add(e.id);
+	protected void render(int entityId, Graphics g) {
+		renderedIds.add(entityId);
 		Assert.assertEquals(graphics, g);
 	}
 

@@ -25,7 +25,6 @@ import com.artemis.utils.IntBag;
  * Implements {@link EntitySystem} to add mini2Dx's render method
  */
 public abstract class RenderingEntitySystem extends EntitySystem {
-	private Entity flyweight;
 	private MdxWorld mdxWorld;
 	
 	private IntBag activeEntityBag;
@@ -39,7 +38,7 @@ public abstract class RenderingEntitySystem extends EntitySystem {
 		super(aspect);
 	}
 	
-	protected abstract void render(Entity e, Graphics g);
+	protected abstract void render(int entityId, Graphics g);
 
 	@Override
 	protected void processSystem() {
@@ -55,18 +54,15 @@ public abstract class RenderingEntitySystem extends EntitySystem {
 			return;
 		}
 		
-		Entity e = flyweight;
 		for (int i = 0, s = activeEntityBag.size(); s > i; i++) {
-			e.id = activeEntityIds[i];
-			render(e, g);
+			render(activeEntityIds[i], g);
 		}
 	}
 	
 	@Override
 	public void setWorld(World world) {
 		super.setWorld(world);
-		flyweight = createFlyweightEntity();
-		
+
 		if(world instanceof MdxWorld) {
 			this.mdxWorld = (MdxWorld) world;
 		}
