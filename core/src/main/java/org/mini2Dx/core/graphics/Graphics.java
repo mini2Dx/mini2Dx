@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -29,6 +30,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Align;
 
 /**
@@ -480,6 +482,32 @@ public class Graphics {
 	public void drawParticleEffect(ParticleEffect effect) {
 		beginRendering();
 		effect.render(spriteBatch);
+	}
+	
+	/**
+	 * Draws a {@link NinePatch} to screen
+	 * @param ninePatch The {@link NinePatch} to be drawn
+	 * @param x The x coordinate to draw at
+	 * @param y The y coordiante to draw at
+	 * @param width The width to apply to the {@link NinePatch}
+	 * @param height The height to apply to the {@link NinePatch}
+	 */
+	public void drawNinePatch(NinePatch ninePatch, float x, float y, float width, float height) {
+		beginRendering();
+		ninePatch.draw(spriteBatch, x, y, width, height);
+	}
+	
+	/**
+	 * Draws a {@link NinePatchDrawable} to screen
+	 * @param ninePatchDrawable The {@link NinePatchDrawable} to be drawn
+	 * @param x The x coordinate to draw at
+	 * @param y The y coordiante to draw at
+	 * @param width The width to apply to the {@link NinePatchDrawable}
+	 * @param height The height to apply to the {@link NinePatchDrawable}
+	 */
+	public void drawNinePatch(NinePatchDrawable ninePatchDrawable, float x, float y, float width, float height) {
+		beginRendering();
+		ninePatchDrawable.draw(spriteBatch, x, y, width, height);
 	}
 
 	/**

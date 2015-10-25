@@ -3,7 +3,7 @@
 - Updated to Android build tools 23.0.1
 - Added controller mappings - Xbox One, Xbox 360 controllers
 - Added render pipeline feature
-- Added clearScaling() method to Graphics
+- Added drawNinePatch() and clearScaling() methods to Graphics
 - Added NPE prevention to TiledCollisionMapper
 - Added additional drawTexture() methods to Graphics
 - Positionable instances now have getId() method
