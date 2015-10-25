@@ -26,9 +26,6 @@ public class MdxInvocationStrategy extends InvocationStrategy {
 		Object[] systems = systemsBag.getData();
 		for (int i = 0, s = systemsBag.size(); s > i; i++) {
 			InterpolatingEntitySystem system = (InterpolatingEntitySystem) systems[i];
-			if (system.isPassive()) {
-				continue;
-			}
 			system.interpolateSystem();
 		}
 	}
@@ -37,9 +34,6 @@ public class MdxInvocationStrategy extends InvocationStrategy {
 		Object[] systems = systemsBag.getData();
 		for (int i = 0, s = systemsBag.size(); s > i; i++) {
 			RenderingEntitySystem system = (RenderingEntitySystem) systems[i];
-			if (system.isPassive()) {
-				continue;
-			}
 			system.renderSystem(g);
 		}
 	}
