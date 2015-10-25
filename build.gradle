@@ -53,7 +53,7 @@ subprojects {
 		beanutilsVersion="1.8.3"
 		langVersion="3.1"
 		reflectionsVersion="0.9.10"
-		artemisVersion="0.11.3"
+		artemisVersion="1.1.0"
 		
 		junitVersion="4.8.1"
 		jmockVersion="2.5.1"
