@@ -22,35 +22,34 @@ import com.badlogic.gdx.math.Vector3;
  * Windows bindings for Xbox 360 controller
  */
 public class WindowsXbox360Controller extends Xbox360Controller {
-	public static final int BUTTON_UP = 0;
-	public static final int BUTTON_DOWN = 1;
-	public static final int BUTTON_LEFT = 2;
-	public static final int BUTTON_RIGHT = 3;
+	public static final int BUTTON_A = 0;
+	public static final int BUTTON_B = 1;
+	public static final int BUTTON_X = 2;
+	public static final int BUTTON_Y = 3;
 	
-	public static final int BUTTON_BACK = 4;
-	public static final int BUTTON_START = 5;
+	public static final int BUTTON_LEFT_SHOULDER = 4;
+	public static final int BUTTON_RIGHT_SHOULDER = 5;
 	
-	public static final int BUTTON_LEFT_STICK = 6;
-	public static final int BUTTON_RIGHT_STICK = 7;
+	public static final int BUTTON_BACK = 6;
+	public static final int BUTTON_START = 7;
 	
-	public static final int BUTTON_LEFT_SHOULDER = 8;
-	public static final int BUTTON_RIGHT_SHOULDER = 9;
+	public static final int BUTTON_LEFT_STICK = 8;
+	public static final int BUTTON_RIGHT_STICK = 9;
 	
-	public static final int BUTTON_GUIDE = 10;
+	public static final int BUTTON_GUIDE = -1;
 	
-	public static final int BUTTON_A = 11;
-	public static final int BUTTON_B = 12;
-	public static final int BUTTON_X = 13;
-	public static final int BUTTON_Y = 14;
+	public static final int AXIS_LEFT_TRIGGER = 4;
+	public static final int AXIS_RIGHT_TRIGGER = 4;
 	
-	public static final int AXIS_LEFT_TRIGGER = 0;
-	public static final int AXIS_RIGHT_TRIGGER = 1;
+	public static final int AXIS_LEFT_STICK_Y = 0;
+	public static final int AXIS_LEFT_STICK_X = 1;
 	
-	public static final int AXIS_LEFT_STICK_X = 2;
-	public static final int AXIS_LEFT_STICK_Y = 3;
+	public static final int AXIS_RIGHT_STICK_Y = 2;
+	public static final int AXIS_RIGHT_STICK_X = 3;
 	
-	public static final int AXIS_RIGHT_STICK_X = 4;
-	public static final int AXIS_RIGHT_STICK_Y = 5;
+	public static final int POV_DIRECTIONS = 0;
+	
+	private boolean up, down, left, right;
 	
 	public WindowsXbox360Controller(Controller controller) {
 		super(controller);
@@ -68,14 +67,6 @@ public class WindowsXbox360Controller extends Xbox360Controller {
 	@Override
 	public boolean buttonDown(Controller controller, int buttonCode) {
 		switch(buttonCode) {
-		case BUTTON_UP:
-			return notifyButtonDown(Xbox360Button.UP);
-		case BUTTON_DOWN:
-			return notifyButtonDown(Xbox360Button.DOWN);
-		case BUTTON_LEFT:
-			return notifyButtonDown(Xbox360Button.LEFT);
-		case BUTTON_RIGHT:
-			return notifyButtonDown(Xbox360Button.RIGHT);
 		case BUTTON_START:
 			return notifyButtonDown(Xbox360Button.START);
 		case BUTTON_BACK:
@@ -105,14 +96,6 @@ public class WindowsXbox360Controller extends Xbox360Controller {
 	@Override
 	public boolean buttonUp(Controller controller, int buttonCode) {
 		switch(buttonCode) {
-		case BUTTON_UP:
-			return notifyButtonUp(Xbox360Button.UP);
-		case BUTTON_DOWN:
-			return notifyButtonUp(Xbox360Button.DOWN);
-		case BUTTON_LEFT:
-			return notifyButtonUp(Xbox360Button.LEFT);
-		case BUTTON_RIGHT:
-			return notifyButtonUp(Xbox360Button.RIGHT);
 		case BUTTON_START:
 			return notifyButtonUp(Xbox360Button.START);
 		case BUTTON_BACK:
@@ -150,8 +133,6 @@ public class WindowsXbox360Controller extends Xbox360Controller {
 			return notifyRightStickXMoved(value);
 		case AXIS_RIGHT_STICK_Y:
 			return notifyRightStickYMoved(value);
-		case AXIS_LEFT_TRIGGER:
-			return notifyLeftTriggerMoved(value);
 		case AXIS_RIGHT_TRIGGER:
 			return notifyRightTriggerMoved(value);
 		}
@@ -160,6 +141,176 @@ public class WindowsXbox360Controller extends Xbox360Controller {
 
 	@Override
 	public boolean povMoved(Controller controller, int povCode, PovDirection value) {
+		switch(povCode) {
+		case POV_DIRECTIONS:
+			switch(value) {
+			case center:
+				if(up) {
+					notifyButtonUp(Xbox360Button.UP);
+					up = false;
+				}
+				if(down) {
+					notifyButtonUp(Xbox360Button.DOWN);
+					down = false;
+				}
+				if(left) {
+					notifyButtonUp(Xbox360Button.LEFT);
+					left = false;
+				}
+				if(right) {
+					notifyButtonUp(Xbox360Button.RIGHT);
+					right = false;
+				}
+				break;
+			case east:
+				if(up) {
+					notifyButtonUp(Xbox360Button.UP);
+					up = false;
+				}
+				if(down) {
+					notifyButtonUp(Xbox360Button.DOWN);
+					down = false;
+				}
+				if(left) {
+					notifyButtonUp(Xbox360Button.LEFT);
+					left = false;
+				}
+				if(!right) {
+					right = true;
+					notifyButtonDown(Xbox360Button.RIGHT);
+				}
+				break;
+			case north:
+				if(left) {
+					notifyButtonUp(Xbox360Button.LEFT);
+					left = false;
+				}
+				if(right) {
+					notifyButtonUp(Xbox360Button.RIGHT);
+					right = false;
+				}
+				if(down) {
+					notifyButtonUp(Xbox360Button.DOWN);
+					down = false;
+				}
+				if(!up) {
+					up = true;
+					notifyButtonDown(Xbox360Button.UP);
+				}
+				break;
+			case northEast:
+				if(left) {
+					notifyButtonUp(Xbox360Button.LEFT);
+					left = false;
+				}
+				if(down) {
+					notifyButtonUp(Xbox360Button.DOWN);
+					down = false;
+				}
+				if(!right) {
+					notifyButtonDown(Xbox360Button.RIGHT);
+					right = true;
+				}
+				if(!up) {
+					up = true;
+					notifyButtonDown(Xbox360Button.UP);
+				}
+				break;
+			case northWest:
+				if(right) {
+					notifyButtonUp(Xbox360Button.RIGHT);
+					right = false;
+				}
+				if(down) {
+					notifyButtonUp(Xbox360Button.DOWN);
+					down = false;
+				}
+				if(!left) {
+					notifyButtonDown(Xbox360Button.LEFT);
+					left = true;
+				}
+				if(!up) {
+					up = true;
+					notifyButtonDown(Xbox360Button.UP);
+				}
+				break;
+			case south:
+				if(left) {
+					notifyButtonUp(Xbox360Button.LEFT);
+					left = false;
+				}
+				if(right) {
+					notifyButtonUp(Xbox360Button.RIGHT);
+					right = false;
+				}
+				if(up) {
+					notifyButtonUp(Xbox360Button.UP);
+					up = false;
+				}
+				if(!down) {
+					notifyButtonDown(Xbox360Button.DOWN);
+					down = true;
+				}
+				break;
+			case southEast:
+				if(left) {
+					notifyButtonUp(Xbox360Button.LEFT);
+					left = false;
+				}
+				if(up) {
+					notifyButtonUp(Xbox360Button.UP);
+					up = false;
+				}
+				if(!right) {
+					notifyButtonDown(Xbox360Button.RIGHT);
+					right = true;
+				}
+				if(!down) {
+					notifyButtonDown(Xbox360Button.DOWN);
+					down = true;
+				}
+				break;
+			case southWest:
+				if(right) {
+					notifyButtonUp(Xbox360Button.RIGHT);
+					right = false;
+				}
+				if(up) {
+					notifyButtonUp(Xbox360Button.UP);
+					up = false;
+				}
+				if(!left) {
+					notifyButtonDown(Xbox360Button.LEFT);
+					left = true;
+				}
+				if(!down) {
+					notifyButtonDown(Xbox360Button.DOWN);
+					down = true;
+				}
+				break;
+			case west:
+				if(up) {
+					notifyButtonUp(Xbox360Button.UP);
+					up = false;
+				}
+				if(down) {
+					notifyButtonUp(Xbox360Button.DOWN);
+					down = false;
+				}
+				if(right) {
+					notifyButtonUp(Xbox360Button.LEFT);
+					right = false;
+				}
+				if(!left) {
+					left = true;
+					notifyButtonDown(Xbox360Button.LEFT);
+				}
+				break;
+			default:
+				break;
+			}
+			break;
+		}
 		return false;
 	}
 
