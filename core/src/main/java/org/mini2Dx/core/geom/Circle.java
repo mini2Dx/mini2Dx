@@ -29,7 +29,7 @@ public class Circle implements Shape {
 		this.radius = radius;
 	}
 	
-	public Circle(float centerX, float centerY, int radius) {
+	public Circle(float centerX, float centerY, float radius) {
 		center = new Vector2(centerX, centerY);
 		this.radius = radius;
 	}
