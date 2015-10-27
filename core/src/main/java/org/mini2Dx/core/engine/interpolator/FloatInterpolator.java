@@ -9,29 +9,19 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.engine.interpolator.geom;
-
-import org.mini2Dx.core.engine.interpolator.Interpolator;
-import org.mini2Dx.core.engine.interpolator.Interpolators;
-import org.mini2Dx.core.geom.Circle;
+package org.mini2Dx.core.engine.interpolator;
 
 /**
- * The circle interpolation function.
+ * The interpolator function for floats. By using primitive values directly, we avoid any unnecessary allocation of {@link Float}s during auto-boxing.
  */
-public final class LinearCircleInterpolator implements Interpolator<Circle> {
-
-  public static final LinearCircleInterpolator INSTANCE = new LinearCircleInterpolator();
-
-  private LinearCircleInterpolator() {
-  }
+public interface FloatInterpolator {
 
   /**
-   * {@inheritDoc}
+   * The interpolation algorithm. This takes the initial value, the current value, and the ratio of initial value to current value. The result is then returned for use.
+   *
+   * @param initialValue the initial value
+   * @param currentValue the current value
+   * @param alpha        a value between 0.0f to 1.0f. When alpha is 0.0f, the value should always be the initial value. When alpha is at 1.0f, the value should always be the current value.
    */
-  @Override
-  public void interpolate(Circle flyweight, Circle initialValue, Circle currentValue, float alpha) {
-    flyweight.setX(Interpolators.linearFloat().interpolate(initialValue.getX(), currentValue.getX(), alpha));
-    flyweight.setY(Interpolators.linearFloat().interpolate(initialValue.getY(), currentValue.getY(), alpha));
-    flyweight.setRadius(Interpolators.linearFloat().interpolate(initialValue.getRadius(), currentValue.getRadius(), alpha));
-  }
+  float interpolate(float initialValue, float currentValue, float alpha);
 }
