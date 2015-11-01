@@ -19,19 +19,33 @@ import org.mini2Dx.uats.ControllerUAT;
 import org.mini2Dx.uats.GeometryUAT;
 import org.mini2Dx.uats.GraphicsUAT;
 import org.mini2Dx.uats.IsometricTiledMapUAT;
-import org.mini2Dx.uats.ParticleEffectsUAT;
 import org.mini2Dx.uats.OrthogonalTiledMapNoCachingUAT;
 import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
+import org.mini2Dx.uats.ParticleEffectsUAT;
+import org.mini2Dx.uats.UiUAT;
+import org.mini2Dx.ui.UiElement;
+import org.mini2Dx.ui.data.UiElementLoader;
+import org.mini2Dx.ui.theme.UiTheme;
+import org.mini2Dx.ui.theme.UiThemeLoader;
+
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 
 /**
  *
  * @author Thomas Cashman
  */
 public class UATApplication extends ScreenBasedGame {
+	private AssetManager assetManager;
     
     @Override
     public void initialise() {
-        addScreen(new UATSelectionScreen());
+    	assetManager = new AssetManager();
+    	assetManager.setLoader(UiTheme.class, new UiThemeLoader(new InternalFileHandleResolver()));
+    	assetManager.setLoader(UiElement.class, new UiElementLoader(new InternalFileHandleResolver()));
+    	
+    	addScreen(new LoadingScreen(assetManager));
+        addScreen(new UATSelectionScreen(assetManager));
         addScreen(new BlendingUAT());
         addScreen(new ClippingUAT());
         addScreen(new GeometryUAT());
@@ -42,6 +56,7 @@ public class UATApplication extends ScreenBasedGame {
         addScreen(new ParticleEffectsUAT());
         addScreen(new ControllerUAT());
         addScreen(new ControllerMapping());
+        addScreen(new UiUAT(assetManager));
     }
 
     @Override

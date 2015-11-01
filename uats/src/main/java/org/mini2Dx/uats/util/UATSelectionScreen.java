@@ -27,12 +27,21 @@ import org.mini2Dx.uats.ControllerUAT;
 import org.mini2Dx.uats.GeometryUAT;
 import org.mini2Dx.uats.GraphicsUAT;
 import org.mini2Dx.uats.IsometricTiledMapUAT;
-import org.mini2Dx.uats.ParticleEffectsUAT;
 import org.mini2Dx.uats.OrthogonalTiledMapNoCachingUAT;
 import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
+import org.mini2Dx.uats.ParticleEffectsUAT;
+import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.UiElement;
+import org.mini2Dx.ui.effect.SlideIn;
+import org.mini2Dx.ui.element.Actionable;
+import org.mini2Dx.ui.element.Button;
+import org.mini2Dx.ui.element.Dialog;
+import org.mini2Dx.ui.element.Label;
+import org.mini2Dx.ui.element.Row;
+import org.mini2Dx.ui.listener.ActionListener;
+import org.mini2Dx.ui.theme.UiTheme;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -40,30 +49,51 @@ import com.badlogic.gdx.graphics.Color;
  * @author Thomas Cashman
  */
 public class UATSelectionScreen extends BasicGameScreen {
-    public static final int SCREEN_ID = 0;
+    public static final int SCREEN_ID = 1;
     
-    private int previousUat = -1;
+    private final AssetManager assetManager;
+    
+    private UiContainer uiContainer;
+    private Dialog uatsDialog;
+    private int nextScreenId = -1;
 
-    @Override
+    public UATSelectionScreen(AssetManager assetManager) {
+    	this.assetManager = assetManager;
+	}
+
+	@Override
     public void initialise(GameContainer gc) {
+		uiContainer = new UiContainer(gc, assetManager);
+		initialiseUi();
     }
+	
+	private UiElement createLabel(String text) {
+		Label label = new Label(text);
+		label.setXRules("xs-0");
+		label.setWidthRules("xs-12");
+		return label;
+	}
+	
+	private UiElement createButton(String text, ActionListener listener) {
+		Button button = new Button();
+		button.setXRules("xs-0");
+		button.setWidthRules("xs-12");
+		button.addActionListener(listener);
+		return button;
+	}
 
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
             float delta) {
-    	switch(Mdx.os) {
-        case ANDROID:
-        case IOS:
-        	updateMobileMenu(gc, screenManager, delta);
-        	break;
-        default:
-        	updateDesktopMenu(screenManager, delta);
-        	break;
-        }
+    	uiContainer.update(delta);
+    	if(nextScreenId > -1) {
+    		screenManager.enterGameScreen(nextScreenId, new FadeOutTransition(), new FadeInTransition());
+    	}
     }
 
     @Override
     public void interpolate(GameContainer gc, float alpha) {
+    	uiContainer.interpolate(alpha);
     }
 
     @Override
@@ -71,81 +101,23 @@ public class UATSelectionScreen extends BasicGameScreen {
         g.clearBlendFunction();
         g.clearShaderProgram();
         g.removeClip();
-        
-        switch(Mdx.os) {
-        case ANDROID:
-        case IOS:
-        	renderMobileMenu(gc, g);
-        	break;
-        default:
-        	renderDesktopMenu(gc, g);
-        	break;
-        }
-        
         g.setBackgroundColor(Color.WHITE);
         g.setColor(Color.BLUE);
-    }
-    
-    private void updateDesktopMenu(ScreenManager<? extends GameScreen> screenManager,
-            float delta) {
-        if(Gdx.input.isKeyJustPressed(Keys.NUM_1)) {
-            screenManager.enterGameScreen(ScreenIds.getScreenId(BlendingUAT.class), new FadeOutTransition(), new FadeInTransition());
-        } else if(Gdx.input.isKeyJustPressed(Keys.NUM_2)) {
-            screenManager.enterGameScreen(ScreenIds.getScreenId(ClippingUAT.class), new FadeOutTransition(), new FadeInTransition());
-        } else if(Gdx.input.isKeyJustPressed(Keys.NUM_3)) {
-            screenManager.enterGameScreen(ScreenIds.getScreenId(GeometryUAT.class), new FadeOutTransition(), new FadeInTransition());
-        } else if(Gdx.input.isKeyJustPressed(Keys.NUM_4)) {
-            screenManager.enterGameScreen(ScreenIds.getScreenId(GraphicsUAT.class), new FadeOutTransition(), new FadeInTransition());
-        } else if(Gdx.input.isKeyJustPressed(Keys.NUM_5)) {
-            screenManager.enterGameScreen(ScreenIds.getScreenId(OrthogonalTiledMapNoCachingUAT.class), new FadeOutTransition(), new FadeInTransition());
-        } else if(Gdx.input.isKeyJustPressed(Keys.NUM_6)) {
-            screenManager.enterGameScreen(ScreenIds.getScreenId(OrthogonalTiledMapWithCachingUAT.class), new FadeOutTransition(), new FadeInTransition());
-        } else if(Gdx.input.isKeyJustPressed(Keys.NUM_7)) {
-            screenManager.enterGameScreen(ScreenIds.getScreenId(IsometricTiledMapUAT.class), new FadeOutTransition(), new FadeInTransition());
-        } else if(Gdx.input.isKeyJustPressed(Keys.NUM_8)) {
-            screenManager.enterGameScreen(ScreenIds.getScreenId(ParticleEffectsUAT.class), new FadeOutTransition(), new FadeInTransition());
-        } else if(Gdx.input.isKeyJustPressed(Keys.NUM_9)) {
-            screenManager.enterGameScreen(ScreenIds.getScreenId(ControllerUAT.class), new FadeOutTransition(), new FadeInTransition());
-        } else if(Gdx.input.isKeyJustPressed(Keys.NUM_0)) {
-            screenManager.enterGameScreen(ScreenIds.getScreenId(ControllerMapping.class), new FadeOutTransition(), new FadeInTransition());
-        }
-    }
-    
-    private void renderDesktopMenu(GameContainer gc, Graphics g) {
-        float lineHeight = g.getFont().getLineHeight();
-        g.drawString("Detected platform: " + Mdx.os, 32, 32);
-        g.drawString("1. Blending UAT", 32, 64);
-        g.drawString("2. Clipping UAT", 32, 64 + lineHeight + 4);
-        g.drawString("3. Geometry UAT", 32, 64 + (lineHeight * 2) + 8);
-        g.drawString("4. Graphics UAT", 32, 64 + (lineHeight * 3) + 12);
-        g.drawString("5. Orthogonal TiledMap (No Caching) UAT", 32, 64 + (lineHeight * 4) + 16);
-        g.drawString("6. Orthogonal TiledMap (With Caching) UAT", 32, 64 + (lineHeight * 5) + 20);
-        g.drawString("7. Isometric TiledMap (No Caching) UAT", 32, 64 + (lineHeight * 6) + 24);
-        g.drawString("8. Particle Effects UAT", 32, 64 + (lineHeight * 7) + 28);
-        g.drawString("9. Controller UAT", 32, 64 + (lineHeight * 8) + 32);
-        g.drawString("0. Controller Mapping", 32, 64 + (lineHeight * 9) + 36);
-    }
-    
-    private void updateMobileMenu(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
-            float delta) {
-    	if(Gdx.input.justTouched()) {
-    		previousUat = previousUat < 9 ? previousUat + 1 : 0;
-    		screenManager.enterGameScreen(previousUat, new FadeOutTransition(), new FadeInTransition());
-    	}
-    }
-    
-    private void renderMobileMenu(GameContainer gc, Graphics g) {
-        float lineHeight = g.getFont().getLineHeight();
-        g.drawString("Detected platform: " + Mdx.os, 32, 32);
-        g.drawString("Touch screen for next UAT", 32, 64);
+        
+        uiContainer.render(g);
     }
 
     @Override
     public void preTransitionIn(Transition transitionIn) {
+    	nextScreenId = -1;
+    	if(!uiContainer.isThemeApplied()) {
+    		uiContainer.applyTheme(UiTheme.DEFAULT_THEME_FILE);
+    	}
     }
 
     @Override
     public void postTransitionIn(Transition transitionIn) {
+    	uatsDialog.applyEffect(new SlideIn());
     }
 
     @Override
@@ -159,5 +131,77 @@ public class UATSelectionScreen extends BasicGameScreen {
     @Override
     public int getId() {
         return SCREEN_ID;
+    }
+    
+    private void initialiseUi() {
+		uatsDialog = new Dialog();
+		uatsDialog.setXRules("auto");
+		uatsDialog.setWidthRules("xs-12 sm-12 md-10 lg-8");
+		
+		uatsDialog.addRow(Row.withElements(createLabel("User Acceptance Tests")));
+		uatsDialog.addRow(Row.withElements(createLabel("Detected OS: " + Mdx.os)));
+		uatsDialog.addRow(Row.withElements(createButton("Blending", new ActionListener() {
+			@Override
+			public void onAction(Actionable source) {
+				nextScreenId = ScreenIds.getScreenId(BlendingUAT.class);
+			}
+		})));
+		uatsDialog.addRow(Row.withElements(createButton("Graphics.clip()", new ActionListener() {
+			@Override
+			public void onAction(Actionable source) {
+				nextScreenId = ScreenIds.getScreenId(ClippingUAT.class);
+			}
+		})));
+		uatsDialog.addRow(Row.withElements(createButton("Geometry", new ActionListener() {
+			@Override
+			public void onAction(Actionable source) {
+				nextScreenId = ScreenIds.getScreenId(GeometryUAT.class);
+			}
+		})));
+		uatsDialog.addRow(Row.withElements(createButton("Graphics", new ActionListener() {
+			@Override
+			public void onAction(Actionable source) {
+				nextScreenId = ScreenIds.getScreenId(GraphicsUAT.class);
+			}
+		})));
+		uatsDialog.addRow(Row.withElements(createButton("Orthogonal TiledMap (No Caching)", new ActionListener() {
+			@Override
+			public void onAction(Actionable source) {
+				nextScreenId = ScreenIds.getScreenId(OrthogonalTiledMapNoCachingUAT.class);
+			}
+		})));
+		uatsDialog.addRow(Row.withElements(createButton("Orthogonal TiledMap (With Caching)", new ActionListener() {
+			@Override
+			public void onAction(Actionable source) {
+				nextScreenId = ScreenIds.getScreenId(OrthogonalTiledMapWithCachingUAT.class);
+			}
+		})));
+		uatsDialog.addRow(Row.withElements(createButton("Isometric TiledMap (No Caching)", new ActionListener() {
+			@Override
+			public void onAction(Actionable source) {
+				nextScreenId = ScreenIds.getScreenId(IsometricTiledMapUAT.class);
+			}
+		})));
+		uatsDialog.addRow(Row.withElements(createButton("Particle Effects", new ActionListener() {
+			@Override
+			public void onAction(Actionable source) {
+				nextScreenId = ScreenIds.getScreenId(ParticleEffectsUAT.class);
+			}
+		})));
+		uatsDialog.addRow(Row.withElements(createButton("Controllers", new ActionListener() {
+			@Override
+			public void onAction(Actionable source) {
+				nextScreenId = ScreenIds.getScreenId(ControllerUAT.class);
+			}
+		})));
+		uatsDialog.addRow(Row.withElements(createLabel("Utilities")));
+		uatsDialog.addRow(Row.withElements(createButton("Controller Mapping", new ActionListener() {
+			@Override
+			public void onAction(Actionable source) {
+				nextScreenId = ScreenIds.getScreenId(ControllerMapping.class);
+			}
+		})));
+		
+		uiContainer.add(uatsDialog);
     }
 }

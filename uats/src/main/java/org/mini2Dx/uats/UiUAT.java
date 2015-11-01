@@ -9,26 +9,65 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.uats.util;
+package org.mini2Dx.uats;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
+import org.mini2Dx.core.screen.ScreenManager;
+import org.mini2Dx.core.screen.Transition;
+import org.mini2Dx.uats.util.ScreenIds;
+import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.theme.UiTheme;
+
+import com.badlogic.gdx.assets.AssetManager;
 
 /**
- * Auto-generate IDs for each {@link GameScreen} in the UAT project
+ * A user acceptance test for the mini2Dx responsive UI framework
  */
-public class ScreenIds {
-	private static AtomicInteger counter = new AtomicInteger(2);
-	private static Map<String, Integer> screenIds = new ConcurrentHashMap<String, Integer>();
+public class UiUAT extends BasicGameScreen {
+	private final AssetManager assetManager;
 	
-	public static int getScreenId(Class<?> clazz) {
-		String key = clazz.getName();
-		if(!screenIds.containsKey(key)) {
-			screenIds.put(key, counter.getAndIncrement());
-		}
-		return screenIds.get(clazz.getName());
+	private UiContainer uiContainer;
+
+	public UiUAT(AssetManager assetManager) {
+		this.assetManager = assetManager;
 	}
+
+	@Override
+	public void initialise(GameContainer gc) {
+		uiContainer = new UiContainer(gc, assetManager);
+	}
+
+	@Override
+	public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void interpolate(GameContainer gc, float alpha) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void render(GameContainer gc, Graphics g) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void preTransitionIn(Transition transitionIn) {
+		if(!uiContainer.isThemeApplied()) {
+    		uiContainer.applyTheme(UiTheme.DEFAULT_THEME_FILE);
+    	}
+	}
+
+	@Override
+	public int getId() {
+		return ScreenIds.getScreenId(UiUAT.class);
+	}
+
 }
