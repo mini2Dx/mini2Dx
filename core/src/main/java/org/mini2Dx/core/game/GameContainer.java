@@ -11,10 +11,12 @@
  */
 package org.mini2Dx.core.game;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -34,6 +36,7 @@ public abstract class GameContainer {
 	protected SpriteBatch spriteBatch;
 	protected ShapeRenderer shapeRenderer;
 	private boolean isInitialised = false;
+	private List<GameResizeListener> gameResizeListeners;
 	
 	/**
 	 * Initialse the game
@@ -58,17 +61,6 @@ public abstract class GameContainer {
 	 */
 	public abstract void render(Graphics g);
 	
-	
-	/**
-	 * Called when the game window changes dimensions. 
-	 * On mobile devices this is called when the screen is rotated.
-	 * 
-	 * @param width The new game window width
-	 * @param height The new game window height
-	 */
-	public abstract void onResize(int width, int height);
-	
-	
 	public abstract void onPause();
 	
 	public abstract void onResume();
@@ -82,7 +74,9 @@ public abstract class GameContainer {
 	public void resize(int width, int height) {
 		this.width = width;
 		this.height = height;
-		onResize(width, height);
+		for(GameResizeListener listener : gameResizeListeners) {
+			listener.onResize(width, height);
+		}
 	}
 	
 	/**
@@ -98,6 +92,7 @@ public abstract class GameContainer {
 	 * Internal pre-initialisation code
 	 */
 	protected void preinit() {
+		this.gameResizeListeners = new ArrayList<GameResizeListener>(1);
 		this.spriteBatch = new SpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
 		
@@ -123,6 +118,14 @@ public abstract class GameContainer {
 	
 	public void dispose() {
 		
+	}
+	
+	public void addResizeListener(GameResizeListener listener) {
+		gameResizeListeners.add(listener);
+	}
+	
+	public void removeResizeListener(GameResizeListener listener) {
+		gameResizeListeners.remove(listener);
 	}
 
 	public int getWidth() {

@@ -49,11 +49,6 @@ public abstract class ScreenBasedGame extends GameContainer {
 	}
 	
 	@Override
-	public void onResize(int width, int height) {
-		screenManager.onResize(width, height);
-	}
-	
-	@Override
 	public void onPause() {
 		screenManager.onPause();
 	}
@@ -87,6 +82,7 @@ public abstract class ScreenBasedGame extends GameContainer {
 	protected void preinit() {
 		super.preinit();
 		screenManager = new BasicScreenManager<GameScreen>();
+		addResizeListener(screenManager);
 	}
 	
 	@Override

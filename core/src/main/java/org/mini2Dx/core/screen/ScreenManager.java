@@ -12,6 +12,7 @@
 package org.mini2Dx.core.screen;
 
 import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.core.game.GameResizeListener;
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.Screen;
@@ -19,7 +20,7 @@ import com.badlogic.gdx.Screen;
 /**
  * Updates and renders {@link GameScreen}s and {@link Transition}s between them
  */
-public interface ScreenManager<T extends GameScreen> {
+public interface ScreenManager<T extends GameScreen> extends GameResizeListener {
 	/**
 	 * Updates the current {@link GameScreen} and any {@link Transition} that
 	 * may be occurring
@@ -51,8 +52,6 @@ public interface ScreenManager<T extends GameScreen> {
 	 *            The {@link Graphics} context available for rendering
 	 */
 	public void render(GameContainer gc, Graphics g);
-	
-	public void onResize(int width, int height);
 	
 	public void onPause();
 
