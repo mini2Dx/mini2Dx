@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
@@ -35,6 +36,18 @@ import com.badlogic.gdx.utils.reflect.Field;
 public class JsonSerializer {
 	/**
 	 * Reads a JSON document and converts it into an object of the specified type
+	 * @param fileHandle The {@link FileHandle} for the JSON document
+	 * @param clazz The {@link Class} to convert the document to
+	 * @return The object deserialized from JSON
+	 * @throws SerializationException Thrown when the data is invalid
+	 */
+	public <T> T fromJson(FileHandle fileHandle, Class<T> clazz)
+			throws SerializationException {
+		return deserialize(new JsonReader().parse(fileHandle), clazz);
+	}
+	
+	/**
+	 * Reads a JSON document and converts it into an object of the specified type
 	 * @param json The JSON document
 	 * @param clazz The {@link Class} to convert the document to
 	 * @return The object deserialized from JSON
@@ -44,6 +57,31 @@ public class JsonSerializer {
 			throws SerializationException {
 		return deserialize(new JsonReader().parse(json), clazz);
 	}
+	
+	/**
+	 * Writes a JSON document by searching the object for {@link org.mini2Dx.core.serialization.annotation.Field} annotations
+	 * @param fileHandle The {@link FileHandle} to write to
+	 * @param object The object to convert to JSON
+	 * @return The object serialized as JSON
+	 * @throws SerializationException Thrown when the object is invalid
+	 */
+	public <T> void toJson(FileHandle fileHandle, T object) throws SerializationException {
+		toJson(fileHandle, object, false);
+	}
+	
+	/**
+	 * Writes a JSON document by searching the object for {@link org.mini2Dx.core.serialization.annotation.Field} annotations
+	 * @param fileHandle The {@link FileHandle} to write to
+	 * @param object The object to convert to JSON
+	 * @param prettyPrint Set to true if the JSON should be prettified
+	 * @return The object serialized as JSON
+	 * @throws SerializationException Thrown when the object is invalid
+	 */
+	public <T> void toJson(FileHandle fileHandle, T object, boolean prettyPrint) throws SerializationException {
+		String json = toJson(object, prettyPrint);
+		fileHandle.writeString(json, false);
+	}
+
 
 	/**
 	 * Writes a JSON document by searching the object for {@link org.mini2Dx.core.serialization.annotation.Field} annotations
