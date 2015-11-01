@@ -13,11 +13,12 @@ package org.mini2Dx.core.engine.geom;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
+import org.mini2Dx.core.engine.SizeChangeListener;
+import org.mini2Dx.core.engine.Sizeable;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Rectangle;
@@ -30,13 +31,15 @@ import com.badlogic.gdx.math.Vector2;
  * appropriate rendering coordinates after interpolating between the previous
  * and current position.
  */
-public class CollisionBox extends Rectangle implements Positionable {
+public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	private static final long serialVersionUID = -8217730724587578266L;
 
 	private final long id;
 	private final ReentrantReadWriteLock positionChangeListenerLock;
+	private final ReentrantReadWriteLock sizeChangeListenerLock;
 	
 	private List<PositionChangeListener> positionChangeListeners;
+	private List<SizeChangeListener> sizeChangeListeners;
 
 	private Rectangle previousRectangle;
 	private Rectangle renderRectangle;
@@ -50,6 +53,7 @@ public class CollisionBox extends Rectangle implements Positionable {
 		this.id = CollisionIdSequence.nextId();
 		
 		positionChangeListenerLock = new ReentrantReadWriteLock();
+		sizeChangeListenerLock = new ReentrantReadWriteLock();
 		previousRectangle = new Rectangle(x, y, width, height);
 		renderRectangle = new Rectangle(x, y, width, height);
 	}
@@ -91,19 +95,24 @@ public class CollisionBox extends Rectangle implements Positionable {
 	@Override
 	public <T extends Positionable> void removePositionChangeListener(
 			PositionChangeListener<T> listener) {
+		positionChangeListenerLock.readLock().lock();
 		if (positionChangeListeners == null) {
+			positionChangeListenerLock.readLock().unlock();
 			return;
 		}
+		positionChangeListenerLock.readLock().unlock();
+		
 		positionChangeListenerLock.writeLock().lock();
 		positionChangeListeners.remove(listener);
 		positionChangeListenerLock.writeLock().unlock();
 	}
 
 	private void notifyPositionChangeListeners() {
+		positionChangeListenerLock.readLock().lock();
 		if (positionChangeListeners == null) {
+			positionChangeListenerLock.readLock().unlock();
 			return;
 		}
-		positionChangeListenerLock.readLock().lock();
 		for (int i = positionChangeListeners.size() - 1; i >= 0; i--) {
 			if(i >= positionChangeListeners.size()) {
 				i = positionChangeListeners.size() - 1;
@@ -114,6 +123,48 @@ public class CollisionBox extends Rectangle implements Positionable {
 			positionChangeListenerLock.readLock().lock();
 		}
 		positionChangeListenerLock.readLock().unlock();
+	}
+	
+	@Override
+	public <T extends Sizeable> void addSizeChangeListener(SizeChangeListener<T> listener) {
+		sizeChangeListenerLock.writeLock().lock();
+		if (sizeChangeListeners == null) {
+			sizeChangeListeners = new ArrayList<SizeChangeListener>(1);
+		}
+		sizeChangeListeners.add(listener);
+		sizeChangeListenerLock.writeLock().unlock();
+	}
+
+	@Override
+	public <T extends Sizeable> void removeSizeChangeListener(SizeChangeListener<T> listener) {
+		sizeChangeListenerLock.readLock().lock();
+		if (sizeChangeListeners == null) {
+			sizeChangeListenerLock.readLock().unlock();
+			return;
+		}
+		sizeChangeListenerLock.readLock().unlock();
+		
+		sizeChangeListenerLock.writeLock().lock();
+		sizeChangeListeners.remove(listener);
+		sizeChangeListenerLock.writeLock().unlock();
+	}
+	
+	private void notifySizeChangeListeners() {
+		sizeChangeListenerLock.readLock().lock();
+		if (sizeChangeListeners == null) {
+			sizeChangeListenerLock.readLock().unlock();
+			return;
+		}
+		for (int i = sizeChangeListeners.size() - 1; i >= 0; i--) {
+			if(i >= sizeChangeListeners.size()) {
+				i = sizeChangeListeners.size() - 1;
+			}
+			SizeChangeListener listener = sizeChangeListeners.get(i);
+			sizeChangeListenerLock.readLock().unlock();
+			listener.sizeChanged(this);
+			sizeChangeListenerLock.readLock().lock();
+		}
+		sizeChangeListenerLock.readLock().unlock();
 	}
 
 	@Override
@@ -161,15 +212,18 @@ public class CollisionBox extends Rectangle implements Positionable {
 	 */
 	public void forceTo(float x, float y, float width, float height) {
 		boolean notifyPositionListeners = x != getX() || y != getY();
+		boolean notifySizeListeners = width != getWidth() || height != getHeight();
 		
 		super.set(x, y, width, height);
 		previousRectangle.set(x, y, width, height);
 		renderRectangle.set(previousRectangle);
 		
-		if(!notifyPositionListeners) {
-			return;
+		if(notifyPositionListeners) {
+			notifyPositionChangeListeners();
 		}
-		notifyPositionChangeListeners();
+		if(notifySizeListeners) {
+			notifySizeChangeListeners();
+		}
 	}
 
 	/**
@@ -183,6 +237,7 @@ public class CollisionBox extends Rectangle implements Positionable {
 		super.setWidth(width);
 		previousRectangle.set(this);
 		renderRectangle.set(this);
+		notifySizeChangeListeners();
 	}
 
 	/**
@@ -196,18 +251,29 @@ public class CollisionBox extends Rectangle implements Positionable {
 		super.setHeight(height);
 		previousRectangle.set(this);
 		renderRectangle.set(this);
+		notifySizeChangeListeners();
 	}
 
 	@Override
 	public Rectangle set(float x, float y, float width, float height) {
+		boolean notifyPositionListeners = x != getX() || y != getY();
+		boolean notifySizeListeners = width != getWidth() || height != getHeight();
+		
 		super.set(x, y, width, height);
-		notifyPositionChangeListeners();
+		
+		if(notifyPositionListeners) {
+			notifyPositionChangeListeners();
+		}
+		if(notifySizeListeners) {
+			notifySizeChangeListeners();
+		}
 		return this;
 	}
 
 	public void set(Rectangle rectangle) {
 		super.set(rectangle);
 		notifyPositionChangeListeners();
+		notifySizeChangeListeners();
 	}
 
 	@Override
@@ -215,6 +281,7 @@ public class CollisionBox extends Rectangle implements Positionable {
 			com.badlogic.gdx.math.Rectangle rectangle) {
 		super.set(rectangle);
 		notifyPositionChangeListeners();
+		notifySizeChangeListeners();
 		return this;
 	}
 
@@ -249,28 +316,28 @@ public class CollisionBox extends Rectangle implements Positionable {
 	@Override
 	public Rectangle setWidth(float width) {
 		super.setWidth(width);
-		notifyPositionChangeListeners();
+		notifySizeChangeListeners();
 		return this;
 	}
 
 	@Override
 	public Rectangle setHeight(float height) {
 		super.setHeight(height);
-		notifyPositionChangeListeners();
+		notifySizeChangeListeners();
 		return this;
 	}
 
 	@Override
 	public Rectangle setSize(float width, float height) {
 		super.setSize(width, height);
-		notifyPositionChangeListeners();
+		notifySizeChangeListeners();
 		return this;
 	}
 
 	@Override
 	public Rectangle setSize(float sizeXY) {
 		super.setSize(sizeXY);
-		notifyPositionChangeListeners();
+		notifySizeChangeListeners();
 		return this;
 	}
 

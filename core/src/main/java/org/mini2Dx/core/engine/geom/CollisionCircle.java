@@ -18,6 +18,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
+import org.mini2Dx.core.engine.SizeChangeListener;
+import org.mini2Dx.core.engine.Sizeable;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Circle;
 
@@ -27,12 +29,14 @@ import org.mini2Dx.core.geom.Circle;
  * appropriate rendering coordinates after interpolating between the previous
  * and current position.
  */
-public class CollisionCircle extends Circle implements Positionable {
+public class CollisionCircle extends Circle implements Positionable, Sizeable {
 	
 	private final long id;
 	private final ReadWriteLock positionChangeListenerLock;
+	private final ReadWriteLock sizeChangeListenerLock;
 	
 	private List<PositionChangeListener> positionChangeListeners;
+	private List<SizeChangeListener> sizeChangeListeners;
 	
 	private Circle previousCircle;
 	private Circle renderCircle;
@@ -42,6 +46,7 @@ public class CollisionCircle extends Circle implements Positionable {
 		this.id = CollisionIdSequence.nextId();
 		
 		positionChangeListenerLock = new ReentrantReadWriteLock();
+		sizeChangeListenerLock = new ReentrantReadWriteLock();
 		previousCircle = new Circle(radius);
 		renderCircle = new Circle(radius);
 	}
@@ -51,6 +56,7 @@ public class CollisionCircle extends Circle implements Positionable {
 		this.id = CollisionIdSequence.nextId();
 		
 		positionChangeListenerLock = new ReentrantReadWriteLock();
+		sizeChangeListenerLock = new ReentrantReadWriteLock();
 		previousCircle = new Circle(centerX, centerY, radius);
 		renderCircle = new Circle(centerX, centerY, radius);
 	}
@@ -91,19 +97,24 @@ public class CollisionCircle extends Circle implements Positionable {
 	@Override
 	public <T extends Positionable> void removePositionChangeListener(
 			PositionChangeListener<T> listener) {
+		positionChangeListenerLock.readLock().lock();
 		if (positionChangeListeners == null) {
+			positionChangeListenerLock.readLock().unlock();
 			return;
 		}
+		positionChangeListenerLock.readLock().unlock();
+		
 		positionChangeListenerLock.writeLock().lock();
 		positionChangeListeners.remove(listener);
 		positionChangeListenerLock.writeLock().unlock();
 	}
 	
 	private void notifyPositionChangeListeners() {
+		positionChangeListenerLock.readLock().lock();
 		if (positionChangeListeners == null) {
+			positionChangeListenerLock.readLock().unlock();
 			return;
 		}
-		positionChangeListenerLock.readLock().lock();
 		for (int i = positionChangeListeners.size() - 1; i >= 0; i--) {
 			if(i >= positionChangeListeners.size()) {
 				i = positionChangeListeners.size() - 1;
@@ -114,6 +125,48 @@ public class CollisionCircle extends Circle implements Positionable {
 			positionChangeListenerLock.readLock().lock();
 		}
 		positionChangeListenerLock.readLock().unlock();
+	}
+	
+	@Override
+	public <T extends Sizeable> void addSizeChangeListener(SizeChangeListener<T> listener) {
+		sizeChangeListenerLock.writeLock().lock();
+		if (sizeChangeListeners == null) {
+			sizeChangeListeners = new ArrayList<SizeChangeListener>();
+		}
+		sizeChangeListeners.add(listener);
+		sizeChangeListenerLock.writeLock().unlock();
+	}
+
+	@Override
+	public <T extends Sizeable> void removeSizeChangeListener(SizeChangeListener<T> listener) {
+		sizeChangeListenerLock.readLock().lock();
+		if (sizeChangeListeners == null) {
+			sizeChangeListenerLock.readLock().unlock();
+			return;
+		}
+		sizeChangeListenerLock.readLock().unlock();
+		
+		sizeChangeListenerLock.writeLock().lock();
+		sizeChangeListeners.remove(listener);
+		sizeChangeListenerLock.writeLock().unlock();
+	}
+	
+	private void notifySizeChangeListeners() {
+		sizeChangeListenerLock.readLock().lock();
+		if (sizeChangeListeners == null) {
+			sizeChangeListenerLock.readLock().unlock();
+			return;
+		}
+		for (int i = sizeChangeListeners.size() - 1; i >= 0; i--) {
+			if(i >= sizeChangeListeners.size()) {
+				i = sizeChangeListeners.size() - 1;
+			}
+			SizeChangeListener listener = sizeChangeListeners.get(i);
+			sizeChangeListenerLock.readLock().unlock();
+			listener.sizeChanged(this);
+			sizeChangeListenerLock.readLock().lock();
+		}
+		sizeChangeListenerLock.readLock().unlock();
 	}
 	
 	/**
@@ -153,6 +206,11 @@ public class CollisionCircle extends Circle implements Positionable {
 		notifyPositionChangeListeners();
 	}
 	
+	public void setRadius(float radius) {
+		super.setRadius(radius);
+		notifySizeChangeListeners();
+	}
+	
 	public float getRenderX() {
 		return renderCircle.getX();
 	}
@@ -179,5 +237,15 @@ public class CollisionCircle extends Circle implements Positionable {
 
 	public long getId() {
 		return id;
+	}
+
+	@Override
+	public float getWidth() {
+		return getRadius() * 2f;
+	}
+
+	@Override
+	public float getHeight() {
+		return getRadius() * 2f;
 	}
 }

@@ -16,6 +16,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.engine.PositionChangeListener;
+import org.mini2Dx.core.engine.SizeChangeListener;
 import org.mini2Dx.core.geom.Circle;
 import org.mini2Dx.core.geom.Point;
 
@@ -23,14 +24,15 @@ import org.mini2Dx.core.geom.Point;
  * Unit tests for {@link CollisionCircle}
  * @author Thomas Cashman
  */
-public class CollisionCircleTest implements PositionChangeListener<CollisionCircle> {
+public class CollisionCircleTest implements PositionChangeListener<CollisionCircle>, SizeChangeListener<CollisionCircle> {
 	private CollisionCircle circle;
-	private boolean receivedNotification;
+	private boolean receivedPositionNotification, receivedSizeNotification;
 	
 	@Before
 	public void setup() {
 		circle = new CollisionCircle(4);
-		receivedNotification = false;
+		receivedPositionNotification = false;
+		receivedSizeNotification = false;
 	}
 	
 	@Test
@@ -61,75 +63,100 @@ public class CollisionCircleTest implements PositionChangeListener<CollisionCirc
 	
 	@Test
 	public void testSetCenterWithoutNotification() {
-		Assert.assertEquals(false, receivedNotification);
+		Assert.assertEquals(false, receivedPositionNotification);
 		
 		circle.setCenter(20f, 25f);
 		
 		Assert.assertEquals(20f, circle.getX());
 		Assert.assertEquals(25f, circle.getY());
-		Assert.assertEquals(false, receivedNotification);
+		Assert.assertEquals(false, receivedPositionNotification);
 	}
 
 	@Test
 	public void testSetCenterWithNotification() {
 		circle.addPostionChangeListener(this);
-		Assert.assertEquals(false, receivedNotification);
+		circle.addSizeChangeListener(this);
+		Assert.assertEquals(false, receivedPositionNotification);
 		
 		circle.setCenter(20f, 25f);
 		
 		Assert.assertEquals(20f, circle.getX());
 		Assert.assertEquals(25f, circle.getY());
-		Assert.assertEquals(true, receivedNotification);
+		Assert.assertEquals(true, receivedPositionNotification);
+		Assert.assertEquals(false, receivedSizeNotification);
 	}
 	
 	@Test
 	public void testSetXWithoutNotification() {
-		Assert.assertEquals(false, receivedNotification);
+		Assert.assertEquals(false, receivedPositionNotification);
 		
 		circle.setX(25f);
 		
 		Assert.assertEquals(25f, circle.getX());
 		Assert.assertEquals(0f, circle.getY());
-		Assert.assertEquals(false, receivedNotification);
+		Assert.assertEquals(false, receivedPositionNotification);
 	}
 	
 	@Test
 	public void testSetXWithNotification() {
 		circle.addPostionChangeListener(this);
-		Assert.assertEquals(false, receivedNotification);
+		circle.addSizeChangeListener(this);
+		Assert.assertEquals(false, receivedPositionNotification);
 		
 		circle.setX(25f);
 		
 		Assert.assertEquals(25f, circle.getX());
 		Assert.assertEquals(0f, circle.getY());
-		Assert.assertEquals(true, receivedNotification);
+		Assert.assertEquals(true, receivedPositionNotification);
+		Assert.assertEquals(false, receivedSizeNotification);
 	}
 	
 	@Test
 	public void testSetYWithoutNotification() {
-		Assert.assertEquals(false, receivedNotification);
+		Assert.assertEquals(false, receivedPositionNotification);
 		
 		circle.setY(25f);
 		
 		Assert.assertEquals(0f, circle.getX());
 		Assert.assertEquals(25f, circle.getY());
-		Assert.assertEquals(false, receivedNotification);
+		Assert.assertEquals(false, receivedPositionNotification);
 	}
 	
 	@Test
 	public void testSetYWithNotification() {
 		circle.addPostionChangeListener(this);
-		Assert.assertEquals(false, receivedNotification);
+		circle.addSizeChangeListener(this);
+		Assert.assertEquals(false, receivedPositionNotification);
 		
 		circle.setY(25f);
 		
 		Assert.assertEquals(0f, circle.getX());
 		Assert.assertEquals(25f, circle.getY());
-		Assert.assertEquals(true, receivedNotification);
+		Assert.assertEquals(true, receivedPositionNotification);
+		Assert.assertEquals(false, receivedSizeNotification);
+	}
+	
+	@Test
+	public void testSetRadiusWithNotification() {
+		circle.addPostionChangeListener(this);
+		circle.addSizeChangeListener(this);
+		
+		circle.setRadius(100f);
+		
+		Assert.assertEquals(0f, circle.getX());
+		Assert.assertEquals(0f, circle.getY());
+		Assert.assertEquals(100f, circle.getRadius());
+		Assert.assertEquals(false, receivedPositionNotification);
+		Assert.assertEquals(true, receivedSizeNotification);
 	}
 
 	@Override
 	public void positionChanged(CollisionCircle moved) {
-		receivedNotification = true;
+		receivedPositionNotification = true;
+	}
+
+	@Override
+	public void sizeChanged(CollisionCircle changed) {
+		receivedSizeNotification = true;
 	}
 }
