@@ -1,0 +1,67 @@
+{
+  "name": "default",
+  "columns": 12,
+  "rows": 24,
+  "fonts": {
+    "default": {
+      "path": ""
+    }
+  },
+  "buttons": {
+    "default": {
+      "normalImage": "",
+      "hoverImage": "",
+      "clickImage": "",
+      "disabledImage": "",
+      "top": 0,
+      "bottom": 0,
+      "left": 0,
+      "right": 0
+    }
+  },
+  "checkboxes": {
+    "default": {
+      "uncheckedImage": "",
+      "checkedImage": "",
+      "top": 0,
+      "bottom": 0,
+      "left": 0,
+      "right": 0
+    }
+  },
+  "frames": {
+    "default": {
+      "image": "",
+      "top": 0,
+      "bottom": 0,
+      "left": 0,
+      "right": 0
+    }
+  },
+  "labels": {
+    "default": {
+      "font": "default",
+      "fontSize": 16
+    }
+  },
+  "listboxes": {
+    "default": {
+      "backgroundImage": "",
+      "scrollBarImage": "",
+      "top": 0,
+      "bottom": 0,
+      "left": 0,
+      "right": 0
+    }
+  },
+  "textboxes": {
+    "default": {
+      "image": "",
+      "top": 0,
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "labelStyle": "default"
+    }
+  }
+}
