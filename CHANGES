@@ -3,9 +3,13 @@
 - Updated to Android build tools 23.0.1
 - Added controller mappings - Xbox One, Xbox 360 controllers
 - Added render pipeline feature
-- Added drawNinePatch() and clearScaling() methods to Graphics
+- (#38) Added drawNinePatch() and clearScaling() methods to Graphics
 - Added NPE prevention to TiledCollisionMapper
 - Added additional drawTexture() methods to Graphics
+- Added Sizeable and SizeChangeListener interfaces
+- Added GameResizeListener and removed onResize method from GameContainer
+- Added MdxException for mini2Dx runtime exceptions
+- Mdx.json can now read/write to/from FileHandle instances
 - Positionable instances now have getId() method
 - Fixed Mdx.xml not deserializing maps correctly when values are objects
 - QuadTrees
