@@ -12,14 +12,16 @@
 package org.mini2Dx.core.exception;
 
 /**
- * Thrown when the a mini2Dx function is not implemented on the current platform
+ * A base runtime exception thrown by mini2Dx
  */
-public class NotYetImplementedException extends MdxException {
-    private static final long serialVersionUID = 3910057641370555308L;
+public class MdxException extends RuntimeException {
+	private static final long serialVersionUID = -324730079393207622L;
 
-    public NotYetImplementedException() {
-        super("This operation is not yet implemented for the current platform. "
-                        + "If you would like to contribute an implementation, "
-                        + "please send a pull request to the mini2Dx repository at https://github.com/mini2Dx/mini2Dx");
-    }
+	public MdxException(String message) {
+		super(message);
+	}
+	
+	public MdxException(String message, Throwable throwable) {
+		super(message, throwable);
+	}
 }
