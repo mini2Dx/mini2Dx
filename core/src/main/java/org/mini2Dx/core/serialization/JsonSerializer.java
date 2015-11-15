@@ -170,6 +170,10 @@ public class JsonSerializer {
 				writePrimitive(fieldName, object, json);
 				return;
 			}
+			if (clazz.isEnum()) {
+				writePrimitive(fieldName, object.toString(), json);
+				return;
+			}
 			if (clazz.isArray()) {
 				writeArray(fieldName, object, json);
 				return;
@@ -263,7 +267,10 @@ public class JsonSerializer {
 				}
 				return (T) array;
 			}
-
+			if (clazz.isEnum()) {
+				return (T) Enum.valueOf((Class<Enum>) clazz, objectRoot.asString());
+			}
+			
 			if (clazz.equals(Boolean.TYPE) || clazz.equals(Boolean.class)) {
 				return (T) ((Boolean) objectRoot.asBoolean());
 			} else if (clazz.equals(Byte.TYPE) || clazz.equals(Byte.class)) {
@@ -453,6 +460,9 @@ public class JsonSerializer {
 		}
 		if (clazz.equals(Short.TYPE) || clazz.equals(Short.class)) {
 			return (T) new Short(value);
+		}
+		if (clazz.isEnum()) {
+			return (T) Enum.valueOf((Class<Enum>) clazz, value);
 		}
 		return (T) value;
 	}

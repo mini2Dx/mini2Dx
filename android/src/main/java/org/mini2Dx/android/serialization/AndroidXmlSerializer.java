@@ -114,6 +114,10 @@ public class AndroidXmlSerializer implements XmlSerializer {
 				writePrimitive(tagName, object, xmlSerializer);
 				return;
 			}
+			if (clazz.isEnum()) {
+				writePrimitive(tagName, object.toString(), xmlSerializer);
+				return;
+			}
 			if (clazz.isArray()) {
 				writeArray(tagName, object, xmlSerializer);
 				return;
@@ -258,6 +262,10 @@ public class AndroidXmlSerializer implements XmlSerializer {
 								result);
 						break;
 					}
+					if (fieldClass.isEnum()) {
+						setEnumField(currentField, fieldClass, result, xmlParser.nextText());
+						break;
+					}
 					if (!fieldClass.isPrimitive()) {
 						if (fieldClass.equals(String.class)) {
 							setPrimitiveField(currentField, fieldClass, result,
@@ -375,6 +383,14 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			field.set(object, list.toArray((Object[]) ArrayReflection
 					.newInstance(arrayType, 0)));
 		} catch (Exception e) {
+			throw new SerializationException(e);
+		}
+	}
+	
+	private <T> void setEnumField(Field field, Class<?> fieldClass, T object, String value) throws SerializationException {
+		try {
+			field.set(object, Enum.valueOf((Class<Enum>) fieldClass, value));
+		} catch (ReflectionException e) {
 			throw new SerializationException(e);
 		}
 	}

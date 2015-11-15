@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.core.util.Os;
 
 /**
  * Parent object class for testing serialization
@@ -51,6 +52,8 @@ public class TestParentObject extends TestSuperObject {
     private List<TestChildObject> children;
     @Field
     private Map<String, TestChildObject> mapObjectValues;
+    @Field
+    private Os enumValue;
     
     private int ignoredValue;
 
@@ -182,6 +185,14 @@ public class TestParentObject extends TestSuperObject {
 		this.mapObjectValues = mapObjectValues;
 	}
 
+	public Os getEnumValue() {
+		return enumValue;
+	}
+
+	public void setEnumValue(Os enumValue) {
+		this.enumValue = enumValue;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -202,6 +213,7 @@ public class TestParentObject extends TestSuperObject {
 		result = prime * result + shortValue;
 		result = prime * result + Arrays.hashCode(stringArrayValue);
 		result = prime * result + ((stringValue == null) ? 0 : stringValue.hashCode());
+		result = prime * result + ((enumValue == null) ? 0 : enumValue.hashCode());
 		return result;
 	}
 
@@ -266,6 +278,11 @@ public class TestParentObject extends TestSuperObject {
 			if (other.stringValue != null)
 				return false;
 		} else if (!stringValue.equals(other.stringValue))
+			return false;
+		if (enumValue == null) {
+			if (other.enumValue != null)
+				return false;
+		} else if (!enumValue.equals(other.enumValue))
 			return false;
 		return true;
 	}

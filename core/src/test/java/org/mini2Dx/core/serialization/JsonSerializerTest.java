@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
+import org.mini2Dx.core.util.Os;
 
 /**
  * User acceptance tests for {@link JsonSerializer}
@@ -40,6 +41,7 @@ public class JsonSerializerTest {
 		parentObject.setFloatValue(2.5f);
 		parentObject.setIgnoredValue(1);
 		parentObject.setIntValue(255);
+		parentObject.setEnumValue(Os.UNKNOWN);
 		
 		parentObject.setListValues(new ArrayList<String>());
 		parentObject.getListValues().add("itemA");
@@ -82,6 +84,7 @@ public class JsonSerializerTest {
 		
 		TestParentObject result = serializer.fromJson(json, TestParentObject.class);
 		Assert.assertEquals(parentObject.getSuperField(), result.getSuperField());
+		Assert.assertEquals(parentObject.getEnumValue(), result.getEnumValue());
 		Assert.assertEquals(parentObject.isBooleanValue(), result.isBooleanValue());
 		Assert.assertEquals(parentObject.getByteValue(), result.getByteValue());
 		Assert.assertEquals(parentObject.getFloatValue(), result.getFloatValue());

@@ -120,6 +120,10 @@ public class IOSXmlSerializer implements XmlSerializer {
 				writePrimitive(tagName, object, xmlWriter);
 				return;
 			}
+			if (clazz.isEnum()) {
+				writePrimitive(tagName, object.toString(), xmlWriter);
+				return;
+			}
 			if (clazz.isArray()) {
 				writeArray(tagName, object, xmlWriter);
 				return;
@@ -264,6 +268,10 @@ public class IOSXmlSerializer implements XmlSerializer {
 					if (fieldClass.isArray()) {
 						setArrayField(xmlReader, currentField, fieldClass,
 								result);
+						break;
+					}
+					if (fieldClass.isEnum()) {
+						setEnumField(currentField, fieldClass, result, xmlReader.getText());
 						break;
 					}
 					if (!fieldClass.isPrimitive()) {
@@ -476,6 +484,14 @@ public class IOSXmlSerializer implements XmlSerializer {
 		} catch (ReflectionException e) {
 			throw new SerializationException(e);
 		} catch (XMLStreamException e) {
+			throw new SerializationException(e);
+		}
+	}
+	
+	private <T> void setEnumField(Field field, Class<?> fieldClass, T object, String value) throws SerializationException {
+		try {
+			field.set(object, Enum.valueOf((Class<Enum>) fieldClass, value));
+		} catch (ReflectionException e) {
 			throw new SerializationException(e);
 		}
 	}

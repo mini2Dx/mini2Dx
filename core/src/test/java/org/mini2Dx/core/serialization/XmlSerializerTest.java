@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
+import org.mini2Dx.core.util.Os;
 
 import junit.framework.Assert;
 
@@ -44,6 +45,7 @@ public abstract class XmlSerializerTest {
 		
 		TestParentObject result = xmlSerializer.fromXml(xml, TestParentObject.class);
 		Assert.assertEquals(parentObject.getSuperField(), result.getSuperField());
+		Assert.assertEquals(parentObject.getEnumValue(), result.getEnumValue());
 		Assert.assertEquals(parentObject.isBooleanValue(), result.isBooleanValue());
 		Assert.assertEquals(parentObject.getByteValue(), result.getByteValue());
 		Assert.assertEquals(parentObject.getFloatValue(), result.getFloatValue());
@@ -102,6 +104,7 @@ public abstract class XmlSerializerTest {
 		xml += "        <value>item2</value>\n";
 		xml += "    </stringArrayValue>\n";
 		xml += "    <stringValue>hello</stringValue>\n";
+		xml += "    <enumValue>UNKNOWN</enumValue>\n";
 		xml += "    <mapValues>\n";
 		xml += "        <entry>\n";
 		xml += "            <key>key</key>\n";
@@ -129,6 +132,7 @@ public abstract class XmlSerializerTest {
 		
 		TestParentObject result = xmlSerializer.fromXml(xml, TestParentObject.class);
 		Assert.assertEquals(parentObject.getSuperField(), result.getSuperField());
+		Assert.assertEquals(parentObject.getEnumValue(), result.getEnumValue());
 		Assert.assertEquals(parentObject.isBooleanValue(), result.isBooleanValue());
 		Assert.assertEquals(parentObject.getByteValue(), result.getByteValue());
 		Assert.assertEquals(parentObject.getFloatValue(), result.getFloatValue());
@@ -169,6 +173,7 @@ public abstract class XmlSerializerTest {
 		parentObject.setFloatValue(2.5f);
 		parentObject.setIgnoredValue(1);
 		parentObject.setIntValue(255);
+		parentObject.setEnumValue(Os.UNKNOWN);
 		
 		parentObject.setListValues(new ArrayList<String>());
 		parentObject.getListValues().add("itemA");

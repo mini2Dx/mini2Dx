@@ -13,6 +13,7 @@
 - Mdx.json can now read/write to/from FileHandle instances
 - Fixed Mdx.xml not deserializing maps correctly when values are objects
 - Fixed Mdx.xml and Mdx.json not serializing/deserialzing super class fields
+- Fixed Mdx.xml and Mdx.json not deserialzing enum fields correctly
 - QuadTrees
   * Added QuadTree interface for all QuadTree implementations
   * Existing Quad class renamed to PointQuadTree
