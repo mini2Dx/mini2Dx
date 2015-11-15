@@ -43,6 +43,7 @@ public abstract class XmlSerializerTest {
 		System.out.println(xml);
 		
 		TestParentObject result = xmlSerializer.fromXml(xml, TestParentObject.class);
+		Assert.assertEquals(parentObject.getSuperField(), result.getSuperField());
 		Assert.assertEquals(parentObject.isBooleanValue(), result.isBooleanValue());
 		Assert.assertEquals(parentObject.getByteValue(), result.getByteValue());
 		Assert.assertEquals(parentObject.getFloatValue(), result.getFloatValue());
@@ -123,9 +124,11 @@ public abstract class XmlSerializerTest {
 		xml += "            <intValue>36</intValue>\n";
 		xml += "        </value>\n";
 		xml += "    </children>\n";
+		xml += "    <superField>super super</superField>\n";
 		xml += "</data>";
 		
 		TestParentObject result = xmlSerializer.fromXml(xml, TestParentObject.class);
+		Assert.assertEquals(parentObject.getSuperField(), result.getSuperField());
 		Assert.assertEquals(parentObject.isBooleanValue(), result.isBooleanValue());
 		Assert.assertEquals(parentObject.getByteValue(), result.getByteValue());
 		Assert.assertEquals(parentObject.getFloatValue(), result.getFloatValue());
@@ -160,6 +163,7 @@ public abstract class XmlSerializerTest {
 	
 	protected TestParentObject createTestParentObject() {
 		TestParentObject parentObject = new TestParentObject();
+		parentObject.setSuperField("super super");
 		parentObject.setBooleanValue(true);
 		parentObject.setByteValue((byte) 1);
 		parentObject.setFloatValue(2.5f);

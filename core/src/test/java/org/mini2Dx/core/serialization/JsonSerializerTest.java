@@ -34,6 +34,7 @@ public class JsonSerializerTest {
 		serializer = new JsonSerializer();
 		
 		parentObject = new TestParentObject();
+		parentObject.setSuperField("super super");
 		parentObject.setBooleanValue(true);
 		parentObject.setByteValue((byte) 1);
 		parentObject.setFloatValue(2.5f);
@@ -80,6 +81,7 @@ public class JsonSerializerTest {
 		System.out.println(json);
 		
 		TestParentObject result = serializer.fromJson(json, TestParentObject.class);
+		Assert.assertEquals(parentObject.getSuperField(), result.getSuperField());
 		Assert.assertEquals(parentObject.isBooleanValue(), result.isBooleanValue());
 		Assert.assertEquals(parentObject.getByteValue(), result.getByteValue());
 		Assert.assertEquals(parentObject.getFloatValue(), result.getFloatValue());

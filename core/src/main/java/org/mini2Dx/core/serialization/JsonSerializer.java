@@ -189,22 +189,26 @@ public class JsonSerializer {
 			} else {
 				json.writeObjectStart(fieldName);
 			}
+			
+			Class<?> currentClass = clazz;
+			while(currentClass != null && !currentClass.equals(Object.class)) {
+				for (Field field : ClassReflection.getDeclaredFields(currentClass)) {
+					field.setAccessible(true);
+					Annotation annotation = field
+							.getDeclaredAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
 
-			for (Field field : ClassReflection.getDeclaredFields(clazz)) {
-				field.setAccessible(true);
-				Annotation annotation = field
-						.getDeclaredAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
+					if (annotation == null) {
+						continue;
+					}
+					org.mini2Dx.core.serialization.annotation.Field fieldAnnotation = annotation
+							.getAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
 
-				if (annotation == null) {
-					continue;
+					if (!fieldAnnotation.optional() && field.get(object) == null) {
+						throw new RequiredFieldException(currentClass, field.getName());
+					}
+					writeObject(field.get(object), field.getName(), json);
 				}
-				org.mini2Dx.core.serialization.annotation.Field fieldAnnotation = annotation
-						.getAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
-
-				if (!fieldAnnotation.optional() && field.get(object) == null) {
-					throw new RequiredFieldException(clazz, field.getName());
-				}
-				writeObject(field.get(object), field.getName(), json);
+				currentClass = currentClass.getSuperclass();
 			}
 
 			json.writeObjectEnd();
@@ -223,26 +227,30 @@ public class JsonSerializer {
 			}
 			if (objectRoot.isObject()) {
 				T result = ClassReflection.newInstance(clazz);
-				for (Field field : ClassReflection.getDeclaredFields(clazz)) {
-					field.setAccessible(true);
-					Annotation annotation = field
-							.getDeclaredAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
+				Class<?> currentClass = clazz;
+				while(currentClass != null && !currentClass.equals(Object.class)) {
+					for (Field field : ClassReflection.getDeclaredFields(currentClass)) {
+						field.setAccessible(true);
+						Annotation annotation = field
+								.getDeclaredAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
 
-					if (annotation == null) {
-						continue;
-					}
-					org.mini2Dx.core.serialization.annotation.Field fieldAnnotation = annotation
-							.getAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
-
-					JsonValue value = objectRoot.get(field.getName());
-					if (value == null || value.isNull()) {
-						if (!fieldAnnotation.optional()) {
-							throw new RequiredFieldException(clazz,
-									field.getName());
+						if (annotation == null) {
+							continue;
 						}
-						continue;
+						org.mini2Dx.core.serialization.annotation.Field fieldAnnotation = annotation
+								.getAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
+
+						JsonValue value = objectRoot.get(field.getName());
+						if (value == null || value.isNull()) {
+							if (!fieldAnnotation.optional()) {
+								throw new RequiredFieldException(currentClass,
+										field.getName());
+							}
+							continue;
+						}
+						setField(result, field, value);
 					}
-					setField(result, field, value);
+					currentClass = currentClass.getSuperclass();
 				}
 				return result;
 			}

@@ -138,21 +138,25 @@ public class IOSXmlSerializer implements XmlSerializer {
 				xmlWriter.writeStartElement(tagName);
 			}
 			
-			for (Field field : ClassReflection.getDeclaredFields(clazz)) {
-				field.setAccessible(true);
-				Annotation annotation = field
-						.getDeclaredAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
+			Class<?> currentClass = clazz;
+			while(currentClass != null && !currentClass.equals(Object.class)) {
+				for (Field field : ClassReflection.getDeclaredFields(currentClass)) {
+					field.setAccessible(true);
+					Annotation annotation = field
+							.getDeclaredAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
 
-				if (annotation == null) {
-					continue;
-				}
-				org.mini2Dx.core.serialization.annotation.Field fieldAnnotation = annotation
-						.getAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
+					if (annotation == null) {
+						continue;
+					}
+					org.mini2Dx.core.serialization.annotation.Field fieldAnnotation = annotation
+							.getAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
 
-				if (!fieldAnnotation.optional() && field.get(object) == null) {
-					throw new RequiredFieldException(clazz, field.getName());
+					if (!fieldAnnotation.optional() && field.get(object) == null) {
+						throw new RequiredFieldException(currentClass, field.getName());
+					}
+					writeObject(field.get(object), field.getName(), xmlWriter);
 				}
-				writeObject(field.get(object), field.getName(), xmlWriter);
+				currentClass = currentClass.getSuperclass();
 			}
 			
 			if (tagName != null) {
@@ -252,8 +256,7 @@ public class IOSXmlSerializer implements XmlSerializer {
 				switch (parserEventType) {
 				case XMLStreamConstants.START_ELEMENT:
 					String currentFieldName = xmlReader.getLocalName();
-					Field currentField = ClassReflection.getDeclaredField(
-							clazz, currentFieldName);
+					Field currentField = findField(clazz, currentFieldName);
 					currentField.setAccessible(true);
 					
 					Class<?> fieldClass = currentField.getType();
@@ -304,6 +307,22 @@ public class IOSXmlSerializer implements XmlSerializer {
 			e.printStackTrace();
 			throw new SerializationException(e);
 		}
+	}
+	
+	private Field findField(Class<?> clazz, String fieldName) throws ReflectionException {
+		Class<?> currentClass = clazz;
+		while(currentClass != null && !currentClass.equals(Object.class)) {
+			try {
+				Field result = ClassReflection.getDeclaredField(
+						currentClass, fieldName);
+				if(result == null) {
+					continue;
+				}
+				return result;
+			} catch (ReflectionException e) {}
+			currentClass = currentClass.getSuperclass();
+		}
+		throw new ReflectionException("No field '" + fieldName + "' found in class " + clazz.getName());
 	}
 
 	private <T> void setCollectionField(XMLStreamReader xmlReader, Field field,

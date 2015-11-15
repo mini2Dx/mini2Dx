@@ -20,7 +20,7 @@ import org.mini2Dx.core.serialization.annotation.Field;
 /**
  * Parent object class for testing serialization
  */
-public class TestParentObject {
+public class TestParentObject extends TestSuperObject {
     @Field
     private int intValue;
     @Field
@@ -185,7 +185,7 @@ public class TestParentObject {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result + (booleanValue ? 1231 : 1237);
 		result = prime * result + byteValue;
 		result = prime * result + ((childObject == null) ? 0 : childObject.hashCode());
@@ -209,7 +209,7 @@ public class TestParentObject {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;

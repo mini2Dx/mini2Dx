@@ -1,4 +1,4 @@
-[1.3.0-alpha]
+[1.3.0][alpha]
 - Updated to libGDX 1.7.0, roboVM 1.8.0, and artemis-odb 1.1.0
 - Updated to Android build tools 23.0.1
 - Added controller mappings - Xbox One, Xbox 360 controllers
@@ -9,9 +9,10 @@
 - Added Sizeable and SizeChangeListener interfaces
 - Added GameResizeListener and removed onResize method from GameContainer
 - Added MdxException for mini2Dx runtime exceptions
-- Mdx.json can now read/write to/from FileHandle instances
 - Positionable instances now have getId() method
+- Mdx.json can now read/write to/from FileHandle instances
 - Fixed Mdx.xml not deserializing maps correctly when values are objects
+- Fixed Mdx.xml and Mdx.json not serializing/deserialzing super class fields
 - QuadTrees
   * Added QuadTree interface for all QuadTree implementations
   * Existing Quad class renamed to PointQuadTree

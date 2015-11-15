@@ -132,21 +132,25 @@ public class AndroidXmlSerializer implements XmlSerializer {
 				xmlSerializer.startTag("", tagName);
 			}
 			
-			for (Field field : ClassReflection.getDeclaredFields(clazz)) {
-				field.setAccessible(true);
-				Annotation annotation = field
-						.getDeclaredAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
+			Class<?> currentClass = clazz;
+			while(currentClass != null && !currentClass.equals(Object.class)) {
+				for (Field field : ClassReflection.getDeclaredFields(currentClass)) {
+					field.setAccessible(true);
+					Annotation annotation = field
+							.getDeclaredAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
 
-				if (annotation == null) {
-					continue;
-				}
-				org.mini2Dx.core.serialization.annotation.Field fieldAnnotation = annotation
-						.getAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
+					if (annotation == null) {
+						continue;
+					}
+					org.mini2Dx.core.serialization.annotation.Field fieldAnnotation = annotation
+							.getAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
 
-				if (!fieldAnnotation.optional() && field.get(object) == null) {
-					throw new RequiredFieldException(clazz, field.getName());
+					if (!fieldAnnotation.optional() && field.get(object) == null) {
+						throw new RequiredFieldException(currentClass, field.getName());
+					}
+					writeObject(field.get(object), field.getName(), xmlSerializer);
 				}
-				writeObject(field.get(object), field.getName(), xmlSerializer);
+				currentClass = currentClass.getSuperclass();
 			}
 			
 			if (tagName != null) {
@@ -244,8 +248,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			while (parserEventType != XmlPullParser.END_DOCUMENT) {
 				switch (parserEventType) {
 				case XmlPullParser.START_TAG:
-					Field currentField = ClassReflection.getDeclaredField(
-							clazz, xmlParser.getName());
+					Field currentField = findField(clazz, xmlParser.getName());
 					currentField.setAccessible(true);
 					
 					Class<?> fieldClass = currentField.getType();
@@ -288,6 +291,22 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		} catch (Exception e) {
 			throw new SerializationException(e);
 		}
+	}
+	
+	private Field findField(Class<?> clazz, String fieldName) throws ReflectionException {
+		Class<?> currentClass = clazz;
+		while(currentClass != null && !currentClass.equals(Object.class)) {
+			try {
+				Field result = ClassReflection.getDeclaredField(
+						currentClass, fieldName);
+				if(result == null) {
+					continue;
+				}
+				return result;
+			} catch (ReflectionException e) {}
+			currentClass = currentClass.getSuperclass();
+		}
+		throw new ReflectionException("No field '" + fieldName + "' found in class " + clazz.getName());
 	}
 
 	private <T> void setCollectionField(XmlPullParser xmlParser, Field field,
