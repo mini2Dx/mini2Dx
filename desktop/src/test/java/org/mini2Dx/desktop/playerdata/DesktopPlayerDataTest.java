@@ -26,6 +26,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.serialization.JsonSerializer;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
+import org.mini2Dx.core.util.Os;
 import org.mini2Dx.desktop.playerdata.DesktopPlayerData;
 import org.mini2Dx.desktop.serialization.DesktopXmlSerializer;
 
@@ -115,6 +116,7 @@ public class DesktopPlayerDataTest {
         Random random = new Random();
         
         expectedParentObject = new TestParentObject();
+        expectedParentObject.setSuperField("super duper");
         expectedParentObject.setBooleanValue(true);
         expectedParentObject.setIgnoredValue(random.nextInt() + 1);
         expectedParentObject.setIntValue(random.nextInt() + 1);
@@ -122,6 +124,7 @@ public class DesktopPlayerDataTest {
         expectedParentObject.setShortValue((short) 77);
         expectedParentObject.setStringValue(String.valueOf(random.nextInt()));
         expectedParentObject.setFloatValue(random.nextFloat());
+        expectedParentObject.setEnumValue(Os.UNKNOWN);
         
         List<String> list = new ArrayList<String>();
         list.add(String.valueOf(random.nextInt()));
