@@ -20,7 +20,13 @@ import com.badlogic.gdx.assets.AssetManager;
  */
 public class TextBoxStyle extends BaseUiElementStyle {
 	@Field
-	private String image;
+	private String normalImage;
+	@Field
+	private String activeImage;
+	@Field
+	private String hoverImage;
+	@Field
+	private String disableImage;
 	@Field
 	private String labelStyle;
 	
@@ -29,12 +35,36 @@ public class TextBoxStyle extends BaseUiElementStyle {
 		
 	}
 
-	public String getImage() {
-		return image;
+	public String getNormalImage() {
+		return normalImage;
 	}
 
-	public void setImage(String ninePatchImage) {
-		this.image = ninePatchImage;
+	public void setNormalImage(String normalImage) {
+		this.normalImage = normalImage;
+	}
+
+	public String getActiveImage() {
+		return activeImage;
+	}
+
+	public void setActiveImage(String activeImage) {
+		this.activeImage = activeImage;
+	}
+
+	public String getHoverImage() {
+		return hoverImage;
+	}
+
+	public void setHoverImage(String hoverImage) {
+		this.hoverImage = hoverImage;
+	}
+
+	public String getDisableImage() {
+		return disableImage;
+	}
+
+	public void setDisableImage(String disableImage) {
+		this.disableImage = disableImage;
 	}
 
 	public String getLabelStyle() {

@@ -31,6 +31,9 @@ public class TextBox extends BasicUiElement<TextBoxStyle> implements Hoverable, 
 	
 	@Override
 	public void accept(UiRenderer renderer) {
+		if(!visible) {
+			return;
+		}
 		renderer.render(this);
 	}
 	

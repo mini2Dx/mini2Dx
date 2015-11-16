@@ -16,6 +16,8 @@ import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.element.Button;
 import org.mini2Dx.ui.theme.ButtonStyle;
 
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+
 /**
  *
  */
@@ -24,6 +26,25 @@ public class ButtonRenderer implements UiElementRenderer<Button> {
 	@Override
 	public void render(UiContainer uiContainer, Button element, Graphics g) {
 		ButtonStyle buttonStyle = element.getCurrentStyle();
+
+		NinePatch ninePatch = buttonStyle.getNormalNinePatch();
+		if (element.isEnabled()) {
+			switch (element.getState()) {
+			case ACTION:
+				ninePatch = buttonStyle.getActionNinePatch();
+				break;
+			case HOVER:
+				ninePatch = buttonStyle.getHoverNinePatch();
+				break;
+			default:
+				break;
+			}
+		} else {
+			ninePatch = buttonStyle.getDisabledNinePatch();
+		}
+
+		g.drawNinePatch(ninePatch, element.getRenderX(), element.getRenderY(), element.getRenderWidth(),
+				element.getRenderHeight());
 	}
 
 }

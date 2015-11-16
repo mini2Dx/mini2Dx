@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ui.element;
 
+import org.mini2Dx.ui.UiElement;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.FrameStyle;
@@ -24,6 +25,9 @@ public class Frame extends Column<FrameStyle> {
 
 	@Override
 	public void accept(UiRenderer renderer) {
+		if(!visible) {
+			return;
+		}
 		renderer.render(this);
 		super.accept(renderer);
 	}
@@ -31,6 +35,7 @@ public class Frame extends Column<FrameStyle> {
 	@Override
 	public void applyStyle(UiTheme theme, ScreenSize screenSize) {
 		currentStyle = theme.getFrameStyle(screenSize, styleId);
+		super.applyStyle(theme, screenSize);
 	}
 
 	@Override

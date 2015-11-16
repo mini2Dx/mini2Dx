@@ -14,26 +14,95 @@ package org.mini2Dx.ui.effect;
 import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.UiContentContainer;
 
 /**
  *
  */
 public class SlideIn implements UiEffect {
+	private static final float DEFAULT_SPEED = 4f;
+	
 	private final SlideDirection direction;
+	private final float speed;
+	
+	private boolean started = false;
+	private boolean finished = false;
 	
 	public SlideIn() {
-		this(SlideDirection.UP);
+		this(DEFAULT_SPEED);
+	}
+	
+	public SlideIn(float speed) {
+		this(SlideDirection.UP, speed);
+	}
+	
+	public SlideIn(SlideDirection direction) {
+		this(direction, DEFAULT_SPEED);
 	}
 
-	public SlideIn(SlideDirection direction) {
+	public SlideIn(SlideDirection direction, float speed) {
 		this.direction = direction;
+		this.speed = speed;
 	}
 
 	@Override
-	public void update(UiContainer uiContainer, CollisionBox currentArea, Rectangle targetArea, float delta) {
-		// TODO Auto-generated method stub
+	public boolean update(UiContentContainer uiContainer, CollisionBox currentArea, Rectangle targetArea, float delta) {
+		if(finished) {
+			return true;
+		}
 		
+		float targetX = targetArea.x;
+		float targetY = targetArea.y;
+		currentArea.setWidth(targetArea.width);
+		currentArea.setHeight(targetArea.height);
+		
+		switch(direction) {
+		case UP:
+			if(!started) {
+				currentArea.forceTo(targetX, uiContainer.getRenderY() + uiContainer.getContentHeight() + 1f);
+				started = true;
+			}
+			if(currentArea.getY() > targetY) {
+				currentArea.setY(Math.max(targetY, currentArea.getY() - speed));
+			} else {
+				finished = true;
+			}
+			break;
+		case DOWN:
+			if(!started) {
+				currentArea.forceTo(targetX, uiContainer.getRenderY() - targetArea.height - 1f);
+				started = true;
+			}
+			if(currentArea.getY() < targetY) {
+				currentArea.setY(Math.min(targetY, currentArea.getY() + speed));
+			} else {
+				finished = true;
+			}
+			break;
+		case LEFT:
+			if(!started) {
+				currentArea.forceTo(uiContainer.getRenderX() + uiContainer.getContentWidth() + 1f, targetY);
+				started = true;
+			}
+			if(currentArea.getX() > targetX) {
+				currentArea.setX(Math.max(targetX, currentArea.getX() - speed));
+			} else {
+				finished = true;
+			}
+			break;
+		case RIGHT:
+			if(!started) {
+				currentArea.forceTo(uiContainer.getRenderX() - targetArea.width - 1f, targetY);
+				started = true;
+			}
+			if(currentArea.getX() < targetX) {
+				currentArea.setX(Math.min(targetX, currentArea.getX() + speed));
+			} else {
+				finished = true;
+			}
+			break;
+		}
+		return true;
 	}
 
 	@Override
@@ -46,8 +115,7 @@ public class SlideIn implements UiEffect {
 
 	@Override
 	public boolean isFinished() {
-		// TODO Auto-generated method stub
-		return false;
+		return finished;
 	}
 
 }

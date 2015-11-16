@@ -24,6 +24,8 @@ public class FrameRenderer implements UiElementRenderer<Frame> {
 	@Override
 	public void render(UiContainer uiContainer, Frame element, Graphics g) {
 		FrameStyle frameStyle = element.getCurrentStyle();
+		g.drawNinePatch(frameStyle.getBackgroundNinePatch(), element.getRenderX(), element.getRenderY(),
+				element.getRenderWidth(), element.getRenderHeight());
 	}
 
 }

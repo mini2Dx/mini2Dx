@@ -11,7 +11,11 @@
  */
 package org.mini2Dx.ui.element;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mini2Dx.ui.layout.ScreenSize;
+import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.CheckBoxStyle;
 import org.mini2Dx.ui.theme.UiTheme;
@@ -19,11 +23,18 @@ import org.mini2Dx.ui.theme.UiTheme;
 /**
  *
  */
-public class CheckBox extends BasicUiElement<CheckBoxStyle> {
+public class CheckBox extends BasicUiElement<CheckBoxStyle> implements Actionable, Hoverable {
+	private final List<ActionListener> listeners = new ArrayList<ActionListener>(1);
+	
 	private CheckBoxStyle currentStyle;
+	private boolean enabled = true;
+	private boolean checked = false;
 
 	@Override
 	public void accept(UiRenderer renderer) {
+		if(!visible) {
+			return;
+		}
 		renderer.render(this);
 	}
 
@@ -45,5 +56,32 @@ public class CheckBox extends BasicUiElement<CheckBoxStyle> {
 	@Override
 	public CheckBoxStyle getCurrentStyle() {
 		return currentStyle;
+	}
+	
+	@Override
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public boolean isChecked() {
+		return checked;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
+
+	@Override
+	public void addActionListener(ActionListener listener) {
+		listeners.add(listener);
+	}
+
+	@Override
+	public void removeActionListener(ActionListener listener) {
+		listeners.remove(listener);
 	}
 }

@@ -14,7 +14,7 @@ package org.mini2Dx.ui.effect;
 import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.UiContentContainer;
 
 /**
  *
@@ -23,8 +23,8 @@ public class FadeIn implements UiEffect {
 	private float alpha;
 
 	@Override
-	public void update(UiContainer uiContainer, CollisionBox currentArea, Rectangle targetArea, float delta) {
-		
+	public boolean update(UiContentContainer uiContainer, CollisionBox currentArea, Rectangle targetArea, float delta) {
+		return true;
 	}
 
 	@Override

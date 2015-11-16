@@ -25,6 +25,8 @@ public class LabelStyle extends BaseUiElementStyle {
 	@Field
 	private int fontSize;
 	
+	private BitmapFont bitmapFont;
+	
 	@Override
 	public void prepareAssets(AssetManager assetManager) {
 	}
@@ -43,5 +45,13 @@ public class LabelStyle extends BaseUiElementStyle {
 
 	public void setFontSize(int fontSize) {
 		this.fontSize = fontSize;
+	}
+
+	public BitmapFont getBitmapFont() {
+		return bitmapFont;
+	}
+
+	public void setBitmapFont(BitmapFont bitmapFont) {
+		this.bitmapFont = bitmapFont;
 	}
 }

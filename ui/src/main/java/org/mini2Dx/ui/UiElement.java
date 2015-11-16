@@ -11,12 +11,10 @@
  */
 package org.mini2Dx.ui;
 
-import org.mini2Dx.core.engine.PositionChangeListener;
-import org.mini2Dx.core.engine.SizeChangeListener;
-import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.ui.effect.UiEffect;
 import org.mini2Dx.ui.element.ElementState;
 import org.mini2Dx.ui.layout.ScreenSize;
+import org.mini2Dx.ui.listener.ContentSizeListener;
 import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.UiElementStyle;
 import org.mini2Dx.ui.theme.UiTheme;
@@ -24,7 +22,7 @@ import org.mini2Dx.ui.theme.UiTheme;
 /**
  *
  */
-public interface UiElement<T extends UiElementStyle> extends PositionChangeListener<CollisionBox> {
+public interface UiElement<T extends UiElementStyle> extends UiContentContainer {
 	
 	public String getId();
 	
@@ -32,9 +30,9 @@ public interface UiElement<T extends UiElementStyle> extends PositionChangeListe
 	
 	public T getCurrentStyle();
 
-	public void update(UiContainer uiContainer, float delta);
+	public void update(UiContentContainer elementContainer, float delta);
 
-	public void interpolate(UiContainer uiContainer, float alpha);
+	public void interpolate(UiContentContainer elementContainer, float alpha);
 
 	public void accept(UiRenderer renderer);
 
@@ -45,6 +43,10 @@ public interface UiElement<T extends UiElementStyle> extends PositionChangeListe
 	public void applyStyle(UiTheme theme, ScreenSize screenSize);
 	
 	public void applyEffect(UiEffect effect);
+	
+	public void addContentSizeListener(ContentSizeListener listener);
+	
+	public void removeContentSizeListener(ContentSizeListener listener);
 	
 	public void dispose();
 
@@ -57,18 +59,4 @@ public interface UiElement<T extends UiElementStyle> extends PositionChangeListe
 	public void setXRules(String rules);
 	
 	public void setWidthRules(String rules);
-
-	public int getRenderX();
-
-	public int getRenderY();
-
-	public int getRenderWidth();
-
-	public int getRenderHeight();
-	
-	public float getContentWidth();
-	
-	public float getContentHeight();
-	
-	public void addSizeChangeListener(SizeChangeListener<CollisionBox> listener);
 }

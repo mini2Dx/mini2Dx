@@ -22,6 +22,9 @@ public class AutoXPositionRule implements PositionRule {
 	private final UiElement element;
 	
 	private float targetX;
+	private float currentColumnSize;
+	private UiTheme currentTheme;
+	private UiElementStyle currentStyle;
 
 	public AutoXPositionRule(UiElement element) {
 		this.element = element;
@@ -29,12 +32,19 @@ public class AutoXPositionRule implements PositionRule {
 
 	@Override
 	public void onScreenResize(UiTheme theme, UiElementStyle style, float columnSize, float totalHeight) {
-		targetX = (((columnSize * theme.getColumns()) / 2f) - (element.getRenderWidth() / 2f)) + style.getMarginLeft();
+		this.currentColumnSize = columnSize;
+		this.currentStyle = style;
+		this.currentTheme = theme;
+		onContentSizeChanged(element);
+	}
+	
+	@Override
+	public void onContentSizeChanged(UiElement<?> element) {
+		targetX = (((currentColumnSize * currentTheme.getColumns()) / 2f) - (element.getContentWidth() / 2f)) + currentStyle.getMarginLeft();
 	}
 
 	@Override
 	public float getTargetPosition() {
 		return targetX;
 	}
-
 }

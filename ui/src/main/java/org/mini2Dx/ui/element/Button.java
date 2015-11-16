@@ -14,6 +14,7 @@ package org.mini2Dx.ui.element;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.render.UiRenderer;
@@ -31,8 +32,13 @@ public class Button extends Column<ButtonStyle> implements Actionable, Hoverable
 
 	@Override
 	public void accept(UiRenderer renderer) {
+		if(!visible) {
+			return;
+		}
 		renderer.render(this);
-		super.accept(renderer);
+		for(int i = 0; i < rows.size(); i++) {
+			rows.get(i).accept(renderer);
+		}
 	}
 
 	@Override

@@ -67,18 +67,19 @@ public class UATSelectionScreen extends BasicGameScreen {
 		initialiseUi();
     }
 	
-	private UiElement createLabel(String text) {
+	private UiElement<?> createLabel(String text) {
 		Label label = new Label(text);
 		label.setXRules("xs-0");
 		label.setWidthRules("xs-12");
 		return label;
 	}
 	
-	private UiElement createButton(String text, ActionListener listener) {
+	private UiElement<?> createButton(String text, ActionListener listener) {
 		Button button = new Button();
 		button.setXRules("xs-0");
 		button.setWidthRules("xs-12");
 		button.addActionListener(listener);
+		button.addRow(Row.withElements(createLabel(text)));
 		return button;
 	}
 

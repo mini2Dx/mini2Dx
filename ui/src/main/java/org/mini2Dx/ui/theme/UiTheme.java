@@ -21,8 +21,10 @@ import org.mini2Dx.ui.layout.ScreenSize;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -42,6 +44,10 @@ public class UiTheme {
 	Map<ScreenSize, UiStyleRuleset> rules;
 	
 	public void validate() {
+		if(rules.size() == 0) {
+			throw new MdxException("No styles defined for theme '" + name + "'");
+		}
+		
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
 		
 		while(screenSizes.hasNext()) {
@@ -58,12 +64,19 @@ public class UiTheme {
 			if(getTextBoxStyle(screenSize, DEFAULT_STYLE_ID) == null) {
 				throw new MdxException("No textbox style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
 			}
-			LabelStyle labelStyle = getLabelStyle(screenSize, DEFAULT_STYLE_ID);
-			if(labelStyle == null) {
+			LabelStyle defaultLabelStyle = getLabelStyle(screenSize, DEFAULT_STYLE_ID);
+			if(defaultLabelStyle == null) {
 				throw new MdxException("No label style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
 			}
-			if(!labelStyle.getFont().equals(DEFAULT_STYLE_ID) && !fonts.containsKey(labelStyle.getFont())) {
-				throw new MdxException("Label requires font '" + labelStyle.getFont() + "' but it is not defined in the theme '" + name + "'");
+			
+			UiStyleRuleset ruleset = rules.get(screenSize);
+			if(ruleset == null) {
+				continue;
+			}
+			for(LabelStyle labelStyle : ruleset.labels.values()) {
+				if(!fonts.containsKey(labelStyle.getFont())) {
+					throw new MdxException("Font '" + labelStyle.getFont() + "' is required by a Label styling but does not exist");
+				}
 			}
 		}
 	}
@@ -83,26 +96,32 @@ public class UiTheme {
 				dependencies.add(new AssetDescriptor<Texture>(buttonStyle.getDisabledImage(), Texture.class));
 			}
 			for(CheckBoxStyle checkBoxStyle : ruleset.checkboxes.values()) {
-				dependencies.add(new AssetDescriptor<Texture>(checkBoxStyle.getUncheckedImage(), Texture.class));
-				dependencies.add(new AssetDescriptor<Texture>(checkBoxStyle.getCheckedImage(), Texture.class));
+				dependencies.add(new AssetDescriptor<Texture>(checkBoxStyle.getNormalImage(), Texture.class));
+				dependencies.add(new AssetDescriptor<Texture>(checkBoxStyle.getHoverImage(), Texture.class));
+				dependencies.add(new AssetDescriptor<Texture>(checkBoxStyle.getDisabledImage(), Texture.class));
+				dependencies.add(new AssetDescriptor<Texture>(checkBoxStyle.getNormalCheckIcon(), Texture.class));
+				dependencies.add(new AssetDescriptor<Texture>(checkBoxStyle.getDisabledCheckIcon(), Texture.class));
 			}
 			for(FrameStyle frameStyle: ruleset.frames.values()) {
 				dependencies.add(new AssetDescriptor<Texture>(frameStyle.getBackgroundImage(), Texture.class));
 				dependencies.add(new AssetDescriptor<Texture>(frameStyle.getScrollBarImage(), Texture.class));
 			}
 			for(TextBoxStyle textBoxStyle: ruleset.textboxes.values()) {
-				dependencies.add(new AssetDescriptor<Texture>(textBoxStyle.getImage(), Texture.class));
+				dependencies.add(new AssetDescriptor<Texture>(textBoxStyle.getNormalImage(), Texture.class));
 			}
 			for(UiFont uiFont : fonts.values()) {
 				if(!uiFont.getPath().endsWith(".ttf")) {
 					throw new MdxException("Non-TTF fonts are not supported by mini2Dx-ui");
 				}
-				//TODO: Load fonts
 			}
 		}
 	}
 	
-	public void prepareAssets(AssetManager assetManager) {
+	public void prepareAssets(FileHandleResolver fileHandleResolver, AssetManager assetManager) {
+		for(UiFont uiFont : fonts.values()) {
+			uiFont.prepareAssets(fileHandleResolver);
+		}
+		
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
 		while(screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
@@ -122,6 +141,16 @@ public class UiTheme {
 			for(TextBoxStyle textBoxStyle: ruleset.textboxes.values()) {
 				textBoxStyle.prepareAssets(assetManager);
 			}
+			for(LabelStyle labelStyle : ruleset.labels.values()) {
+				UiFont uiFont = fonts.get(labelStyle.getFont());
+				FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+				parameter.size = labelStyle.getFontSize();
+				labelStyle.setBitmapFont(uiFont.getFontGenerator().generateFont(parameter));
+			}
+		}
+		
+		for(UiFont uiFont : fonts.values()) {
+			uiFont.dispose();
 		}
 	}
 

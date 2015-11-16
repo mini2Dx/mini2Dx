@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.ui.UiElement;
 import org.mini2Dx.ui.theme.UiElementStyle;
 import org.mini2Dx.ui.theme.UiTheme;
 
@@ -26,8 +27,11 @@ public class DefaultYPositionRule implements PositionRule {
 	}
 
 	@Override
+	public void onContentSizeChanged(UiElement<?> element) {
+	}
+
+	@Override
 	public float getTargetPosition() {
 		return targetPosition;
 	}
-
 }

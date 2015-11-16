@@ -16,6 +16,9 @@ import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.theme.LabelStyle;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+
 /**
  *
  */
@@ -24,6 +27,18 @@ public class LabelRenderer implements UiElementRenderer<Label> {
 	@Override
 	public void render(UiContainer uiContainer, Label element, Graphics g) {
 		LabelStyle labelStyle = element.getCurrentStyle();
+		BitmapFont font = labelStyle.getBitmapFont();
+		if(font == null) {
+			return;
+		}
+		BitmapFont previousFont = g.getFont();
+		Color previousColor = g.getColor();
+		
+		g.setFont(font);
+		g.setColor(element.getColor());
+		g.drawString(element.getText(), element.getRenderX(), element.getRenderY());
+		g.setFont(previousFont);
+		g.setColor(previousColor);
 	}
 
 }

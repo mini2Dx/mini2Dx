@@ -14,12 +14,11 @@ package org.mini2Dx.ui.element;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mini2Dx.core.engine.SizeChangeListener;
-import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.exception.MdxException;
-import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.UiContentContainer;
 import org.mini2Dx.ui.UiElement;
 import org.mini2Dx.ui.layout.ScreenSize;
+import org.mini2Dx.ui.listener.ContentSizeListener;
 import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.NullStyle;
 import org.mini2Dx.ui.theme.UiTheme;
@@ -27,11 +26,11 @@ import org.mini2Dx.ui.theme.UiTheme;
 /**
  *
  */
-public class Row extends BasicUiElement<NullStyle> implements SizeChangeListener<CollisionBox> {
+public class Row extends BasicUiElement<NullStyle> implements ContentSizeListener {
 	protected final List<UiElement<?>> children = new ArrayList<UiElement<?>>(1);
 
 	private float contentWidth, contentHeight;
-	private boolean childAdded = false;
+	private boolean childAdded;
 
 	public Row() {
 		super();
@@ -46,15 +45,15 @@ public class Row extends BasicUiElement<NullStyle> implements SizeChangeListener
 	}
 
 	@Override
-	public void update(UiContainer uiContainer, float delta) {
+	public void update(UiContentContainer uiContainer, float delta) {
 		if(childAdded) {
-			calculateContentDimensions();
+			notifyContentSizeListeners();
 			childAdded = false;
 		}
 		
 		super.update(uiContainer, delta);
 		boolean childRemoved = false;
-		
+
 		for (int i = 0; i < children.size(); i++) {
 			UiElement<?> element = children.get(i);
 			if (element.disposed()) {
@@ -62,23 +61,36 @@ public class Row extends BasicUiElement<NullStyle> implements SizeChangeListener
 				i--;
 				childRemoved = true;
 			} else {
-				element.update(uiContainer, delta);
+				element.update(this, delta);
 			}
 		}
-		
-		if(!childRemoved) {
+
+		if (!childRemoved) {
 			return;
 		}
 		calculateContentDimensions();
 	}
+	
+	@Override
+	public void interpolate(UiContentContainer uiContainer, float alpha) {
+		super.interpolate(uiContainer, alpha);
+		for (int i = 0; i < children.size(); i++) {
+			children.get(i).interpolate(this, alpha);;
+		}
+	}
 
 	@Override
 	public void resize(ScreenSize screenSize, UiTheme theme, float columnWidth, float totalHeight) {
-		super.resize(screenSize, theme, columnWidth, totalHeight);
-
+		applyStyle(theme, screenSize);
+		applyRules(screenSize, theme, columnWidth, totalHeight);
+		
 		for (int i = 0; i < children.size(); i++) {
 			children.get(i).resize(screenSize, theme, columnWidth, totalHeight);
 		}
+		
+		notifyRules(screenSize, theme, columnWidth, totalHeight);
+		
+		rulesChanged = true;
 	}
 
 	@Override
@@ -97,6 +109,9 @@ public class Row extends BasicUiElement<NullStyle> implements SizeChangeListener
 
 	@Override
 	public void accept(UiRenderer renderer) {
+		if (!visible) {
+			return;
+		}
 		for (int i = 0; i < children.size(); i++) {
 			children.get(i).accept(renderer);
 		}
@@ -110,13 +125,18 @@ public class Row extends BasicUiElement<NullStyle> implements SizeChangeListener
 	}
 
 	public void addChild(UiElement<?> element) {
-		element.addSizeChangeListener(this);
+		element.addContentSizeListener(this);
 		currentArea.addPostionChangeListener(element);
 		children.add(element);
+
+		contentWidth += element.getContentWidth();
+		contentHeight = Math.max(contentHeight, element.getContentHeight());
 		childAdded = true;
 	}
 
 	public void removeChild(UiElement<?> element) {
+		currentArea.removePositionChangeListener(element);
+		element.removeContentSizeListener(this);
 		element.dispose();
 	}
 
@@ -131,11 +151,6 @@ public class Row extends BasicUiElement<NullStyle> implements SizeChangeListener
 	}
 
 	@Override
-	public void sizeChanged(CollisionBox child) {
-		calculateContentDimensions();
-	}
-
-	@Override
 	public float getContentWidth() {
 		return contentWidth;
 	}
@@ -144,20 +159,32 @@ public class Row extends BasicUiElement<NullStyle> implements SizeChangeListener
 	public float getContentHeight() {
 		return contentHeight;
 	}
-	
+
 	private void calculateContentDimensions() {
 		float contentWidth = 0f;
 		float contentHeight = 0f;
-		
+
 		for (UiElement<?> element : children) {
 			contentWidth += element.getContentWidth();
 			contentHeight = Math.max(contentHeight, element.getContentHeight());
 		}
-		
+
+		boolean notifyListeners = this.contentHeight != contentHeight || this.contentWidth != contentWidth;
+
 		this.contentWidth = contentWidth;
 		this.contentHeight = contentHeight;
+		
+		if(!notifyListeners) {
+			return;
+		}
+		notifyContentSizeListeners();
 	}
 	
+	@Override
+	public void onContentSizeChanged(UiElement<?> element) {
+		calculateContentDimensions();
+	}
+
 	public static Row withElements(UiElement<?>... elements) {
 		Row row = new Row();
 		for (UiElement<?> element : elements) {
@@ -177,5 +204,13 @@ public class Row extends BasicUiElement<NullStyle> implements SizeChangeListener
 	@Override
 	public NullStyle getCurrentStyle() {
 		return NullStyle.INSTANCE;
+	}
+	
+	@Override
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+		for (int i = 0; i < children.size(); i++) {
+			children.get(i).setVisible(visible);
+		}
 	}
 }

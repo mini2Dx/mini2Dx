@@ -30,9 +30,11 @@ import com.badlogic.gdx.utils.Array;
  */
 public class UiThemeLoader extends AsynchronousAssetLoader<UiTheme, UiThemeParameter> {
 	private volatile UiTheme theme;
+	private final FileHandleResolver fileHandleResolver;
 	
 	public UiThemeLoader(FileHandleResolver resolver) {
 		super(resolver);
+		this.fileHandleResolver = resolver;
 	}
 
 	@Override
@@ -51,7 +53,7 @@ public class UiThemeLoader extends AsynchronousAssetLoader<UiTheme, UiThemeParam
 	public UiTheme loadSync(AssetManager manager, String fileName, FileHandle file, UiThemeParameter parameter) {
 		UiTheme theme = this.theme;
 		this.theme = null;
-		theme.prepareAssets(manager);
+		theme.prepareAssets(fileHandleResolver, manager);
 		return theme;
 	}
 	

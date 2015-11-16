@@ -23,6 +23,9 @@ public class Image extends BasicUiElement<NullStyle> {
 
 	@Override
 	public void accept(UiRenderer renderer) {
+		if(!visible) {
+			return;
+		}
 		renderer.render(this);
 	}
 	

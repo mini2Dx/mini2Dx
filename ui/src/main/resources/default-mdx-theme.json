@@ -1,67 +1,132 @@
 {
-  "name": "default",
-  "columns": 12,
-  "rows": 24,
-  "fonts": {
-    "default": {
-      "path": ""
+    "name": "mdx-default-theme",
+    "columns": 12,
+    "fonts": {
+        "default": {
+            "path": "default-mdx-theme/kenvector_future.ttf"
+        }
+    },
+    "rules": {
+        "XS": {
+            "buttons": {
+                "default": {
+                    "normalImage": "default-mdx-theme/button_default_normal.png",
+                    "hoverImage": "default-mdx-theme/button_default_hover.png",
+                    "actionImage": "default-mdx-theme/button_default_action.png",
+                    "disabledImage": "default-mdx-theme/button_default_disabled.png",
+                    "paddingTop": 12,
+                    "paddingBottom": 12,
+                    "paddingLeft": 12,
+                    "paddingRight": 12,
+                    "marginTop": 0,
+                    "marginBottom": 0,
+                    "marginLeft": 0,
+                    "marginRight": 0,
+                    "minHeight": 0
+                },
+                "success": {
+                    "normalImage": "default-mdx-theme/button_success_normal.png",
+                    "hoverImage": "default-mdx-theme/button_success_hover.png",
+                    "actionImage": "default-mdx-theme/button_success_action.png",
+                    "disabledImage": "default-mdx-theme/button_default_disabled.png",
+                    "paddingTop": 12,
+                    "paddingBottom": 12,
+                    "paddingLeft": 12,
+                    "paddingRight": 12,
+                    "marginTop": 0,
+                    "marginBottom": 0,
+                    "marginLeft": 0,
+                    "marginRight": 0,
+                    "minHeight": 0
+                },
+                "danger": {
+                    "normalImage": "default-mdx-theme/button_danger_normal.png",
+                    "hoverImage": "default-mdx-theme/button_danger_hover.png",
+                    "actionImage": "default-mdx-theme/button_danger_action.png",
+                    "disabledImage": "default-mdx-theme/button_default_disabled.png",
+                    "paddingTop": 12,
+                    "paddingBottom": 12,
+                    "paddingLeft": 12,
+                    "paddingRight": 12,
+                    "marginTop": 0,
+                    "marginBottom": 0,
+                    "marginLeft": 0,
+                    "marginRight": 0,
+                    "minHeight": 0
+                }
+            },
+            "checkboxes": {
+                "default": {
+                    "normalImage": "default-mdx-theme/checkbox_normal.png",
+                    "hoverImage": "default-mdx-theme/checkbox_normal.png",
+                    "disabledImage": "default-mdx-theme/checkbox_normal.png",
+                    "normalCheckIcon": "default-mdx-theme/checkicon_normal.png",
+                    "disabledCheckIcon": "default-mdx-theme/checkicon_disabled.png",
+                    "paddingTop": 12,
+                    "paddingBottom": 12,
+                    "paddingLeft": 12,
+                    "paddingRight": 12,
+                    "marginTop": 0,
+                    "marginBottom": 0,
+                    "marginLeft": 0,
+                    "marginRight": 0,
+                    "minHeight": 0
+                }
+            },
+            "frames": {
+                "default": {
+                    "backgroundImage": "default-mdx-theme/frame.png",
+                    "scrollBarImage": "default-mdx-theme/scrollbar.png",
+                    "verticalScrollBarWidth": 24,
+                    "horizontalScrollBarHeight": 24,
+                    "scrollBarPaddingTop": 24,
+                    "scrollBarPaddingBottom": 24,
+                    "scrollBarPaddingLeft": 24,
+                    "scrollBarPaddingRight": 24,
+                    "paddingTop": 24,
+                    "paddingBottom": 24,
+                    "paddingLeft": 24,
+                    "paddingRight": 24,
+                    "marginTop": 0,
+                    "marginBottom": 0,
+                    "marginLeft": 0,
+                    "marginRight": 0,
+                    "minHeight": 0
+                }
+            },
+            "labels": {
+                "default": {
+                    "font": "default",
+                    "fontSize": 14,
+                    "paddingTop": 0,
+                    "paddingBottom": 0,
+                    "paddingLeft": 0,
+                    "paddingRight": 0,
+                    "marginTop": 0,
+                    "marginBottom": 0,
+                    "marginLeft": 0,
+                    "marginRight": 0,
+                    "minHeight": 0
+                }
+            },
+            "textboxes": {
+                "default": {
+                    "normalImage": "default-mdx-theme/textbox_normal.png",
+                    "activeImage": "default-mdx-theme/textbox_normal.png",
+                    "hoverImage": "default-mdx-theme/textbox_normal.png",
+                    "disableImage": "default-mdx-theme/textbox_disabled.png",
+                    "labelStyle": "default",
+                    "paddingTop": 12,
+                    "paddingBottom": 12,
+                    "paddingLeft": 12,
+                    "paddingRight": 12,
+                    "marginTop": 0,
+                    "marginBottom": 0,
+                    "marginLeft": 0,
+                    "marginRight": 0,
+                    "minHeight": 0
+                }
+            }
+        }
     }
-  },
-  "buttons": {
-    "default": {
-      "normalImage": "",
-      "hoverImage": "",
-      "clickImage": "",
-      "disabledImage": "",
-      "top": 0,
-      "bottom": 0,
-      "left": 0,
-      "right": 0
-    }
-  },
-  "checkboxes": {
-    "default": {
-      "uncheckedImage": "",
-      "checkedImage": "",
-      "top": 0,
-      "bottom": 0,
-      "left": 0,
-      "right": 0
-    }
-  },
-  "frames": {
-    "default": {
-      "image": "",
-      "top": 0,
-      "bottom": 0,
-      "left": 0,
-      "right": 0
-    }
-  },
-  "labels": {
-    "default": {
-      "font": "default",
-      "fontSize": 16
-    }
-  },
-  "listboxes": {
-    "default": {
-      "backgroundImage": "",
-      "scrollBarImage": "",
-      "top": 0,
-      "bottom": 0,
-      "left": 0,
-      "right": 0
-    }
-  },
-  "textboxes": {
-    "default": {
-      "image": "",
-      "top": 0,
-      "bottom": 0,
-      "left": 0,
-      "right": 0,
-      "labelStyle": "default"
-    }
-  }
 }

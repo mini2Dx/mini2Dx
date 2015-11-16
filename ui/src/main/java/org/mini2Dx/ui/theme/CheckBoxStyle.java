@@ -22,41 +22,88 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
  */
 public class CheckBoxStyle extends BaseUiElementStyle {
 	@Field
-	private String uncheckedImage;
+	private String normalImage;
 	@Field
-	private String checkedImage;
+	private String hoverImage;
+	@Field
+	private String disabledImage;
+	@Field
+	private String normalCheckIcon;
+	@Field
+	private String disabledCheckIcon;
 	
-	private NinePatch uncheckedNinePatch, checkedNinePatch;
+	private Texture normalCheckIconTexture, disabledCheckIconTexture;
+	private NinePatch normalNinePatch, hoverNinePatch, disabledNinePatch;
 	
 	@Override
 	public void prepareAssets(AssetManager assetManager) {
-		uncheckedNinePatch = new NinePatch(assetManager.get(uncheckedImage, Texture.class), getPaddingLeft(),
+		normalCheckIconTexture = assetManager.get(normalCheckIcon, Texture.class);
+		disabledCheckIconTexture = assetManager.get(disabledCheckIcon, Texture.class);
+		normalNinePatch = new NinePatch(assetManager.get(normalImage, Texture.class), getPaddingLeft(),
 				getPaddingRight(), getPaddingTop(), getPaddingBottom());
-		checkedNinePatch = new NinePatch(assetManager.get(checkedImage, Texture.class), getPaddingLeft(),
+		hoverNinePatch = new NinePatch(assetManager.get(hoverImage, Texture.class), getPaddingLeft(),
+				getPaddingRight(), getPaddingTop(), getPaddingBottom());
+		disabledNinePatch = new NinePatch(assetManager.get(disabledImage, Texture.class), getPaddingLeft(),
 				getPaddingRight(), getPaddingTop(), getPaddingBottom());
 	}
 	
-	public String getUncheckedImage() {
-		return uncheckedImage;
+	public String getNormalImage() {
+		return normalImage;
 	}
 	
-	public void setUncheckedImage(String uncheckedImage) {
-		this.uncheckedImage = uncheckedImage;
+	public void setNormalImage(String uncheckedImage) {
+		this.normalImage = uncheckedImage;
 	}
 	
-	public String getCheckedImage() {
-		return checkedImage;
+	public String getNormalCheckIcon() {
+		return normalCheckIcon;
 	}
 	
-	public void setCheckedImage(String checkedImage) {
-		this.checkedImage = checkedImage;
+	public void setNormalCheckIcon(String checkedImage) {
+		this.normalCheckIcon = checkedImage;
 	}
 
-	public NinePatch getUncheckedNinePatch() {
-		return uncheckedNinePatch;
+	public String getDisabledCheckIcon() {
+		return disabledCheckIcon;
 	}
 
-	public NinePatch getCheckedNinePatch() {
-		return checkedNinePatch;
+	public void setDisabledCheckIcon(String disabledCheckIcon) {
+		this.disabledCheckIcon = disabledCheckIcon;
+	}
+
+	public NinePatch getNormalNinePatch() {
+		return normalNinePatch;
+	}
+
+	public NinePatch getDisabledNinePatch() {
+		return disabledNinePatch;
+	}
+
+	public String getDisabledImage() {
+		return disabledImage;
+	}
+
+	public void setDisabledImage(String disabledImage) {
+		this.disabledImage = disabledImage;
+	}
+
+	public String getHoverImage() {
+		return hoverImage;
+	}
+
+	public void setHoverImage(String hoverImage) {
+		this.hoverImage = hoverImage;
+	}
+
+	public Texture getNormalCheckIconTexture() {
+		return normalCheckIconTexture;
+	}
+
+	public Texture getDisabledCheckIconTexture() {
+		return disabledCheckIconTexture;
+	}
+
+	public NinePatch getHoverNinePatch() {
+		return hoverNinePatch;
 	}
 }

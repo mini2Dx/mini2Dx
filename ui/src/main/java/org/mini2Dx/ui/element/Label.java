@@ -16,12 +16,19 @@ import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.LabelStyle;
 import org.mini2Dx.ui.theme.UiTheme;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+
 /**
  *
  */
 public class Label extends BasicUiElement<LabelStyle> {
+	public static final Color DEFAULT_COLOR = new Color(254f / 255f, 254f / 255f, 254f / 255f, 1f);
+	
 	private String text;
+	private Color color;
 	private LabelStyle currentStyle;
+	private GlyphLayout glyphLayout;
 	
 	public Label() {
 		this("");
@@ -29,32 +36,63 @@ public class Label extends BasicUiElement<LabelStyle> {
 	
 	public Label(String text) {
 		super();
+		color = DEFAULT_COLOR;
+		glyphLayout = new GlyphLayout();
 		this.text = text;
 	}
 
 	@Override
 	public void accept(UiRenderer renderer) {
+		if(!visible) {
+			return;
+		}
 		renderer.render(this);
 	}
 	
 	@Override
 	public void applyStyle(UiTheme theme, ScreenSize screenSize) {
 		currentStyle = theme.getLabelStyle(screenSize, styleId);
+		glyphLayout.setText(currentStyle.getBitmapFont(), text);
+		notifyContentSizeListeners();
 	}
 
 	@Override
 	public float getContentWidth() {
-		return 0f;
+		return glyphLayout.width;
 	}
 
 	@Override
 	public float getContentHeight() {
-		// TODO Auto-generated method stub
-		return 0;
+		return glyphLayout.height;
 	}
 
 	@Override
 	public LabelStyle getCurrentStyle() {
 		return currentStyle;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		if(color == null) {
+			return;
+		}
+		this.color = color;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		if(this.text.equals(text)) {
+			return;
+		}
+		
+		this.text = text;
+		glyphLayout.setText(currentStyle.getBitmapFont(), text);
+		notifyContentSizeListeners();
 	}
 }

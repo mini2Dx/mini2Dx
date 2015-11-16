@@ -13,13 +13,14 @@ package org.mini2Dx.ui.element;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.mini2Dx.core.engine.SizeChangeListener;
 import org.mini2Dx.core.engine.geom.CollisionBox;
+import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.geom.Rectangle;
-import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.UiContentContainer;
 import org.mini2Dx.ui.UiElement;
 import org.mini2Dx.ui.effect.UiEffect;
 import org.mini2Dx.ui.layout.AutoHeightRule;
@@ -31,6 +32,7 @@ import org.mini2Dx.ui.layout.ResponsivePositionRule;
 import org.mini2Dx.ui.layout.ResponsiveWidthRule;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.layout.SizeRule;
+import org.mini2Dx.ui.listener.ContentSizeListener;
 import org.mini2Dx.ui.theme.UiElementStyle;
 import org.mini2Dx.ui.theme.UiTheme;
 
@@ -56,7 +58,10 @@ public abstract class BasicUiElement<T extends UiElementStyle> implements UiElem
 	protected PositionRule xRule;
 	protected PositionRule yRule = new DefaultYPositionRule();
 	protected SizeRule widthRule, heightRule;
+	protected boolean visible = false;
+	
 	private ElementState state = ElementState.NORMAL;
+	private List<ContentSizeListener> contentSizeListeners;
 	
 	public BasicUiElement() {
 		this(null);
@@ -64,13 +69,13 @@ public abstract class BasicUiElement<T extends UiElementStyle> implements UiElem
 	
 	public BasicUiElement(String id) {
 		if(id == null) {
-			id = String.valueOf(currentArea.getId());
+			id = "ui-element-" + String.valueOf(currentArea.getId());
 		}
 		this.id = id;
 	}
 	
 	@Override
-	public void update(UiContainer uiContainer, float delta) {
+	public void update(UiContentContainer uiContainer, float delta) {
 		targetArea.set(parentX + xRule.getTargetPosition(), parentY + yRule.getTargetPosition(),
 				widthRule.getTargetSize(), heightRule.getTargetSize());
 		currentArea.preUpdate();
@@ -96,18 +101,23 @@ public abstract class BasicUiElement<T extends UiElementStyle> implements UiElem
 		finishedEffects.clear();
 	}
 	
-	private void updateEffects(UiContainer uiContainer, float delta) {
+	private void updateEffects(UiContentContainer uiContainer, float delta) {
+		boolean visibilityResult = false;
 		for(int i = 0; i < effects.size(); i++) {
 			UiEffect effect = effects.get(i);
-			effect.update(uiContainer, currentArea, targetArea, delta);
+			visibilityResult |= effect.update(uiContainer, currentArea, targetArea, delta);
 			if(effect.isFinished()) {
 				finishedEffects.add(effect);
 			}
 		}
+		if(visibilityResult == visible) {
+			return;
+		}
+		setVisible(visibilityResult);
 	}
 
 	@Override
-	public void interpolate(UiContainer uiContainer, float alpha) {
+	public void interpolate(UiContentContainer uiContainer, float alpha) {
 		currentArea.interpolate(null, alpha);
 	}
 
@@ -122,35 +132,109 @@ public abstract class BasicUiElement<T extends UiElementStyle> implements UiElem
 	@Override
 	public void resize(ScreenSize screenSize, UiTheme theme, float columnWidth, float totalHeight) {
 		applyStyle(theme, screenSize);
+		applyRules(screenSize, theme, columnWidth, totalHeight);
+		notifyRules(screenSize, theme, columnWidth, totalHeight);
+		
+		rulesChanged = true;
+	}
+	
+	protected void applyRules(ScreenSize screenSize, UiTheme theme, float columnWidth, float totalHeight) {
+		widthRule = determineSizeRule(screenSize, widthRules);
 		
 		UiElementStyle currentStyle = getCurrentStyle();
-		
-		widthRule = widthRules.get(screenSize);
-		widthRule.onScreenResize(theme, currentStyle, columnWidth, totalHeight);
-		
 		if(currentStyle.getMinHeight() > 0) {
 			heightRule = new MinHeightRule(this);
 		} else {
 			heightRule = new AutoHeightRule(this);
 		}
-		heightRule.onScreenResize(theme, currentStyle, columnWidth, totalHeight);
 		
-		xRule = xPositionRules.get(screenSize);
+		xRule = determinePositionRule(screenSize, xPositionRules);
+	}
+	
+	public void notifyRules(ScreenSize screenSize, UiTheme theme, float columnWidth, float totalHeight) {
+		UiElementStyle currentStyle = getCurrentStyle();
+		widthRule.onScreenResize(theme, currentStyle, columnWidth, totalHeight);
+		heightRule.onScreenResize(theme, currentStyle, columnWidth, totalHeight);
 		xRule.onScreenResize(theme, currentStyle, columnWidth, totalHeight);
 		yRule.onScreenResize(theme, currentStyle, columnWidth, totalHeight);
-		
-		rulesChanged = true;
+	}
+	
+	private PositionRule determinePositionRule(ScreenSize screenSize, Map<ScreenSize, PositionRule> rules) {
+		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
+		while(screenSizes.hasNext()) {
+			ScreenSize nextSize = screenSizes.next();
+			if(nextSize.getMinSize() > screenSize.getMinSize()) {
+				continue;
+			}
+			if(!rules.containsKey(nextSize)) {
+				continue;
+			}
+			return rules.get(nextSize);
+		}
+		throw new MdxException("No position rule for element '" + getId() + "' with screen size " + screenSize);
+	}
+	
+	private SizeRule determineSizeRule(ScreenSize screenSize, Map<ScreenSize, SizeRule> rules) {
+		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
+		while(screenSizes.hasNext()) {
+			ScreenSize nextSize = screenSizes.next();
+			if(nextSize.getMinSize() > screenSize.getMinSize()) {
+				continue;
+			}
+			if(!rules.containsKey(nextSize)) {
+				continue;
+			}
+			return rules.get(nextSize);
+		}
+		throw new MdxException("No size rule for element '" + getId() + "' with screen size " + screenSize);
 	}
 	
 	@Override
 	public void positionChanged(CollisionBox moved) {
 		parentX = moved.getX();
 		parentY = moved.getY();
+		rulesChanged = true;
 	}
 
 	@Override
 	public void applyEffect(UiEffect effect) {
 		effects.add(effect);
+	}
+	
+	public void addContentSizeListener(ContentSizeListener listener) {
+		if(contentSizeListeners == null) {
+			contentSizeListeners = new ArrayList<ContentSizeListener>(1);
+		}
+		contentSizeListeners.add(listener);
+	}
+	
+	public void removeContentSizeListener(ContentSizeListener listener) {
+		if(contentSizeListeners == null) {
+			return;
+		}
+		contentSizeListeners.remove(listener);
+	}
+	
+	protected void notifyContentSizeListeners() {
+		if(widthRule != null) {
+			widthRule.onContentSizeChanged(this);
+		}
+		if(heightRule != null) {
+			heightRule.onContentSizeChanged(this);
+		}
+		if(xRule != null) {
+			xRule.onContentSizeChanged(this);
+		}
+		if(yRule != null) {
+			yRule.onContentSizeChanged(this);
+		}
+		
+		if(contentSizeListeners == null) {
+			return;
+		}
+		for(int i = contentSizeListeners.size() - 1; i >= 0; i--) {
+			contentSizeListeners.get(i).onContentSizeChanged(this);
+		}
 	}
 	
 	public void setXRules(String rules) {
@@ -234,10 +318,7 @@ public abstract class BasicUiElement<T extends UiElementStyle> implements UiElem
 
 	@Override
 	public String getId() {
-		if (id == null) {
-			return String.valueOf(currentArea.getId());
-		}
-		return null;
+		return id;
 	}
 	
 	@Override
@@ -253,7 +334,13 @@ public abstract class BasicUiElement<T extends UiElementStyle> implements UiElem
 		this.state = state;
 	}
 	
-	public void addSizeChangeListener(SizeChangeListener<CollisionBox> listener) {
-		currentArea.addSizeChangeListener(listener);
+	@Override
+	public boolean isVisible() {
+		return visible;
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 }

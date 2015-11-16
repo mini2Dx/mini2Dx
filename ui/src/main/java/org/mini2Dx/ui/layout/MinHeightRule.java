@@ -20,7 +20,8 @@ import org.mini2Dx.ui.theme.UiTheme;
  */
 public class MinHeightRule implements SizeRule {
 	private final UiElement element;
-
+	
+	private UiElementStyle currentStyle;
 	private float targetHeight;
 
 	public MinHeightRule(UiElement element) {
@@ -29,9 +30,15 @@ public class MinHeightRule implements SizeRule {
 
 	@Override
 	public void onScreenResize(UiTheme theme, UiElementStyle style, float columnSize, float totalHeight) {
-		targetHeight = element.getContentHeight() + style.getPaddingTop() + style.getPaddingBottom();
-		if(targetHeight < style.getMinHeight()) {
-			targetHeight = style.getMinHeight();
+		currentStyle = style;
+		onContentSizeChanged(element);
+	}
+	
+	@Override
+	public void onContentSizeChanged(UiElement<?> element) {
+		targetHeight = element.getContentHeight() + currentStyle.getPaddingTop() + currentStyle.getPaddingBottom();
+		if(targetHeight < currentStyle.getMinHeight()) {
+			targetHeight = currentStyle.getMinHeight();
 		}
 	}
 

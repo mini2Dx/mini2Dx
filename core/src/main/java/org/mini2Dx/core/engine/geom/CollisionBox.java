@@ -364,4 +364,10 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	public long getId() {
 		return id;
 	}
+	
+	@Override
+	public String toString() {
+		return "CollisionBox [id=" + id + ", x=" + x + ", y=" + y + ", width="
+				+ width + ", height=" + height + ", getRotation()=" + getRotation() + ", renderRectangle=" + renderRectangle + "]";
+	}
 }

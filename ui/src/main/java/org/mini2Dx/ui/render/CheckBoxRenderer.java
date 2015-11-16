@@ -16,6 +16,9 @@ import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.element.CheckBox;
 import org.mini2Dx.ui.theme.CheckBoxStyle;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+
 /**
  *
  */
@@ -24,6 +27,30 @@ public class CheckBoxRenderer implements UiElementRenderer<CheckBox> {
 	@Override
 	public void render(UiContainer uiContainer, CheckBox element, Graphics g) {
 		CheckBoxStyle checkBoxStyle = element.getCurrentStyle();
+		NinePatch ninePatch = checkBoxStyle.getNormalNinePatch();
+
+		if (element.isEnabled()) {
+			switch (element.getState()) {
+			case ACTION:
+			case HOVER:
+				ninePatch = checkBoxStyle.getHoverNinePatch();
+				break;
+			default:
+				break;
+			}
+		} else {
+			ninePatch = checkBoxStyle.getDisabledNinePatch();
+		}
+
+		g.drawNinePatch(ninePatch, element.getRenderX(), element.getRenderY(), element.getRenderWidth(),
+				element.getRenderHeight());
+
+		if (!element.isChecked()) {
+			return;
+		}
+		Texture checkIcon = checkBoxStyle.getNormalCheckIconTexture();
+		g.drawTexture(checkIcon, element.getRenderX() + (element.getRenderWidth() / 2) - (checkIcon.getWidth() / 2),
+				element.getRenderY() + (element.getRenderHeight() / 2) - (checkIcon.getHeight() / 2));
 	}
 
 }

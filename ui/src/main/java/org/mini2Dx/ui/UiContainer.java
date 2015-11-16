@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.GameResizeListener;
 import org.mini2Dx.core.graphics.Graphics;
@@ -29,7 +30,7 @@ import com.badlogic.gdx.assets.AssetManager;
 /**
  *
  */
-public class UiContainer implements GameResizeListener, InputProcessor {
+public class UiContainer implements GameResizeListener, InputProcessor, UiContentContainer {
 	private final GameContainer gc;
 	private final AssetManager assetManager;
 	private final UiRenderer uiRenderer;
@@ -40,6 +41,7 @@ public class UiContainer implements GameResizeListener, InputProcessor {
 	
 	private UiTheme theme;
 	private ScreenSize currentScreenSize;
+	private boolean visible = true;
 	
 	public UiContainer(GameContainer gc, AssetManager assetManager) {
 		this.gc = gc;
@@ -52,11 +54,7 @@ public class UiContainer implements GameResizeListener, InputProcessor {
 	
 	public void applyTheme(String filepath) {
 		this.theme = assetManager.get(filepath, UiTheme.class);
-		
-		for(int i = 0; i < elements.size(); i++) {
-			UiElement<?> element = elements.get(i);
-			element.applyStyle(theme, currentScreenSize);
-		}
+		onResize(gc.getWidth(), gc.getHeight());
 	}
 	
 	public void update(float delta) {
@@ -85,6 +83,9 @@ public class UiContainer implements GameResizeListener, InputProcessor {
 		if(uiRenderer == null) {
 			return;
 		}
+		if(!visible) {
+			return;
+		}
 		uiRenderer.setGraphics(g);
 		for(int i = 0; i < elements.size(); i++) {
 			elements.get(i).accept(uiRenderer);
@@ -107,6 +108,10 @@ public class UiContainer implements GameResizeListener, InputProcessor {
 			screenSize = ScreenSize.XL;
 		}
 		this.currentScreenSize = screenSize;
+		
+		if(theme == null) {
+			return;
+		}
 		
 		float columnWidth = width / theme.getColumns();
 		
@@ -131,11 +136,7 @@ public class UiContainer implements GameResizeListener, InputProcessor {
 	
 	public void add(UiElement<?> element) {
 		if(theme != null) {
-			element.applyStyle(theme, ScreenSize.XL);
-			element.applyStyle(theme, ScreenSize.LG);
-			element.applyStyle(theme, ScreenSize.MD);
-			element.applyStyle(theme, ScreenSize.SM);
-			element.applyStyle(theme, ScreenSize.XS);
+			element.applyStyle(theme, currentScreenSize);
 		}
 		elements.add(element);
 	}
@@ -202,5 +203,48 @@ public class UiContainer implements GameResizeListener, InputProcessor {
 	public boolean scrolled(int amount) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void positionChanged(CollisionBox moved) {}
+
+	@Override
+	public int getRenderX() {
+		return 0;
+	}
+
+	@Override
+	public int getRenderY() {
+		return 0;
+	}
+
+	@Override
+	public int getRenderWidth() {
+		return gc.getWidth();
+	}
+
+	@Override
+	public int getRenderHeight() {
+		return gc.getHeight();
+	}
+
+	@Override
+	public float getContentWidth() {
+		return gc.getWidth();
+	}
+
+	@Override
+	public float getContentHeight() {
+		return gc.getHeight();
+	}
+
+	@Override
+	public boolean isVisible() {
+		return visible;
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 }

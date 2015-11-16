@@ -27,20 +27,20 @@ public enum ScreenSize {
 	
 	private static final List<ScreenSize> smallestToLargest = new ArrayList<ScreenSize>() {
 		{
-			smallestToLargest.add(XS);
-			smallestToLargest.add(SM);
-			smallestToLargest.add(MD);
-			smallestToLargest.add(LG);
-			smallestToLargest.add(XL);
+			add(XS);
+			add(SM);
+			add(MD);
+			add(LG);
+			add(XL);
 		}
 	};
 	private static final List<ScreenSize> largestToSmallest = new ArrayList<ScreenSize>() {
 		{
-			smallestToLargest.add(XS);
-			smallestToLargest.add(SM);
-			smallestToLargest.add(MD);
-			smallestToLargest.add(LG);
-			smallestToLargest.add(XL);
+			add(XS);
+			add(SM);
+			add(MD);
+			add(LG);
+			add(XL);
 		}
 	};
 	

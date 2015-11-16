@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.uats.util;
 
+import org.mini2Dx.core.assets.FallbackFileHandleResolver;
 import org.mini2Dx.core.game.ScreenBasedGame;
 import org.mini2Dx.uats.BlendingUAT;
 import org.mini2Dx.uats.ClippingUAT;
@@ -28,8 +29,11 @@ import org.mini2Dx.ui.data.UiElementLoader;
 import org.mini2Dx.ui.theme.UiTheme;
 import org.mini2Dx.ui.theme.UiThemeLoader;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.ClasspathFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.utils.Logger;
 
 /**
  *
@@ -37,30 +41,33 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
  */
 public class UATApplication extends ScreenBasedGame {
 	private AssetManager assetManager;
-    
-    @Override
-    public void initialise() {
-    	assetManager = new AssetManager();
-    	assetManager.setLoader(UiTheme.class, new UiThemeLoader(new InternalFileHandleResolver()));
-    	assetManager.setLoader(UiElement.class, new UiElementLoader(new InternalFileHandleResolver()));
-    	
-    	addScreen(new LoadingScreen(assetManager));
-        addScreen(new UATSelectionScreen(assetManager));
-        addScreen(new BlendingUAT());
-        addScreen(new ClippingUAT());
-        addScreen(new GeometryUAT());
-        addScreen(new GraphicsUAT());
-        addScreen(new OrthogonalTiledMapNoCachingUAT());
-        addScreen(new OrthogonalTiledMapWithCachingUAT());
-        addScreen(new IsometricTiledMapUAT());
-        addScreen(new ParticleEffectsUAT());
-        addScreen(new ControllerUAT());
-        addScreen(new ControllerMapping());
-        addScreen(new UiUAT(assetManager));
-    }
 
-    @Override
-    public int getInitialScreenId() {
-        return 0;
-    }
+	@Override
+	public void initialise() {
+		assetManager = new AssetManager(
+				new FallbackFileHandleResolver(new ClasspathFileHandleResolver(), new InternalFileHandleResolver()));
+		assetManager.setLogger(new Logger("AssetManager", Application.LOG_ERROR));
+		
+		assetManager.setLoader(UiTheme.class, new UiThemeLoader(new InternalFileHandleResolver()));
+		assetManager.setLoader(UiElement.class, new UiElementLoader(new InternalFileHandleResolver()));
+
+		addScreen(new LoadingScreen(assetManager));
+		addScreen(new UATSelectionScreen(assetManager));
+		addScreen(new BlendingUAT());
+		addScreen(new ClippingUAT());
+		addScreen(new GeometryUAT());
+		addScreen(new GraphicsUAT());
+		addScreen(new OrthogonalTiledMapNoCachingUAT());
+		addScreen(new OrthogonalTiledMapWithCachingUAT());
+		addScreen(new IsometricTiledMapUAT());
+		addScreen(new ParticleEffectsUAT());
+		addScreen(new ControllerUAT());
+		addScreen(new ControllerMapping());
+		addScreen(new UiUAT(assetManager));
+	}
+
+	@Override
+	public int getInitialScreenId() {
+		return 0;
+	}
 }

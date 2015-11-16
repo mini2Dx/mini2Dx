@@ -13,7 +13,10 @@ package org.mini2Dx.ui.theme;
 
 import org.mini2Dx.core.serialization.annotation.Field;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 /**
  *
@@ -22,8 +25,14 @@ public class UiFont {
 	@Field
 	private String path;
 	
-	public void prepareAssets(AssetManager assetManager) {
-		
+	private FreeTypeFontGenerator fontGenerator;
+	
+	public void prepareAssets(FileHandleResolver fileHandleResolver) {
+		fontGenerator = new FreeTypeFontGenerator(fileHandleResolver.resolve(path));
+	}
+	
+	public void dispose() {
+		fontGenerator.dispose();
 	}
 	
 	public String getPath() {
@@ -32,5 +41,9 @@ public class UiFont {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public FreeTypeFontGenerator getFontGenerator() {
+		return fontGenerator;
 	}
 }

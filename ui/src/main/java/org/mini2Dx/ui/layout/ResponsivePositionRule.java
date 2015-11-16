@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.ui.UiElement;
 import org.mini2Dx.ui.theme.UiElementStyle;
 import org.mini2Dx.ui.theme.UiTheme;
 
@@ -29,6 +30,10 @@ public class ResponsivePositionRule implements PositionRule {
 	@Override
 	public void onScreenResize(UiTheme theme, UiElementStyle style, float columnSize, float totalHeight) {
 		targetPosition = columnSize * offset;
+	}
+	
+	@Override
+	public void onContentSizeChanged(UiElement<?> element) {
 	}
 
 	@Override

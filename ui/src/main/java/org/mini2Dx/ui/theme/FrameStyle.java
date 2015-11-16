@@ -14,6 +14,8 @@ package org.mini2Dx.ui.theme;
 import org.mini2Dx.core.serialization.annotation.Field;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 
 /**
  *
@@ -23,10 +25,27 @@ public class FrameStyle extends BaseUiElementStyle {
 	private String backgroundImage;
 	@Field
 	private String scrollBarImage;
+	@Field
+	private int verticalScrollBarWidth;
+	@Field
+	private int horizontalScrollBarHeight;
+	@Field
+	private int scrollBarPaddingTop;
+	@Field
+	private int scrollBarPaddingBottom;
+	@Field
+	private int scrollBarPaddingLeft;
+	@Field
+	private int scrollBarPaddingRight;
+	
+	private NinePatch backgroundNinePatch, scrollBarNinePatch;
 	
 	@Override
 	public void prepareAssets(AssetManager assetManager) {
-		
+		backgroundNinePatch = new NinePatch(assetManager.get(backgroundImage, Texture.class), getPaddingLeft(),
+				getPaddingRight(), getPaddingTop(), getPaddingBottom());
+		scrollBarNinePatch = new NinePatch(assetManager.get(scrollBarImage, Texture.class), getScrollBarPaddingLeft(),
+				getScrollBarPaddingRight(), getScrollBarPaddingTop(), getScrollBarPaddingBottom());
 	}
 
 	public String getBackgroundImage() {
@@ -43,5 +62,61 @@ public class FrameStyle extends BaseUiElementStyle {
 
 	public void setScrollBarImage(String scrollBarImage) {
 		this.scrollBarImage = scrollBarImage;
+	}
+
+	public int getVerticalScrollBarWidth() {
+		return verticalScrollBarWidth;
+	}
+
+	public void setVerticalScrollBarWidth(int verticalScrollBarWidth) {
+		this.verticalScrollBarWidth = verticalScrollBarWidth;
+	}
+
+	public int getHorizontalScrollBarHeight() {
+		return horizontalScrollBarHeight;
+	}
+
+	public void setHorizontalScrollBarHeight(int horizontalScrollBarHeight) {
+		this.horizontalScrollBarHeight = horizontalScrollBarHeight;
+	}
+
+	public int getScrollBarPaddingTop() {
+		return scrollBarPaddingTop;
+	}
+
+	public void setScrollBarPaddingTop(int scrollBarPaddingTop) {
+		this.scrollBarPaddingTop = scrollBarPaddingTop;
+	}
+
+	public int getScrollBarPaddingBottom() {
+		return scrollBarPaddingBottom;
+	}
+
+	public void setScrollBarPaddingBottom(int scrollBarPaddingBottom) {
+		this.scrollBarPaddingBottom = scrollBarPaddingBottom;
+	}
+
+	public int getScrollBarPaddingLeft() {
+		return scrollBarPaddingLeft;
+	}
+
+	public void setScrollBarPaddingLeft(int scrollBarPaddingLeft) {
+		this.scrollBarPaddingLeft = scrollBarPaddingLeft;
+	}
+
+	public int getScrollBarPaddingRight() {
+		return scrollBarPaddingRight;
+	}
+
+	public void setScrollBarPaddingRight(int scrollBarPaddingRight) {
+		this.scrollBarPaddingRight = scrollBarPaddingRight;
+	}
+
+	public NinePatch getBackgroundNinePatch() {
+		return backgroundNinePatch;
+	}
+
+	public NinePatch getScrollBarNinePatch() {
+		return scrollBarNinePatch;
 	}
 }
