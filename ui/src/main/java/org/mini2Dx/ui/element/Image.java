@@ -16,10 +16,17 @@ import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.NullStyle;
 import org.mini2Dx.ui.theme.UiTheme;
 
+import com.badlogic.gdx.graphics.Texture;
+
 /**
  *
  */
 public class Image extends BasicUiElement<NullStyle> {
+	private final Texture texture;
+	
+	public Image(Texture texture) {
+		this.texture = texture;
+	}
 
 	@Override
 	public void accept(UiRenderer renderer) {
@@ -35,16 +42,26 @@ public class Image extends BasicUiElement<NullStyle> {
 	
 	@Override
 	public float getContentWidth() {
-		return 0f;
+		if(texture == null) {
+			return 0f;
+		}
+		return texture.getWidth();
 	}
 
 	@Override
 	public float getContentHeight() {
-		return 0f;
+		if(texture == null) {
+			return 0f;
+		}
+		return texture.getHeight();
 	}
 
 	@Override
 	public NullStyle getCurrentStyle() {
 		return NullStyle.INSTANCE;
+	}
+
+	public Texture getTexture() {
+		return texture;
 	}
 }

@@ -14,6 +14,8 @@ package org.mini2Dx.ui.theme;
 import org.mini2Dx.core.serialization.annotation.Field;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 
 /**
  *
@@ -22,17 +24,26 @@ public class TextBoxStyle extends BaseUiElementStyle {
 	@Field
 	private String normalImage;
 	@Field
-	private String activeImage;
+	private String actionImage;
 	@Field
 	private String hoverImage;
 	@Field
-	private String disableImage;
+	private String disabledImage;
 	@Field
 	private String labelStyle;
 	
+	private NinePatch normalNinePatch, hoverNinePatch, actionNinePatch, disabledNinePatch;
+	
 	@Override
 	public void prepareAssets(AssetManager assetManager) {
-		
+		normalNinePatch = new NinePatch(assetManager.get(normalImage, Texture.class), getPaddingLeft(),
+				getPaddingRight(), getPaddingTop(), getPaddingBottom());
+		hoverNinePatch = new NinePatch(assetManager.get(hoverImage, Texture.class), getPaddingLeft(),
+				getPaddingRight(), getPaddingTop(), getPaddingBottom());
+		actionNinePatch = new NinePatch(assetManager.get(actionImage, Texture.class), getPaddingLeft(),
+				getPaddingRight(), getPaddingTop(), getPaddingBottom());
+		disabledNinePatch = new NinePatch(assetManager.get(disabledImage, Texture.class), getPaddingLeft(),
+				getPaddingRight(), getPaddingTop(), getPaddingBottom());
 	}
 
 	public String getNormalImage() {
@@ -43,12 +54,12 @@ public class TextBoxStyle extends BaseUiElementStyle {
 		this.normalImage = normalImage;
 	}
 
-	public String getActiveImage() {
-		return activeImage;
+	public String getActionImage() {
+		return actionImage;
 	}
 
-	public void setActiveImage(String activeImage) {
-		this.activeImage = activeImage;
+	public void setActionImage(String activeImage) {
+		this.actionImage = activeImage;
 	}
 
 	public String getHoverImage() {
@@ -59,12 +70,12 @@ public class TextBoxStyle extends BaseUiElementStyle {
 		this.hoverImage = hoverImage;
 	}
 
-	public String getDisableImage() {
-		return disableImage;
+	public String getDisabledImage() {
+		return disabledImage;
 	}
 
-	public void setDisableImage(String disableImage) {
-		this.disableImage = disableImage;
+	public void setDisabledImage(String disableImage) {
+		this.disabledImage = disableImage;
 	}
 
 	public String getLabelStyle() {
@@ -73,5 +84,21 @@ public class TextBoxStyle extends BaseUiElementStyle {
 
 	public void setLabelStyle(String labelStyle) {
 		this.labelStyle = labelStyle;
+	}
+
+	public NinePatch getNormalNinePatch() {
+		return normalNinePatch;
+	}
+
+	public NinePatch getHoverNinePatch() {
+		return hoverNinePatch;
+	}
+
+	public NinePatch getActionNinePatch() {
+		return actionNinePatch;
+	}
+
+	public NinePatch getDisabledNinePatch() {
+		return disabledNinePatch;
 	}
 }

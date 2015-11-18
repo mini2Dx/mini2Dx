@@ -11,7 +11,13 @@
  */
 package org.mini2Dx.ui.element;
 
-import org.mini2Dx.ui.UiElement;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.mini2Dx.ui.layout.AlignToBottomPositionRule;
+import org.mini2Dx.ui.layout.AutoYPositionRule;
+import org.mini2Dx.ui.layout.DefaultYPositionRule;
+import org.mini2Dx.ui.layout.PositionRule;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.FrameStyle;
@@ -21,7 +27,14 @@ import org.mini2Dx.ui.theme.UiTheme;
  *
  */
 public class Frame extends Column<FrameStyle> {
+	private final Map<ScreenSize, PositionRule> yPositionRules = new HashMap<ScreenSize, PositionRule>();
+	
 	private FrameStyle currentStyle;
+	
+	public Frame() {
+		super();
+		yPositionRules.put(ScreenSize.XS, new DefaultYPositionRule());
+	}
 
 	@Override
 	public void accept(UiRenderer renderer) {
@@ -37,9 +50,82 @@ public class Frame extends Column<FrameStyle> {
 		currentStyle = theme.getFrameStyle(screenSize, styleId);
 		super.applyStyle(theme, screenSize);
 	}
+	
+	@Override
+	protected void applyRules(ScreenSize screenSize, UiTheme theme, float columnWidth, float totalHeight) {
+		super.applyRules(screenSize, theme, columnWidth, totalHeight);
+		yRule = determinePositionRule(screenSize, yPositionRules);
+	}
 
 	@Override
 	public FrameStyle getCurrentStyle() {
 		return currentStyle;
+	}
+	
+	public void setYRules(String rules) {
+		switch(rules) {
+		case "auto":
+			yPositionRules.put(ScreenSize.XL, new AutoYPositionRule());
+			yPositionRules.put(ScreenSize.LG, new AutoYPositionRule());
+			yPositionRules.put(ScreenSize.MD, new AutoYPositionRule());
+			yPositionRules.put(ScreenSize.SM, new AutoYPositionRule());
+			yPositionRules.put(ScreenSize.XS, new AutoYPositionRule());
+			return;
+		case "top":
+			yPositionRules.put(ScreenSize.XL, new DefaultYPositionRule());
+			yPositionRules.put(ScreenSize.LG, new DefaultYPositionRule());
+			yPositionRules.put(ScreenSize.MD, new DefaultYPositionRule());
+			yPositionRules.put(ScreenSize.SM, new DefaultYPositionRule());
+			yPositionRules.put(ScreenSize.XS, new DefaultYPositionRule());
+			return;
+		case "bottom":
+			yPositionRules.put(ScreenSize.XL, new AlignToBottomPositionRule());
+			yPositionRules.put(ScreenSize.LG, new AlignToBottomPositionRule());
+			yPositionRules.put(ScreenSize.MD, new AlignToBottomPositionRule());
+			yPositionRules.put(ScreenSize.SM, new AlignToBottomPositionRule());
+			yPositionRules.put(ScreenSize.XS, new AlignToBottomPositionRule());
+			return;
+		}
+		
+		String[] positionData = rules.split(" ");
+		for (String positionRule : positionData) {
+			if (positionRule.endsWith("auto")) {
+				if (positionRule.startsWith("xs")) {
+					yPositionRules.put(ScreenSize.XS, new AutoYPositionRule());
+				} else if (positionRule.startsWith("sm")) {
+					yPositionRules.put(ScreenSize.SM, new AutoYPositionRule());
+				} else if (positionRule.startsWith("md")) {
+					yPositionRules.put(ScreenSize.MD, new AutoYPositionRule());
+				} else if (positionRule.startsWith("lg")) {
+					yPositionRules.put(ScreenSize.LG, new AutoYPositionRule());
+				} else if (positionRule.startsWith("xl")) {
+					yPositionRules.put(ScreenSize.XL, new AutoYPositionRule());
+				}
+			} else if(positionRule.endsWith("top")) {
+				if (positionRule.startsWith("xs")) {
+					yPositionRules.put(ScreenSize.XS, new DefaultYPositionRule());
+				} else if (positionRule.startsWith("sm")) {
+					yPositionRules.put(ScreenSize.SM, new DefaultYPositionRule());
+				} else if (positionRule.startsWith("md")) {
+					yPositionRules.put(ScreenSize.MD, new DefaultYPositionRule());
+				} else if (positionRule.startsWith("lg")) {
+					yPositionRules.put(ScreenSize.LG, new DefaultYPositionRule());
+				} else if (positionRule.startsWith("xl")) {
+					yPositionRules.put(ScreenSize.XL, new DefaultYPositionRule());
+				}
+			} else {
+				if (positionRule.startsWith("xs")) {
+					yPositionRules.put(ScreenSize.XS, new AlignToBottomPositionRule());
+				} else if (positionRule.startsWith("sm")) {
+					yPositionRules.put(ScreenSize.SM, new AlignToBottomPositionRule());
+				} else if (positionRule.startsWith("md")) {
+					yPositionRules.put(ScreenSize.MD, new AlignToBottomPositionRule());
+				} else if (positionRule.startsWith("lg")) {
+					yPositionRules.put(ScreenSize.LG, new AlignToBottomPositionRule());
+				} else if (positionRule.startsWith("xl")) {
+					yPositionRules.put(ScreenSize.XL, new AlignToBottomPositionRule());
+				}
+			}
+		}
 	}
 }

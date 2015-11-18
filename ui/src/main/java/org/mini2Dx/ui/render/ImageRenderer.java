@@ -22,7 +22,7 @@ public class ImageRenderer implements UiElementRenderer<Image> {
 
 	@Override
 	public void render(UiContainer uiContainer, Image element, Graphics g) {
-		
+		g.drawTexture(element.getTexture(), element.getRenderX(), element.getRenderHeight());
 	}
 
 }

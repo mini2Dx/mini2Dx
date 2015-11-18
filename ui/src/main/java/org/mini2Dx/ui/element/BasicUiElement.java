@@ -187,7 +187,7 @@ public abstract class BasicUiElement<T extends UiElementStyle>
 		yRule.onScreenResize(theme, currentStyle, columnWidth, totalHeight);
 	}
 
-	private PositionRule determinePositionRule(ScreenSize screenSize, Map<ScreenSize, PositionRule> rules) {
+	protected PositionRule determinePositionRule(ScreenSize screenSize, Map<ScreenSize, PositionRule> rules) {
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
 		while (screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
@@ -289,15 +289,29 @@ public abstract class BasicUiElement<T extends UiElementStyle>
 	}
 
 	public void setXRules(String rules) {
+		if(rules.equals("auto")) {
+			xPositionRules.put(ScreenSize.XL, new AutoXPositionRule(this));
+			xPositionRules.put(ScreenSize.LG, new AutoXPositionRule(this));
+			xPositionRules.put(ScreenSize.MD, new AutoXPositionRule(this));
+			xPositionRules.put(ScreenSize.SM, new AutoXPositionRule(this));
+			xPositionRules.put(ScreenSize.XS, new AutoXPositionRule(this));
+			return;
+		}
+		
 		String[] positionData = rules.split(" ");
 		for (String positionRule : positionData) {
-			if (positionRule.equals("auto")) {
-				xPositionRules.put(ScreenSize.XL, new AutoXPositionRule(this));
-				xPositionRules.put(ScreenSize.LG, new AutoXPositionRule(this));
-				xPositionRules.put(ScreenSize.MD, new AutoXPositionRule(this));
-				xPositionRules.put(ScreenSize.SM, new AutoXPositionRule(this));
-				xPositionRules.put(ScreenSize.XS, new AutoXPositionRule(this));
-				return;
+			if (positionRule.endsWith("auto")) {
+				if (positionRule.startsWith("xs")) {
+					xPositionRules.put(ScreenSize.XS, new AutoXPositionRule(this));
+				} else if (positionRule.startsWith("sm")) {
+					xPositionRules.put(ScreenSize.SM,  new AutoXPositionRule(this));
+				} else if (positionRule.startsWith("md")) {
+					xPositionRules.put(ScreenSize.MD, new AutoXPositionRule(this));
+				} else if (positionRule.startsWith("lg")) {
+					xPositionRules.put(ScreenSize.LG,  new AutoXPositionRule(this));
+				} else if (positionRule.startsWith("xl")) {
+					xPositionRules.put(ScreenSize.XL,  new AutoXPositionRule(this));
+				}
 			} else {
 				String[] ruleData = positionRule.split("-");
 				int value = Integer.parseInt(ruleData[1]);

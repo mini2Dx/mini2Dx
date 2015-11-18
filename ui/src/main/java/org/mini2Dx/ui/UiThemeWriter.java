@@ -55,8 +55,8 @@ public class UiThemeWriter {
 		theme.putLabelStyle(ScreenSize.XS, UiTheme.DEFAULT_STYLE_ID, labelStyle);
 		
 		TextBoxStyle textBoxStyle = new TextBoxStyle();
-		textBoxStyle.setActiveImage("");
-		textBoxStyle.setDisableImage("");
+		textBoxStyle.setActionImage("");
+		textBoxStyle.setDisabledImage("");
 		textBoxStyle.setHoverImage("");
 		textBoxStyle.setNormalImage("");
 		textBoxStyle.setLabelStyle("");

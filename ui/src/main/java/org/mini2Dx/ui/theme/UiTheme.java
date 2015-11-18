@@ -61,9 +61,14 @@ public class UiTheme {
 			if(getFrameStyle(screenSize, DEFAULT_STYLE_ID) == null) {
 				throw new MdxException("No frame style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
 			}
-			if(getTextBoxStyle(screenSize, DEFAULT_STYLE_ID) == null) {
+			TextBoxStyle textBoxStyle = getTextBoxStyle(screenSize, DEFAULT_STYLE_ID);
+			if(textBoxStyle == null) {
 				throw new MdxException("No textbox style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
 			}
+			if(getLabelStyle(screenSize, textBoxStyle.getLabelStyle()) == null) {
+				throw new MdxException("Textbox requires label style '" + textBoxStyle.getLabelStyle() + "' but it is not defined for theme '" + name + "'");
+			}
+			
 			LabelStyle defaultLabelStyle = getLabelStyle(screenSize, DEFAULT_STYLE_ID);
 			if(defaultLabelStyle == null) {
 				throw new MdxException("No label style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
@@ -108,6 +113,9 @@ public class UiTheme {
 			}
 			for(TextBoxStyle textBoxStyle: ruleset.textboxes.values()) {
 				dependencies.add(new AssetDescriptor<Texture>(textBoxStyle.getNormalImage(), Texture.class));
+				dependencies.add(new AssetDescriptor<Texture>(textBoxStyle.getActionImage(), Texture.class));
+				dependencies.add(new AssetDescriptor<Texture>(textBoxStyle.getHoverImage(), Texture.class));
+				dependencies.add(new AssetDescriptor<Texture>(textBoxStyle.getDisabledImage(), Texture.class));
 			}
 			for(UiFont uiFont : fonts.values()) {
 				if(!uiFont.getPath().endsWith(".ttf")) {

@@ -112,9 +112,9 @@
             "textboxes": {
                 "default": {
                     "normalImage": "default-mdx-theme/textbox_normal.png",
-                    "activeImage": "default-mdx-theme/textbox_normal.png",
+                    "actionImage": "default-mdx-theme/textbox_normal.png",
                     "hoverImage": "default-mdx-theme/textbox_normal.png",
-                    "disableImage": "default-mdx-theme/textbox_disabled.png",
+                    "disabledImage": "default-mdx-theme/textbox_disabled.png",
                     "labelStyle": "default",
                     "paddingTop": 12,
                     "paddingBottom": 12,

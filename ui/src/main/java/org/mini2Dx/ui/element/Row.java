@@ -146,6 +146,9 @@ public class Row extends BasicUiElement<RowStyle>implements ContentSizeListener 
 	
 	@Override
 	public Actionable mouseDown(int screenX, int screenY, int pointer, int button) {
+		if(!visible) {
+			return null;
+		}
 		for(int i = children.size() - 1; i >= 0; i--) {
 			Actionable result = children.get(i).mouseDown(screenX, screenY, pointer, button);
 			if(result != null) {

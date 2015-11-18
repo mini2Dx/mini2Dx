@@ -16,15 +16,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.GameResizeListener;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Actionable;
+import org.mini2Dx.ui.element.TextInputable;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
 import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.UiTheme;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
 
@@ -45,6 +49,7 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 	private ScreenSize currentScreenSize;
 	private boolean visible = true;
 	private Actionable currentAction;
+	private TextInputable currentTextInput;
 	
 	public UiContainer(GameContainer gc, AssetManager assetManager) {
 		this.gc = gc;
@@ -168,28 +173,63 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
-		return false;
+		if(currentTextInput == null) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
-		return false;
+		if(currentTextInput == null) {
+			return false;
+		}
+		switch(keycode) {
+		case Keys.BACKSPACE:
+			currentTextInput.onBackspace();
+			break;
+		case Keys.ENTER:
+			if(currentTextInput.onEnter()) {
+				currentTextInput = null;
+				currentAction = null;
+			}
+			break;
+		}
+		return true;
 	}
 
 	@Override
 	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
-		return false;
+		if(currentTextInput == null) {
+			return false;
+		}
+		currentTextInput.onCharacterReceived(character);
+		return true;
 	}
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		if(currentTextInput != null && currentTextInput.mouseDown(screenX, screenY, pointer, button) == null) {
+			//Release textbox control
+			currentTextInput = null;
+			currentAction = null;
+		}
+		
 		for(int i = elements.size() - 1; i >= 0; i--) {
 			Actionable result = elements.get(i).mouseDown(screenX, screenY, pointer, button);
 			if(result != null) {
 				currentAction = result;
+				if(currentAction instanceof TextInputable) {
+					switch(Mdx.os) {
+					case ANDROID:
+					case IOS:
+						Gdx.input.setOnscreenKeyboardVisible(true);
+						break;
+					default:
+						break;
+					}
+					currentTextInput = (TextInputable) currentAction;
+				}
 				return true;
 			}
 		}

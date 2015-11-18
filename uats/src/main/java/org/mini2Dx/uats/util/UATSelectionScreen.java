@@ -30,6 +30,7 @@ import org.mini2Dx.uats.IsometricTiledMapUAT;
 import org.mini2Dx.uats.OrthogonalTiledMapNoCachingUAT;
 import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
 import org.mini2Dx.uats.ParticleEffectsUAT;
+import org.mini2Dx.uats.UiUAT;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.UiElement;
 import org.mini2Dx.ui.effect.SlideIn;
@@ -52,203 +53,207 @@ import com.badlogic.gdx.graphics.Color;
  * @author Thomas Cashman
  */
 public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeListener {
-    public static final int SCREEN_ID = 1;
-    
-    private final AssetManager assetManager;
-    
-    private UiContainer uiContainer;
-    private Dialog uatsDialog;
-    private int nextScreenId = -1;
+	public static final int SCREEN_ID = 1;
 
-    public UATSelectionScreen(AssetManager assetManager) {
-    	this.assetManager = assetManager;
+	private final AssetManager assetManager;
+
+	private UiContainer uiContainer;
+	private Dialog uatsDialog;
+	private int nextScreenId = -1;
+
+	public UATSelectionScreen(AssetManager assetManager) {
+		this.assetManager = assetManager;
 	}
 
 	@Override
-    public void initialise(GameContainer gc) {
+	public void initialise(GameContainer gc) {
 		uiContainer = new UiContainer(gc, assetManager);
 		uiContainer.addScreenSizeListener(this);
 		initialiseUi();
-    }
-	
-	private UiElement<?> createHeader(String text) {
-		Label label = new Label(text);
-		label.setXRules("xs-0");
-		label.setWidthRules("xs-12");
-		label.setColor(Label.COLOR_BLACK);
-		return label;
-	}
-	
-	private UiElement<?> createLabel(String text) {
-		Label label = new Label(text);
-		label.setXRules("xs-0");
-		label.setWidthRules("xs-12");
-		return label;
-	}
-	
-	private UiElement<?> createButton(String text, ActionListener listener) {
-		Button button = new Button();
-		button.setXRules("xs-0");
-		button.setWidthRules("xs-12");
-		button.addActionListener(listener);
-		button.addRow(Row.withElements(createLabel(text)));
-		return button;
 	}
 
-    @Override
-    public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
-            float delta) {
-    	uiContainer.update(delta);
-    	if(nextScreenId > -1) {
-    		screenManager.enterGameScreen(nextScreenId, new FadeOutTransition(), new FadeInTransition());
-    	}
-    }
+	@Override
+	public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
+		uiContainer.update(delta);
+		if (nextScreenId > -1) {
+			screenManager.enterGameScreen(nextScreenId, new FadeOutTransition(), new FadeInTransition());
+			nextScreenId = -1;
+		}
+	}
 
-    @Override
-    public void interpolate(GameContainer gc, float alpha) {
-    	uiContainer.interpolate(alpha);
-    }
+	@Override
+	public void interpolate(GameContainer gc, float alpha) {
+		uiContainer.interpolate(alpha);
+	}
 
-    @Override
-    public void render(GameContainer gc, Graphics g) {
-        g.clearBlendFunction();
-        g.clearShaderProgram();
-        g.removeClip();
-        g.setBackgroundColor(Color.WHITE);
-        g.setColor(Color.BLUE);
-        
-        uiContainer.render(g);
-    }
+	@Override
+	public void render(GameContainer gc, Graphics g) {
+		g.clearBlendFunction();
+		g.clearShaderProgram();
+		g.removeClip();
+		g.setBackgroundColor(Color.WHITE);
+		g.setColor(Color.BLUE);
 
-    @Override
-    public void preTransitionIn(Transition transitionIn) {
-    	nextScreenId = -1;
-    	if(!uiContainer.isThemeApplied()) {
-    		uiContainer.applyTheme(UiTheme.DEFAULT_THEME_FILE);
-    	}
-    	Gdx.input.setInputProcessor(uiContainer);
-    }
+		uiContainer.render(g);
+	}
 
-    @Override
-    public void postTransitionIn(Transition transitionIn) {
-    	uatsDialog.applyEffect(new SlideIn());
-    }
+	@Override
+	public void preTransitionIn(Transition transitionIn) {
+		nextScreenId = -1;
+		if (!uiContainer.isThemeApplied()) {
+			uiContainer.applyTheme(UiTheme.DEFAULT_THEME_FILE);
+		}
+		Gdx.input.setInputProcessor(uiContainer);
+		uatsDialog.applyEffect(new SlideIn());
+	}
 
-    @Override
-    public void preTransitionOut(Transition transitionOut) {
-    }
+	@Override
+	public void postTransitionIn(Transition transitionIn) {
+		
+	}
 
-    @Override
-    public void postTransitionOut(Transition transitionOut) {
-    }
+	@Override
+	public void preTransitionOut(Transition transitionOut) {
+	}
 
-    @Override
-    public int getId() {
-        return SCREEN_ID;
-    }
-    
-    private void initialiseUi() {
+	@Override
+	public void postTransitionOut(Transition transitionOut) {
+		uatsDialog.setVisible(false);
+	}
+
+	@Override
+	public int getId() {
+		return SCREEN_ID;
+	}
+
+	private void initialiseUi() {
 		uatsDialog = new Dialog();
 		uatsDialog.setXRules("auto");
 		uatsDialog.setWidthRules("xs-12 sm-10 md-8 lg-6");
-		
-		uatsDialog.addRow(Row.withElements(createHeader("Detected OS: " + Mdx.os)));
-		uatsDialog.addRow(Row.withElements(createHeader("")));
-		uatsDialog.addRow(Row.withElements(createHeader("User Acceptance Tests")));
-		uatsDialog.addRow(Row.withElements(createButton("Blending", new ActionListener() {
+
+		uatsDialog.addRow(Row.withElements(UiUtils.createHeader("Detected OS: " + Mdx.os)));
+		uatsDialog.addRow(Row.withElements(UiUtils.createHeader("")));
+		uatsDialog.addRow(Row.withElements(UiUtils.createHeader("User Acceptance Tests")));
+		uatsDialog.addRow(Row.withElements(UiUtils.createButton("Blending", "xs-0", "xs-12", new ActionListener() {
 			@Override
-			public void onActionBegin(Actionable source) {}
+			public void onActionBegin(Actionable source) {
+			}
 
 			@Override
 			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(BlendingUAT.class);
 			}
 		})));
-		uatsDialog.addRow(Row.withElements(createButton("Graphics.clip()", new ActionListener() {
+		uatsDialog
+				.addRow(Row.withElements(UiUtils.createButton("Graphics.clip()", "xs-0", "xs-12", new ActionListener() {
+					@Override
+					public void onActionBegin(Actionable source) {
+					}
+
+					@Override
+					public void onActionEnd(Actionable source) {
+						nextScreenId = ScreenIds.getScreenId(ClippingUAT.class);
+					}
+				})));
+		uatsDialog.addRow(Row.withElements(UiUtils.createButton("Geometry", "xs-0", "xs-12", new ActionListener() {
 			@Override
-			public void onActionBegin(Actionable source) {}
-			
-			@Override
-			public void onActionEnd(Actionable source) {
-				nextScreenId = ScreenIds.getScreenId(ClippingUAT.class);
+			public void onActionBegin(Actionable source) {
 			}
-		})));
-		uatsDialog.addRow(Row.withElements(createButton("Geometry", new ActionListener() {
-			@Override
-			public void onActionBegin(Actionable source) {}
-			
+
 			@Override
 			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(GeometryUAT.class);
 			}
 		})));
-		uatsDialog.addRow(Row.withElements(createButton("Graphics", new ActionListener() {
+		uatsDialog.addRow(Row.withElements(UiUtils.createButton("Graphics", "xs-0", "xs-12", new ActionListener() {
 			@Override
-			public void onActionBegin(Actionable source) {}
-			
+			public void onActionBegin(Actionable source) {
+			}
+
 			@Override
 			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(GraphicsUAT.class);
 			}
 		})));
-		uatsDialog.addRow(Row.withElements(createButton("Orthogonal TiledMap (No Caching)", new ActionListener() {
+		uatsDialog.addRow(Row.withElements(
+				UiUtils.createButton("Orthogonal TiledMap (No Caching)", "xs-0", "xs-12", new ActionListener() {
+					@Override
+					public void onActionBegin(Actionable source) {
+					}
+
+					@Override
+					public void onActionEnd(Actionable source) {
+						nextScreenId = ScreenIds.getScreenId(OrthogonalTiledMapNoCachingUAT.class);
+					}
+				})));
+		uatsDialog.addRow(Row.withElements(
+				UiUtils.createButton("Orthogonal TiledMap (With Caching)", "xs-0", "xs-12", new ActionListener() {
+					@Override
+					public void onActionBegin(Actionable source) {
+					}
+
+					@Override
+					public void onActionEnd(Actionable source) {
+						nextScreenId = ScreenIds.getScreenId(OrthogonalTiledMapWithCachingUAT.class);
+					}
+				})));
+		uatsDialog.addRow(Row.withElements(
+				UiUtils.createButton("Isometric TiledMap (No Caching)", "xs-0", "xs-12", new ActionListener() {
+					@Override
+					public void onActionBegin(Actionable source) {
+					}
+
+					@Override
+					public void onActionEnd(Actionable source) {
+						nextScreenId = ScreenIds.getScreenId(IsometricTiledMapUAT.class);
+					}
+				})));
+		uatsDialog.addRow(
+				Row.withElements(UiUtils.createButton("Particle Effects", "xs-0", "xs-12", new ActionListener() {
+					@Override
+					public void onActionBegin(Actionable source) {
+					}
+
+					@Override
+					public void onActionEnd(Actionable source) {
+						nextScreenId = ScreenIds.getScreenId(ParticleEffectsUAT.class);
+					}
+				})));
+		uatsDialog.addRow(Row.withElements(UiUtils.createButton("Controllers", "xs-0", "xs-12", new ActionListener() {
 			@Override
-			public void onActionBegin(Actionable source) {}
-			
-			@Override
-			public void onActionEnd(Actionable source) {
-				nextScreenId = ScreenIds.getScreenId(OrthogonalTiledMapNoCachingUAT.class);
+			public void onActionBegin(Actionable source) {
 			}
-		})));
-		uatsDialog.addRow(Row.withElements(createButton("Orthogonal TiledMap (With Caching)", new ActionListener() {
-			@Override
-			public void onActionBegin(Actionable source) {}
-			
-			@Override
-			public void onActionEnd(Actionable source) {
-				nextScreenId = ScreenIds.getScreenId(OrthogonalTiledMapWithCachingUAT.class);
-			}
-		})));
-		uatsDialog.addRow(Row.withElements(createButton("Isometric TiledMap (No Caching)", new ActionListener() {
-			@Override
-			public void onActionBegin(Actionable source) {}
-			
-			@Override
-			public void onActionEnd(Actionable source) {
-				nextScreenId = ScreenIds.getScreenId(IsometricTiledMapUAT.class);
-			}
-		})));
-		uatsDialog.addRow(Row.withElements(createButton("Particle Effects", new ActionListener() {
-			@Override
-			public void onActionBegin(Actionable source) {}
-			
-			@Override
-			public void onActionEnd(Actionable source) {
-				nextScreenId = ScreenIds.getScreenId(ParticleEffectsUAT.class);
-			}
-		})));
-		uatsDialog.addRow(Row.withElements(createButton("Controllers", new ActionListener() {
-			@Override
-			public void onActionBegin(Actionable source) {}
-			
+
 			@Override
 			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(ControllerUAT.class);
 			}
 		})));
-		uatsDialog.addRow(Row.withElements(createHeader("Utilities")));
-		uatsDialog.addRow(Row.withElements(createButton("Controller Mapping", new ActionListener() {
+		uatsDialog.addRow(Row.withElements(UiUtils.createButton("UI", "xs-0", "xs-12", new ActionListener() {
 			@Override
-			public void onActionBegin(Actionable source) {}
-			
+			public void onActionBegin(Actionable source) {
+			}
+
 			@Override
 			public void onActionEnd(Actionable source) {
-				nextScreenId = ScreenIds.getScreenId(ControllerMapping.class);
+				nextScreenId = ScreenIds.getScreenId(UiUAT.class);
 			}
 		})));
-		
+		uatsDialog.addRow(Row.withElements(UiUtils.createHeader("Utilities")));
+		uatsDialog.addRow(
+				Row.withElements(UiUtils.createButton("Controller Mapping", "xs-0", "xs-12", new ActionListener() {
+					@Override
+					public void onActionBegin(Actionable source) {
+					}
+
+					@Override
+					public void onActionEnd(Actionable source) {
+						nextScreenId = ScreenIds.getScreenId(ControllerMapping.class);
+					}
+				})));
+
 		uiContainer.add(uatsDialog);
-    }
+	}
 
 	@Override
 	public void onScreenSizeChanged(ScreenSize screenSize, float screenWidth, float screenHeight) {

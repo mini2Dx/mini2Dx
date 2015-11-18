@@ -46,6 +46,9 @@ public class Button extends Column<ButtonStyle> implements Actionable, Hoverable
 	
 	@Override
 	public Actionable mouseDown(int screenX, int screenY, int pointer, int button) {
+		if(!visible) {
+			return null;
+		}
 		if(button != Buttons.LEFT) {
 			return null;
 		}

@@ -116,6 +116,9 @@ public abstract class Column<T extends UiElementStyle> extends BasicUiElement<T>
 	
 	@Override
 	public Actionable mouseDown(int screenX, int screenY, int pointer, int button) {
+		if(!visible) {
+			return null;
+		}
 		for(int i = rows.size() - 1; i >= 0; i--) {
 			Actionable result = rows.get(i).mouseDown(screenX, screenY, pointer, button);
 			if(result != null) {

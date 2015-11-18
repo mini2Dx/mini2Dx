@@ -11,17 +11,31 @@
  */
 package org.mini2Dx.uats;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
+import org.mini2Dx.core.screen.transition.FadeInTransition;
+import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import org.mini2Dx.uats.util.ScreenIds;
+import org.mini2Dx.uats.util.UATSelectionScreen;
+import org.mini2Dx.uats.util.UiUtils;
 import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.element.Actionable;
+import org.mini2Dx.ui.element.Dialog;
+import org.mini2Dx.ui.element.Frame;
+import org.mini2Dx.ui.element.Label;
+import org.mini2Dx.ui.element.Row;
+import org.mini2Dx.ui.element.TextBox;
+import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.theme.UiTheme;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 
 /**
  * A user acceptance test for the mini2Dx responsive UI framework
@@ -30,6 +44,13 @@ public class UiUAT extends BasicGameScreen {
 	private final AssetManager assetManager;
 	
 	private UiContainer uiContainer;
+	private Frame topLeftFrame, bottomRightFrame;
+	private Dialog dialog;
+	
+	private TextBox textBox;
+	private Label textBoxResult;
+	
+	private int nextScreenId = -1;
 
 	public UiUAT(AssetManager assetManager) {
 		this.assetManager = assetManager;
@@ -38,31 +59,35 @@ public class UiUAT extends BasicGameScreen {
 	@Override
 	public void initialise(GameContainer gc) {
 		uiContainer = new UiContainer(gc, assetManager);
+		initialiseUi();
 	}
 
 	@Override
 	public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
-		// TODO Auto-generated method stub
-		
+		uiContainer.update(delta);
+		if (nextScreenId > -1) {
+			screenManager.enterGameScreen(nextScreenId, new FadeOutTransition(), new FadeInTransition());
+			nextScreenId = -1;
+		}
 	}
 
 	@Override
 	public void interpolate(GameContainer gc, float alpha) {
-		// TODO Auto-generated method stub
-		
+		uiContainer.interpolate(alpha);
 	}
 
 	@Override
 	public void render(GameContainer gc, Graphics g) {
-		// TODO Auto-generated method stub
-		
+		uiContainer.render(g);
 	}
 	
 	@Override
 	public void preTransitionIn(Transition transitionIn) {
-		if(!uiContainer.isThemeApplied()) {
+		nextScreenId = -1;
+    	if(!uiContainer.isThemeApplied()) {
     		uiContainer.applyTheme(UiTheme.DEFAULT_THEME_FILE);
     	}
+    	Gdx.input.setInputProcessor(uiContainer);
 	}
 
 	@Override
@@ -70,4 +95,52 @@ public class UiUAT extends BasicGameScreen {
 		return ScreenIds.getScreenId(UiUAT.class);
 	}
 
+	private void initialiseUi() {
+		topLeftFrame = new Frame();
+		topLeftFrame.setXRules("xs-0");
+		topLeftFrame.setYRules("top");
+		topLeftFrame.setWidthRules("xs-12 sm-6 md-4 lg-3");
+		topLeftFrame.addRow(Row.withElements(UiUtils.createHeader("UI UAT")));
+		topLeftFrame.setVisible(true);
+		uiContainer.add(topLeftFrame);
+		
+		textBox = UiUtils.createTextBox("xs-0", "xs-6", new ActionListener() {
+			
+			@Override
+			public void onActionEnd(Actionable source) {
+				textBoxResult.setText(textBox.getText());
+			}
+			
+			@Override
+			public void onActionBegin(Actionable source) {
+			}
+		});
+		textBoxResult = UiUtils.createLabel("", "xs-6", "xs-6");
+		
+		dialog = new Dialog();
+		dialog.setXRules("auto");
+		dialog.setYRules("auto");
+		dialog.setWidthRules("xs-12 md-8 lg-6");
+		dialog.addRow(Row.withElements(textBox, textBoxResult));
+		dialog.addRow(Row.withElements(UiUtils.createButton("Return to UAT Selection Screen", "xs-0 md-4 xl-6", "xs-12 md-8 xl-6", new ActionListener() {
+			
+			@Override
+			public void onActionBegin(Actionable source) {}
+			
+			@Override
+			public void onActionEnd(Actionable source) {
+				nextScreenId = UATSelectionScreen.SCREEN_ID;
+			}
+		})));
+		dialog.setVisible(true);
+		uiContainer.add(dialog);
+		
+		bottomRightFrame = new Frame();
+		bottomRightFrame.setXRules("xs-0 sm-6 md-8 lg-9");
+		bottomRightFrame.setYRules("bottom");
+		bottomRightFrame.setWidthRules("xs-12 sm-6 md-4 lg-3");
+		bottomRightFrame.setVisible(true);
+		bottomRightFrame.addRow(Row.withElements(UiUtils.createHeader("Detected OS: " + Mdx.os)));
+		uiContainer.add(bottomRightFrame);
+	}
 }

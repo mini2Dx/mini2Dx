@@ -14,7 +14,12 @@ package org.mini2Dx.ui.render;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.element.TextBox;
+import org.mini2Dx.ui.theme.LabelStyle;
 import org.mini2Dx.ui.theme.TextBoxStyle;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 
 /**
  *
@@ -24,6 +29,49 @@ public class TextBoxRenderer implements UiElementRenderer<TextBox> {
 	@Override
 	public void render(UiContainer uiContainer, TextBox element, Graphics g) {
 		TextBoxStyle textBoxStyle = element.getCurrentStyle();
+		LabelStyle textStyle = element.getTextStyle();
+		
+		BitmapFont font = textStyle.getBitmapFont();
+		if (font == null) {
+			return;
+		}
+
+		NinePatch ninePatch = textBoxStyle.getNormalNinePatch();
+		if (element.isEnabled()) {
+			switch (element.getState()) {
+			case ACTION:
+				ninePatch = textBoxStyle.getActionNinePatch();
+				break;
+			case HOVER:
+				ninePatch = textBoxStyle.getHoverNinePatch();
+				break;
+			default:
+				break;
+			}
+		} else {
+			ninePatch = textBoxStyle.getDisabledNinePatch();
+		}
+
+		float textRenderX = element.getRenderX() + element.getPaddingLeft();
+		float textRenderY = element.getRenderY() + element.getPaddingTop();
+
+		g.drawNinePatch(ninePatch, element.getRenderX(), element.getRenderY(), element.getRenderWidth(),
+				element.getRenderHeight());
+		
+		BitmapFont previousFont = g.getFont();
+		Color previousColor = g.getColor();
+
+		g.setFont(font);
+		g.setColor(element.getTextColor());
+		
+		g.drawString(element.getText(), textRenderX, textRenderY);
+		if (element.isCursorVisible()) {
+			g.drawLineSegment(textRenderX + element.getRenderCursorX(), textRenderY,
+					textRenderX + element.getRenderCursorX(), textRenderY + element.getRenderCursorHeight());
+		}
+		
+		g.setFont(previousFont);
+		g.setColor(previousColor);
 	}
 
 }
