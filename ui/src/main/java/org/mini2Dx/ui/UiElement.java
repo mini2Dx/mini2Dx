@@ -12,6 +12,7 @@
 package org.mini2Dx.ui;
 
 import org.mini2Dx.ui.effect.UiEffect;
+import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.ElementState;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ContentPositionListener;
@@ -36,6 +37,12 @@ public interface UiElement<T extends UiElementStyle> extends UiContentContainer 
 	public void interpolate(UiContentContainer elementContainer, float alpha);
 
 	public void accept(UiRenderer renderer);
+	
+	public boolean mouseMoved(int screenX, int screenY);
+	
+	public Actionable mouseDown(int screenX, int screenY, int pointer, int button);
+	
+	public void mouseUp(int screenX, int screenY, int pointer, int button);
 
 	public UiElement<?> getById(String id);
 

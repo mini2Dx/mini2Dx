@@ -82,6 +82,23 @@ public abstract class Column<T extends UiElementStyle> extends BasicUiElement<T>
 
 		rulesChanged = true;
 	}
+	
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		if(currentArea.contains(screenX, screenY)) {
+			setState(ElementState.HOVER);
+			boolean result = false;
+			for(int i = rows.size() - 1; i >= 0; i--) {
+				if(rows.get(i).mouseMoved(screenX, screenY)) {
+					result = true;
+				}
+			}
+			return result;
+		} else if(getState() != ElementState.NORMAL) {
+			setState(ElementState.NORMAL);
+		}
+		return false;
+	}
 
 	@Override
 	public UiElement<?> getById(String id) {
@@ -91,6 +108,17 @@ public abstract class Column<T extends UiElementStyle> extends BasicUiElement<T>
 		for (UiElement<?> element : rows) {
 			UiElement<?> result = element.getById(id);
 			if (result != null) {
+				return result;
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public Actionable mouseDown(int screenX, int screenY, int pointer, int button) {
+		for(int i = rows.size() - 1; i >= 0; i--) {
+			Actionable result = rows.get(i).mouseDown(screenX, screenY, pointer, button);
+			if(result != null) {
 				return result;
 			}
 		}
@@ -165,6 +193,17 @@ public abstract class Column<T extends UiElementStyle> extends BasicUiElement<T>
 		this.visible = visible;
 		for (int i = 0; i < rows.size(); i++) {
 			rows.get(i).setVisible(visible);
+		}
+	}
+	
+	@Override
+	public void setState(ElementState state) {
+		super.setState(state);
+		if(state != ElementState.NORMAL) {
+			return;
+		}
+		for(int i = rows.size() -1; i >= 0; i--) {
+			rows.get(i).setState(ElementState.NORMAL);
 		}
 	}
 }

@@ -28,6 +28,7 @@ public class DefaultYPositionRule implements PositionRule {
 
 	@Override
 	public void onContentSizeChanged(UiElement<?> element, float targetWidth, float targetHeight) {
+		targetPosition = element.getMarginTop();
 	}
 
 	@Override

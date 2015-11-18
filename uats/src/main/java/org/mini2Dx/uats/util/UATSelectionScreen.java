@@ -43,6 +43,7 @@ import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
 import org.mini2Dx.ui.theme.UiTheme;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 
@@ -125,6 +126,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
     	if(!uiContainer.isThemeApplied()) {
     		uiContainer.applyTheme(UiTheme.DEFAULT_THEME_FILE);
     	}
+    	Gdx.input.setInputProcessor(uiContainer);
     }
 
     @Override
@@ -155,62 +157,92 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 		uatsDialog.addRow(Row.withElements(createHeader("User Acceptance Tests")));
 		uatsDialog.addRow(Row.withElements(createButton("Blending", new ActionListener() {
 			@Override
-			public void onAction(Actionable source) {
+			public void onActionBegin(Actionable source) {}
+
+			@Override
+			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(BlendingUAT.class);
 			}
 		})));
 		uatsDialog.addRow(Row.withElements(createButton("Graphics.clip()", new ActionListener() {
 			@Override
-			public void onAction(Actionable source) {
+			public void onActionBegin(Actionable source) {}
+			
+			@Override
+			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(ClippingUAT.class);
 			}
 		})));
 		uatsDialog.addRow(Row.withElements(createButton("Geometry", new ActionListener() {
 			@Override
-			public void onAction(Actionable source) {
+			public void onActionBegin(Actionable source) {}
+			
+			@Override
+			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(GeometryUAT.class);
 			}
 		})));
 		uatsDialog.addRow(Row.withElements(createButton("Graphics", new ActionListener() {
 			@Override
-			public void onAction(Actionable source) {
+			public void onActionBegin(Actionable source) {}
+			
+			@Override
+			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(GraphicsUAT.class);
 			}
 		})));
 		uatsDialog.addRow(Row.withElements(createButton("Orthogonal TiledMap (No Caching)", new ActionListener() {
 			@Override
-			public void onAction(Actionable source) {
+			public void onActionBegin(Actionable source) {}
+			
+			@Override
+			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(OrthogonalTiledMapNoCachingUAT.class);
 			}
 		})));
 		uatsDialog.addRow(Row.withElements(createButton("Orthogonal TiledMap (With Caching)", new ActionListener() {
 			@Override
-			public void onAction(Actionable source) {
+			public void onActionBegin(Actionable source) {}
+			
+			@Override
+			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(OrthogonalTiledMapWithCachingUAT.class);
 			}
 		})));
 		uatsDialog.addRow(Row.withElements(createButton("Isometric TiledMap (No Caching)", new ActionListener() {
 			@Override
-			public void onAction(Actionable source) {
+			public void onActionBegin(Actionable source) {}
+			
+			@Override
+			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(IsometricTiledMapUAT.class);
 			}
 		})));
 		uatsDialog.addRow(Row.withElements(createButton("Particle Effects", new ActionListener() {
 			@Override
-			public void onAction(Actionable source) {
+			public void onActionBegin(Actionable source) {}
+			
+			@Override
+			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(ParticleEffectsUAT.class);
 			}
 		})));
 		uatsDialog.addRow(Row.withElements(createButton("Controllers", new ActionListener() {
 			@Override
-			public void onAction(Actionable source) {
+			public void onActionBegin(Actionable source) {}
+			
+			@Override
+			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(ControllerUAT.class);
 			}
 		})));
 		uatsDialog.addRow(Row.withElements(createHeader("Utilities")));
 		uatsDialog.addRow(Row.withElements(createButton("Controller Mapping", new ActionListener() {
 			@Override
-			public void onAction(Actionable source) {
+			public void onActionBegin(Actionable source) {}
+			
+			@Override
+			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(ControllerMapping.class);
 			}
 		})));

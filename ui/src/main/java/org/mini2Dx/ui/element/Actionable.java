@@ -17,7 +17,9 @@ import org.mini2Dx.ui.listener.ActionListener;
  *
  */
 public interface Actionable {
-
+	
+	public void mouseUp(int screenX, int screenY, int pointer, int button);
+	
 	public void addActionListener(ActionListener listener);
 	
 	public void removeActionListener(ActionListener listener);

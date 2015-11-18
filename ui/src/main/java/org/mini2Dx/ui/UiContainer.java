@@ -19,6 +19,7 @@ import java.util.Map;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.GameResizeListener;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
 import org.mini2Dx.ui.render.UiRenderer;
@@ -43,6 +44,7 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 	private UiTheme theme;
 	private ScreenSize currentScreenSize;
 	private boolean visible = true;
+	private Actionable currentAction;
 	
 	public UiContainer(GameContainer gc, AssetManager assetManager) {
 		this.gc = gc;
@@ -159,6 +161,9 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 
 	public void dispose() {
 		gc.removeResizeListener(this);
+		elements.clear();
+		disposedElements.clear();
+		elementsById.clear();
 	}
 
 	@Override
@@ -181,31 +186,46 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
+		for(int i = elements.size() - 1; i >= 0; i--) {
+			Actionable result = elements.get(i).mouseDown(screenX, screenY, pointer, button);
+			if(result != null) {
+				currentAction = result;
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
+		if(currentAction == null) {
+			return false;
+		}
+		currentAction.mouseUp(screenX, screenY, pointer, button);
+		return true;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
-		return false;
+		if(!visible) {
+			return false;
+		}
+		boolean result = false;
+		for(int i = elements.size() - 1; i >= 0; i--) {
+			if(elements.get(i).mouseMoved(screenX, screenY)) {
+				result = true;
+			}
+		}
+		return result;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	

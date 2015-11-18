@@ -35,8 +35,7 @@ public class AutoHeightRule implements SizeRule {
 
 	@Override
 	public void onContentSizeChanged(UiElement<?> element) {
-		targetHeight = element.getContentHeight() + currentStyle.getPaddingTop() + currentStyle.getPaddingBottom()
-				- currentStyle.getMarginBottom() - currentStyle.getMarginTop();
+		targetHeight = element.getContentHeight() + currentStyle.getPaddingTop() + currentStyle.getPaddingBottom();
 	}
 
 	@Override

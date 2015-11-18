@@ -22,6 +22,8 @@ import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.ButtonStyle;
 import org.mini2Dx.ui.theme.UiTheme;
 
+import com.badlogic.gdx.Input.Buttons;
+
 /**
  *
  */
@@ -39,6 +41,30 @@ public class Button extends Column<ButtonStyle> implements Actionable, Hoverable
 		renderer.render(this);
 		for(int i = 0; i < rows.size(); i++) {
 			rows.get(i).accept(renderer);
+		}
+	}
+	
+	@Override
+	public Actionable mouseDown(int screenX, int screenY, int pointer, int button) {
+		if(button != Buttons.LEFT) {
+			return null;
+		}
+		if(currentArea.contains(screenX, screenY)) {
+			setState(ElementState.ACTION);
+			notifyActionListenersOnBeginEvent();
+			return this;
+		}
+		return null;
+	}
+	
+	
+	@Override
+	public void mouseUp(int screenX, int screenY, int pointer, int button) {
+		notifyActionListenersOnEndEvent();
+		if(currentArea.contains(screenX, screenY)) {
+			setState(ElementState.HOVER);
+		} else {
+			setState(ElementState.NORMAL);
 		}
 	}
 
@@ -59,6 +85,18 @@ public class Button extends Column<ButtonStyle> implements Actionable, Hoverable
 	@Override
 	public void removeActionListener(ActionListener listener) {
 		listeners.remove(listener);
+	}
+	
+	private void notifyActionListenersOnBeginEvent() {
+		for(int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).onActionBegin(this);
+		}
+	}
+	
+	private void notifyActionListenersOnEndEvent() {
+		for(int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).onActionEnd(this);
+		}
 	}
 
 	@Override

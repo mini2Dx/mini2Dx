@@ -129,6 +129,24 @@ public abstract class BasicUiElement<T extends UiElementStyle>
 		}
 		currentArea.interpolate(null, alpha);
 	}
+	
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		if(currentArea.contains(screenX, screenY)) {
+			state = ElementState.HOVER;
+			return true;
+		}
+		state = ElementState.NORMAL;
+		return false;
+	}
+	
+	@Override
+	public Actionable mouseDown(int screenX, int screenY, int pointer, int button) {
+		return null;
+	}
+	
+	@Override
+	public void mouseUp(int screenX, int screenY, int pointer, int button) {}
 
 	@Override
 	public UiElement<?> getById(String id) {

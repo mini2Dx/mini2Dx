@@ -95,6 +95,23 @@ public class Row extends BasicUiElement<RowStyle>implements ContentSizeListener 
 		
 		rulesChanged = true;
 	}
+	
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		if(currentArea.contains(screenX, screenY)) {
+			setState(ElementState.HOVER);
+			boolean result = false;
+			for(int i = children.size() - 1; i >= 0; i--) {
+				if(children.get(i).mouseMoved(screenX, screenY)) {
+					result = true;
+				}
+			}
+			return result;
+		} else if(getState() != ElementState.NORMAL) {
+			setState(ElementState.NORMAL);
+		}
+		return false;
+	}
 
 	@Override
 	public UiElement<?> getById(String id) {
@@ -125,6 +142,17 @@ public class Row extends BasicUiElement<RowStyle>implements ContentSizeListener 
 		for (int i = 0; i < children.size(); i++) {
 			children.get(i).applyStyle(theme, screenSize);
 		}
+	}
+	
+	@Override
+	public Actionable mouseDown(int screenX, int screenY, int pointer, int button) {
+		for(int i = children.size() - 1; i >= 0; i--) {
+			Actionable result = children.get(i).mouseDown(screenX, screenY, pointer, button);
+			if(result != null) {
+				return result;
+			}
+		}
+		return null;
 	}
 
 	public void addChild(UiElement<?> element) {
@@ -211,6 +239,17 @@ public class Row extends BasicUiElement<RowStyle>implements ContentSizeListener 
 		}
 	}
 
+	@Override
+	public void setState(ElementState state) {
+		super.setState(state);
+		if(state != ElementState.NORMAL) {
+			return;
+		}
+		for(int i = children.size() -1; i >= 0; i--) {
+			children.get(i).setState(ElementState.NORMAL);
+		}
+	}
+	
 	public float getRowYOffset() {
 		return rowYOffset;
 	}
