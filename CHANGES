@@ -10,10 +10,12 @@
 - Added GameResizeListener and removed onResize method from GameContainer
 - Added MdxException for mini2Dx runtime exceptions
 - Positionable instances now have getId() method
+- Improved pixel rounding and reduced interpolation for CollisionBox, CollisionCircle and CollisionPoint
 - Mdx.json can now read/write to/from FileHandle instances
 - Fixed Mdx.xml not deserializing maps correctly when values are objects
 - Fixed Mdx.xml and Mdx.json not serializing/deserialzing super class fields
 - Fixed Mdx.xml and Mdx.json not deserialzing enum fields correctly
+- Fixed Animation flipping Sprites when rendering at a coordinate
 - QuadTrees
   * Added QuadTree interface for all QuadTree implementations
   * Existing Quad class renamed to PointQuadTree
