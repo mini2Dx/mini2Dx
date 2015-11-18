@@ -21,6 +21,7 @@ import org.mini2Dx.core.engine.Positionable;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Point;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -39,6 +40,8 @@ public class CollisionPoint extends Point implements Positionable {
 	
 	private Point previousPosition;
 	private Point renderPosition;
+	private int renderX, renderY;
+	private boolean interpolate = false;
 	
 	public CollisionPoint() {
 		this(0f, 0f);
@@ -51,6 +54,7 @@ public class CollisionPoint extends Point implements Positionable {
 		positionChangeListenerLock = new ReentrantReadWriteLock();
 		previousPosition = new Point(x, y);
 		renderPosition = new Point(x, y);
+		storeRenderCoordinates();
 	}
 
 	public CollisionPoint(Point point) {
@@ -60,6 +64,12 @@ public class CollisionPoint extends Point implements Positionable {
 		positionChangeListenerLock = new ReentrantReadWriteLock();
 		previousPosition = new Point(point);
 		renderPosition = new Point(point);
+		storeRenderCoordinates();
+	}
+	
+	private void storeRenderCoordinates() {
+		renderX = MathUtils.round(renderPosition.getX());
+		renderY = MathUtils.round(renderPosition.getY());
 	}
 	
 	/**
@@ -76,7 +86,18 @@ public class CollisionPoint extends Point implements Positionable {
 
 	@Override
 	public void interpolate(GameContainer gc, float alpha) {
+		if(!interpolate) {
+			return;
+		}
 		renderPosition.set(previousPosition.lerp(this, alpha));
+		storeRenderCoordinates();
+		if(renderX != MathUtils.round(x)) {
+			return;
+		}
+		if(renderY != MathUtils.round(y)) {
+			return;
+		}
+		interpolate = false;
 	}
 
 	@Override
@@ -138,6 +159,7 @@ public class CollisionPoint extends Point implements Positionable {
 		super.set(x, y);
 		previousPosition.set(x, y);
 		renderPosition.set(x, y);
+		storeRenderCoordinates();
 		
 		if(!notifyPositionListeners) {
 			return;
@@ -148,6 +170,7 @@ public class CollisionPoint extends Point implements Positionable {
 	@Override
 	public Vector2 set(float x, float y) {
 		super.set(x, y);
+		interpolate = true;
 		notifyPositionChangeListeners();
 		return this;
 	}
@@ -155,6 +178,7 @@ public class CollisionPoint extends Point implements Positionable {
 	@Override
 	public Vector2 add(float x, float y) {
 		super.add(x, y);
+		interpolate = true;
 		notifyPositionChangeListeners();
 		return this;
 	}
@@ -162,16 +186,17 @@ public class CollisionPoint extends Point implements Positionable {
 	@Override
 	public Vector2 sub(float x, float y) {
 		super.sub(x, y);
+		interpolate = true;
 		notifyPositionChangeListeners();
 		return this;
 	}
 	
-	public float getRenderX() {
-		return renderPosition.getX();
+	public int getRenderX() {
+		return renderX;
 	}
 	
-	public float getRenderY() {
-		return renderPosition.getY();
+	public int getRenderY() {
+		return renderY;
 	}
 
 	public long getId() {

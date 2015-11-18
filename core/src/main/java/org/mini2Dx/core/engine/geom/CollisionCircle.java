@@ -23,6 +23,8 @@ import org.mini2Dx.core.engine.Sizeable;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Circle;
 
+import com.badlogic.gdx.math.MathUtils;
+
 /**
  * An implementation of {@link Circle} that allows for interpolation. Game
  * objects can use this class to move around the game world and retrieve the
@@ -40,6 +42,8 @@ public class CollisionCircle extends Circle implements Positionable, Sizeable {
 	
 	private Circle previousCircle;
 	private Circle renderCircle;
+	private int renderX, renderY;
+	private boolean interpolate = false;
 	
 	public CollisionCircle(int radius) {
 		super(radius);
@@ -49,6 +53,7 @@ public class CollisionCircle extends Circle implements Positionable, Sizeable {
 		sizeChangeListenerLock = new ReentrantReadWriteLock();
 		previousCircle = new Circle(radius);
 		renderCircle = new Circle(radius);
+		storeRenderCoordinates();
 	}
 	
 	public CollisionCircle(float centerX, float centerY, int radius) {
@@ -59,6 +64,12 @@ public class CollisionCircle extends Circle implements Positionable, Sizeable {
 		sizeChangeListenerLock = new ReentrantReadWriteLock();
 		previousCircle = new Circle(centerX, centerY, radius);
 		renderCircle = new Circle(centerX, centerY, radius);
+		storeRenderCoordinates();
+	}
+	
+	private void storeRenderCoordinates() {
+		renderX = MathUtils.round(renderCircle.getX());
+		renderY = MathUtils.round(renderCircle.getY());
 	}
 	
 	/**
@@ -75,7 +86,18 @@ public class CollisionCircle extends Circle implements Positionable, Sizeable {
 
 	@Override
 	public void interpolate(GameContainer gc, float alpha) {
+		if(!interpolate) {
+			return;
+		}
 		renderCircle.set(previousCircle.lerp(this, alpha));
+		storeRenderCoordinates();
+		if(renderX != MathUtils.round(getX())) {
+			return;
+		}
+		if(renderY != MathUtils.round(getY())) {
+			return;
+		}
+		interpolate = false;
 	}
 	
 	@Override
@@ -184,6 +206,7 @@ public class CollisionCircle extends Circle implements Positionable, Sizeable {
 		super.setCenter(x, y);
 		previousCircle.setCenter(x, y);
 		renderCircle.setCenter(x, y);
+		storeRenderCoordinates();
 		
 		if(!notifyPositionListeners) {
 			return;
@@ -193,30 +216,34 @@ public class CollisionCircle extends Circle implements Positionable, Sizeable {
 
 	public void setX(float x) {
 		super.setX(x);
+		interpolate = true;
 		notifyPositionChangeListeners();
 	}
 	
 	public void setY(float y) {
 		super.setY(y);
+		interpolate = true;
 		notifyPositionChangeListeners();
 	}
 	
 	public void setCenter(float x, float y) {
 		super.setCenter(x, y);
+		interpolate = true;
 		notifyPositionChangeListeners();
 	}
 	
 	public void setRadius(float radius) {
 		super.setRadius(radius);
+		interpolate = true;
 		notifySizeChangeListeners();
 	}
 	
-	public float getRenderX() {
-		return renderCircle.getX();
+	public int getRenderX() {
+		return renderX;
 	}
 	
-	public float getRenderY() {
-		return renderCircle.getY();
+	public int getRenderY() {
+		return renderY;
 	}
 	
 	public float getRenderRadius() {

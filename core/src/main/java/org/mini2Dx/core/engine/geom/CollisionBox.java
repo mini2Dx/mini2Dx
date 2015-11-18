@@ -23,6 +23,7 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Rectangle;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -43,6 +44,8 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 
 	private Rectangle previousRectangle;
 	private Rectangle renderRectangle;
+	private int renderX, renderY, renderWidth, renderHeight;
+	private boolean interpolate = false;
 
 	public CollisionBox() {
 		this(0f, 0f, 1f, 1f);
@@ -56,6 +59,14 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 		sizeChangeListenerLock = new ReentrantReadWriteLock();
 		previousRectangle = new Rectangle(x, y, width, height);
 		renderRectangle = new Rectangle(x, y, width, height);
+		storeRenderCoordinates();
+	}
+	
+	private void storeRenderCoordinates() {
+		renderX = MathUtils.round(renderRectangle.x);
+		renderY = MathUtils.round(renderRectangle.y);
+		renderWidth = MathUtils.round(renderRectangle.width);
+		renderHeight = MathUtils.round(renderRectangle.height);
 	}
 	
 	/**
@@ -72,7 +83,24 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 
 	@Override
 	public void interpolate(GameContainer gc, float alpha) {
+		if(!interpolate) {
+			return;
+		}
 		renderRectangle.set(previousRectangle.lerp(this, alpha));
+		storeRenderCoordinates();
+		if(renderX != MathUtils.round(this.x)) {
+			return;
+		}
+		if(renderY != MathUtils.round(this.y)) {
+			return;
+		}
+		if(renderWidth != MathUtils.round(this.width)) {
+			return;
+		}
+		if(renderHeight != MathUtils.round(this.height)) {
+			return;
+		}
+		interpolate = false;
 	}
 
 	/**
@@ -217,6 +245,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 		super.set(x, y, width, height);
 		previousRectangle.set(x, y, width, height);
 		renderRectangle.set(previousRectangle);
+		storeRenderCoordinates();
 		
 		if(notifyPositionListeners) {
 			notifyPositionChangeListeners();
@@ -237,6 +266,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 		super.setWidth(width);
 		previousRectangle.set(this);
 		renderRectangle.set(this);
+		storeRenderCoordinates();
 		notifySizeChangeListeners();
 	}
 
@@ -251,6 +281,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 		super.setHeight(height);
 		previousRectangle.set(this);
 		renderRectangle.set(this);
+		storeRenderCoordinates();
 		notifySizeChangeListeners();
 	}
 
@@ -261,6 +292,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 		
 		super.set(x, y, width, height);
 		
+		interpolate = true;
 		if(notifyPositionListeners) {
 			notifyPositionChangeListeners();
 		}
@@ -272,6 +304,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 
 	public void set(Rectangle rectangle) {
 		super.set(rectangle);
+		interpolate = true;
 		notifyPositionChangeListeners();
 		notifySizeChangeListeners();
 	}
@@ -280,6 +313,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	public com.badlogic.gdx.math.Rectangle set(
 			com.badlogic.gdx.math.Rectangle rectangle) {
 		super.set(rectangle);
+		interpolate = true;
 		notifyPositionChangeListeners();
 		notifySizeChangeListeners();
 		return this;
@@ -288,6 +322,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	@Override
 	public Rectangle setPosition(float x, float y) {
 		super.setPosition(x, y);
+		interpolate = true;
 		notifyPositionChangeListeners();
 		return this;
 	}
@@ -295,6 +330,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	@Override
 	public Rectangle setPosition(Vector2 position) {
 		super.setPosition(position);
+		interpolate = true;
 		notifyPositionChangeListeners();
 		return this;
 	}
@@ -302,6 +338,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	@Override
 	public Rectangle setX(float x) {
 		super.setX(x);
+		interpolate = true;
 		notifyPositionChangeListeners();
 		return this;
 	}
@@ -309,6 +346,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	@Override
 	public Rectangle setY(float y) {
 		super.setY(y);
+		interpolate = true;
 		notifyPositionChangeListeners();
 		return this;
 	}
@@ -316,6 +354,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	@Override
 	public Rectangle setWidth(float width) {
 		super.setWidth(width);
+		interpolate = true;
 		notifySizeChangeListeners();
 		return this;
 	}
@@ -323,6 +362,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	@Override
 	public Rectangle setHeight(float height) {
 		super.setHeight(height);
+		interpolate = true;
 		notifySizeChangeListeners();
 		return this;
 	}
@@ -330,6 +370,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	@Override
 	public Rectangle setSize(float width, float height) {
 		super.setSize(width, height);
+		interpolate = true;
 		notifySizeChangeListeners();
 		return this;
 	}
@@ -337,24 +378,25 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	@Override
 	public Rectangle setSize(float sizeXY) {
 		super.setSize(sizeXY);
+		interpolate = true;
 		notifySizeChangeListeners();
 		return this;
 	}
 
-	public float getRenderX() {
-		return renderRectangle.getX();
+	public int getRenderX() {
+		return renderX;
 	}
 
-	public float getRenderY() {
-		return renderRectangle.getY();
+	public int getRenderY() {
+		return renderY;
 	}
 
-	public float getRenderWidth() {
-		return renderRectangle.getWidth();
+	public int getRenderWidth() {
+		return renderWidth;
 	}
 
-	public float getRenderHeight() {
-		return renderRectangle.getHeight();
+	public int getRenderHeight() {
+		return renderHeight;
 	}
 
 	public float getRenderRotation() {
