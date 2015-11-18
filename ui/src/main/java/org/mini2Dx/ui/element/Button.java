@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mini2Dx.core.engine.geom.CollisionBox;
+import org.mini2Dx.ui.UiElement;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.render.UiRenderer;

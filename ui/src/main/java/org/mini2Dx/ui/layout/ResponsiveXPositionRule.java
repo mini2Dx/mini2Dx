@@ -18,22 +18,22 @@ import org.mini2Dx.ui.theme.UiTheme;
 /**
  *
  */
-public class ResponsivePositionRule implements PositionRule {
+public class ResponsiveXPositionRule implements PositionRule {
 	private final int offset;
 	
 	private float targetPosition;
 	
-	public ResponsivePositionRule(int offset) {
+	public ResponsiveXPositionRule(int offset) {
 		this.offset = offset;
 	}
 	
 	@Override
 	public void onScreenResize(UiTheme theme, UiElementStyle style, float columnSize, float totalHeight) {
-		targetPosition = columnSize * offset;
+		targetPosition = (columnSize * offset) + style.getMarginLeft();
 	}
 	
 	@Override
-	public void onContentSizeChanged(UiElement<?> element) {
+	public void onContentSizeChanged(UiElement<?> element, float targetWidth, float targetHeight) {
 	}
 
 	@Override

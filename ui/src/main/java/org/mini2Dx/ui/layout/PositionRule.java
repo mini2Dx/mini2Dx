@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.ui.UiElement;
 import org.mini2Dx.ui.listener.ContentSizeListener;
 import org.mini2Dx.ui.theme.UiElementStyle;
 import org.mini2Dx.ui.theme.UiTheme;
@@ -18,9 +19,11 @@ import org.mini2Dx.ui.theme.UiTheme;
 /**
  *
  */
-public interface PositionRule extends ContentSizeListener {
+public interface PositionRule {
 
 	public void onScreenResize(UiTheme theme, UiElementStyle style, float columnSize, float totalHeight);
+	
+	public void onContentSizeChanged(UiElement<?> element, float targetWidth, float targetHeight);
 	
 	public float getTargetPosition();
 }

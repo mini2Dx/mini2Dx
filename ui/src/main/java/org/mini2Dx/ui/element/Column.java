@@ -25,139 +25,131 @@ import org.mini2Dx.ui.theme.UiTheme;
 /**
  *
  */
-public abstract class Column<T extends UiElementStyle> extends BasicUiElement<T> implements ContentSizeListener {
+public abstract class Column<T extends UiElementStyle> extends BasicUiElement<T>implements ContentSizeListener {
 	protected final List<Row> rows = new ArrayList<Row>(1);
-	
+
 	private float contentWidth, contentHeight;
 	private boolean rowAdded;
-	
+
 	@Override
 	public void update(UiContentContainer uiContainer, float delta) {
-		if(rowAdded) {
+		if (rowAdded) {
 			notifyContentSizeListeners();
 			rowAdded = false;
 		}
-		
+
 		super.update(uiContainer, delta);
-		
+
 		boolean rowsRemoved = false;
-		
-		for(int i = 0; i < rows.size(); i++) {
+
+		for (int i = 0; i < rows.size(); i++) {
 			UiElement<?> row = rows.get(i);
-			if(row.disposed()) {
+			if (row.disposed()) {
 				rows.remove(i);
-				currentArea.removePositionChangeListener(row);
+				removeContentPositionListener(row);
 				i--;
 				rowsRemoved = true;
 			} else {
 				row.update(this, delta);
 			}
 		}
-		
-		if(!rowsRemoved) {
+
+		if (!rowsRemoved) {
 			return;
 		}
 		calculateContentDimensions();
 	}
-	
+
 	@Override
 	public void interpolate(UiContentContainer uiContainer, float alpha) {
 		super.interpolate(uiContainer, alpha);
 		for (int i = 0; i < rows.size(); i++) {
-			rows.get(i).interpolate(this, alpha);;
+			rows.get(i).interpolate(this, alpha);
 		}
 	}
-	
+
 	@Override
 	public void resize(ScreenSize screenSize, UiTheme theme, float columnWidth, float totalHeight) {
-		float originalColumnWidth = columnWidth;
-		
 		applyStyle(theme, screenSize);
 		applyRules(screenSize, theme, columnWidth, totalHeight);
-		notifyRules(screenSize, theme, originalColumnWidth, totalHeight);
-		
-		columnWidth = widthRule.getTargetSize() / theme.getColumns();
-		
-		for(int i = 0; i < rows.size(); i++) {
+		notifyRules(screenSize, theme, columnWidth, totalHeight);
+
+		columnWidth = ((widthRule.getTargetSize() - getPaddingLeft() - getPaddingRight()) / theme.getColumns());
+
+		for (int i = 0; i < rows.size(); i++) {
 			rows.get(i).resize(screenSize, theme, columnWidth, heightRule.getTargetSize());
 		}
-		notifyRules(screenSize, theme, originalColumnWidth, totalHeight);
-		
+
 		rulesChanged = true;
 	}
-	
+
 	@Override
 	public UiElement<?> getById(String id) {
 		if (id.equals(getId())) {
 			return this;
 		}
-		for(UiElement<?> element : rows) {
+		for (UiElement<?> element : rows) {
 			UiElement<?> result = element.getById(id);
-			if(result != null) {
+			if (result != null) {
 				return result;
 			}
 		}
 		return null;
 	}
-	
+
 	public void addRow(Row row) {
 		row.addContentSizeListener(this);
-		currentArea.addPostionChangeListener(row);
+		addContentPositionListener(row);
 		rows.add(row);
-		
+
 		contentWidth = Math.max(contentWidth, row.getContentWidth());
 		contentHeight += row.getContentHeight();
 		rowAdded = true;
 	}
-	
+
 	public void removeRow(Row row) {
-		currentArea.removePositionChangeListener(row);
+		removeContentPositionListener(row);
 		row.removeContentSizeListener(this);
 		row.dispose();
 	}
 
 	@Override
 	public void accept(UiRenderer renderer) {
-		if(!visible) {
+		if (!visible) {
 			return;
 		}
-		for(int i = 0; i < rows.size(); i++) {
+		for (int i = 0; i < rows.size(); i++) {
 			rows.get(i).accept(renderer);
 		}
 	}
 
 	@Override
 	public void applyStyle(UiTheme theme, ScreenSize screenSize) {
-		for(int i = 0; i < rows.size(); i++) {
+		for (int i = 0; i < rows.size(); i++) {
 			rows.get(i).applyStyle(theme, screenSize);
 		}
 	}
-	
+
 	private void calculateContentDimensions() {
 		float contentWidth = 0f;
 		float contentHeight = 0f;
-		
-		for (Row row : rows) {
-			contentWidth = Math.max(contentWidth, row.getContentWidth());
-			contentHeight += row.getContentHeight();
-		}
 
-		boolean notifyListeners = this.contentHeight != contentHeight || this.contentWidth != contentWidth;
+		for (Row row : rows) {
+			row.setRowYOffset(contentHeight);
+			contentWidth = Math.max(contentWidth, row.getElementWidth());
+			contentHeight += row.getElementHeight();
+		}
 
 		this.contentWidth = contentWidth;
 		this.contentHeight = contentHeight;
-		
-		if(!notifyListeners) {
-			return;
-		}
-		notifyContentSizeListeners();
 	}
-	
+
 	@Override
 	public void onContentSizeChanged(UiElement<?> element) {
 		calculateContentDimensions();
+		notifyContentSizeListeners();
 	}
-	
+
 	@Override
 	public float getContentWidth() {
 		return contentWidth;
@@ -167,7 +159,7 @@ public abstract class Column<T extends UiElementStyle> extends BasicUiElement<T>
 	public float getContentHeight() {
 		return contentHeight;
 	}
-	
+
 	@Override
 	public void setVisible(boolean visible) {
 		this.visible = visible;

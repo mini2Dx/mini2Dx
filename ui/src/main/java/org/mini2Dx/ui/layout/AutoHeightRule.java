@@ -19,25 +19,24 @@ import org.mini2Dx.ui.theme.UiTheme;
  *
  */
 public class AutoHeightRule implements SizeRule {
-	private final UiElement element;
+	private final UiElement<?> element;
 
 	private UiElementStyle currentStyle;
 	private float targetHeight;
 
-	public AutoHeightRule(UiElement element) {
+	public AutoHeightRule(UiElement<?> element) {
 		this.element = element;
 	}
 
 	@Override
 	public void onScreenResize(UiTheme theme, UiElementStyle style, float columnSize, float totalHeight) {
 		this.currentStyle = style;
-		onContentSizeChanged(element);
 	}
 
 	@Override
 	public void onContentSizeChanged(UiElement<?> element) {
 		targetHeight = element.getContentHeight() + currentStyle.getPaddingTop() + currentStyle.getPaddingBottom()
-				- currentStyle.getMarginBottom();
+				- currentStyle.getMarginBottom() - currentStyle.getMarginTop();
 	}
 
 	@Override

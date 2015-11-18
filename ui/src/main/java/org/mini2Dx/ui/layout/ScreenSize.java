@@ -36,11 +36,11 @@ public enum ScreenSize {
 	};
 	private static final List<ScreenSize> largestToSmallest = new ArrayList<ScreenSize>() {
 		{
-			add(XS);
-			add(SM);
-			add(MD);
-			add(LG);
 			add(XL);
+			add(LG);
+			add(MD);
+			add(SM);
+			add(XS);
 		}
 	};
 	

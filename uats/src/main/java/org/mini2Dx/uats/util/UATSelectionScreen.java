@@ -38,7 +38,9 @@ import org.mini2Dx.ui.element.Button;
 import org.mini2Dx.ui.element.Dialog;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.Row;
+import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ActionListener;
+import org.mini2Dx.ui.listener.ScreenSizeListener;
 import org.mini2Dx.ui.theme.UiTheme;
 
 import com.badlogic.gdx.assets.AssetManager;
@@ -48,7 +50,7 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Thomas Cashman
  */
-public class UATSelectionScreen extends BasicGameScreen {
+public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeListener {
     public static final int SCREEN_ID = 1;
     
     private final AssetManager assetManager;
@@ -64,8 +66,17 @@ public class UATSelectionScreen extends BasicGameScreen {
 	@Override
     public void initialise(GameContainer gc) {
 		uiContainer = new UiContainer(gc, assetManager);
+		uiContainer.addScreenSizeListener(this);
 		initialiseUi();
     }
+	
+	private UiElement<?> createHeader(String text) {
+		Label label = new Label(text);
+		label.setXRules("xs-0");
+		label.setWidthRules("xs-12");
+		label.setColor(Label.COLOR_BLACK);
+		return label;
+	}
 	
 	private UiElement<?> createLabel(String text) {
 		Label label = new Label(text);
@@ -137,10 +148,11 @@ public class UATSelectionScreen extends BasicGameScreen {
     private void initialiseUi() {
 		uatsDialog = new Dialog();
 		uatsDialog.setXRules("auto");
-		uatsDialog.setWidthRules("xs-12 sm-12 md-10 lg-8");
+		uatsDialog.setWidthRules("xs-12 sm-10 md-8 lg-6");
 		
-		uatsDialog.addRow(Row.withElements(createLabel("User Acceptance Tests")));
-		uatsDialog.addRow(Row.withElements(createLabel("Detected OS: " + Mdx.os)));
+		uatsDialog.addRow(Row.withElements(createHeader("Detected OS: " + Mdx.os)));
+		uatsDialog.addRow(Row.withElements(createHeader("")));
+		uatsDialog.addRow(Row.withElements(createHeader("User Acceptance Tests")));
 		uatsDialog.addRow(Row.withElements(createButton("Blending", new ActionListener() {
 			@Override
 			public void onAction(Actionable source) {
@@ -195,7 +207,7 @@ public class UATSelectionScreen extends BasicGameScreen {
 				nextScreenId = ScreenIds.getScreenId(ControllerUAT.class);
 			}
 		})));
-		uatsDialog.addRow(Row.withElements(createLabel("Utilities")));
+		uatsDialog.addRow(Row.withElements(createHeader("Utilities")));
 		uatsDialog.addRow(Row.withElements(createButton("Controller Mapping", new ActionListener() {
 			@Override
 			public void onAction(Actionable source) {
@@ -205,4 +217,9 @@ public class UATSelectionScreen extends BasicGameScreen {
 		
 		uiContainer.add(uatsDialog);
     }
+
+	@Override
+	public void onScreenSizeChanged(ScreenSize screenSize, float screenWidth, float screenHeight) {
+		System.out.println("Current Screen Size: " + screenSize + " @ " + screenWidth + "," + screenHeight);
+	}
 }

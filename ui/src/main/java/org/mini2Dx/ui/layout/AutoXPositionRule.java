@@ -19,14 +19,14 @@ import org.mini2Dx.ui.theme.UiTheme;
  *
  */
 public class AutoXPositionRule implements PositionRule {
-	private final UiElement element;
+	private final UiElement<?> element;
 	
 	private float targetX;
 	private float currentColumnSize;
 	private UiTheme currentTheme;
 	private UiElementStyle currentStyle;
 
-	public AutoXPositionRule(UiElement element) {
+	public AutoXPositionRule(UiElement<?> element) {
 		this.element = element;
 	}
 
@@ -35,12 +35,11 @@ public class AutoXPositionRule implements PositionRule {
 		this.currentColumnSize = columnSize;
 		this.currentStyle = style;
 		this.currentTheme = theme;
-		onContentSizeChanged(element);
 	}
 	
 	@Override
-	public void onContentSizeChanged(UiElement<?> element) {
-		targetX = (((currentColumnSize * currentTheme.getColumns()) / 2f) - (element.getContentWidth() / 2f)) + currentStyle.getMarginLeft();
+	public void onContentSizeChanged(UiElement<?> element, float targetWidth, float targetHeight) {
+		targetX = (((currentColumnSize * currentTheme.getColumns()) / 2f) - (targetWidth / 2f)) + currentStyle.getMarginLeft();
 	}
 
 	@Override

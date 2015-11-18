@@ -14,6 +14,7 @@ package org.mini2Dx.ui;
 import org.mini2Dx.ui.effect.UiEffect;
 import org.mini2Dx.ui.element.ElementState;
 import org.mini2Dx.ui.layout.ScreenSize;
+import org.mini2Dx.ui.listener.ContentPositionListener;
 import org.mini2Dx.ui.listener.ContentSizeListener;
 import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.UiElementStyle;
@@ -44,6 +45,10 @@ public interface UiElement<T extends UiElementStyle> extends UiContentContainer 
 	
 	public void applyEffect(UiEffect effect);
 	
+	public void addContentPositionListener(ContentPositionListener listener);
+	
+	public void removeContentPositionListener(ContentPositionListener listener);
+	
 	public void addContentSizeListener(ContentSizeListener listener);
 	
 	public void removeContentSizeListener(ContentSizeListener listener);
@@ -59,4 +64,8 @@ public interface UiElement<T extends UiElementStyle> extends UiContentContainer 
 	public void setXRules(String rules);
 	
 	public void setWidthRules(String rules);
+	
+	public float getElementWidth();
+	
+	public float getElementHeight();
 }

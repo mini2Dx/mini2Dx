@@ -20,7 +20,6 @@ public abstract class BasicGameScreen implements GameScreen {
 
 	@Override
 	public void onResize(int width, int height) {
-		Gdx.app.log("INFO", "Game window changed to " + width + "x" + height);
 	}
 	
 	@Override

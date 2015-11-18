@@ -145,6 +145,7 @@ public class UiTheme {
 				UiFont uiFont = fonts.get(labelStyle.getFont());
 				FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 				parameter.size = labelStyle.getFontSize();
+				parameter.flip = true;
 				labelStyle.setBitmapFont(uiFont.getFontGenerator().generateFont(parameter));
 			}
 		}

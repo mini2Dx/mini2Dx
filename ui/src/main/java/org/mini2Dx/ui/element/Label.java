@@ -23,7 +23,8 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
  *
  */
 public class Label extends BasicUiElement<LabelStyle> {
-	public static final Color DEFAULT_COLOR = new Color(254f / 255f, 254f / 255f, 254f / 255f, 1f);
+	public static final Color COLOR_WHITE = new Color(254f / 255f, 254f / 255f, 254f / 255f, 1f);
+	public static final Color COLOR_BLACK = new Color(1f / 255f, 1f / 255f, 1f / 255f, 1f);
 	
 	private String text;
 	private Color color;
@@ -36,7 +37,7 @@ public class Label extends BasicUiElement<LabelStyle> {
 	
 	public Label(String text) {
 		super();
-		color = DEFAULT_COLOR;
+		color = COLOR_WHITE;
 		glyphLayout = new GlyphLayout();
 		this.text = text;
 	}
@@ -95,4 +96,5 @@ public class Label extends BasicUiElement<LabelStyle> {
 		glyphLayout.setText(currentStyle.getBitmapFont(), text);
 		notifyContentSizeListeners();
 	}
+	
 }

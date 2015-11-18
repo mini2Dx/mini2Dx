@@ -21,15 +21,18 @@ import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ContentSizeListener;
 import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.NullStyle;
+import org.mini2Dx.ui.theme.RowStyle;
 import org.mini2Dx.ui.theme.UiTheme;
 
 /**
  *
  */
-public class Row extends BasicUiElement<NullStyle> implements ContentSizeListener {
+public class Row extends BasicUiElement<RowStyle>implements ContentSizeListener {
 	protected final List<UiElement<?>> children = new ArrayList<UiElement<?>>(1);
+	protected final RowStyle currentStyle = new RowStyle(this);
 
 	private float contentWidth, contentHeight;
+	private float rowYOffset;
 	private boolean childAdded;
 
 	public Row() {
@@ -46,11 +49,11 @@ public class Row extends BasicUiElement<NullStyle> implements ContentSizeListene
 
 	@Override
 	public void update(UiContentContainer uiContainer, float delta) {
-		if(childAdded) {
+		if (childAdded) {
 			notifyContentSizeListeners();
 			childAdded = false;
 		}
-		
+
 		super.update(uiContainer, delta);
 		boolean childRemoved = false;
 
@@ -70,12 +73,13 @@ public class Row extends BasicUiElement<NullStyle> implements ContentSizeListene
 		}
 		calculateContentDimensions();
 	}
-	
+
 	@Override
 	public void interpolate(UiContentContainer uiContainer, float alpha) {
 		super.interpolate(uiContainer, alpha);
 		for (int i = 0; i < children.size(); i++) {
-			children.get(i).interpolate(this, alpha);;
+			children.get(i).interpolate(this, alpha);
+			;
 		}
 	}
 
@@ -83,12 +87,11 @@ public class Row extends BasicUiElement<NullStyle> implements ContentSizeListene
 	public void resize(ScreenSize screenSize, UiTheme theme, float columnWidth, float totalHeight) {
 		applyStyle(theme, screenSize);
 		applyRules(screenSize, theme, columnWidth, totalHeight);
-		
+		notifyRules(screenSize, theme, columnWidth, totalHeight);
+
 		for (int i = 0; i < children.size(); i++) {
 			children.get(i).resize(screenSize, theme, columnWidth, totalHeight);
 		}
-		
-		notifyRules(screenSize, theme, columnWidth, totalHeight);
 		
 		rulesChanged = true;
 	}
@@ -126,7 +129,7 @@ public class Row extends BasicUiElement<NullStyle> implements ContentSizeListene
 
 	public void addChild(UiElement<?> element) {
 		element.addContentSizeListener(this);
-		currentArea.addPostionChangeListener(element);
+		addContentPositionListener(element);
 		children.add(element);
 
 		contentWidth += element.getContentWidth();
@@ -135,7 +138,7 @@ public class Row extends BasicUiElement<NullStyle> implements ContentSizeListene
 	}
 
 	public void removeChild(UiElement<?> element) {
-		currentArea.removePositionChangeListener(element);
+		removeContentPositionListener(element);
 		element.removeContentSizeListener(this);
 		element.dispose();
 	}
@@ -165,24 +168,18 @@ public class Row extends BasicUiElement<NullStyle> implements ContentSizeListene
 		float contentHeight = 0f;
 
 		for (UiElement<?> element : children) {
-			contentWidth += element.getContentWidth();
-			contentHeight = Math.max(contentHeight, element.getContentHeight());
+			contentWidth += element.getElementWidth();
+			contentHeight = Math.max(contentHeight, element.getElementHeight());
 		}
-
-		boolean notifyListeners = this.contentHeight != contentHeight || this.contentWidth != contentWidth;
 
 		this.contentWidth = contentWidth;
 		this.contentHeight = contentHeight;
-		
-		if(!notifyListeners) {
-			return;
-		}
-		notifyContentSizeListeners();
 	}
-	
+
 	@Override
 	public void onContentSizeChanged(UiElement<?> element) {
 		calculateContentDimensions();
+		notifyContentSizeListeners();
 	}
 
 	public static Row withElements(UiElement<?>... elements) {
@@ -202,15 +199,23 @@ public class Row extends BasicUiElement<NullStyle> implements ContentSizeListene
 	}
 
 	@Override
-	public NullStyle getCurrentStyle() {
-		return NullStyle.INSTANCE;
+	public RowStyle getCurrentStyle() {
+		return currentStyle;
 	}
-	
+
 	@Override
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 		for (int i = 0; i < children.size(); i++) {
 			children.get(i).setVisible(visible);
 		}
+	}
+
+	public float getRowYOffset() {
+		return rowYOffset;
+	}
+
+	public void setRowYOffset(float rowOffset) {
+		this.rowYOffset = rowOffset;
 	}
 }

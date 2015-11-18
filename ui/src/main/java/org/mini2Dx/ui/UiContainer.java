@@ -16,11 +16,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.GameResizeListener;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.layout.ScreenSize;
+import org.mini2Dx.ui.listener.ScreenSizeListener;
 import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.UiTheme;
 
@@ -38,6 +38,7 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 	private final List<UiElement<?>> elements = new ArrayList<UiElement<?>>(1);
 	private final List<UiElement<?>> disposedElements = new ArrayList<UiElement<?>>(1);
 	private final Map<String, UiElement<?>> elementsById = new HashMap<String, UiElement<?>>();
+	private final List<ScreenSizeListener> screenSizeListeners = new ArrayList<ScreenSizeListener>(1);
 	
 	private UiTheme theme;
 	private ScreenSize currentScreenSize;
@@ -117,6 +118,9 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 		
 		for(int i = 0; i < elements.size(); i++) {
 			elements.get(i).resize(screenSize, theme, columnWidth, height);
+		}
+		for(int i = screenSizeListeners.size() - 1; i >= 0; i--) {
+			screenSizeListeners.get(i).onScreenSizeChanged(screenSize, width, height);
 		}
 	}
 	
@@ -204,9 +208,14 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	@Override
-	public void positionChanged(CollisionBox moved) {}
+	
+	public void addScreenSizeListener(ScreenSizeListener listener) {
+		screenSizeListeners.add(listener);
+	}
+	
+	public void removeScreenSizeListener(ScreenSizeListener listener) {
+		screenSizeListeners.remove(listener);
+	}
 
 	@Override
 	public int getRenderX() {
@@ -246,5 +255,69 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 	@Override
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+
+	@Override
+	public void onContentPositionChanged(UiElement<?> element) {
+	}
+
+	@Override
+	public float getX() {
+		return 0f;
+	}
+
+	@Override
+	public float getY() {
+		return 0f;
+	}
+	
+	@Override
+	public float getWidth() {
+		return gc.getWidth();
+	}
+	
+	@Override
+	public float getHeight() {
+		return gc.getHeight();
+	}
+
+	@Override
+	public int getPaddingTop() {
+		return 0;
+	}
+
+	@Override
+	public int getPaddingBottom() {
+		return 0;
+	}
+
+	@Override
+	public int getPaddingLeft() {
+		return 0;
+	}
+
+	@Override
+	public int getPaddingRight() {
+		return 0;
+	}
+
+	@Override
+	public int getMarginTop() {
+		return 0;
+	}
+
+	@Override
+	public int getMarginBottom() {
+		return 0;
+	}
+
+	@Override
+	public int getMarginLeft() {
+		return 0;
+	}
+
+	@Override
+	public int getMarginRight() {
+		return 0;
 	}
 }

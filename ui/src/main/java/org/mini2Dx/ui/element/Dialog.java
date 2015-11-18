@@ -11,9 +11,16 @@
  */
 package org.mini2Dx.ui.element;
 
+import java.util.Map;
+
 /**
  *
  */
 public class Dialog extends Frame {
-
+	private Map<Integer, Actionable> actionables;
+	private int hoverIndex;
+	
+	public void setControllerHint(int index, Actionable actionable) {
+		
+	}
 }

@@ -28,15 +28,16 @@ public class LabelRenderer implements UiElementRenderer<Label> {
 	public void render(UiContainer uiContainer, Label element, Graphics g) {
 		LabelStyle labelStyle = element.getCurrentStyle();
 		BitmapFont font = labelStyle.getBitmapFont();
-		if(font == null) {
+		if (font == null) {
 			return;
 		}
 		BitmapFont previousFont = g.getFont();
 		Color previousColor = g.getColor();
-		
+
 		g.setFont(font);
 		g.setColor(element.getColor());
-		g.drawString(element.getText(), element.getRenderX(), element.getRenderY());
+		g.drawString(element.getText(), element.getRenderX() + element.getPaddingLeft(),
+				element.getRenderY() + element.getPaddingTop());
 		g.setFont(previousFont);
 		g.setColor(previousColor);
 	}

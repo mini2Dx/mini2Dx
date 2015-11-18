@@ -27,7 +27,7 @@ public class DefaultYPositionRule implements PositionRule {
 	}
 
 	@Override
-	public void onContentSizeChanged(UiElement<?> element) {
+	public void onContentSizeChanged(UiElement<?> element, float targetWidth, float targetHeight) {
 	}
 
 	@Override

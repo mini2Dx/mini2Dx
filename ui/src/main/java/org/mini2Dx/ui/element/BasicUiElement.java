@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.geom.Rectangle;
@@ -28,10 +29,11 @@ import org.mini2Dx.ui.layout.AutoXPositionRule;
 import org.mini2Dx.ui.layout.DefaultYPositionRule;
 import org.mini2Dx.ui.layout.MinHeightRule;
 import org.mini2Dx.ui.layout.PositionRule;
-import org.mini2Dx.ui.layout.ResponsivePositionRule;
+import org.mini2Dx.ui.layout.ResponsiveXPositionRule;
 import org.mini2Dx.ui.layout.ResponsiveWidthRule;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.layout.SizeRule;
+import org.mini2Dx.ui.listener.ContentPositionListener;
 import org.mini2Dx.ui.listener.ContentSizeListener;
 import org.mini2Dx.ui.theme.UiElementStyle;
 import org.mini2Dx.ui.theme.UiTheme;
@@ -41,76 +43,80 @@ import com.badlogic.gdx.math.MathUtils;
 /**
  *
  */
-public abstract class BasicUiElement<T extends UiElementStyle> implements UiElement<T> {
+public abstract class BasicUiElement<T extends UiElementStyle>
+		implements UiElement<T>, PositionChangeListener<CollisionBox> {
 	private final Map<ScreenSize, PositionRule> xPositionRules = new HashMap<ScreenSize, PositionRule>();
 	private final Map<ScreenSize, SizeRule> widthRules = new HashMap<ScreenSize, SizeRule>();
-	
+
 	protected final String id;
 	protected final CollisionBox currentArea = new CollisionBox();
 	protected final Rectangle targetArea = new Rectangle();
 	protected final List<UiEffect> effects = new ArrayList<UiEffect>(1);
 	protected final List<UiEffect> finishedEffects = new ArrayList<UiEffect>(1);
-	
+
 	protected String styleId = UiTheme.DEFAULT_STYLE_ID;
 	protected boolean rulesChanged, disposed;
 	protected float parentX, parentY;
-	
+
 	protected PositionRule xRule;
 	protected PositionRule yRule = new DefaultYPositionRule();
 	protected SizeRule widthRule, heightRule;
 	protected boolean visible = false;
-	
+	private boolean interpolate = false;
+
 	private ElementState state = ElementState.NORMAL;
 	private List<ContentSizeListener> contentSizeListeners;
-	
+	private List<ContentPositionListener> contentPositionListeners;
+
 	public BasicUiElement() {
 		this(null);
 	}
-	
+
 	public BasicUiElement(String id) {
-		if(id == null) {
+		if (id == null) {
 			id = "ui-element-" + String.valueOf(currentArea.getId());
 		}
 		this.id = id;
+		currentArea.addPostionChangeListener(this);
 	}
-	
+
 	@Override
 	public void update(UiContentContainer uiContainer, float delta) {
 		targetArea.set(parentX + xRule.getTargetPosition(), parentY + yRule.getTargetPosition(),
 				widthRule.getTargetSize(), heightRule.getTargetSize());
 		currentArea.preUpdate();
-		
+
 		cleanupFinishedEffects();
-		
-		if(effects.isEmpty()) {
-			if(rulesChanged) {
+
+		if (effects.isEmpty()) {
+			if (rulesChanged) {
 				currentArea.set(targetArea);
 			}
 			rulesChanged = false;
 			return;
 		}
-		
+
 		updateEffects(uiContainer, delta);
 	}
-	
+
 	private void cleanupFinishedEffects() {
-		if(finishedEffects.isEmpty()) {
+		if (finishedEffects.isEmpty()) {
 			return;
 		}
 		effects.removeAll(finishedEffects);
 		finishedEffects.clear();
 	}
-	
+
 	private void updateEffects(UiContentContainer uiContainer, float delta) {
 		boolean visibilityResult = false;
-		for(int i = 0; i < effects.size(); i++) {
+		for (int i = 0; i < effects.size(); i++) {
 			UiEffect effect = effects.get(i);
 			visibilityResult |= effect.update(uiContainer, currentArea, targetArea, delta);
-			if(effect.isFinished()) {
+			if (effect.isFinished()) {
 				finishedEffects.add(effect);
 			}
 		}
-		if(visibilityResult == visible) {
+		if (visibilityResult == visible) {
 			return;
 		}
 		setVisible(visibilityResult);
@@ -118,6 +124,9 @@ public abstract class BasicUiElement<T extends UiElementStyle> implements UiElem
 
 	@Override
 	public void interpolate(UiContentContainer uiContainer, float alpha) {
+		if (!interpolate) {
+			return;
+		}
 		currentArea.interpolate(null, alpha);
 	}
 
@@ -134,23 +143,24 @@ public abstract class BasicUiElement<T extends UiElementStyle> implements UiElem
 		applyStyle(theme, screenSize);
 		applyRules(screenSize, theme, columnWidth, totalHeight);
 		notifyRules(screenSize, theme, columnWidth, totalHeight);
-		
+		notifyContentSizeListeners();
+
 		rulesChanged = true;
 	}
-	
+
 	protected void applyRules(ScreenSize screenSize, UiTheme theme, float columnWidth, float totalHeight) {
 		widthRule = determineSizeRule(screenSize, widthRules);
-		
+
 		UiElementStyle currentStyle = getCurrentStyle();
-		if(currentStyle.getMinHeight() > 0) {
+		if (currentStyle.getMinHeight() > 0) {
 			heightRule = new MinHeightRule(this);
 		} else {
 			heightRule = new AutoHeightRule(this);
 		}
-		
+
 		xRule = determinePositionRule(screenSize, xPositionRules);
 	}
-	
+
 	public void notifyRules(ScreenSize screenSize, UiTheme theme, float columnWidth, float totalHeight) {
 		UiElementStyle currentStyle = getCurrentStyle();
 		widthRule.onScreenResize(theme, currentStyle, columnWidth, totalHeight);
@@ -158,41 +168,47 @@ public abstract class BasicUiElement<T extends UiElementStyle> implements UiElem
 		xRule.onScreenResize(theme, currentStyle, columnWidth, totalHeight);
 		yRule.onScreenResize(theme, currentStyle, columnWidth, totalHeight);
 	}
-	
+
 	private PositionRule determinePositionRule(ScreenSize screenSize, Map<ScreenSize, PositionRule> rules) {
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
-		while(screenSizes.hasNext()) {
+		while (screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
-			if(nextSize.getMinSize() > screenSize.getMinSize()) {
+			if (nextSize.getMinSize() > screenSize.getMinSize()) {
 				continue;
 			}
-			if(!rules.containsKey(nextSize)) {
+			if (!rules.containsKey(nextSize)) {
 				continue;
 			}
 			return rules.get(nextSize);
 		}
 		throw new MdxException("No position rule for element '" + getId() + "' with screen size " + screenSize);
 	}
-	
+
 	private SizeRule determineSizeRule(ScreenSize screenSize, Map<ScreenSize, SizeRule> rules) {
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
-		while(screenSizes.hasNext()) {
+		while (screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
-			if(nextSize.getMinSize() > screenSize.getMinSize()) {
+			if (nextSize.getMinSize() > screenSize.getMinSize()) {
 				continue;
 			}
-			if(!rules.containsKey(nextSize)) {
+			if (!rules.containsKey(nextSize)) {
 				continue;
 			}
 			return rules.get(nextSize);
 		}
 		throw new MdxException("No size rule for element '" + getId() + "' with screen size " + screenSize);
 	}
-	
+
 	@Override
 	public void positionChanged(CollisionBox moved) {
-		parentX = moved.getX();
-		parentY = moved.getY();
+		interpolate = true;
+		notifyContentPositionListeners();
+	}
+
+	@Override
+	public void onContentPositionChanged(UiElement<?> element) {
+		parentX = element.getX() + element.getPaddingLeft();
+		parentY = element.getY() + element.getPaddingTop();
 		rulesChanged = true;
 	}
 
@@ -200,43 +216,60 @@ public abstract class BasicUiElement<T extends UiElementStyle> implements UiElem
 	public void applyEffect(UiEffect effect) {
 		effects.add(effect);
 	}
-	
+
+	public void addContentPositionListener(ContentPositionListener listener) {
+		if (contentPositionListeners == null) {
+			contentPositionListeners = new ArrayList<ContentPositionListener>();
+		}
+		contentPositionListeners.add(listener);
+	}
+
+	public void removeContentPositionListener(ContentPositionListener listener) {
+		if (contentPositionListeners == null) {
+			return;
+		}
+		contentPositionListeners.remove(listener);
+	}
+
+	protected void notifyContentPositionListeners() {
+		if (contentPositionListeners == null) {
+			return;
+		}
+		for (int i = contentPositionListeners.size() - 1; i >= 0; i--) {
+			contentPositionListeners.get(i).onContentPositionChanged(this);
+		}
+	}
+
 	public void addContentSizeListener(ContentSizeListener listener) {
-		if(contentSizeListeners == null) {
+		if (contentSizeListeners == null) {
 			contentSizeListeners = new ArrayList<ContentSizeListener>(1);
 		}
 		contentSizeListeners.add(listener);
 	}
-	
+
 	public void removeContentSizeListener(ContentSizeListener listener) {
-		if(contentSizeListeners == null) {
+		if (contentSizeListeners == null) {
 			return;
 		}
 		contentSizeListeners.remove(listener);
 	}
-	
+
 	protected void notifyContentSizeListeners() {
-		if(widthRule != null) {
+		if (widthRule != null && heightRule != null) {
 			widthRule.onContentSizeChanged(this);
-		}
-		if(heightRule != null) {
 			heightRule.onContentSizeChanged(this);
+			xRule.onContentSizeChanged(this, widthRule.getTargetSize(), heightRule.getTargetSize());
+			yRule.onContentSizeChanged(this, widthRule.getTargetSize(), heightRule.getTargetSize());
 		}
-		if(xRule != null) {
-			xRule.onContentSizeChanged(this);
-		}
-		if(yRule != null) {
-			yRule.onContentSizeChanged(this);
-		}
-		
-		if(contentSizeListeners == null) {
+
+		if (contentSizeListeners == null) {
 			return;
 		}
-		for(int i = contentSizeListeners.size() - 1; i >= 0; i--) {
+		for (int i = contentSizeListeners.size() - 1; i >= 0; i--) {
 			contentSizeListeners.get(i).onContentSizeChanged(this);
 		}
 	}
-	
+
 	public void setXRules(String rules) {
 		String[] positionData = rules.split(" ");
 		for (String positionRule : positionData) {
@@ -250,22 +283,22 @@ public abstract class BasicUiElement<T extends UiElementStyle> implements UiElem
 			} else {
 				String[] ruleData = positionRule.split("-");
 				int value = Integer.parseInt(ruleData[1]);
-				
+
 				if (positionRule.startsWith("xs")) {
-					xPositionRules.put(ScreenSize.XS, new ResponsivePositionRule(value));
+					xPositionRules.put(ScreenSize.XS, new ResponsiveXPositionRule(value));
 				} else if (positionRule.startsWith("sm")) {
-					xPositionRules.put(ScreenSize.SM, new ResponsivePositionRule(value));
+					xPositionRules.put(ScreenSize.SM, new ResponsiveXPositionRule(value));
 				} else if (positionRule.startsWith("md")) {
-					xPositionRules.put(ScreenSize.MD, new ResponsivePositionRule(value));
+					xPositionRules.put(ScreenSize.MD, new ResponsiveXPositionRule(value));
 				} else if (positionRule.startsWith("lg")) {
-					xPositionRules.put(ScreenSize.LG, new ResponsivePositionRule(value));
+					xPositionRules.put(ScreenSize.LG, new ResponsiveXPositionRule(value));
 				} else if (positionRule.startsWith("xl")) {
-					xPositionRules.put(ScreenSize.XL, new ResponsivePositionRule(value));
+					xPositionRules.put(ScreenSize.XL, new ResponsiveXPositionRule(value));
 				}
 			}
 		}
 	}
-	
+
 	public void setWidthRules(String rules) {
 		String[] sizeData = rules.split(" ");
 		for (String sizeRule : sizeData) {
@@ -287,23 +320,43 @@ public abstract class BasicUiElement<T extends UiElementStyle> implements UiElem
 	}
 
 	@Override
+	public float getX() {
+		return currentArea.getX();
+	}
+
+	@Override
+	public float getY() {
+		return currentArea.getY();
+	}
+
+	@Override
+	public float getWidth() {
+		return currentArea.getWidth();
+	}
+
+	@Override
+	public float getHeight() {
+		return currentArea.getHeight();
+	}
+
+	@Override
 	public int getRenderX() {
-		return MathUtils.round(currentArea.getRenderX());
+		return currentArea.getRenderX();
 	}
 
 	@Override
 	public int getRenderY() {
-		return MathUtils.round(currentArea.getRenderY());
+		return currentArea.getRenderY();
 	}
 
 	@Override
 	public int getRenderWidth() {
-		return MathUtils.round(currentArea.getRenderWidth());
+		return currentArea.getRenderWidth();
 	}
 
 	@Override
 	public int getRenderHeight() {
-		return MathUtils.round(currentArea.getRenderHeight());
+		return currentArea.getRenderHeight();
 	}
 
 	@Override
@@ -320,20 +373,20 @@ public abstract class BasicUiElement<T extends UiElementStyle> implements UiElem
 	public String getId() {
 		return id;
 	}
-	
+
 	@Override
 	public String getStyleId() {
 		return styleId;
 	}
-	
+
 	public ElementState getState() {
 		return state;
 	}
-	
+
 	public void setState(ElementState state) {
 		this.state = state;
 	}
-	
+
 	@Override
 	public boolean isVisible() {
 		return visible;
@@ -342,5 +395,89 @@ public abstract class BasicUiElement<T extends UiElementStyle> implements UiElem
 	@Override
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+
+	public float getElementWidth() {
+		return getContentWidth() + getPaddingLeft() + getPaddingRight();
+	}
+
+	public float getElementHeight() {
+		return getContentHeight() + getPaddingTop() + getPaddingBottom();
+	}
+
+	public int getPaddingTop() {
+		UiElementStyle currentStyle = getCurrentStyle();
+		if (currentStyle == null) {
+			return 0;
+		}
+		return currentStyle.getPaddingTop();
+	}
+
+	public int getPaddingBottom() {
+		UiElementStyle currentStyle = getCurrentStyle();
+		if (currentStyle == null) {
+			return 0;
+		}
+		return currentStyle.getPaddingBottom();
+	}
+
+	public int getPaddingLeft() {
+		UiElementStyle currentStyle = getCurrentStyle();
+		if (currentStyle == null) {
+			return 0;
+		}
+		return currentStyle.getPaddingLeft();
+	}
+
+	public int getPaddingRight() {
+		UiElementStyle currentStyle = getCurrentStyle();
+		if (currentStyle == null) {
+			return 0;
+		}
+		return currentStyle.getPaddingRight();
+	}
+
+	public int getMarginTop() {
+		UiElementStyle currentStyle = getCurrentStyle();
+		if (currentStyle == null) {
+			return 0;
+		}
+		return currentStyle.getMarginTop();
+	}
+
+	public int getMarginBottom() {
+		UiElementStyle currentStyle = getCurrentStyle();
+		if (currentStyle == null) {
+			return 0;
+		}
+		return currentStyle.getMarginBottom();
+	}
+
+	public int getMarginLeft() {
+		UiElementStyle currentStyle = getCurrentStyle();
+		if (currentStyle == null) {
+			return 0;
+		}
+		return currentStyle.getMarginLeft();
+	}
+
+	public int getMarginRight() {
+		UiElementStyle currentStyle = getCurrentStyle();
+		if (currentStyle == null) {
+			return 0;
+		}
+		return currentStyle.getMarginRight();
+	}
+
+	@Override
+	public String toString() {
+		return "BasicUiElement [id=" + id + ", visible=" + visible + ", getX()=" + getX() + ", getY()=" + getY()
+				+ ", getRenderX()=" + getRenderX() + ", getRenderY()=" + getRenderY() + ", getRenderWidth()="
+				+ getRenderWidth() + ", getRenderHeight()=" + getRenderHeight() + ", getElementWidth()="
+				+ getElementWidth() + ", getElementHeight()=" + getElementHeight() + ", getPaddingTop()="
+				+ getPaddingTop() + ", getPaddingBottom()=" + getPaddingBottom() + ", getPaddingLeft()="
+				+ getPaddingLeft() + ", getPaddingRight()=" + getPaddingRight() + ", getMarginTop()=" + getMarginTop()
+				+ ", getMarginBottom()=" + getMarginBottom() + ", getMarginLeft()=" + getMarginLeft()
+				+ ", getMarginRight()=" + getMarginRight() + "]";
 	}
 }

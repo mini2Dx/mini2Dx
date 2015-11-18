@@ -20,7 +20,7 @@ import org.mini2Dx.ui.UiContentContainer;
  *
  */
 public class SlideIn implements UiEffect {
-	private static final float DEFAULT_SPEED = 4f;
+	private static final float DEFAULT_SPEED = 8f;
 	
 	private final SlideDirection direction;
 	private final float speed;
@@ -53,16 +53,16 @@ public class SlideIn implements UiEffect {
 		
 		float targetX = targetArea.x;
 		float targetY = targetArea.y;
-		currentArea.setWidth(targetArea.width);
-		currentArea.setHeight(targetArea.height);
 		
 		switch(direction) {
 		case UP:
 			if(!started) {
-				currentArea.forceTo(targetX, uiContainer.getRenderY() + uiContainer.getContentHeight() + 1f);
+				currentArea.forceTo(targetX, uiContainer.getRenderY() + uiContainer.getContentHeight() + 1f, targetArea.width, targetArea.height);
 				started = true;
 			}
 			if(currentArea.getY() > targetY) {
+				currentArea.setWidth(targetArea.width);
+				currentArea.setHeight(targetArea.height);
 				currentArea.setY(Math.max(targetY, currentArea.getY() - speed));
 			} else {
 				finished = true;
@@ -70,10 +70,12 @@ public class SlideIn implements UiEffect {
 			break;
 		case DOWN:
 			if(!started) {
-				currentArea.forceTo(targetX, uiContainer.getRenderY() - targetArea.height - 1f);
+				currentArea.forceTo(targetX, uiContainer.getRenderY() - targetArea.height - 1f, targetArea.width, targetArea.height);
 				started = true;
 			}
 			if(currentArea.getY() < targetY) {
+				currentArea.setWidth(targetArea.width);
+				currentArea.setHeight(targetArea.height);
 				currentArea.setY(Math.min(targetY, currentArea.getY() + speed));
 			} else {
 				finished = true;
@@ -81,10 +83,12 @@ public class SlideIn implements UiEffect {
 			break;
 		case LEFT:
 			if(!started) {
-				currentArea.forceTo(uiContainer.getRenderX() + uiContainer.getContentWidth() + 1f, targetY);
+				currentArea.forceTo(uiContainer.getRenderX() + uiContainer.getContentWidth() + 1f, targetY, targetArea.width, targetArea.height);
 				started = true;
 			}
 			if(currentArea.getX() > targetX) {
+				currentArea.setWidth(targetArea.width);
+				currentArea.setHeight(targetArea.height);
 				currentArea.setX(Math.max(targetX, currentArea.getX() - speed));
 			} else {
 				finished = true;
@@ -92,10 +96,12 @@ public class SlideIn implements UiEffect {
 			break;
 		case RIGHT:
 			if(!started) {
-				currentArea.forceTo(uiContainer.getRenderX() - targetArea.width - 1f, targetY);
+				currentArea.forceTo(uiContainer.getRenderX() - targetArea.width - 1f, targetY, targetArea.width, targetArea.height);
 				started = true;
 			}
 			if(currentArea.getX() < targetX) {
+				currentArea.setWidth(targetArea.width);
+				currentArea.setHeight(targetArea.height);
 				currentArea.setX(Math.min(targetX, currentArea.getX() + speed));
 			} else {
 				finished = true;

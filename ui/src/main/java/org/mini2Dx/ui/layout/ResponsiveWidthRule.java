@@ -29,7 +29,7 @@ public class ResponsiveWidthRule implements SizeRule {
 
 	@Override
 	public void onScreenResize(UiTheme theme, UiElementStyle style, float columnSize, float totalHeight) {
-		targetSize = (columnSize * size) - style.getMarginRight();
+		targetSize = (columnSize * size) - style.getMarginRight() - style.getMarginLeft();
 	}
 	
 	@Override
