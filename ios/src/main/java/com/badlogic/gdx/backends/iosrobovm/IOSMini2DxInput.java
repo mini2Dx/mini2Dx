@@ -632,4 +632,9 @@ public class IOSMini2DxInput implements Input {
 		int x, y;
 		int pointer;
 	}
+
+	@Override
+	public boolean isCatchMenuKey() {
+		return false;
+	}
 }
