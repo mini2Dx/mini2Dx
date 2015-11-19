@@ -391,7 +391,7 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 		if(c == '\b') {
 			return false;
 		}
-		if(Character.getNumericValue(c) < 0) {
+		if(Character.getName(c).equals("NULL")) {
 			return false;
 		}
 		return true;

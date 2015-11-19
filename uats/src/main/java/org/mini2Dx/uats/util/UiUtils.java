@@ -21,7 +21,7 @@ public class UiUtils {
 	}
 	
 	public static Label createLabel(String text, String xRules, String widthRules) {
-		return createLabel(text, xRules, widthRules, Label.COLOR_WHITE);
+		return createLabel(text, xRules, widthRules, Label.COLOR_BLACK);
 	}
 
 	private static Label createLabel(String text, String xRules, String widthRules, Color color) {
