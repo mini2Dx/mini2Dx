@@ -36,8 +36,22 @@ public class LabelRenderer implements UiElementRenderer<Label> {
 
 		g.setFont(font);
 		g.setColor(element.getColor());
-		g.drawString(element.getText(), element.getRenderX() + element.getPaddingLeft(),
-				element.getRenderY() + element.getPaddingTop());
+		
+		float renderX = element.getRenderX() + element.getPaddingLeft();
+		float renderY = element.getRenderY() + element.getPaddingTop();
+		
+		switch(element.getHorizontalAlign()) {
+		case CENTER:
+			renderX = element.getRenderX() + element.getPaddingLeft() + ((element.getRenderWidth() - element.getPaddingRight() - element.getPaddingLeft()) / 2f) - (element.getContentWidth() / 2f);
+			break;
+		case RIGHT:
+			renderX = element.getRenderX() + element.getPaddingLeft() + (element.getRenderWidth() - element.getPaddingRight() - element.getPaddingLeft()) - element.getContentWidth();
+			break;
+		default:
+			break;
+		}
+		
+		g.drawString(element.getText(), renderX, renderY);
 		g.setFont(previousFont);
 		g.setColor(previousColor);
 	}

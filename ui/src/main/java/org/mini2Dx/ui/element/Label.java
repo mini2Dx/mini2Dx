@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ui.element;
 
+import org.mini2Dx.ui.layout.HorizontalAlign;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.LabelStyle;
@@ -30,6 +31,7 @@ public class Label extends BasicUiElement<LabelStyle> {
 	private Color color;
 	private LabelStyle currentStyle;
 	private GlyphLayout glyphLayout;
+	private HorizontalAlign horizontalAlign = HorizontalAlign.LEFT;
 	
 	public Label() {
 		this("");
@@ -98,6 +100,14 @@ public class Label extends BasicUiElement<LabelStyle> {
 		}
 		glyphLayout.setText(currentStyle.getBitmapFont(), text);
 		notifyContentSizeListeners();
+	}
+
+	public HorizontalAlign getHorizontalAlign() {
+		return horizontalAlign;
+	}
+
+	public void setHorizontalAlign(HorizontalAlign horizontalAlign) {
+		this.horizontalAlign = horizontalAlign;
 	}
 	
 }
