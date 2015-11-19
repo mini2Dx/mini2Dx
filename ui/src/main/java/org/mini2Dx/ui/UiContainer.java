@@ -21,6 +21,8 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.GameResizeListener;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Actionable;
+import org.mini2Dx.ui.element.Dialog;
+import org.mini2Dx.ui.element.ElementState;
 import org.mini2Dx.ui.element.TextInputable;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
@@ -48,6 +50,7 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 	private UiTheme theme;
 	private ScreenSize currentScreenSize;
 	private boolean visible = true;
+	private Dialog activeDialog;
 	private Actionable currentAction;
 	private TextInputable currentTextInput;
 	
@@ -170,7 +173,7 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 		disposedElements.clear();
 		elementsById.clear();
 	}
-
+	
 	@Override
 	public boolean keyDown(int keycode) {
 		if(currentTextInput == null) {
@@ -181,27 +184,61 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 
 	@Override
 	public boolean keyUp(int keycode) {
-		if(currentTextInput == null) {
+		if(handleTextInputKeyUp(keycode)) {
+			return true;
+		}
+		if(handleDialogKeyUp(keycode)) {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean handleDialogKeyUp(int keycode) {
+		if(activeDialog == null) {
 			return false;
 		}
 		switch(keycode) {
-		case Keys.BACKSPACE:
-			currentTextInput.backspace();
+		case Keys.UP:
+			setCurrentAction(activeDialog.goToPreviousActionable());
 			break;
-		case Keys.ENTER:
-			if(currentTextInput.enter()) {
-				currentTextInput = null;
-				currentAction = null;
-			}
-			break;
-		case Keys.RIGHT:
-			currentTextInput.moveCursorRight();
-			break;
-		case Keys.LEFT:
-			currentTextInput.moveCursorLeft();
+		case Keys.DOWN:
+			setCurrentAction(activeDialog.goToNextActionable());
 			break;
 		}
 		return true;
+	}
+	
+	private boolean handleTextInputKeyUp(int keycode) {
+		if(currentTextInput == null) {
+			return false;
+		}
+		if(currentTextInput.isReceivingInput()) {
+			switch(keycode) {
+			case Keys.BACKSPACE:
+				currentTextInput.backspace();
+				break;
+			case Keys.ENTER:
+				if(currentTextInput.enter()) {
+					currentTextInput = null;
+					currentAction = null;
+				}
+				break;
+			case Keys.RIGHT:
+				currentTextInput.moveCursorRight();
+				break;
+			case Keys.LEFT:
+				currentTextInput.moveCursorLeft();
+				break;
+			}
+			return true;
+		}
+		
+		switch(keycode) {
+		case Keys.ENTER:
+			currentTextInput.beginHandlingInput();
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -224,18 +261,7 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 		for(int i = elements.size() - 1; i >= 0; i--) {
 			Actionable result = elements.get(i).mouseDown(screenX, screenY, pointer, button);
 			if(result != null) {
-				currentAction = result;
-				if(currentAction instanceof TextInputable) {
-					switch(Mdx.os) {
-					case ANDROID:
-					case IOS:
-						Gdx.input.setOnscreenKeyboardVisible(true);
-						break;
-					default:
-						break;
-					}
-					currentTextInput = (TextInputable) currentAction;
-				}
+				setCurrentAction(result);
 				return true;
 			}
 		}
@@ -275,12 +301,27 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 		return false;
 	}
 	
+	private void setCurrentAction(Actionable actionable) {
+		if(actionable instanceof TextInputable) {
+			currentTextInput = (TextInputable) actionable;
+		}
+		currentAction = actionable;
+	}
+	
 	public void addScreenSizeListener(ScreenSizeListener listener) {
 		screenSizeListeners.add(listener);
 	}
 	
 	public void removeScreenSizeListener(ScreenSizeListener listener) {
 		screenSizeListeners.remove(listener);
+	}
+	
+	public void setActiveDialog(Dialog activeDialog) {
+		this.activeDialog = activeDialog;
+	}
+
+	public void clearActiveDialog() {
+		this.activeDialog = null;
 	}
 
 	@Override
@@ -385,5 +426,10 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 	@Override
 	public int getMarginRight() {
 		return 0;
+	}
+
+	@Override
+	public boolean contains(float screenX, float screenY) {
+		return true;
 	}
 }

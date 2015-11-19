@@ -18,6 +18,7 @@ import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.ui.UiElement;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ActionListener;
+import org.mini2Dx.ui.listener.HoverListener;
 import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.ButtonStyle;
 import org.mini2Dx.ui.theme.UiTheme;
@@ -27,7 +28,7 @@ import com.badlogic.gdx.Input.Buttons;
 /**
  *
  */
-public class Button extends Column<ButtonStyle> implements Actionable, Hoverable {
+public class Button extends Column<ButtonStyle> implements Actionable {
 	private final List<ActionListener> listeners = new ArrayList<ActionListener>(1);
 	
 	private ButtonStyle currentStyle;

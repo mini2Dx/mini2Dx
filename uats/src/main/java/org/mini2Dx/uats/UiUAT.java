@@ -148,8 +148,12 @@ public class UiUAT extends BasicGameScreen {
 				nextScreenId = UATSelectionScreen.SCREEN_ID;
 			}
 		})));
+		
+		dialog.setControllerHint(0, textBox);
+		dialog.setControllerHint(1, select);
 		dialog.setVisible(true);
 		uiContainer.add(dialog);
+		uiContainer.setActiveDialog(dialog);
 		
 		bottomRightFrame = new Frame();
 		bottomRightFrame.setXRules("xs-0 sm-6 md-8 lg-9");

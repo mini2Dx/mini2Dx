@@ -14,6 +14,7 @@ package org.mini2Dx.ui.element;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.ui.UiContentContainer;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ActionListener;
@@ -196,6 +197,14 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 			if (currentArea.contains(screenX, screenY)) {
 				super.setState(ElementState.ACTION);
 				notifyActionListenersOnBeginEvent();
+				switch(Mdx.os) {
+				case ANDROID:
+				case IOS:
+					Gdx.input.setOnscreenKeyboardVisible(true);
+					break;
+				default:
+					break;
+				}
 			} else {
 				super.setState(ElementState.NORMAL);
 			}
@@ -307,6 +316,7 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 
 	@Override
 	public boolean enter() {
+		setState(ElementState.HOVER);
 		notifyActionListenersOnEndEvent();
 		return true;
 	}
@@ -424,5 +434,15 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 			return;
 		}
 		super.setState(state);
+	}
+	
+	public boolean isReceivingInput() {
+		return getState() == ElementState.ACTION;
+	}
+
+	@Override
+	public void beginHandlingInput() {
+		setState(ElementState.ACTION);
+		notifyActionListenersOnBeginEvent();
 	}
 }

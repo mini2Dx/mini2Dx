@@ -11,16 +11,60 @@
  */
 package org.mini2Dx.ui.element;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- *
+ * Wraps a {@link Frame} to allow for keyboard and controller based navigation
+ * of {@link UiElement}s
  */
 public class Dialog extends Frame {
-	private Map<Integer, Actionable> actionables;
+	private List<Actionable> actionables;
 	private int hoverIndex;
-	
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		if (super.mouseMoved(screenX, screenY)) {
+			if (actionables == null) {
+				return true;
+			}
+			for (int i = actionables.size() - 1; i >= 0; i--) {
+				if (actionables.get(i).contains(screenX, screenY)) {
+					hoverIndex = i;
+					break;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public Actionable goToNextActionable() {
+		if (actionables == null) {
+			return null;
+		}
+		actionables.get(hoverIndex).setState(ElementState.NORMAL);
+		hoverIndex = hoverIndex < actionables.size() - 1 ? hoverIndex + 1 : 0;
+		Actionable result = actionables.get(hoverIndex);
+		result.setState(ElementState.HOVER);
+		return result;
+	}
+
+	public Actionable goToPreviousActionable() {
+		if (actionables == null) {
+			return null;
+		}
+		actionables.get(hoverIndex).setState(ElementState.NORMAL);
+		hoverIndex = hoverIndex == 0 ? actionables.size() - 1 : hoverIndex - 1;
+		Actionable result = actionables.get(hoverIndex);
+		result.setState(ElementState.HOVER);
+		return result;
+	}
+
 	public void setControllerHint(int index, Actionable actionable) {
-		
+		if (actionables == null) {
+			actionables = new ArrayList<Actionable>();
+		}
+		actionables.add(index, actionable);
 	}
 }

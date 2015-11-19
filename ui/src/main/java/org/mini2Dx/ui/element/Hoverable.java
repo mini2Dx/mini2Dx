@@ -11,9 +11,18 @@
  */
 package org.mini2Dx.ui.element;
 
+import org.mini2Dx.ui.listener.HoverListener;
+
 /**
  *
  */
 public interface Hoverable {
-
+	
+	public String getId();
+	
+	public boolean contains(float screenX, float screenY);
+	
+	public void addHoverListener(HoverListener listener);
+	
+	public void removeHoverListener(HoverListener listener);
 }

@@ -9,6 +9,8 @@ import org.mini2Dx.ui.listener.ContentPositionListener;
  *
  */
 public interface UiContentContainer extends ContentPositionListener {
+	public boolean contains(float screenX, float screenY);
+	
 	public float getX();
 	
 	public float getY();

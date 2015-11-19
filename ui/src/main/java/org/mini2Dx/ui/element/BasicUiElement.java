@@ -35,6 +35,7 @@ import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.layout.SizeRule;
 import org.mini2Dx.ui.listener.ContentPositionListener;
 import org.mini2Dx.ui.listener.ContentSizeListener;
+import org.mini2Dx.ui.listener.HoverListener;
 import org.mini2Dx.ui.theme.UiElementStyle;
 import org.mini2Dx.ui.theme.UiTheme;
 
@@ -44,7 +45,7 @@ import com.badlogic.gdx.math.MathUtils;
  *
  */
 public abstract class BasicUiElement<T extends UiElementStyle>
-		implements UiElement<T>, PositionChangeListener<CollisionBox> {
+		implements UiElement<T>, Hoverable, PositionChangeListener<CollisionBox> {
 	private final Map<ScreenSize, PositionRule> xPositionRules = new HashMap<ScreenSize, PositionRule>();
 	private final Map<ScreenSize, SizeRule> widthRules = new HashMap<ScreenSize, SizeRule>();
 
@@ -135,8 +136,9 @@ public abstract class BasicUiElement<T extends UiElementStyle>
 		if(currentArea.contains(screenX, screenY)) {
 			state = ElementState.HOVER;
 			return true;
+		} else if(state != ElementState.NORMAL) {
+			state = ElementState.NORMAL;
 		}
-		state = ElementState.NORMAL;
 		return false;
 	}
 	
@@ -288,6 +290,24 @@ public abstract class BasicUiElement<T extends UiElementStyle>
 		}
 	}
 
+	@Override
+	public void addHoverListener(HoverListener listener) {
+		
+	}
+
+	@Override
+	public void removeHoverListener(HoverListener listener) {
+		
+	}
+	
+	protected void notifyHoverListenersOfBeginEvent() {
+		
+	}
+	
+	protected void notifyHoverListenersOfEndEvent() {
+		
+	}
+
 	public void setXRules(String rules) {
 		if(rules.equals("auto")) {
 			xPositionRules.put(ScreenSize.XL, new AutoXPositionRule(this));
@@ -349,6 +369,11 @@ public abstract class BasicUiElement<T extends UiElementStyle>
 				widthRules.put(ScreenSize.XL, new ResponsiveWidthRule(value));
 			}
 		}
+	}
+	
+	@Override
+	public boolean contains(float screenX, float screenY) {
+		return currentArea.contains(screenX, screenY);
 	}
 
 	@Override
@@ -416,7 +441,15 @@ public abstract class BasicUiElement<T extends UiElementStyle>
 	}
 
 	public void setState(ElementState state) {
+		ElementState previousState = this.state;
 		this.state = state;
+		if(previousState != state) {
+			if(state == ElementState.HOVER) {
+				notifyHoverListenersOfBeginEvent();
+			} else if(previousState == ElementState.HOVER) {
+				notifyHoverListenersOfEndEvent();
+			}
+		}
 	}
 
 	@Override

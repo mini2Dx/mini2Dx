@@ -16,15 +16,15 @@ import org.mini2Dx.ui.listener.ActionListener;
 /**
  *
  */
-public interface Actionable {
-	
-	public String getId();
+public interface Actionable extends Hoverable {
 	
 	public void mouseUp(int screenX, int screenY, int pointer, int button);
 	
 	public void addActionListener(ActionListener listener);
 	
 	public void removeActionListener(ActionListener listener);
+	
+	public void setState(ElementState state);
 	
 	public boolean isEnabled();
 }
