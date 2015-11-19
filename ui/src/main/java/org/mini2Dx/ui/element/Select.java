@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.mini2Dx.ui.layout.HorizontalAlign;
 import org.mini2Dx.ui.layout.ScreenSize;
+import org.mini2Dx.ui.layout.VerticalAlign;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.theme.SelectStyle;
 import org.mini2Dx.ui.theme.UiTheme;

@@ -13,6 +13,7 @@ package org.mini2Dx.ui.element;
 
 import org.mini2Dx.ui.layout.HorizontalAlign;
 import org.mini2Dx.ui.layout.ScreenSize;
+import org.mini2Dx.ui.layout.VerticalAlign;
 import org.mini2Dx.ui.render.UiRenderer;
 import org.mini2Dx.ui.theme.LabelStyle;
 import org.mini2Dx.ui.theme.UiTheme;
@@ -32,6 +33,7 @@ public class Label extends BasicUiElement<LabelStyle> {
 	private LabelStyle currentStyle;
 	private GlyphLayout glyphLayout;
 	private HorizontalAlign horizontalAlign = HorizontalAlign.LEFT;
+	private VerticalAlign verticalAlign = VerticalAlign.CENTER;
 	
 	public Label() {
 		this("");
@@ -108,6 +110,14 @@ public class Label extends BasicUiElement<LabelStyle> {
 
 	public void setHorizontalAlign(HorizontalAlign horizontalAlign) {
 		this.horizontalAlign = horizontalAlign;
+	}
+
+	public VerticalAlign getVerticalAlign() {
+		return verticalAlign;
+	}
+
+	public void setVerticalAlign(VerticalAlign verticalAlign) {
+		this.verticalAlign = verticalAlign;
 	}
 	
 }

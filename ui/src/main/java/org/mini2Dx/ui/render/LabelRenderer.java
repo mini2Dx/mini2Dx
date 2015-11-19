@@ -36,21 +36,39 @@ public class LabelRenderer implements UiElementRenderer<Label> {
 
 		g.setFont(font);
 		g.setColor(element.getColor());
-		
+
 		float renderX = element.getRenderX() + element.getPaddingLeft();
 		float renderY = element.getRenderY() + element.getPaddingTop();
-		
-		switch(element.getHorizontalAlign()) {
+
+		switch (element.getHorizontalAlign()) {
 		case CENTER:
-			renderX = element.getRenderX() + element.getPaddingLeft() + ((element.getRenderWidth() - element.getPaddingRight() - element.getPaddingLeft()) / 2f) - (element.getContentWidth() / 2f);
+			renderX = element.getRenderX() + element.getPaddingLeft()
+					+ ((element.getRenderWidth() - element.getPaddingRight() - element.getPaddingLeft()) / 2f)
+					- (element.getContentWidth() / 2f);
 			break;
 		case RIGHT:
-			renderX = element.getRenderX() + element.getPaddingLeft() + (element.getRenderWidth() - element.getPaddingRight() - element.getPaddingLeft()) - element.getContentWidth();
+			renderX = element.getRenderX() + element.getPaddingLeft()
+					+ (element.getRenderWidth() - element.getPaddingRight() - element.getPaddingLeft())
+					- element.getContentWidth();
 			break;
 		default:
 			break;
 		}
-		
+		switch (element.getVerticalAlign()) {
+		case CENTER:
+			renderY = element.getRenderY() + element.getPaddingTop()
+					+ ((element.getRenderHeight() - element.getPaddingTop() - element.getPaddingBottom()) / 2f)
+					- (element.getContentHeight() / 2f);
+			break;
+		case BOTTOM:
+			renderY = element.getRenderY() + element.getPaddingTop()
+					+ (element.getRenderHeight() - element.getPaddingTop() - element.getPaddingBottom())
+					- element.getContentHeight();
+			break;
+		default:
+			break;
+		}
+
 		g.drawString(element.getText(), renderX, renderY);
 		g.setFont(previousFont);
 		g.setColor(previousColor);
