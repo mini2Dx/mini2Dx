@@ -37,7 +37,7 @@ public class Label extends BasicUiElement<LabelStyle> {
 	
 	public Label(String text) {
 		super();
-		color = COLOR_WHITE;
+		color = COLOR_BLACK;
 		glyphLayout = new GlyphLayout();
 		this.text = text;
 	}
@@ -91,8 +91,11 @@ public class Label extends BasicUiElement<LabelStyle> {
 		if(this.text.equals(text)) {
 			return;
 		}
-		
 		this.text = text;
+		
+		if(currentStyle == null || currentStyle.getBitmapFont() == null) {
+			return;
+		}
 		glyphLayout.setText(currentStyle.getBitmapFont(), text);
 		notifyContentSizeListeners();
 	}

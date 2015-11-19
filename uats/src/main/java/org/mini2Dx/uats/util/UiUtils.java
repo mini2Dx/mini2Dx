@@ -6,6 +6,7 @@ package org.mini2Dx.uats.util;
 import org.mini2Dx.ui.element.Button;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.Row;
+import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.listener.ActionListener;
 
@@ -47,5 +48,13 @@ public class UiUtils {
 		textBox.setWidthRules(widthRules);
 		textBox.addActionListener(listener);
 		return textBox;
+	}
+	
+	public static Select<String> createSelect(String xRules, String widthRules, ActionListener listener) {
+		Select<String> select = new Select<String>();
+		select.setXRules(xRules);
+		select.setWidthRules(widthRules);
+		select.addActionListener(listener);
+		return select;
 	}
 }

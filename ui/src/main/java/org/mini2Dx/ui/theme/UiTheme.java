@@ -42,114 +42,135 @@ public class UiTheme {
 	Map<String, UiFont> fonts;
 	@Field
 	Map<ScreenSize, UiStyleRuleset> rules;
-	
+
 	public void validate() {
-		if(rules.size() == 0) {
+		if (rules.size() == 0) {
 			throw new MdxException("No styles defined for theme '" + name + "'");
 		}
-		
+
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
-		
-		while(screenSizes.hasNext()) {
+
+		while (screenSizes.hasNext()) {
 			ScreenSize screenSize = screenSizes.next();
-			if(getButtonStyle(screenSize, DEFAULT_STYLE_ID) == null) {
-				throw new MdxException("No button style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
+			if (getButtonStyle(screenSize, DEFAULT_STYLE_ID) == null) {
+				throw new MdxException(
+						"No Button style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
 			}
-			if(getCheckBoxStyle(screenSize, DEFAULT_STYLE_ID) == null) {
-				throw new MdxException("No checkbox style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
+			if (getCheckBoxStyle(screenSize, DEFAULT_STYLE_ID) == null) {
+				throw new MdxException("No CheckBox style with id '" + UiTheme.DEFAULT_STYLE_ID
+						+ "' defined for theme '" + name + "'");
 			}
-			if(getFrameStyle(screenSize, DEFAULT_STYLE_ID) == null) {
-				throw new MdxException("No frame style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
+			if (getFrameStyle(screenSize, DEFAULT_STYLE_ID) == null) {
+				throw new MdxException(
+						"No Frame style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
 			}
+			SelectStyle selectStyle = getSelectStyle(screenSize, DEFAULT_STYLE_ID);
+			if (selectStyle == null) {
+				throw new MdxException(
+						"No Select style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
+			}
+			if (getButtonStyle(screenSize, selectStyle.getButtonStyle()) == null) {
+				throw new MdxException("Button style '" + selectStyle.getButtonStyle()
+						+ "' is required by Select style '" + UiTheme.DEFAULT_STYLE_ID + "' but it does not exist");
+			}
+			if (getLabelStyle(screenSize, selectStyle.getLabelStyle()) == null) {
+				throw new MdxException("Label style '" + selectStyle.getLabelStyle()
+						+ "' is required by Select style '" + UiTheme.DEFAULT_STYLE_ID + "' but it does not exist");
+			}
+
 			TextBoxStyle textBoxStyle = getTextBoxStyle(screenSize, DEFAULT_STYLE_ID);
-			if(textBoxStyle == null) {
-				throw new MdxException("No textbox style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
+			if (textBoxStyle == null) {
+				throw new MdxException(
+						"No TextBox style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
 			}
-			if(getLabelStyle(screenSize, textBoxStyle.getLabelStyle()) == null) {
-				throw new MdxException("Textbox requires label style '" + textBoxStyle.getLabelStyle() + "' but it is not defined for theme '" + name + "'");
+			if (getLabelStyle(screenSize, textBoxStyle.getLabelStyle()) == null) {
+				throw new MdxException("TextBox requires Label style '" + textBoxStyle.getLabelStyle()
+						+ "' but it is not defined for theme '" + name + "'");
 			}
-			
+
 			LabelStyle defaultLabelStyle = getLabelStyle(screenSize, DEFAULT_STYLE_ID);
-			if(defaultLabelStyle == null) {
-				throw new MdxException("No label style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
+			if (defaultLabelStyle == null) {
+				throw new MdxException(
+						"No Label style with id '" + UiTheme.DEFAULT_STYLE_ID + "' defined for theme '" + name + "'");
 			}
-			
+
 			UiStyleRuleset ruleset = rules.get(screenSize);
-			if(ruleset == null) {
+			if (ruleset == null) {
 				continue;
 			}
-			for(LabelStyle labelStyle : ruleset.labels.values()) {
-				if(!fonts.containsKey(labelStyle.getFont())) {
-					throw new MdxException("Font '" + labelStyle.getFont() + "' is required by a Label styling but does not exist");
+			for (LabelStyle labelStyle : ruleset.labels.values()) {
+				if (!fonts.containsKey(labelStyle.getFont())) {
+					throw new MdxException(
+							"Font '" + labelStyle.getFont() + "' is required by a Label styling but does not exist");
 				}
 			}
 		}
 	}
-	
+
 	public void loadDependencies(Array<AssetDescriptor> dependencies) {
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
-		while(screenSizes.hasNext()) {
+		while (screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
-			if(!rules.containsKey(nextSize)) {
+			if (!rules.containsKey(nextSize)) {
 				continue;
 			}
 			UiStyleRuleset ruleset = rules.get(nextSize);
-			for(ButtonStyle buttonStyle: ruleset.buttons.values()) {
+			for (ButtonStyle buttonStyle : ruleset.buttons.values()) {
 				dependencies.add(new AssetDescriptor<Texture>(buttonStyle.getNormalImage(), Texture.class));
 				dependencies.add(new AssetDescriptor<Texture>(buttonStyle.getHoverImage(), Texture.class));
 				dependencies.add(new AssetDescriptor<Texture>(buttonStyle.getActionImage(), Texture.class));
 				dependencies.add(new AssetDescriptor<Texture>(buttonStyle.getDisabledImage(), Texture.class));
 			}
-			for(CheckBoxStyle checkBoxStyle : ruleset.checkboxes.values()) {
+			for (CheckBoxStyle checkBoxStyle : ruleset.checkboxes.values()) {
 				dependencies.add(new AssetDescriptor<Texture>(checkBoxStyle.getNormalImage(), Texture.class));
 				dependencies.add(new AssetDescriptor<Texture>(checkBoxStyle.getHoverImage(), Texture.class));
 				dependencies.add(new AssetDescriptor<Texture>(checkBoxStyle.getDisabledImage(), Texture.class));
 				dependencies.add(new AssetDescriptor<Texture>(checkBoxStyle.getNormalCheckIcon(), Texture.class));
 				dependencies.add(new AssetDescriptor<Texture>(checkBoxStyle.getDisabledCheckIcon(), Texture.class));
 			}
-			for(FrameStyle frameStyle: ruleset.frames.values()) {
+			for (FrameStyle frameStyle : ruleset.frames.values()) {
 				dependencies.add(new AssetDescriptor<Texture>(frameStyle.getBackgroundImage(), Texture.class));
 				dependencies.add(new AssetDescriptor<Texture>(frameStyle.getScrollBarImage(), Texture.class));
 			}
-			for(TextBoxStyle textBoxStyle: ruleset.textboxes.values()) {
+			for (TextBoxStyle textBoxStyle : ruleset.textboxes.values()) {
 				dependencies.add(new AssetDescriptor<Texture>(textBoxStyle.getNormalImage(), Texture.class));
 				dependencies.add(new AssetDescriptor<Texture>(textBoxStyle.getActionImage(), Texture.class));
 				dependencies.add(new AssetDescriptor<Texture>(textBoxStyle.getHoverImage(), Texture.class));
 				dependencies.add(new AssetDescriptor<Texture>(textBoxStyle.getDisabledImage(), Texture.class));
 			}
-			for(UiFont uiFont : fonts.values()) {
-				if(!uiFont.getPath().endsWith(".ttf")) {
+			for (UiFont uiFont : fonts.values()) {
+				if (!uiFont.getPath().endsWith(".ttf")) {
 					throw new MdxException("Non-TTF fonts are not supported by mini2Dx-ui");
 				}
 			}
 		}
 	}
-	
+
 	public void prepareAssets(FileHandleResolver fileHandleResolver, AssetManager assetManager) {
-		for(UiFont uiFont : fonts.values()) {
+		for (UiFont uiFont : fonts.values()) {
 			uiFont.prepareAssets(fileHandleResolver);
 		}
-		
+
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
-		while(screenSizes.hasNext()) {
+		while (screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
-			if(!rules.containsKey(nextSize)) {
+			if (!rules.containsKey(nextSize)) {
 				continue;
 			}
 			UiStyleRuleset ruleset = rules.get(nextSize);
-			for(ButtonStyle buttonStyle: ruleset.buttons.values()) {
+			for (ButtonStyle buttonStyle : ruleset.buttons.values()) {
 				buttonStyle.prepareAssets(assetManager);
 			}
-			for(CheckBoxStyle checkBoxStyle : ruleset.checkboxes.values()) {
+			for (CheckBoxStyle checkBoxStyle : ruleset.checkboxes.values()) {
 				checkBoxStyle.prepareAssets(assetManager);
 			}
-			for(FrameStyle frameStyle: ruleset.frames.values()) {
+			for (FrameStyle frameStyle : ruleset.frames.values()) {
 				frameStyle.prepareAssets(assetManager);
 			}
-			for(TextBoxStyle textBoxStyle: ruleset.textboxes.values()) {
+			for (TextBoxStyle textBoxStyle : ruleset.textboxes.values()) {
 				textBoxStyle.prepareAssets(assetManager);
 			}
-			for(LabelStyle labelStyle : ruleset.labels.values()) {
+			for (LabelStyle labelStyle : ruleset.labels.values()) {
 				UiFont uiFont = fonts.get(labelStyle.getFont());
 				FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 				parameter.size = labelStyle.getFontSize();
@@ -157,8 +178,8 @@ public class UiTheme {
 				labelStyle.setBitmapFont(uiFont.getFontGenerator().generateFont(parameter));
 			}
 		}
-		
-		for(UiFont uiFont : fonts.values()) {
+
+		for (UiFont uiFont : fonts.values()) {
 			uiFont.dispose();
 		}
 	}
@@ -178,171 +199,201 @@ public class UiTheme {
 	public void setColumns(int columns) {
 		this.columns = columns;
 	}
-	
+
 	public UiFont getFont(String font) {
-		if(fonts == null) {
+		if (fonts == null) {
 			return null;
 		}
 		return fonts.get(font);
 	}
-	
+
 	public void putFont(String name, UiFont font) {
-		if(fonts == null) {
+		if (fonts == null) {
 			fonts = new HashMap<String, UiFont>();
 		}
 		fonts.put(name, font);
 	}
-	
+
 	public ButtonStyle getButtonStyle(ScreenSize screenSize, String styleId) {
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
-		while(screenSizes.hasNext()) {
+		while (screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
-			if(nextSize.getMinSize() > screenSize.getMinSize()) {
+			if (nextSize.getMinSize() > screenSize.getMinSize()) {
 				continue;
 			}
-			if(!rules.containsKey(nextSize)) {
+			if (!rules.containsKey(nextSize)) {
 				continue;
 			}
 			UiStyleRuleset ruleset = rules.get(nextSize);
 			ButtonStyle result = ruleset.getButtonStyle(styleId);
-			if(result == null) {
+			if (result == null) {
 				continue;
 			}
 			return result;
 		}
-		if(!styleId.equals(DEFAULT_STYLE_ID)) {
+		if (!styleId.equals(DEFAULT_STYLE_ID)) {
 			return getButtonStyle(screenSize, DEFAULT_STYLE_ID);
 		}
 		return null;
 	}
-	
+
 	public CheckBoxStyle getCheckBoxStyle(ScreenSize screenSize, String styleId) {
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
-		while(screenSizes.hasNext()) {
+		while (screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
-			if(nextSize.getMinSize() > screenSize.getMinSize()) {
+			if (nextSize.getMinSize() > screenSize.getMinSize()) {
 				continue;
 			}
-			if(!rules.containsKey(nextSize)) {
+			if (!rules.containsKey(nextSize)) {
 				continue;
 			}
 			UiStyleRuleset ruleset = rules.get(nextSize);
 			CheckBoxStyle result = ruleset.getCheckBoxStyle(styleId);
-			if(result == null) {
+			if (result == null) {
 				continue;
 			}
 			return result;
 		}
 		return null;
 	}
-	
+
 	public FrameStyle getFrameStyle(ScreenSize screenSize, String styleId) {
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
-		while(screenSizes.hasNext()) {
+		while (screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
-			if(nextSize.getMinSize() > screenSize.getMinSize()) {
+			if (nextSize.getMinSize() > screenSize.getMinSize()) {
 				continue;
 			}
-			if(!rules.containsKey(nextSize)) {
+			if (!rules.containsKey(nextSize)) {
 				continue;
 			}
 			UiStyleRuleset ruleset = rules.get(nextSize);
 			FrameStyle result = ruleset.getFrameStyle(styleId);
-			if(result == null) {
+			if (result == null) {
 				continue;
 			}
 			return result;
 		}
 		return null;
 	}
-	
+
 	public LabelStyle getLabelStyle(ScreenSize screenSize, String styleId) {
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
-		while(screenSizes.hasNext()) {
+		while (screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
-			if(nextSize.getMinSize() > screenSize.getMinSize()) {
+			if (nextSize.getMinSize() > screenSize.getMinSize()) {
 				continue;
 			}
-			if(!rules.containsKey(nextSize)) {
+			if (!rules.containsKey(nextSize)) {
 				continue;
 			}
 			UiStyleRuleset ruleset = rules.get(nextSize);
 			LabelStyle result = ruleset.getLabelStyle(styleId);
-			if(result == null) {
+			if (result == null) {
 				continue;
 			}
 			return result;
 		}
 		return null;
 	}
-	
+
 	public TextBoxStyle getTextBoxStyle(ScreenSize screenSize, String styleId) {
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
-		while(screenSizes.hasNext()) {
+		while (screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
-			if(nextSize.getMinSize() > screenSize.getMinSize()) {
+			if (nextSize.getMinSize() > screenSize.getMinSize()) {
 				continue;
 			}
-			if(!rules.containsKey(nextSize)) {
+			if (!rules.containsKey(nextSize)) {
 				continue;
 			}
 			UiStyleRuleset ruleset = rules.get(nextSize);
 			TextBoxStyle result = ruleset.getTextBoxStyle(styleId);
-			if(result == null) {
+			if (result == null) {
 				continue;
 			}
 			return result;
 		}
 		return null;
 	}
-	
+
+	public SelectStyle getSelectStyle(ScreenSize screenSize, String styleId) {
+		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
+		while (screenSizes.hasNext()) {
+			ScreenSize nextSize = screenSizes.next();
+			if (nextSize.getMinSize() > screenSize.getMinSize()) {
+				continue;
+			}
+			if (!rules.containsKey(nextSize)) {
+				continue;
+			}
+			UiStyleRuleset ruleset = rules.get(nextSize);
+			SelectStyle result = ruleset.getSelectStyle(styleId);
+			if (result == null) {
+				continue;
+			}
+			return result;
+		}
+		return null;
+	}
+
 	public void putButtonStyle(ScreenSize screenSize, String styleId, ButtonStyle style) {
-		if(rules == null) {
+		if (rules == null) {
 			rules = new HashMap<ScreenSize, UiStyleRuleset>();
 		}
-		if(!rules.containsKey(screenSize)) {
+		if (!rules.containsKey(screenSize)) {
 			rules.put(screenSize, new UiStyleRuleset());
 		}
 		rules.get(screenSize).putButtonStyle(styleId, style);
 	}
-	
+
 	public void putCheckBoxStyle(ScreenSize screenSize, String styleId, CheckBoxStyle style) {
-		if(rules == null) {
+		if (rules == null) {
 			rules = new HashMap<ScreenSize, UiStyleRuleset>();
 		}
-		if(!rules.containsKey(screenSize)) {
+		if (!rules.containsKey(screenSize)) {
 			rules.put(screenSize, new UiStyleRuleset());
 		}
 		rules.get(screenSize).putCheckBoxStyle(styleId, style);
 	}
-	
+
 	public void putFrameStyle(ScreenSize screenSize, String styleId, FrameStyle style) {
-		if(rules == null) {
+		if (rules == null) {
 			rules = new HashMap<ScreenSize, UiStyleRuleset>();
 		}
-		if(!rules.containsKey(screenSize)) {
+		if (!rules.containsKey(screenSize)) {
 			rules.put(screenSize, new UiStyleRuleset());
 		}
 		rules.get(screenSize).putFrameStyle(styleId, style);
 	}
-	
+
 	public void putLabelStyle(ScreenSize screenSize, String styleId, LabelStyle style) {
-		if(rules == null) {
+		if (rules == null) {
 			rules = new HashMap<ScreenSize, UiStyleRuleset>();
 		}
-		if(!rules.containsKey(screenSize)) {
+		if (!rules.containsKey(screenSize)) {
 			rules.put(screenSize, new UiStyleRuleset());
 		}
 		rules.get(screenSize).putLabelStyle(styleId, style);
 	}
-	
+
 	public void putTextBoxStyle(ScreenSize screenSize, String styleId, TextBoxStyle style) {
-		if(rules == null) {
+		if (rules == null) {
 			rules = new HashMap<ScreenSize, UiStyleRuleset>();
 		}
-		if(!rules.containsKey(screenSize)) {
+		if (!rules.containsKey(screenSize)) {
 			rules.put(screenSize, new UiStyleRuleset());
 		}
 		rules.get(screenSize).putTextBoxStyle(styleId, style);
+	}
+
+	public void putSelectStyle(ScreenSize screenSize, String styleId, SelectStyle style) {
+		if (rules == null) {
+			rules = new HashMap<ScreenSize, UiStyleRuleset>();
+		}
+		if (!rules.containsKey(screenSize)) {
+			rules.put(screenSize, new UiStyleRuleset());
+		}
+		rules.get(screenSize).putSelectStyle(styleId, style);
 	}
 }

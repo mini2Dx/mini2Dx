@@ -30,6 +30,8 @@ public class UiStyleRuleset {
 	Map<String, LabelStyle> labels;
 	@Field(optional = true)
 	Map<String, TextBoxStyle> textboxes;
+	@Field(optional = true)
+	Map<String, SelectStyle> selects;
 	
 	public ButtonStyle getButtonStyle(String styleId) {
 		if(buttons == null) {
@@ -66,6 +68,13 @@ public class UiStyleRuleset {
 		return textboxes.get(styleId);
 	}
 	
+	public SelectStyle getSelectStyle(String styleId) {
+		if(selects == null) {
+			return null;
+		}
+		return selects.get(styleId);
+	}
+	
 	public void putButtonStyle(String styleId, ButtonStyle style) {
 		if(buttons == null) {
 			buttons = new HashMap<String, ButtonStyle>();
@@ -99,5 +108,12 @@ public class UiStyleRuleset {
 			textboxes = new HashMap<String, TextBoxStyle>();
 		}
 		textboxes.put(styleId, style);
+	}
+	
+	public void putSelectStyle(String styleId, SelectStyle style) {
+		if(selects == null) {
+			selects = new HashMap<String, SelectStyle>();
+		}
+		selects.put(styleId, style);
 	}
 }
