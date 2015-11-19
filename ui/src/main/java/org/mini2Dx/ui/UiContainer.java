@@ -186,13 +186,19 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 		}
 		switch(keycode) {
 		case Keys.BACKSPACE:
-			currentTextInput.onBackspace();
+			currentTextInput.backspace();
 			break;
 		case Keys.ENTER:
-			if(currentTextInput.onEnter()) {
+			if(currentTextInput.enter()) {
 				currentTextInput = null;
 				currentAction = null;
 			}
+			break;
+		case Keys.RIGHT:
+			currentTextInput.moveCursorRight();
+			break;
+		case Keys.LEFT:
+			currentTextInput.moveCursorLeft();
 			break;
 		}
 		return true;
@@ -203,7 +209,7 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 		if(currentTextInput == null) {
 			return false;
 		}
-		currentTextInput.onCharacterReceived(character);
+		currentTextInput.characterReceived(character);
 		return true;
 	}
 

@@ -265,7 +265,7 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 	}
 
 	@Override
-	public void onCharacterReceived(char c) {
+	public void characterReceived(char c) {
 		if (!isValidCharacter(c)) {
 			return;
 		}
@@ -286,7 +286,7 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 	}
 
 	@Override
-	public void onBackspace() {
+	public void backspace() {
 		switch (cursor) {
 		case 0:
 			return;
@@ -306,9 +306,27 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 	}
 
 	@Override
-	public boolean onEnter() {
+	public boolean enter() {
 		notifyActionListenersOnEndEvent();
 		return true;
+	}
+	
+	@Override
+	public void moveCursorRight() {
+		if(cursor == text.length() - 1) {
+			return;
+		}
+		cursor++;
+		setCursorRenderX();
+	}
+
+	@Override
+	public void moveCursorLeft() {
+		if(cursor == 0) {
+			return;
+		}
+		cursor--;
+		setCursorRenderX();
 	}
 
 	public String getText() {
@@ -392,6 +410,9 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 			return false;
 		}
 		if(Character.getName(c).equals("NULL")) {
+			return false;
+		}
+		if(Character.getName(c).contains("PRIVATE USE")) {
 			return false;
 		}
 		return true;
