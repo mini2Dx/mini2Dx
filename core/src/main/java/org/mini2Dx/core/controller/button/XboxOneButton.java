@@ -14,24 +14,44 @@ package org.mini2Dx.core.controller.button;
 /**
  *
  */
-public enum XboxOneButton {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
+public enum XboxOneButton implements ControllerButton {
+	UP("xboxOne-up"),
+	DOWN("xboxOne-down"),
+	LEFT("xboxOne-left"),
+	RIGHT("xboxOne-right"),
 	
-	MENU,
-	VIEW,
-	HOME,
+	MENU("xboxOne-menu"),
+	VIEW("xboxOne-view"),
+	HOME("xboxOne-home"),
 	
-	LEFT_STICK,
-	RIGHT_STICK,
+	LEFT_STICK("xboxOne-left-stick"),
+	RIGHT_STICK("xboxOne-right-stick"),
 	
-	LEFT_SHOULDER,
-	RIGHT_SHOULDER,
+	LEFT_SHOULDER("xboxOne-left-shoulder"),
+	RIGHT_SHOULDER("xboxOne-right-shoulder"),
 	
-	A,
-	B,
-	X,
-	Y
+	A("xboxOne-a"),
+	B("xboxOne-b"),
+	X("xboxOne-x"),
+	Y("xboxOne-y");
+	
+	private final String absoluteValue;
+	
+	private XboxOneButton(String absoluteValue) {
+		this.absoluteValue = absoluteValue;
+	}
+
+	@Override
+	public String getAbsoluteValue() {
+		return absoluteValue;
+	}
+	
+	public static XboxOneButton fromAbsoluteValue(String value) {
+		for(XboxOneButton button : XboxOneButton.values()) {
+			if(button.getAbsoluteValue().equals(value)) {
+				return button;
+			}
+		}
+		return null;
+	}
 }

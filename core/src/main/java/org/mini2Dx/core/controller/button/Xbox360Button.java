@@ -14,24 +14,44 @@ package org.mini2Dx.core.controller.button;
 /**
  *
  */
-public enum Xbox360Button {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
+public enum Xbox360Button implements ControllerButton {
+	UP("xbox360-up"),
+	DOWN("xbox360-down"),
+	LEFT("xbox360-left"),
+	RIGHT("xbox360-right"),
 	
-	START,
-	BACK,
-	GUIDE,
+	START("xbox360-start"),
+	BACK("xbox360-back"),
+	GUIDE("xbox360-guide"),
 	
-	LEFT_STICK,
-	RIGHT_STICK,
+	LEFT_STICK("xbox360-left-stick"),
+	RIGHT_STICK("xbox360-right-stick"),
 	
-	LEFT_SHOULDER,
-	RIGHT_SHOULDER,
+	LEFT_SHOULDER("xbox360-left-shoulder"),
+	RIGHT_SHOULDER("xbox360-right-shoulder"),
 	
-	A,
-	B,
-	X,
-	Y
+	A("xbox360-a"),
+	B("xbox360-b"),
+	X("xbox360-x"),
+	Y("xbox360-y");
+	
+	private final String absoluteValue;
+	
+	private Xbox360Button(String absoluteValue) {
+		this.absoluteValue = absoluteValue;
+	}
+
+	@Override
+	public String getAbsoluteValue() {
+		return absoluteValue;
+	}
+	
+	public static Xbox360Button fromAbsoluteValue(String value) {
+		for(Xbox360Button button : Xbox360Button.values()) {
+			if(button.getAbsoluteValue().equals(value)) {
+				return button;
+			}
+		}
+		return null;
+	}
 }

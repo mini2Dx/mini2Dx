@@ -12,45 +12,9 @@
 package org.mini2Dx.core.controller.button;
 
 /**
- *
+ * Common interface for game controller buttons
  */
-public enum PS4Button implements ControllerButton {
-	UP("ps4-up"),
-	DOWN("ps4-down"),
-	LEFT("ps4-left"),
-	RIGHT("ps4-right"),
-	
-	X("ps4-x"),
-	SQUARE("ps4-square"),
-	CIRCLE("ps4-circle"),
-	TRIANGLE("ps4-triangle"),
-	
-	L1("ps4-l1"),
-	R1("ps4-r1"),
-	L3("ps4-l3"),
-	R3("ps4-r3"),
-	
-	PS("ps4-ps"),
-	SHARE("ps4-share"),
-	OPTIONS("ps4-options");
-	
-	private final String absoluteValue;
-	
-	private PS4Button(String absoluteValue) {
-		this.absoluteValue = absoluteValue;
-	}
+public interface ControllerButton {
 
-	@Override
-	public String getAbsoluteValue() {
-		return absoluteValue;
-	}
-	
-	public static PS4Button fromAbsoluteValue(String value) {
-		for(PS4Button button : PS4Button.values()) {
-			if(button.getAbsoluteValue().equals(value)) {
-				return button;
-			}
-		}
-		return null;
-	}
+	public String getAbsoluteValue();
 }

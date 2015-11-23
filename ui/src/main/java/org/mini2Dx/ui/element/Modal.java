@@ -12,13 +12,20 @@
 package org.mini2Dx.ui.element;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.mini2Dx.core.controller.button.ControllerButton;
+import org.mini2Dx.ui.UiElement;
 
 /**
  * Wraps a {@link Frame} to allow for keyboard and controller based navigation
  * of {@link UiElement}s
  */
-public class Dialog extends Frame {
+public class Modal extends Frame {
+	private Map<Integer, Actionable> keyboardHotkeys;
+	private Map<String, Actionable> controllerHotkeys;
 	private List<Actionable> actionables;
 	private int hoverIndex;
 
@@ -37,6 +44,20 @@ public class Dialog extends Frame {
 			return true;
 		}
 		return false;
+	}
+	
+	public Actionable hotkey(int keycode) {
+		if(keyboardHotkeys == null) {
+			return null;
+		}
+		return keyboardHotkeys.get(keycode);
+	}
+	
+	public Actionable hotkey(ControllerButton controllerButton) {
+		if(controllerHotkeys == null) {
+			return null;
+		}
+		return controllerHotkeys.get(controllerButton.getAbsoluteValue());
 	}
 
 	public Actionable goToNextActionable() {
@@ -61,10 +82,24 @@ public class Dialog extends Frame {
 		return result;
 	}
 
-	public void setControllerHint(int index, Actionable actionable) {
+	public void setNavigation(int index, Actionable actionable) {
 		if (actionables == null) {
 			actionables = new ArrayList<Actionable>();
 		}
 		actionables.add(index, actionable);
+	}
+	
+	public void setHotkey(ControllerButton button, Actionable actionable) {
+		if(controllerHotkeys == null) {
+			controllerHotkeys = new HashMap<String, Actionable>();
+		}
+		controllerHotkeys.put(button.getAbsoluteValue(), actionable);
+	}
+	
+	public void setHotkey(int keycode, Actionable actionable) {
+		if(keyboardHotkeys == null) {
+			keyboardHotkeys = new HashMap<Integer, Actionable>();
+		}
+		keyboardHotkeys.put(keycode, actionable);
 	}
 }

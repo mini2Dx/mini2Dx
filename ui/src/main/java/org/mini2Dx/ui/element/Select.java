@@ -73,7 +73,7 @@ public class Select<V> extends Column<SelectStyle> implements ActionListener, Ac
 
 	@Override
 	public void onActionBegin(Actionable source) {
-		notifyActionListenersOnBeginEvent();
+		beginAction();
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class Select<V> extends Column<SelectStyle> implements ActionListener, Ac
 		} else if(source.getId().equals(rightButton.getId())) {
 			setSelectedIndex(selectedIndex + 1);
 		}
-		notifyActionListenersOnEndEvent();
+		endAction();
 	}
 	
 	public OptionItem<V> getSelectedItem() {
@@ -128,6 +128,21 @@ public class Select<V> extends Column<SelectStyle> implements ActionListener, Ac
 		options.remove(option);
 		setSelectedIndex(selectedIndex);
 	}
+	
+
+	@Override
+	public void beginAction() {
+		for(int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).onActionBegin(this);
+		}
+	}
+
+	@Override
+	public void endAction() {
+		for(int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).onActionEnd(this);
+		}
+	}
 
 	@Override
 	public void addActionListener(ActionListener listener) {
@@ -137,18 +152,6 @@ public class Select<V> extends Column<SelectStyle> implements ActionListener, Ac
 	@Override
 	public void removeActionListener(ActionListener listener) {
 		listeners.remove(listener);
-	}
-	
-	private void notifyActionListenersOnBeginEvent() {
-		for(int i = listeners.size() - 1; i >= 0; i--) {
-			listeners.get(i).onActionBegin(this);
-		}
-	}
-	
-	private void notifyActionListenersOnEndEvent() {
-		for(int i = listeners.size() - 1; i >= 0; i--) {
-			listeners.get(i).onActionEnd(this);
-		}
 	}
 
 	@Override

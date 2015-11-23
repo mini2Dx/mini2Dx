@@ -18,6 +18,10 @@ import org.mini2Dx.ui.listener.ActionListener;
  */
 public interface Actionable extends Hoverable {
 	
+	public void beginAction();
+	
+	public void endAction();
+	
 	public void mouseUp(int screenX, int screenY, int pointer, int button);
 	
 	public void addActionListener(ActionListener listener);

@@ -26,7 +26,5 @@ public interface TextInputable extends Actionable {
 	
 	public void paste();
 	
-	public void beginHandlingInput();
-	
 	public boolean isReceivingInput();
 }

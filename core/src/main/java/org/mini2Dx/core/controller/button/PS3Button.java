@@ -14,23 +14,43 @@ package org.mini2Dx.core.controller.button;
 /**
  *
  */
-public enum PS3Button {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
+public enum PS3Button implements ControllerButton {
+	UP("ps3-up"),
+	DOWN("ps3-down"),
+	LEFT("ps3-left"),
+	RIGHT("ps3-right"),
 	
-	X,
-	SQUARE,
-	CIRCLE,
-	TRIANGLE,
+	X("ps3-x"),
+	SQUARE("ps3-square"),
+	CIRCLE("ps3-circle"),
+	TRIANGLE("ps3-triangle"),
 	
-	L1,
-	R1,
-	L3,
-	R3,
+	L1("ps3-l1"),
+	R1("ps3-r1"),
+	L3("ps3-l3"),
+	R3("ps3-r3"),
 	
-	PS,
-	START,
-	SELECT
+	PS("ps3-ps"),
+	START("ps3-start"),
+	SELECT("ps3-select");
+	
+	private final String absoluteValue;
+	
+	private PS3Button(String absoluteValue) {
+		this.absoluteValue = absoluteValue;
+	}
+
+	@Override
+	public String getAbsoluteValue() {
+		return absoluteValue;
+	}
+	
+	public static PS3Button fromAbsoluteValue(String value) {
+		for(PS3Button button : PS3Button.values()) {
+			if(button.getAbsoluteValue().equals(value)) {
+				return button;
+			}
+		}
+		return null;
+	}
 }

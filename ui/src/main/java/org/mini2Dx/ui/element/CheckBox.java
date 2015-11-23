@@ -42,6 +42,28 @@ public class CheckBox extends BasicUiElement<CheckBoxStyle> implements Actionabl
 	public void applyStyle(UiTheme theme, ScreenSize screenSize) {
 		currentStyle = theme.getCheckBoxStyle(screenSize, styleId);
 	}
+	
+	@Override
+	public void beginAction() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endAction() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void addActionListener(ActionListener listener) {
+		listeners.add(listener);
+	}
+
+	@Override
+	public void removeActionListener(ActionListener listener) {
+		listeners.remove(listener);
+	}
 
 	@Override
 	public float getContentWidth() {
@@ -73,15 +95,5 @@ public class CheckBox extends BasicUiElement<CheckBoxStyle> implements Actionabl
 
 	public void setChecked(boolean checked) {
 		this.checked = checked;
-	}
-
-	@Override
-	public void addActionListener(ActionListener listener) {
-		listeners.add(listener);
-	}
-
-	@Override
-	public void removeActionListener(ActionListener listener) {
-		listeners.remove(listener);
 	}
 }

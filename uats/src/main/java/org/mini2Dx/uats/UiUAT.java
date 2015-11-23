@@ -25,7 +25,7 @@ import org.mini2Dx.uats.util.UATSelectionScreen;
 import org.mini2Dx.uats.util.UiUtils;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.element.Actionable;
-import org.mini2Dx.ui.element.Dialog;
+import org.mini2Dx.ui.element.Modal;
 import org.mini2Dx.ui.element.Frame;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.Row;
@@ -45,7 +45,7 @@ public class UiUAT extends BasicGameScreen {
 	
 	private UiContainer uiContainer;
 	private Frame topLeftFrame, bottomRightFrame;
-	private Dialog dialog;
+	private Modal modal;
 	
 	private Select<String> select;
 	private TextBox textBox;
@@ -132,13 +132,13 @@ public class UiUAT extends BasicGameScreen {
 		select.addOption("Item 2", "2");
 		select.addOption("Item 3", "3");
 		
-		dialog = new Dialog();
-		dialog.setXRules("auto");
-		dialog.setYRules("auto");
-		dialog.setWidthRules("xs-12 md-8 lg-6");
-		dialog.addRow(Row.withElements(textBox, textBoxResult));
-		dialog.addRow(Row.withElements(select));
-		dialog.addRow(Row.withElements(UiUtils.createButton("Return to UAT Selection Screen", "xs-0 md-4 xl-6", "xs-12 md-8 xl-6", new ActionListener() {
+		modal = new Modal();
+		modal.setXRules("auto");
+		modal.setYRules("auto");
+		modal.setWidthRules("xs-12 md-8 lg-6");
+		modal.addRow(Row.withElements(textBox, textBoxResult));
+		modal.addRow(Row.withElements(select));
+		modal.addRow(Row.withElements(UiUtils.createButton("Return to UAT Selection Screen", "xs-0 md-4 xl-6", "xs-12 md-8 xl-6", new ActionListener() {
 			
 			@Override
 			public void onActionBegin(Actionable source) {}
@@ -149,11 +149,11 @@ public class UiUAT extends BasicGameScreen {
 			}
 		})));
 		
-		dialog.setControllerHint(0, textBox);
-		dialog.setControllerHint(1, select);
-		dialog.setVisible(true);
-		uiContainer.add(dialog);
-		uiContainer.setActiveDialog(dialog);
+		modal.setNavigation(0, textBox);
+		modal.setNavigation(1, select);
+		modal.setVisible(true);
+		uiContainer.add(modal);
+		uiContainer.setActiveModal(modal);
 		
 		bottomRightFrame = new Frame();
 		bottomRightFrame.setXRules("xs-0 sm-6 md-8 lg-9");

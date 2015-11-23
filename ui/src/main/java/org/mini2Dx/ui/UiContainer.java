@@ -21,7 +21,7 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.GameResizeListener;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Actionable;
-import org.mini2Dx.ui.element.Dialog;
+import org.mini2Dx.ui.element.Modal;
 import org.mini2Dx.ui.element.ElementState;
 import org.mini2Dx.ui.element.TextInputable;
 import org.mini2Dx.ui.layout.ScreenSize;
@@ -50,7 +50,7 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 	private UiTheme theme;
 	private ScreenSize currentScreenSize;
 	private boolean visible = true;
-	private Dialog activeDialog;
+	private Modal activeModal;
 	private Actionable currentAction;
 	private TextInputable currentTextInput;
 	
@@ -176,10 +176,13 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 	
 	@Override
 	public boolean keyDown(int keycode) {
-		if(currentTextInput == null) {
-			return false;
+		if(currentTextInput != null) {
+			return true;
 		}
-		return true;
+		if(handleModalKeyDown(keycode)) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -187,23 +190,40 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 		if(handleTextInputKeyUp(keycode)) {
 			return true;
 		}
-		if(handleDialogKeyUp(keycode)) {
+		if(handleModalKeyUp(keycode)) {
 			return true;
 		}
 		return false;
 	}
 	
-	private boolean handleDialogKeyUp(int keycode) {
-		if(activeDialog == null) {
+	private boolean handleModalKeyDown(int keycode) {
+		if(activeModal == null) {
 			return false;
 		}
-		switch(keycode) {
-		case Keys.UP:
-			setCurrentAction(activeDialog.goToPreviousActionable());
-			break;
-		case Keys.DOWN:
-			setCurrentAction(activeDialog.goToNextActionable());
-			break;
+		Actionable hotkeyAction = activeModal.hotkey(keycode);
+		if(hotkeyAction == null) {
+			return false;
+		}
+		hotkeyAction.beginAction();
+		return true;
+	}
+	
+	private boolean handleModalKeyUp(int keycode) {
+		if(activeModal == null) {
+			return false;
+		}
+		Actionable hotkeyAction = activeModal.hotkey(keycode);
+		if(hotkeyAction == null) {
+			switch(keycode) {
+			case Keys.UP:
+				setCurrentAction(activeModal.goToPreviousActionable());
+				break;
+			case Keys.DOWN:
+				setCurrentAction(activeModal.goToNextActionable());
+				break;
+			}
+		} else {
+			hotkeyAction.endAction();
 		}
 		return true;
 	}
@@ -235,7 +255,7 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 		
 		switch(keycode) {
 		case Keys.ENTER:
-			currentTextInput.beginHandlingInput();
+			currentTextInput.beginAction();
 			return true;
 		}
 		return false;
@@ -261,6 +281,7 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 		for(int i = elements.size() - 1; i >= 0; i--) {
 			Actionable result = elements.get(i).mouseDown(screenX, screenY, pointer, button);
 			if(result != null) {
+				result.beginAction();
 				setCurrentAction(result);
 				return true;
 			}
@@ -316,12 +337,12 @@ public class UiContainer implements GameResizeListener, InputProcessor, UiConten
 		screenSizeListeners.remove(listener);
 	}
 	
-	public void setActiveDialog(Dialog activeDialog) {
-		this.activeDialog = activeDialog;
+	public void setActiveModal(Modal activeDialog) {
+		this.activeModal = activeDialog;
 	}
 
-	public void clearActiveDialog() {
-		this.activeDialog = null;
+	public void clearActiveModal() {
+		this.activeModal = null;
 	}
 
 	@Override

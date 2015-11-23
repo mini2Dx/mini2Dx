@@ -166,8 +166,7 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 		switch(getState()) {
 		case ACTION:
 			if (!currentArea.contains(screenX, screenY)) {
-				super.setState(ElementState.NORMAL);
-				notifyActionListenersOnEndEvent();
+				endAction();
 				return null;
 			}
 			return this;
@@ -189,14 +188,12 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 			if (currentArea.contains(screenX, screenY)) {
 				setCursorIndex(screenX, screenY);
 			} else {
-				notifyActionListenersOnEndEvent();
-				super.setState(ElementState.NORMAL);
+				endAction();
 			}
 			break;
 		default:
 			if (currentArea.contains(screenX, screenY)) {
-				super.setState(ElementState.ACTION);
-				notifyActionListenersOnBeginEvent();
+				beginAction();
 				switch(Mdx.os) {
 				case ANDROID:
 				case IOS:
@@ -255,14 +252,18 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 	public void removeActionListener(ActionListener listener) {
 		listeners.remove(listener);
 	}
-
-	private void notifyActionListenersOnBeginEvent() {
+	
+	@Override
+	public void beginAction() {
+		super.setState(ElementState.ACTION);
 		for (int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).onActionBegin(this);
 		}
 	}
 
-	private void notifyActionListenersOnEndEvent() {
+	@Override
+	public void endAction() {
+		super.setState(ElementState.NORMAL);
 		for (int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).onActionEnd(this);
 		}
@@ -316,8 +317,8 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 
 	@Override
 	public boolean enter() {
+		endAction();
 		setState(ElementState.HOVER);
-		notifyActionListenersOnEndEvent();
 		return true;
 	}
 	
@@ -438,11 +439,5 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 	
 	public boolean isReceivingInput() {
 		return getState() == ElementState.ACTION;
-	}
-
-	@Override
-	public void beginHandlingInput() {
-		setState(ElementState.ACTION);
-		notifyActionListenersOnBeginEvent();
 	}
 }

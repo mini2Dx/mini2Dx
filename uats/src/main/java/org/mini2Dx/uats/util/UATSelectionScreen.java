@@ -36,7 +36,7 @@ import org.mini2Dx.ui.UiElement;
 import org.mini2Dx.ui.effect.SlideIn;
 import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.Button;
-import org.mini2Dx.ui.element.Dialog;
+import org.mini2Dx.ui.element.Modal;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.Row;
 import org.mini2Dx.ui.layout.ScreenSize;
@@ -58,7 +58,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 	private final AssetManager assetManager;
 
 	private UiContainer uiContainer;
-	private Dialog uatsDialog;
+	private Modal uatsDialog;
 	private int nextScreenId = -1;
 
 	public UATSelectionScreen(AssetManager assetManager) {
@@ -127,7 +127,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 	}
 
 	private void initialiseUi() {
-		uatsDialog = new Dialog();
+		uatsDialog = new Modal();
 		uatsDialog.setXRules("auto");
 		uatsDialog.setWidthRules("xs-12 sm-10 md-8 lg-6");
 

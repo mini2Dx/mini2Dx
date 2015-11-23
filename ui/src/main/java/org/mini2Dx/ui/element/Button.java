@@ -55,7 +55,6 @@ public class Button extends Column<ButtonStyle> implements Actionable {
 		}
 		if(currentArea.contains(screenX, screenY)) {
 			setState(ElementState.ACTION);
-			notifyActionListenersOnBeginEvent();
 			return this;
 		}
 		return null;
@@ -64,12 +63,15 @@ public class Button extends Column<ButtonStyle> implements Actionable {
 	
 	@Override
 	public void mouseUp(int screenX, int screenY, int pointer, int button) {
-		notifyActionListenersOnEndEvent();
+		if(getState() != ElementState.ACTION) {
+			return;
+		}
 		if(currentArea.contains(screenX, screenY)) {
 			setState(ElementState.HOVER);
 		} else {
 			setState(ElementState.NORMAL);
 		}
+		endAction();
 	}
 
 	@Override
@@ -91,18 +93,20 @@ public class Button extends Column<ButtonStyle> implements Actionable {
 		listeners.remove(listener);
 	}
 	
-	private void notifyActionListenersOnBeginEvent() {
+	@Override
+	public void beginAction() {
 		for(int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).onActionBegin(this);
 		}
 	}
-	
-	private void notifyActionListenersOnEndEvent() {
+
+	@Override
+	public void endAction() {
 		for(int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).onActionEnd(this);
 		}
 	}
-
+	
 	@Override
 	public void applyStyle(UiTheme theme, ScreenSize screenSize) {
 		currentStyle = theme.getButtonStyle(screenSize, styleId);
