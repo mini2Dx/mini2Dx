@@ -62,7 +62,7 @@ public abstract class BasicUiElement<T extends UiElementStyle>
 	protected PositionRule xRule;
 	protected PositionRule yRule = new DefaultYPositionRule();
 	protected SizeRule widthRule, heightRule;
-	protected boolean visible = false;
+	private boolean visible = false;
 	private boolean interpolate = false;
 
 	private ElementState state = ElementState.NORMAL;
@@ -454,6 +454,12 @@ public abstract class BasicUiElement<T extends UiElementStyle>
 
 	@Override
 	public boolean isVisible() {
+		if(currentArea.width <= 0f) {
+			return false;
+		}
+		if(currentArea.height <= 0f) {
+			return false;
+		}
 		return visible;
 	}
 

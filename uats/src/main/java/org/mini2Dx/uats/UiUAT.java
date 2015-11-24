@@ -138,6 +138,8 @@ public class UiUAT extends BasicGameScreen {
 		modal.setWidthRules("xs-12 md-8 lg-6");
 		modal.addRow(Row.withElements(textBox, textBoxResult));
 		modal.addRow(Row.withElements(select));
+		modal.addRow(Row.withElements(UiUtils.createLabel("Not visible on XS screen size", "xs-0", "xs-0 sm-12")));
+		
 		modal.addRow(Row.withElements(UiUtils.createButton("Return to UAT Selection Screen", "xs-0 md-4 xl-6", "xs-12 md-8 xl-6", new ActionListener() {
 			
 			@Override

@@ -36,7 +36,7 @@ public class Button extends Column<ButtonStyle> implements Actionable {
 
 	@Override
 	public void accept(UiRenderer renderer) {
-		if(!visible) {
+		if(!isVisible()) {
 			return;
 		}
 		renderer.render(this);
@@ -47,7 +47,7 @@ public class Button extends Column<ButtonStyle> implements Actionable {
 	
 	@Override
 	public Actionable mouseDown(int screenX, int screenY, int pointer, int button) {
-		if(!visible) {
+		if(!isVisible()) {
 			return null;
 		}
 		if(button != Buttons.LEFT) {

@@ -129,7 +129,7 @@ public class Row extends BasicUiElement<RowStyle>implements ContentSizeListener 
 
 	@Override
 	public void accept(UiRenderer renderer) {
-		if (!visible) {
+		if (!isVisible()) {
 			return;
 		}
 		for (int i = 0; i < children.size(); i++) {
@@ -146,7 +146,7 @@ public class Row extends BasicUiElement<RowStyle>implements ContentSizeListener 
 	
 	@Override
 	public Actionable mouseDown(int screenX, int screenY, int pointer, int button) {
-		if(!visible) {
+		if(!isVisible()) {
 			return null;
 		}
 		for(int i = children.size() - 1; i >= 0; i--) {
@@ -236,7 +236,7 @@ public class Row extends BasicUiElement<RowStyle>implements ContentSizeListener 
 
 	@Override
 	public void setVisible(boolean visible) {
-		this.visible = visible;
+		super.setVisible(visible);
 		for (int i = 0; i < children.size(); i++) {
 			children.get(i).setVisible(visible);
 		}

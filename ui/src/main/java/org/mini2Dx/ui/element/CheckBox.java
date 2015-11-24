@@ -32,7 +32,7 @@ public class CheckBox extends BasicUiElement<CheckBoxStyle> implements Actionabl
 
 	@Override
 	public void accept(UiRenderer renderer) {
-		if(!visible) {
+		if(!isVisible()) {
 			return;
 		}
 		renderer.render(this);

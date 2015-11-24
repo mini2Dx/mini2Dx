@@ -116,7 +116,7 @@ public abstract class Column<T extends UiElementStyle> extends BasicUiElement<T>
 	
 	@Override
 	public Actionable mouseDown(int screenX, int screenY, int pointer, int button) {
-		if(!visible) {
+		if(!isVisible()) {
 			return null;
 		}
 		for(int i = rows.size() - 1; i >= 0; i--) {
@@ -146,7 +146,7 @@ public abstract class Column<T extends UiElementStyle> extends BasicUiElement<T>
 
 	@Override
 	public void accept(UiRenderer renderer) {
-		if (!visible) {
+		if (!isVisible()) {
 			return;
 		}
 		for (int i = 0; i < rows.size(); i++) {
@@ -193,7 +193,7 @@ public abstract class Column<T extends UiElementStyle> extends BasicUiElement<T>
 
 	@Override
 	public void setVisible(boolean visible) {
-		this.visible = visible;
+		super.setVisible(visible);
 		for (int i = 0; i < rows.size(); i++) {
 			rows.get(i).setVisible(visible);
 		}

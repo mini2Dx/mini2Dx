@@ -38,7 +38,7 @@ public class Frame extends Column<FrameStyle> {
 
 	@Override
 	public void accept(UiRenderer renderer) {
-		if(!visible) {
+		if(!isVisible()) {
 			return;
 		}
 		renderer.render(this);

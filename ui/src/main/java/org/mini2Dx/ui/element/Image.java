@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.Texture;
  *
  */
 public class Image extends BasicUiElement<NullStyle> {
-	private final Texture texture;
+	private Texture texture;
 	
 	public Image(Texture texture) {
 		this.texture = texture;
@@ -30,7 +30,7 @@ public class Image extends BasicUiElement<NullStyle> {
 
 	@Override
 	public void accept(UiRenderer renderer) {
-		if(!visible) {
+		if(!isVisible()) {
 			return;
 		}
 		renderer.render(this);
@@ -63,5 +63,10 @@ public class Image extends BasicUiElement<NullStyle> {
 
 	public Texture getTexture() {
 		return texture;
+	}
+
+	public void setTexture(Texture texture) {
+		this.texture = texture;
+		notifyContentSizeListeners();
 	}
 }

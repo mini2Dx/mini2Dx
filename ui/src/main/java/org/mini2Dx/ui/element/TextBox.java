@@ -127,7 +127,7 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 
 	@Override
 	public void accept(UiRenderer renderer) {
-		if (!visible) {
+		if (!isVisible()) {
 			return;
 		}
 		renderer.render(this);
@@ -154,7 +154,7 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 
 	@Override
 	public Actionable mouseDown(int screenX, int screenY, int pointer, int button) {
-		if (!visible) {
+		if (!isVisible()) {
 			return null;
 		}
 		if (!isEnabled()) {
@@ -180,7 +180,7 @@ public class TextBox extends BasicUiElement<TextBoxStyle>implements Hoverable, T
 
 	@Override
 	public void mouseUp(int screenX, int screenY, int pointer, int button) {
-		if(!visible) {
+		if(!isVisible()) {
 			return;
 		}
 		switch(getState()) {
