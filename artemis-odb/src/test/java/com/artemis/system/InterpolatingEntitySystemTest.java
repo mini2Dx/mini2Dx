@@ -21,7 +21,9 @@ import com.artemis.Aspect;
 import com.artemis.Entity;
 import com.artemis.MdxWorld;
 import com.artemis.WorldConfiguration;
+import com.artemis.listener.WorldListener;
 import com.artemis.system.test.DummyComponent;
+import com.artemis.system.test.DummyWorldListener;
 import com.badlogic.gdx.math.MathUtils;
 
 import junit.framework.Assert;
@@ -107,6 +109,19 @@ public class InterpolatingEntitySystemTest extends InterpolatingEntitySystem {
 		Entity entityWithComponent = world.createEntity();
 		entityWithComponent.edit().add(new DummyComponent());
 		world.interpolate();
+	}
+	
+	@Test
+	public void testWorldListeners() {
+		DummyWorldListener listener = new DummyWorldListener();
+		world.addWorldListener(listener);
+		
+		Entity entity = world.createEntity();
+		listener.assertEntityCreated(entity.getId());
+		listener.assertEntityNotDeleted(entity.getId());
+		
+		world.delete(entity.getId());
+		listener.assertEntityDeleted(entity.getId());
 	}
 
 	@Override

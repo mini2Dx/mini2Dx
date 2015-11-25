@@ -9,6 +9,7 @@
 - Added Sizeable and SizeChangeListener interfaces
 - Added GameResizeListener and removed onResize method from GameContainer
 - Added MdxException for mini2Dx runtime exceptions
+- Added WorldListener interface to listen for entity creation/deletion
 - Positionable instances now have getId() method
 - Improved pixel rounding and reduced interpolation for CollisionBox, CollisionCircle and CollisionPoint
 - Mdx.json can now read/write to/from FileHandle instances

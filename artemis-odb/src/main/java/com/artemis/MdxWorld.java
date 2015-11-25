@@ -11,8 +11,12 @@
  */
 package com.artemis;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mini2Dx.core.graphics.Graphics;
 
+import com.artemis.listener.WorldListener;
 import com.artemis.system.InterpolatingEntitySystem;
 import com.artemis.system.RenderingEntitySystem;
 import com.artemis.utils.Bag;
@@ -26,6 +30,7 @@ public class MdxWorld extends World {
 	
 	private final MdxInvocationStrategy mdxInvocationStrategy;
 	
+	private List<WorldListener> worldListeners;
 	public float alpha;
 	
 	/**
@@ -65,7 +70,73 @@ public class MdxWorld extends World {
 	public void render(Graphics g) {
 		mdxInvocationStrategy.render(renderingSystemsBag, g);
 	}
-
+	
+	@Override
+	public int create() {
+		int result = super.create();
+		notifyWorldListenersOnCreate(result);
+		return result;
+	}
+	
+	@Override
+	public Entity createEntity() {
+		Entity result = super.createEntity();
+		notifyWorldListenersOnCreate(result.id);
+		return result;
+	}
+	
+	@Override
+	public void deleteEntity(Entity e) {
+		notifyWorldListenersOnDeleted(e.id);
+		super.deleteEntity(e);
+	}
+	
+	@Override
+	public void delete(int entityId) {
+		notifyWorldListenersOnDeleted(entityId);
+		super.delete(entityId);
+	}
+	
+	private void notifyWorldListenersOnCreate(int entityId) {
+		if(worldListeners == null) {
+			return;
+		}
+		for(int i = worldListeners.size() - 1; i >= 0; i--) {
+			worldListeners.get(i).afterEntityCreated(this, entityId);
+		}
+	}
+	
+	private void notifyWorldListenersOnDeleted(int entityId) {
+		if(worldListeners == null) {
+			return;
+		}
+		for(int i = worldListeners.size() - 1; i >= 0; i--) {
+			worldListeners.get(i).beforeEntityDeleted(this, entityId);
+		}
+	}
+	
+	/**
+	 * Adds a {@link WorldListener} to be notified of {@link MdxWorld} events
+	 * @param listener The {@link WorldListener} to be added
+	 */
+	public void addWorldListener(WorldListener listener) {
+		if(worldListeners == null) {
+			worldListeners = new ArrayList<WorldListener>();
+		}
+		worldListeners.add(listener);
+	}
+	
+	/**
+	 * Removes a {@link WorldListener} from {@link MdxWorld} notifications
+	 * @param listener The {@link WorldListener} to be removed
+	 */
+	public void removeWorldListener(WorldListener listener) {
+		if(worldListeners == null) {
+			return;
+		}
+		worldListeners.remove(listener);
+	}
+	
 	/**
 	 * Returns the interpolation alpha
 	 * @return
