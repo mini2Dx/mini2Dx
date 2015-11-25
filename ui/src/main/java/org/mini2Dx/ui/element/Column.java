@@ -30,6 +30,10 @@ public abstract class Column<T extends UiElementStyle> extends BasicUiElement<T>
 
 	private float contentWidth, contentHeight;
 	private boolean rowAdded;
+	
+	public Column(String id) {
+		super(id);
+	}
 
 	@Override
 	public void update(UiContentContainer uiContainer, float delta) {
@@ -208,5 +212,17 @@ public abstract class Column<T extends UiElementStyle> extends BasicUiElement<T>
 		for(int i = rows.size() -1; i >= 0; i--) {
 			rows.get(i).setState(ElementState.NORMAL);
 		}
+	}
+	
+	public static LayoutColumn withRows(Row... rows) {
+		return withRows(null, rows);
+	}
+	
+	public static LayoutColumn withRows(String id, Row... rows) {
+		LayoutColumn result = new LayoutColumn(id);
+		for(int i = 0; i < rows.length; i++) {
+			result.addRow(rows[i]);
+		}
+		return result;
 	}
 }

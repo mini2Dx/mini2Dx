@@ -35,7 +35,11 @@ public class Select<V> extends Column<SelectStyle> implements ActionListener, Ac
 	private boolean enabled;
 
 	public Select() {
-		this(new Label(), new TextButton("<"), new TextButton(">"));
+		this(null);
+	}
+	
+	public Select(String id) {
+		this(id, new Label(), new TextButton("<"), new TextButton(">"));
 		leftButton.setXRules("xs-0");
 		leftButton.setWidthRules("xs-1");
 		rightButton.setXRules("xs-11");
@@ -46,7 +50,8 @@ public class Select<V> extends Column<SelectStyle> implements ActionListener, Ac
 		selectionLabel.setHorizontalAlign(HorizontalAlign.CENTER);
 	}
 
-	public Select(Label selectionLabel, Button leftButton, Button rightButton) {
+	public Select(String id, Label selectionLabel, Button leftButton, Button rightButton) {
+		super(id);
 		this.leftButton = leftButton;
 		this.rightButton = rightButton;
 		this.selectionLabel = selectionLabel;

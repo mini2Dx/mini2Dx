@@ -33,6 +33,14 @@ public class Button extends Column<ButtonStyle> implements Actionable {
 	
 	private ButtonStyle currentStyle;
 	private boolean enabled = true;
+	
+	public Button() {
+		this(null);
+	}
+	
+	public Button(String id) {
+		super(id);
+	}
 
 	@Override
 	public void accept(UiRenderer renderer) {

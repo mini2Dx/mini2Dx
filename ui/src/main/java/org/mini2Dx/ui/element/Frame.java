@@ -32,7 +32,11 @@ public class Frame extends Column<FrameStyle> {
 	private FrameStyle currentStyle;
 	
 	public Frame() {
-		super();
+		this(null);
+	}
+	
+	public Frame(String id) {
+		super(id);
 		yPositionRules.put(ScreenSize.XS, new DefaultYPositionRule());
 	}
 

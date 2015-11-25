@@ -40,7 +40,11 @@ public class Label extends BasicUiElement<LabelStyle> {
 	}
 	
 	public Label(String text) {
-		super();
+		this(null, text);
+	}
+	
+	public Label(String id, String text) {
+		super(id);
 		color = COLOR_BLACK;
 		glyphLayout = new GlyphLayout();
 		this.text = text;

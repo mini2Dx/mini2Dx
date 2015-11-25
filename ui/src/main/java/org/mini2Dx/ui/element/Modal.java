@@ -28,6 +28,14 @@ public class Modal extends Frame {
 	private Map<String, Actionable> controllerHotkeys;
 	private List<Actionable> actionables;
 	private int hoverIndex;
+	
+	public Modal() {
+		this(null);
+	}
+	
+	public Modal(String id) {
+		super(id);
+	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {

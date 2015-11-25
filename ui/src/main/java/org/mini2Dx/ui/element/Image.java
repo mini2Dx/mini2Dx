@@ -24,7 +24,20 @@ import com.badlogic.gdx.graphics.Texture;
 public class Image extends BasicUiElement<NullStyle> {
 	private Texture texture;
 	
+	public Image() {
+		this(null, null);
+	}
+	
 	public Image(Texture texture) {
+		this(null, texture);
+	}
+	
+	public Image(String id) {
+		this(id, null);
+	}
+	
+	public Image(String id, Texture texture) {
+		super(id);
 		this.texture = texture;
 	}
 

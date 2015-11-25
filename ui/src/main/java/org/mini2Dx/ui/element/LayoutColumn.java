@@ -17,6 +17,14 @@ import org.mini2Dx.ui.theme.NullStyle;
  *
  */
 public class LayoutColumn extends Column<NullStyle> {
+	
+	public LayoutColumn() {
+		this(null);
+	}
+	
+	public LayoutColumn(String id) {
+		super(id);
+	}
 
 	@Override
 	public NullStyle getCurrentStyle() {
