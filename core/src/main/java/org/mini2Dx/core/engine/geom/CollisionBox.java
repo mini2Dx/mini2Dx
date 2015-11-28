@@ -35,7 +35,7 @@ import com.badlogic.gdx.math.Vector2;
 public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	private static final long serialVersionUID = -8217730724587578266L;
 
-	private final long id;
+	private final int id;
 	private final ReentrantReadWriteLock positionChangeListenerLock;
 	private final ReentrantReadWriteLock sizeChangeListenerLock;
 	
@@ -50,10 +50,18 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	public CollisionBox() {
 		this(0f, 0f, 1f, 1f);
 	}
+	
+	public CollisionBox(int id) {
+		this(id, 0f, 0f, 1f, 1f);
+	}
 
 	public CollisionBox(float x, float y, float width, float height) {
+		this(CollisionIdSequence.nextId(), x, y, width, height);
+	}
+	
+	public CollisionBox(int id, float x, float y, float width, float height) {
 		super(x, y, width, height);
-		this.id = CollisionIdSequence.nextId();
+		this.id = id;
 		
 		positionChangeListenerLock = new ReentrantReadWriteLock();
 		sizeChangeListenerLock = new ReentrantReadWriteLock();
@@ -403,7 +411,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 		return renderRectangle.getRotation();
 	}
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 	

@@ -11,15 +11,15 @@
  */
 package org.mini2Dx.core.engine.geom;
 
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Generates IDs for collision objects (e.g. {@link CollisionBox}, {@link CollisionPoint}, etc.)
  */
 class CollisionIdSequence {
-	private static final AtomicLong ID_SEQUENCE = new AtomicLong();
+	private static final AtomicInteger ID_SEQUENCE = new AtomicInteger();
 	
-	public static long nextId() {
+	public static int nextId() {
 		return ID_SEQUENCE.incrementAndGet();
 	}
 }

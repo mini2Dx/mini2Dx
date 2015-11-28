@@ -20,7 +20,7 @@ public interface Positionable extends Updatable {
 	 * Returns the unique id of this object
 	 * @return
 	 */
-	public long getId();
+	public int getId();
 	/**
 	 * Returns the x coordinate of this object
 	 * 

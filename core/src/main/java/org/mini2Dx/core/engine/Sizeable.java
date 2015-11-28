@@ -20,7 +20,7 @@ public interface Sizeable {
 	 * 
 	 * @return
 	 */
-	public long getId();
+	public int getId();
 
 	/**
 	 * Returns the width of this object

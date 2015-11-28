@@ -33,7 +33,7 @@ import com.badlogic.gdx.math.MathUtils;
  */
 public class CollisionCircle extends Circle implements Positionable, Sizeable {
 	
-	private final long id;
+	private final int id;
 	private final ReadWriteLock positionChangeListenerLock;
 	private final ReadWriteLock sizeChangeListenerLock;
 	
@@ -46,8 +46,12 @@ public class CollisionCircle extends Circle implements Positionable, Sizeable {
 	private boolean interpolate = false;
 	
 	public CollisionCircle(int radius) {
+		this(CollisionIdSequence.nextId(), radius);
+	}
+	
+	public CollisionCircle(int id, int radius) {
 		super(radius);
-		this.id = CollisionIdSequence.nextId();
+		this.id = id;
 		
 		positionChangeListenerLock = new ReentrantReadWriteLock();
 		sizeChangeListenerLock = new ReentrantReadWriteLock();
@@ -57,8 +61,12 @@ public class CollisionCircle extends Circle implements Positionable, Sizeable {
 	}
 	
 	public CollisionCircle(float centerX, float centerY, int radius) {
+		this(CollisionIdSequence.nextId(), centerX, centerY, radius);
+	}
+	
+	public CollisionCircle(int id, float centerX, float centerY, int radius) {
 		super(centerX, centerY, radius);
-		this.id = CollisionIdSequence.nextId();
+		this.id = id;
 		
 		positionChangeListenerLock = new ReentrantReadWriteLock();
 		sizeChangeListenerLock = new ReentrantReadWriteLock();
@@ -262,7 +270,7 @@ public class CollisionCircle extends Circle implements Positionable, Sizeable {
 		return previousCircle.getRadius();
 	}
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
