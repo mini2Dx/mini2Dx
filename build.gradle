@@ -17,27 +17,10 @@ buildscript {
 subprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
-    apply plugin: "maven"
+	apply plugin: "maven"
 
 	group = 'org.mini2Dx'
     version = '1.3.0-SNAPSHOT'
-    
-    uploadArchives {
-		repositories {
-			mavenDeployer {
-				repository(url: "http://maven.mini2dx.org/content/repositories/releases") {
-					if(project.hasProperty('mini2DxMavenUser')) {
-						authentication(userName: project.property('mini2DxMavenUser'), password: project.property('mini2DxMavenPassword'))
-					}
-    			}
-    			snapshotRepository(url: "http://maven.mini2dx.org/content/repositories/snapshots") {
-    				if(project.hasProperty('mini2DxMavenUser')) {
-    					authentication(userName: project.property('mini2DxMavenUser'), password: project.property('mini2DxMavenPassword'))
-    				}
-    			}
-			}
-		}
-	}
 
     repositories {
         mavenLocal()
@@ -74,6 +57,34 @@ def docProjects() {
 
 configure(docProjects()) {
 	apply plugin: "java"
+	apply plugin: "maven-publish"
+	
+	task sourceJar(type: Jar) {
+		from sourceSets.main.allJava
+	}
+	
+	publishing {
+		repositories {
+			maven {
+				url "https://mini2dx.org/maven/content/repositories/releases"
+				if(project.hasProperty('mini2DxMavenUser')) {
+					credentials {
+						username = project.property('mini2DxMavenUser')
+						password = project.property('mini2DxMavenPassword')
+					}
+				}
+			}
+		}
+		publications {
+			maven(MavenPublication) {
+				from components.java
+				
+				artifact sourceJar {
+					classifier "sources"
+				}
+			}
+		}
+	}
 }
 
 project(":" + rootProject.name + "-core") {
@@ -270,7 +281,7 @@ if (Os.isFamily(Os.FAMILY_MAC)) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.4'
+    gradleVersion = '2.9'
 }
 
 boolean hasAndroidSdk() {
