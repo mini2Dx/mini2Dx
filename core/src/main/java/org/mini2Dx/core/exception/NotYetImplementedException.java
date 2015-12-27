@@ -18,8 +18,12 @@ public class NotYetImplementedException extends MdxException {
     private static final long serialVersionUID = 3910057641370555308L;
 
     public NotYetImplementedException() {
-        super("This operation is not yet implemented for the current platform. "
+        this("This operation is not yet implemented for the current platform. "
                         + "If you would like to contribute an implementation, "
                         + "please send a pull request to the mini2Dx repository at https://github.com/mini2Dx/mini2Dx");
+    }
+    
+    public NotYetImplementedException(String message) {
+    	super(message);
     }
 }

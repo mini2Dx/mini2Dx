@@ -18,6 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.mini2Dx.core.engine.PositionChangeListener;
 import org.mini2Dx.core.engine.Positionable;
+import org.mini2Dx.core.exception.NotYetImplementedException;
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.math.Vector2;
@@ -395,6 +396,17 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		g.drawLineSegment(bottomLeft.x, bottomLeft.y, bottomRight.x,
 				bottomRight.y);
 		g.drawLineSegment(topLeft.x, topLeft.y, bottomLeft.x, bottomLeft.y);
+	}
+	
+	@Override
+	public void fill(Graphics g) {
+		if (rotation == 0f) {
+			g.fillRect(topLeft.x, topLeft.y, width, height);
+			return;
+		}
+		throw new NotYetImplementedException("g.fillRect for rotated Rectangles has not been implemented yet. " 
+				+ "If you would like to contribute an implementation, "
+                + "please send a pull request to the mini2Dx repository at https://github.com/mini2Dx/mini2Dx");
 	}
 
 	@Override

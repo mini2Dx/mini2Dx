@@ -127,6 +127,11 @@ public class Circle implements Shape {
 		g.drawCircle(center.x, center.y, MathUtils.round(radius));
 	}
 	
+	@Override
+	public void fill(Graphics g) {
+		g.fillCircle(center.x, center.y, MathUtils.round(radius));
+	}
+	
 	public void set(Circle circle) {
 		setCenter(circle.getX(), circle.getY());
 		setRadius(circle.getRadius());

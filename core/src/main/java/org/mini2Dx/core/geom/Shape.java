@@ -35,4 +35,6 @@ public interface Shape {
 	public int getNumberOfSides();
 	
 	public void draw(Graphics g);
+	
+	public void fill(Graphics g);
 }

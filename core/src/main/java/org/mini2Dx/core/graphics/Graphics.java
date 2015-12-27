@@ -50,8 +50,7 @@ public class Graphics {
 	private float rotation, rotationX, rotationY;
 	private float currentWidth, currentHeight;
 
-	private int defaultBlendSrcFunc = GL20.GL_SRC_ALPHA,
-			defaultBlendDstFunc = GL20.GL_ONE_MINUS_SRC_ALPHA;
+	private int defaultBlendSrcFunc = GL20.GL_SRC_ALPHA, defaultBlendDstFunc = GL20.GL_ONE_MINUS_SRC_ALPHA;
 	private int lineHeight;
 	private boolean rendering, renderingShapes;
 	private Rectangle clip;
@@ -94,8 +93,7 @@ public class Graphics {
 		this.currentWidth = gameWidth;
 		this.currentHeight = gameHeight;
 
-		Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g,
-				backgroundColor.b, backgroundColor.a);
+		Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
 
 		rendering = false;
@@ -160,10 +158,8 @@ public class Graphics {
 		int roundWidth = MathUtils.round(width);
 		int roundHeight = MathUtils.round(height);
 
-		spriteBatch.draw(colorTextureCache.getRectangleTexture(color,
-				roundWidth, roundHeight, getLineHeight()), x, y, 0, 0,
-				roundWidth, roundHeight, 1f, 1f, 0, 0, 0, roundWidth,
-				roundHeight, false, false);
+		spriteBatch.draw(colorTextureCache.getRectangleTexture(color, roundWidth, roundHeight, getLineHeight()), x, y,
+				0, 0, roundWidth, roundHeight, 1f, 1f, 0, 0, 0, roundWidth, roundHeight, false, false);
 	}
 
 	/**
@@ -181,8 +177,8 @@ public class Graphics {
 	public void fillRect(float x, float y, float width, float height) {
 		beginRendering();
 
-		spriteBatch.draw(colorTextureCache.getFilledRectangleTexture(color), x,
-				y, 0, 0, width, height, 1f, 1f, 0, 0, 0, 1, 1, false, false);
+		spriteBatch.draw(colorTextureCache.getFilledRectangleTexture(color), x, y, 0, 0, width, height, 1f, 1f, 0, 0, 0,
+				1, 1, false, false);
 	}
 
 	/**
@@ -202,11 +198,9 @@ public class Graphics {
 		float renderX = (centerX - radius);
 		float renderY = (centerY - radius);
 
-		Texture texture = colorTextureCache.getCircleTexture(color, radius,
-				getLineHeight());
-		spriteBatch.draw(texture, renderX, renderY, 0, 0, texture.getWidth(),
-				texture.getHeight(), 1f, 1f, 0, 0, 0, texture.getWidth(),
-				texture.getHeight(), false, false);
+		Texture texture = colorTextureCache.getCircleTexture(color, radius, getLineHeight());
+		spriteBatch.draw(texture, renderX, renderY, 0, 0, texture.getWidth(), texture.getHeight(), 1f, 1f, 0, 0, 0,
+				texture.getWidth(), texture.getHeight(), false, false);
 	}
 
 	/**
@@ -220,16 +214,14 @@ public class Graphics {
 	 *            The radius of the circle
 	 */
 	public void fillCircle(float centerX, float centerY, int radius) {
-		Texture texture = colorTextureCache.getFilledCircleTexture(color,
-				radius);
+		Texture texture = colorTextureCache.getFilledCircleTexture(color, radius);
 
 		float renderX = (centerX - radius);
 		float renderY = (centerY - radius);
 
 		beginRendering();
-		spriteBatch.draw(texture, renderX, renderY, 0, 0, texture.getWidth(),
-				texture.getHeight(), 1f, 1f, 0, 0, 0, texture.getWidth(),
-				texture.getHeight(), false, false);
+		spriteBatch.draw(texture, renderX, renderY, 0, 0, texture.getWidth(), texture.getHeight(), 1f, 1f, 0, 0, 0,
+				texture.getWidth(), texture.getHeight(), false, false);
 	}
 
 	/**
@@ -252,8 +244,8 @@ public class Graphics {
 	}
 
 	/**
-	 * Draws a string to the window, automatically wrapping it within a specified
-	 * width
+	 * Draws a string to the window, automatically wrapping it within a
+	 * specified width
 	 * 
 	 * @param text
 	 *            The {@link String} to draw
@@ -262,15 +254,16 @@ public class Graphics {
 	 * @param y
 	 *            The y coordinate to draw at
 	 * @param targetWidth
-	 *            The width to render the {@link String} at. Note: The string will automatically wrapped if it is longer.
+	 *            The width to render the {@link String} at. Note: The string
+	 *            will automatically wrapped if it is longer.
 	 */
 	public void drawString(String text, float x, float y, float targetWidth) {
 		drawString(text, x, y, targetWidth, Align.left);
 	}
-	
+
 	/**
-	 * Draws a string to the window, automatically wrapping it within a specified
-	 * width and aligning it to the left, center or right of the width
+	 * Draws a string to the window, automatically wrapping it within a
+	 * specified width and aligning it to the left, center or right of the width
 	 * 
 	 * @param text
 	 *            The {@link String} to draw
@@ -279,9 +272,11 @@ public class Graphics {
 	 * @param y
 	 *            The y coordinate to draw at
 	 * @param targetWidth
-	 *            The width to render the {@link String} at. Note: The string will automatically wrapped if it is longer.
+	 *            The width to render the {@link String} at. Note: The string
+	 *            will automatically wrapped if it is longer.
 	 * @param horizontalAlign
-	 * 			  The horizontal alignment. Note: Use {@link Align} to retrieve the appropriate value.
+	 *            The horizontal alignment. Note: Use {@link Align} to retrieve
+	 *            the appropriate value.
 	 */
 	public void drawString(String text, float x, float y, float targetWidth, int horizontalAlign) {
 		if (font == null) {
@@ -305,7 +300,7 @@ public class Graphics {
 	public void drawTexture(Texture texture, float x, float y) {
 		drawTexture(texture, x, y, texture.getWidth(), texture.getHeight());
 	}
-	
+
 	/**
 	 * Draws a texture to this graphics context
 	 * 
@@ -315,7 +310,8 @@ public class Graphics {
 	 *            The x coordinate to draw at
 	 * @param y
 	 *            The y coordinate to draw at
-	 * @param flipY True if the texture should be flipped vertically
+	 * @param flipY
+	 *            True if the texture should be flipped vertically
 	 */
 	public void drawTexture(Texture texture, float x, float y, boolean flipY) {
 		drawTexture(texture, x, y, texture.getWidth(), texture.getHeight(), flipY);
@@ -337,11 +333,10 @@ public class Graphics {
 	 *            The height to draw the texture (this can stretch/shrink the
 	 *            texture if not matching the texture's height)
 	 */
-	public void drawTexture(Texture texture, float x, float y, float width,
-			float height) {
+	public void drawTexture(Texture texture, float x, float y, float width, float height) {
 		drawTexture(texture, x, y, width, height, true);
 	}
-	
+
 	/**
 	 * 
 	 * @param texture
@@ -356,13 +351,13 @@ public class Graphics {
 	 * @param height
 	 *            The height to draw the texture (this can stretch/shrink the
 	 *            texture if not matching the texture's height)
-	 * @param flipY True if the texture should be flipped vertically
+	 * @param flipY
+	 *            True if the texture should be flipped vertically
 	 */
-	public void drawTexture(Texture texture, float x, float y, float width,
-			float height, boolean flipY) {
+	public void drawTexture(Texture texture, float x, float y, float width, float height, boolean flipY) {
 		beginRendering();
-		spriteBatch.draw(texture, x, y, 0, 0, width, height, 1f, 1f, 0, 0, 0,
-				texture.getWidth(), texture.getHeight(), false, flipY);
+		spriteBatch.draw(texture, x, y, 0, 0, width, height, 1f, 1f, 0, 0, 0, texture.getWidth(), texture.getHeight(),
+				false, flipY);
 	}
 
 	/**
@@ -378,7 +373,7 @@ public class Graphics {
 	public void drawTextureRegion(TextureRegion textureRegion, float x, float y) {
 		drawTextureRegion(textureRegion, x, y, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
 	}
-	
+
 	/**
 	 * Draws a texture region to this graphics context
 	 * 
@@ -408,6 +403,16 @@ public class Graphics {
 	 */
 	public void drawShape(Shape shape) {
 		shape.draw(this);
+	}
+
+	/**
+	 * Fills an instance of {@link Shape}
+	 * 
+	 * @param shape
+	 *            The implementation of {@link Shape} to fill
+	 */
+	public void fillShape(Shape shape) {
+		shape.fill(this);
 	}
 
 	/**
@@ -450,60 +455,76 @@ public class Graphics {
 	/**
 	 * Draws a {@link SpriteCache}
 	 * 
-	 * @param spriteCache The {@link SpriteCache} to draw
-	 * @param cacheId The cacheId to draw
+	 * @param spriteCache
+	 *            The {@link SpriteCache} to draw
+	 * @param cacheId
+	 *            The cacheId to draw
 	 */
 	public void drawSpriteCache(SpriteCache spriteCache, int cacheId) {
 		beginRendering();
-		spriteCache.getProjectionMatrix().set(
-				spriteBatch.getProjectionMatrix().cpy());
-		spriteCache.getTransformMatrix().set(
-				spriteBatch.getTransformMatrix().cpy());
+		spriteCache.getProjectionMatrix().set(spriteBatch.getProjectionMatrix().cpy());
+		spriteCache.getTransformMatrix().set(spriteBatch.getTransformMatrix().cpy());
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 
 		spriteCache.begin();
 		spriteCache.draw(cacheId);
 		spriteCache.end();
 	}
-	
+
 	/**
 	 * Draws an instance of a LibGDX {@link Stage}
-	 * @param stage The {@link Stage} to be drawn to screen
+	 * 
+	 * @param stage
+	 *            The {@link Stage} to be drawn to screen
 	 */
 	public void drawStage(Stage stage) {
 		endRendering();
 		stage.draw();
 	}
-	
+
 	/**
 	 * Draws a {@link ParticleEffect} or {@link PooledParticleEffect} to screen
-	 * @param effect The effect to be drawn
+	 * 
+	 * @param effect
+	 *            The effect to be drawn
 	 */
 	public void drawParticleEffect(ParticleEffect effect) {
 		beginRendering();
 		effect.render(spriteBatch);
 	}
-	
+
 	/**
 	 * Draws a {@link NinePatch} to screen
-	 * @param ninePatch The {@link NinePatch} to be drawn
-	 * @param x The x coordinate to draw at
-	 * @param y The y coordiante to draw at
-	 * @param width The width to apply to the {@link NinePatch}
-	 * @param height The height to apply to the {@link NinePatch}
+	 * 
+	 * @param ninePatch
+	 *            The {@link NinePatch} to be drawn
+	 * @param x
+	 *            The x coordinate to draw at
+	 * @param y
+	 *            The y coordiante to draw at
+	 * @param width
+	 *            The width to apply to the {@link NinePatch}
+	 * @param height
+	 *            The height to apply to the {@link NinePatch}
 	 */
 	public void drawNinePatch(NinePatch ninePatch, float x, float y, float width, float height) {
 		beginRendering();
 		ninePatch.draw(spriteBatch, x, y, width, height);
 	}
-	
+
 	/**
 	 * Draws a {@link NinePatchDrawable} to screen
-	 * @param ninePatchDrawable The {@link NinePatchDrawable} to be drawn
-	 * @param x The x coordinate to draw at
-	 * @param y The y coordiante to draw at
-	 * @param width The width to apply to the {@link NinePatchDrawable}
-	 * @param height The height to apply to the {@link NinePatchDrawable}
+	 * 
+	 * @param ninePatchDrawable
+	 *            The {@link NinePatchDrawable} to be drawn
+	 * @param x
+	 *            The x coordinate to draw at
+	 * @param y
+	 *            The y coordiante to draw at
+	 * @param width
+	 *            The width to apply to the {@link NinePatchDrawable}
+	 * @param height
+	 *            The height to apply to the {@link NinePatchDrawable}
 	 */
 	public void drawNinePatch(NinePatchDrawable ninePatchDrawable, float x, float y, float width, float height) {
 		beginRendering();
@@ -547,7 +568,7 @@ public class Graphics {
 		this.scaleX *= scaleX;
 		this.scaleY *= scaleY;
 	}
-	
+
 	/**
 	 * Resets scaling back to default values
 	 */
@@ -555,7 +576,7 @@ public class Graphics {
 		if (rendering) {
 			endRendering();
 		}
-		
+
 		scaleX = 1f;
 		scaleY = 1f;
 	}
@@ -687,9 +708,10 @@ public class Graphics {
 	public void setShaderProgram(ShaderProgram shaderProgram) {
 		spriteBatch.setShader(shaderProgram);
 	}
-	
+
 	/**
 	 * Returns the currently applied {@link ShaderProgram}
+	 * 
 	 * @return
 	 */
 	public ShaderProgram getShaderProgram() {
@@ -749,13 +771,10 @@ public class Graphics {
 				Gdx.gl.glColorMask(false, false, false, false);
 				Gdx.gl.glDepthMask(false);
 				Gdx.gl.glStencilFunc(GL20.GL_ALWAYS, 1, 1);
-				Gdx.gl.glStencilOp(GL20.GL_REPLACE, GL20.GL_REPLACE,
-						GL20.GL_REPLACE);
+				Gdx.gl.glStencilOp(GL20.GL_REPLACE, GL20.GL_REPLACE, GL20.GL_REPLACE);
 
-				spriteBatch.draw(colorTextureCache
-						.getFilledRectangleTexture(Color.WHITE), clip.getX(),
-						clip.getY(), 0f, 0f, clip.getWidth(), clip.getHeight(),
-						1f, 1f, 0, 0, 0, 1, 1, false, false);
+				spriteBatch.draw(colorTextureCache.getFilledRectangleTexture(Color.WHITE), clip.getX(), clip.getY(), 0f,
+						0f, clip.getWidth(), clip.getHeight(), 1f, 1f, 0, 0, 0, 1, 1, false, false);
 				spriteBatch.end();
 
 				Gdx.gl.glColorMask(true, true, true, true);
@@ -804,8 +823,7 @@ public class Graphics {
 		camera.update();
 
 		if (rotation != 0f) {
-			camera.rotateAround(new Vector3(rotationX, rotationY, 0),
-					new Vector3(0, 0, 1), -rotation);
+			camera.rotateAround(new Vector3(rotationX, rotationY, 0), new Vector3(0, 0, 1), -rotation);
 		}
 		camera.update();
 
@@ -819,8 +837,7 @@ public class Graphics {
 	private void undoTransformations() {
 
 		if (rotation != 0f) {
-			camera.rotateAround(new Vector3(rotationX, rotationY, 0),
-					new Vector3(0, 0, 1), rotation);
+			camera.rotateAround(new Vector3(rotationX, rotationY, 0), new Vector3(0, 0, 1), rotation);
 		}
 		camera.update();
 
@@ -959,12 +976,10 @@ public class Graphics {
 
 	@Override
 	public String toString() {
-		return "Graphics [color=" + color + ", backgroundColor="
-				+ backgroundColor + ", tint=" + tint + ", translationX="
-				+ translationX + ", translationY=" + translationY + ", scaleX="
-				+ scaleX + ", scaleY=" + scaleY + ", rotation=" + rotation
-				+ ", rotationX=" + rotationX + ", rotationY=" + rotationY
-				+ ", currentWidth=" + currentWidth + ", currentHeight="
-				+ currentHeight + ", lineHeight=" + lineHeight + "]";
+		return "Graphics [color=" + color + ", backgroundColor=" + backgroundColor + ", tint=" + tint
+				+ ", translationX=" + translationX + ", translationY=" + translationY + ", scaleX=" + scaleX
+				+ ", scaleY=" + scaleY + ", rotation=" + rotation + ", rotationX=" + rotationX + ", rotationY="
+				+ rotationY + ", currentWidth=" + currentWidth + ", currentHeight=" + currentHeight + ", lineHeight="
+				+ lineHeight + "]";
 	}
 }
