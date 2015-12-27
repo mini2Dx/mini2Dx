@@ -22,10 +22,19 @@ import org.mini2Dx.core.engine.PositionChangeListener;
  */
 public class CircleTest {
 	private Circle circle;
-	
+
 	@Before
 	public void setup() {
 		circle = new Circle(4);
+	}
+
+	@Test
+	public void testContains() {
+		for (float x = -5f; x <= 5f; x += 0.1f) {
+			for (float y = -5f; y <= 5f; y += 0.1f) {
+				Assert.assertEquals(circle.getDistanceFromCenter(x, y) <= circle.getRadius(), circle.contains(x, y));
+			}
+		}
 	}
 
 	@Test
@@ -33,7 +42,7 @@ public class CircleTest {
 		Circle circle2 = new Circle(20f, 20f, 4);
 		Assert.assertEquals(false, circle.intersects(circle2));
 		Assert.assertEquals(false, circle2.intersects(circle));
-		
+
 		circle2.setCenter(5f, 0f);
 		Assert.assertEquals(true, circle.intersects(circle2));
 		Assert.assertEquals(true, circle2.intersects(circle));
@@ -43,7 +52,7 @@ public class CircleTest {
 	public void testGetDistanceToPositionable() {
 		Point point = new Point(3f, 0f);
 		Assert.assertEquals(0f, circle.getDistanceTo(point));
-		
+
 		point.set(5f, 0f);
 		Assert.assertEquals(1f, circle.getDistanceTo(point));
 	}
@@ -51,23 +60,23 @@ public class CircleTest {
 	@Test
 	public void testSetCenter() {
 		circle.setCenter(20f, 25f);
-		
+
 		Assert.assertEquals(20f, circle.getX());
 		Assert.assertEquals(25f, circle.getY());
 	}
-	
+
 	@Test
 	public void testSetX() {
 		circle.setX(25f);
-		
+
 		Assert.assertEquals(25f, circle.getX());
 		Assert.assertEquals(0f, circle.getY());
 	}
-	
+
 	@Test
 	public void testSetY() {
 		circle.setY(25f);
-		
+
 		Assert.assertEquals(0f, circle.getX());
 		Assert.assertEquals(25f, circle.getY());
 	}

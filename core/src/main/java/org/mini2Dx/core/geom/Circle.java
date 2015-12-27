@@ -41,21 +41,80 @@ public class Circle implements Shape {
 		radius = (radius * inverseAlpha) + (target.getRadius() * alpha);
 		return this;
 	}
+	
+	public boolean contains(Vector2 point) {
+		return contains(point.x, point.y);
+	}
+	
+	public boolean contains(float x, float y) {
+		float dx = Math.abs(x - center.x);
+		if(dx > radius) {
+			System.out.println("dx false");
+			return false;
+		}
+		
+		float dy = Math.abs(y - center.y);
+		if(dy > radius) {
+			System.out.println("dy false: " + dy + " " + radius);
+			return false;
+		}
+		
+		if(dx + dy <= radius) {
+			System.out.println("dx + dy false");
+			return true;
+		}
+		if((dx * dx) + (dy * dy) <= (radius * radius)) {
+			System.out.println("pyth false");
+			return true;
+		}
+		System.out.println("false");
+		return false;
+	}
 
 	public boolean intersects(Circle circle) {
 		return center.dst(circle.center) <= radius + circle.radius;
 	}
 
-	public float getDistanceTo(Point point) {
-		return getDistanceTo(point.getX(), point.getY());
+	/**
+	 * Returns the distance from the edge of this {@link Circle} to a point
+	 * @param point The point
+	 * @return The distance to the point
+	 */
+	public float getDistanceTo(Vector2 point) {
+		return getDistanceTo(point.x, point.y);
 	}
 	
+	/**
+	 * Returns the distance from the edge of this {@link Circle} to a point
+	 * @param x The x coordinate
+	 * @param y The y coordinate
+	 * @return The distance to the point
+	 */
 	public float getDistanceTo(float x, float y) {
 		float result = center.dst(x, y);
 		if(result <= radius) {
 			return 0f;
 		}
 		return result - radius;
+	}
+	
+	/**
+	 * Returns the distance from the center of this {@link Circle} to a point
+	 * @param point The point
+	 * @return The distane to the point
+	 */
+	public float getDistanceFromCenter(Vector2 point) {
+		return center.dst(point.x, point.y);
+	}
+	
+	/**
+	 * Returns the distance from the center of this {@link Circle} to a point
+	 * @param x The x coordinate
+	 * @param y The y coordinate
+	 * @return The distane to the point
+	 */
+	public float getDistanceFromCenter(float x, float y) {
+		return center.dst(x, y);
 	}
 	
 	@Override
