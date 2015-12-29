@@ -17,7 +17,6 @@ import org.mini2Dx.ui.element.Hoverable;
  *
  */
 public interface HoverListener {
-
 	public void onHoverBegin(Hoverable source);
 	
 	public void onHoverEnd(Hoverable source);

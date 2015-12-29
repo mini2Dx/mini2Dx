@@ -1,0 +1,22 @@
+<container>
+	<row>
+		<column id="firstColumn" layout="xs-12 sm-10 sm-offset-1 md-3" style="">
+			<label style="" text="Label text" />
+		</column>
+		<column layout="xs-12 sm-10 sm-offset-2 md-3">
+			<select id="" style="">
+				<option value="1" text="Option 1" />
+				<option value="2" text="Option 2" />
+				<option value="3" text="Option 3" />
+				<option value="4" text="Option 4" />
+			</select>
+		</column>
+		<column layout="xs-12 sm-10 sm-offset-2 md-3">
+			<textButton id="" text="" style="" />
+			<imageButton id="" image="" style="" />
+		</column>
+		<column layout="xs-12 sm-10 sm-offset-2 md-3">
+			<textbox id="" style="" />
+		</column>
+	</row>
+</container>

@@ -14,24 +14,14 @@ package org.mini2Dx.ui.element;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mini2Dx.core.engine.geom.CollisionBox;
-import org.mini2Dx.ui.UiElement;
-import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.listener.HoverListener;
-import org.mini2Dx.ui.render.UiRenderer;
-import org.mini2Dx.ui.theme.ButtonStyle;
-import org.mini2Dx.ui.theme.UiTheme;
-
-import com.badlogic.gdx.Input.Buttons;
 
 /**
  *
  */
-public class Button extends Column<ButtonStyle> implements Actionable {
-	private final List<ActionListener> listeners = new ArrayList<ActionListener>(1);
-	
-	private ButtonStyle currentStyle;
+public abstract class Button extends UiElement implements Actionable {
+	private List<ActionListener> actionListeners;
 	private boolean enabled = true;
 	
 	public Button() {
@@ -41,88 +31,50 @@ public class Button extends Column<ButtonStyle> implements Actionable {
 	public Button(String id) {
 		super(id);
 	}
-
+	
 	@Override
-	public void accept(UiRenderer renderer) {
-		if(!isVisible()) {
+	public void notifyActionListenersOfBeginEvent() {
+		if(actionListeners == null) {
 			return;
 		}
-		renderer.render(this);
-		for(int i = 0; i < rows.size(); i++) {
-			rows.get(i).accept(renderer);
+		for(int i = actionListeners.size() - 1; i >= 0; i--) {
+			actionListeners.get(i).onActionBegin(this);
 		}
 	}
 	
 	@Override
-	public Actionable mouseDown(int screenX, int screenY, int pointer, int button) {
-		if(!isVisible()) {
-			return null;
-		}
-		if(button != Buttons.LEFT) {
-			return null;
-		}
-		if(currentArea.contains(screenX, screenY)) {
-			setState(ElementState.ACTION);
-			return this;
-		}
-		return null;
-	}
-	
-	
-	@Override
-	public void mouseUp(int screenX, int screenY, int pointer, int button) {
-		if(getState() != ElementState.ACTION) {
+	public void notifyActionListenersOfEndEvent() {
+		if(actionListeners == null) {
 			return;
 		}
-		if(currentArea.contains(screenX, screenY)) {
-			setState(ElementState.HOVER);
-		} else {
-			setState(ElementState.NORMAL);
+		for(int i = actionListeners.size() - 1; i >= 0; i--) {
+			actionListeners.get(i).onActionEnd(this);
 		}
-		endAction();
 	}
-
-	@Override
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
+	
 	@Override
 	public void addActionListener(ActionListener listener) {
-		listeners.add(listener);
+		if(actionListeners == null) {
+			actionListeners = new ArrayList<ActionListener>(1);
+		}
+		actionListeners.add(listener);
 	}
 
 	@Override
 	public void removeActionListener(ActionListener listener) {
-		listeners.remove(listener);
+		if(actionListeners == null) {
+			return;
+		}
+		actionListeners.remove(listener);
 	}
 	
 	@Override
-	public void beginAction() {
-		for(int i = listeners.size() - 1; i >= 0; i--) {
-			listeners.get(i).onActionBegin(this);
-		}
-	}
-
-	@Override
-	public void endAction() {
-		for(int i = listeners.size() - 1; i >= 0; i--) {
-			listeners.get(i).onActionEnd(this);
-		}
+	public boolean isEnabled() {
+		return enabled;
 	}
 	
 	@Override
-	public void applyStyle(UiTheme theme, ScreenSize screenSize) {
-		currentStyle = theme.getButtonStyle(screenSize, styleId);
-		super.applyStyle(theme, screenSize);
-	}
-
-	@Override
-	public ButtonStyle getCurrentStyle() {
-		return currentStyle;
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 }

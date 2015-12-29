@@ -14,34 +14,31 @@ package org.mini2Dx.ui.effect;
 import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.ui.UiContentContainer;
+import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.render.UiContainerRenderTree;
 
 /**
  *
  */
 public class SlideOut implements UiEffect {
-	private final SlideDirection direction;
-	
-	public SlideOut() {
-		this(SlideDirection.DOWN);
-	}
-
-	public SlideOut(SlideDirection direction) {
-		this.direction = direction;
-	}
 
 	@Override
-	public boolean update(UiContentContainer uiContainer, CollisionBox currentArea, Rectangle targetArea, float delta) {
-		
+	public boolean update(UiContainerRenderTree uiContainer, CollisionBox currentArea, Rectangle targetArea,
+			float delta) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void preRender(Graphics g) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void postRender(Graphics g) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

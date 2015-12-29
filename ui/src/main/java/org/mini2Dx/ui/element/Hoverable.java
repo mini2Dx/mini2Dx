@@ -20,9 +20,11 @@ public interface Hoverable {
 	
 	public String getId();
 	
-	public boolean contains(float screenX, float screenY);
-	
 	public void addHoverListener(HoverListener listener);
 	
 	public void removeHoverListener(HoverListener listener);
+	
+	public void notifyHoverListenersOnBeginHover();
+	
+	public void notifyHoverListenersOnEndHover();
 }

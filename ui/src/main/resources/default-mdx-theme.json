@@ -1,147 +1,197 @@
 {
-    "name": "mdx-default-theme",
-    "columns": 12,
-    "fonts": {
-        "default": {
-            "path": "default-mdx-theme/kenvector_future.ttf"
-        }
-    },
-    "rules": {
+  "id": "default-mdx-theme",
+  "buttons": {
+    "default": {
+      "rules": {
         "XS": {
-            "buttons": {
-                "default": {
-                    "normalImage": "default-mdx-theme/button_default_normal.png",
-                    "hoverImage": "default-mdx-theme/button_default_hover.png",
-                    "actionImage": "default-mdx-theme/button_default_action.png",
-                    "disabledImage": "default-mdx-theme/button_default_disabled.png",
-                    "paddingTop": 12,
-                    "paddingBottom": 12,
-                    "paddingLeft": 12,
-                    "paddingRight": 12,
-                    "marginTop": 0,
-                    "marginBottom": 0,
-                    "marginLeft": 0,
-                    "marginRight": 0,
-                    "minHeight": 0
-                },
-                "success": {
-                    "normalImage": "default-mdx-theme/button_success_normal.png",
-                    "hoverImage": "default-mdx-theme/button_success_hover.png",
-                    "actionImage": "default-mdx-theme/button_success_action.png",
-                    "disabledImage": "default-mdx-theme/button_default_disabled.png",
-                    "paddingTop": 12,
-                    "paddingBottom": 12,
-                    "paddingLeft": 12,
-                    "paddingRight": 12,
-                    "marginTop": 0,
-                    "marginBottom": 0,
-                    "marginLeft": 0,
-                    "marginRight": 0,
-                    "minHeight": 0
-                },
-                "danger": {
-                    "normalImage": "default-mdx-theme/button_danger_normal.png",
-                    "hoverImage": "default-mdx-theme/button_danger_hover.png",
-                    "actionImage": "default-mdx-theme/button_danger_action.png",
-                    "disabledImage": "default-mdx-theme/button_default_disabled.png",
-                    "paddingTop": 12,
-                    "paddingBottom": 12,
-                    "paddingLeft": 12,
-                    "paddingRight": 12,
-                    "marginTop": 0,
-                    "marginBottom": 0,
-                    "marginLeft": 0,
-                    "marginRight": 0,
-                    "minHeight": 0
-                }
-            },
-            "checkboxes": {
-                "default": {
-                    "normalImage": "default-mdx-theme/checkbox_normal.png",
-                    "hoverImage": "default-mdx-theme/checkbox_normal.png",
-                    "disabledImage": "default-mdx-theme/checkbox_normal.png",
-                    "normalCheckIcon": "default-mdx-theme/checkicon_normal.png",
-                    "disabledCheckIcon": "default-mdx-theme/checkicon_disabled.png",
-                    "paddingTop": 12,
-                    "paddingBottom": 12,
-                    "paddingLeft": 12,
-                    "paddingRight": 12,
-                    "marginTop": 0,
-                    "marginBottom": 0,
-                    "marginLeft": 0,
-                    "marginRight": 0,
-                    "minHeight": 0
-                }
-            },
-            "frames": {
-                "default": {
-                    "backgroundImage": "default-mdx-theme/frame.png",
-                    "scrollBarImage": "default-mdx-theme/scrollbar.png",
-                    "verticalScrollBarWidth": 24,
-                    "horizontalScrollBarHeight": 24,
-                    "scrollBarPaddingTop": 24,
-                    "scrollBarPaddingBottom": 24,
-                    "scrollBarPaddingLeft": 24,
-                    "scrollBarPaddingRight": 24,
-                    "paddingTop": 24,
-                    "paddingBottom": 24,
-                    "paddingLeft": 24,
-                    "paddingRight": 24,
-                    "marginTop": 0,
-                    "marginBottom": 0,
-                    "marginLeft": 0,
-                    "marginRight": 0,
-                    "minHeight": 0
-                }
-            },
-            "labels": {
-                "default": {
-                    "font": "default",
-                    "fontSize": 14,
-                    "paddingTop": 4,
-                    "paddingBottom": 4,
-                    "paddingLeft": 4,
-                    "paddingRight": 4,
-                    "marginTop": 0,
-                    "marginBottom": 0,
-                    "marginLeft": 0,
-                    "marginRight": 0,
-                    "minHeight": 0
-                }
-            },
-            "selects": {
-                "default": {
-                    "buttonStyle": "default",
-                    "labelStyle": "default",
-                    "paddingTop": 0,
-                    "paddingBottom": 0,
-                    "paddingLeft": 0,
-                    "paddingRight": 0,
-                    "marginTop": 0,
-                    "marginBottom": 0,
-                    "marginLeft": 0,
-                    "marginRight": 0,
-                    "minHeight": 0
-                }
-            },
-            "textboxes": {
-                "default": {
-                    "normalImage": "default-mdx-theme/textbox_normal.png",
-                    "actionImage": "default-mdx-theme/textbox_normal.png",
-                    "hoverImage": "default-mdx-theme/textbox_normal.png",
-                    "disabledImage": "default-mdx-theme/textbox_disabled.png",
-                    "labelStyle": "default",
-                    "paddingTop": 12,
-                    "paddingBottom": 12,
-                    "paddingLeft": 12,
-                    "paddingRight": 12,
-                    "marginTop": 0,
-                    "marginBottom": 0,
-                    "marginLeft": 0,
-                    "marginRight": 0,
-                    "minHeight": 0
-                }
-            }
+          "normal": "default-mdx-theme/button_default_normal.png",
+          "hover": "default-mdx-theme/button_default_hover.png",
+          "action": "default-mdx-theme/button_default_action.png",
+          "disabled": "default-mdx-theme/button_default_disabled.png",
+          "fontSize": 12,
+          "font": "default",
+          "textColor": "255,255,255",
+          "paddingTop": 12,
+          "paddingBottom": 12,
+          "paddingLeft": 12,
+          "paddingRight": 12,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
         }
+      }
+    },
+    "success": {
+      "rules": {
+        "XS": {
+          "normal": "default-mdx-theme/button_success_normal.png",
+          "hover": "default-mdx-theme/button_success_hover.png",
+          "action": "default-mdx-theme/button_success_action.png",
+          "disabled": "default-mdx-theme/button_default_disabled.png",
+          "fontSize": 12,
+          "font": "default",
+          "textColor": "255,255,255",
+          "paddingTop": 12,
+          "paddingBottom": 12,
+          "paddingLeft": 12,
+          "paddingRight": 12,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    },
+    "danger": {
+      "rules": {
+        "XS": {
+          "normal": "default-mdx-theme/button_danger_normal.png",
+          "hover": "default-mdx-theme/button_danger_hover.png",
+          "action": "default-mdx-theme/button_danger_action.png",
+          "disabled": "default-mdx-theme/button_default_disabled.png",
+          "fontSize": 12,
+          "font": "default",
+          "textColor": "255,255,255",
+          "paddingTop": 12,
+          "paddingBottom": 12,
+          "paddingLeft": 12,
+          "paddingRight": 12,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
     }
+  },
+  "columns": {
+    "default": {
+      "rules": {
+        "XS": {
+          "paddingTop": 0,
+          "paddingBottom": 0,
+          "paddingLeft": 0,
+          "paddingRight": 0,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    }
+  },
+  "containers": {
+    "default": {
+      "rules": {
+        "XS": {
+          "background": "default-mdx-theme/frame.png",
+          "paddingTop": 24,
+          "paddingBottom": 24,
+          "paddingLeft": 24,
+          "paddingRight": 24,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    }
+  },
+  "fonts": {
+    "default": {
+      "path": "default-mdx-theme/kenvector_future.ttf"
+    }
+  },
+  "images": {
+    "default": {
+      "rules": {
+        "XS": {
+          "paddingTop": 0,
+          "paddingBottom": 0,
+          "paddingLeft": 0,
+          "paddingRight": 0,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    }
+  },
+  "labels": {
+    "default": {
+      "rules": {
+        "XS": {
+          "fontSize": 12,
+          "font": "default",
+          "textColor": "255,255,255",
+          "paddingTop": 4,
+          "paddingBottom": 4,
+          "paddingLeft": 0,
+          "paddingRight": 0,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    },
+    "header": {
+      "rules": {
+        "XS": {
+          "fontSize": 18,
+          "font": "default",
+          "textColor": "255,255,255",
+          "paddingTop": 4,
+          "paddingBottom": 4,
+          "paddingLeft": 0,
+          "paddingRight": 0,
+          "marginTop": 4,
+          "marginBottom": 4,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    }
+  },
+  "selects": {
+    "default": {
+      "rules": {
+        "XS": {
+          "paddingTop": 0,
+          "paddingBottom": 0,
+          "paddingLeft": 0,
+          "paddingRight": 0,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    }
+  },
+  "textboxes": {
+    "default": {
+      "rules": {
+        "XS": {
+          "normal": "default-mdx-theme/textbox_normal.png",
+          "hover": "default-mdx-theme/textbox_normal.png",
+          "action": "default-mdx-theme/textbox_normal.png",
+          "disabled": "default-mdx-theme/textbox_disabled.png",
+          "fontSize": 12,
+          "font": "default",
+          "textColor": "1,1,1",
+          "paddingTop": 12,
+          "paddingBottom": 12,
+          "paddingLeft": 12,
+          "paddingRight": 12,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    }
+  }
 }

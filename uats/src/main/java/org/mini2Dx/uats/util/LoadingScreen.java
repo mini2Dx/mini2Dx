@@ -10,7 +10,7 @@ import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
-import org.mini2Dx.ui.theme.UiTheme;
+import org.mini2Dx.ui.style.UiTheme;
 
 import com.badlogic.gdx.assets.AssetManager;
 
@@ -25,7 +25,7 @@ public class LoadingScreen extends BasicGameScreen {
 	public LoadingScreen(AssetManager assetManager) {
 		this.assetManager = assetManager;
 		
-		assetManager.load(UiTheme.DEFAULT_THEME_FILE, UiTheme.class);
+		assetManager.load(UiTheme.DEFAULT_THEME_FILENAME, UiTheme.class);
 	}
 
 	@Override

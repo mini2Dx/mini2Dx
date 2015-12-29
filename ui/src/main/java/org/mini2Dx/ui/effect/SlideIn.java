@@ -14,12 +14,13 @@ package org.mini2Dx.ui.effect;
 import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.ui.UiContentContainer;
+import org.mini2Dx.ui.render.UiContainerRenderTree;
 
 /**
  *
  */
 public class SlideIn implements UiEffect {
+
 	private static final float DEFAULT_SPEED = 8f;
 	
 	private final SlideDirection direction;
@@ -46,7 +47,7 @@ public class SlideIn implements UiEffect {
 	}
 
 	@Override
-	public boolean update(UiContentContainer uiContainer, CollisionBox currentArea, Rectangle targetArea, float delta) {
+	public boolean update(UiContainerRenderTree uiContainer, CollisionBox currentArea, Rectangle targetArea, float delta) {
 		if(finished) {
 			return true;
 		}
@@ -57,7 +58,7 @@ public class SlideIn implements UiEffect {
 		switch(direction) {
 		case UP:
 			if(!started) {
-				currentArea.forceTo(targetX, uiContainer.getRenderY() + uiContainer.getContentHeight() + 1f, targetArea.width, targetArea.height);
+				currentArea.forceTo(targetX, uiContainer.getRenderY() + uiContainer.getHeight() + 1f, targetArea.width, targetArea.height);
 				started = true;
 			}
 			if(currentArea.getY() > targetY) {
@@ -83,7 +84,7 @@ public class SlideIn implements UiEffect {
 			break;
 		case LEFT:
 			if(!started) {
-				currentArea.forceTo(uiContainer.getRenderX() + uiContainer.getContentWidth() + 1f, targetY, targetArea.width, targetArea.height);
+				currentArea.forceTo(uiContainer.getRenderX() + uiContainer.getWidth() + 1f, targetY, targetArea.width, targetArea.height);
 				started = true;
 			}
 			if(currentArea.getX() > targetX) {
@@ -123,5 +124,4 @@ public class SlideIn implements UiEffect {
 	public boolean isFinished() {
 		return finished;
 	}
-
 }

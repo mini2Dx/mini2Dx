@@ -61,4 +61,20 @@ public enum ScreenSize {
 	public static Iterator<ScreenSize> largestToSmallest() {
 		return largestToSmallest.iterator();
 	}
+	
+	public static ScreenSize fromString(String value) {
+		switch(value.toLowerCase()) {
+		case "xs":
+			return ScreenSize.XS;
+		case "sm":
+			return ScreenSize.SM;
+		case "md":
+			return ScreenSize.MD;
+		case "lg":
+			return ScreenSize.LG;
+		case "xl":
+			return ScreenSize.XL;
+		}
+		return ScreenSize.XS;
+	}
 }

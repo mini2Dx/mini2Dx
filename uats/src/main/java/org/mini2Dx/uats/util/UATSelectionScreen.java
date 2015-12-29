@@ -32,17 +32,16 @@ import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
 import org.mini2Dx.uats.ParticleEffectsUAT;
 import org.mini2Dx.uats.UiUAT;
 import org.mini2Dx.ui.UiContainer;
-import org.mini2Dx.ui.UiElement;
 import org.mini2Dx.ui.effect.SlideIn;
 import org.mini2Dx.ui.element.Actionable;
-import org.mini2Dx.ui.element.Button;
 import org.mini2Dx.ui.element.Modal;
-import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.Row;
+import org.mini2Dx.ui.element.Visibility;
+import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
-import org.mini2Dx.ui.theme.UiTheme;
+import org.mini2Dx.ui.style.UiTheme;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -101,7 +100,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 	public void preTransitionIn(Transition transitionIn) {
 		nextScreenId = -1;
 		if (!uiContainer.isThemeApplied()) {
-			uiContainer.applyTheme(UiTheme.DEFAULT_THEME_FILE);
+			uiContainer.setTheme(assetManager.get(UiTheme.DEFAULT_THEME_FILENAME, UiTheme.class));
 		}
 		Gdx.input.setInputProcessor(uiContainer);
 		uatsDialog.applyEffect(new SlideIn());
@@ -118,7 +117,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 
 	@Override
 	public void postTransitionOut(Transition transitionOut) {
-		uatsDialog.setVisible(false);
+		uatsDialog.setVisibility(Visibility.HIDDEN);
 	}
 
 	@Override
@@ -127,14 +126,12 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 	}
 
 	private void initialiseUi() {
-		uatsDialog = new Modal();
-		uatsDialog.setXRules("auto");
-		uatsDialog.setWidthRules("xs-12 sm-10 md-8 lg-6");
+		uatsDialog = new Modal("uats-dialog");
+		uatsDialog.setLayout(new LayoutRuleset("xs-12 sm-10 md-8 lg-6 sm-offset-1 md-offset-2 lg-offset-3"));
 
-		uatsDialog.addRow(Row.withElements(UiUtils.createHeader("Detected OS: " + Mdx.os)));
-		uatsDialog.addRow(Row.withElements(UiUtils.createHeader("")));
-		uatsDialog.addRow(Row.withElements(UiUtils.createHeader("User Acceptance Tests")));
-		uatsDialog.addRow(Row.withElements(UiUtils.createButton("Blending", "xs-0", "xs-12", new ActionListener() {
+		uatsDialog.add(Row.withElements("row-os", UiUtils.createLabel("Detected OS: " + Mdx.os)));
+		uatsDialog.add(Row.withElements("row-header", UiUtils.createHeader("User Acceptance Tests")));
+		uatsDialog.add(Row.withElements("row-blending", UiUtils.createButton("Blending", false, new ActionListener() {
 			@Override
 			public void onActionBegin(Actionable source) {
 			}
@@ -144,8 +141,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 				nextScreenId = ScreenIds.getScreenId(BlendingUAT.class);
 			}
 		})));
-		uatsDialog
-				.addRow(Row.withElements(UiUtils.createButton("Graphics.clip()", "xs-0", "xs-12", new ActionListener() {
+		uatsDialog.add(Row.withElements("row-clip", UiUtils.createButton("Graphics.clip()", false, new ActionListener() {
 					@Override
 					public void onActionBegin(Actionable source) {
 					}
@@ -155,7 +151,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 						nextScreenId = ScreenIds.getScreenId(ClippingUAT.class);
 					}
 				})));
-		uatsDialog.addRow(Row.withElements(UiUtils.createButton("Geometry", "xs-0", "xs-12", new ActionListener() {
+		uatsDialog.add(Row.withElements("row-geometry", UiUtils.createButton("Geometry", new ActionListener() {
 			@Override
 			public void onActionBegin(Actionable source) {
 			}
@@ -165,7 +161,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 				nextScreenId = ScreenIds.getScreenId(GeometryUAT.class);
 			}
 		})));
-		uatsDialog.addRow(Row.withElements(UiUtils.createButton("Graphics", "xs-0", "xs-12", new ActionListener() {
+		uatsDialog.add(Row.withElements("row-graphics", UiUtils.createButton("Graphics", new ActionListener() {
 			@Override
 			public void onActionBegin(Actionable source) {
 			}
@@ -175,8 +171,8 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 				nextScreenId = ScreenIds.getScreenId(GraphicsUAT.class);
 			}
 		})));
-		uatsDialog.addRow(Row.withElements(
-				UiUtils.createButton("Orthogonal TiledMap (No Caching)", "xs-0", "xs-12", new ActionListener() {
+		uatsDialog.add(Row.withElements("row-orthogonal-tiledmap",
+				UiUtils.createButton("Orthogonal TiledMap (No Caching)", new ActionListener() {
 					@Override
 					public void onActionBegin(Actionable source) {
 					}
@@ -186,8 +182,8 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 						nextScreenId = ScreenIds.getScreenId(OrthogonalTiledMapNoCachingUAT.class);
 					}
 				})));
-		uatsDialog.addRow(Row.withElements(
-				UiUtils.createButton("Orthogonal TiledMap (With Caching)", "xs-0", "xs-12", new ActionListener() {
+		uatsDialog.add(Row.withElements("row-orthogonal-tiledmap-caching",
+				UiUtils.createButton("Orthogonal TiledMap (With Caching)", new ActionListener() {
 					@Override
 					public void onActionBegin(Actionable source) {
 					}
@@ -197,8 +193,8 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 						nextScreenId = ScreenIds.getScreenId(OrthogonalTiledMapWithCachingUAT.class);
 					}
 				})));
-		uatsDialog.addRow(Row.withElements(
-				UiUtils.createButton("Isometric TiledMap (No Caching)", "xs-0", "xs-12", new ActionListener() {
+		uatsDialog.add(Row.withElements("row-isometric-tiledmap",
+				UiUtils.createButton("Isometric TiledMap (No Caching)", new ActionListener() {
 					@Override
 					public void onActionBegin(Actionable source) {
 					}
@@ -208,8 +204,8 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 						nextScreenId = ScreenIds.getScreenId(IsometricTiledMapUAT.class);
 					}
 				})));
-		uatsDialog.addRow(
-				Row.withElements(UiUtils.createButton("Particle Effects", "xs-0", "xs-12", new ActionListener() {
+		uatsDialog.add(
+				Row.withElements("row-particle-effects", UiUtils.createButton("Particle Effects", new ActionListener() {
 					@Override
 					public void onActionBegin(Actionable source) {
 					}
@@ -219,7 +215,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 						nextScreenId = ScreenIds.getScreenId(ParticleEffectsUAT.class);
 					}
 				})));
-		uatsDialog.addRow(Row.withElements(UiUtils.createButton("Controllers", "xs-0", "xs-12", new ActionListener() {
+		uatsDialog.add(Row.withElements("row-controllers", UiUtils.createButton("Controllers", new ActionListener() {
 			@Override
 			public void onActionBegin(Actionable source) {
 			}
@@ -229,7 +225,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 				nextScreenId = ScreenIds.getScreenId(ControllerUAT.class);
 			}
 		})));
-		uatsDialog.addRow(Row.withElements(UiUtils.createButton("UI", "xs-0", "xs-12", new ActionListener() {
+		uatsDialog.add(Row.withElements("row-ui", UiUtils.createButton("UI", new ActionListener() {
 			@Override
 			public void onActionBegin(Actionable source) {
 			}
@@ -239,9 +235,9 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 				nextScreenId = ScreenIds.getScreenId(UiUAT.class);
 			}
 		})));
-		uatsDialog.addRow(Row.withElements(UiUtils.createHeader("Utilities")));
-		uatsDialog.addRow(
-				Row.withElements(UiUtils.createButton("Controller Mapping", "xs-0", "xs-12", new ActionListener() {
+		uatsDialog.add(Row.withElements("row-utilities", UiUtils.createHeader("Utilities")));
+		uatsDialog.add(
+				Row.withElements("row-controller-mapping", UiUtils.createButton("Controller Mapping", new ActionListener() {
 					@Override
 					public void onActionBegin(Actionable source) {
 					}
@@ -251,12 +247,13 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 						nextScreenId = ScreenIds.getScreenId(ControllerMapping.class);
 					}
 				})));
+		uatsDialog.setVisibility(Visibility.VISIBLE);
 
 		uiContainer.add(uatsDialog);
 	}
 
 	@Override
-	public void onScreenSizeChanged(ScreenSize screenSize, float screenWidth, float screenHeight) {
-		System.out.println("Current Screen Size: " + screenSize + " @ " + screenWidth + "," + screenHeight);
+	public void onScreenSizeChanged(ScreenSize screenSize) {
+		System.out.println("Current Screen Size: " + screenSize);
 	}
 }

@@ -11,16 +11,17 @@
  */
 package org.mini2Dx.ui.layout;
 
-import org.mini2Dx.ui.listener.ContentSizeListener;
-import org.mini2Dx.ui.theme.UiElementStyle;
-import org.mini2Dx.ui.theme.UiTheme;
-
 /**
  *
  */
-public interface SizeRule extends ContentSizeListener {
-
-	public void onScreenResize(UiTheme theme, UiElementStyle style, float columnSize, float totalHeight);
+public class SizeRule {
+	private final int columns;
 	
-	public float getTargetSize();
+	public SizeRule(int columns) {
+		this.columns = columns;
+	}
+
+	public int getColumns() {
+		return columns;
+	}
 }

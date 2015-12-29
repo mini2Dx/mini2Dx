@@ -24,10 +24,9 @@ import org.mini2Dx.uats.OrthogonalTiledMapNoCachingUAT;
 import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
 import org.mini2Dx.uats.ParticleEffectsUAT;
 import org.mini2Dx.uats.UiUAT;
-import org.mini2Dx.ui.UiElement;
-import org.mini2Dx.ui.data.UiElementLoader;
-import org.mini2Dx.ui.theme.UiTheme;
-import org.mini2Dx.ui.theme.UiThemeLoader;
+import org.mini2Dx.ui.UiThemeLoader;
+import org.mini2Dx.ui.element.UiElement;
+import org.mini2Dx.ui.style.UiTheme;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.assets.AssetManager;
@@ -49,7 +48,6 @@ public class UATApplication extends ScreenBasedGame {
 		assetManager.setLogger(new Logger("AssetManager", Application.LOG_ERROR));
 		
 		assetManager.setLoader(UiTheme.class, new UiThemeLoader(new InternalFileHandleResolver()));
-		assetManager.setLoader(UiElement.class, new UiElementLoader(new InternalFileHandleResolver()));
 
 		addScreen(new LoadingScreen(assetManager));
 		addScreen(new UATSelectionScreen(assetManager));

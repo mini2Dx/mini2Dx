@@ -11,31 +11,102 @@
  */
 package org.mini2Dx.ui.element;
 
+import org.mini2Dx.ui.layout.HorizontalAlignment;
+import org.mini2Dx.ui.listener.HoverListener;
+import org.mini2Dx.ui.render.NodeState;
+import org.mini2Dx.ui.render.ParentRenderNode;
+import org.mini2Dx.ui.render.TextButtonRenderNode;
+
 /**
  *
  */
 public class TextButton extends Button {
-	private final Label label;
-
+	private String text = "";
+	private TextButtonRenderNode renderNode;
+	private HorizontalAlignment textAlignment = HorizontalAlignment.CENTER;
+	
 	public TextButton() {
-		this("");
+		this(null);
 	}
 	
-	public TextButton(String text) {
-		super();
-		label = new Label();
-		label.setXRules("auto");
-		label.setWidthRules("xs-12");
-		label.setText(text);
-		
-		addRow(Row.withElements(label));
+	public TextButton(String id) {
+		super(id);
 	}
-
+	
 	public String getText() {
-		return label.getText();
+		return text;
 	}
 
 	public void setText(String text) {
-		label.setText(text);
+		if(text == null) {
+			return;
+		}
+		this.text = text;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+
+	@Override
+	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
+		if(renderNode != null) {
+			return;
+		}
+		renderNode = new TextButtonRenderNode(parentRenderNode, this);
+		parentRenderNode.addChild(renderNode);
+	}
+
+	@Override
+	public void detach(ParentRenderNode<?, ?> parentRenderNode) {
+		if(renderNode == null) {
+			return;
+		}
+		parentRenderNode.removeChild(renderNode);
+	}
+	
+	@Override
+	public void setVisibility(Visibility visibility) {
+		if(this.visibility == visibility) {
+			return;
+		}
+		this.visibility = visibility;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+	
+	@Override
+	public void setStyleId(String styleId) {
+		if(styleId == null) {
+			return;
+		}
+		this.styleId = styleId;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+	
+	@Override
+	public void pushEffectsToRenderNode() {
+		while(!effects.isEmpty()) {
+			renderNode.applyEffect(effects.poll());
+		}
+	}
+
+	public HorizontalAlignment getTextAlignment() {
+		return textAlignment;
+	}
+
+	public void setTextAlignment(HorizontalAlignment textAlignment) {
+		if(textAlignment == null) {
+			return;
+		}
+		this.textAlignment = textAlignment;
 	}
 }

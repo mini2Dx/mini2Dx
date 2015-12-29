@@ -262,6 +262,10 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 			notifySizeChangeListeners();
 		}
 	}
+	
+	public void forceTo(Rectangle rectangle) {
+		forceTo(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+	}
 
 	/**
 	 * Sets the current width to the specified width and force updates the

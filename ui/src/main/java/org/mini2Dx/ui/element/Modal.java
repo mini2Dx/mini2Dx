@@ -11,23 +11,28 @@
  */
 package org.mini2Dx.ui.element;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import org.mini2Dx.core.controller.button.ControllerButton;
-import org.mini2Dx.ui.UiElement;
+import org.mini2Dx.ui.input.ControllerHotKeyOperation;
+import org.mini2Dx.ui.input.KeyboardHotKeyOperation;
+import org.mini2Dx.ui.input.VerticalUiNavigation;
+import org.mini2Dx.ui.input.UiNavigation;
+import org.mini2Dx.ui.layout.VerticalAlignment;
+import org.mini2Dx.ui.render.ActionableRenderNode;
+import org.mini2Dx.ui.render.ModalRenderNode;
+import org.mini2Dx.ui.render.ParentRenderNode;
 
 /**
- * Wraps a {@link Frame} to allow for keyboard and controller based navigation
- * of {@link UiElement}s
+ *
  */
-public class Modal extends Frame {
-	private Map<Integer, Actionable> keyboardHotkeys;
-	private Map<String, Actionable> controllerHotkeys;
-	private List<Actionable> actionables;
-	private int hoverIndex;
+public class Modal extends Container {
+	private final Queue<ControllerHotKeyOperation> controllerHotKeyOperations = new LinkedList<ControllerHotKeyOperation>();
+	private final Queue<KeyboardHotKeyOperation> keyboardHotKeyOperations = new LinkedList<KeyboardHotKeyOperation>();
+	
+	private UiNavigation navigation = new VerticalUiNavigation();
+	private VerticalAlignment verticalAlignment = VerticalAlignment.MIDDLE;
 	
 	public Modal() {
 		this(null);
@@ -36,78 +41,72 @@ public class Modal extends Frame {
 	public Modal(String id) {
 		super(id);
 	}
-
+	
 	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		if (super.mouseMoved(screenX, screenY)) {
-			if (actionables == null) {
-				return true;
-			}
-			for (int i = actionables.size() - 1; i >= 0; i--) {
-				if (actionables.get(i).contains(screenX, screenY)) {
-					hoverIndex = i;
-					break;
-				}
-			}
-			return true;
+	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
+		if(renderNode != null) {
+			return;
 		}
-		return false;
+		renderNode = new ModalRenderNode(parentRenderNode, this);
+		for(int i = 0; i < children.size(); i++) {
+			children.get(i).attach(renderNode);
+		}
+		parentRenderNode.addChild(renderNode);
 	}
 	
-	public Actionable hotkey(int keycode) {
-		if(keyboardHotkeys == null) {
+	public ActionableRenderNode navigate(int keycode) {
+		if(renderNode == null) {
 			return null;
 		}
-		return keyboardHotkeys.get(keycode);
+		return ((ModalRenderNode) renderNode).navigate(keycode);
 	}
 	
-	public Actionable hotkey(ControllerButton controllerButton) {
-		if(controllerHotkeys == null) {
+	public ActionableRenderNode hotkey(int keycode) {
+		if(renderNode == null) {
 			return null;
 		}
-		return controllerHotkeys.get(controllerButton.getAbsoluteValue());
+		return ((ModalRenderNode) renderNode).hotkey(keycode);
 	}
-
-	public Actionable goToNextActionable() {
-		if (actionables == null) {
+	
+	public ActionableRenderNode hotkey(ControllerButton button) {
+		if(renderNode == null) {
 			return null;
 		}
-		actionables.get(hoverIndex).setState(ElementState.NORMAL);
-		hoverIndex = hoverIndex < actionables.size() - 1 ? hoverIndex + 1 : 0;
-		Actionable result = actionables.get(hoverIndex);
-		result.setState(ElementState.HOVER);
-		return result;
-	}
-
-	public Actionable goToPreviousActionable() {
-		if (actionables == null) {
-			return null;
-		}
-		actionables.get(hoverIndex).setState(ElementState.NORMAL);
-		hoverIndex = hoverIndex == 0 ? actionables.size() - 1 : hoverIndex - 1;
-		Actionable result = actionables.get(hoverIndex);
-		result.setState(ElementState.HOVER);
-		return result;
-	}
-
-	public void setNavigation(int index, Actionable actionable) {
-		if (actionables == null) {
-			actionables = new ArrayList<Actionable>();
-		}
-		actionables.add(index, actionable);
+		return ((ModalRenderNode) renderNode).hotkey(button);
 	}
 	
 	public void setHotkey(ControllerButton button, Actionable actionable) {
-		if(controllerHotkeys == null) {
-			controllerHotkeys = new HashMap<String, Actionable>();
-		}
-		controllerHotkeys.put(button.getAbsoluteValue(), actionable);
+		controllerHotKeyOperations.offer(new ControllerHotKeyOperation(button, actionable, true));
 	}
 	
 	public void setHotkey(int keycode, Actionable actionable) {
-		if(keyboardHotkeys == null) {
-			keyboardHotkeys = new HashMap<Integer, Actionable>();
+		keyboardHotKeyOperations.offer(new KeyboardHotKeyOperation(keycode, actionable, true));
+	}
+	
+	public void unsetHotkey(ControllerButton button, Actionable actionable) {
+		controllerHotKeyOperations.offer(new ControllerHotKeyOperation(button, actionable, false));
+	}
+	
+	public void unsetHotkey(int keycode, Actionable actionable) {
+		keyboardHotKeyOperations.offer(new KeyboardHotKeyOperation(keycode, actionable, false));
+	}
+
+	public VerticalAlignment getVerticalAlignment() {
+		return verticalAlignment;
+	}
+
+	public void setVerticalAlignment(VerticalAlignment verticalAlignment) {
+		this.verticalAlignment = verticalAlignment;
+	}
+
+	public UiNavigation getNavigation() {
+		return navigation;
+	}
+
+	public void setNavigation(UiNavigation navigation) {
+		if(navigation == null) {
+			return;
 		}
-		keyboardHotkeys.put(keycode, actionable);
+		this.navigation = navigation;
 	}
 }

@@ -11,75 +11,126 @@
  */
 package org.mini2Dx.ui.element;
 
-import org.mini2Dx.ui.layout.ScreenSize;
-import org.mini2Dx.ui.render.UiRenderer;
-import org.mini2Dx.ui.theme.NullStyle;
-import org.mini2Dx.ui.theme.UiTheme;
+import org.mini2Dx.core.graphics.TextureRegion;
+import org.mini2Dx.ui.render.ImageRenderNode;
+import org.mini2Dx.ui.render.ParentRenderNode;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
  *
  */
-public class Image extends BasicUiElement<NullStyle> {
-	private Texture texture;
-	
-	public Image() {
-		this(null, null);
-	}
+public class Image extends UiElement {
+	private ImageRenderNode renderNode;
+	private TextureRegion textureRegion;
+	private String path;
+	private boolean responsive = false;
 	
 	public Image(Texture texture) {
-		this(null, texture);
+		this.textureRegion = new TextureRegion(texture);
 	}
 	
-	public Image(String id) {
-		this(id, null);
+	public Image(TextureRegion textureRegion) {
+		this.textureRegion = textureRegion;
 	}
 	
-	public Image(String id, Texture texture) {
-		super(id);
-		this.texture = texture;
+	public Image(String texturePath) {
+		this.path = texturePath;
 	}
 
 	@Override
-	public void accept(UiRenderer renderer) {
-		if(!isVisible()) {
+	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
+		if(renderNode != null) {
 			return;
 		}
-		renderer.render(this);
+		renderNode = new ImageRenderNode(parentRenderNode, this);
+		parentRenderNode.addChild(renderNode);
+	}
+
+	@Override
+	public void detach(ParentRenderNode<?, ?> parentRenderNode) {
+		if(renderNode == null) {
+			return;
+		}
+		parentRenderNode.removeChild(renderNode);
 	}
 	
-	@Override
-	public void applyStyle(UiTheme theme, ScreenSize screenSize) {
+	public TextureRegion getTextureRegion(AssetManager assetManager) {
+		if(path != null) {
+			textureRegion = new TextureRegion(assetManager.get(path, Texture.class));
+			path = null;
+		}
+		return textureRegion;
+	}
+
+	public void setTextureRegion(TextureRegion textureRegion) {
+		this.textureRegion = textureRegion;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
 	}
 	
-	@Override
-	public float getContentWidth() {
-		if(texture == null) {
-			return 0f;
-		}
-		return texture.getWidth();
-	}
-
-	@Override
-	public float getContentHeight() {
-		if(texture == null) {
-			return 0f;
-		}
-		return texture.getHeight();
-	}
-
-	@Override
-	public NullStyle getCurrentStyle() {
-		return NullStyle.INSTANCE;
-	}
-
-	public Texture getTexture() {
-		return texture;
-	}
-
 	public void setTexture(Texture texture) {
-		this.texture = texture;
-		notifyContentSizeListeners();
+		setTextureRegion(new TextureRegion(texture));
+	}
+	
+	public void setTexturePath(String texturePath) {
+		this.path = texturePath;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+
+	public boolean isResponsive() {
+		return responsive;
+	}
+
+	public void setResponsive(boolean responsive) {
+		this.responsive = responsive;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+
+	public void setVisibility(Visibility visibility) {
+		if(visibility == null) {
+			return;
+		}
+		if(this.visibility == visibility) {
+			return;
+		}
+		this.visibility = visibility;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+	
+	@Override
+	public void pushEffectsToRenderNode() {
+		while(!effects.isEmpty()) {
+			renderNode.applyEffect(effects.poll());
+		}
+	}
+
+	@Override
+	public void setStyleId(String styleId) {
+		if(styleId == null) {
+			return;
+		}
+		this.styleId = styleId;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
 	}
 }

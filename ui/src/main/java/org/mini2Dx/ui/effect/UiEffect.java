@@ -14,14 +14,13 @@ package org.mini2Dx.ui.effect;
 import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.ui.UiContentContainer;
+import org.mini2Dx.ui.render.UiContainerRenderTree;
 
 /**
  *
  */
 public interface UiEffect {
-
-	public boolean update(UiContentContainer uiContainer, CollisionBox currentArea, Rectangle targetArea, float delta);
+	public boolean update(UiContainerRenderTree uiContainer, CollisionBox currentArea, Rectangle targetArea, float delta);
 	
 	public void preRender(Graphics g);
 	

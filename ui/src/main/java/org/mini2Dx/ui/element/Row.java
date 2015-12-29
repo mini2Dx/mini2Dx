@@ -11,253 +11,44 @@
  */
 package org.mini2Dx.ui.element;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.mini2Dx.core.exception.MdxException;
-import org.mini2Dx.ui.UiContentContainer;
-import org.mini2Dx.ui.UiElement;
-import org.mini2Dx.ui.layout.ScreenSize;
-import org.mini2Dx.ui.listener.ContentSizeListener;
-import org.mini2Dx.ui.render.UiRenderer;
-import org.mini2Dx.ui.theme.NullStyle;
-import org.mini2Dx.ui.theme.RowStyle;
-import org.mini2Dx.ui.theme.UiTheme;
+import org.mini2Dx.ui.render.ParentRenderNode;
+import org.mini2Dx.ui.render.RowRenderNode;
 
 /**
  *
  */
-public class Row extends BasicUiElement<RowStyle>implements ContentSizeListener {
-	protected final List<UiElement<?>> children = new ArrayList<UiElement<?>>(1);
-	protected final RowStyle currentStyle = new RowStyle(this);
-
-	private float contentWidth, contentHeight;
-	private float rowYOffset;
-	private boolean childAdded;
-
+public class Row extends Column {
+	
 	public Row() {
-		super();
-		super.setXRules("xs-0");
-		super.setWidthRules("xs-12");
+		this(null);
 	}
-
+	
 	public Row(String id) {
 		super(id);
-		super.setXRules("xs-0");
-		super.setWidthRules("xs-12");
 	}
 
 	@Override
-	public void update(UiContentContainer uiContainer, float delta) {
-		if (childAdded) {
-			notifyContentSizeListeners();
-			childAdded = false;
-		}
-
-		super.update(uiContainer, delta);
-		boolean childRemoved = false;
-
-		for (int i = 0; i < children.size(); i++) {
-			UiElement<?> element = children.get(i);
-			if (element.disposed()) {
-				children.remove(i);
-				i--;
-				childRemoved = true;
-			} else {
-				element.update(this, delta);
-			}
-		}
-
-		if (!childRemoved) {
+	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
+		if(renderNode != null) {
 			return;
 		}
-		calculateContentDimensions();
-	}
-
-	@Override
-	public void interpolate(UiContentContainer uiContainer, float alpha) {
-		super.interpolate(uiContainer, alpha);
-		for (int i = 0; i < children.size(); i++) {
-			children.get(i).interpolate(this, alpha);
-			;
+		renderNode = new RowRenderNode(parentRenderNode, this);
+		for(int i = 0; i < children.size(); i++) {
+			children.get(i).attach(renderNode);
 		}
-	}
-
-	@Override
-	public void resize(ScreenSize screenSize, UiTheme theme, float columnWidth, float totalHeight) {
-		applyStyle(theme, screenSize);
-		applyRules(screenSize, theme, columnWidth, totalHeight);
-		notifyRules(screenSize, theme, columnWidth, totalHeight);
-
-		for (int i = 0; i < children.size(); i++) {
-			children.get(i).resize(screenSize, theme, columnWidth, totalHeight);
-		}
-		
-		rulesChanged = true;
+		parentRenderNode.addChild(renderNode);
 	}
 	
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		if(currentArea.contains(screenX, screenY)) {
-			setState(ElementState.HOVER);
-			boolean result = false;
-			for(int i = children.size() - 1; i >= 0; i--) {
-				if(children.get(i).mouseMoved(screenX, screenY)) {
-					result = true;
-				}
-			}
-			return result;
-		} else if(getState() != ElementState.NORMAL) {
-			setState(ElementState.NORMAL);
-		}
-		return false;
-	}
-
-	@Override
-	public UiElement<?> getById(String id) {
-		if (id.equals(getId())) {
-			return this;
-		}
-		for (UiElement<?> element : children) {
-			UiElement<?> result = element.getById(id);
-			if (result != null) {
-				return result;
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public void accept(UiRenderer renderer) {
-		if (!isVisible()) {
-			return;
-		}
-		for (int i = 0; i < children.size(); i++) {
-			children.get(i).accept(renderer);
-		}
-	}
-
-	@Override
-	public void applyStyle(UiTheme theme, ScreenSize screenSize) {
-		for (int i = 0; i < children.size(); i++) {
-			children.get(i).applyStyle(theme, screenSize);
-		}
+	public static Row withElements(UiElement ...elements) {
+		return withElements(null, elements);
 	}
 	
-	@Override
-	public Actionable mouseDown(int screenX, int screenY, int pointer, int button) {
-		if(!isVisible()) {
-			return null;
+	public static Row withElements(String rowId, UiElement ...elements) {
+		Row result = new Row(rowId);
+		for(int i = 0; i < elements.length; i++) {
+			result.add(elements[i]);
 		}
-		for(int i = children.size() - 1; i >= 0; i--) {
-			Actionable result = children.get(i).mouseDown(screenX, screenY, pointer, button);
-			if(result != null) {
-				return result;
-			}
-		}
-		return null;
-	}
-
-	public void addChild(UiElement<?> element) {
-		element.addContentSizeListener(this);
-		addContentPositionListener(element);
-		children.add(element);
-
-		contentWidth += element.getContentWidth();
-		contentHeight = Math.max(contentHeight, element.getContentHeight());
-		childAdded = true;
-	}
-
-	public void removeChild(UiElement<?> element) {
-		removeContentPositionListener(element);
-		element.removeContentSizeListener(this);
-		element.dispose();
-	}
-
-	@Override
-	public void setXRules(String rules) {
-		throw new MdxException("Cannot set x rules on " + Row.class.getSimpleName());
-	}
-
-	@Override
-	public void setWidthRules(String rules) {
-		throw new MdxException("Cannot set width rules on " + Row.class.getSimpleName());
-	}
-
-	@Override
-	public float getContentWidth() {
-		return contentWidth;
-	}
-
-	@Override
-	public float getContentHeight() {
-		return contentHeight;
-	}
-
-	private void calculateContentDimensions() {
-		float contentWidth = 0f;
-		float contentHeight = 0f;
-
-		for (UiElement<?> element : children) {
-			contentWidth += element.getElementWidth();
-			contentHeight = Math.max(contentHeight, element.getElementHeight());
-		}
-
-		this.contentWidth = contentWidth;
-		this.contentHeight = contentHeight;
-	}
-
-	@Override
-	public void onContentSizeChanged(UiElement<?> element) {
-		calculateContentDimensions();
-		notifyContentSizeListeners();
-	}
-
-	public static Row withElements(UiElement<?>... elements) {
-		Row row = new Row();
-		for (UiElement<?> element : elements) {
-			row.addChild(element);
-		}
-		return row;
-	}
-
-	public static Row withElements(String rowId, UiElement<?>... elements) {
-		Row row = new Row(rowId);
-		for (UiElement<?> element : elements) {
-			row.addChild(element);
-		}
-		return row;
-	}
-
-	@Override
-	public RowStyle getCurrentStyle() {
-		return currentStyle;
-	}
-
-	@Override
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
-		for (int i = 0; i < children.size(); i++) {
-			children.get(i).setVisible(visible);
-		}
-	}
-
-	@Override
-	public void setState(ElementState state) {
-		super.setState(state);
-		if(state != ElementState.NORMAL) {
-			return;
-		}
-		for(int i = children.size() -1; i >= 0; i--) {
-			children.get(i).setState(ElementState.NORMAL);
-		}
-	}
-	
-	public float getRowYOffset() {
-		return rowYOffset;
-	}
-
-	public void setRowYOffset(float rowOffset) {
-		this.rowYOffset = rowOffset;
+		result.setVisibility(Visibility.VISIBLE);
+		return result;
 	}
 }

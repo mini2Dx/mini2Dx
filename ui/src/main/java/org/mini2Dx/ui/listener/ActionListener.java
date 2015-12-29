@@ -17,7 +17,6 @@ import org.mini2Dx.ui.element.Actionable;
  *
  */
 public interface ActionListener {
-
 	public void onActionBegin(Actionable source);
 	
 	public void onActionEnd(Actionable source);

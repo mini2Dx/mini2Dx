@@ -14,215 +14,124 @@ package org.mini2Dx.ui.element;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mini2Dx.ui.UiContentContainer;
-import org.mini2Dx.ui.UiElement;
-import org.mini2Dx.ui.layout.ScreenSize;
-import org.mini2Dx.ui.listener.ContentSizeListener;
-import org.mini2Dx.ui.render.UiRenderer;
-import org.mini2Dx.ui.theme.UiElementStyle;
-import org.mini2Dx.ui.theme.UiTheme;
+import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.ui.layout.LayoutRuleset;
+import org.mini2Dx.ui.render.AbstractColumnRenderNode;
+import org.mini2Dx.ui.render.ColumnRenderNode;
+import org.mini2Dx.ui.render.ParentRenderNode;
 
 /**
  *
  */
-public abstract class Column<T extends UiElementStyle> extends BasicUiElement<T>implements ContentSizeListener {
-	protected final List<Row> rows = new ArrayList<Row>(1);
-
-	private float contentWidth, contentHeight;
-	private boolean rowAdded;
+public class Column extends UiElement {
+	protected final List<UiElement> children = new ArrayList<UiElement>(1);
+	protected AbstractColumnRenderNode<?> renderNode;
+	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
+	
+	public Column() {
+		this(null);
+	}
 	
 	public Column(String id) {
 		super(id);
 	}
-
-	@Override
-	public void update(UiContentContainer uiContainer, float delta) {
-		if (rowAdded) {
-			notifyContentSizeListeners();
-			rowAdded = false;
+	
+	public void add(UiElement element) {
+		if(element == null) {
+			throw new MdxException("Cannot add null element to Column");
 		}
-
-		super.update(uiContainer, delta);
-
-		boolean rowsRemoved = false;
-
-		for (int i = 0; i < rows.size(); i++) {
-			UiElement<?> row = rows.get(i);
-			if (row.disposed()) {
-				rows.remove(i);
-				removeContentPositionListener(row);
-				i--;
-				rowsRemoved = true;
-			} else {
-				row.update(this, delta);
-			}
-		}
-
-		if (!rowsRemoved) {
+		children.add(element);
+		if(renderNode == null) {
 			return;
 		}
-		calculateContentDimensions();
-	}
-
-	@Override
-	public void interpolate(UiContentContainer uiContainer, float alpha) {
-		super.interpolate(uiContainer, alpha);
-		for (int i = 0; i < rows.size(); i++) {
-			rows.get(i).interpolate(this, alpha);
-		}
-	}
-
-	@Override
-	public void resize(ScreenSize screenSize, UiTheme theme, float columnWidth, float totalHeight) {
-		applyStyle(theme, screenSize);
-		applyRules(screenSize, theme, columnWidth, totalHeight);
-		notifyRules(screenSize, theme, columnWidth, totalHeight);
-
-		columnWidth = ((widthRule.getTargetSize() - getPaddingLeft() - getPaddingRight()) / theme.getColumns());
-
-		for (int i = 0; i < rows.size(); i++) {
-			rows.get(i).resize(screenSize, theme, columnWidth, heightRule.getTargetSize());
-		}
-
-		rulesChanged = true;
+		element.attach(renderNode);
 	}
 	
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		if(currentArea.contains(screenX, screenY)) {
-			setState(ElementState.HOVER);
-			boolean result = false;
-			for(int i = rows.size() - 1; i >= 0; i--) {
-				if(rows.get(i).mouseMoved(screenX, screenY)) {
-					result = true;
-				}
-			}
-			return result;
-		} else if(getState() != ElementState.NORMAL) {
-			setState(ElementState.NORMAL);
+	public boolean remove(UiElement element) {
+		if(renderNode != null) {
+			element.detach(renderNode);
 		}
-		return false;
+		return children.remove(element);
 	}
 
 	@Override
-	public UiElement<?> getById(String id) {
-		if (id.equals(getId())) {
-			return this;
-		}
-		for (UiElement<?> element : rows) {
-			UiElement<?> result = element.getById(id);
-			if (result != null) {
-				return result;
-			}
-		}
-		return null;
-	}
-	
-	@Override
-	public Actionable mouseDown(int screenX, int screenY, int pointer, int button) {
-		if(!isVisible()) {
-			return null;
-		}
-		for(int i = rows.size() - 1; i >= 0; i--) {
-			Actionable result = rows.get(i).mouseDown(screenX, screenY, pointer, button);
-			if(result != null) {
-				return result;
-			}
-		}
-		return null;
-	}
-
-	public void addRow(Row row) {
-		row.addContentSizeListener(this);
-		addContentPositionListener(row);
-		rows.add(row);
-
-		contentWidth = Math.max(contentWidth, row.getContentWidth());
-		contentHeight += row.getContentHeight();
-		rowAdded = true;
-	}
-
-	public void removeRow(Row row) {
-		removeContentPositionListener(row);
-		row.removeContentSizeListener(this);
-		row.dispose();
-	}
-
-	@Override
-	public void accept(UiRenderer renderer) {
-		if (!isVisible()) {
+	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
+		if(renderNode != null) {
 			return;
 		}
-		for (int i = 0; i < rows.size(); i++) {
-			rows.get(i).accept(renderer);
+		renderNode = new ColumnRenderNode(parentRenderNode, this);
+		for(int i = 0; i < children.size(); i++) {
+			children.get(i).attach(renderNode);
 		}
-	}
-
-	@Override
-	public void applyStyle(UiTheme theme, ScreenSize screenSize) {
-		for (int i = 0; i < rows.size(); i++) {
-			rows.get(i).applyStyle(theme, screenSize);
-		}
-	}
-
-	private void calculateContentDimensions() {
-		float contentWidth = 0f;
-		float contentHeight = 0f;
-
-		for (Row row : rows) {
-			row.setRowYOffset(contentHeight);
-			contentWidth = Math.max(contentWidth, row.getElementWidth());
-			contentHeight += row.getElementHeight();
-		}
-
-		this.contentWidth = contentWidth;
-		this.contentHeight = contentHeight;
-	}
-
-	@Override
-	public void onContentSizeChanged(UiElement<?> element) {
-		calculateContentDimensions();
-		notifyContentSizeListeners();
-	}
-
-	@Override
-	public float getContentWidth() {
-		return contentWidth;
-	}
-
-	@Override
-	public float getContentHeight() {
-		return contentHeight;
-	}
-
-	@Override
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
-		for (int i = 0; i < rows.size(); i++) {
-			rows.get(i).setVisible(visible);
-		}
+		parentRenderNode.addChild(renderNode);
 	}
 	
 	@Override
-	public void setState(ElementState state) {
-		super.setState(state);
-		if(state != ElementState.NORMAL) {
+	public void detach(ParentRenderNode<?, ?> parentRenderNode) {
+		if(renderNode == null) {
 			return;
 		}
-		for(int i = rows.size() -1; i >= 0; i--) {
-			rows.get(i).setState(ElementState.NORMAL);
+		parentRenderNode.removeChild(renderNode);
+	}
+
+	public LayoutRuleset getLayout() {
+		return layout;
+	}
+
+	public void setLayout(LayoutRuleset layoutRuleset) {
+		if(layoutRuleset == null) {
+			return;
+		}
+		this.layout = layoutRuleset;
+	}
+	
+	public void setVisibility(Visibility visibility) {
+		if(this.visibility == visibility) {
+			return;
+		}
+		this.visibility = visibility;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+
+	@Override
+	public void pushEffectsToRenderNode() {
+		while(!effects.isEmpty()) {
+			renderNode.applyEffect(effects.poll());
 		}
 	}
 	
-	public static LayoutColumn withRows(Row... rows) {
-		return withRows(null, rows);
+	@Override
+	public void setStyleId(String styleId) {
+		if(styleId == null) {
+			return;
+		}
+		this.styleId = styleId;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
 	}
 	
-	public static LayoutColumn withRows(String id, Row... rows) {
-		LayoutColumn result = new LayoutColumn(id);
-		for(int i = 0; i < rows.length; i++) {
-			result.addRow(rows[i]);
+	public static Column withElements(UiElement ...elements) {
+		return withElements(null, elements);
+	}
+	
+	public static Column withElements(String columnId, UiElement ...elements) {
+		return withElements(columnId, "xs-12", elements);
+	}
+	
+	public static Column withElements(String columnId, String layoutRuleset, UiElement ...elements) {
+		Column result = new Column(columnId);
+		result.setLayout(new LayoutRuleset(layoutRuleset));
+		for(int i = 0; i < elements.length; i++) {
+			result.add(elements[i]);
 		}
+		result.setVisibility(Visibility.VISIBLE);
 		return result;
 	}
 }

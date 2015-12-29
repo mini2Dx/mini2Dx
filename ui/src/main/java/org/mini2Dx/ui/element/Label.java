@@ -11,84 +11,30 @@
  */
 package org.mini2Dx.ui.element;
 
-import org.mini2Dx.ui.layout.HorizontalAlign;
-import org.mini2Dx.ui.layout.ScreenSize;
-import org.mini2Dx.ui.layout.VerticalAlign;
-import org.mini2Dx.ui.render.UiRenderer;
-import org.mini2Dx.ui.theme.LabelStyle;
-import org.mini2Dx.ui.theme.UiTheme;
+import org.mini2Dx.ui.layout.HorizontalAlignment;
+import org.mini2Dx.ui.render.LabelRenderNode;
+import org.mini2Dx.ui.render.ParentRenderNode;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 /**
  *
  */
-public class Label extends BasicUiElement<LabelStyle> {
+public class Label extends UiElement {
 	public static final Color COLOR_WHITE = new Color(254f / 255f, 254f / 255f, 254f / 255f, 1f);
 	public static final Color COLOR_BLACK = new Color(1f / 255f, 1f / 255f, 1f / 255f, 1f);
 	
-	private String text;
-	private Color color;
-	private LabelStyle currentStyle;
-	private GlyphLayout glyphLayout;
-	private HorizontalAlign horizontalAlign = HorizontalAlign.LEFT;
-	private VerticalAlign verticalAlign = VerticalAlign.CENTER;
+	private LabelRenderNode renderNode;
+	private String text = "";
+	private Color color = COLOR_WHITE;
+	private HorizontalAlignment horizontalAlignment = HorizontalAlignment.LEFT;
 	
 	public Label() {
-		this("");
+		this(null);
 	}
 	
-	public Label(String text) {
-		this(null, text);
-	}
-	
-	public Label(String id, String text) {
+	public Label(String id) {
 		super(id);
-		color = COLOR_BLACK;
-		glyphLayout = new GlyphLayout();
-		this.text = text;
-	}
-
-	@Override
-	public void accept(UiRenderer renderer) {
-		if(!isVisible()) {
-			return;
-		}
-		renderer.render(this);
-	}
-	
-	@Override
-	public void applyStyle(UiTheme theme, ScreenSize screenSize) {
-		currentStyle = theme.getLabelStyle(screenSize, styleId);
-		glyphLayout.setText(currentStyle.getBitmapFont(), text);
-		notifyContentSizeListeners();
-	}
-
-	@Override
-	public float getContentWidth() {
-		return glyphLayout.width;
-	}
-
-	@Override
-	public float getContentHeight() {
-		return glyphLayout.height;
-	}
-
-	@Override
-	public LabelStyle getCurrentStyle() {
-		return currentStyle;
-	}
-
-	public Color getColor() {
-		return color;
-	}
-
-	public void setColor(Color color) {
-		if(color == null) {
-			return;
-		}
-		this.color = color;
 	}
 
 	public String getText() {
@@ -96,32 +42,83 @@ public class Label extends BasicUiElement<LabelStyle> {
 	}
 
 	public void setText(String text) {
-		if(this.text.equals(text)) {
+		if(text == null) {
 			return;
 		}
 		this.text = text;
 		
-		if(currentStyle == null || currentStyle.getBitmapFont() == null) {
+		if(renderNode == null) {
 			return;
 		}
-		glyphLayout.setText(currentStyle.getBitmapFont(), text);
-		notifyContentSizeListeners();
+		renderNode.setDirty(true);
 	}
 
-	public HorizontalAlign getHorizontalAlign() {
-		return horizontalAlign;
+	@Override
+	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
+		if(renderNode != null) {
+			return;
+		}
+		renderNode = new LabelRenderNode(parentRenderNode, this);
+		parentRenderNode.addChild(renderNode);
 	}
 
-	public void setHorizontalAlign(HorizontalAlign horizontalAlign) {
-		this.horizontalAlign = horizontalAlign;
-	}
-
-	public VerticalAlign getVerticalAlign() {
-		return verticalAlign;
-	}
-
-	public void setVerticalAlign(VerticalAlign verticalAlign) {
-		this.verticalAlign = verticalAlign;
+	@Override
+	public void detach(ParentRenderNode<?, ?> parentRenderNode) {
+		if(renderNode == null) {
+			return;
+		}
+		parentRenderNode.removeChild(renderNode);
 	}
 	
+	@Override
+	public void setVisibility(Visibility visibility) {
+		if(this.visibility == visibility) {
+			return;
+		}
+		this.visibility = visibility;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+	
+	@Override
+	public void pushEffectsToRenderNode() {
+		while(!effects.isEmpty()) {
+			renderNode.applyEffect(effects.poll());
+		}
+	}
+	
+	@Override
+	public void setStyleId(String styleId) {
+		if(styleId == null) {
+			return;
+		}
+		this.styleId = styleId;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+
+	public HorizontalAlignment getHorizontalAlignment() {
+		return horizontalAlignment;
+	}
+
+	public void setHorizontalAlignment(HorizontalAlignment horizontalAlignment) {
+		if(horizontalAlignment == null) {
+			return;
+		}
+		this.horizontalAlignment = horizontalAlignment;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
 }
