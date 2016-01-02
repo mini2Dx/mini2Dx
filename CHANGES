@@ -4,6 +4,9 @@
 - Added controller mappings - Xbox One, Xbox 360 controllers
 - Added render pipeline feature
 - (#38) Added drawNinePatch() and clearScaling() methods to Graphics
+- (#45) Added contains and getDistanceFromCenter to Circle
+- (#45) Added fillShape() method to Graphics class
+- (#46) Fixed ParticleEffect not flipped correctly on load
 - Added NPE prevention to TiledCollisionMapper
 - Added additional drawTexture() methods to Graphics
 - Added Sizeable and SizeChangeListener interfaces
