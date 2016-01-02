@@ -38,19 +38,23 @@ public class ParticleEffect implements Updatable, Disposable {
 	public ParticleEffect(ParticleEffect effect) {
 		particleEffect = new com.badlogic.gdx.graphics.g2d.ParticleEffect(
 				effect.particleEffect);
+		particleEffect.setFlip(false, true);
 	}
 
 	public void load(FileHandle effectFile, FileHandle imagesDir) {
 		particleEffect.load(effectFile, imagesDir);
+		particleEffect.setFlip(false, true);
 	}
 
 	public void load(FileHandle effectFile, TextureAtlas atlas) {
 		particleEffect.load(effectFile, atlas);
+		particleEffect.setFlip(false, true);
 	}
 
 	public void load(FileHandle effectFile, TextureAtlas atlas,
 			String atlasPrefix) {
 		particleEffect.load(effectFile, atlas, atlasPrefix);
+		particleEffect.setFlip(false, true);
 	}
 
 	public void save(Writer output) throws IOException {
