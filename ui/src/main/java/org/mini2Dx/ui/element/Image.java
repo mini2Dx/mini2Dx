@@ -27,16 +27,35 @@ public class Image extends UiElement {
 	private String path;
 	private boolean responsive = false;
 	
+	public Image() {
+		super(null);
+	}
+	
+	public Image(String id) {
+		super(id);
+	}
+	
+	public Image(String id, String texturePath) {
+		super(id);
+		setTexturePath(texturePath);
+	}
+	
 	public Image(Texture texture) {
-		this.textureRegion = new TextureRegion(texture);
+		this(null, texture);
 	}
 	
 	public Image(TextureRegion textureRegion) {
-		this.textureRegion = textureRegion;
+		this(null, textureRegion);
 	}
 	
-	public Image(String texturePath) {
-		this.path = texturePath;
+	public Image(String id, Texture texture) {
+		super(id);
+		this.textureRegion = new TextureRegion(texture);
+	}
+	
+	public Image(String id, TextureRegion textureRegion) {
+		super(id);
+		this.textureRegion = textureRegion;
 	}
 
 	@Override

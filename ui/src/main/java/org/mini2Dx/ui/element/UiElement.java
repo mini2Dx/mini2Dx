@@ -28,29 +28,29 @@ import org.mini2Dx.ui.util.IdAllocator;
 public abstract class UiElement implements Hoverable {
 	private final String id;
 	protected final Queue<UiEffect> effects = new LinkedList<UiEffect>();
-	
+
 	private List<HoverListener> hoverListeners;
 	protected Visibility visibility = Visibility.HIDDEN;
 	protected String styleId = UiTheme.DEFAULT_STYLE_ID;
 	private boolean debugEnabled = false;
-	
+
 	public UiElement() {
 		this(null);
 	}
-	
+
 	public UiElement(String id) {
-		if(id == null) {
+		if (id == null) {
 			id = IdAllocator.getNextId();
 		}
 		this.id = id;
 	}
-	
+
 	public abstract void pushEffectsToRenderNode();
-	
+
 	public abstract void attach(ParentRenderNode<?, ?> parentRenderNode);
-	
+
 	public abstract void detach(ParentRenderNode<?, ?> parentRenderNode);
-	
+
 	public void applyEffect(UiEffect effect) {
 		effects.offer(effect);
 	}
@@ -70,10 +70,10 @@ public abstract class UiElement implements Hoverable {
 	}
 
 	public abstract void setStyleId(String styleId);
-	
+
 	@Override
 	public void addHoverListener(HoverListener listener) {
-		if(hoverListeners == null) {
+		if (hoverListeners == null) {
 			hoverListeners = new ArrayList<HoverListener>(1);
 		}
 		hoverListeners.add(listener);
@@ -81,28 +81,45 @@ public abstract class UiElement implements Hoverable {
 
 	@Override
 	public void removeHoverListener(HoverListener listener) {
-		if(hoverListeners == null) {
+		if (hoverListeners == null) {
 			return;
 		}
 		hoverListeners.remove(listener);
 	}
-	
+
 	public void notifyHoverListenersOnBeginHover() {
-		if(hoverListeners == null) {
+		if (hoverListeners == null) {
 			return;
 		}
-		for(int i = hoverListeners.size() - 1; i >= 0; i--) {
+		for (int i = hoverListeners.size() - 1; i >= 0; i--) {
 			hoverListeners.get(i).onHoverBegin(this);
 		}
 	}
-	
+
 	public void notifyHoverListenersOnEndHover() {
-		if(hoverListeners == null) {
+		if (hoverListeners == null) {
 			return;
 		}
-		for(int i = hoverListeners.size() - 1; i >= 0; i--) {
+		for (int i = hoverListeners.size() - 1; i >= 0; i--) {
 			hoverListeners.get(i).onHoverEnd(this);
 		}
+	}
+
+	/**
+	 * Searches the UI for a {@link UiElement} with a given id
+	 * <br /><br />
+	 * <u><b>Warning</b></u>: This can be an expensive operation for complex UIs. It is
+	 * recommended you cache results.
+	 * 
+	 * @param id
+	 *            The {@link UiElement} identifier to search for
+	 * @return Null if there is no such {@link UiElement} with the given id
+	 */
+	public UiElement getElementById(String id) {
+		if (getId().equals(id)) {
+			return this;
+		}
+		return null;
 	}
 
 	@Override

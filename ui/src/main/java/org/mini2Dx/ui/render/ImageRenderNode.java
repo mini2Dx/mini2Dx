@@ -29,6 +29,9 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 	
 	@Override
 	protected void renderElement(Graphics g) {
+		if(textureRegion == null) {
+			return;
+		}
 		g.drawTextureRegion(textureRegion, getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight());
 	}
 	
@@ -40,6 +43,9 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 
 	@Override
 	protected float determinePreferredWidth(LayoutState layoutState) {
+		if(textureRegion == null) {
+			return 0f;
+		}
 		if(element.isResponsive()) {
 			return layoutState.getParentWidth();
 		} else {
@@ -49,6 +55,9 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 
 	@Override
 	protected float determinePreferredHeight(LayoutState layoutState) {
+		if(textureRegion == null) {
+			return 0f;
+		}
 		if(element.isResponsive()) {
 			return textureRegion.getRegionHeight() * (preferredWidth / textureRegion.getRegionWidth());
 		} else {

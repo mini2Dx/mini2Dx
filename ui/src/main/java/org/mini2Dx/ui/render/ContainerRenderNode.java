@@ -11,17 +11,30 @@
  */
 package org.mini2Dx.ui.render;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Column;
+import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ContainerStyleRule;
 
 /**
  *
  */
 public abstract class ContainerRenderNode extends AbstractColumnRenderNode<ContainerStyleRule> {
-
+	private final Map<String, RenderNode<?, ?>> elementIdLookupCache = new HashMap<String, RenderNode<?, ?>>();
+	
 	public ContainerRenderNode(ParentRenderNode<?, ?> parent, Column column) {
 		super(parent, column);
+	}
+	
+	@Override
+	public void layout(LayoutState layoutState) {
+		if(isDirty()) {
+			elementIdLookupCache.clear();
+		}
+		super.layout(layoutState);
 	}
 
 	@Override
@@ -29,5 +42,23 @@ public abstract class ContainerRenderNode extends AbstractColumnRenderNode<Conta
 		g.drawNinePatch(style.getBackgroundNinePatch(), getRenderX() + style.getMarginLeft(),
 				getRenderY() + style.getMarginTop(), getRenderWidth(), getRenderHeight());
 		super.renderElement(g);
+	}
+	
+	@Override
+	public RenderNode<?, ?> getElementById(String id) {
+		if (element.getId().equals(id)) {
+			return this;
+		}
+		if(elementIdLookupCache.containsKey(id)) {
+			return elementIdLookupCache.get(id);
+		}
+		for (RenderNode<?, ?> child : children) {
+			RenderNode<?, ?> result = child.getElementById(id);
+			if (result != null) {
+				elementIdLookupCache.put(id, result);
+				return result;
+			}
+		}
+		return null;
 	}
 }

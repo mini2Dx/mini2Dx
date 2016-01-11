@@ -117,17 +117,26 @@ public class Column extends UiElement {
 		renderNode.setDirty(true);
 	}
 	
+	@Override
+	public UiElement getElementById(String id) {
+		if (getId().equals(id)) {
+			return this;
+		}
+		for(int i = 0; i < children.size(); i++) {
+			UiElement result = children.get(i).getElementById(id);
+			if(result != null) {
+				return result;
+			}
+		}
+		return null;
+	}
+	
 	public static Column withElements(UiElement ...elements) {
 		return withElements(null, elements);
 	}
 	
 	public static Column withElements(String columnId, UiElement ...elements) {
-		return withElements(columnId, "xs-12", elements);
-	}
-	
-	public static Column withElements(String columnId, String layoutRuleset, UiElement ...elements) {
 		Column result = new Column(columnId);
-		result.setLayout(new LayoutRuleset(layoutRuleset));
 		for(int i = 0; i < elements.length; i++) {
 			result.add(elements[i]);
 		}

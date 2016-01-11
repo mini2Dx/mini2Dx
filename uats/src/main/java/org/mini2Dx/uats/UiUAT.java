@@ -153,7 +153,9 @@ public class UiUAT extends BasicGameScreen {
 		modal.setVerticalAlignment(VerticalAlignment.MIDDLE);
 		modal.add(Row.withElements("row-textbox", textBox, textBoxResult));
 		modal.add(Row.withElements("row-select", select));
-		modal.add(Row.withElements("row-not-visible-xs", Column.withElements("col-not-visible-xs", "xs-0 sm-12", UiUtils.createLabel("Not visible on XS screen size"))));
+		Column xsHiddenColumn = Column.withElements("col-not-visible-xs", UiUtils.createLabel("Not visible on XS screen size"));
+		xsHiddenColumn.setLayout(new LayoutRuleset("xs-0 sm-12"));
+		modal.add(Row.withElements("row-not-visible-xs", xsHiddenColumn));
 		
 		modal.add(Row.withElements("row-return-button", returnButton));
 		
