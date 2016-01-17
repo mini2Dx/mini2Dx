@@ -11,63 +11,44 @@
  */
 package org.mini2Dx.ui.element;
 
-import org.mini2Dx.core.graphics.TextureRegion;
-import org.mini2Dx.ui.render.ImageButtonRenderNode;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.ui.render.ContentButtonRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
-
 /**
- *
+ * Implementation of {@link Button} that allows custom inner content
  */
-public class ImageButton extends Button {
-	private String path;
-	private ImageButtonRenderNode renderNode;
-	private TextureRegion textureRegion;
-	private boolean responsive = false;
+public class ContentButton extends Button {
+	protected final List<UiElement> children = new ArrayList<UiElement>(1);
+	private ContentButtonRenderNode renderNode;
 	
-	public TextureRegion getTextureRegion(AssetManager assetManager) {
-		if(path != null) {
-			textureRegion = new TextureRegion(assetManager.get(path, Texture.class));
-			path = null;
-		}
-		return textureRegion;
+	public ContentButton() {
+		this(null);
 	}
-
-	public void setTextureRegion(TextureRegion textureRegion) {
-		this.textureRegion = textureRegion;
-		
+	
+	public ContentButton(String id) {
+		super(id);
+	}
+	
+	public void add(UiElement element) {
+		if(element == null) {
+			throw new MdxException("Cannot add null element to ContentButton");
+		}
+		children.add(element);
 		if(renderNode == null) {
 			return;
 		}
-		renderNode.setDirty(true);
+		element.attach(renderNode);
 	}
 	
-	public void setTexture(Texture texture) {
-		setTextureRegion(new TextureRegion(texture));
-	}
-	
-	public void setTexturePath(String texturePath) {
-		this.path = texturePath;
-		
-		if(renderNode == null) {
-			return;
+	public boolean remove(UiElement element) {
+		if(renderNode != null) {
+			element.detach(renderNode);
 		}
-		renderNode.setDirty(true);
-	}
-
-	public boolean isResponsive() {
-		return responsive;
-	}
-
-	public void setResponsive(boolean responsive) {
-		this.responsive = responsive;
-		
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
+		return children.remove(element);
 	}
 
 	@Override
@@ -75,7 +56,7 @@ public class ImageButton extends Button {
 		if(renderNode != null) {
 			return;
 		}
-		renderNode = new ImageButtonRenderNode(parentRenderNode, this);
+		renderNode = new ContentButtonRenderNode(parentRenderNode, this);
 		parentRenderNode.addChild(renderNode);
 	}
 
@@ -119,4 +100,5 @@ public class ImageButton extends Button {
 			renderNode.applyEffect(effects.poll());
 		}
 	}
+
 }
