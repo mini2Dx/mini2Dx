@@ -57,6 +57,9 @@ public class ContentButton extends Button {
 			return;
 		}
 		renderNode = new ContentButtonRenderNode(parentRenderNode, this);
+		for(int i = 0; i < children.size(); i++) {
+			children.get(i).attach(renderNode);
+		}
 		parentRenderNode.addChild(renderNode);
 	}
 

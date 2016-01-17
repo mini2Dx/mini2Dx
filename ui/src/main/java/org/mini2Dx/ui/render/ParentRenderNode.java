@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.UiElement;
+import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.StyleRule;
 
 /**
@@ -51,6 +52,54 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 		for (int i = 0; i < children.size(); i++) {
 			children.get(i).render(g);
 		}
+	}
+	
+	@Override
+	public void layout(LayoutState layoutState) {
+		if(!isDirty() && !layoutState.isScreenSizeChanged()) {
+			return;
+		}
+		
+		float parentWidth = layoutState.getParentWidth();
+		style = determineStyleRule(layoutState);
+		xOffset = determineXOffset(layoutState);
+		preferredWidth = determinePreferredWidth(layoutState);
+		layoutState.setParentWidth(getPreferredContentWidth());
+
+		float startX = style.getPaddingLeft();
+		float startY = style.getPaddingTop();
+		for (int i = 0; i < children.size(); i++) {
+			RenderNode<?, ?> node = children.get(i);
+			node.layout(layoutState);
+			if (!node.isIncludedInLayout()) {
+				continue;
+			}
+
+			node.setRelativeX(startX + node.getXOffset());
+			node.setRelativeY(startY + node.getYOffset());
+
+			startX += node.getPreferredWidth() + node.getXOffset();
+			if (startX >= getPreferredContentWidth()) {
+				float maxHeight = 0f;
+				for (int j = i; j >= 0; j--) {
+					RenderNode<?, ?> previousNode = children.get(j);
+					if (previousNode.getRelativeY() == startY) {
+						float height = previousNode.getPreferredHeight() + node.getYOffset();
+						if (height > maxHeight) {
+							maxHeight = height;
+						}
+					}
+				}
+				startY += maxHeight;
+				startX = style.getPaddingLeft();
+			}
+		}
+		layoutState.setParentWidth(parentWidth);
+
+		yOffset = determineYOffset(layoutState);
+		preferredHeight = determinePreferredHeight(layoutState);
+		setDirty(false);
+		childDirty = false;
 	}
 
 	@Override

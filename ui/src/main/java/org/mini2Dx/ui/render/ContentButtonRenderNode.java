@@ -55,7 +55,17 @@ public class ContentButtonRenderNode extends ParentRenderNode<ContentButton, But
 
 	@Override
 	protected float determinePreferredHeight(LayoutState layoutState) {
-		return style.getPaddingTop() + style.getPaddingBottom() + style.getFontSize();
+		float maxHeight = 0f;
+
+		for (int i = 0; i < children.size(); i++) {
+			float height = children.get(i).getRelativeY() + children.get(i).getPreferredHeight()
+					+ children.get(i).getYOffset();
+			if (height > maxHeight) {
+				maxHeight = height;
+			}
+		}
+		return maxHeight + style.getMarginTop() + style.getMarginBottom() + style.getPaddingTop()
+				+ style.getPaddingBottom();
 	}
 
 	@Override
