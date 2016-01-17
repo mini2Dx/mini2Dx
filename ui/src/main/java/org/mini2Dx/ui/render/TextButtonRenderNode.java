@@ -12,15 +12,14 @@
 package org.mini2Dx.ui.render;
 
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.ui.element.TextButton;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ButtonStyleRule;
-import org.mini2Dx.ui.style.StyleRule;
 
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 
 /**
  *

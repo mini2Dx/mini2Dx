@@ -13,6 +13,7 @@ package org.mini2Dx.ui.render;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.TextBoxStyleRule;
@@ -22,7 +23,6 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.utils.Clipboard;
 
 /**

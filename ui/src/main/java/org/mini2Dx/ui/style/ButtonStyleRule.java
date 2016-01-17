@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ui.style;
 
+import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.core.serialization.annotation.Field;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -19,7 +20,6 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.utils.Array;
 
