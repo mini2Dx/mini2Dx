@@ -27,7 +27,6 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 	private static GlyphLayout glyphLayout = new GlyphLayout();
 
 	private BitmapFont font = new BitmapFont(true);
-	private Color color = new Color(1f / 255f, 1f / 255f, 1f / 255f, 1f);
 
 	public LabelRenderNode(ParentRenderNode<?, ?> parent, Label element) {
 		super(parent, element);
@@ -38,8 +37,13 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 		BitmapFont tmpFont = g.getFont();
 		Color tmpColor = g.getColor();
 
-		g.setFont(font);
-		g.setColor(color);
+		if(style.getBitmapFont() == null) {
+			g.setFont(font);
+		} else {
+			g.setFont(style.getBitmapFont());
+		}
+		
+		g.setColor(style.getColor());
 		g.drawString(element.getText(), getRenderX() + style.getPaddingLeft(), getRenderY() + style.getPaddingTop(),
 				getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight(),
 				element.getHorizontalAlignment().getAlignValue());
