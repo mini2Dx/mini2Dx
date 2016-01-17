@@ -18,7 +18,6 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Container;
 import org.mini2Dx.ui.element.Modal;
-import org.mini2Dx.ui.element.TextInputable;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
@@ -43,6 +42,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 	private final List<Container> children = new ArrayList<Container>(1);
 	private final UiContainerRenderTree renderTree;
 	
+	private int width, height;
 	private boolean themeWarningIssued, initialThemeLayoutComplete;
 	private UiTheme theme;
 	
@@ -52,7 +52,10 @@ public class UiContainer extends UiElement implements InputProcessor {
 	
 	public UiContainer(GameContainer gc, AssetManager assetManager) {
 		super("ui-container-root");
-		renderTree = new UiContainerRenderTree(this, gc, assetManager);
+		this.width = gc.getWidth();
+		this.height = gc.getHeight();
+		
+		renderTree = new UiContainerRenderTree(this, assetManager);
 		setVisibility(Visibility.VISIBLE);
 	}
 	
@@ -302,5 +305,19 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	public void setActiveModal(Modal activeModal) {
 		this.activeModal = activeModal;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+	
+	public void set(int width, int height) {
+		this.width = width;
+		this.height = height;
+		renderTree.onResize(width, height);
 	}
 }

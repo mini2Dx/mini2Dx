@@ -15,7 +15,6 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.LabelStyleRule;
-import org.mini2Dx.ui.style.StyleRule;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;

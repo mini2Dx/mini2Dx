@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.ScreenSize;
-import org.mini2Dx.ui.style.ButtonStyleRule;
 import org.mini2Dx.ui.style.ContainerStyleRule;
 import org.mini2Dx.ui.style.StyleRuleset;
 import org.mini2Dx.ui.style.UiTheme;

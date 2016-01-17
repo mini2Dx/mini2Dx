@@ -12,7 +12,6 @@
 package org.mini2Dx.ui.render;
 
 import org.mini2Dx.ui.element.AbsoluteContainer;
-import org.mini2Dx.ui.element.Modal;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ContainerStyleRule;
 

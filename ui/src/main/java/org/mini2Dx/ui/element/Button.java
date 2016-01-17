@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mini2Dx.ui.listener.ActionListener;
-import org.mini2Dx.ui.listener.HoverListener;
 
 /**
  *

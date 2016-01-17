@@ -18,8 +18,6 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.style.StyleRule;
 
-import com.sun.org.apache.xml.internal.serialize.ElementState;
-
 /**
  *
  */

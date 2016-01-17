@@ -14,8 +14,6 @@ package org.mini2Dx.ui.render;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.core.game.GameResizeListener;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.layout.ScreenSize;
@@ -28,23 +26,21 @@ import com.badlogic.gdx.assets.AssetManager;
 /**
  *
  */
-public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRule> implements GameResizeListener {
+public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRule> {
 	private static final String LOGGING_TAG = UiContainerRenderTree.class.getSimpleName();
 	
-	private final GameContainer gc;
 	private final AssetManager assetManager;
 	
 	private List<ScreenSizeListener> screenSizeListeners;
 	private ScreenSize currentScreenSize = ScreenSize.XS;
 	private boolean screenSizeChanged = false;
 
-	public UiContainerRenderTree(UiContainer uiContainer, GameContainer gc, AssetManager assetManager) {
+	public UiContainerRenderTree(UiContainer uiContainer, AssetManager assetManager) {
 		super(null, uiContainer);
-		this.gc = gc;
 		this.assetManager = assetManager;
 		
-		gc.addResizeListener(this);
-		onResize(gc.getWidth(), gc.getHeight());
+		onResize(uiContainer.getWidth(), uiContainer.getHeight());
+		Gdx.app.log(LOGGING_TAG, "Screen resize set to " + currentScreenSize + " - " + uiContainer.getWidth() + "x" + uiContainer.getHeight());
 	}
 	
 	public void update(float delta) {
@@ -52,7 +48,7 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRu
 	}
 	
 	public void layout() {
-		layout(new LayoutState(this, assetManager, element.getTheme(), currentScreenSize, 12, gc.getWidth(), screenSizeChanged));
+		layout(new LayoutState(this, assetManager, element.getTheme(), currentScreenSize, 12, ((UiContainer) element).getWidth(), screenSizeChanged));
 	}
 	
 	@Override
@@ -86,8 +82,7 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRu
 		childDirty = false;
 		screenSizeChanged = false;
 	}
-
-	@Override
+	
 	public void onResize(int width, int height) {
 		ScreenSize screenSize = ScreenSize.XS;
 		if(width >= ScreenSize.SM.getMinSize()) {
@@ -104,6 +99,10 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRu
 		}
 		screenSizeChanged = true;
 		this.currentScreenSize = screenSize;
+		
+		if(element.isDebugEnabled()) {
+			Gdx.app.log(LOGGING_TAG, "Screen resize to " + currentScreenSize + " - " + width + "x" + height);
+		}
 		
 		if(screenSizeListeners == null) {
 			return;
@@ -129,12 +128,12 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRu
 	
 	@Override
 	protected float determinePreferredWidth(LayoutState layoutState) {
-		return gc.getWidth();
+		return ((UiContainer) element).getWidth();
 	}
 	
 	@Override
 	protected float determinePreferredHeight(LayoutState layoutState) {
-		return gc.getHeight();
+		return ((UiContainer) element).getHeight();
 	}
 	
 	@Override

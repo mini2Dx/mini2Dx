@@ -15,7 +15,6 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.SelectStyleRule;
-import org.mini2Dx.ui.style.StyleRule;
 
 /**
  *
