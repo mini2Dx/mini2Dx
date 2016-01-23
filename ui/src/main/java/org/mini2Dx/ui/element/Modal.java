@@ -32,7 +32,6 @@ public class Modal extends Container {
 	private final Queue<KeyboardHotKeyOperation> keyboardHotKeyOperations = new LinkedList<KeyboardHotKeyOperation>();
 	
 	private UiNavigation navigation = new VerticalUiNavigation();
-	private VerticalAlignment verticalAlignment = VerticalAlignment.MIDDLE;
 	
 	public Modal() {
 		this(null);
@@ -40,18 +39,6 @@ public class Modal extends Container {
 	
 	public Modal(String id) {
 		super(id);
-	}
-	
-	@Override
-	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode != null) {
-			return;
-		}
-		renderNode = new ModalRenderNode(parentRenderNode, this);
-		for(int i = 0; i < children.size(); i++) {
-			children.get(i).attach(renderNode);
-		}
-		parentRenderNode.addChild(renderNode);
 	}
 	
 	public ActionableRenderNode navigate(int keycode) {
@@ -89,14 +76,6 @@ public class Modal extends Container {
 	
 	public void unsetHotkey(int keycode, Actionable actionable) {
 		keyboardHotKeyOperations.offer(new KeyboardHotKeyOperation(keycode, actionable, false));
-	}
-
-	public VerticalAlignment getVerticalAlignment() {
-		return verticalAlignment;
-	}
-
-	public void setVerticalAlignment(VerticalAlignment verticalAlignment) {
-		this.verticalAlignment = verticalAlignment;
 	}
 
 	public UiNavigation getNavigation() {

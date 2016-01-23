@@ -26,9 +26,9 @@ import org.mini2Dx.uats.util.UiUtils;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.element.AbsoluteContainer;
 import org.mini2Dx.ui.element.Actionable;
+import org.mini2Dx.ui.element.AlignedModal;
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.element.Label;
-import org.mini2Dx.ui.element.Modal;
 import org.mini2Dx.ui.element.Row;
 import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.element.TextBox;
@@ -50,7 +50,7 @@ public class UiUAT extends BasicGameScreen {
 	
 	private UiContainer uiContainer;
 	private AbsoluteContainer topLeftFrame, bottomRightFrame;
-	private Modal modal;
+	private AlignedModal modal;
 	
 	private Select<String> select;
 	private TextBox textBox;
@@ -148,7 +148,7 @@ public class UiUAT extends BasicGameScreen {
 		select.addOption("Item 2", "2");
 		select.addOption("Item 3", "3");
 		
-		modal = new Modal("main-modal");
+		modal = new AlignedModal("main-modal");
 		modal.setLayout(new LayoutRuleset("xs-12 md-8 lg-6 md-offset-2 lg-offset-3"));
 		modal.setVerticalAlignment(VerticalAlignment.MIDDLE);
 		modal.add(Row.withElements("row-textbox", textBox, textBoxResult));

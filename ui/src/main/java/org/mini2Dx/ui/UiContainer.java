@@ -306,6 +306,12 @@ public class UiContainer extends UiElement implements InputProcessor {
 	public void setActiveModal(Modal activeModal) {
 		this.activeModal = activeModal;
 	}
+	
+	public void clearActiveModal() {
+		this.activeTextInput = null;
+		this.activeAction = null;
+		this.activeModal = null;
+	}
 
 	public int getWidth() {
 		return width;
