@@ -45,7 +45,7 @@ public abstract class UiElement implements Hoverable {
 		this.id = id;
 	}
 
-	public abstract void pushEffectsToRenderNode();
+	public abstract void syncWithRenderNode();
 
 	public abstract void attach(ParentRenderNode<?, ?> parentRenderNode);
 

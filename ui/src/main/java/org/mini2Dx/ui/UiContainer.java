@@ -121,7 +121,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 	}
 	
 	@Override
-	public void pushEffectsToRenderNode() {
+	public void syncWithRenderNode() {
 		while(!effects.isEmpty()) {
 			renderTree.applyEffect(effects.poll());
 		}

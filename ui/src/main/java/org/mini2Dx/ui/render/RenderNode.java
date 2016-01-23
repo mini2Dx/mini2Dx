@@ -62,7 +62,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		}
 		currentArea.preUpdate();
 
-		element.pushEffectsToRenderNode();
+		element.syncWithRenderNode();
 
 		boolean visible = isIncludedInRender();
 		if (effects.size() == 0) {

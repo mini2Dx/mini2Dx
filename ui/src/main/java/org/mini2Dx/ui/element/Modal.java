@@ -41,6 +41,12 @@ public class Modal extends Container {
 		super(id);
 	}
 	
+	@Override
+	public void syncWithRenderNode() {
+		super.syncWithRenderNode();
+		((ModalRenderNode) renderNode).syncHotkeys(controllerHotKeyOperations, keyboardHotKeyOperations);
+	}
+	
 	public ActionableRenderNode navigate(int keycode) {
 		if(renderNode == null) {
 			return null;

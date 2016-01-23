@@ -91,7 +91,7 @@ public class TextButton extends Button {
 	}
 	
 	@Override
-	public void pushEffectsToRenderNode() {
+	public void syncWithRenderNode() {
 		while(!effects.isEmpty()) {
 			renderNode.applyEffect(effects.poll());
 		}

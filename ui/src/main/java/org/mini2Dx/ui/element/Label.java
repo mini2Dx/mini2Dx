@@ -84,7 +84,7 @@ public class Label extends UiElement {
 	}
 	
 	@Override
-	public void pushEffectsToRenderNode() {
+	public void syncWithRenderNode() {
 		while(!effects.isEmpty()) {
 			renderNode.applyEffect(effects.poll());
 		}

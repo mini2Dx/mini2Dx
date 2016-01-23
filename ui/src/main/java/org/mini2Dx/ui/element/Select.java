@@ -81,7 +81,7 @@ public class Select<V> extends UiElement implements Actionable {
 	}
 	
 	@Override
-	public void pushEffectsToRenderNode() {
+	public void syncWithRenderNode() {
 		while(!effects.isEmpty()) {
 			renderNode.applyEffect(effects.poll());
 		}
