@@ -3,10 +3,14 @@
 - Updated to Android build tools 23.0.1
 - Added controller mappings - Xbox One, Xbox 360 controllers
 - Added render pipeline feature
+- Implemented responsive UI framework (mini2Dx-ui)
 - (#38) Added drawNinePatch() and clearScaling() methods to Graphics
 - (#45) Added contains and getDistanceFromCenter to Circle
 - (#45) Added fillShape() method to Graphics class
+- (#45) Added Rectangle#intersects(Circle) and Circle#intersects(Rectangle)
+- (#45) Circle now extends com.badlogic.gdx.math.Circle
 - (#46) Fixed ParticleEffect not flipped correctly on load
+- (#48) Fixed alpha channel not being applied to line rendering
 - Added NPE prevention to TiledCollisionMapper
 - Added additional drawTexture() methods to Graphics
 - Added Sizeable and SizeChangeListener interfaces
