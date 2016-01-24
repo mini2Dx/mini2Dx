@@ -34,11 +34,14 @@ import org.mini2Dx.uats.UiUAT;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.effect.SlideIn;
 import org.mini2Dx.ui.element.Actionable;
+import org.mini2Dx.ui.element.AlignedModal;
 import org.mini2Dx.ui.element.Modal;
 import org.mini2Dx.ui.element.Row;
 import org.mini2Dx.ui.element.Visibility;
+import org.mini2Dx.ui.layout.HorizontalAlignment;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.ScreenSize;
+import org.mini2Dx.ui.layout.VerticalAlignment;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
 import org.mini2Dx.ui.style.UiTheme;
@@ -57,7 +60,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 	private final AssetManager assetManager;
 
 	private UiContainer uiContainer;
-	private Modal uatsDialog;
+	private AlignedModal uatsDialog;
 	private int nextScreenId = -1;
 
 	public UATSelectionScreen(AssetManager assetManager) {
@@ -126,7 +129,9 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 	}
 
 	private void initialiseUi() {
-		uatsDialog = new Modal("uats-dialog");
+		uatsDialog = new AlignedModal("uats-dialog");
+		uatsDialog.setHorizontalAlignment(HorizontalAlignment.CENTER);
+		uatsDialog.setVerticalAlignment(VerticalAlignment.TOP);
 		uatsDialog.setLayout(new LayoutRuleset("xs-12 sm-10 md-8 lg-6 sm-offset-1 md-offset-2 lg-offset-3"));
 
 		uatsDialog.add(Row.withElements("row-os", UiUtils.createLabel("Detected OS: " + Mdx.os)));

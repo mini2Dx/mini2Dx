@@ -27,7 +27,7 @@ import org.mini2Dx.ui.render.ParentRenderNode;
 /**
  *
  */
-public class Modal extends Container {
+public abstract class Modal extends Container {
 	private final Queue<ControllerHotKeyOperation> controllerHotKeyOperations = new LinkedList<ControllerHotKeyOperation>();
 	private final Queue<KeyboardHotKeyOperation> keyboardHotKeyOperations = new LinkedList<KeyboardHotKeyOperation>();
 	
