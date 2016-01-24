@@ -13,6 +13,7 @@ package org.mini2Dx.ui.style;
 
 import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.core.util.ColorUtils;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
@@ -72,6 +73,10 @@ public class ButtonStyleRule extends StyleRule {
 		fontParameter.size = fontSize;
 		fontParameter.flip = true;
 		bitmapFont = theme.getFont(font).getFontGenerator().generateFont(fontParameter);
+		
+		if(textColor != null) {
+			color = ColorUtils.rgbToColor(textColor);
+		}
 	}
 
 	public NinePatch getNormalNinePatch() {
