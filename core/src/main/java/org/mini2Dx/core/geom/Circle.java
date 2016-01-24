@@ -11,7 +11,6 @@
  */
 package org.mini2Dx.core.geom;
 
-import org.mini2Dx.core.engine.Positionable;
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.math.MathUtils;
@@ -20,24 +19,25 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * Implements a circle
  */
-public class Circle implements Shape {
-	private Vector2 center;
-	private float radius;
-	
-	public Circle(int radius) {
-		center = new Vector2();
-		this.radius = radius;
+public class Circle extends com.badlogic.gdx.math.Circle implements Shape {
+	private static final long serialVersionUID = 7900371446650127192L;
+
+	public Circle(float radius) {
+		this(0f, 0f, radius);
 	}
 	
 	public Circle(float centerX, float centerY, float radius) {
-		center = new Vector2(centerX, centerY);
-		this.radius = radius;
+		super(centerX, centerY, radius);
+	}
+	
+	public Circle(Circle circle) {
+		super(circle);
 	}
 	
 	public Circle lerp(Circle target, float alpha) {
 		final float inverseAlpha = 1.0f - alpha;
-		center.x = (center.x * inverseAlpha) + (target.getX() * alpha);
-		center.y = (center.y * inverseAlpha) + (target.getY() * alpha);
+		x = (x * inverseAlpha) + (target.getX() * alpha);
+		y = (y * inverseAlpha) + (target.getY() * alpha);
 		radius = (radius * inverseAlpha) + (target.getRadius() * alpha);
 		return this;
 	}
@@ -47,32 +47,43 @@ public class Circle implements Shape {
 	}
 	
 	public boolean contains(float x, float y) {
-		float dx = Math.abs(x - center.x);
+		float dx = Math.abs(x - this.x);
 		if(dx > radius) {
-			System.out.println("dx false");
 			return false;
 		}
 		
-		float dy = Math.abs(y - center.y);
+		float dy = Math.abs(y - this.y);
 		if(dy > radius) {
-			System.out.println("dy false: " + dy + " " + radius);
 			return false;
 		}
 		
 		if(dx + dy <= radius) {
-			System.out.println("dx + dy false");
 			return true;
 		}
 		if((dx * dx) + (dy * dy) <= (radius * radius)) {
-			System.out.println("pyth false");
 			return true;
 		}
-		System.out.println("false");
 		return false;
 	}
+	
+	/**
+	 * Returns if the specified {@link Rectangle} intersects this {@link Circle}
+	 * 
+	 * @param rectangle The {@link Rectangle} to test for intersection
+	 * @return True if intersection occurs
+	 */
+	public boolean interects(Rectangle rectangle) {
+		return com.badlogic.gdx.math.Intersector.overlaps(this, rectangle);
+	}
 
+	/**
+	 * Returns if the specified {@link Circle} intersects this one
+	 * 
+	 * @param circle The {@link Circle} to test for intersection
+	 * @return True if intersection occurs
+	 */
 	public boolean intersects(Circle circle) {
-		return center.dst(circle.center) <= radius + circle.radius;
+		return Vector2.dst(x, y, circle.x, circle.y) <= radius + circle.radius;
 	}
 
 	/**
@@ -91,7 +102,7 @@ public class Circle implements Shape {
 	 * @return The distance to the point
 	 */
 	public float getDistanceTo(float x, float y) {
-		float result = center.dst(x, y);
+		float result = Vector2.dst(this.x, this.y, x, y);
 		if(result <= radius) {
 			return 0f;
 		}
@@ -104,7 +115,7 @@ public class Circle implements Shape {
 	 * @return The distane to the point
 	 */
 	public float getDistanceFromCenter(Vector2 point) {
-		return center.dst(point.x, point.y);
+		return Vector2.dst(x, y, point.x, point.y);
 	}
 	
 	/**
@@ -114,7 +125,7 @@ public class Circle implements Shape {
 	 * @return The distane to the point
 	 */
 	public float getDistanceFromCenter(float x, float y) {
-		return center.dst(x, y);
+		return Vector2.dst(this.x, this.y, x, y);
 	}
 	
 	@Override
@@ -124,12 +135,12 @@ public class Circle implements Shape {
 
 	@Override
 	public void draw(Graphics g) {
-		g.drawCircle(center.x, center.y, MathUtils.round(radius));
+		g.drawCircle(x, y, MathUtils.round(radius));
 	}
 	
 	@Override
 	public void fill(Graphics g) {
-		g.fillCircle(center.x, center.y, MathUtils.round(radius));
+		g.fillCircle(x, y, MathUtils.round(radius));
 	}
 	
 	public void set(Circle circle) {
@@ -138,23 +149,24 @@ public class Circle implements Shape {
 	}
 
 	public float getX() {
-		return center.x;
+		return x;
 	}
 
 	public float getY() {
-		return center.y;
+		return y;
 	}
 	
 	public void setX(float x) {
-		center.set(x, center.y);
+		this.x = x;
 	}
 	
 	public void setY(float y) {
-		center.set(center.x, y);
+		this.y = y;
 	}
 	
 	public void setCenter(float x, float y) {
-		center.set(x, y);
+		this.x = x;
+		this.y = y;
 	}
 
 	public float getRadius() {

@@ -45,11 +45,11 @@ public class CollisionCircle extends Circle implements Positionable, Sizeable {
 	private int renderX, renderY;
 	private boolean interpolate = false;
 	
-	public CollisionCircle(int radius) {
+	public CollisionCircle(float radius) {
 		this(CollisionIdSequence.nextId(), radius);
 	}
 	
-	public CollisionCircle(int id, int radius) {
+	public CollisionCircle(int id, float radius) {
 		super(radius);
 		this.id = id;
 		
@@ -60,11 +60,11 @@ public class CollisionCircle extends Circle implements Positionable, Sizeable {
 		storeRenderCoordinates();
 	}
 	
-	public CollisionCircle(float centerX, float centerY, int radius) {
+	public CollisionCircle(float centerX, float centerY, float radius) {
 		this(CollisionIdSequence.nextId(), centerX, centerY, radius);
 	}
 	
-	public CollisionCircle(int id, float centerX, float centerY, int radius) {
+	public CollisionCircle(int id, float centerX, float centerY, float radius) {
 		super(centerX, centerY, radius);
 		this.id = id;
 		
