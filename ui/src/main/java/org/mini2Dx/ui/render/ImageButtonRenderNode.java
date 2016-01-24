@@ -76,7 +76,9 @@ public class ImageButtonRenderNode extends RenderNode<ImageButton, ButtonStyleRu
 			ninePatch = style.getDisabledNinePatch();
 		}
 
-		g.drawNinePatch(ninePatch, getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight());
+		if(ninePatch != null) {
+			g.drawNinePatch(ninePatch, getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight());
+		}
 
 		float imageRenderX = getRenderX() + style.getPaddingLeft();
 		float imageRenderY = getRenderY() + style.getPaddingTop();

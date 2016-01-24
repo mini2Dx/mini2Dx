@@ -44,7 +44,9 @@ public class ContentButtonRenderNode extends ParentRenderNode<ContentButton, But
 			ninePatch = style.getDisabledNinePatch();
 		}
 
-		g.drawNinePatch(ninePatch, getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight());
+		if(ninePatch != null) {
+			g.drawNinePatch(ninePatch, getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight());
+		}
 		super.renderElement(g);
 	}
 

@@ -28,13 +28,13 @@ import com.badlogic.gdx.utils.Array;
  *
  */
 public class ButtonStyleRule extends StyleRule {
-	@Field
+	@Field(optional=true)
 	private String normal;
-	@Field
+	@Field(optional=true)
 	private String hover;
-	@Field
+	@Field(optional=true)
 	private String action;
-	@Field
+	@Field(optional=true)
 	private String disabled;
 	@Field
 	private int fontSize;
@@ -52,22 +52,38 @@ public class ButtonStyleRule extends StyleRule {
 	
 	@Override
 	public void loadDependencies(UiTheme theme, Array<AssetDescriptor> dependencies) {
-		dependencies.add(new AssetDescriptor<Texture>(normal, Texture.class));
-		dependencies.add(new AssetDescriptor<Texture>(hover, Texture.class));
-		dependencies.add(new AssetDescriptor<Texture>(action, Texture.class));
-		dependencies.add(new AssetDescriptor<Texture>(disabled, Texture.class));
+		if(normal != null) {
+			dependencies.add(new AssetDescriptor<Texture>(normal, Texture.class));
+		}
+		if(hover != null) {
+			dependencies.add(new AssetDescriptor<Texture>(hover, Texture.class));
+		}
+		if(action != null) {
+			dependencies.add(new AssetDescriptor<Texture>(action, Texture.class));
+		}
+		if(disabled != null) {
+			dependencies.add(new AssetDescriptor<Texture>(disabled, Texture.class));
+		}
 	}
 	
 	@Override
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
-		normalNinePatch = new NinePatch(assetManager.get(normal, Texture.class), getPaddingLeft(),
-				getPaddingRight(), getPaddingTop(), getPaddingBottom());
-		hoverNinePatch = new NinePatch(assetManager.get(hover, Texture.class), getPaddingLeft(),
-				getPaddingRight(), getPaddingTop(), getPaddingBottom());
-		actionNinePatch = new NinePatch(assetManager.get(action, Texture.class), getPaddingLeft(),
-				getPaddingRight(), getPaddingTop(), getPaddingBottom());
-		disabledNinePatch = new NinePatch(assetManager.get(disabled, Texture.class), getPaddingLeft(),
-				getPaddingRight(), getPaddingTop(), getPaddingBottom());
+		if(normal != null) {
+			normalNinePatch = new NinePatch(assetManager.get(normal, Texture.class), getPaddingLeft(),
+					getPaddingRight(), getPaddingTop(), getPaddingBottom());
+		}
+		if(hover != null) {
+			hoverNinePatch = new NinePatch(assetManager.get(hover, Texture.class), getPaddingLeft(),
+					getPaddingRight(), getPaddingTop(), getPaddingBottom());
+		}
+		if(action != null) {
+			actionNinePatch = new NinePatch(assetManager.get(action, Texture.class), getPaddingLeft(),
+					getPaddingRight(), getPaddingTop(), getPaddingBottom());
+		}
+		if(disabled != null) {
+			disabledNinePatch = new NinePatch(assetManager.get(disabled, Texture.class), getPaddingLeft(),
+					getPaddingRight(), getPaddingTop(), getPaddingBottom());
+		}
 		
 		FreeTypeFontParameter fontParameter = new  FreeTypeFontParameter();
 		fontParameter.size = fontSize;

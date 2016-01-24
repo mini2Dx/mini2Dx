@@ -76,8 +76,10 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 			ninePatch = style.getDisabledNinePatch();
 		}
 
-		g.drawNinePatch(ninePatch, getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight());
-
+		if(ninePatch != null) {
+			g.drawNinePatch(ninePatch, getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight());
+		}
+		
 		float textRenderX = getRenderX() + style.getPaddingLeft();
 		float textRenderY = getRenderY() + style.getPaddingTop();
 		float textRenderWidth = getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight();
