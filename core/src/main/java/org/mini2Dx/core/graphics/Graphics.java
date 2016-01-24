@@ -92,7 +92,7 @@ public class Graphics {
 		this.currentWidth = gameWidth;
 		this.currentHeight = gameHeight;
 
-		Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
+		Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
 
 		rendering = false;
@@ -132,8 +132,11 @@ public class Graphics {
 		/* TODO: Move all shape rendering over to using ShapeRenderer */
 		renderingShapes = true;
 		shapeRenderer.begin(ShapeType.Filled);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+	    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		shapeRenderer.setColor(color);
 		shapeRenderer.rectLine(x1, y1, x2, y2, lineHeight);
+		shapeRenderer.end();
 
 		beginRendering();
 	}
