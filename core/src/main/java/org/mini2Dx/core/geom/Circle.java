@@ -72,7 +72,7 @@ public class Circle extends com.badlogic.gdx.math.Circle implements Shape {
 	 * @param rectangle The {@link Rectangle} to test for intersection
 	 * @return True if intersection occurs
 	 */
-	public boolean interects(Rectangle rectangle) {
+	public boolean intersects(Rectangle rectangle) {
 		return com.badlogic.gdx.math.Intersector.overlaps(this, rectangle);
 	}
 
