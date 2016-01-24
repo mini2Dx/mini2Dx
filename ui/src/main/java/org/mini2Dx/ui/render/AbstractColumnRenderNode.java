@@ -48,6 +48,9 @@ public abstract class AbstractColumnRenderNode<S extends StyleRule> extends Pare
 
 	@Override
 	protected float determinePreferredWidth(LayoutState layoutState) {
+		if(element.getLayout().isHiddenByInputSource(layoutState.getLastInputSource())) {
+			return 0f;
+		}
 		float layoutRuleResult = element.getLayout().getPreferredWidth(layoutState);
 		if(layoutRuleResult <= 0f) {
 			element.setVisibility(Visibility.HIDDEN);

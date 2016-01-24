@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.ui.input.InputSource;
 import org.mini2Dx.ui.render.UiContainerRenderTree;
 import org.mini2Dx.ui.style.UiTheme;
 
@@ -30,7 +31,7 @@ public class LayoutState {
 	private float parentWidth;
 	private float columnWidth;
 
-	public LayoutState(UiContainerRenderTree uiContainer, AssetManager assetManager, UiTheme theme,
+	public LayoutState(UiContainerRenderTree uiContainer, AssetManager assetManager,  UiTheme theme,
 			ScreenSize screenSize, int totalColumns, float parentWidth, boolean screenSizeChanged) {
 		this.uiContainer = uiContainer;
 		this.assetManager = assetManager;
@@ -72,6 +73,10 @@ public class LayoutState {
 
 	public UiContainerRenderTree getUiContainer() {
 		return uiContainer;
+	}
+	
+	public InputSource getLastInputSource() {
+		return uiContainer.getLastInputSource();
 	}
 
 	public boolean isScreenSizeChanged() {

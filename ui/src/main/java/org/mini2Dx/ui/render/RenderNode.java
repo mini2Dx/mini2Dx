@@ -179,11 +179,20 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public boolean isIncludedInLayout() {
-		return element.getVisibility() != Visibility.HIDDEN;
+		if(element.getVisibility() == Visibility.HIDDEN) {
+			return false;
+		}
+		return preferredWidth > 0f && preferredHeight > 0f;
 	}
 
 	public boolean isIncludedInRender() {
-		return style != null && element.getVisibility() == Visibility.VISIBLE;
+		if(style == null) {
+			return false;
+		}
+		if(element.getVisibility() != Visibility.VISIBLE) {
+			return false;
+		}
+		return preferredWidth > 0f && preferredHeight > 0f;
 	}
 
 	public boolean isDirty() {

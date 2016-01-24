@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.input.InputSource;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
@@ -154,5 +155,9 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRu
 	@Override
 	public boolean isDirty() {
 		return screenSizeChanged || super.isDirty();
+	}
+	
+	public InputSource getLastInputSource() {
+		return ((UiContainer) element).getLastInputSource();
 	}
 }

@@ -12,8 +12,14 @@
 package org.mini2Dx.ui.layout;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+
+import org.mini2Dx.ui.input.InputSource;
+
+import sun.net.www.http.Hurryable;
 
 /**
  *
@@ -22,6 +28,7 @@ public class LayoutRuleset {
 	public static final LayoutRuleset DEFAULT_RULESET = new LayoutRuleset("xs-12");
 	
 	private final Map<ScreenSize, SizeRule> sizeRules = new HashMap<ScreenSize, SizeRule>();
+	private final Set<InputSource> hiddenByInput = new HashSet<InputSource>();
 	private final Map<ScreenSize, OffsetRule> offsetRules = new HashMap<ScreenSize, OffsetRule>();
 
 	public LayoutRuleset(String rules) {
@@ -32,9 +39,11 @@ public class LayoutRuleset {
 			case 1:
 				break;
 			case 2:
+				//e.g. xs-12, hidden-controller, visible-touchscreen, hidden-keyboardmouse
 				storeWidthRule(ruleDetails);
 				break;
 			case 3:
+				//e.g. xs-offset-12
 				storeOffsetRule(ruleDetails);
 				break;
 			}
@@ -43,8 +52,26 @@ public class LayoutRuleset {
 	}
 
 	private void storeWidthRule(String[] ruleDetails) {
-		ScreenSize screenSize = ScreenSize.fromString(ruleDetails[0]);
-		sizeRules.put(screenSize, new SizeRule(Integer.parseInt(ruleDetails[1])));
+		switch(ruleDetails[0].toLowerCase()) {
+		case "hidden": {
+			switch(InputSource.fromString(ruleDetails[1])) {
+			case CONTROLLER:
+				hiddenByInput.add(InputSource.CONTROLLER);
+				break;
+			case KEYBOARD_MOUSE:
+				hiddenByInput.add(InputSource.KEYBOARD_MOUSE);
+				break;
+			case TOUCHSCREEN:
+				hiddenByInput.add(InputSource.TOUCHSCREEN);
+				break;
+			}
+			break;
+		}
+		default:
+			ScreenSize screenSize = ScreenSize.fromString(ruleDetails[0]);
+			sizeRules.put(screenSize, new SizeRule(Integer.parseInt(ruleDetails[1])));
+			break;
+		}
 	}
 
 	private void storeOffsetRule(String[] ruleDetails) {
@@ -72,6 +99,10 @@ public class LayoutRuleset {
 				lastOffsetRule = offsetRules.get(nextSize);
 			}
 		}
+	}
+	
+	public boolean isHiddenByInputSource(InputSource lastInputSource) {
+		return hiddenByInput.contains(lastInputSource);
 	}
 	
 	public float getPreferredWidth(LayoutState layoutState) {

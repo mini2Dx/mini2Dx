@@ -14,12 +14,14 @@ package org.mini2Dx.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Container;
 import org.mini2Dx.ui.element.Modal;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.element.Visibility;
+import org.mini2Dx.ui.input.InputSource;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
 import org.mini2Dx.ui.render.ActionableRenderNode;
 import org.mini2Dx.ui.render.NodeState;
@@ -42,6 +44,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 	private final List<Container> children = new ArrayList<Container>(1);
 	private final UiContainerRenderTree renderTree;
 	
+	private InputSource lastInputSource;
 	private int width, height;
 	private boolean themeWarningIssued, initialThemeLayoutComplete;
 	private UiTheme theme;
@@ -54,6 +57,20 @@ public class UiContainer extends UiElement implements InputProcessor {
 		super("ui-container-root");
 		this.width = gc.getWidth();
 		this.height = gc.getHeight();
+		
+		switch(Mdx.os) {
+		case ANDROID:
+		case IOS:
+			lastInputSource = InputSource.TOUCHSCREEN;
+			break;
+		case MAC:
+		case UNIX:
+		case WINDOWS:
+			lastInputSource = InputSource.KEYBOARD_MOUSE;
+			break;
+		default:
+			break;
+		}
 		
 		renderTree = new UiContainerRenderTree(this, assetManager);
 		setVisibility(Visibility.VISIBLE);
@@ -325,5 +342,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 		this.width = width;
 		this.height = height;
 		renderTree.onResize(width, height);
+	}
+
+	public InputSource getLastInputSource() {
+		return lastInputSource;
 	}
 }
