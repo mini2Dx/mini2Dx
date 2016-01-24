@@ -239,7 +239,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 		}
 		ActionableRenderNode hotkeyAction = activeModal.hotkey(keycode);
 		if(hotkeyAction == null) {
-			return false;
+			return true;
 		}
 		hotkeyAction.beginAction();
 		return true;
