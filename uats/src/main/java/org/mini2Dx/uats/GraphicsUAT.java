@@ -99,8 +99,12 @@ public class GraphicsUAT extends BasicGameScreen {
         g.fillRect(32, 32, 32, 32);
         g.rotate(-rotation, 32 + 16, 32 + 16);
         
+        g.setColor(new Color(0f, 0f, 1f, 0.5f));
+        g.setLineHeight(4);
+        g.drawLineSegment(0f, 0f, 128f, 128f);
+        g.setLineHeight(1);
+        
         g.setColor(Color.RED);
-
 
         g.rotate(rotation, 0, 0);
         g.fillRect(128, 32, 64, 64);
