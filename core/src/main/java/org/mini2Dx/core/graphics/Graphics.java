@@ -131,9 +131,9 @@ public class Graphics {
 
 		/* TODO: Move all shape rendering over to using ShapeRenderer */
 		renderingShapes = true;
-		shapeRenderer.begin(ShapeType.Line);
+		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(color);
-		shapeRenderer.line(x1, y1, x2, y2);
+		shapeRenderer.rectLine(x1, y1, x2, y2, lineHeight);
 
 		beginRendering();
 	}
@@ -894,8 +894,10 @@ public class Graphics {
 	 * @param color
 	 */
 	public void setColor(Color color) {
-		if (color != null)
-			this.color = color;
+		if (color == null) {
+			return;
+		}
+		this.color = color;
 	}
 
 	/**
