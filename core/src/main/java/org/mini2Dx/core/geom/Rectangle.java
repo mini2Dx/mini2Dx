@@ -21,6 +21,7 @@ import org.mini2Dx.core.engine.Positionable;
 import org.mini2Dx.core.exception.NotYetImplementedException;
 import org.mini2Dx.core.graphics.Graphics;
 
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -243,6 +244,16 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Returns if the specified {@link Circle} intersects this {@link Rectangle}
+	 * 
+	 * @param circle The {@link Circle} to test for intersection
+	 * @return True if the {@link Circle} intersects
+	 */
+	public boolean intersects(Circle circle) {
+		return Intersector.overlaps(circle, this);
 	}
 
 	/**
