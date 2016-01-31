@@ -93,7 +93,11 @@ public class Image extends UiElement {
 	}
 	
 	public void setTexture(Texture texture) {
-		setTextureRegion(new TextureRegion(texture));
+		if(texture == null) {
+			setTextureRegion(null);
+		} else {
+			setTextureRegion(new TextureRegion(texture));
+		}
 	}
 	
 	public void setTexturePath(String texturePath) {
