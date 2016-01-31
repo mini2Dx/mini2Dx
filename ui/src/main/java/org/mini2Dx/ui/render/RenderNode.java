@@ -184,7 +184,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		if (element.getVisibility() == Visibility.HIDDEN) {
 			return false;
 		}
-		return preferredContentWidth > 0f && preferredContentHeight > 0f;
+		return getPreferredInnerWidth() > 0f || getPreferredInnerHeight() > 0f;
 	}
 
 	public boolean isIncludedInRender() {
@@ -194,7 +194,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		if (element.getVisibility() != Visibility.VISIBLE) {
 			return false;
 		}
-		return preferredContentWidth > 0f && preferredContentHeight > 0f;
+		return getPreferredInnerWidth() > 0f || getPreferredInnerHeight() > 0f;
 	}
 
 	public boolean isDirty() {
