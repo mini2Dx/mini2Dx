@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 /**
  *
  */
-public class ImageButtonRenderNode extends RenderNode<ImageButton, ButtonStyleRule> implements ActionableRenderNode {
+public class ImageButtonRenderNode extends RenderNode<ImageButton, ButtonStyleRule>implements ActionableRenderNode {
 	private TextureRegion textureRegion;
 
 	public ImageButtonRenderNode(ParentRenderNode<?, ?> parent, ImageButton element) {
@@ -84,7 +84,7 @@ public class ImageButtonRenderNode extends RenderNode<ImageButton, ButtonStyleRu
 			ninePatch = style.getDisabledNinePatch();
 		}
 
-		if(ninePatch != null) {
+		if (ninePatch != null) {
 			g.drawNinePatch(ninePatch, getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight());
 		}
 
@@ -97,22 +97,19 @@ public class ImageButtonRenderNode extends RenderNode<ImageButton, ButtonStyleRu
 	}
 
 	@Override
-	protected float determinePreferredWidth(LayoutState layoutState) {
-		return layoutState.getParentWidth();
+	protected float determinePreferredContentWidth(LayoutState layoutState) {
+		return layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight();
 	}
 
 	@Override
-	protected float determinePreferredHeight(LayoutState layoutState) {
+	protected float determinePreferredContentHeight(LayoutState layoutState) {
 		if (textureRegion == null) {
-			return style.getPaddingTop() + style.getPaddingBottom();
+			return 0f;
 		}
 		if (element.isResponsive()) {
-			return style.getPaddingTop() + (textureRegion.getRegionHeight()
-					* ((preferredWidth - style.getPaddingLeft() - style.getPaddingRight())
-							/ textureRegion.getRegionWidth()))
-					+ style.getPaddingBottom();
+			return textureRegion.getRegionHeight() * (preferredContentWidth / textureRegion.getRegionWidth());
 		} else {
-			return style.getPaddingTop() + textureRegion.getRegionHeight() + style.getPaddingBottom();
+			return textureRegion.getRegionHeight();
 		}
 	}
 

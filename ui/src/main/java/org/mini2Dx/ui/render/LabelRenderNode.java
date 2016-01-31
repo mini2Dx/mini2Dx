@@ -37,12 +37,12 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 		BitmapFont tmpFont = g.getFont();
 		Color tmpColor = g.getColor();
 
-		if(style.getBitmapFont() == null) {
+		if (style.getBitmapFont() == null) {
 			g.setFont(font);
 		} else {
 			g.setFont(style.getBitmapFont());
 		}
-		
+
 		g.setColor(style.getColor());
 		g.drawString(element.getText(), getRenderX() + style.getPaddingLeft(), getRenderY() + style.getPaddingTop(),
 				getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight(),
@@ -52,15 +52,14 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 	}
 
 	@Override
-	protected float determinePreferredWidth(LayoutState layoutState) {
-		return layoutState.getParentWidth();
+	protected float determinePreferredContentWidth(LayoutState layoutState) {
+		return layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight();
 	}
 
 	@Override
-	protected float determinePreferredHeight(LayoutState layoutState) {
+	protected float determinePreferredContentHeight(LayoutState layoutState) {
 		glyphLayout.setText(font, element.getText());
-		return glyphLayout.height + style.getMarginTop() + style.getMarginBottom() + style.getPaddingTop()
-				+ style.getPaddingBottom();
+		return glyphLayout.height;
 	}
 
 	@Override

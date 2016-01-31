@@ -26,11 +26,12 @@ public class AlignedModalRenderNode extends ModalRenderNode {
 	
 	@Override
 	protected float determineXOffset(LayoutState layoutState) {
+		float innerWidth = determinePreferredContentWidth(layoutState) + style.getPaddingLeft() + style.getPaddingRight();
 		switch(((AlignedModal) element).getHorizontalAlignment()) {
 		case RIGHT:
-			return layoutState.getUiContainer().getWidth() - determinePreferredWidth(layoutState);
+			return layoutState.getUiContainer().getWidth() - innerWidth;
 		case CENTER:
-			return (layoutState.getUiContainer().getWidth() / 2f) - (determinePreferredWidth(layoutState) / 2f);
+			return (layoutState.getUiContainer().getWidth() / 2f) - (innerWidth / 2f);
 		default:
 			return 0f;
 		}
@@ -38,11 +39,12 @@ public class AlignedModalRenderNode extends ModalRenderNode {
 
 	@Override
 	protected float determineYOffset(LayoutState layoutState) {
+		float innerHeight = determinePreferredContentHeight(layoutState) + style.getPaddingTop() + style.getPaddingBottom();
 		switch(((AlignedModal) element).getVerticalAlignment()) {
 		case BOTTOM:
-			return layoutState.getUiContainer().getHeight() - determinePreferredHeight(layoutState);
+			return layoutState.getUiContainer().getHeight() - innerHeight;
 		case MIDDLE:
-			return (layoutState.getUiContainer().getHeight() / 2f) - (determinePreferredHeight(layoutState) / 2f);
+			return (layoutState.getUiContainer().getHeight() / 2f) - (innerHeight / 2f);
 		default:
 			return 0f;
 		}

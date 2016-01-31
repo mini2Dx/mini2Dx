@@ -41,12 +41,12 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 	}
 
 	@Override
-	protected float determinePreferredWidth(LayoutState layoutState) {
+	protected float determinePreferredContentWidth(LayoutState layoutState) {
 		return layoutState.getParentWidth();
 	}
 
 	@Override
-	protected float determinePreferredHeight(LayoutState layoutState) {
+	protected float determinePreferredContentHeight(LayoutState layoutState) {
 		return 0f;
 	}
 

@@ -104,13 +104,13 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 	}
 
 	@Override
-	protected float determinePreferredWidth(LayoutState layoutState) {
-		return layoutState.getParentWidth();
+	protected float determinePreferredContentWidth(LayoutState layoutState) {
+		return layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight();
 	}
 
 	@Override
-	protected float determinePreferredHeight(LayoutState layoutState) {
-		return style.getPaddingTop() + style.getPaddingBottom() + style.getFontSize();
+	protected float determinePreferredContentHeight(LayoutState layoutState) {
+		return style.getFontSize();
 	}
 
 	@Override

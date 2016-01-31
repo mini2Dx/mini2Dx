@@ -26,15 +26,15 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 	public ImageRenderNode(ParentRenderNode<?, ?> parent, Image element) {
 		super(parent, element);
 	}
-	
+
 	@Override
 	protected void renderElement(Graphics g) {
-		if(textureRegion == null) {
+		if (textureRegion == null) {
 			return;
 		}
 		g.drawTextureRegion(textureRegion, getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight());
 	}
-	
+
 	@Override
 	public void layout(LayoutState layoutState) {
 		textureRegion = element.getTextureRegion(layoutState.getAssetManager());
@@ -42,11 +42,11 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 	}
 
 	@Override
-	protected float determinePreferredWidth(LayoutState layoutState) {
-		if(textureRegion == null) {
+	protected float determinePreferredContentWidth(LayoutState layoutState) {
+		if (textureRegion == null) {
 			return 0f;
 		}
-		if(element.isResponsive()) {
+		if (element.isResponsive()) {
 			return layoutState.getParentWidth();
 		} else {
 			return textureRegion.getRegionWidth();
@@ -54,12 +54,12 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 	}
 
 	@Override
-	protected float determinePreferredHeight(LayoutState layoutState) {
-		if(textureRegion == null) {
+	protected float determinePreferredContentHeight(LayoutState layoutState) {
+		if (textureRegion == null) {
 			return 0f;
 		}
-		if(element.isResponsive()) {
-			return textureRegion.getRegionHeight() * (preferredWidth / textureRegion.getRegionWidth());
+		if (element.isResponsive()) {
+			return textureRegion.getRegionHeight() * (preferredContentWidth / textureRegion.getRegionWidth());
 		} else {
 			return textureRegion.getRegionHeight();
 		}

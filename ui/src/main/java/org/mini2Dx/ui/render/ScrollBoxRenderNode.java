@@ -25,8 +25,8 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<StyleRule> {
 	}
 
 	@Override
-	protected float determinePreferredWidth(LayoutState layoutState) {
-		float result = super.determinePreferredWidth(layoutState);
+	protected float determinePreferredContentWidth(LayoutState layoutState) {
+		float result = super.determinePreferredContentWidth(layoutState);
 		
 		if(result > ((ScrollBox) element).getMaxWidth()) {
 			return ((ScrollBox) element).getMaxWidth();
@@ -35,8 +35,8 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<StyleRule> {
 	}
 	
 	@Override
-	protected float determinePreferredHeight(LayoutState layoutState) {
-		float result = super.determinePreferredHeight(layoutState);
+	protected float determinePreferredContentHeight(LayoutState layoutState) {
+		float result = super.determinePreferredContentHeight(layoutState);
 		
 		if(result > ((ScrollBox) element).getMaxHeight()) {
 			return ((ScrollBox) element).getMaxHeight();

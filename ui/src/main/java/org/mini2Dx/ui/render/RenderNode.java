@@ -37,7 +37,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	protected final T element;
 
 	protected S style;
-	protected float preferredWidth, preferredHeight;
+	protected float preferredContentWidth, preferredContentHeight;
 	protected float xOffset, yOffset;
 	private float relativeX, relativeY;
 	private boolean dirty;
@@ -50,15 +50,16 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public void update(UiContainerRenderTree uiContainer, float delta) {
-		if(style == null) {
+		if (style == null) {
 			throw new MdxException("No style found for element: " + getId());
 		}
 		if (parent == null) {
-			targetArea.set(relativeX + style.getMarginLeft(), relativeY + style.getMarginTop(), preferredWidth,
-					preferredHeight);
+			targetArea.set(relativeX + style.getMarginLeft(), relativeY + style.getMarginTop(),
+					getPreferredInnerWidth(), getPreferredInnerHeight());
 		} else {
 			targetArea.set(parent.getX() + relativeX + style.getMarginLeft(),
-					parent.getY() + style.getMarginTop() + relativeY, preferredWidth, preferredHeight);
+					parent.getY() + style.getMarginTop() + relativeY, getPreferredInnerWidth(),
+					getPreferredInnerHeight());
 		}
 		currentArea.preUpdate();
 
@@ -83,7 +84,8 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 			element.setVisibility(Visibility.VISIBLE);
 		}
 		if (element.isDebugEnabled()) {
-			Gdx.app.log(element.getId(), "UPDATE - currentArea: " + currentArea + ", targetArea: " + targetArea + ", visibility: " + element.getVisibility());
+			Gdx.app.log(element.getId(), "UPDATE - currentArea: " + currentArea + ", targetArea: " + targetArea
+					+ ", visibility: " + element.getVisibility());
 		}
 	}
 
@@ -147,30 +149,30 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 
 	protected abstract S determineStyleRule(LayoutState layoutState);
 
-	protected abstract float determinePreferredWidth(LayoutState layoutState);
+	protected abstract float determinePreferredContentWidth(LayoutState layoutState);
 
-	protected abstract float determinePreferredHeight(LayoutState layoutState);
+	protected abstract float determinePreferredContentHeight(LayoutState layoutState);
 
 	protected abstract float determineXOffset(LayoutState layoutState);
 
 	protected abstract float determineYOffset(LayoutState layoutState);
 
 	public void layout(LayoutState layoutState) {
-		if(!isDirty() && !layoutState.isScreenSizeChanged()) {
+		if (!isDirty() && !layoutState.isScreenSizeChanged()) {
 			return;
 		}
 		style = determineStyleRule(layoutState);
 
 		switch (element.getVisibility()) {
 		case HIDDEN:
-			preferredWidth = 0f;
-			preferredHeight = 0f;
+			preferredContentWidth = 0f;
+			preferredContentHeight = 0f;
 			xOffset = 0f;
 			yOffset = 0f;
 			return;
 		default:
-			preferredWidth = determinePreferredWidth(layoutState);
-			preferredHeight = determinePreferredHeight(layoutState);
+			preferredContentWidth = determinePreferredContentWidth(layoutState);
+			preferredContentHeight = determinePreferredContentHeight(layoutState);
 			xOffset = determineXOffset(layoutState);
 			yOffset = determineYOffset(layoutState);
 			break;
@@ -179,20 +181,20 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public boolean isIncludedInLayout() {
-		if(element.getVisibility() == Visibility.HIDDEN) {
+		if (element.getVisibility() == Visibility.HIDDEN) {
 			return false;
 		}
-		return preferredWidth > 0f && preferredHeight > 0f;
+		return preferredContentWidth > 0f && preferredContentHeight > 0f;
 	}
 
 	public boolean isIncludedInRender() {
-		if(style == null) {
+		if (style == null) {
 			return false;
 		}
-		if(element.getVisibility() != Visibility.VISIBLE) {
+		if (element.getVisibility() != Visibility.VISIBLE) {
 			return false;
 		}
-		return preferredWidth > 0f && preferredHeight > 0f;
+		return preferredContentWidth > 0f && preferredContentHeight > 0f;
 	}
 
 	public boolean isDirty() {
@@ -227,22 +229,30 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		this.relativeY = relativeY;
 	}
 
-	public float getPreferredWidth() {
-		return preferredWidth;
-	}
-
-	public float getPreferredHeight() {
-		return preferredHeight;
-	}
-
 	public float getPreferredContentWidth() {
-		return preferredWidth - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft()
-				- style.getMarginRight();
+		return preferredContentWidth;
+	}
+
+	public float getPreferredInnerWidth() {
+		return preferredContentWidth + style.getPaddingLeft() + style.getPaddingRight();
+	}
+
+	public float getPreferredOuterWidth() {
+		return preferredContentWidth + style.getPaddingLeft() + style.getPaddingRight() + style.getMarginLeft()
+				+ style.getMarginRight();
 	}
 
 	public float getPreferredContentHeight() {
-		return preferredHeight - style.getPaddingTop() - style.getPaddingBottom() - style.getMarginTop()
-				- style.getMarginBottom();
+		return preferredContentHeight;
+	}
+
+	public float getPreferredInnerHeight() {
+		return preferredContentHeight + style.getPaddingTop() + style.getPaddingBottom();
+	}
+
+	public float getPreferredOuterHeight() {
+		return preferredContentHeight + style.getPaddingTop() + style.getPaddingBottom() + style.getMarginTop()
+				+ style.getMarginBottom();
 	}
 
 	public float getXOffset() {
@@ -315,7 +325,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	@Override
 	public String toString() {
 		return "RenderNode [currentArea=" + currentArea + ", targetArea=" + targetArea + ", parent=" + parent.getId()
-				+ ", style=" + style + ", preferredWidth=" + preferredWidth + ", preferredHeight=" + preferredHeight
-				+ ", xOffset=" + xOffset + ", yOffset=" + yOffset + "]";
+				+ ", style=" + style + ", preferredWidth=" + preferredContentWidth + ", preferredHeight="
+				+ preferredContentHeight + ", xOffset=" + xOffset + ", yOffset=" + yOffset + "]";
 	}
 }

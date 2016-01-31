@@ -61,11 +61,11 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRu
 			Gdx.app.log(LOGGING_TAG, "Layout triggered");
 		}
 		style = determineStyleRule(layoutState);
-		preferredWidth = determinePreferredWidth(layoutState);
-		preferredHeight = determinePreferredHeight(layoutState);
+		preferredContentWidth = determinePreferredContentWidth(layoutState);
+		preferredContentHeight = determinePreferredContentHeight(layoutState);
 		xOffset = determineXOffset(layoutState);
 		yOffset = determineYOffset(layoutState);
-		currentArea.forceTo(xOffset, yOffset, preferredWidth, preferredHeight);
+		currentArea.forceTo(xOffset, yOffset, preferredContentWidth, preferredContentHeight);
 		
 		for (int i = 0; i < children.size(); i++) {
 			RenderNode<?, ?> node = children.get(i);
@@ -128,12 +128,12 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRu
 	}
 	
 	@Override
-	protected float determinePreferredWidth(LayoutState layoutState) {
+	protected float determinePreferredContentWidth(LayoutState layoutState) {
 		return ((UiContainer) element).getWidth();
 	}
 	
 	@Override
-	protected float determinePreferredHeight(LayoutState layoutState) {
+	protected float determinePreferredContentHeight(LayoutState layoutState) {
 		return ((UiContainer) element).getHeight();
 	}
 	

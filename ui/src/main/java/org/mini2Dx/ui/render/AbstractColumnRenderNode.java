@@ -26,8 +26,8 @@ public abstract class AbstractColumnRenderNode<S extends StyleRule> extends Pare
 	}
 
 	@Override
-	protected float determinePreferredHeight(LayoutState layoutState) {
-		if(preferredWidth <= 0f) {
+	protected float determinePreferredContentHeight(LayoutState layoutState) {
+		if(preferredContentWidth <= 0f) {
 			return 0f;
 		}
 		float maxHeight = 0f;
@@ -36,18 +36,17 @@ public abstract class AbstractColumnRenderNode<S extends StyleRule> extends Pare
 			if(!children.get(i).isIncludedInLayout()) {
 				continue;
 			}
-			float height = children.get(i).getRelativeY() + children.get(i).getPreferredHeight()
+			float height = children.get(i).getRelativeY() + children.get(i).getPreferredOuterHeight()
 					+ children.get(i).getYOffset();
 			if (height > maxHeight) {
 				maxHeight = height;
 			}
 		}
-		return maxHeight + style.getMarginTop() + style.getMarginBottom() + style.getPaddingTop()
-				+ style.getPaddingBottom();
+		return maxHeight;
 	}
 
 	@Override
-	protected float determinePreferredWidth(LayoutState layoutState) {
+	protected float determinePreferredContentWidth(LayoutState layoutState) {
 		if(element.getLayout().isHiddenByInputSource(layoutState.getLastInputSource())) {
 			return 0f;
 		}
@@ -58,7 +57,7 @@ public abstract class AbstractColumnRenderNode<S extends StyleRule> extends Pare
 		} else if(layoutState.isScreenSizeChanged() && element.getVisibility() == Visibility.HIDDEN) {
 			element.setVisibility(Visibility.VISIBLE);
 		}
-		return style.getMarginLeft() + layoutRuleResult + style.getMarginRight();
+		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight();
 	}
 
 	@Override

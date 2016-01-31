@@ -25,7 +25,7 @@ public class RowRenderNode extends AbstractColumnRenderNode<StyleRule> {
 	}
 
 	@Override
-	protected float determinePreferredWidth(LayoutState layoutState) {
+	protected float determinePreferredContentWidth(LayoutState layoutState) {
 		return layoutState.getParentWidth();
 	}
 
