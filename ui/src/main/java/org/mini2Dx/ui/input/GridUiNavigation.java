@@ -34,6 +34,7 @@ public class GridUiNavigation implements UiNavigation {
 	
 	public GridUiNavigation(int xsWidth) {
 		widths.put(ScreenSize.XS, xsWidth);
+		width = xsWidth;
 	}
 	
 	@Override
@@ -120,5 +121,10 @@ public class GridUiNavigation implements UiNavigation {
 			rows++;
 		}
 		return rows;
+	}
+
+	@Override
+	public String toString() {
+		return "GridUiNavigation [navigation=" + navigation + "]";
 	}
 }
