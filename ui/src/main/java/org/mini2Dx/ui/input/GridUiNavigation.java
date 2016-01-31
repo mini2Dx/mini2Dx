@@ -55,11 +55,15 @@ public class GridUiNavigation implements UiNavigation {
 
 	@Override
 	public void set(int index, Actionable actionable) {
-		navigation.set(index, actionable);
+		if(navigation.size() > index) {
+			navigation.set(index, actionable);
+		} else {
+			navigation.add(index, actionable);
+		}
 	}
 	
 	public void set(int x, int y, Actionable actionable) {
-		navigation.set((y * width) + x, actionable);
+		set((y * width) + x, actionable);
 	}
 
 	@Override
