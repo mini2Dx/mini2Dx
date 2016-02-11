@@ -19,8 +19,6 @@ import java.util.Set;
 
 import org.mini2Dx.ui.input.InputSource;
 
-import sun.net.www.http.Hurryable;
-
 /**
  *
  */

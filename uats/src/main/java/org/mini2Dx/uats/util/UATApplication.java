@@ -25,7 +25,6 @@ import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
 import org.mini2Dx.uats.ParticleEffectsUAT;
 import org.mini2Dx.uats.UiUAT;
 import org.mini2Dx.ui.UiThemeLoader;
-import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.style.UiTheme;
 
 import com.badlogic.gdx.Application;

@@ -13,7 +13,6 @@ package com.artemis.system;
 
 import com.artemis.Aspect;
 import com.artemis.Aspect.Builder;
-import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.MdxWorld;
 import com.artemis.World;

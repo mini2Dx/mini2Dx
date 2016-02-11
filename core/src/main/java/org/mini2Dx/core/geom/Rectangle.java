@@ -11,13 +11,6 @@
  */
 package org.mini2Dx.core.geom;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.mini2Dx.core.engine.PositionChangeListener;
-import org.mini2Dx.core.engine.Positionable;
 import org.mini2Dx.core.exception.NotYetImplementedException;
 import org.mini2Dx.core.graphics.Graphics;
 

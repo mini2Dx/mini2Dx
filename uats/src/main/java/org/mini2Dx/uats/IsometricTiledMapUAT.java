@@ -26,7 +26,6 @@ import org.mini2Dx.uats.util.UATSelectionScreen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.MathUtils;
 
 /**
  * A {@link GameScreen} that allows visual user acceptance testing of isometric

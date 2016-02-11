@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mini2Dx.core.controller.button.XboxOneButton;
-import org.mini2Dx.core.controller.xbox360.Xbox360ControllerListener;
 import org.mini2Dx.core.controller.xboxone.XboxOneControllerListener;
 
 import com.badlogic.gdx.controllers.Controller;

@@ -11,9 +11,6 @@
  */
 package org.mini2Dx.core.controller.xboxone;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.mini2Dx.core.controller.XboxOneController;
 import org.mini2Dx.core.controller.button.XboxOneButton;
 

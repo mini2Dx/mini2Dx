@@ -11,9 +11,7 @@
  */
 package org.mini2Dx.uats.util;
 
-import org.mini2Dx.ui.element.Button;
 import org.mini2Dx.ui.element.Label;
-import org.mini2Dx.ui.element.Row;
 import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.TextButton;

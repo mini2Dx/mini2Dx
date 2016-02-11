@@ -15,7 +15,6 @@ import org.mini2Dx.core.graphics.Graphics;
 
 import com.artemis.Aspect;
 import com.artemis.Aspect.Builder;
-import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.MdxWorld;
 import com.artemis.World;

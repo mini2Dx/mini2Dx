@@ -35,7 +35,6 @@ import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.effect.SlideIn;
 import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.AlignedModal;
-import org.mini2Dx.ui.element.Modal;
 import org.mini2Dx.ui.element.Row;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.layout.HorizontalAlignment;

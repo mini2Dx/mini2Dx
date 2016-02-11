@@ -11,7 +11,6 @@
  */
 package org.mini2Dx.ui.render;
 
-import org.mini2Dx.ui.element.AbsoluteContainer;
 import org.mini2Dx.ui.element.AbsoluteModal;
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.layout.LayoutState;

@@ -11,8 +11,6 @@
  */
 package org.mini2Dx.core.geom;
 
-import org.mini2Dx.core.engine.Positionable;
-
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
