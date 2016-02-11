@@ -119,4 +119,14 @@ public class ImageButton extends Button {
 			renderNode.applyEffect(effects.poll());
 		}
 	}
+	
+	@Override
+	public void setZIndex(int zIndex) {
+		this.zIndex = zIndex;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
 }

@@ -150,4 +150,14 @@ public class TextBox extends UiElement implements Actionable {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
+	
+	@Override
+	public void setZIndex(int zIndex) {
+		this.zIndex = zIndex;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
 }

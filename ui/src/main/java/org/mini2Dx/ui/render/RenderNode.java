@@ -39,6 +39,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	protected S style;
 	protected float preferredContentWidth, preferredContentHeight;
 	protected float xOffset, yOffset;
+	protected int zIndex;
 	private float relativeX, relativeY;
 	private boolean dirty;
 	private NodeState state = NodeState.NORMAL;
@@ -46,6 +47,8 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	public RenderNode(ParentRenderNode<?, ?> parent, T element) {
 		this.parent = parent;
 		this.element = element;
+		this.zIndex = element.getZIndex();
+		
 		setDirty(true);
 	}
 
@@ -162,6 +165,12 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 			return;
 		}
 		style = determineStyleRule(layoutState);
+		
+		if(this.zIndex != element.getZIndex()) {
+			parent.removeChild(this);
+			zIndex = element.getZIndex();
+			parent.addChild(this);
+		}
 
 		switch (element.getVisibility()) {
 		case HIDDEN:
@@ -311,6 +320,10 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		}
 	}
 
+	public S getStyle() {
+		return style;
+	}
+
 	public RenderNode<?, ?> getElementById(String id) {
 		if (element.getId().equals(id)) {
 			return this;
@@ -320,6 +333,10 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 
 	public String getId() {
 		return element.getId();
+	}
+	
+	public int getZIndex() {
+		return zIndex;
 	}
 
 	@Override

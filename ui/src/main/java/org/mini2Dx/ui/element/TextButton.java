@@ -91,6 +91,16 @@ public class TextButton extends Button {
 	}
 	
 	@Override
+	public void setZIndex(int zIndex) {
+		this.zIndex = zIndex;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+	
+	@Override
 	public void syncWithRenderNode() {
 		while(!effects.isEmpty()) {
 			renderNode.applyEffect(effects.poll());

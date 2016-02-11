@@ -11,8 +11,9 @@
  */
 package org.mini2Dx.ui.render;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.NavigableMap;
+import java.util.NavigableSet;
+import java.util.TreeMap;
 
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.UiElement;
@@ -23,7 +24,7 @@ import org.mini2Dx.ui.style.StyleRule;
  *
  */
 public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule> extends RenderNode<T, S> {
-	protected final List<RenderNode<?, ?>> children = new ArrayList<RenderNode<?, ?>>(1);
+	protected final NavigableMap<Integer, RenderLayer> layers = new TreeMap<Integer, RenderLayer>();
 
 	protected boolean childDirty = false;
 
@@ -34,23 +35,23 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 	@Override
 	public void update(UiContainerRenderTree uiContainer, float delta) {
 		super.update(uiContainer, delta);
-		for (int i = 0; i < children.size(); i++) {
-			children.get(i).update(uiContainer, delta);
+		for (RenderLayer layer : layers.values()) {
+			layer.update(uiContainer, delta);
 		}
 	}
 
 	@Override
 	public void interpolate(float alpha) {
 		super.interpolate(alpha);
-		for (int i = 0; i < children.size(); i++) {
-			children.get(i).interpolate(alpha);
+		for (RenderLayer layer : layers.values()) {
+			layer.interpolate(alpha);
 		}
 	}
 
 	@Override
 	protected void renderElement(Graphics g) {
-		for (int i = 0; i < children.size(); i++) {
-			children.get(i).render(g);
+		for (RenderLayer layer : layers.values()) {
+			layer.render(g);
 		}
 	}
 	
@@ -62,38 +63,21 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 		
 		float parentWidth = layoutState.getParentWidth();
 		style = determineStyleRule(layoutState);
+		
+		if(this.zIndex != element.getZIndex()) {
+			parent.removeChild(this);
+			zIndex = element.getZIndex();
+			parent.addChild(this);
+		}
+		
 		xOffset = determineXOffset(layoutState);
 		preferredContentWidth = determinePreferredContentWidth(layoutState);
 		layoutState.setParentWidth(getPreferredContentWidth());
 
-		float startX = style.getPaddingLeft();
-		float startY = style.getPaddingTop();
-		for (int i = 0; i < children.size(); i++) {
-			RenderNode<?, ?> node = children.get(i);
-			node.layout(layoutState);
-			if (!node.isIncludedInLayout()) {
-				continue;
-			}
-
-			node.setRelativeX(startX + node.getXOffset());
-			node.setRelativeY(startY + node.getYOffset());
-
-			startX += node.getPreferredOuterWidth() + node.getXOffset();
-			if (startX >= getPreferredContentWidth()) {
-				float maxHeight = 0f;
-				for (int j = i; j >= 0; j--) {
-					RenderNode<?, ?> previousNode = children.get(j);
-					if (previousNode.getRelativeY() == startY) {
-						float height = previousNode.getPreferredOuterHeight() + node.getYOffset();
-						if (height > maxHeight) {
-							maxHeight = height;
-						}
-					}
-				}
-				startY += maxHeight;
-				startX = style.getPaddingLeft();
-			}
+		for(RenderLayer layer : layers.values()) {
+			layer.layout(layoutState);
 		}
+
 		layoutState.setParentWidth(parentWidth);
 
 		yOffset = determineYOffset(layoutState);
@@ -107,8 +91,9 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 		if (currentArea.contains(screenX, screenY)) {
 			setState(NodeState.HOVER);
 			boolean result = false;
-			for (int i = children.size() - 1; i >= 0; i--) {
-				if (children.get(i).mouseMoved(screenX, screenY)) {
+			NavigableSet<Integer> descendingLayerKeys = layers.descendingKeySet();
+			for (Integer layerIndex : descendingLayerKeys) {
+				if (layers.get(layerIndex).mouseMoved(screenX, screenY)) {
 					result = true;
 				}
 			}
@@ -124,9 +109,10 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 		if (!isIncludedInRender()) {
 			return null;
 		}
-		for (int i = children.size() - 1; i >= 0; i--) {
-			ActionableRenderNode result = children.get(i).mouseDown(screenX, screenY, pointer, button);
-			if (result != null) {
+		NavigableSet<Integer> descendingLayerKeys = layers.descendingKeySet();
+		for (Integer layerIndex : descendingLayerKeys) {
+			ActionableRenderNode result = layers.get(layerIndex).mouseDown(screenX, screenY, pointer, button);
+			if(result != null) {
 				return result;
 			}
 		}
@@ -134,17 +120,24 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 	}
 
 	public void addChild(RenderNode<?, ?> child) {
-		children.add(child);
+		int zIndex = child.getZIndex();
+		if(!layers.containsKey(zIndex)) {
+			layers.put(zIndex, new RenderLayer(this, zIndex));
+		}
+		layers.get(zIndex).add(child);
 		setDirty(true);
 	}
 
 	public void removeChild(RenderNode<?, ?> child) {
-		children.remove(child);
+		if(!layers.containsKey(child.getZIndex())) {
+			return;
+		}
+		layers.get(child.getZIndex()).remove(child);
 		setDirty(true);
 	}
 
 	public void clearChildren() {
-		children.clear();
+		layers.clear();
 		setDirty(true);
 	}
 
@@ -166,8 +159,8 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 		if (state != NodeState.NORMAL) {
 			return;
 		}
-		for (int i = children.size() - 1; i >= 0; i--) {
-			children.get(i).setState(NodeState.NORMAL);
+		for (RenderLayer layer : layers.values()) {
+			layer.setState(state);
 		}
 	}
 
@@ -175,8 +168,8 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 		if (element.getId().equals(id)) {
 			return this;
 		}
-		for (RenderNode<?, ?> child : children) {
-			RenderNode<?, ?> result = child.getElementById(id);
+		for (RenderLayer layer : layers.values()) {
+			RenderNode<?, ?> result = layer.getElementById(id);
 			if (result != null) {
 				return result;
 			}

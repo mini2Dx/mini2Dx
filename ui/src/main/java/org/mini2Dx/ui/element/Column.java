@@ -143,4 +143,14 @@ public class Column extends UiElement {
 		result.setVisibility(Visibility.VISIBLE);
 		return result;
 	}
+
+	@Override
+	public void setZIndex(int zIndex) {
+		this.zIndex = zIndex;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
 }

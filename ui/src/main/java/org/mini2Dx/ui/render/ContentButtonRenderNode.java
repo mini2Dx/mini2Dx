@@ -59,9 +59,8 @@ public class ContentButtonRenderNode extends ParentRenderNode<ContentButton, But
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
 		float maxHeight = 0f;
 
-		for (int i = 0; i < children.size(); i++) {
-			float height = children.get(i).getRelativeY() + children.get(i).getPreferredOuterHeight()
-					+ children.get(i).getYOffset();
+		for (RenderLayer layer : layers.values()) {
+			float height = layer.determinePreferredContentHeight(layoutState);
 			if (height > maxHeight) {
 				maxHeight = height;
 			}

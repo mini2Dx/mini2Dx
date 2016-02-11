@@ -32,12 +32,8 @@ public abstract class AbstractColumnRenderNode<S extends StyleRule> extends Pare
 		}
 		float maxHeight = 0f;
 
-		for (int i = 0; i < children.size(); i++) {
-			if(!children.get(i).isIncludedInLayout()) {
-				continue;
-			}
-			float height = children.get(i).getRelativeY() + children.get(i).getPreferredOuterHeight()
-					+ children.get(i).getYOffset();
+		for (RenderLayer layer : layers.values()) {
+			float height = layer.determinePreferredContentHeight(layoutState);
 			if (height > maxHeight) {
 				maxHeight = height;
 			}

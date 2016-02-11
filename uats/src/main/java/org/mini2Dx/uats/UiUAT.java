@@ -106,6 +106,24 @@ public class UiUAT extends BasicGameScreen {
 		topLeftFrame = new AbsoluteContainer("top-left-frame");
 		topLeftFrame.setLayout(new LayoutRuleset("xs-12 sm-6 md-4 lg-3"));
 		topLeftFrame.add(Row.withElements("top-left-header", UiUtils.createHeader("UI UAT")));
+		
+		Row backRow = Row.withElements("behind-header", UiUtils.createButton("", new ActionListener() {
+			
+			@Override
+			public void onActionEnd(Actionable source) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onActionBegin(Actionable source) {
+				// TODO Auto-generated method stub
+				
+			}
+		}));
+		backRow.setZIndex(-1);
+		topLeftFrame.add(backRow);
+		
 		topLeftFrame.setVisibility(Visibility.VISIBLE);
 		uiContainer.add(topLeftFrame);
 		

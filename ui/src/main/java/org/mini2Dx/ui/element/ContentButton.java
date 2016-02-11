@@ -104,4 +104,13 @@ public class ContentButton extends Button {
 		}
 	}
 
+	@Override
+	public void setZIndex(int zIndex) {
+		this.zIndex = zIndex;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
 }

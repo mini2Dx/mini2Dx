@@ -61,27 +61,30 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRu
 			Gdx.app.log(LOGGING_TAG, "Layout triggered");
 		}
 		style = determineStyleRule(layoutState);
+		zIndex = element.getZIndex();
 		preferredContentWidth = determinePreferredContentWidth(layoutState);
 		preferredContentHeight = determinePreferredContentHeight(layoutState);
 		xOffset = determineXOffset(layoutState);
 		yOffset = determineYOffset(layoutState);
 		currentArea.forceTo(xOffset, yOffset, preferredContentWidth, preferredContentHeight);
 		
-		for (int i = 0; i < children.size(); i++) {
-			RenderNode<?, ?> node = children.get(i);
-			node.layout(layoutState);
-			
-			if(!node.isIncludedInLayout()) {
-				continue;
-			}
-			
-			node.setRelativeX(node.getXOffset());
-			node.setRelativeY(node.getYOffset());
+		for(RenderLayer layer : layers.values()) {
+			layer.layout(layoutState);
 		}
 		
 		setDirty(false);
 		childDirty = false;
 		screenSizeChanged = false;
+	}
+	
+	@Override
+	public void addChild(RenderNode<?, ?> child) {
+		int zIndex = child.getZIndex();
+		if(!layers.containsKey(zIndex)) {
+			layers.put(zIndex, new UiContainerRenderLayer(this, zIndex));
+		}
+		layers.get(zIndex).add(child);
+		setDirty(true);
 	}
 	
 	public void onResize(int width, int height) {

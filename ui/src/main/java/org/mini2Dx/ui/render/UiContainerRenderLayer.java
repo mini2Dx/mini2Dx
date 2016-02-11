@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,54 +11,29 @@
  */
 package org.mini2Dx.ui.render;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.layout.LayoutState;
-import org.mini2Dx.ui.style.ContainerStyleRule;
 
 /**
  *
  */
-public abstract class ContainerRenderNode extends AbstractColumnRenderNode<ContainerStyleRule> {
-	private final Map<String, RenderNode<?, ?>> elementIdLookupCache = new HashMap<String, RenderNode<?, ?>>();
-	
-	public ContainerRenderNode(ParentRenderNode<?, ?> parent, Column column) {
-		super(parent, column);
-	}
-	
-	@Override
-	public void layout(LayoutState layoutState) {
-		if(isDirty()) {
-			elementIdLookupCache.clear();
-		}
-		super.layout(layoutState);
+public class UiContainerRenderLayer extends RenderLayer {
+
+	public UiContainerRenderLayer(ParentRenderNode<?, ?> owner, int zIndex) {
+		super(owner, zIndex);
 	}
 
 	@Override
-	protected void renderElement(Graphics g) {
-		g.drawNinePatch(style.getBackgroundNinePatch(), getRenderX() + style.getMarginLeft(),
-				getRenderY() + style.getMarginTop(), getRenderWidth(), getRenderHeight());
-		super.renderElement(g);
-	}
-	
-	@Override
-	public RenderNode<?, ?> getElementById(String id) {
-		if (element.getId().equals(id)) {
-			return this;
-		}
-		if(elementIdLookupCache.containsKey(id)) {
-			return elementIdLookupCache.get(id);
-		}
-		for (RenderLayer layer : layers.values()) {
-			RenderNode<?, ?> result = layer.getElementById(id);
-			if (result != null) {
-				elementIdLookupCache.put(id, result);
-				return result;
+	public void layout(LayoutState layoutState) {
+		for (int i = 0; i < children.size(); i++) {
+			RenderNode<?, ?> node = children.get(i);
+			node.layout(layoutState);
+			
+			if(!node.isIncludedInLayout()) {
+				continue;
 			}
+			
+			node.setRelativeX(node.getXOffset());
+			node.setRelativeY(node.getYOffset());
 		}
-		return null;
 	}
 }

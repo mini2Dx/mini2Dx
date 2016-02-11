@@ -347,4 +347,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 	public InputSource getLastInputSource() {
 		return lastInputSource;
 	}
+
+	@Override
+	public void setZIndex(int zIndex) {}
 }

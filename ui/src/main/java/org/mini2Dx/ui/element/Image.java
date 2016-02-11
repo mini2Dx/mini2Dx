@@ -156,4 +156,14 @@ public class Image extends UiElement {
 		}
 		renderNode.setDirty(true);
 	}
+	
+	@Override
+	public void setZIndex(int zIndex) {
+		this.zIndex = zIndex;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
 }

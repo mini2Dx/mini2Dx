@@ -29,9 +29,11 @@ public abstract class UiElement implements Hoverable {
 	private final String id;
 	protected final Queue<UiEffect> effects = new LinkedList<UiEffect>();
 
-	private List<HoverListener> hoverListeners;
 	protected Visibility visibility = Visibility.HIDDEN;
 	protected String styleId = UiTheme.DEFAULT_STYLE_ID;
+	protected int zIndex = 0;
+
+	private List<HoverListener> hoverListeners;
 	private boolean debugEnabled = false;
 
 	public UiElement() {
@@ -70,6 +72,12 @@ public abstract class UiElement implements Hoverable {
 	}
 
 	public abstract void setStyleId(String styleId);
+
+	public int getZIndex() {
+		return zIndex;
+	}
+
+	public abstract void setZIndex(int zIndex);
 
 	@Override
 	public void addHoverListener(HoverListener listener) {
