@@ -71,6 +71,13 @@ public class StyleRule {
 		this.paddingRight = paddingRight;
 	}
 	
+	public void setPadding(int padding) {
+		this.paddingTop = padding;
+		this.paddingBottom = padding;
+		this.paddingLeft = padding;
+		this.paddingRight = padding;
+	}
+	
 	public int getMarginTop() {
 		return marginTop;
 	}
@@ -101,5 +108,12 @@ public class StyleRule {
 	
 	public void setMarginRight(int marginRight) {
 		this.marginRight = marginRight;
+	}
+	
+	public void setMargin(int margin) {
+		this.marginTop = margin;
+		this.marginBottom = margin;
+		this.marginLeft = margin;
+		this.marginRight = margin;
 	}
 }

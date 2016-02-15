@@ -66,12 +66,8 @@ public class RenderLayer implements Comparable<RenderLayer> {
 			if (!node.isIncludedInLayout()) {
 				continue;
 			}
-
-			node.setRelativeX(startX + node.getXOffset());
-			node.setRelativeY(startY + node.getYOffset());
-
-			startX += node.getPreferredOuterWidth() + node.getXOffset();
-			if (startX >= owner.getPreferredContentWidth()) {
+			
+			if(startX - owner.getStyle().getPaddingLeft() + node.getXOffset() + node.getPreferredOuterWidth() > owner.getPreferredContentWidth()) {
 				float maxHeight = 0f;
 				for (int j = i; j >= 0; j--) {
 					RenderNode<?, ?> previousNode = children.get(j);
@@ -85,6 +81,10 @@ public class RenderLayer implements Comparable<RenderLayer> {
 				startY += maxHeight;
 				startX = owner.getStyle().getPaddingLeft();
 			}
+
+			node.setRelativeX(startX + node.getXOffset());
+			node.setRelativeY(startY + node.getYOffset());
+			startX += node.getPreferredOuterWidth() + node.getXOffset();
 		}
 	}
 	
@@ -115,8 +115,7 @@ public class RenderLayer implements Comparable<RenderLayer> {
 			if(!children.get(i).isIncludedInLayout()) {
 				continue;
 			}
-			float height = children.get(i).getRelativeY() + children.get(i).getPreferredOuterHeight()
-					+ children.get(i).getYOffset();
+			float height = children.get(i).getRelativeY() + children.get(i).getPreferredOuterHeight();
 			if (height > maxHeight) {
 				maxHeight = height;
 			}
