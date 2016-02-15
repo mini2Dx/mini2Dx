@@ -24,6 +24,8 @@ import com.badlogic.gdx.utils.Array;
  *
  */
 public class ContainerStyleRule extends StyleRule {
+	@Field(optional=true)
+	private int ninePatchTop, ninePatchBottom, ninePatchLeft, ninePatchRight;
 	@Field
 	private String background;
 	
@@ -39,8 +41,8 @@ public class ContainerStyleRule extends StyleRule {
 	
 	@Override
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
-		backgroundNinePatch = new NinePatch(assetManager.get(background, Texture.class), getPaddingLeft(),
-				getPaddingRight(), getPaddingTop(), getPaddingBottom());
+		backgroundNinePatch = new NinePatch(assetManager.get(background, Texture.class), getNinePatchLeft(),
+				getNinePatchRight(), getNinePatchTop(), getNinePatchBottom());
 	}
 
 	public NinePatch getBackgroundNinePatch() {
@@ -53,5 +55,33 @@ public class ContainerStyleRule extends StyleRule {
 
 	public void setBackground(String background) {
 		this.background = background;
+	}
+
+	public int getNinePatchTop() {
+		if(ninePatchTop <= 0) {
+			return getPaddingTop();
+		}
+		return ninePatchTop;
+	}
+
+	public int getNinePatchBottom() {
+		if(ninePatchBottom <= 0) {
+			return getPaddingBottom();
+		}
+		return ninePatchBottom;
+	}
+
+	public int getNinePatchLeft() {
+		if(ninePatchLeft <= 0) {
+			return getPaddingLeft();
+		}
+		return ninePatchLeft;
+	}
+
+	public int getNinePatchRight() {
+		if(ninePatchRight <= 0) {
+			return getPaddingRight();
+		}
+		return ninePatchRight;
 	}
 }

@@ -27,6 +27,12 @@ public class DummyUiElement extends UiElement {
 	private DummyRenderNode renderNode;
 	
 	public DummyUiElement() {
+		super();
+		setVisibility(Visibility.VISIBLE);
+	}
+	
+	public DummyUiElement(String id) {
+		super(id);
 		setVisibility(Visibility.VISIBLE);
 	}
 
