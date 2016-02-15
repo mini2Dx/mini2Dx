@@ -28,6 +28,7 @@ public class Label extends UiElement {
 	private String text = "";
 	private Color color = COLOR_WHITE;
 	private HorizontalAlignment horizontalAlignment = HorizontalAlignment.LEFT;
+	private boolean responsive = false;
 	
 	public Label() {
 		this(null);
@@ -122,6 +123,19 @@ public class Label extends UiElement {
 			return;
 		}
 		this.horizontalAlignment = horizontalAlignment;
+	}
+	
+	public boolean isResponsive() {
+		return responsive;
+	}
+
+	public void setResponsive(boolean responsive) {
+		this.responsive = responsive;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
 	}
 
 	public Color getColor() {

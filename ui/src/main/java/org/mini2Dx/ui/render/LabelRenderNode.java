@@ -53,12 +53,25 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		return layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight();
+		if(element.isResponsive()) {
+			return layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight();
+		} else {
+			if (style.getBitmapFont() == null) {
+				glyphLayout.setText(font, element.getText());
+			} else {
+				glyphLayout.setText(style.getBitmapFont(), element.getText());
+			}
+			return glyphLayout.width;
+		}
 	}
 
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
-		glyphLayout.setText(font, element.getText());
+		if (style.getBitmapFont() == null) {
+			glyphLayout.setText(font, element.getText());
+		} else {
+			glyphLayout.setText(style.getBitmapFont(), element.getText());
+		}
 		return glyphLayout.height;
 	}
 
