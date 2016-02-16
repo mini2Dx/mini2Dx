@@ -70,10 +70,15 @@ public class TextBoxStyleRule extends StyleRule {
 				getPaddingRight(), getPaddingTop(), getPaddingBottom());
 		color = ColorUtils.rgbToColor(textColor);
 		
+		UiFont themeFont = theme.getFont(font);
 		FreeTypeFontParameter fontParameter = new  FreeTypeFontParameter();
 		fontParameter.size = fontSize;
 		fontParameter.flip = true;
-		bitmapFont = theme.getFont(font).getFontGenerator().generateFont(fontParameter);
+		if(themeFont.getBorderWidth() > 0) {
+			fontParameter.borderWidth = themeFont.getBorderWidth();
+			fontParameter.borderColor = themeFont.getFontBorderColor();
+		}
+		bitmapFont = themeFont.getFontGenerator().generateFont(fontParameter);
 	}
 	
 	public NinePatch getNormalNinePatch() {

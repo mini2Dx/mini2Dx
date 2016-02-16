@@ -85,10 +85,15 @@ public class ButtonStyleRule extends StyleRule {
 					getPaddingRight(), getPaddingTop(), getPaddingBottom());
 		}
 		
+		UiFont themeFont = theme.getFont(font);
 		FreeTypeFontParameter fontParameter = new  FreeTypeFontParameter();
 		fontParameter.size = fontSize;
 		fontParameter.flip = true;
-		bitmapFont = theme.getFont(font).getFontGenerator().generateFont(fontParameter);
+		if(themeFont.getBorderWidth() > 0) {
+			fontParameter.borderWidth = themeFont.getBorderWidth();
+			fontParameter.borderColor = themeFont.getFontBorderColor();
+		}
+		bitmapFont = themeFont.getFontGenerator().generateFont(fontParameter);
 		
 		if(textColor != null) {
 			color = ColorUtils.rgbToColor(textColor);

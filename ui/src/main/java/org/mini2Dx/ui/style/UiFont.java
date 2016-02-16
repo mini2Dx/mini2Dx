@@ -12,8 +12,10 @@
 package org.mini2Dx.ui.style;
 
 import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.core.util.ColorUtils;
 
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 /**
@@ -22,11 +24,19 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 public class UiFont {
 	@Field
 	private String path;
+	@Field(optional=true)
+	private String borderColor;
+	@Field(optional=true)
+	private int borderWidth; 
 	
+	private Color fontBorderColor;
 	private FreeTypeFontGenerator fontGenerator;
 	
 	public void prepareAssets(FileHandleResolver fileHandleResolver) {
 		fontGenerator = new FreeTypeFontGenerator(fileHandleResolver.resolve(path));
+		if(borderColor != null) {
+			fontBorderColor = ColorUtils.rgbToColor(borderColor);
+		}
 	}
 	
 	public void dispose() {
@@ -41,7 +51,19 @@ public class UiFont {
 		this.path = path;
 	}
 
+	public int getBorderWidth() {
+		return borderWidth;
+	}
+
+	public void setBorderWidth(int borderWidth) {
+		this.borderWidth = borderWidth;
+	}
+
 	public FreeTypeFontGenerator getFontGenerator() {
 		return fontGenerator;
+	}
+
+	public Color getFontBorderColor() {
+		return fontBorderColor;
 	}
 }
