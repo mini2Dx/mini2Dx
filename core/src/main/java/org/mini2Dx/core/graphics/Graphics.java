@@ -555,12 +555,12 @@ public class Graphics {
 	}
 
 	/**
-	 * Scales the canvas
+	 * Scales the canvas (multiplies scale value)
 	 * 
 	 * @param scaleX
 	 *            Scaling along the X axis
 	 * @param scaleY
-	 *            Scaling along the Y axos
+	 *            Scaling along the Y axis
 	 */
 	public void scale(float scaleX, float scaleY) {
 		if (rendering) {
@@ -569,6 +569,22 @@ public class Graphics {
 
 		this.scaleX *= scaleX;
 		this.scaleY *= scaleY;
+	}
+	
+	/**
+	 * Sets the canvas scale
+	 * @param scaleX
+	 *            Scaling along the X axis
+	 * @param scaleY
+	 *            Scaling along the Y axis
+	 */
+	public void setScale(float scaleX, float scaleY) {
+		if (rendering) {
+			endRendering();
+		}
+
+		this.scaleX = scaleX;
+		this.scaleY = scaleY;
 	}
 
 	/**
@@ -598,6 +614,22 @@ public class Graphics {
 
 		this.translationX += translateX;
 		this.translationY += translateY;
+	}
+	
+	/**
+	 * Sets the translation coordinates 
+	 * @param translateX
+	 *            The x axis translation
+	 * @param translateY
+	 *            The y axis translation
+	 */
+	public void setTranslation(float translateX, float translateY) {
+		if (rendering) {
+			endRendering();
+		}
+
+		this.translationX = translateX;
+		this.translationY = translateY;
 	}
 
 	/**
