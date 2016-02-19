@@ -17,6 +17,8 @@ import org.mini2Dx.ui.element.ContentButton;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ButtonStyleRule;
 
+import com.badlogic.gdx.Input.Buttons;
+
 /**
  *
  */
@@ -24,6 +26,34 @@ public class ContentButtonRenderNode extends ParentRenderNode<ContentButton, But
 
 	public ContentButtonRenderNode(ParentRenderNode<?, ?> parent, ContentButton element) {
 		super(parent, element);
+	}
+	
+	@Override
+	public ActionableRenderNode mouseDown(int screenX, int screenY, int pointer, int button) {
+		if (!isIncludedInRender()) {
+			return null;
+		}
+		if (button != Buttons.LEFT) {
+			return null;
+		}
+		if (currentArea.contains(screenX, screenY)) {
+			setState(NodeState.ACTION);
+			return this;
+		}
+		return null;
+	}
+
+	@Override
+	public void mouseUp(int screenX, int screenY, int pointer, int button) {
+		if (getState() != NodeState.ACTION) {
+			return;
+		}
+		if (currentArea.contains(screenX, screenY)) {
+			setState(NodeState.HOVER);
+		} else {
+			setState(NodeState.NORMAL);
+		}
+		endAction();
 	}
 	
 	@Override
