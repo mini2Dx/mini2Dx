@@ -34,31 +34,34 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  *
  */
 public class UiContainer extends UiElement implements InputProcessor {
 	private static final String LOGGING_TAG = UiContainer.class.getSimpleName();
-	
+
 	private final List<Container> children = new ArrayList<Container>(1);
 	private final UiContainerRenderTree renderTree;
-	
+
 	private InputSource lastInputSource;
 	private int width, height;
+	private float scaleX = 1f;
+	private float scaleY = 1f;
 	private boolean themeWarningIssued, initialThemeLayoutComplete;
 	private UiTheme theme;
-	
+
 	private Modal activeModal;
 	private ActionableRenderNode activeAction;
 	private TextInputableRenderNode activeTextInput;
-	
+
 	public UiContainer(GameContainer gc, AssetManager assetManager) {
 		super("ui-container-root");
 		this.width = gc.getWidth();
 		this.height = gc.getHeight();
-		
-		switch(Mdx.os) {
+
+		switch (Mdx.os) {
 		case ANDROID:
 		case IOS:
 			lastInputSource = InputSource.TOUCHSCREEN;
@@ -71,38 +74,38 @@ public class UiContainer extends UiElement implements InputProcessor {
 		default:
 			break;
 		}
-		
+
 		renderTree = new UiContainerRenderTree(this, assetManager);
 		setVisibility(Visibility.VISIBLE);
 	}
-	
+
 	public void update(float delta) {
-		if(!isThemeApplied()) {
-			if(!themeWarningIssued) {
+		if (!isThemeApplied()) {
+			if (!themeWarningIssued) {
 				Gdx.app.error(LOGGING_TAG, "No theme applied to UI - cannot update or render UI.");
 				themeWarningIssued = true;
 			}
 			return;
 		}
-		if(renderTree.isDirty()) {
+		if (renderTree.isDirty()) {
 			renderTree.layout();
 			initialThemeLayoutComplete = true;
 		}
 		renderTree.update(delta);
 	}
-	
+
 	public void interpolate(float alpha) {
-		if(!isThemeApplied()) {
+		if (!isThemeApplied()) {
 			return;
 		}
 		renderTree.interpolate(alpha);
 	}
-	
+
 	public void render(Graphics g) {
-		if(!isThemeApplied()) {
+		if (!isThemeApplied()) {
 			return;
 		}
-		if(!initialThemeLayoutComplete) {
+		if (!initialThemeLayoutComplete) {
 			return;
 		}
 		switch (visibility) {
@@ -111,11 +114,20 @@ public class UiContainer extends UiElement implements InputProcessor {
 		case NO_RENDER:
 			return;
 		default:
+			float previousScaleX = g.getScaleX();
+			float previousScaleY = g.getScaleY();
+
+			if (scaleX != 1f || scaleY != 1f) {
+				g.setScale(scaleX, scaleY);
+			}
 			renderTree.render(g);
+			if (scaleX != 1f || scaleY != 1f) {
+				g.setScale(previousScaleX, previousScaleY);
+			}
 			break;
 		}
 	}
-	
+
 	public void add(Container container) {
 		container.attach(renderTree);
 		children.add(container);
@@ -125,29 +137,31 @@ public class UiContainer extends UiElement implements InputProcessor {
 		children.remove(container);
 		container.detach(renderTree);
 	}
-	
-	@Override
-	public void attach(ParentRenderNode<?, ?> parentRenderNode) {}
 
 	@Override
-	public void detach(ParentRenderNode<?, ?> parentRenderNode) {}
-	
+	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
+	}
+
+	@Override
+	public void detach(ParentRenderNode<?, ?> parentRenderNode) {
+	}
+
 	@Override
 	public void setVisibility(Visibility visibility) {
 		this.visibility = visibility;
 	}
-	
+
 	@Override
 	public void syncWithRenderNode() {
-		while(!effects.isEmpty()) {
+		while (!effects.isEmpty()) {
 			renderTree.applyEffect(effects.poll());
 		}
 	}
-	
+
 	public void addScreenSizeListener(ScreenSizeListener listener) {
 		renderTree.addScreenSizeListener(listener);
 	}
-	
+
 	public void removeScreenSizeListener(ScreenSizeListener listener) {
 		renderTree.removeScreenSizeListener(listener);
 	}
@@ -161,10 +175,10 @@ public class UiContainer extends UiElement implements InputProcessor {
 	}
 
 	public void setTheme(UiTheme theme) {
-		if(theme == null) {
+		if (theme == null) {
 			return;
 		}
-		if(this.theme != null && theme.equals(this.theme)) {
+		if (this.theme != null && theme.equals(this.theme)) {
 			return;
 		}
 		this.theme = theme;
@@ -174,18 +188,22 @@ public class UiContainer extends UiElement implements InputProcessor {
 	}
 
 	@Override
-	public void setStyleId(String styleId) {}
+	public void setStyleId(String styleId) {
+	}
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if(activeTextInput != null && activeTextInput.mouseDown(screenX, screenY, pointer, button) == null) {
-			//Release textbox control
+		screenX = MathUtils.round(screenX / scaleX);
+		screenY = MathUtils.round(screenY / scaleY);
+		
+		if (activeTextInput != null && activeTextInput.mouseDown(screenX, screenY, pointer, button) == null) {
+			// Release textbox control
 			activeTextInput = null;
 			activeAction = null;
 		}
-		
+
 		ActionableRenderNode result = renderTree.mouseDown(screenX, screenY, pointer, button);
-		if(result != null) {
+		if (result != null) {
 			result.beginAction();
 			setActiveAction(result);
 			return true;
@@ -195,7 +213,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		if(activeAction == null) {
+		screenX = MathUtils.round(screenX / scaleX);
+		screenY = MathUtils.round(screenY / scaleY);
+		if (activeAction == null) {
 			return false;
 		}
 		activeAction.mouseUp(screenX, screenY, pointer, button);
@@ -204,11 +224,16 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		screenX = MathUtils.round(screenX / scaleX);
+		screenY = MathUtils.round(screenY / scaleY);
+		
 		return false;
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+		screenX = MathUtils.round(screenX / scaleX);
+		screenY = MathUtils.round(screenY / scaleY);
 		return renderTree.mouseMoved(screenX, screenY);
 	}
 
@@ -216,24 +241,24 @@ public class UiContainer extends UiElement implements InputProcessor {
 	public boolean scrolled(int amount) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean keyTyped(char character) {
-		if(activeTextInput == null) {
+		if (activeTextInput == null) {
 			return false;
 		}
-		if(activeTextInput.isReceivingInput()) {
+		if (activeTextInput.isReceivingInput()) {
 			activeTextInput.characterReceived(character);
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean keyDown(int keycode) {
-		if(activeTextInput != null) {
+		if (activeTextInput != null) {
 			return true;
 		}
-		if(handleModalKeyDown(keycode)) {
+		if (handleModalKeyDown(keycode)) {
 			return true;
 		}
 		return false;
@@ -241,34 +266,34 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {
-		if(handleTextInputKeyUp(keycode)) {
+		if (handleTextInputKeyUp(keycode)) {
 			return true;
 		}
-		if(handleModalKeyUp(keycode)) {
+		if (handleModalKeyUp(keycode)) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	private boolean handleModalKeyDown(int keycode) {
-		if(activeModal == null) {
+		if (activeModal == null) {
 			return false;
 		}
 		ActionableRenderNode hotkeyAction = activeModal.hotkey(keycode);
-		if(hotkeyAction == null) {
+		if (hotkeyAction == null) {
 			return true;
 		}
 		hotkeyAction.beginAction();
 		return true;
 	}
-	
+
 	private boolean handleModalKeyUp(int keycode) {
-		if(activeModal == null) {
+		if (activeModal == null) {
 			return false;
 		}
 		ActionableRenderNode hotkeyAction = activeModal.hotkey(keycode);
-		if(hotkeyAction == null) {
-			if(activeAction != null) {
+		if (hotkeyAction == null) {
+			if (activeAction != null) {
 				activeAction.setState(NodeState.NORMAL);
 			}
 			ActionableRenderNode result = activeModal.navigate(keycode);
@@ -279,18 +304,18 @@ public class UiContainer extends UiElement implements InputProcessor {
 		}
 		return true;
 	}
-	
+
 	private boolean handleTextInputKeyUp(int keycode) {
-		if(activeTextInput == null) {
+		if (activeTextInput == null) {
 			return false;
 		}
-		if(activeTextInput.isReceivingInput()) {
-			switch(keycode) {
+		if (activeTextInput.isReceivingInput()) {
+			switch (keycode) {
 			case Keys.BACKSPACE:
 				activeTextInput.backspace();
 				break;
 			case Keys.ENTER:
-				if(activeTextInput.enter()) {
+				if (activeTextInput.enter()) {
 					activeTextInput = null;
 					activeAction = null;
 				}
@@ -304,17 +329,17 @@ public class UiContainer extends UiElement implements InputProcessor {
 			}
 			return true;
 		}
-		
-		switch(keycode) {
+
+		switch (keycode) {
 		case Keys.ENTER:
 			activeTextInput.beginAction();
 			return true;
 		}
 		return false;
 	}
-	
+
 	private void setActiveAction(ActionableRenderNode actionable) {
-		if(actionable instanceof TextInputableRenderNode) {
+		if (actionable instanceof TextInputableRenderNode) {
 			activeTextInput = (TextInputableRenderNode) actionable;
 		}
 		activeAction = actionable;
@@ -323,7 +348,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 	public void setActiveModal(Modal activeModal) {
 		this.activeModal = activeModal;
 	}
-	
+
 	public void clearActiveModal() {
 		this.activeTextInput = null;
 		this.activeAction = null;
@@ -337,11 +362,31 @@ public class UiContainer extends UiElement implements InputProcessor {
 	public int getHeight() {
 		return height;
 	}
-	
+
+	/**
+	 * Sets the width and height of the {@link UiContainer}
+	 * 
+	 * @param width The width in pixels
+	 * @param height The height in pixels
+	 */
 	public void set(int width, int height) {
 		this.width = width;
 		this.height = height;
 		renderTree.onResize(width, height);
+	}
+
+	/**
+	 * Sets the {@link Graphics} scaling during rendering. Mouse/touch
+	 * coordinates will be scaled accordingly.
+	 * 
+	 * @param scaleX
+	 *            Scaling along the X axis
+	 * @param scaleY
+	 *            Scaling along the Y axis
+	 */
+	public void setScale(float scaleX, float scaleY) {
+		this.scaleX = scaleX;
+		this.scaleY = scaleY;
 	}
 
 	public InputSource getLastInputSource() {
@@ -349,5 +394,6 @@ public class UiContainer extends UiElement implements InputProcessor {
 	}
 
 	@Override
-	public void setZIndex(int zIndex) {}
+	public void setZIndex(int zIndex) {
+	}
 }
