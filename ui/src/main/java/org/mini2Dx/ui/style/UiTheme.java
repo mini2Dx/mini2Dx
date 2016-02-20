@@ -22,6 +22,7 @@ import org.mini2Dx.ui.element.Container;
 import org.mini2Dx.ui.element.Image;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.Select;
+import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.layout.ScreenSize;
@@ -30,6 +31,7 @@ import org.mini2Dx.ui.style.ruleset.ContainerStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.DefaultStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.LabelStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.SelectStyleRuleset;
+import org.mini2Dx.ui.style.ruleset.TabStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.TextBoxStyleRuleset;
 
 import com.badlogic.gdx.Gdx;
@@ -64,6 +66,8 @@ public class UiTheme {
 	@Field
 	private Map<String, SelectStyleRuleset> selects;
 	@Field
+	private Map<String, TabStyleRuleset> tabs;
+	@Field
 	private Map<String, TextBoxStyleRuleset> textboxes;
 
 	public void validate() {
@@ -84,6 +88,9 @@ public class UiTheme {
 		}
 		if (!selects.containsKey(DEFAULT_STYLE_ID)) {
 			throw new MdxException("No style with id 'default' for selects");
+		}
+		if (!tabs.containsKey(DEFAULT_STYLE_ID)) {
+			throw new MdxException("No style with id 'default' for tabs");
 		}
 		if (!textboxes.containsKey(DEFAULT_STYLE_ID)) {
 			throw new MdxException("No style with id 'default' for textboxes");
@@ -106,6 +113,9 @@ public class UiTheme {
 		}
 		for (StyleRuleset<SelectStyleRule> selectRuleset : selects.values()) {
 			selectRuleset.validate(this);
+		}
+		for (StyleRuleset<TabStyleRule> tabRuleset : tabs.values()) {
+			tabRuleset.validate(this);
 		}
 		for (StyleRuleset<TextBoxStyleRule> textboxRuleset : textboxes.values()) {
 			textboxRuleset.validate(this);
@@ -143,6 +153,11 @@ public class UiTheme {
 			selectRuleset.loadDependencies(this, dependencies);
 			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Select Ruleset: " + id + "] Dependencies loaded");
 		}
+		for (String id : tabs.keySet()) {
+			StyleRuleset<TabStyleRule> tabRuleset = tabs.get(id);
+			tabRuleset.loadDependencies(this, dependencies);
+			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Tab Ruleset: " + id + "] Dependencies loaded");
+		}
 		for (String id : textboxes.keySet()) {
 			StyleRuleset<TextBoxStyleRule> textboxRuleset = textboxes.get(id);
 			textboxRuleset.loadDependencies(this, dependencies);
@@ -172,9 +187,16 @@ public class UiTheme {
 		for (StyleRuleset<SelectStyleRule> selectRuleset : selects.values()) {
 			selectRuleset.prepareAssets(this, fileHandleResolver, assetManager);
 		}
+		for (StyleRuleset<TabStyleRule> tabRuleset : tabs.values()) {
+			tabRuleset.prepareAssets(this, fileHandleResolver, assetManager);
+		}
 		for (StyleRuleset<TextBoxStyleRule> textboxRuleset : textboxes.values()) {
 			textboxRuleset.prepareAssets(this, fileHandleResolver, assetManager);
 		}
+	}
+	
+	public boolean containsButtonStyleRuleset(String id) {
+		return buttons.containsKey(id);
 	}
 
 	public ButtonStyleRule getStyleRule(Button button, ScreenSize screenSize) {
@@ -213,6 +235,14 @@ public class UiTheme {
 		StyleRuleset<SelectStyleRule> ruleset = selects.get(select.getStyleId());
 		if (ruleset == null) {
 			ruleset = selects.get(DEFAULT_STYLE_ID);
+		}
+		return ruleset.getStyleRule(screenSize);
+	}
+	
+	public TabStyleRule getStyleRule(TabView tabView, ScreenSize screenSize) {
+		StyleRuleset<TabStyleRule> ruleset = tabs.get(tabView.getStyleId());
+		if (ruleset == null) {
+			ruleset = tabs.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
 	}
@@ -278,6 +308,13 @@ public class UiTheme {
 			selects = new HashMap<String, SelectStyleRuleset>();
 		}
 		selects.put(rulesetId, ruleset);
+	}
+	
+	public void putTabStyleRuleset(String rulesetId, TabStyleRuleset ruleset) {
+		if(tabs == null) {
+			tabs = new HashMap<String, TabStyleRuleset>();
+		}
+		tabs.put(rulesetId, ruleset);
 	}
 	
 	public void putTextBoxStyleRuleset(String rulesetId, TextBoxStyleRuleset ruleset) {

@@ -16,42 +16,65 @@ import java.util.List;
 
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.ui.layout.LayoutRuleset;
-import org.mini2Dx.ui.render.AbstractColumnRenderNode;
-import org.mini2Dx.ui.render.ColumnRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
+import org.mini2Dx.ui.render.TabViewRenderNode;
 
 /**
  *
  */
-public class Column extends UiElement {
-	protected final List<UiElement> children = new ArrayList<UiElement>(1);
-	protected AbstractColumnRenderNode<?> renderNode;
-	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
+public class TabView extends UiElement {
+	private final List<Tab> tabs = new ArrayList<Tab>();
 	
-	public Column() {
+	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
+	private TabViewRenderNode renderNode;
+	private int currentTabIndex = 0;
+	
+	public TabView() {
 		this(null);
 	}
 	
-	public Column(String id) {
+	public TabView(String id) {
 		super(id);
 	}
 	
-	public void add(UiElement element) {
-		if(element == null) {
-			throw new MdxException("Cannot add null element to Column");
+	public void add(Tab tab) {
+		if(tab == null) {
+			throw new MdxException("Cannot add null element to TabView");
 		}
-		children.add(element);
+		tabs.add(tab);
 		if(renderNode == null) {
 			return;
 		}
-		element.attach(renderNode);
+		tab.attach(renderNode);
 	}
 	
-	public boolean remove(UiElement element) {
-		if(renderNode != null) {
-			element.detach(renderNode);
+	public void add(int index, Tab tab) {
+		if(tab == null) {
+			throw new MdxException("Cannot add null element to TabView");
 		}
-		return children.remove(element);
+		tabs.add(index, tab);
+		if(renderNode == null) {
+			return;
+		}
+		tab.attach(renderNode);
+	}
+	
+	public boolean remove(Tab tab) {
+		if(renderNode != null) {
+			tab.detach(renderNode);
+		}
+		return tabs.remove(tab);
+	}
+	
+	public boolean remove(int index) {
+		return remove(tabs.get(index));
+	}
+	
+	@Override
+	public void syncWithRenderNode() {
+		while(!effects.isEmpty()) {
+			renderNode.applyEffect(effects.poll());
+		}
 	}
 
 	@Override
@@ -59,13 +82,13 @@ public class Column extends UiElement {
 		if(renderNode != null) {
 			return;
 		}
-		renderNode = new ColumnRenderNode(parentRenderNode, this);
-		for(int i = 0; i < children.size(); i++) {
-			children.get(i).attach(renderNode);
+		renderNode = new TabViewRenderNode(parentRenderNode, this);
+		for(int i = 0; i < tabs.size(); i++) {
+			tabs.get(i).attach(renderNode);
 		}
 		parentRenderNode.addChild(renderNode);
 	}
-	
+
 	@Override
 	public void detach(ParentRenderNode<?, ?> parentRenderNode) {
 		if(renderNode == null) {
@@ -74,6 +97,42 @@ public class Column extends UiElement {
 		parentRenderNode.removeChild(renderNode);
 	}
 
+	@Override
+	public void setVisibility(Visibility visibility) {
+		if(this.visibility == visibility) {
+			return;
+		}
+		this.visibility = visibility;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+
+	@Override
+	public void setStyleId(String styleId) {
+		if(styleId == null) {
+			return;
+		}
+		this.styleId = styleId;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+
+	@Override
+	public void setZIndex(int zIndex) {
+		this.zIndex = zIndex;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+	
 	public LayoutRuleset getLayout() {
 		return layout;
 	}
@@ -89,72 +148,59 @@ public class Column extends UiElement {
 		renderNode.setDirty(true);
 	}
 	
-	public void setVisibility(Visibility visibility) {
-		if(this.visibility == visibility) {
-			return;
+	public Tab getCurrentTab() {
+		if(currentTabIndex >= tabs.size()) {
+			return null;
 		}
-		this.visibility = visibility;
-		
-		if(renderNode == null) {
-			return;
+		return tabs.get(currentTabIndex);
+	}
+	
+	public void setCurrentTab(Tab tab) {
+		int tabIndex = tabs.indexOf(tab);
+		if(tabIndex < 0) {
+			throw new MdxException(tab + " cannot be set to current tab as it was not added to " + TabView.class.getSimpleName() + ":" + getId());
 		}
-		renderNode.setDirty(true);
+		setCurrentTabIndex(tabIndex);
 	}
 
-	@Override
-	public void syncWithRenderNode() {
-		while(!effects.isEmpty()) {
-			renderNode.applyEffect(effects.poll());
-		}
-	}
-	
-	@Override
-	public void setStyleId(String styleId) {
-		if(styleId == null) {
-			return;
-		}
-		this.styleId = styleId;
-		
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
-	}
-	
-	@Override
-	public UiElement getElementById(String id) {
-		if (getId().equals(id)) {
-			return this;
-		}
-		for(int i = 0; i < children.size(); i++) {
-			UiElement result = children.get(i).getElementById(id);
-			if(result != null) {
-				return result;
-			}
-		}
-		return null;
-	}
-	
-	public static Column withElements(UiElement ...elements) {
-		return withElements(null, elements);
-	}
-	
-	public static Column withElements(String columnId, UiElement ...elements) {
-		Column result = new Column(columnId);
-		for(int i = 0; i < elements.length; i++) {
-			result.add(elements[i]);
-		}
-		result.setVisibility(Visibility.VISIBLE);
-		return result;
+	public int getCurrentTabIndex() {
+		return currentTabIndex;
 	}
 
-	@Override
-	public void setZIndex(int zIndex) {
-		this.zIndex = zIndex;
+	public void setCurrentTabIndex(int currentTabIndex) {
+		if(currentTabIndex < 0) {
+			return;
+		}
+		if(currentTabIndex >= tabs.size()) {
+			return;
+		}
+		if(this.currentTabIndex == currentTabIndex) {
+			return;
+		}
+		
+		tabs.get(this.currentTabIndex).deactivateTab();
+		this.currentTabIndex = currentTabIndex;
+		tabs.get(this.currentTabIndex).activateTab();
 		
 		if(renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
+	}
+	
+	public void nextTab() {
+		if(currentTabIndex >= tabs.size() - 1) {
+			setCurrentTabIndex(0);
+		} else {
+			setCurrentTabIndex(currentTabIndex + 1);
+		}
+	}
+	
+	public void previousTab() {
+		if(currentTabIndex <= 0) {
+			setCurrentTabIndex(tabs.size() - 1);
+		} else {
+			setCurrentTabIndex(currentTabIndex - 1);
+		}
 	}
 }
