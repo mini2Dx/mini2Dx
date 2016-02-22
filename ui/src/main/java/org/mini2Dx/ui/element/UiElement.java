@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Queue;
 
 import org.mini2Dx.ui.effect.UiEffect;
+import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.listener.HoverListener;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.style.UiTheme;

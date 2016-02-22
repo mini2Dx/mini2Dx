@@ -27,7 +27,7 @@ import org.mini2Dx.ui.style.ContainerStyleRule;
 /**
  *
  */
-public abstract class ModalRenderNode extends ContainerRenderNode {
+public abstract class ModalRenderNode extends ContainerRenderNode implements NavigatableRenderNode {
 	private Map<Integer, ActionableRenderNode> keyboardHotkeys = new HashMap<Integer, ActionableRenderNode>();
 	private Map<String, ActionableRenderNode> controllerHotkeys = new HashMap<String, ActionableRenderNode>();
 
@@ -41,14 +41,17 @@ public abstract class ModalRenderNode extends ContainerRenderNode {
 		super.layout(layoutState);
 	}
 
+	@Override
 	public ActionableRenderNode hotkey(int keycode) {
 		return keyboardHotkeys.get(keycode);
 	}
 
+	@Override
 	public ActionableRenderNode hotkey(ControllerButton controllerButton) {
 		return controllerHotkeys.get(controllerButton.getAbsoluteValue());
 	}
 
+	@Override
 	public void syncHotkeys(Queue<ControllerHotKeyOperation> controllerHotKeyOperations,
 			Queue<KeyboardHotKeyOperation> keyboardHotKeyOperations) {
 		while (!controllerHotKeyOperations.isEmpty()) {
@@ -70,6 +73,7 @@ public abstract class ModalRenderNode extends ContainerRenderNode {
 		}
 	}
 
+	@Override
 	public ActionableRenderNode navigate(int keycode) {
 		Actionable actionable = ((Modal) element).getNavigation().navigate(keycode);
 		return (ActionableRenderNode) getElementById(actionable.getId());

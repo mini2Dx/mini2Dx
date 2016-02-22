@@ -14,6 +14,7 @@ package org.mini2Dx.ui.render;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.ui.element.ContentButton;
+import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ButtonStyleRule;
 
@@ -82,7 +83,17 @@ public class ContentButtonRenderNode extends ParentRenderNode<ContentButton, But
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		return layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight();
+		if(element.getLayout().isHiddenByInputSource(layoutState.getLastInputSource())) {
+			return 0f;
+		}
+		float layoutRuleResult = element.getLayout().getPreferredWidth(layoutState);
+		if(layoutRuleResult <= 0f) {
+			element.setVisibility(Visibility.HIDDEN);
+			return 0f;
+		} else if(layoutState.isScreenSizeChanged() && element.getVisibility() == Visibility.HIDDEN) {
+			element.setVisibility(Visibility.VISIBLE);
+		}
+		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight();
 	}
 
 	@Override

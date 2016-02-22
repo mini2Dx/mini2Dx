@@ -12,6 +12,7 @@
 package org.mini2Dx.ui.element;
 
 import org.mini2Dx.ui.layout.HorizontalAlignment;
+import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.TextButtonRenderNode;
 
@@ -116,5 +117,17 @@ public class TextButton extends Button {
 			return;
 		}
 		this.textAlignment = textAlignment;
+	}
+	
+	@Override
+	public void setLayout(LayoutRuleset layoutRuleset) {
+		if(layoutRuleset == null) {
+			return;
+		}
+		this.layout = layoutRuleset;
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
 	}
 }

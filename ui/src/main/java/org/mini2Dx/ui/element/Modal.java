@@ -25,7 +25,7 @@ import org.mini2Dx.ui.render.ModalRenderNode;
 /**
  *
  */
-public abstract class Modal extends Container {
+public abstract class Modal extends Container implements Navigatable {
 	private final Queue<ControllerHotKeyOperation> controllerHotKeyOperations = new LinkedList<ControllerHotKeyOperation>();
 	private final Queue<KeyboardHotKeyOperation> keyboardHotKeyOperations = new LinkedList<KeyboardHotKeyOperation>();
 	
@@ -45,6 +45,7 @@ public abstract class Modal extends Container {
 		((ModalRenderNode) renderNode).syncHotkeys(controllerHotKeyOperations, keyboardHotKeyOperations);
 	}
 	
+	@Override
 	public ActionableRenderNode navigate(int keycode) {
 		if(renderNode == null) {
 			return null;
@@ -52,6 +53,7 @@ public abstract class Modal extends Container {
 		return ((ModalRenderNode) renderNode).navigate(keycode);
 	}
 	
+	@Override
 	public ActionableRenderNode hotkey(int keycode) {
 		if(renderNode == null) {
 			return null;
@@ -59,6 +61,7 @@ public abstract class Modal extends Container {
 		return ((ModalRenderNode) renderNode).hotkey(keycode);
 	}
 	
+	@Override
 	public ActionableRenderNode hotkey(ControllerButton button) {
 		if(renderNode == null) {
 			return null;
@@ -66,22 +69,27 @@ public abstract class Modal extends Container {
 		return ((ModalRenderNode) renderNode).hotkey(button);
 	}
 	
+	@Override
 	public void setHotkey(ControllerButton button, Actionable actionable) {
 		controllerHotKeyOperations.offer(new ControllerHotKeyOperation(button, actionable, true));
 	}
 	
+	@Override
 	public void setHotkey(int keycode, Actionable actionable) {
 		keyboardHotKeyOperations.offer(new KeyboardHotKeyOperation(keycode, actionable, true));
 	}
 	
+	@Override
 	public void unsetHotkey(ControllerButton button, Actionable actionable) {
 		controllerHotKeyOperations.offer(new ControllerHotKeyOperation(button, actionable, false));
 	}
 	
+	@Override
 	public void unsetHotkey(int keycode, Actionable actionable) {
 		keyboardHotKeyOperations.offer(new KeyboardHotKeyOperation(keycode, actionable, false));
 	}
 
+	@Override
 	public UiNavigation getNavigation() {
 		return navigation;
 	}

@@ -84,7 +84,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 			}
 		}
 		if (visible) {
-			element.setVisibility(Visibility.VISIBLE);
+			//element.setVisibility(Visibility.VISIBLE);
 		}
 		if (element.isDebugEnabled()) {
 			Gdx.app.log(element.getId(), "UPDATE - currentArea: " + currentArea + ", targetArea: " + targetArea

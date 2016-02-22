@@ -11,13 +11,31 @@
  */
 package org.mini2Dx.ui.element;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
+import org.mini2Dx.core.controller.button.ControllerButton;
 import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.ui.input.ControllerHotKeyOperation;
+import org.mini2Dx.ui.input.KeyboardHotKeyOperation;
+import org.mini2Dx.ui.input.UiNavigation;
+import org.mini2Dx.ui.input.VerticalUiNavigation;
+import org.mini2Dx.ui.render.ActionableRenderNode;
+import org.mini2Dx.ui.render.NavigatableRenderNode;
+import org.mini2Dx.ui.render.ParentRenderNode;
+import org.mini2Dx.ui.render.TabRenderNode;
 
 /**
  *
  */
-public class Tab extends Row {
+public class Tab extends Row implements Navigatable {
+	private final Queue<ControllerHotKeyOperation> controllerHotKeyOperations = new LinkedList<ControllerHotKeyOperation>();
+	private final Queue<KeyboardHotKeyOperation> keyboardHotKeyOperations = new LinkedList<KeyboardHotKeyOperation>();
+	
+	private UiNavigation navigation = new VerticalUiNavigation();
+	
 	private String title = "";
+	private boolean titleChanged = true;
 	
 	public Tab() {
 		this(null);
@@ -29,6 +47,18 @@ public class Tab extends Row {
 	
 	public Tab(String id, String title) {
 		super(id);
+	}
+	
+	@Override
+	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
+		if(renderNode != null) {
+			return;
+		}
+		renderNode = new TabRenderNode(parentRenderNode, this);
+		for(int i = 0; i < children.size(); i++) {
+			children.get(i).attach(renderNode);
+		}
+		parentRenderNode.addChild(renderNode);
 	}
 
 	public String getTitle() {
@@ -43,28 +73,94 @@ public class Tab extends Row {
 			return;
 		}
 		this.title = title;
-		
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
+		titleChanged = true;
 	}
 	
 	@Override
 	public void setZIndex(int zIndex) {
-		throw new MdxException("Tabs cannot change Z index");
+		throw new MdxException(Tab.class.getSimpleName() + " instances cannot change Z index");
 	}
 	
 	@Override
 	public void setVisibility(Visibility visibility) {
-		throw new MdxException("Tab visibility is managed by " + TabView.class.getSimpleName());
+		throw new MdxException(Tab.class.getSimpleName() + " visibility is managed by " + TabView.class.getSimpleName());
+	}
+	
+	boolean titleChanged() {
+		return titleChanged;
+	}
+	
+	void clearTitleChanged() {
+		titleChanged = false;
 	}
 	
 	void activateTab() {
-		setVisibility(Visibility.VISIBLE);
+		super.setVisibility(Visibility.VISIBLE);
 	}
 	
 	void deactivateTab() {
-		setVisibility(Visibility.HIDDEN);
+		super.setVisibility(Visibility.HIDDEN);
+	}
+
+	@Override
+	public void syncWithRenderNode() {
+		super.syncWithRenderNode();
+		((NavigatableRenderNode) renderNode).syncHotkeys(controllerHotKeyOperations, keyboardHotKeyOperations);
+	}
+	
+	@Override
+	public ActionableRenderNode navigate(int keycode) {
+		if(renderNode == null) {
+			return null;
+		}
+		return ((NavigatableRenderNode) renderNode).navigate(keycode);
+	}
+	
+	@Override
+	public ActionableRenderNode hotkey(int keycode) {
+		if(renderNode == null) {
+			return null;
+		}
+		return ((NavigatableRenderNode) renderNode).hotkey(keycode);
+	}
+	
+	@Override
+	public ActionableRenderNode hotkey(ControllerButton button) {
+		if(renderNode == null) {
+			return null;
+		}
+		return ((NavigatableRenderNode) renderNode).hotkey(button);
+	}
+	
+	@Override
+	public void setHotkey(ControllerButton button, Actionable actionable) {
+		controllerHotKeyOperations.offer(new ControllerHotKeyOperation(button, actionable, true));
+	}
+	
+	@Override
+	public void setHotkey(int keycode, Actionable actionable) {
+		keyboardHotKeyOperations.offer(new KeyboardHotKeyOperation(keycode, actionable, true));
+	}
+	
+	@Override
+	public void unsetHotkey(ControllerButton button, Actionable actionable) {
+		controllerHotKeyOperations.offer(new ControllerHotKeyOperation(button, actionable, false));
+	}
+	
+	@Override
+	public void unsetHotkey(int keycode, Actionable actionable) {
+		keyboardHotKeyOperations.offer(new KeyboardHotKeyOperation(keycode, actionable, false));
+	}
+
+	@Override
+	public UiNavigation getNavigation() {
+		return navigation;
+	}
+
+	public void setNavigation(UiNavigation navigation) {
+		if(navigation == null) {
+			return;
+		}
+		this.navigation = navigation;
 	}
 }

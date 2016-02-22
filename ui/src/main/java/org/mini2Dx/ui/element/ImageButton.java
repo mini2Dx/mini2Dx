@@ -12,6 +12,7 @@
 package org.mini2Dx.ui.element;
 
 import org.mini2Dx.core.graphics.TextureRegion;
+import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.ImageButtonRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 
@@ -124,6 +125,18 @@ public class ImageButton extends Button {
 	public void setZIndex(int zIndex) {
 		this.zIndex = zIndex;
 		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+	
+	@Override
+	public void setLayout(LayoutRuleset layoutRuleset) {
+		if(layoutRuleset == null) {
+			return;
+		}
+		this.layout = layoutRuleset;
 		if(renderNode == null) {
 			return;
 		}

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.ContentButtonRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 
@@ -108,6 +109,18 @@ public class ContentButton extends Button {
 	public void setZIndex(int zIndex) {
 		this.zIndex = zIndex;
 		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+	
+	@Override
+	public void setLayout(LayoutRuleset layoutRuleset) {
+		if(layoutRuleset == null) {
+			return;
+		}
+		this.layout = layoutRuleset;
 		if(renderNode == null) {
 			return;
 		}

@@ -11,23 +11,70 @@
  */
 package org.mini2Dx.ui.render;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
 
+import org.mini2Dx.core.controller.button.ControllerButton;
+import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.TabView;
-import org.mini2Dx.ui.element.TextButton;
 import org.mini2Dx.ui.element.Visibility;
+import org.mini2Dx.ui.input.ControllerHotKeyOperation;
+import org.mini2Dx.ui.input.KeyboardHotKeyOperation;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.TabStyleRule;
 
 /**
  *
  */
-public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> {
-	private final List<TextButton> tabButtons = new ArrayList<TextButton>(1);
-
+public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> implements NavigatableRenderNode {
+	private Map<Integer, ActionableRenderNode> keyboardHotkeys = new HashMap<Integer, ActionableRenderNode>();
+	private Map<String, ActionableRenderNode> controllerHotkeys = new HashMap<String, ActionableRenderNode>();
+	
 	public TabViewRenderNode(ParentRenderNode<?, ?> parent, TabView tabView) {
 		super(parent, tabView);
+	}
+
+	@Override
+	public ActionableRenderNode hotkey(int keycode) {
+		return keyboardHotkeys.get(keycode);
+	}
+
+	@Override
+	public ActionableRenderNode hotkey(ControllerButton controllerButton) {
+		return controllerHotkeys.get(controllerButton.getAbsoluteValue());
+	}
+
+	@Override
+	public void syncHotkeys(Queue<ControllerHotKeyOperation> controllerHotKeyOperations,
+			Queue<KeyboardHotKeyOperation> keyboardHotKeyOperations) {
+		while (!controllerHotKeyOperations.isEmpty()) {
+			ControllerHotKeyOperation hotKeyOperation = controllerHotKeyOperations.poll();
+			if (hotKeyOperation.isMapOperation()) {
+				controllerHotkeys.put(hotKeyOperation.getControllerButton().getAbsoluteValue(),
+						(ActionableRenderNode) getElementById(hotKeyOperation.getActionable().getId()));
+			} else {
+				controllerHotkeys.remove(hotKeyOperation.getControllerButton().getAbsoluteValue());
+			}
+		}
+		while (!keyboardHotKeyOperations.isEmpty()) {
+			KeyboardHotKeyOperation hotKeyOperation = keyboardHotKeyOperations.poll();
+			if(hotKeyOperation.isMapOperation()) {
+				keyboardHotkeys.put(hotKeyOperation.getKeycode(), (ActionableRenderNode) getElementById(hotKeyOperation.getActionable().getId()));
+			} else {
+				keyboardHotkeys.remove(hotKeyOperation.getKeycode());
+			}
+		}
+	}
+
+	@Override
+	public ActionableRenderNode navigate(int keycode) {
+		Actionable actionable = ((TabView) element).getNavigation().navigate(keycode);
+		if(actionable == null) {
+			return null;
+		}
+		return (ActionableRenderNode) getElementById(actionable.getId());
 	}
 
 	@Override
@@ -75,5 +122,12 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> {
 	protected float determineYOffset(LayoutState layoutState) {
 		return 0f;
 	}
-
+	
+	@Override
+	public void setChildDirty(boolean childDirty) {
+		if (!childDirty) {
+			return;
+		}
+		this.childDirty = childDirty;
+	}
 }

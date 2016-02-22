@@ -11,77 +11,28 @@
  */
 package org.mini2Dx.ui.element;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.mini2Dx.ui.layout.LayoutRuleset;
-import org.mini2Dx.ui.listener.ActionListener;
+import org.mini2Dx.core.controller.button.ControllerButton;
+import org.mini2Dx.ui.input.UiNavigation;
+import org.mini2Dx.ui.render.ActionableRenderNode;
 
 /**
- *
+ * Common interface for {@link UiElement}s that can be navigated by keyboard or
+ * controller
  */
-public abstract class Button extends UiElement implements Actionable {
-	protected LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
-	private List<ActionListener> actionListeners;
-	private boolean enabled = true;
-	
-	public Button() {
-		this(null);
-	}
-	
-	public Button(String id) {
-		super(id);
-	}
-	
-	@Override
-	public void notifyActionListenersOfBeginEvent() {
-		if(actionListeners == null) {
-			return;
-		}
-		for(int i = actionListeners.size() - 1; i >= 0; i--) {
-			actionListeners.get(i).onActionBegin(this);
-		}
-	}
-	
-	@Override
-	public void notifyActionListenersOfEndEvent() {
-		if(actionListeners == null) {
-			return;
-		}
-		for(int i = actionListeners.size() - 1; i >= 0; i--) {
-			actionListeners.get(i).onActionEnd(this);
-		}
-	}
-	
-	@Override
-	public void addActionListener(ActionListener listener) {
-		if(actionListeners == null) {
-			actionListeners = new ArrayList<ActionListener>(1);
-		}
-		actionListeners.add(listener);
-	}
+public interface Navigatable {
+	public ActionableRenderNode navigate(int keycode);
 
-	@Override
-	public void removeActionListener(ActionListener listener) {
-		if(actionListeners == null) {
-			return;
-		}
-		actionListeners.remove(listener);
-	}
-	
-	@Override
-	public boolean isEnabled() {
-		return enabled;
-	}
-	
-	@Override
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-	
-	public LayoutRuleset getLayout() {
-		return layout;
-	}
-	
-	public abstract void setLayout(LayoutRuleset layoutRuleset);
+	public ActionableRenderNode hotkey(int keycode);
+
+	public ActionableRenderNode hotkey(ControllerButton button);
+
+	public void setHotkey(ControllerButton button, Actionable actionable);
+
+	public void setHotkey(int keycode, Actionable actionable);
+
+	public void unsetHotkey(ControllerButton button, Actionable actionable);
+
+	public void unsetHotkey(int keycode, Actionable actionable);
+
+	public UiNavigation getNavigation();
 }

@@ -19,9 +19,11 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Container;
 import org.mini2Dx.ui.element.Modal;
+import org.mini2Dx.ui.element.Navigatable;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.input.InputSource;
+import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
 import org.mini2Dx.ui.render.ActionableRenderNode;
 import org.mini2Dx.ui.render.NodeState;
@@ -52,7 +54,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 	private boolean themeWarningIssued, initialThemeLayoutComplete;
 	private UiTheme theme;
 
-	private Modal activeModal;
+	private Navigatable activeNavigation;
 	private ActionableRenderNode activeAction;
 	private TextInputableRenderNode activeTextInput;
 
@@ -276,10 +278,10 @@ public class UiContainer extends UiElement implements InputProcessor {
 	}
 
 	private boolean handleModalKeyDown(int keycode) {
-		if (activeModal == null) {
+		if (activeNavigation == null) {
 			return false;
 		}
-		ActionableRenderNode hotkeyAction = activeModal.hotkey(keycode);
+		ActionableRenderNode hotkeyAction = activeNavigation.hotkey(keycode);
 		if (hotkeyAction == null) {
 			return true;
 		}
@@ -288,15 +290,15 @@ public class UiContainer extends UiElement implements InputProcessor {
 	}
 
 	private boolean handleModalKeyUp(int keycode) {
-		if (activeModal == null) {
+		if (activeNavigation == null) {
 			return false;
 		}
-		ActionableRenderNode hotkeyAction = activeModal.hotkey(keycode);
+		ActionableRenderNode hotkeyAction = activeNavigation.hotkey(keycode);
 		if (hotkeyAction == null) {
 			if (activeAction != null) {
 				activeAction.setState(NodeState.NORMAL);
 			}
-			ActionableRenderNode result = activeModal.navigate(keycode);
+			ActionableRenderNode result = activeNavigation.navigate(keycode);
 			result.setState(NodeState.HOVER);
 			setActiveAction(result);
 		} else {
@@ -345,14 +347,14 @@ public class UiContainer extends UiElement implements InputProcessor {
 		activeAction = actionable;
 	}
 
-	public void setActiveModal(Modal activeModal) {
-		this.activeModal = activeModal;
+	public void setActiveNavigation(Navigatable activeNavigation) {
+		this.activeNavigation = activeNavigation;
 	}
 
 	public void clearActiveModal() {
 		this.activeTextInput = null;
 		this.activeAction = null;
-		this.activeModal = null;
+		this.activeNavigation = null;
 	}
 
 	public int getWidth() {

@@ -31,6 +31,8 @@ import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.Row;
 import org.mini2Dx.ui.element.Select;
+import org.mini2Dx.ui.element.Tab;
+import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.TextButton;
 import org.mini2Dx.ui.element.Visibility;
@@ -169,20 +171,29 @@ public class UiUAT extends BasicGameScreen {
 		modal = new AlignedModal("main-modal");
 		modal.setLayout(new LayoutRuleset("xs-12 md-8 lg-6 md-offset-2 lg-offset-3"));
 		modal.setVerticalAlignment(VerticalAlignment.MIDDLE);
-		modal.add(Row.withElements("row-textbox", textBox, textBoxResult));
-		modal.add(Row.withElements("row-select", select));
+		
+		TabView tabView = new TabView("tabView");
+		tabView.setVisibility(Visibility.VISIBLE);
+		
+		Tab tab1 = new Tab("tab1", "Tab 1");
+		tab1.add(Row.withElements("row-textbox", textBox, textBoxResult));
+		tab1.add(Row.withElements("row-select", select));
+		tab1.add(Row.withElements("row-return-button", returnButton));
+		tab1.getNavigation().set(0, textBox);
+		tab1.getNavigation().set(1, select);
+		tab1.getNavigation().set(2, returnButton);
+		tabView.add(tab1);
+		
+		Tab tab2 = new Tab("tab2", "Tab 2");
 		Column xsHiddenColumn = Column.withElements("col-not-visible-xs", UiUtils.createLabel("Not visible on XS screen size"));
 		xsHiddenColumn.setLayout(new LayoutRuleset("xs-0 sm-12"));
-		modal.add(Row.withElements("row-not-visible-xs", xsHiddenColumn));
+		tab2.add(Row.withElements("row-not-visible-xs", xsHiddenColumn));
+		tabView.add(tab2);
+		modal.add(tabView);
 		
-		modal.add(Row.withElements("row-return-button", returnButton));
-		
-		modal.getNavigation().set(0, textBox);
-		modal.getNavigation().set(1, select);
-		modal.getNavigation().set(2, returnButton);
 		modal.setVisibility(Visibility.VISIBLE);
 		uiContainer.add(modal);
-		uiContainer.setActiveModal(modal);
+		uiContainer.setActiveNavigation(modal);
 		
 		bottomRightFrame = new AbsoluteContainer("bottom-right-frame");
 		bottomRightFrame.setLayout(new LayoutRuleset("xs-12 sm-6 md-4 lg-3"));

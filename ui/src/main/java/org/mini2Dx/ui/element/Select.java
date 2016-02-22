@@ -14,6 +14,7 @@ package org.mini2Dx.ui.element;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.SelectRenderNode;
@@ -25,6 +26,7 @@ public class Select<V> extends UiElement implements Actionable {
 	private final List<SelectOption<V>> options = new ArrayList<SelectOption<V>>(1);
 	private List<ActionListener> actionListeners;
 	
+	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
 	private boolean enabled = true;
 	private SelectRenderNode renderNode;
 	private int selectedIndex = 0;
@@ -179,6 +181,21 @@ public class Select<V> extends UiElement implements Actionable {
 	public void setZIndex(int zIndex) {
 		this.zIndex = zIndex;
 		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+	
+	public LayoutRuleset getLayout() {
+		return layout;
+	}
+	
+	public void setLayout(LayoutRuleset layoutRuleset) {
+		if(layoutRuleset == null) {
+			return;
+		}
+		this.layout = layoutRuleset;
 		if(renderNode == null) {
 			return;
 		}

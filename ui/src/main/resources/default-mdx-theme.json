@@ -193,5 +193,24 @@
         }
       }
     }
+  },
+  "tabs": {
+    "default": {
+      "rules": {
+        "XS": {
+          "tabButtonStyle": "default",
+          "tabMenuBackground": "default-mdx-theme/tab_menu_bg.png",
+          "tabBackground": "default-mdx-theme/tab_bg.png",
+          "paddingTop": 24,
+          "paddingBottom": 24,
+          "paddingLeft": 24,
+          "paddingRight": 24,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    }
   }
 }

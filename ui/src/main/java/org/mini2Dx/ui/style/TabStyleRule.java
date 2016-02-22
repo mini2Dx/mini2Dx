@@ -22,7 +22,9 @@ public class TabStyleRule extends StyleRule {
 	@Field(optional=true)
 	private int ninePatchTop, ninePatchBottom, ninePatchLeft, ninePatchRight;
 	@Field
-	private String background;
+	private String tabMenuBackground;
+	@Field
+	private String tabBackground;
 	
 	private NinePatch backgroundNinePatch;
 	
@@ -35,12 +37,12 @@ public class TabStyleRule extends StyleRule {
 	
 	@Override
 	public void loadDependencies(UiTheme theme, Array<AssetDescriptor> dependencies) {
-		dependencies.add(new AssetDescriptor<Texture>(background, Texture.class));
+		dependencies.add(new AssetDescriptor<Texture>(tabBackground, Texture.class));
 	}
 	
 	@Override
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
-		backgroundNinePatch = new NinePatch(assetManager.get(background, Texture.class), getNinePatchLeft(),
+		backgroundNinePatch = new NinePatch(assetManager.get(tabBackground, Texture.class), getNinePatchLeft(),
 				getNinePatchRight(), getNinePatchTop(), getNinePatchBottom());
 	}
 
@@ -52,12 +54,12 @@ public class TabStyleRule extends StyleRule {
 		return tabButtonStyle;
 	}
 
-	public String getBackground() {
-		return background;
+	public String getTabBackground() {
+		return tabBackground;
 	}
 
-	public void setBackground(String background) {
-		this.background = background;
+	public void setTabBackground(String background) {
+		this.tabBackground = background;
 	}
 
 	public int getNinePatchTop() {
