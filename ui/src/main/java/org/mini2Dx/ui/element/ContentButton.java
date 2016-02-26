@@ -90,6 +90,9 @@ public class ContentButton extends Button {
 		if(styleId == null) {
 			return;
 		}
+		if(this.styleId.equals(styleId)) {
+			return;
+		}
 		this.styleId = styleId;
 		
 		if(renderNode == null) {

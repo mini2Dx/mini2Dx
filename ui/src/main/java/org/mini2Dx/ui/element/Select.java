@@ -74,6 +74,9 @@ public class Select<V> extends UiElement implements Actionable {
 		if(styleId == null) {
 			return;
 		}
+		if(this.styleId.equals(styleId)) {
+			return;
+		}
 		this.styleId = styleId;
 		
 		if(renderNode == null) {

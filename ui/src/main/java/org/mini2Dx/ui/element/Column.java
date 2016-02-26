@@ -113,6 +113,9 @@ public class Column extends UiElement {
 		if(styleId == null) {
 			return;
 		}
+		if(this.styleId.equals(styleId)) {
+			return;
+		}
 		this.styleId = styleId;
 		
 		if(renderNode == null) {
