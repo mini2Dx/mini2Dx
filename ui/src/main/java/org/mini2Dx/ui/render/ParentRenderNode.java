@@ -151,6 +151,11 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 			return;
 		}
 		this.childDirty = childDirty;
+		
+		if (parent == null) {
+			return;
+		}
+		parent.setChildDirty(true);
 	}
 
 	@Override

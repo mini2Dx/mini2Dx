@@ -27,6 +27,7 @@ import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.style.ruleset.ButtonStyleRuleset;
+import org.mini2Dx.ui.style.ruleset.ColumnStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.ContainerStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.DefaultStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.LabelStyleRuleset;
@@ -54,7 +55,7 @@ public class UiTheme {
 	@Field
 	private Map<String, ButtonStyleRuleset> buttons;
 	@Field
-	private Map<String, DefaultStyleRuleset> columns;
+	private Map<String, ColumnStyleRuleset> columns;
 	@Field
 	private Map<String, ContainerStyleRuleset> containers;
 	@Field
@@ -99,7 +100,7 @@ public class UiTheme {
 		for (StyleRuleset<ButtonStyleRule> buttonRuleset : buttons.values()) {
 			buttonRuleset.validate(this);
 		}
-		for (StyleRuleset<StyleRule> columnRuleset : columns.values()) {
+		for (StyleRuleset<ColumnStyleRule> columnRuleset : columns.values()) {
 			columnRuleset.validate(this);
 		}
 		for (StyleRuleset<ContainerStyleRule> containerRuleset : containers.values()) {
@@ -129,7 +130,7 @@ public class UiTheme {
 			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Button Ruleset: " + id + "] Dependencies loaded");
 		}
 		for (String id : columns.keySet()) {
-			StyleRuleset<StyleRule> columnRuleset = columns.get(id);
+			StyleRuleset<ColumnStyleRule> columnRuleset = columns.get(id);
 			columnRuleset.loadDependencies(this, dependencies);
 			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Column Ruleset: " + id + "] Dependencies loaded");
 		}
@@ -172,7 +173,7 @@ public class UiTheme {
 		for (StyleRuleset<ButtonStyleRule> buttonRuleset : buttons.values()) {
 			buttonRuleset.prepareAssets(this, fileHandleResolver, assetManager);
 		}
-		for (StyleRuleset<StyleRule> columnRuleset : columns.values()) {
+		for (StyleRuleset<ColumnStyleRule> columnRuleset : columns.values()) {
 			columnRuleset.prepareAssets(this, fileHandleResolver, assetManager);
 		}
 		for (StyleRuleset<ContainerStyleRule> containerRuleset : containers.values()) {
@@ -198,6 +199,10 @@ public class UiTheme {
 	public boolean containsButtonStyleRuleset(String id) {
 		return buttons.containsKey(id);
 	}
+	
+	public boolean containsColumnStyleRuleset(String id) {
+		return columns.containsKey(id);
+	}
 
 	public ButtonStyleRule getStyleRule(Button button, ScreenSize screenSize) {
 		StyleRuleset<ButtonStyleRule> ruleset = buttons.get(button.getStyleId());
@@ -207,8 +212,12 @@ public class UiTheme {
 		return ruleset.getStyleRule(screenSize);
 	}
 
-	public StyleRule getStyleRule(Column column, ScreenSize screenSize) {
-		return getStyleRule(column, screenSize, columns);
+	public ColumnStyleRule getStyleRule(Column column, ScreenSize screenSize) {
+		StyleRuleset<ColumnStyleRule> ruleset = columns.get(column.getStyleId());
+		if (ruleset == null) {
+			ruleset = columns.get(DEFAULT_STYLE_ID);
+		}
+		return ruleset.getStyleRule(screenSize);
 	}
 
 	public ContainerStyleRule getStyleRule(Container container, ScreenSize screenSize) {
@@ -275,9 +284,9 @@ public class UiTheme {
 		buttons.put(rulesetId, ruleset);
 	}
 	
-	public void putColumnStyleRuleset(String rulesetId, DefaultStyleRuleset ruleset) {
+	public void putColumnStyleRuleset(String rulesetId, ColumnStyleRuleset ruleset) {
 		if(columns == null) {
-			columns = new HashMap<String, DefaultStyleRuleset>();
+			columns = new HashMap<String, ColumnStyleRuleset>();
 		}
 		columns.put(rulesetId, ruleset);
 	}

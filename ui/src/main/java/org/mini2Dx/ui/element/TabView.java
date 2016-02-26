@@ -145,6 +145,7 @@ public class TabView extends UiElement implements Navigatable {
 		}
 		((NavigatableRenderNode) renderNode).syncHotkeys(controllerHotKeyOperations, keyboardHotKeyOperations);
 		syncTabTitles();
+		syncChildStyles();
 	}
 	
 	private void syncTabTitles() {
@@ -152,6 +153,7 @@ public class TabView extends UiElement implements Navigatable {
 			//Tabs added
 			for(int i = tabButtons.size(); i < tabs.size(); i++) {
 				TextButton tabButton = new TextButton();
+				tabButton.setVisibility(Visibility.VISIBLE);
 				tabButton.setText(tabs.get(i).getTitle());
 				tabButton.addActionListener(new TabButtonActionListener(this, i));
 				tabButtons.add(tabButton);
@@ -170,6 +172,16 @@ public class TabView extends UiElement implements Navigatable {
 				tab.clearTitleChanged();
 			}
 		}
+	}
+	
+	private void syncChildStyles() {
+		tabMenuRow.setStyleId(renderNode.getTabMenuStyleId());
+		for(int i = 0; i < tabs.size(); i++) {
+			tabs.get(i).setStyleId(renderNode.getTabContentStyleId());
+			tabButtons.get(i).setStyleId(renderNode.getTabButtonStyleId());
+		}
+		previousTabButton.setStyleId(renderNode.getTabButtonStyleId());
+		nextTabButton.setStyleId(renderNode.getTabButtonStyleId());
 	}
 
 	@Override
@@ -209,6 +221,9 @@ public class TabView extends UiElement implements Navigatable {
 	@Override
 	public void setStyleId(String styleId) {
 		if(styleId == null) {
+			return;
+		}
+		if(this.styleId.equals(styleId)) {
 			return;
 		}
 		this.styleId = styleId;

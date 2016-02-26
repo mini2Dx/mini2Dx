@@ -79,6 +79,36 @@
           "marginRight": 0
         }
       }
+    },
+    "tab-menu": {
+      "rules": {
+        "XS": {
+          "background": "default-mdx-theme/tab_menu_bg.png",
+          "paddingTop": 12,
+          "paddingBottom": 12,
+          "paddingLeft": 12,
+          "paddingRight": 12,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    },
+    "tab-content": {
+      "rules": {
+        "XS": {
+          "background": "default-mdx-theme/tab_bg.png",
+          "paddingTop": 12,
+          "paddingBottom": 12,
+          "paddingLeft": 12,
+          "paddingRight": 12,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
     }
   },
   "containers": {
@@ -198,13 +228,13 @@
     "default": {
       "rules": {
         "XS": {
-          "tabButtonStyle": "default",
-          "tabMenuBackground": "default-mdx-theme/tab_menu_bg.png",
-          "tabBackground": "default-mdx-theme/tab_bg.png",
-          "paddingTop": 24,
-          "paddingBottom": 24,
-          "paddingLeft": 24,
-          "paddingRight": 24,
+          "buttonStyle": "default",
+          "menuStyle": "tab-menu",
+          "tabStyle": "tab-content",
+          "paddingTop": 0,
+          "paddingBottom": 0,
+          "paddingLeft": 0,
+          "paddingRight": 0,
           "marginTop": 0,
           "marginBottom": 0,
           "marginLeft": 0,

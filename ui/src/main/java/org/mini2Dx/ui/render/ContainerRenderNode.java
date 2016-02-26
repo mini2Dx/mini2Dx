@@ -36,13 +36,6 @@ public abstract class ContainerRenderNode extends AbstractColumnRenderNode<Conta
 		}
 		super.layout(layoutState);
 	}
-
-	@Override
-	protected void renderElement(Graphics g) {
-		g.drawNinePatch(style.getBackgroundNinePatch(), getRenderX() + style.getMarginLeft(),
-				getRenderY() + style.getMarginTop(), getRenderWidth(), getRenderHeight());
-		super.renderElement(g);
-	}
 	
 	@Override
 	public RenderNode<?, ?> getElementById(String id) {

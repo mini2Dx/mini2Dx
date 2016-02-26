@@ -13,12 +13,13 @@ package org.mini2Dx.ui.render;
 
 import org.mini2Dx.ui.element.ScrollBox;
 import org.mini2Dx.ui.layout.LayoutState;
+import org.mini2Dx.ui.style.ColumnStyleRule;
 import org.mini2Dx.ui.style.StyleRule;
 
 /**
  *
  */
-public class ScrollBoxRenderNode extends AbstractColumnRenderNode<StyleRule> {
+public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ColumnStyleRule> {
 	
 	public ScrollBoxRenderNode(ParentRenderNode<?, ?> parent, ScrollBox row) {
 		super(parent, row);
@@ -45,7 +46,7 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<StyleRule> {
 	}
 
 	@Override
-	protected StyleRule determineStyleRule(LayoutState layoutState) {
+	protected ColumnStyleRule determineStyleRule(LayoutState layoutState) {
 		// TODO Auto-generated method stub
 		return null;
 	}

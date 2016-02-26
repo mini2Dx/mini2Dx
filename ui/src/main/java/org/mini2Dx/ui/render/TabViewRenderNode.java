@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Queue;
 
 import org.mini2Dx.core.controller.button.ControllerButton;
-import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.Visibility;
@@ -123,11 +122,15 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> i
 		return 0f;
 	}
 	
-	@Override
-	public void setChildDirty(boolean childDirty) {
-		if (!childDirty) {
-			return;
-		}
-		this.childDirty = childDirty;
+	public String getTabMenuStyleId() {
+		return style.getMenuStyle();
+	}
+	
+	public String getTabButtonStyleId() {
+		return style.getButtonStyle();
+	}
+	
+	public String getTabContentStyleId() {
+		return style.getTabStyle();
 	}
 }

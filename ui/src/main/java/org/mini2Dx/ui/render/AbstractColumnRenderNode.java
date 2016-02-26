@@ -11,18 +11,28 @@
  */
 package org.mini2Dx.ui.render;
 
+import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.layout.LayoutState;
-import org.mini2Dx.ui.style.StyleRule;
+import org.mini2Dx.ui.style.ColumnStyleRule;
 
 /**
  *
  */
-public abstract class AbstractColumnRenderNode<S extends StyleRule> extends ParentRenderNode<Column, S> {
+public abstract class AbstractColumnRenderNode<S extends ColumnStyleRule> extends ParentRenderNode<Column, S> {
 
 	public AbstractColumnRenderNode(ParentRenderNode<?, ?> parent, Column column) {
 		super(parent, column);
+	}
+	
+	@Override
+	protected void renderElement(Graphics g) {
+		if(style.getBackgroundNinePatch() != null) {
+			g.drawNinePatch(style.getBackgroundNinePatch(), getRenderX() + style.getMarginLeft(),
+					getRenderY() + style.getMarginTop(), getRenderWidth(), getRenderHeight());
+		}
+		super.renderElement(g);
 	}
 
 	@Override

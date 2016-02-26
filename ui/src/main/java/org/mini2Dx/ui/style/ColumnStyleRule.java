@@ -11,60 +11,82 @@
  */
 package org.mini2Dx.ui.style;
 
-import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.core.serialization.annotation.Field;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 
 /**
  *
  */
-public class TabStyleRule extends ColumnStyleRule {
-	@Field
-	private String buttonStyle;
-	@Field
-	private String menuStyle;
+public class ColumnStyleRule extends StyleRule {
 	@Field(optional=true)
-	private String tabStyle;
+	private String background;
+	@Field(optional=true)
+	private int ninePatchTop, ninePatchBottom, ninePatchLeft, ninePatchRight;
+	
+	private NinePatch backgroundNinePatch;
 	
 	@Override
 	public void validate(UiTheme theme) {
-		super.validate(theme);
-		if(!theme.containsButtonStyleRuleset(buttonStyle)) {
-			throw new MdxException("No style with id '" + buttonStyle + "' for buttons. Required by " + TabStyleRule.class.getSimpleName());
-		}
-		if(!theme.containsColumnStyleRuleset(menuStyle)) {
-			throw new MdxException("No style with id '" + menuStyle + "' for columns/rows. Required by " + TabStyleRule.class.getSimpleName());
-		}
-		if(tabStyle != null && !theme.containsColumnStyleRuleset(tabStyle)) {
-			throw new MdxException("No style with id '" + tabStyle + "' for columns/rows. Required by " + TabStyleRule.class.getSimpleName());
+	}
+	
+	@Override
+	public void loadDependencies(UiTheme theme, Array<AssetDescriptor> dependencies) {
+		if(background != null) {
+			dependencies.add(new AssetDescriptor<Texture>(background, Texture.class));
 		}
 	}
-
-	public String getButtonStyle() {
-		return buttonStyle;
+	
+	@Override
+	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
+		if(background != null) {
+			backgroundNinePatch = new NinePatch(assetManager.get(background, Texture.class), getNinePatchLeft(),
+					getNinePatchRight(), getNinePatchTop(), getNinePatchBottom());
+		}
 	}
 
-	public void setButtonStyle(String buttonStyle) {
-		this.buttonStyle = buttonStyle;
+	public NinePatch getBackgroundNinePatch() {
+		return backgroundNinePatch;
 	}
 
-	public String getMenuStyle() {
-		return menuStyle;
+	public String getBackground() {
+		return background;
 	}
 
-	public void setMenuStyle(String menuColumnStyle) {
-		this.menuStyle = menuColumnStyle;
+	public void setBackground(String background) {
+		this.background = background;
 	}
 
-	public String getTabStyle() {
-		return tabStyle;
+	public int getNinePatchTop() {
+		if(ninePatchTop <= 0) {
+			return getPaddingTop();
+		}
+		return ninePatchTop;
 	}
 
-	public void setTabStyle(String tabStyle) {
-		this.tabStyle = tabStyle;
+	public int getNinePatchBottom() {
+		if(ninePatchBottom <= 0) {
+			return getPaddingBottom();
+		}
+		return ninePatchBottom;
+	}
+
+	public int getNinePatchLeft() {
+		if(ninePatchLeft <= 0) {
+			return getPaddingLeft();
+		}
+		return ninePatchLeft;
+	}
+
+	public int getNinePatchRight() {
+		if(ninePatchRight <= 0) {
+			return getPaddingRight();
+		}
+		return ninePatchRight;
 	}
 }

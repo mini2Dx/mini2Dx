@@ -339,6 +339,10 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		return zIndex;
 	}
 
+	public ParentRenderNode<?, ?> getParent() {
+		return parent;
+	}
+
 	@Override
 	public String toString() {
 		return "RenderNode [currentArea=" + currentArea + ", targetArea=" + targetArea + ", parent=" + parent.getId()
