@@ -58,10 +58,10 @@ public abstract class AbstractColumnRenderNode<S extends ColumnStyleRule> extend
 		}
 		float layoutRuleResult = element.getLayout().getPreferredWidth(layoutState);
 		if(layoutRuleResult <= 0f) {
-			element.setVisibility(Visibility.HIDDEN);
+			hiddenByLayoutRule = true;
 			return 0f;
-		} else if(layoutState.isScreenSizeChanged() && element.getVisibility() == Visibility.HIDDEN) {
-			element.setVisibility(Visibility.VISIBLE);
+		} else {
+			hiddenByLayoutRule = false;
 		}
 		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight();
 	}

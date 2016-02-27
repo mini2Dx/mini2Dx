@@ -40,6 +40,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	protected float preferredContentWidth, preferredContentHeight;
 	protected float xOffset, yOffset;
 	protected int zIndex;
+	protected boolean hiddenByLayoutRule = false;
 	protected boolean initialLayoutOccurred = false;
 	private float relativeX, relativeY;
 	private boolean dirty;
@@ -198,6 +199,9 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public boolean isIncludedInLayout() {
+		if (hiddenByLayoutRule) {
+			return false;
+		}
 		if (element.getVisibility() == Visibility.HIDDEN) {
 			return false;
 		}
@@ -206,6 +210,9 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 
 	public boolean isIncludedInRender() {
 		if (!initialLayoutOccurred) {
+			return false;
+		}
+		if (hiddenByLayoutRule) {
 			return false;
 		}
 		if (style == null) {

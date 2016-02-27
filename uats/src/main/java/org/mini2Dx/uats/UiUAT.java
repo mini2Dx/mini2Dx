@@ -13,6 +13,7 @@ package org.mini2Dx.uats;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.core.game.GameResizeListener;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
@@ -27,6 +28,7 @@ import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.element.AbsoluteContainer;
 import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.AlignedModal;
+import org.mini2Dx.ui.element.Button;
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.Row;
@@ -47,7 +49,7 @@ import com.badlogic.gdx.assets.AssetManager;
 /**
  * A user acceptance test for the mini2Dx responsive UI framework
  */
-public class UiUAT extends BasicGameScreen {
+public class UiUAT extends BasicGameScreen implements GameResizeListener {
 	private final AssetManager assetManager;
 	
 	private UiContainer uiContainer;
@@ -67,7 +69,13 @@ public class UiUAT extends BasicGameScreen {
 	@Override
 	public void initialise(GameContainer gc) {
 		uiContainer = new UiContainer(gc, assetManager);
+		gc.addResizeListener(this);
 		initialiseUi();
+	}
+	
+	@Override
+	public void onResize(int width, int height) {
+		uiContainer.set(width, height);
 	}
 
 	@Override
@@ -192,6 +200,16 @@ public class UiUAT extends BasicGameScreen {
 		
 		Tab tab3 = new Tab("tab3", "Tab 3");
 		tab3.add(Row.withElements(UiUtils.createLabel("Third tab")));
+		Button hiddenButton = UiUtils.createButton("Hidden", new ActionListener() {
+			
+			@Override
+			public void onActionEnd(Actionable source) {}
+			
+			@Override
+			public void onActionBegin(Actionable source) {}
+		});
+		hiddenButton.setVisibility(Visibility.HIDDEN);
+		tab3.add(Row.withElements(hiddenButton));
 		tabView.add(tab3);
 		
 		modal.add(tabView);
