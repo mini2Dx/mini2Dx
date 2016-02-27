@@ -45,6 +45,9 @@ public class ImageButtonRenderNode extends RenderNode<ImageButton, ButtonStyleRu
 		if (button != Buttons.LEFT) {
 			return null;
 		}
+		if (!element.isEnabled()) {
+			return null;
+		}
 		if (currentArea.contains(screenX, screenY)) {
 			setState(NodeState.ACTION);
 			return this;

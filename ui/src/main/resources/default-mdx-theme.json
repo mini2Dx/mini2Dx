@@ -63,6 +63,27 @@
           "marginRight": 0
         }
       }
+    },
+    "tab-button": {
+      "rules": {
+        "XS": {
+          "normal": "default-mdx-theme/button_tab_normal.png",
+          "hover": "default-mdx-theme/button_tab_hover.png",
+          "action": "default-mdx-theme/button_tab_active.png",
+          "disabled": "default-mdx-theme/button_tab_disabled.png",
+          "fontSize": 12,
+          "font": "default",
+          "textColor": "254,254,254",
+          "paddingTop": 12,
+          "paddingBottom": 12,
+          "paddingLeft": 12,
+          "paddingRight": 12,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
     }
   },
   "columns": {
@@ -85,13 +106,14 @@
         "XS": {
           "background": "default-mdx-theme/tab_menu_bg.png",
           "paddingTop": 12,
-          "paddingBottom": 12,
+          "paddingBottom": 0,
           "paddingLeft": 12,
           "paddingRight": 12,
           "marginTop": 0,
           "marginBottom": 0,
           "marginLeft": 0,
-          "marginRight": 0
+          "marginRight": 0,
+          "ninePatchBottom": 12
         }
       }
     },
@@ -183,6 +205,23 @@
           "marginRight": 0
         }
       }
+    },
+    "tab-button-label": {
+      "rules": {
+        "XS": {
+          "fontSize": 12,
+          "font": "default",
+          "textColor": "1,1,1",
+          "paddingTop": 0,
+          "paddingBottom": 0,
+          "paddingLeft": 0,
+          "paddingRight": 0,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
     }
   },
   "selects": {
@@ -228,7 +267,9 @@
     "default": {
       "rules": {
         "XS": {
-          "buttonStyle": "default",
+          "buttonStyle": "tab-button",
+          "buttonLabelStyle": "tab-button-label",
+          "buttonImageStyle": "default",
           "menuStyle": "tab-menu",
           "tabStyle": "tab-content",
           "paddingTop": 0,

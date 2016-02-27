@@ -25,6 +25,10 @@ import com.badlogic.gdx.utils.Array;
 public class TabStyleRule extends ColumnStyleRule {
 	@Field
 	private String buttonStyle;
+	@Field(optional=true)
+	private String buttonLabelStyle;
+	@Field(optional=true)
+	private String buttonImageStyle;
 	@Field
 	private String menuStyle;
 	@Field(optional=true)
@@ -35,6 +39,12 @@ public class TabStyleRule extends ColumnStyleRule {
 		super.validate(theme);
 		if(!theme.containsButtonStyleRuleset(buttonStyle)) {
 			throw new MdxException("No style with id '" + buttonStyle + "' for buttons. Required by " + TabStyleRule.class.getSimpleName());
+		}
+		if(buttonLabelStyle != null && !theme.containsLabelStyleRuleset(buttonLabelStyle)) {
+			throw new MdxException("No style with id '" + buttonLabelStyle + "' for labels. Required by " + TabStyleRule.class.getSimpleName());
+		}
+		if(buttonImageStyle != null && !theme.containsImageStyleRuleset(buttonImageStyle)) {
+			throw new MdxException("No style with id '" + buttonImageStyle + "' for images. Required by " + TabStyleRule.class.getSimpleName());
 		}
 		if(!theme.containsColumnStyleRuleset(menuStyle)) {
 			throw new MdxException("No style with id '" + menuStyle + "' for columns/rows. Required by " + TabStyleRule.class.getSimpleName());
@@ -50,6 +60,22 @@ public class TabStyleRule extends ColumnStyleRule {
 
 	public void setButtonStyle(String buttonStyle) {
 		this.buttonStyle = buttonStyle;
+	}
+
+	public String getButtonLabelStyle() {
+		return buttonLabelStyle;
+	}
+
+	public void setButtonLabelStyle(String buttonLabelStyle) {
+		this.buttonLabelStyle = buttonLabelStyle;
+	}
+
+	public String getButtonImageStyle() {
+		return buttonImageStyle;
+	}
+
+	public void setButtonImageStyle(String buttonImageStyle) {
+		this.buttonImageStyle = buttonImageStyle;
 	}
 
 	public String getMenuStyle() {

@@ -203,6 +203,14 @@ public class UiTheme {
 	public boolean containsColumnStyleRuleset(String id) {
 		return columns.containsKey(id);
 	}
+	
+	public boolean containsImageStyleRuleset(String id) {
+		return images.containsKey(id);
+	}
+	
+	public boolean containsLabelStyleRuleset(String id) {
+		return labels.containsKey(id);
+	}
 
 	public ButtonStyleRule getStyleRule(Button button, ScreenSize screenSize) {
 		StyleRuleset<ButtonStyleRule> ruleset = buttons.get(button.getStyleId());

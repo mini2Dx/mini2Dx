@@ -24,7 +24,7 @@ import org.mini2Dx.ui.render.ParentRenderNode;
  */
 public class ContentButton extends Button {
 	protected final List<UiElement> children = new ArrayList<UiElement>(1);
-	private ContentButtonRenderNode renderNode;
+	protected ContentButtonRenderNode renderNode;
 	
 	public ContentButton() {
 		this(null);

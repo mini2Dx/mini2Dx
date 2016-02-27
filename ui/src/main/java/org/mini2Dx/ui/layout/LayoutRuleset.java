@@ -29,6 +29,9 @@ public class LayoutRuleset {
 	private final Set<InputSource> hiddenByInput = new HashSet<InputSource>();
 	private final Map<ScreenSize, OffsetRule> offsetRules = new HashMap<ScreenSize, OffsetRule>();
 
+	private boolean hiddenByInputSource = false;
+	private int currentSizeInColumns = 0;
+	
 	public LayoutRuleset(String rules) {
 		String[] rule = rules.split(" ");
 		for (int i = 0; i < rule.length; i++) {
@@ -100,14 +103,24 @@ public class LayoutRuleset {
 	}
 	
 	public boolean isHiddenByInputSource(InputSource lastInputSource) {
-		return hiddenByInput.contains(lastInputSource);
+		hiddenByInputSource = hiddenByInput.contains(lastInputSource);
+		return hiddenByInputSource;
 	}
 	
 	public float getPreferredWidth(LayoutState layoutState) {
-		return layoutState.getColumnWidth() * sizeRules.get(layoutState.getScreenSize()).getColumns();
+		currentSizeInColumns = sizeRules.get(layoutState.getScreenSize()).getColumns();
+		return layoutState.getColumnWidth() * currentSizeInColumns;
 	}
 	
 	public float getXOffset(LayoutState layoutState) {
 		return layoutState.getColumnWidth() * offsetRules.get(layoutState.getScreenSize()).getColumns();
+	}
+
+	public int getCurrentSizeInColumns() {
+		return currentSizeInColumns;
+	}
+
+	public boolean isHiddenByInputSource() {
+		return hiddenByInputSource;
 	}
 }

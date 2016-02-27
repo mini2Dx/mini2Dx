@@ -40,6 +40,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	protected float preferredContentWidth, preferredContentHeight;
 	protected float xOffset, yOffset;
 	protected int zIndex;
+	protected boolean initialLayoutOccurred = false;
 	private float relativeX, relativeY;
 	private boolean dirty;
 	private NodeState state = NodeState.NORMAL;
@@ -53,6 +54,9 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public void update(UiContainerRenderTree uiContainer, float delta) {
+		if (!initialLayoutOccurred) {
+			return;
+		}
 		if (style == null) {
 			throw new MdxException("No style found for element: " + getId());
 		}
@@ -93,6 +97,9 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public void interpolate(float alpha) {
+		if (!initialLayoutOccurred) {
+			return;
+		}
 		currentArea.interpolate(null, alpha);
 	}
 
@@ -187,6 +194,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 			break;
 		}
 		dirty = false;
+		initialLayoutOccurred = true;
 	}
 
 	public boolean isIncludedInLayout() {
@@ -197,6 +205,9 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public boolean isIncludedInRender() {
+		if (!initialLayoutOccurred) {
+			return false;
+		}
 		if (style == null) {
 			return false;
 		}

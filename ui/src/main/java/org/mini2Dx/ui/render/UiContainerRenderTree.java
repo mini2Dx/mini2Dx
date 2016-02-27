@@ -75,6 +75,7 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRu
 		setDirty(false);
 		childDirty = false;
 		screenSizeChanged = false;
+		initialLayoutOccurred = true;
 	}
 	
 	@Override

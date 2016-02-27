@@ -22,12 +22,14 @@ import org.mini2Dx.ui.style.ButtonStyleRule;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 /**
  *
  */
 public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule>implements ActionableRenderNode {
-
+	private static GlyphLayout glyphLayout = new GlyphLayout();
+	
 	public TextButtonRenderNode(ParentRenderNode<?, ?> parent, TextButton element) {
 		super(parent, element);
 	}
@@ -38,6 +40,9 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 			return null;
 		}
 		if (button != Buttons.LEFT) {
+			return null;
+		}
+		if (!element.isEnabled()) {
 			return null;
 		}
 		if (currentArea.contains(screenX, screenY)) {
@@ -114,7 +119,8 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
-		return style.getFontSize();
+		glyphLayout.setText(style.getBitmapFont(), element.getText());
+		return glyphLayout.height;
 	}
 
 	@Override

@@ -37,6 +37,9 @@ public class ContentButtonRenderNode extends ParentRenderNode<ContentButton, But
 		if (button != Buttons.LEFT) {
 			return null;
 		}
+		if (!element.isEnabled()) {
+			return null;
+		}
 		if (currentArea.contains(screenX, screenY)) {
 			setState(NodeState.ACTION);
 			return this;

@@ -42,7 +42,7 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 		} else {
 			g.setFont(style.getBitmapFont());
 		}
-
+		
 		g.setColor(style.getColor());
 		g.drawString(element.getText(), getRenderX() + style.getPaddingLeft(), getRenderY() + style.getPaddingTop(),
 				getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight(),

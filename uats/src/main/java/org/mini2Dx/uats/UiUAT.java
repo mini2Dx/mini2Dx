@@ -189,8 +189,12 @@ public class UiUAT extends BasicGameScreen {
 		xsHiddenColumn.setLayout(new LayoutRuleset("xs-0 sm-12"));
 		tab2.add(Row.withElements("row-not-visible-xs", xsHiddenColumn));
 		tabView.add(tab2);
-		modal.add(tabView);
 		
+		Tab tab3 = new Tab("tab3", "Tab 3");
+		tab3.add(Row.withElements(UiUtils.createLabel("Third tab")));
+		tabView.add(tab3);
+		
+		modal.add(tabView);
 		modal.setVisibility(Visibility.VISIBLE);
 		uiContainer.add(modal);
 		uiContainer.setActiveNavigation(modal);

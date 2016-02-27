@@ -53,6 +53,15 @@ public class Column extends UiElement {
 		}
 		return children.remove(element);
 	}
+	
+	public void removeAll() {
+		for(int i = children.size() - 1; i >= 0; i--) {
+			UiElement element = children.remove(i);
+			if(renderNode != null) {
+				element.detach(renderNode);
+			}
+		}
+	}
 
 	@Override
 	public void attach(ParentRenderNode<?, ?> parentRenderNode) {

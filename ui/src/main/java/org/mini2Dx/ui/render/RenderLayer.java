@@ -120,7 +120,7 @@ public class RenderLayer implements Comparable<RenderLayer> {
 				maxHeight = height;
 			}
 		}
-		return maxHeight;
+		return maxHeight - owner.getStyle().getPaddingTop();
 	}
 	
 	public void setState(NodeState state) {

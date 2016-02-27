@@ -34,8 +34,9 @@ public class Tab extends Row implements Navigatable {
 	
 	private UiNavigation navigation = new VerticalUiNavigation();
 	
-	private String title = "";
-	private boolean titleChanged = true;
+	private String title = null;
+	private String iconPath = null;
+	private boolean titleOrIconChanged = true;
 	
 	public Tab() {
 		this(null);
@@ -47,6 +48,7 @@ public class Tab extends Row implements Navigatable {
 	
 	public Tab(String id, String title) {
 		super(id);
+		this.title = title;
 	}
 	
 	@Override
@@ -66,16 +68,31 @@ public class Tab extends Row implements Navigatable {
 	}
 
 	public void setTitle(String title) {
-		if(title == null) {
+		if(this.title == null && title == null) {
 			return;
 		}
-		if(title.equals(this.title)) {
+		if(this.title != null && this.title.equals(title)) {
 			return;
 		}
 		this.title = title;
-		titleChanged = true;
+		titleOrIconChanged = true;
 	}
 	
+	public String getIconPath() {
+		return iconPath;
+	}
+
+	public void setIconPath(String iconPath) {
+		if(this.iconPath == null && iconPath == null) {
+			return;
+		}
+		if(this.iconPath != null && this.iconPath.equals(iconPath)) {
+			return;
+		}
+		this.iconPath = iconPath;
+		titleOrIconChanged = true;
+	}
+
 	@Override
 	public void setZIndex(int zIndex) {
 		throw new MdxException(Tab.class.getSimpleName() + " instances cannot change Z index");
@@ -86,12 +103,12 @@ public class Tab extends Row implements Navigatable {
 		throw new MdxException(Tab.class.getSimpleName() + " visibility is managed by " + TabView.class.getSimpleName());
 	}
 	
-	boolean titleChanged() {
-		return titleChanged;
+	boolean titleOrIconChanged() {
+		return titleOrIconChanged;
 	}
 	
-	void clearTitleChanged() {
-		titleChanged = false;
+	void clearTitleOrIconChanged() {
+		titleOrIconChanged = false;
 	}
 	
 	void activateTab() {

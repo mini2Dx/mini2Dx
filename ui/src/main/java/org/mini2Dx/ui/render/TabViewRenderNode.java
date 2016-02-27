@@ -130,6 +130,14 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> i
 		return style.getButtonStyle();
 	}
 	
+	public String getTabButtonLabelStyleId() {
+		return style.getButtonLabelStyle();
+	}
+	
+	public String getTabButtonImageStyleId() {
+		return style.getButtonImageStyle();
+	}
+	
 	public String getTabContentStyleId() {
 		return style.getTabStyle();
 	}

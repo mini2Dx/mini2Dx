@@ -84,6 +84,7 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 		preferredContentHeight = determinePreferredContentHeight(layoutState);
 		setDirty(false);
 		childDirty = false;
+		initialLayoutOccurred = true;
 	}
 
 	@Override
