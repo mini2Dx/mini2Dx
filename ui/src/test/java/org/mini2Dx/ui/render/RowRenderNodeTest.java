@@ -22,7 +22,7 @@ import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.mock.DummyRenderNode;
 import org.mini2Dx.ui.mock.DummyUiElement;
-import org.mini2Dx.ui.style.StyleRule;
+import org.mini2Dx.ui.style.ColumnStyleRule;
 import org.mini2Dx.ui.style.UiTheme;
 
 import junit.framework.Assert;
@@ -319,7 +319,7 @@ public class RowRenderNodeTest {
 				atLeast(1).of(layoutState).getScreenSize();
 				will(returnValue(ScreenSize.XS));
 				atLeast(1).of(theme).getStyleRule(with(row), with(ScreenSize.XS));
-				will(returnValue(new StyleRule()));
+				will(returnValue(new ColumnStyleRule()));
 				atLeast(1).of(layoutState).getParentWidth();
 				will(returnValue(parentWidth));
 				atLeast(1).of(layoutState).getColumnWidth();
