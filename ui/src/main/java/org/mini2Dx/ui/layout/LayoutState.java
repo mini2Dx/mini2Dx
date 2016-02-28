@@ -16,6 +16,7 @@ import org.mini2Dx.ui.render.UiContainerRenderTree;
 import org.mini2Dx.ui.style.UiTheme;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  *
@@ -29,7 +30,7 @@ public class LayoutState {
 	private final boolean screenSizeChanged;
 	
 	private float parentWidth;
-	private float columnWidth;
+	private int columnWidth;
 
 	public LayoutState(UiContainerRenderTree uiContainer, AssetManager assetManager,  UiTheme theme,
 			ScreenSize screenSize, int totalColumns, float parentWidth, boolean screenSizeChanged) {
@@ -48,7 +49,8 @@ public class LayoutState {
 
 	public void setParentWidth(float parentWidth) {
 		this.parentWidth = parentWidth;
-		this.columnWidth = parentWidth / totalColumns;
+		//Rounding down to prevent (columnWidth * 12) > parentWidth
+		this.columnWidth = (int) parentWidth / totalColumns;
 	}
 
 	public AssetManager getAssetManager() {

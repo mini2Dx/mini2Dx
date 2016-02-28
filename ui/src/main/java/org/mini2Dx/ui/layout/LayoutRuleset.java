@@ -109,6 +109,9 @@ public class LayoutRuleset {
 	
 	public float getPreferredWidth(LayoutState layoutState) {
 		currentSizeInColumns = sizeRules.get(layoutState.getScreenSize()).getColumns();
+		if(currentSizeInColumns == layoutState.getTotalColumns()) {
+			return layoutState.getParentWidth();
+		}
 		return layoutState.getColumnWidth() * currentSizeInColumns;
 	}
 	
