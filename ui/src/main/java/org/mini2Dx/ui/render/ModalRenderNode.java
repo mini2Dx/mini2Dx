@@ -76,6 +76,9 @@ public abstract class ModalRenderNode extends ContainerRenderNode implements Nav
 	@Override
 	public ActionableRenderNode navigate(int keycode) {
 		Actionable actionable = ((Modal) element).getNavigation().navigate(keycode);
+		if(actionable == null) {
+			return null;
+		}
 		return (ActionableRenderNode) getElementById(actionable.getId());
 	}
 
