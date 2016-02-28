@@ -47,11 +47,26 @@ public class Column extends UiElement {
 		element.attach(renderNode);
 	}
 	
+	public void add(int index, UiElement element) {
+		if(element == null) {
+			throw new MdxException("Cannot add null element to Column");
+		}
+		children.add(index, element);
+		if(renderNode == null) {
+			return;
+		}
+		element.attach(renderNode);
+	}
+	
 	public boolean remove(UiElement element) {
 		if(renderNode != null) {
 			element.detach(renderNode);
 		}
 		return children.remove(element);
+	}
+	
+	public boolean remove(int index) {
+		return remove(children.get(index));
 	}
 	
 	public void removeAll() {
