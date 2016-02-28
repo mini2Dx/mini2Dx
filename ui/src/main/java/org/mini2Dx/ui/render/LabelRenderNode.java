@@ -42,7 +42,7 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 		} else {
 			g.setFont(style.getBitmapFont());
 		}
-		
+
 		g.setColor(style.getColor());
 		g.drawString(element.getText(), getRenderX() + style.getPaddingLeft(), getRenderY() + style.getPaddingTop(),
 				getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight(),
@@ -53,13 +53,17 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if(element.isResponsive()) {
-			return layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight();
+		float availableWidth = layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight();
+		if (element.isResponsive()) {
+			return availableWidth;
 		} else {
 			if (style.getBitmapFont() == null) {
 				glyphLayout.setText(font, element.getText());
 			} else {
 				glyphLayout.setText(style.getBitmapFont(), element.getText());
+			}
+			if (glyphLayout.width > availableWidth) {
+				return availableWidth;
 			}
 			return glyphLayout.width;
 		}
@@ -68,9 +72,11 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
 		if (style.getBitmapFont() == null) {
-			glyphLayout.setText(font, element.getText());
+			glyphLayout.setText(font, element.getText(), Color.WHITE, preferredContentWidth,
+					element.getHorizontalAlignment().getAlignValue(), true);
 		} else {
-			glyphLayout.setText(style.getBitmapFont(), element.getText());
+			glyphLayout.setText(style.getBitmapFont(), element.getText(), Color.WHITE, preferredContentWidth,
+					element.getHorizontalAlignment().getAlignValue(), true);
 		}
 		return glyphLayout.height;
 	}
