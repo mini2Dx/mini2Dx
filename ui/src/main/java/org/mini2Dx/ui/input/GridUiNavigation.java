@@ -69,6 +69,9 @@ public class GridUiNavigation implements UiNavigation {
 
 	@Override
 	public Actionable navigate(int keycode) {
+		if(navigation.size() == 0) {
+			return null;
+		}
 		switch(keycode) {
 		case Keys.UP:
 			if(cursorY > 0) {

@@ -37,6 +37,9 @@ public class VerticalUiNavigation implements UiNavigation {
 
 	@Override
 	public Actionable navigate(int keycode) {
+		if(navigation.size() == 0) {
+			return null;
+		}
 		switch (keycode) {
 		case Keys.UP:
 			cursor = cursor > 0 ? cursor - 1 : navigation.size() - 1;
