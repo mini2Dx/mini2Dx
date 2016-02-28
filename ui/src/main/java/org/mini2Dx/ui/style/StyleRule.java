@@ -22,9 +22,9 @@ import com.badlogic.gdx.utils.Array;
  *
  */
 public class StyleRule {
-	@Field
+	@Field(optional=true)
 	private int paddingTop, paddingBottom, paddingLeft, paddingRight;
-	@Field
+	@Field(optional=true)
 	private int marginTop, marginBottom, marginLeft, marginRight;
 	
 	public void validate(UiTheme theme) {
