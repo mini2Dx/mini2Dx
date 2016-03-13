@@ -125,7 +125,7 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 
 	@Override
 	protected float determineXOffset(LayoutState layoutState) {
-		return 0f;
+		return element.getLayout().getXOffset(layoutState);
 	}
 
 	@Override

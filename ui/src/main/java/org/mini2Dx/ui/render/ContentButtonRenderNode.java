@@ -114,7 +114,7 @@ public class ContentButtonRenderNode extends ParentRenderNode<ContentButton, But
 
 	@Override
 	protected float determineXOffset(LayoutState layoutState) {
-		return 0f;
+		return element.getLayout().getXOffset(layoutState);
 	}
 
 	@Override

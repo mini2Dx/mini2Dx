@@ -127,7 +127,7 @@ public class ImageButtonRenderNode extends RenderNode<ImageButton, ButtonStyleRu
 
 	@Override
 	protected float determineXOffset(LayoutState layoutState) {
-		return 0f;
+		return element.getLayout().getXOffset(layoutState);
 	}
 
 	@Override
