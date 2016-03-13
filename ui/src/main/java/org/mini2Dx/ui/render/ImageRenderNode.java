@@ -32,7 +32,8 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 		if (textureRegion == null) {
 			return;
 		}
-		g.drawTextureRegion(textureRegion, getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight());
+		g.drawTextureRegion(textureRegion, getRenderX() + style.getPaddingLeft(), getRenderY() + style.getPaddingTop(),
+				getRenderWidth(), getRenderHeight());
 	}
 
 	@Override
