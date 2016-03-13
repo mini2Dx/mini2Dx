@@ -322,7 +322,7 @@ public class RowRenderNodeTest {
 				will(returnValue(new ColumnStyleRule()));
 				atLeast(1).of(layoutState).getParentWidth();
 				will(returnValue(parentWidth));
-				atLeast(1).of(layoutState).getColumnWidth();
+				atLeast(1).of(layoutState).getColumnWidth(with(any(Integer.class)));
 				will(returnValue(parentWidth / 12f));
 				atLeast(1).of(layoutState).setParentWidth(with(any(Float.class)));
 			}

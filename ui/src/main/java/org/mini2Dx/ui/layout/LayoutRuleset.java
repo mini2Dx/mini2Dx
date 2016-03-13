@@ -112,11 +112,11 @@ public class LayoutRuleset {
 		if(currentSizeInColumns == layoutState.getTotalColumns()) {
 			return layoutState.getParentWidth();
 		}
-		return layoutState.getColumnWidth() * currentSizeInColumns;
+		return layoutState.getColumnWidth(currentSizeInColumns);
 	}
 	
 	public float getXOffset(LayoutState layoutState) {
-		return layoutState.getColumnWidth() * offsetRules.get(layoutState.getScreenSize()).getColumns();
+		return layoutState.getColumnWidth(offsetRules.get(layoutState.getScreenSize()).getColumns());
 	}
 
 	public int getCurrentSizeInColumns() {

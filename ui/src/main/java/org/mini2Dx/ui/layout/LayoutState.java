@@ -26,11 +26,10 @@ public class LayoutState {
 	private final AssetManager assetManager;
 	private final UiTheme theme;
 	private final ScreenSize screenSize;
-	private final int totalColumns;
+	private final float totalColumns;
 	private final boolean screenSizeChanged;
 	
 	private float parentWidth;
-	private int columnWidth;
 
 	public LayoutState(UiContainerRenderTree uiContainer, AssetManager assetManager,  UiTheme theme,
 			ScreenSize screenSize, int totalColumns, float parentWidth, boolean screenSizeChanged) {
@@ -49,8 +48,6 @@ public class LayoutState {
 
 	public void setParentWidth(float parentWidth) {
 		this.parentWidth = parentWidth;
-		//Rounding down to prevent (columnWidth * 12) > parentWidth
-		this.columnWidth = (int) parentWidth / totalColumns;
 	}
 
 	public AssetManager getAssetManager() {
@@ -62,11 +59,14 @@ public class LayoutState {
 	}
 
 	public int getTotalColumns() {
-		return totalColumns;
+		return (int) totalColumns;
 	}
 
-	public float getColumnWidth() {
-		return columnWidth;
+	public float getColumnWidth(int columns) {
+		if(columns <= 0) {
+			return 0f;
+		}
+		return (int) ((columns / totalColumns) * parentWidth);
 	}
 
 	public UiTheme getTheme() {
@@ -88,6 +88,6 @@ public class LayoutState {
 	@Override
 	public String toString() {
 		return "LayoutState [theme=" + theme.getId() + ", screenSize=" + screenSize + ", totalColumns=" + totalColumns
-				+ ", parentWidth=" + parentWidth + ", columnWidth=" + columnWidth + "]";
+				+ ", parentWidth=" + parentWidth + "]";
 	}
 }
