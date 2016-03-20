@@ -351,7 +351,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 		this.activeNavigation = activeNavigation;
 	}
 
-	public void clearActiveModal() {
+	public void clearActiveNavigation() {
 		this.activeTextInput = null;
 		this.activeAction = null;
 		this.activeNavigation = null;
