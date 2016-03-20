@@ -299,8 +299,10 @@ public class UiContainer extends UiElement implements InputProcessor {
 				activeAction.setState(NodeState.NORMAL);
 			}
 			ActionableRenderNode result = activeNavigation.navigate(keycode);
-			result.setState(NodeState.HOVER);
-			setActiveAction(result);
+			if(result != null) {
+				result.setState(NodeState.HOVER);
+				setActiveAction(result);
+			}
 		} else {
 			hotkeyAction.endAction();
 		}
