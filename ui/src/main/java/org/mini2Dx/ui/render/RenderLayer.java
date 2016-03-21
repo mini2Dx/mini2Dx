@@ -123,6 +123,12 @@ public class RenderLayer implements Comparable<RenderLayer> {
 		return maxHeight - owner.getStyle().getPaddingTop();
 	}
 	
+	public void setDirty(boolean dirty) {
+		for (int i = children.size() - 1; i >= 0; i--) {
+			children.get(i).setDirty(dirty);
+		}
+	}
+	
 	public void setState(NodeState state) {
 		for (int i = children.size() - 1; i >= 0; i--) {
 			children.get(i).setState(NodeState.NORMAL);

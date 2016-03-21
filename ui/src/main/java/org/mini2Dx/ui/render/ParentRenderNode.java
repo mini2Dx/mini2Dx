@@ -146,9 +146,24 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 	public boolean isDirty() {
 		return childDirty || super.isDirty();
 	}
+	
+	@Override
+	public void setDirty(boolean dirty) {
+		if(layers == null || layers.size() == 0) {
+			super.setDirty(dirty);
+		} else {
+			for (RenderLayer layer : layers.values()) {
+				layer.setDirty(dirty);
+			}
+		}
+	}
 
 	public void setChildDirty(boolean childDirty) {
 		if (!childDirty) {
+			return;
+		}
+		if (this.childDirty) {
+			//Prevent repeated bubbling
 			return;
 		}
 		this.childDirty = childDirty;
