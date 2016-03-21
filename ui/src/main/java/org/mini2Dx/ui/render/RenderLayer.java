@@ -69,7 +69,7 @@ public class RenderLayer implements Comparable<RenderLayer> {
 			
 			if(startX - owner.getStyle().getPaddingLeft() + node.getXOffset() + node.getPreferredOuterWidth() > owner.getPreferredContentWidth()) {
 				float maxHeight = 0f;
-				for (int j = i; j >= 0; j--) {
+				for (int j = i - 1; j >= 0; j--) {
 					RenderNode<?, ?> previousNode = children.get(j);
 					if (previousNode.getRelativeY() == startY) {
 						float height = previousNode.getPreferredOuterHeight() + node.getYOffset();
