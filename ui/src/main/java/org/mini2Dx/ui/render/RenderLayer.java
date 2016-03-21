@@ -71,7 +71,7 @@ public class RenderLayer implements Comparable<RenderLayer> {
 				float maxHeight = 0f;
 				for (int j = i - 1; j >= 0; j--) {
 					RenderNode<?, ?> previousNode = children.get(j);
-					if (previousNode.getRelativeY() == startY) {
+					if (previousNode.getRelativeY() == startY + previousNode.getYOffset()) {
 						float height = previousNode.getPreferredOuterHeight() + node.getYOffset();
 						if (height > maxHeight) {
 							maxHeight = height;
