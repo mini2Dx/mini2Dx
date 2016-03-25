@@ -16,9 +16,7 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
 import org.mini2Dx.ios.IOSMini2DxConfig;
-import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.coregraphics.CGSize;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.glkit.GLKView;
 import org.robovm.apple.glkit.GLKViewController;
@@ -44,6 +42,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.iosrobovm.custom.HWMachine;
 import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -80,21 +79,6 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 		}
 
 		@Override
-		public void didRotate (UIInterfaceOrientation orientation) {
-			super.didRotate(orientation);
-			// get the view size and update graphics
-			// FIXME: supporting BOTH (landscape+portrait at same time) is
-			// currently not working correctly (needs fix)
-			// FIXME screen orientation needs to be stored for
-			// Input#getNativeOrientation
-			CGSize bounds = app.getBounds(this);
-			graphics.width = (int)bounds.getWidth();
-			graphics.height = (int)bounds.getHeight();
-			graphics.makeCurrent();
-			app.listener.resize(graphics.width, graphics.height);
-		}
-
-		@Override
 		public UIInterfaceOrientationMask getSupportedInterfaceOrientations () {
 			long mask = 0;
 			if (app.config.orientationLandscape) {
@@ -123,6 +107,19 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 			}
 		}
 
+		@Override
+		public void viewDidLayoutSubviews () {
+			super.viewDidLayoutSubviews();
+			// get the view size and update graphics
+			CGRect bounds = app.getBounds();
+			graphics.width = (int)bounds.getWidth();
+			graphics.height = (int)bounds.getHeight();
+			graphics.makeCurrent();
+			if (graphics.created) {
+				app.listener.resize(graphics.width, graphics.height);
+			}
+		}
+
 		@Callback
 		@BindSelector("shouldAutorotateToInterfaceOrientation:")
 		private static boolean shouldAutorotateToInterfaceOrientation (IOSUIViewController self, Selector sel,
@@ -137,10 +134,11 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 			super(frame, context);
 		}
 	}
-	
+
 	IOSMini2DxGame app;
 	IOSMini2DxInput input;
 	GL20 gl20;
+	GL30 gl30;
 	int width;
 	int height;
 	long lastFrameTime;
@@ -166,45 +164,54 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 	private final float targetTimestep;
 	private float accumulator = 0f;
 
-	IOSMini2DxConfig config;
+	IOSApplicationConfiguration config;
 	EAGLContext context;
 	GLKView view;
 	IOSUIViewController viewController;
 
-	public IOSMini2DxGraphics (CGSize bounds, float scale, IOSMini2DxGame app, IOSMini2DxConfig config, IOSMini2DxInput input,
-		GL20 gl20) {
+	public IOSMini2DxGraphics (float scale, IOSMini2DxGame app, IOSMini2DxConfig config, IOSMini2DxInput input, boolean useGLES30) {
 		this.config = config;
 		
 		maximumDelta = 1f / config.targetFPS;
 		targetTimestep = config.targetTimestep;
-		
+
+		final CGRect bounds = app.getBounds();
 		// setup view and OpenGL
 		width = (int)bounds.getWidth();
 		height = (int)bounds.getHeight();
-		app.debug(tag, bounds.getWidth() + "x" + bounds.getHeight() + ", " + scale);
-		this.gl20 = gl20;
 
-		context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
+		if (useGLES30) {
+			context = new EAGLContext(EAGLRenderingAPI.OpenGLES3);
+			if (context != null)
+				gl20 = gl30 = new IOSGLES30();
+			else
+				Gdx.app.log(tag, "OpenGL ES 3.0 not supported, falling back on 2.0");
+		}
+		if (context == null) {
+			context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
+			gl20 = new IOSGLES20();
+			gl30 = null;
+		}
 
-		view = new GLKView(new CGRect(new CGPoint(0, 0), bounds), context) {
+		view = new GLKView(new CGRect(0, 0, bounds.getWidth(), bounds.getHeight()), context) {
 			@Method(selector = "touchesBegan:withEvent:")
 			public void touchesBegan (@Pointer long touches, UIEvent event) {
-				IOSMini2DxGraphics.this.input.touchDown(touches, event);
+				IOSMini2DxGraphics.this.input.onTouch(touches);
 			}
 
 			@Method(selector = "touchesCancelled:withEvent:")
 			public void touchesCancelled (@Pointer long touches, UIEvent event) {
-				IOSMini2DxGraphics.this.input.touchUp(touches, event);
+				IOSMini2DxGraphics.this.input.onTouch(touches);
 			}
 
 			@Method(selector = "touchesEnded:withEvent:")
 			public void touchesEnded (@Pointer long touches, UIEvent event) {
-				IOSMini2DxGraphics.this.input.touchUp(touches, event);
+				IOSMini2DxGraphics.this.input.onTouch(touches);
 			}
 
 			@Method(selector = "touchesMoved:withEvent:")
 			public void touchesMoved (@Pointer long touches, UIEvent event) {
-				IOSMini2DxGraphics.this.input.touchMoved(touches, event);
+				IOSMini2DxGraphics.this.input.onTouch(touches);
 			}
 
 			@Override
@@ -251,7 +258,6 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 			samples = 4;
 		}
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
-		this.gl20 = gl20;
 
 		String machineString = HWMachine.getMachineString();
 		IOSDevice device = IOSDevice.getDevice(machineString);
@@ -381,6 +387,16 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 	}
 
 	@Override
+	public int getBackBufferWidth() {
+		return width;
+	}
+
+	@Override
+	public int getBackBufferHeight() {
+		return height;
+	}
+
+	@Override
 	public float getDeltaTime () {
 		return deltaTime;
 	}
@@ -432,28 +448,47 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 
 	@Override
 	public DisplayMode[] getDisplayModes () {
-		return new DisplayMode[] {getDesktopDisplayMode()};
+		return new DisplayMode[] {getDisplayMode()};
 	}
 
 	@Override
-	public DisplayMode getDesktopDisplayMode () {
+	public DisplayMode getDisplayMode () {
 		return new IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond, bufferFormat.r + bufferFormat.g
 			+ bufferFormat.b + bufferFormat.a);
 	}
 
-	private class IOSDisplayMode extends DisplayMode {
-		protected IOSDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
-			super(width, height, refreshRate, bitsPerPixel);
-		}
+	@Override
+	public Monitor getPrimaryMonitor() {
+		return new IOSMonitor(0, 0, "Primary Monitor");
 	}
 
 	@Override
-	public boolean setDisplayMode (DisplayMode displayMode) {
+	public Monitor getMonitor() {
+		return getPrimaryMonitor();
+	}
+
+	@Override
+	public Monitor[] getMonitors() {
+		return new Monitor[] { getPrimaryMonitor() };
+	}
+
+	@Override
+	public DisplayMode[] getDisplayModes(Monitor monitor) {
+		return getDisplayModes();
+	}
+
+	@Override
+	public DisplayMode getDisplayMode(Monitor monitor) {
+		return getDisplayMode();
+	}
+
+	@Override
+	public boolean setFullscreenMode (DisplayMode displayMode) {
 		return false;
 	}
 
 	@Override
-	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
+	public boolean setWindowedMode (int width, int height) {
 		return false;
 	}
 
@@ -525,5 +560,21 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 
 	@Override
 	public void setCursor (Cursor cursor) {
+	}
+
+	@Override
+	public void setSystemCursor (SystemCursor systemCursor) {
+	}
+
+	private class IOSDisplayMode extends DisplayMode {
+		protected IOSDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
+			super(width, height, refreshRate, bitsPerPixel);
+		}
+	}
+
+	private class IOSMonitor extends Monitor {
+		protected IOSMonitor(int virtualX, int virtualY, String name) {
+			super(virtualX, virtualY, name);
+		}
 	}
 }

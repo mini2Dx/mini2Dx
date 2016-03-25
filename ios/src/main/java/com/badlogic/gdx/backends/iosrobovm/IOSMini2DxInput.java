@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.iosrobovm;
 
+import org.mini2Dx.ios.IOSMini2DxConfig;
 import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
@@ -25,10 +26,7 @@ import org.robovm.apple.uikit.UIAlertView;
 import org.robovm.apple.uikit.UIAlertViewDelegate;
 import org.robovm.apple.uikit.UIAlertViewDelegateAdapter;
 import org.robovm.apple.uikit.UIAlertViewStyle;
-import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIDevice;
-import org.robovm.apple.uikit.UIEvent;
-import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIKeyboardType;
 import org.robovm.apple.uikit.UIReturnKeyType;
 import org.robovm.apple.uikit.UITextAutocapitalizationType;
@@ -52,7 +50,6 @@ import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
@@ -65,9 +62,11 @@ public class IOSMini2DxInput implements Input {
 
 	private static class NSObjectWrapper<T extends NSObject> {
 		private static final long HANDLE_OFFSET;
+
 		static {
 			try {
-				HANDLE_OFFSET = VM.getInstanceFieldOffset(VM.getFieldAddress(NativeObject.class.getDeclaredField("handle")));
+				HANDLE_OFFSET = VM
+						.getInstanceFieldOffset(VM.getFieldAddress(NativeObject.class.getDeclaredField("handle")));
 			} catch (Throwable t) {
 				throw new Error(t);
 			}
@@ -75,21 +74,22 @@ public class IOSMini2DxInput implements Input {
 
 		private final T instance;
 
-		public NSObjectWrapper (Class<T> cls) {
+		public NSObjectWrapper(Class<T> cls) {
 			instance = VM.allocateObject(cls);
 		}
 
-		public T wrap (long handle) {
+		public T wrap(long handle) {
 			VM.setLong(VM.getObjectAddress(instance) + HANDLE_OFFSET, handle);
 			return instance;
 		}
 	}
 
 	private static final NSObjectWrapper<UITouch> UI_TOUCH_WRAPPER = new NSObjectWrapper<UITouch>(UITouch.class);
-	static final NSObjectWrapper<UIAcceleration> UI_ACCELERATION_WRAPPER = new NSObjectWrapper<UIAcceleration>(UIAcceleration.class);
-	
+	static final NSObjectWrapper<UIAcceleration> UI_ACCELERATION_WRAPPER = new NSObjectWrapper<UIAcceleration>(
+			UIAcceleration.class);
+
 	IOSMini2DxGame app;
-	IOSApplicationConfiguration config;
+	IOSMini2DxConfig config;
 	int[] deltaX = new int[MAX_TOUCHES];
 	int[] deltaY = new int[MAX_TOUCHES];
 	int[] touchX = new int[MAX_TOUCHES];
@@ -100,7 +100,7 @@ public class IOSMini2DxInput implements Input {
 	boolean justTouched = false;
 	Pool<TouchEvent> touchEventPool = new Pool<TouchEvent>() {
 		@Override
-		protected TouchEvent newObject () {
+		protected TouchEvent newObject() {
 			return new TouchEvent();
 		}
 	};
@@ -112,41 +112,42 @@ public class IOSMini2DxInput implements Input {
 	InputProcessor inputProcessor = null;
 
 	boolean hasVibrator;
-	//CMMotionManager motionManager;
+	// CMMotionManager motionManager;
 	UIAccelerometerDelegate accelerometerDelegate;
 	boolean compassSupported;
 	boolean keyboardCloseOnReturn;
 
-	public IOSMini2DxInput (IOSMini2DxGame app) {
+	public IOSMini2DxInput(IOSMini2DxGame app) {
 		this.app = app;
 		this.config = app.config;
 		this.keyboardCloseOnReturn = app.config.keyboardCloseOnReturn;
 	}
 
-	void setupPeripherals () {
-		//motionManager = new CMMotionManager();
+	void setupPeripherals() {
+		// motionManager = new CMMotionManager();
 		setupAccelerometer();
 		setupCompass();
 		UIDevice device = UIDevice.getCurrentDevice();
-		if (device.getModel().equalsIgnoreCase("iphone")) hasVibrator = true;
+		if (device.getModel().equalsIgnoreCase("iphone"))
+			hasVibrator = true;
 	}
 
-	private void setupCompass () {
+	private void setupCompass() {
 		if (config.useCompass) {
-			//setupMagnetometer();
+			// setupMagnetometer();
 		}
 	}
-	
-	private void setupAccelerometer () {
+
+	private void setupAccelerometer() {
 		if (config.useAccelerometer) {
 			accelerometerDelegate = new UIAccelerometerDelegateAdapter() {
 
 				@Method(selector = "accelerometer:didAccelerate:")
-				public void didAccelerate (UIAccelerometer accelerometer, @Pointer long valuesPtr) {
+				public void didAccelerate(UIAccelerometer accelerometer, @Pointer long valuesPtr) {
 					UIAcceleration values = UI_ACCELERATION_WRAPPER.wrap(valuesPtr);
-					float x = (float)values.getX() * 10;
-					float y = (float)values.getY() * 10;
-					float z = (float)values.getZ() * 10;
+					float x = (float) values.getX() * 10;
+					float y = (float) values.getY() * 10;
+					float z = (float) values.getZ() * 10;
 
 					acceleration[0] = -x;
 					acceleration[1] = -y;
@@ -159,86 +160,90 @@ public class IOSMini2DxInput implements Input {
 	}
 
 	@Override
-	public float getAccelerometerX () {
+	public float getAccelerometerX() {
 		return acceleration[0];
 	}
 
 	@Override
-	public float getAccelerometerY () {
+	public float getAccelerometerY() {
 		return acceleration[1];
 	}
 
 	@Override
-	public float getAccelerometerZ () {
+	public float getAccelerometerZ() {
 		return acceleration[2];
 	}
 
 	@Override
-	public float getAzimuth () {
-		if (!compassSupported) return 0;
+	public float getAzimuth() {
+		if (!compassSupported)
+			return 0;
 		return rotation[0];
 	}
 
 	@Override
-	public float getPitch () {
-		if (!compassSupported) return 0;
+	public float getPitch() {
+		if (!compassSupported)
+			return 0;
 		return rotation[1];
 	}
 
 	@Override
-	public float getRoll () {
-		if (!compassSupported) return 0;
+	public float getRoll() {
+		if (!compassSupported)
+			return 0;
 		return rotation[2];
 	}
 
 	@Override
-	public void getRotationMatrix (float[] matrix) {
-		if (matrix.length != 9) return;
-		//TODO implement when azimuth is fixed
+	public void getRotationMatrix(float[] matrix) {
+		if (matrix.length != 9)
+			return;
+		// TODO implement when azimuth is fixed
 	}
 
 	@Override
-	public int getX () {
+	public int getX() {
 		return touchX[0];
 	}
 
 	@Override
-	public int getX (int pointer) {
+	public int getX(int pointer) {
 		return touchX[pointer];
 	}
 
 	@Override
-	public int getDeltaX () {
+	public int getDeltaX() {
 		return deltaX[0];
 	}
 
 	@Override
-	public int getDeltaX (int pointer) {
+	public int getDeltaX(int pointer) {
 		return deltaX[pointer];
 	}
 
 	@Override
-	public int getY () {
+	public int getY() {
 		return touchY[0];
 	}
 
 	@Override
-	public int getY (int pointer) {
+	public int getY(int pointer) {
 		return touchY[pointer];
 	}
 
 	@Override
-	public int getDeltaY () {
+	public int getDeltaY() {
 		return deltaY[0];
 	}
 
 	@Override
-	public int getDeltaY (int pointer) {
+	public int getDeltaY(int pointer) {
 		return deltaY[pointer];
 	}
 
 	@Override
-	public boolean isTouched () {
+	public boolean isTouched() {
 		for (int pointer = 0; pointer < MAX_TOUCHES; pointer++) {
 			if (touchDown[pointer] != 0) {
 				return true;
@@ -248,41 +253,41 @@ public class IOSMini2DxInput implements Input {
 	}
 
 	@Override
-	public boolean justTouched () {
+	public boolean justTouched() {
 		return justTouched;
 	}
 
 	@Override
-	public boolean isTouched (int pointer) {
+	public boolean isTouched(int pointer) {
 		return touchDown[pointer] != 0;
 	}
 
 	@Override
-	public boolean isButtonPressed (int button) {
+	public boolean isButtonPressed(int button) {
 		return button == Buttons.LEFT && numTouched > 0;
 	}
 
 	@Override
-	public boolean isKeyPressed (int key) {
+	public boolean isKeyPressed(int key) {
 		return false;
 	}
 
 	@Override
-	public boolean isKeyJustPressed (int key) {
+	public boolean isKeyJustPressed(int key) {
 		return false;
 	}
 
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
 		buildUIAlertView(listener, title, text, hint).show();
-	}	
+	}
 
 	// hack for software keyboard support
 	// uses a hidden textfield to capture input
 	// see: http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
 
 	private class HiddenTextField extends UITextField {
-		public HiddenTextField (CGRect frame) {
+		public HiddenTextField(CGRect frame) {
 			super(frame);
 
 			setKeyboardType(UIKeyboardType.Default);
@@ -294,8 +299,8 @@ public class IOSMini2DxInput implements Input {
 		}
 
 		@Override
-		public void deleteBackward () {
-			app.input.inputProcessor.keyTyped((char)8);
+		public void deleteBackward() {
+			app.input.inputProcessor.keyTyped((char) 8);
 			super.deleteBackward();
 			Gdx.graphics.requestRendering();
 		}
@@ -304,13 +309,14 @@ public class IOSMini2DxInput implements Input {
 	private UITextField textfield = null;
 	private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
 		@Override
-		public boolean shouldChangeCharacters (UITextField textField, NSRange range, String string) {
+		public boolean shouldChangeCharacters(UITextField textField, NSRange range, String string) {
 			for (int i = 0; i < range.getLength(); i++) {
-				app.input.inputProcessor.keyTyped((char)8);
+				app.input.inputProcessor.keyTyped((char) 8);
 			}
 
 			if (string.isEmpty()) {
-				if (range.getLength() > 0) Gdx.graphics.requestRendering();
+				if (range.getLength() > 0)
+					Gdx.graphics.requestRendering();
 				return false;
 			}
 
@@ -326,8 +332,9 @@ public class IOSMini2DxInput implements Input {
 		}
 
 		@Override
-		public boolean shouldEndEditing (UITextField textField) {
-			// Text field needs to have at least one symbol - so we can use backspace
+		public boolean shouldEndEditing(UITextField textField) {
+			// Text field needs to have at least one symbol - so we can use
+			// backspace
 			textField.setText("x");
 			Gdx.graphics.requestRendering();
 
@@ -335,18 +342,20 @@ public class IOSMini2DxInput implements Input {
 		}
 
 		@Override
-		public boolean shouldReturn (UITextField textField) {
-			if (keyboardCloseOnReturn) setOnscreenKeyboardVisible(false);
+		public boolean shouldReturn(UITextField textField) {
+			if (keyboardCloseOnReturn)
+				setOnscreenKeyboardVisible(false);
 			app.input.inputProcessor.keyDown(Keys.ENTER);
-			app.input.inputProcessor.keyTyped((char)13);
+			app.input.inputProcessor.keyTyped((char) 13);
 			Gdx.graphics.requestRendering();
 			return false;
 		}
 	};
 
 	@Override
-	public void setOnscreenKeyboardVisible (boolean visible) {
-		if (textfield == null) createDefaultTextField();
+	public void setOnscreenKeyboardVisible(boolean visible) {
+		if (textfield == null)
+			createDefaultTextField();
 		if (visible) {
 			textfield.becomeFirstResponder();
 			textfield.setDelegate(textDelegate);
@@ -354,23 +363,26 @@ public class IOSMini2DxInput implements Input {
 			textfield.resignFirstResponder();
 		}
 	}
-	
+
 	/**
 	 * Set the keyboard to close when the UITextField return key is pressed
-	 * @param shouldClose Whether or not the keyboard should clsoe on return key press
+	 * 
+	 * @param shouldClose
+	 *            Whether or not the keyboard should clsoe on return key press
 	 */
-	public void setKeyboardCloseOnReturnKey (boolean shouldClose) {
+	public void setKeyboardCloseOnReturnKey(boolean shouldClose) {
 		keyboardCloseOnReturn = shouldClose;
 	}
-	
-	public UITextField getKeyboardTextField () {
-		if (textfield == null) createDefaultTextField();
+
+	public UITextField getKeyboardTextField() {
+		if (textfield == null)
+			createDefaultTextField();
 		return textfield;
 	}
-	
-	private void createDefaultTextField () {
+
+	private void createDefaultTextField() {
 		textfield = new UITextField(new CGRect(10, 10, 100, 50));
-		//Parameters
+		// Parameters
 		// Setting parameters
 		textfield.setKeyboardType(UIKeyboardType.Default);
 		textfield.setReturnKeyType(UIReturnKeyType.Done);
@@ -378,23 +390,32 @@ public class IOSMini2DxInput implements Input {
 		textfield.setAutocorrectionType(UITextAutocorrectionType.No);
 		textfield.setSpellCheckingType(UITextSpellCheckingType.No);
 		textfield.setHidden(true);
-		// Text field needs to have at least one symbol - so we can use backspace
+		// Text field needs to have at least one symbol - so we can use
+		// backspace
 		textfield.setText("x");
 		app.getUIViewController().getView().addSubview(textfield);
 	}
-	
+
 	// Issue 773 indicates this may solve a premature GC issue
 	UIAlertViewDelegate delegate;
 
-	/** Builds an {@link UIAlertView} with an added {@link UITextField} for inputting text.
-	 * @param listener Text input listener
-	 * @param title Dialog title
-	 * @param text Text for text field
-	 * @return UiAlertView */
-	private UIAlertView buildUIAlertView (final TextInputListener listener, String title, String text, String placeholder) {
+	/**
+	 * Builds an {@link UIAlertView} with an added {@link UITextField} for
+	 * inputting text.
+	 * 
+	 * @param listener
+	 *            Text input listener
+	 * @param title
+	 *            Dialog title
+	 * @param text
+	 *            Text for text field
+	 * @return UiAlertView
+	 */
+	private UIAlertView buildUIAlertView(final TextInputListener listener, String title, String text,
+			String placeholder) {
 		delegate = new UIAlertViewDelegateAdapter() {
 			@Override
-			public void clicked (UIAlertView view, long clicked) {
+			public void clicked(UIAlertView view, long clicked) {
 				if (clicked == 0) {
 					// user clicked "Cancel" button
 					listener.canceled();
@@ -407,7 +428,7 @@ public class IOSMini2DxInput implements Input {
 			}
 
 			@Override
-			public void cancel (UIAlertView view) {
+			public void cancel(UIAlertView view) {
 				listener.canceled();
 				delegate = null;
 			}
@@ -429,120 +450,133 @@ public class IOSMini2DxInput implements Input {
 	}
 
 	@Override
-	public void vibrate (int milliseconds) {
+	public void vibrate(int milliseconds) {
 		AudioServices.playSystemSound(4095);
 	}
 
 	@Override
-	public void vibrate (long[] pattern, int repeat) {
+	public void vibrate(long[] pattern, int repeat) {
 		// FIXME implement this
 	}
 
 	@Override
-	public void cancelVibrate () {
+	public void cancelVibrate() {
 		// FIXME implement this
 	}
 
 	@Override
-	public long getCurrentEventTime () {
+	public long getCurrentEventTime() {
 		return currentEvent.timestamp;
 	}
 
 	@Override
-	public void setCatchBackKey (boolean catchBack) {
+	public void setCatchBackKey(boolean catchBack) {
 	}
 
 	@Override
-	public boolean isCatchBackKey () {
+	public boolean isCatchBackKey() {
 		return false;
 	}
 
 	@Override
-	public void setCatchMenuKey (boolean catchMenu) {
+	public void setCatchMenuKey(boolean catchMenu) {
 	}
 
 	@Override
-	public void setInputProcessor (InputProcessor processor) {
+	public boolean isCatchMenuKey() {
+		return false;
+	}
+
+	@Override
+	public void setInputProcessor(InputProcessor processor) {
 		this.inputProcessor = processor;
 	}
 
 	@Override
-	public InputProcessor getInputProcessor () {
+	public InputProcessor getInputProcessor() {
 		return inputProcessor;
 	}
 
 	@Override
-	public boolean isPeripheralAvailable (Peripheral peripheral) {
-		if (peripheral == Peripheral.Accelerometer && config.useAccelerometer) return true;
-		if (peripheral == Peripheral.MultitouchScreen) return true;
-		if (peripheral == Peripheral.Vibrator) return hasVibrator;
-		if (peripheral == Peripheral.Compass) return compassSupported;
+	public boolean isPeripheralAvailable(Peripheral peripheral) {
+		if (peripheral == Peripheral.Accelerometer && config.useAccelerometer)
+			return true;
+		if (peripheral == Peripheral.MultitouchScreen)
+			return true;
+		if (peripheral == Peripheral.Vibrator)
+			return hasVibrator;
+		if (peripheral == Peripheral.Compass)
+			return compassSupported;
 		// if(peripheral == Peripheral.OnscreenKeyboard) return true;
 		return false;
 	}
 
 	@Override
-	public int getRotation () {
-		UIInterfaceOrientation orientation = app.graphics.viewController != null ? app.graphics.viewController
-			.getInterfaceOrientation() : UIApplication.getSharedApplication().getStatusBarOrientation();
+	public int getRotation() {
 		// we measure orientation counter clockwise, just like on Android
-		if (orientation == UIInterfaceOrientation.Portrait) return 0;
-		if (orientation == UIInterfaceOrientation.LandscapeLeft) return 270;
-		if (orientation == UIInterfaceOrientation.PortraitUpsideDown) return 180;
-		if (orientation == UIInterfaceOrientation.LandscapeRight) return 90;
-		return 0;
+		switch (app.uiApp.getStatusBarOrientation()) {
+		case LandscapeLeft:
+			return 270;
+		case PortraitUpsideDown:
+			return 180;
+		case LandscapeRight:
+			return 90;
+		case Portrait:
+		default:
+			return 0;
+		}
 	}
 
 	@Override
-	public Orientation getNativeOrientation () {
-		return Orientation.Portrait;
+	public Orientation getNativeOrientation() {
+		switch (app.uiApp.getStatusBarOrientation()) {
+		case LandscapeLeft:
+		case LandscapeRight:
+			return Orientation.Landscape;
+		default:
+			return Orientation.Portrait;
+		}
 	}
 
 	@Override
-	public void setCursorCatched (boolean catched) {
+	public void setCursorCatched(boolean catched) {
 	}
 
 	@Override
-	public boolean isCursorCatched () {
+	public boolean isCursorCatched() {
 		return false;
 	}
 
 	@Override
-	public void setCursorPosition (int x, int y) {
+	public void setCursorPosition(int x, int y) {
 	}
 
-	public void touchDown (long touches, UIEvent event) {
-		toTouchEvents(touches, event);
+	protected void onTouch(long touches) {
+		toTouchEvents(touches);
 		Gdx.graphics.requestRendering();
 	}
 
-	public void touchUp (long touches, UIEvent event) {
-		toTouchEvents(touches, event);
-		Gdx.graphics.requestRendering();
-	}
-
-	public void touchMoved (long touches, UIEvent event) {
-		toTouchEvents(touches, event);
-		Gdx.graphics.requestRendering();
-	}
-
-	void processEvents () {
+	void processEvents() {
 		synchronized (touchEvents) {
 			justTouched = false;
 			for (TouchEvent event : touchEvents) {
 				currentEvent = event;
 				switch (event.phase) {
 				case Began:
-					if (inputProcessor != null) inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
-					if (numTouched == 1) justTouched = true;
+					if (inputProcessor != null)
+						inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
+					if (numTouched == 1)
+						justTouched = true;
 					break;
 				case Cancelled:
 				case Ended:
-					if (inputProcessor != null) inputProcessor.touchUp(event.x, event.y, event.pointer, Buttons.LEFT);
+					if (inputProcessor != null)
+						inputProcessor.touchUp(event.x, event.y, event.pointer, Buttons.LEFT);
 					break;
 				case Moved:
 				case Stationary:
-					if (inputProcessor != null) inputProcessor.touchDragged(event.x, event.y, event.pointer);
+					if (inputProcessor != null)
+						inputProcessor.touchDragged(event.x, event.y, event.pointer);
 					break;
 				}
 			}
@@ -551,48 +585,60 @@ public class IOSMini2DxInput implements Input {
 		}
 	}
 
-	private int getFreePointer () {
+	private int getFreePointer() {
 		for (int i = 0; i < touchDown.length; i++) {
-			if (touchDown[i] == 0) return i;
+			if (touchDown[i] == 0)
+				return i;
 		}
 		throw new GdxRuntimeException("Couldn't find free pointer id!");
 	}
 
-	private int findPointer (UITouch touch) {
+	private int findPointer(UITouch touch) {
 		long ptr = touch.getHandle();
 		for (int i = 0; i < touchDown.length; i++) {
-			if (touchDown[i] == ptr) return i;
+			if (touchDown[i] == ptr)
+				return i;
 		}
 		throw new GdxRuntimeException("Couldn't find pointer id for touch event!");
 	}
 
 	private static class NSSetExtensions extends NSExtensions {
 		@Method(selector = "allObjects")
-		public static native @Pointer long allObjects (@Pointer long thiz);
+		public static native @Pointer long allObjects(@Pointer long thiz);
 	}
 
 	private static class NSArrayExtensions extends NSExtensions {
 		@Method(selector = "objectAtIndex:")
-		public static native @Pointer long objectAtIndex$ (@Pointer long thiz, @MachineSizedUInt long index);
+		public static native @Pointer long objectAtIndex$(@Pointer long thiz, @MachineSizedUInt long index);
 
 		@Method(selector = "count")
-		public static native @MachineSizedUInt long count (@Pointer long thiz);
+		public static native @MachineSizedUInt long count(@Pointer long thiz);
 	}
 
-	private void toTouchEvents (long touches, UIEvent uiEvent) {
+	private void toTouchEvents(long touches) {
 		long array = NSSetExtensions.allObjects(touches);
-		int length = (int)NSArrayExtensions.count(array);
+		int length = (int) NSArrayExtensions.count(array);
 		for (int i = 0; i < length; i++) {
 			long touchHandle = NSArrayExtensions.objectAtIndex$(array, i);
 			UITouch touch = UI_TOUCH_WRAPPER.wrap(touchHandle);
-			CGPoint loc = touch.getLocationInView(touch.getView());
+			final int locX, locY;
+			// Get and map the location to our drawing space
+			{
+				CGPoint loc = touch.getLocationInView(touch.getWindow());
+				final CGRect bounds = app.getCachedBounds();
+				locX = (int) (loc.getX() * app.displayScaleFactor - bounds.getMinX());
+				locY = (int) (loc.getY() * app.displayScaleFactor - bounds.getMinY());
+				// app.debug("IOSInput","pos= "+loc+" bounds= "+bounds+" x=
+				// "+locX+" locY= "+locY);
+			}
+
 			synchronized (touchEvents) {
 				UITouchPhase phase = touch.getPhase();
 				TouchEvent event = touchEventPool.obtain();
-				event.x = (int)(loc.getX() * app.displayScaleFactor);
-				event.y = (int)(loc.getY() * app.displayScaleFactor);
+				event.x = locX;
+				event.y = locY;
 				event.phase = phase;
-				event.timestamp = (long)(touch.getTimestamp() * 1000000000);
+				event.timestamp = (long) (touch.getTimestamp() * 1000000000);
 				touchEvents.add(event);
 
 				if (phase == UITouchPhase.Began) {
@@ -634,7 +680,20 @@ public class IOSMini2DxInput implements Input {
 	}
 
 	@Override
-	public boolean isCatchMenuKey() {
-		return false;
+	public float getGyroscopeX() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeY() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeZ() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
