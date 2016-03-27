@@ -71,6 +71,7 @@ public class TabView extends UiElement implements Navigatable {
 			previousButton.setVisibility(Visibility.VISIBLE);
 			this.previousTabButton = previousButton;
 		} else {
+			previousTabButton.setLayout(DEFAULT_CHANGE_TAB_BTN_LAYOUT);
 			this.previousTabButton = previousTabButton;
 		}
 		this.previousTabButton.setEnabled(false);
@@ -82,6 +83,7 @@ public class TabView extends UiElement implements Navigatable {
 			nextButton.setVisibility(Visibility.VISIBLE);
 			this.nextTabButton = nextButton;
 		} else {
+			nextTabButton.setLayout(DEFAULT_CHANGE_TAB_BTN_LAYOUT);
 			this.nextTabButton = nextTabButton;
 		}
 		this.previousTabButton.addActionListener(new ActionListener() {
