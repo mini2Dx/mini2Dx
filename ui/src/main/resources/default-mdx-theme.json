@@ -267,7 +267,7 @@
     "default": {
       "rules": {
         "XS": {
-          "buttonStyle": "tab-button",
+          "tabButtonStyle": "tab-button",
           "buttonLabelStyle": "tab-button-label",
           "buttonImageStyle": "default",
           "menuStyle": "tab-menu",

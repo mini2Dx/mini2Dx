@@ -241,8 +241,8 @@ public class TabView extends UiElement implements Navigatable {
 			tabButtons.get(i).setLabelStyle(renderNode.getTabButtonLabelStyleId());
 			tabButtons.get(i).setIconStyle(renderNode.getTabButtonImageStyleId());
 		}
-		previousTabButton.setStyleId(renderNode.getTabButtonStyleId());
-		nextTabButton.setStyleId(renderNode.getTabButtonStyleId());
+		previousTabButton.setStyleId(renderNode.getPreviousTabButtonStyleId());
+		nextTabButton.setStyleId(renderNode.getNextTabButtonStyleId());
 	}
 
 	@Override

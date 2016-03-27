@@ -24,7 +24,11 @@ import com.badlogic.gdx.utils.Array;
  */
 public class TabStyleRule extends ColumnStyleRule {
 	@Field
-	private String buttonStyle;
+	private String tabButtonStyle;
+	@Field(optional=true)
+	private String previousTabButtonStyle;
+	@Field(optional=true)
+	private String nextTabButtonStyle;
 	@Field(optional=true)
 	private String buttonLabelStyle;
 	@Field(optional=true)
@@ -37,8 +41,14 @@ public class TabStyleRule extends ColumnStyleRule {
 	@Override
 	public void validate(UiTheme theme) {
 		super.validate(theme);
-		if(!theme.containsButtonStyleRuleset(buttonStyle)) {
-			throw new MdxException("No style with id '" + buttonStyle + "' for buttons. Required by " + TabStyleRule.class.getSimpleName());
+		if(!theme.containsButtonStyleRuleset(tabButtonStyle)) {
+			throw new MdxException("No style with id '" + tabButtonStyle + "' for buttons. Required by " + TabStyleRule.class.getSimpleName());
+		}
+		if(previousTabButtonStyle != null && !theme.containsButtonStyleRuleset(previousTabButtonStyle)) {
+			throw new MdxException("No style with id '" + previousTabButtonStyle + "' for buttons. Required by " + TabStyleRule.class.getSimpleName());
+		}
+		if(nextTabButtonStyle != null && !theme.containsButtonStyleRuleset(nextTabButtonStyle)) {
+			throw new MdxException("No style with id '" + nextTabButtonStyle + "' for buttons. Required by " + TabStyleRule.class.getSimpleName());
 		}
 		if(buttonLabelStyle != null && !theme.containsLabelStyleRuleset(buttonLabelStyle)) {
 			throw new MdxException("No style with id '" + buttonLabelStyle + "' for labels. Required by " + TabStyleRule.class.getSimpleName());
@@ -54,12 +64,34 @@ public class TabStyleRule extends ColumnStyleRule {
 		}
 	}
 
-	public String getButtonStyle() {
-		return buttonStyle;
+	public String getTabButtonStyle() {
+		return tabButtonStyle;
 	}
 
-	public void setButtonStyle(String buttonStyle) {
-		this.buttonStyle = buttonStyle;
+	public void setTabButtonStyle(String buttonStyle) {
+		this.tabButtonStyle = buttonStyle;
+	}
+
+	public String getPreviousTabButtonStyle() {
+		if(previousTabButtonStyle == null) {
+			return tabButtonStyle;
+		}
+		return previousTabButtonStyle;
+	}
+
+	public void setPreviousTabButtonStyle(String previousTabButtonStyle) {
+		this.previousTabButtonStyle = previousTabButtonStyle;
+	}
+
+	public String getNextTabButtonStyle() {
+		if(nextTabButtonStyle == null) {
+			return tabButtonStyle;
+		}
+		return nextTabButtonStyle;
+	}
+
+	public void setNextTabButtonStyle(String nextTabButtonStyle) {
+		this.nextTabButtonStyle = nextTabButtonStyle;
 	}
 
 	public String getButtonLabelStyle() {

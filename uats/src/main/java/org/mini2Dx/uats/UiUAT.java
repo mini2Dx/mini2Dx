@@ -180,7 +180,15 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		modal.setLayout(new LayoutRuleset("xs-12 md-8 lg-6 md-offset-2 lg-offset-3"));
 		modal.setVerticalAlignment(VerticalAlignment.MIDDLE);
 		
-		TabView tabView = new TabView("tabView");
+		TextButton previousTabButton = new TextButton();
+		previousTabButton.setText("<");
+		previousTabButton.setVisibility(Visibility.VISIBLE);
+		
+		TextButton nextTabButton = new TextButton();
+		nextTabButton.setText(">");
+		nextTabButton.setVisibility(Visibility.VISIBLE);
+		
+		TabView tabView = new TabView("tabView", previousTabButton, nextTabButton);
 		tabView.setVisibility(Visibility.VISIBLE);
 		
 		Tab tab1 = new Tab("tab1", "Tab 1");
