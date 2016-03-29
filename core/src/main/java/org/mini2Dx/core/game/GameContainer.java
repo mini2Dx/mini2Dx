@@ -17,6 +17,7 @@ import java.util.List;
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -34,6 +35,7 @@ public abstract class GameContainer {
 	protected int width, height;
 	protected Graphics graphics;
 	protected SpriteBatch spriteBatch;
+	protected PolygonSpriteBatch polygonSpriteBatch;
 	protected ShapeRenderer shapeRenderer;
 	private boolean isInitialised = false;
 	private List<GameResizeListener> gameResizeListeners;
@@ -94,9 +96,10 @@ public abstract class GameContainer {
 	protected void preinit() {
 		this.gameResizeListeners = new ArrayList<GameResizeListener>(1);
 		this.spriteBatch = new SpriteBatch();
+		this.polygonSpriteBatch = new PolygonSpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
 		
-		this.graphics = new Graphics(spriteBatch, shapeRenderer);
+		this.graphics = new Graphics(spriteBatch, polygonSpriteBatch, shapeRenderer);
 	}
 	
 	/**

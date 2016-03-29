@@ -12,6 +12,7 @@
 package org.mini2Dx.uats;
 
 import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.core.geom.Polygon;
 import org.mini2Dx.core.graphics.Animation;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
@@ -43,6 +44,7 @@ public class GraphicsUAT extends BasicGameScreen {
 	private TextureRegion textureRegion;
 	private Sprite spriteWithTexture, spriteWithTextureRegion;
 	private Animation<Sprite> animation;
+	private Polygon polygon;
 
     @Override
     public void initialise(GameContainer gc) {
@@ -64,6 +66,8 @@ public class GraphicsUAT extends BasicGameScreen {
         animation.addFrame(new Sprite(texture), 1000);
         animation.setOriginX(spriteWithTexture.getWidth() / 2f);
         animation.setOriginY(0f);
+        
+        polygon = new Polygon(new float [] { 25f, 25f, 50f, 37.5f, 37.5f, 75f, 12.5f, 75f, 0f, 37.5f });
     }
 
     @Override
@@ -90,11 +94,20 @@ public class GraphicsUAT extends BasicGameScreen {
             }
         }
         
+        g.setColor(Color.RED);
+        g.fillPolygon(polygon.getVertices(), polygon.getTriangles().items);
+        g.setColor(Color.BLUE);
+        g.drawPolygon(polygon.getVertices());
+        
+        g.setColor(Color.RED);
+        g.fillTriangle(200f, 200f, 225f, 225f, 175f, 225f);
+        g.setColor(Color.BLUE);
+        g.drawTriangle(200f, 200f, 225f, 225f, 175f, 225f);
+        
         g.drawRect(32, 32, 64, 64);
         g.scale(scaleX, scaleY);
         g.translate(-(playerX * 32), -(playerY * 32));
         
-        g.setColor(Color.BLUE);
         g.rotate(rotation, 32 + 16, 32 + 16);
         g.fillRect(32, 32, 32, 32);
         g.rotate(-rotation, 32 + 16, 32 + 16);

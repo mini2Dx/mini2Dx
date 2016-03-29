@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,60 +11,44 @@
  */
 package org.mini2Dx.core.geom;
 
-import org.mini2Dx.core.graphics.Graphics;
+import org.junit.Test;
 
-import com.badlogic.gdx.math.Vector2;
-
+import junit.framework.Assert;
 
 /**
- * A common interface for shapes
+ * Unit tests for {@link Polygon}
  */
-public interface Shape {
-	
-	/**
-	 * Returns if a set of coordinates are contained inside this {@link Shape}
-	 * @param x The x coordinate to check
-	 * @param y The y coordinate to check
-	 * @return True if this {@link Shape} contains the specified coordinates
-	 */
-	public boolean contains(float x, float y);
-	
-	/**
-	 * Returns if a {@link Vector2} is contained inside this {@link Shape}
-	 * @param point The {@link Vector2} to check
-	 * @return True if this {@link Shape} contains the specified {@link Vector2}
-	 */
-	public boolean contains(Vector2 vector2);
-	
-	/**
-	 * Draws this shape using a {@link Graphics} instance
-	 * @param g The {@link Graphics} context to render with
-	 */
-	public void draw(Graphics g);
-	
-	/**
-	 * Fills this shape using a {@link Graphics} instance
-	 * @param g The {@link Graphics} context to render with
-	 */
-	public void fill(Graphics g);
-	
-	/**
-	 * Returns the x coordinate of this object
-	 * 
-	 * @return 0 by default
-	 */
-	public float getX();
+public class PolygonTest {
+	@Test
+	public void testAddPoint() {
+		Polygon polygon = new Polygon(new Point [] { new Point(0f, 0f),
+				new Point(5f, 5f), new Point(2.5f, 10f) });
+		polygon.addPoint(new Point(-2.5f, 10f));
+		polygon.addPoint(new Point(-5f, 5f));
+		Assert.assertEquals(0f, polygon.getX());
+		Assert.assertEquals(0f, polygon.getY());
+		Assert.assertEquals(5f, polygon.getMaxX());
+		Assert.assertEquals(10f, polygon.getMaxY());
+	}
 
-	/**
-	 * Returns the y coordinate of this object
-	 * 
-	 * @return 0 by default
-	 */
-	public float getY();
-	
-	/**
-	 * Returns the number of edges of this object
-	 * @return The number of sides/edges
-	 */
-	public int getNumberOfSides();
+	@Test
+	public void testRemovePoint() {
+		Point maxX = new Point(5f, 5f);
+		Point maxY1 = new Point(2.5f, 10f);
+		Point maxY2 = new Point(-2.5f, 10f);
+		Polygon polygon = new Polygon(new Point[] { new Point(0f, 0f), maxX, maxY1, 
+				maxY2, new Point(-5f, 5f) });
+		Assert.assertEquals(5f, polygon.getMaxX());
+		Assert.assertEquals(10f, polygon.getMaxY());
+
+		polygon.removePoint(maxX);
+		Assert.assertEquals(2.5f, polygon.getMaxX());
+		Assert.assertEquals(10f, polygon.getMaxY());
+
+		polygon.addPoint(maxX);
+		polygon.removePoint(maxY1);
+		polygon.removePoint(maxY2);
+		Assert.assertEquals(5f, polygon.getMaxX());
+		Assert.assertEquals(5f, polygon.getMaxY());
+	}
 }

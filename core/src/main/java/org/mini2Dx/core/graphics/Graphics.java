@@ -20,11 +20,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -36,10 +39,13 @@ import com.badlogic.gdx.utils.Align;
  * Implements graphics rendering functionality
  */
 public class Graphics {
+	private final SpriteBatch spriteBatch;
+	private final ShapeTextureCache colorTextureCache;
+	private final ShapeRenderer shapeRenderer;
+	private final PolygonSpriteBatch polygonSpriteBatch;
+	private final EarClippingTriangulator triangulator = new EarClippingTriangulator();
+	
 	private Color color, backgroundColor, tint, defaultTint;
-	private SpriteBatch spriteBatch;
-	private ShapeTextureCache colorTextureCache;
-	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 	private BitmapFont font;
 	private ShaderProgram defaultShader;
@@ -53,10 +59,15 @@ public class Graphics {
 	private int lineHeight;
 	private boolean rendering, renderingShapes;
 	private Rectangle clip;
+	
+	private float [] triangleVertices = new float[6];
+	//3 edge polygon by default, expanded as needed during rendering
+	private float [] polygonRenderData = new float[15];
 
-	public Graphics(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
+	public Graphics(SpriteBatch spriteBatch, PolygonSpriteBatch polygonSpriteBatch, ShapeRenderer shapeRenderer) {
 		this.spriteBatch = spriteBatch;
 		this.shapeRenderer = shapeRenderer;
+		this.polygonSpriteBatch = polygonSpriteBatch;
 
 		defaultTint = spriteBatch.getColor();
 		if (defaultTint != null) {
@@ -224,6 +235,96 @@ public class Graphics {
 		beginRendering();
 		spriteBatch.draw(texture, renderX, renderY, 0, 0, texture.getWidth(), texture.getHeight(), 1f, 1f, 0, 0, 0,
 				texture.getWidth(), texture.getHeight(), false, false);
+	}
+	
+	/**
+	 * Draws a triangle to the window in the current {@link Color}
+	 * @param x1 The x coordinate of the first point
+	 * @param y1 The y coordinate of the first point
+	 * @param x2 The x coordinate of the second point
+	 * @param y2 The y coordinate of the second point
+	 * @param x3 The x coordinate of the third point
+	 * @param y3 The y coordinate of the third point
+	 */
+	public void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
+		triangleVertices[0] = x1;
+		triangleVertices[1] = y1;
+		triangleVertices[2] = x2;
+		triangleVertices[3] = y2;
+		triangleVertices[4] = x3;
+		triangleVertices[5] = y3;
+		drawPolygon(triangleVertices);
+	}
+	
+	/**
+	 * Draws a triangle to the window in the current {@link Color}
+	 * @param x1 The x coordinate of the first point
+	 * @param y1 The y coordinate of the first point
+	 * @param x2 The x coordinate of the second point
+	 * @param y2 The y coordinate of the second point
+	 * @param x3 The x coordinate of the third point
+	 * @param y3 The y coordinate of the third point
+	 */
+	public void fillTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
+		triangleVertices[0] = x1;
+		triangleVertices[1] = y1;
+		triangleVertices[2] = x2;
+		triangleVertices[3] = y2;
+		triangleVertices[4] = x3;
+		triangleVertices[5] = y3;
+		fillPolygon(triangleVertices, triangulator.computeTriangles(triangleVertices).items);
+	}
+	
+	/**
+	 * Draws a polygon to the window in the current {@link Color}
+	 * @param vertices The vertices of the polygon in format x1,y1,x2,y2,x3,y3,etc.
+	 */
+	public void drawPolygon(float[] vertices) {
+		beginRendering();
+		endRendering();
+
+		/* TODO: Move all shape rendering over to using ShapeRenderer */
+		renderingShapes = true;
+		shapeRenderer.begin(ShapeType.Line);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+	    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.setColor(color);
+		shapeRenderer.polygon(vertices);
+		shapeRenderer.end();
+
+		beginRendering();
+	}
+	
+	/**
+	 * Fills a polygon to the window in the current {@link Color}
+	 * @param vertices The vertices of the polygon in format x1,y1,x2,y2,x3,y3,etc.
+	 * @param triangles The indices in the vertices parameter that make up the triangles of the polygon
+	 */
+	public void fillPolygon(float [] vertices, short [] triangles) {
+		beginRendering();
+		endRendering();
+		
+		renderingShapes = true;
+		if(vertices.length * 5 > polygonRenderData.length) {
+			polygonRenderData = new float[vertices.length * 5];
+		}
+		
+		int totalPoints = vertices.length / 2;
+		for(int i = 0; i < totalPoints; i++) {
+			int verticesIndex = i * 2;
+			int renderIndex = i * 5;
+			polygonRenderData[renderIndex] = vertices[verticesIndex];
+			polygonRenderData[renderIndex + 1] = vertices[verticesIndex + 1];
+			polygonRenderData[renderIndex + 2] = color.toFloatBits();
+			polygonRenderData[renderIndex + 3] = vertices[verticesIndex];
+			polygonRenderData[renderIndex + 4] = vertices[verticesIndex + 1];
+		}
+		
+		polygonSpriteBatch.begin();
+		polygonSpriteBatch.draw(colorTextureCache.getFilledRectangleTexture(color), polygonRenderData, 0, vertices.length * 5, triangles, 0, triangles.length);
+		polygonSpriteBatch.end();
+		
+		beginRendering();
 	}
 
 	/**
@@ -863,6 +964,7 @@ public class Graphics {
 
 		spriteBatch.setProjectionMatrix(camera.combined);
 		shapeRenderer.setProjectionMatrix(camera.combined);
+		polygonSpriteBatch.setProjectionMatrix(camera.combined);
 	}
 
 	/**

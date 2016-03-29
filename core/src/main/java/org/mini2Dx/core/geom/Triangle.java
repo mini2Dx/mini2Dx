@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -15,56 +15,73 @@ import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.math.Vector2;
 
-
 /**
- * A common interface for shapes
+ * Implements a rotatable triangle
  */
-public interface Shape {
+public class Triangle implements Shape {
+	private final Polygon polygon;
 	
-	/**
-	 * Returns if a set of coordinates are contained inside this {@link Shape}
-	 * @param x The x coordinate to check
-	 * @param y The y coordinate to check
-	 * @return True if this {@link Shape} contains the specified coordinates
-	 */
-	public boolean contains(float x, float y);
+	public Triangle(Point p1, Point p2, Point p3) {
+		this(p1.getX(), p1.getY(), p2.getX(), p2.getY(), p3.getX(), p3.getY());
+	}
 	
-	/**
-	 * Returns if a {@link Vector2} is contained inside this {@link Shape}
-	 * @param point The {@link Vector2} to check
-	 * @return True if this {@link Shape} contains the specified {@link Vector2}
-	 */
-	public boolean contains(Vector2 vector2);
-	
-	/**
-	 * Draws this shape using a {@link Graphics} instance
-	 * @param g The {@link Graphics} context to render with
-	 */
-	public void draw(Graphics g);
-	
-	/**
-	 * Fills this shape using a {@link Graphics} instance
-	 * @param g The {@link Graphics} context to render with
-	 */
-	public void fill(Graphics g);
-	
-	/**
-	 * Returns the x coordinate of this object
-	 * 
-	 * @return 0 by default
-	 */
-	public float getX();
+	public Triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
+		polygon = new Polygon(new float [] { x1, y1, x2, y2, x3, y3 });
+	}
 
-	/**
-	 * Returns the y coordinate of this object
-	 * 
-	 * @return 0 by default
-	 */
-	public float getY();
+	@Override
+	public float getX() {
+		return polygon.getX();
+	}
+
+	@Override
+	public float getY() {
+		return polygon.getY();
+	}
 	
-	/**
-	 * Returns the number of edges of this object
-	 * @return The number of sides/edges
-	 */
-	public int getNumberOfSides();
+	public void setPosition(float x1, float y1, float x2, float y2, float x3, float y3) {
+		polygon.setVertices(new float [] { x1, y1, x2, y2, x3, y3 });
+	}
+	
+	public void translate(float translateX, float translateY) {
+		float [] vertices = polygon.getVertices();
+		for(int i = 0; i < vertices.length; i += 2) {
+			vertices[i] += translateX;
+			vertices[i + 1] += translateY;
+		}
+		polygon.setVertices(vertices);
+	}
+	
+	public void setRotation(float degrees) {
+		polygon.setRotation(degrees);
+	}
+	
+	public void rotate(float degrees) {
+		polygon.rotate(degrees);
+	}
+
+	@Override
+	public int getNumberOfSides() {
+		return 3;
+	}
+
+	@Override
+	public void draw(Graphics g) {
+		polygon.draw(g);
+	}
+
+	@Override
+	public void fill(Graphics g) {
+		polygon.fill(g);
+	}
+
+	@Override
+	public boolean contains(float x, float y) {
+		return polygon.contains(x, y);
+	}
+
+	@Override
+	public boolean contains(Vector2 vector2) {
+		return polygon.contains(vector2.x, vector2.y);
+	}
 }

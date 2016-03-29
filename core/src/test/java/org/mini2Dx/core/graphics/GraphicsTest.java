@@ -19,6 +19,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -29,6 +30,7 @@ public class GraphicsTest {
 	private Mockery mockery;
 	
 	private SpriteBatch spriteBatch;
+	private PolygonSpriteBatch polygonSpriteBatch;
 	private ShapeRenderer shapeRenderer;
 	private Graphics graphics;
 	
@@ -37,6 +39,7 @@ public class GraphicsTest {
 		mockery = new Mockery();
 		mockery.setImposteriser(ClassImposteriser.INSTANCE);
 		spriteBatch = mockery.mock(SpriteBatch.class);
+		polygonSpriteBatch = mockery.mock(PolygonSpriteBatch.class);
 		shapeRenderer = mockery.mock(ShapeRenderer.class);
 		
 		mockery.checking(new Expectations() {
@@ -46,7 +49,7 @@ public class GraphicsTest {
 			}
 		});
 		
-		graphics = new Graphics(spriteBatch, shapeRenderer);
+		graphics = new Graphics(spriteBatch, polygonSpriteBatch, shapeRenderer);
 	}
 
 	@Test
