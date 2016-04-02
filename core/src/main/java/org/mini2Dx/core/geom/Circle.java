@@ -12,6 +12,7 @@
 package org.mini2Dx.core.geom;
 
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.util.EdgeIterator;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
@@ -23,6 +24,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Circle extends Shape {
 	private static final long serialVersionUID = 7900371446650127192L;
 	
+	private final CircleEdgeIterator edgeIterator = new CircleEdgeIterator();
 	private final Vector2 tmp = new Vector2();
 	final com.badlogic.gdx.math.Circle circle;
 
@@ -196,5 +198,47 @@ public class Circle extends Shape {
 	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
 		tmp.set(circle.x, circle.y);
 		return Intersector.intersectSegmentCircle(pointA, pointB, tmp, circle.radius * circle.radius);
+	}
+
+	@Override
+	public EdgeIterator edgeIterator() {
+		return edgeIterator;
+	}
+	
+	private class CircleEdgeIterator extends EdgeIterator {
+
+		@Override
+		protected void beginIteration() {}
+
+		@Override
+		protected void endIteration() {}
+
+		@Override
+		protected void nextEdge() {}
+
+		@Override
+		public boolean hasNext() {
+			return false;
+		}
+
+		@Override
+		public float getPointAX() {
+			return circle.x;
+		}
+
+		@Override
+		public float getPointAY() {
+			return circle.y;
+		}
+
+		@Override
+		public float getPointBX() {
+			return circle.x;
+		}
+
+		@Override
+		public float getPointBY() {
+			return circle.y;
+		}
 	}
 }

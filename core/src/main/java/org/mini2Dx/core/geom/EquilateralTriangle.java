@@ -12,12 +12,11 @@
 package org.mini2Dx.core.geom;
 
 /**
- * A <a href="https://en.wikipedia.org/wiki/Hexagon">hexagon</a> where all
- * interior angles are 120 degrees.
+ * Implements an equilateral triangle
  */
-public class RegularHexagon extends RegularPolygon {
-	private static final int TOTAL_SIDES = 6;
-	private static final float ROTATION_SYMMETRY = 60f;
+public class EquilateralTriangle extends RegularPolygon {
+	private static final int TOTAL_SIDES = 3;
+	private static final float ROTATION_SYMMETRY = 120f;
 
 	/**
 	 * Constructor
@@ -25,7 +24,8 @@ public class RegularHexagon extends RegularPolygon {
 	 * @param centerY The center Y coordinate
 	 * @param radius The distance from the center to the corner points
 	 */
-	public RegularHexagon(float centerX, float centerY, float radius) {
+	public EquilateralTriangle(float centerX, float centerY, float radius) {
 		super(centerX, centerY, radius, TOTAL_SIDES, ROTATION_SYMMETRY);
 	}
+
 }

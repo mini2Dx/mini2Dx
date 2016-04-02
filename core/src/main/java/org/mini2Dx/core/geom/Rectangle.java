@@ -11,8 +11,10 @@
  */
 package org.mini2Dx.core.geom;
 
+import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.exception.NotYetImplementedException;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.util.EdgeIterator;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
@@ -24,6 +26,7 @@ public class Rectangle extends Shape implements
 		Parallelogram {
 	private static final long serialVersionUID = 4016090439885217620L;
 	
+	private final RectangleEdgeIterator edgeIterator = new RectangleEdgeIterator();
 	final com.badlogic.gdx.math.Rectangle rectangle;
 	
 	private float rotation;
@@ -554,6 +557,11 @@ public class Rectangle extends Shape implements
 	public void translate(float translateX, float translateY) {
 		set(getX() + translateX, getY() + translateY);
 	}
+	
+	@Override
+	public EdgeIterator edgeIterator() {
+		return edgeIterator;
+	}
 
 	/**
 	 * Returns the x coordinate of the center of this {@link Rectangle}
@@ -613,5 +621,86 @@ public class Rectangle extends Shape implements
 	public String toString() {
 		return "Rectangle [rotation=" + rotation + ", x=" + rectangle.x + ", y=" + rectangle.y
 				+ ", width=" + rectangle.width + ", height=" + rectangle.height + "]";
+	}
+	
+	private class RectangleEdgeIterator extends EdgeIterator {
+		private int edge;
+
+		@Override
+		protected void beginIteration() {
+			edge = 0;
+		}
+
+		@Override
+		protected void endIteration() {}
+
+		@Override
+		protected void nextEdge() {
+			if(edge >= 4) {
+				throw new MdxException("No more edges remaining. Make sure to call end()");
+			}
+			edge++;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return edge < 4;
+		}
+
+		@Override
+		public float getPointAX() {
+			switch(edge) {
+			case 1:
+				return topRight.x;
+			case 2:
+				return bottomRight.x;
+			case 3:
+				return bottomLeft.x;
+			default:
+				return topLeft.x;
+			}
+		}
+
+		@Override
+		public float getPointAY() {
+			switch(edge) {
+			case 1:
+				return topRight.y;
+			case 2:
+				return bottomRight.y;
+			case 3:
+				return bottomLeft.y;
+			default:
+				return topLeft.y;
+			}
+		}
+
+		@Override
+		public float getPointBX() {
+			switch(edge) {
+			case 1:
+				return bottomRight.x;
+			case 2:
+				return bottomLeft.x;
+			case 3:
+				return topLeft.x;
+			default:
+				return topRight.x;
+			}
+		}
+
+		@Override
+		public float getPointBY() {
+			switch(edge) {
+			case 1:
+				return bottomRight.y;
+			case 2:
+				return bottomLeft.y;
+			case 3:
+				return topLeft.y;
+			default:
+				return topRight.y;
+			}
+		}
 	}
 }

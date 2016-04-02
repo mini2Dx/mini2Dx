@@ -12,13 +12,16 @@
 package org.mini2Dx.core.geom;
 
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.util.EdgeIterator;
 
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * A {@link Shape} where all interior angles are the same
+ * A polygon that is both equilateral and equiangular.
+ * 
+ * See <a href="https://en.wikipedia.org/wiki/Regular_polygon">Regular Polygon</a>
  */
-public class RegularShape extends Shape {
+public class RegularPolygon extends Shape {
 	private final float rotationSymmetry;
 	private final int totalSides;
 	private final Point center;
@@ -40,7 +43,7 @@ public class RegularShape extends Shape {
 	 * @param rotationSymmetry
 	 *            The rotational symmetry of the corner points from the center
 	 */
-	public RegularShape(float centerX, float centerY, float radius, int totalSides, float rotationSymmetry) {
+	public RegularPolygon(float centerX, float centerY, float radius, int totalSides, float rotationSymmetry) {
 		this.center = new Point(centerX, centerY);
 		this.rotationSymmetry = rotationSymmetry;
 		this.totalSides = totalSides;
@@ -48,11 +51,11 @@ public class RegularShape extends Shape {
 	}
 	
 	/**
-	 * Returns if this {@link RegularShape} intersects a {@link Polygon}
+	 * Returns if this {@link RegularPolygon} intersects a {@link Polygon}
 	 * 
 	 * @param polygon
 	 *            The {@link Polygon} to check
-	 * @return True if this {@link RegularShape} and {@link Polygon} intersect
+	 * @return True if this {@link RegularPolygon} and {@link Polygon} intersect
 	 */
 	public boolean intersects(Polygon polygon) {
 		return polygon.intersects(polygon);
@@ -60,11 +63,11 @@ public class RegularShape extends Shape {
 
 	/**
 	 * Returns if the specified {@link Rectangle} intersects this
-	 * {@link RegularShape}
+	 * {@link RegularPolygon}
 	 * 
 	 * @param rectangle
 	 *            The {@link Rectangle} to check
-	 * @return True if this {@link RegularShape} and {@link Rectangle} intersect
+	 * @return True if this {@link RegularPolygon} and {@link Rectangle} intersect
 	 */
 	public boolean intersects(Rectangle rectangle) {
 		return rectangle.intersects(polygon);
@@ -101,7 +104,7 @@ public class RegularShape extends Shape {
 	}
 
 	/**
-	 * Returns the center X coordinate of this {@link RegularShape}
+	 * Returns the center X coordinate of this {@link RegularPolygon}
 	 * 
 	 * @return The center X coordinate
 	 */
@@ -111,7 +114,7 @@ public class RegularShape extends Shape {
 	}
 
 	/**
-	 * Sets the X coordinate of this {@link RegularShape}
+	 * Sets the X coordinate of this {@link RegularPolygon}
 	 * 
 	 * @param centerX
 	 *            The center X coordinate
@@ -127,7 +130,7 @@ public class RegularShape extends Shape {
 	}
 
 	/**
-	 * Returns the center Y coordinate of this {@link RegularShape}
+	 * Returns the center Y coordinate of this {@link RegularPolygon}
 	 * 
 	 * @return The center Y coordinate
 	 */
@@ -137,7 +140,7 @@ public class RegularShape extends Shape {
 	}
 
 	/**
-	 * Sets the Y coordinate of this {@link RegularShape}
+	 * Sets the Y coordinate of this {@link RegularPolygon}
 	 * 
 	 * @param centerY
 	 *            The center Y coordinate
@@ -154,7 +157,7 @@ public class RegularShape extends Shape {
 
 	/**
 	 * Sets the center X and Y coordinates. Faster than calling
-	 * {@link RegularShape#setX(float)} and {@link RegularShape#setY(float)}
+	 * {@link RegularPolygon#setX(float)} and {@link RegularPolygon#setY(float)}
 	 * separately.
 	 * 
 	 * @param centerX
@@ -177,7 +180,7 @@ public class RegularShape extends Shape {
 	}
 
 	/**
-	 * Returns the radius of this {@link RegularShape}
+	 * Returns the radius of this {@link RegularPolygon}
 	 * 
 	 * @return The distance between the center and its corners
 	 */
@@ -186,7 +189,7 @@ public class RegularShape extends Shape {
 	}
 
 	/**
-	 * Sets the radius of this {@link RegularShape}
+	 * Sets the radius of this {@link RegularPolygon}
 	 * 
 	 * Note: This operation is expensive
 	 * 
@@ -235,5 +238,10 @@ public class RegularShape extends Shape {
 	@Override
 	public int getNumberOfSides() {
 		return totalSides;
+	}
+
+	@Override
+	public EdgeIterator edgeIterator() {
+		return polygon.edgeIterator();
 	}
 }

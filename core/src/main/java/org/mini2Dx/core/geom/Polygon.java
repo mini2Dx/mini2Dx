@@ -13,6 +13,7 @@ package org.mini2Dx.core.geom;
 
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.util.EdgeIterator;
 
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Intersector;
@@ -25,6 +26,8 @@ import com.badlogic.gdx.utils.ShortArray;
  */
 public class Polygon extends Shape {
 	private final EarClippingTriangulator triangulator;
+	private final PolygonEdgeIterator edgeIterator = new PolygonEdgeIterator();
+	
 	final com.badlogic.gdx.math.Polygon polygon;
 	
 	private int totalSidesCache = -1;
@@ -336,5 +339,62 @@ public class Polygon extends Shape {
 	@Override
 	public void translate(float translateX, float translateY) {
 		polygon.translate(translateX, translateY);
+	}
+
+	@Override
+	public EdgeIterator edgeIterator() {
+		return edgeIterator;
+	}
+	
+	private class PolygonEdgeIterator extends EdgeIterator {
+		private int edge = 0;
+
+		@Override
+		protected void beginIteration() {
+			edge = 0;
+		}
+
+		@Override
+		protected void endIteration() {}
+
+		@Override
+		protected void nextEdge() {
+			if(edge >=  getNumberOfSides()) {
+				throw new MdxException("No more edges remaining. Make sure to call end()");
+			}
+			edge++;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return edge < getNumberOfSides();
+		}
+
+		@Override
+		public float getPointAX() {
+			return polygon.getVertices()[edge * 2];
+		}
+
+		@Override
+		public float getPointAY() {
+			return polygon.getVertices()[(edge * 2) + 1];
+		}
+
+		@Override
+		public float getPointBX() {
+			if(edge == getNumberOfSides() - 1) {
+				return polygon.getVertices()[0];
+			}
+			return polygon.getVertices()[(edge + 1) * 2];
+		}
+
+		@Override
+		public float getPointBY() {
+			if(edge == getNumberOfSides() - 1) {
+				return polygon.getVertices()[1];
+			}
+			return polygon.getVertices()[((edge + 1) * 2) + 1];
+		}
+		
 	}
 }

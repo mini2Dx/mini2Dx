@@ -12,6 +12,7 @@
 package org.mini2Dx.core.geom;
 
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.util.EdgeIterator;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -32,11 +33,11 @@ public class Triangle extends Shape {
 	}
 
 	/**
-	 * Returns if this {@link RegularShape} intersects a {@link Polygon}
+	 * Returns if this {@link RegularPolygon} intersects a {@link Polygon}
 	 * 
 	 * @param polygon
 	 *            The {@link Polygon} to check
-	 * @return True if this {@link RegularShape} and {@link Polygon} intersect
+	 * @return True if this {@link RegularPolygon} and {@link Polygon} intersect
 	 */
 	public boolean intersects(Polygon polygon) {
 		return polygon.intersects(polygon);
@@ -133,5 +134,10 @@ public class Triangle extends Shape {
 
 	public void setPosition(float x1, float y1, float x2, float y2, float x3, float y3) {
 		polygon.setVertices(new float[] { x1, y1, x2, y2, x3, y3 });
+	}
+
+	@Override
+	public EdgeIterator edgeIterator() {
+		return polygon.edgeIterator();
 	}
 }
