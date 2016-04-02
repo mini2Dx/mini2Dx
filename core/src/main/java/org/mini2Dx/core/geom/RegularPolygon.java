@@ -220,7 +220,7 @@ public class RegularPolygon extends Shape {
 	 * @return The x coordinate of the corner
 	 */
 	public float getX(int index) {
-		return polygon.getVertices()[index * 2];
+		return polygon.getX(index);
 	}
 	
 	/**
@@ -232,7 +232,7 @@ public class RegularPolygon extends Shape {
 	 * @return The y coordinate of the corner
 	 */
 	public float getY(int index) {
-		return polygon.getVertices()[(index * 2) + 1];
+		return polygon.getY(index);
 	}
 
 	@Override

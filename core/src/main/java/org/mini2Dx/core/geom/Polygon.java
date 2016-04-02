@@ -266,6 +266,26 @@ public class Polygon extends Shape {
 	public float getY() {
 		return polygon.getY();
 	}
+	
+	/**
+	 * Returns the x coordinate of the corner at the specified index
+	 * 
+	 * @param index The point index
+	 * @return The x coordinate of the corner
+	 */
+	public float getX(int index) {
+		return polygon.getVertices()[index * 2];
+	}
+	
+	/**
+	 * Returns the y coordinate of the corner at the specified index
+	 * 
+	 * @param index The point index
+	 * @return The y coordinate of the corner
+	 */
+	public float getY(int index) {
+		return polygon.getVertices()[(index * 2) + 1];
+	}
 
 	/**
 	 * Returns max X coordinate of this {@link Polygon}
