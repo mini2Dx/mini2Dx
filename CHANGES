@@ -9,8 +9,10 @@
 - (#45) Added fillShape() method to Graphics class
 - (#45) Added Rectangle#intersects(Circle) and Circle#intersects(Rectangle)
 - (#45) Circle now extends com.badlogic.gdx.math.Circle
+- (#45) Added Polygon and Triangle classes
 - (#46) Fixed ParticleEffect not flipped correctly on load
 - (#48) Fixed alpha channel not being applied to line rendering
+- Added RegularShape classes (shapes with equal interior angles)
 - Added NPE prevention to TiledCollisionMapper
 - Added additional drawTexture() methods to Graphics
 - Added Sizeable and SizeChangeListener interfaces
