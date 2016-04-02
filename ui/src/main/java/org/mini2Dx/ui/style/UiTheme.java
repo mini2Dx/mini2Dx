@@ -213,35 +213,19 @@ public class UiTheme {
 	}
 
 	public ButtonStyleRule getStyleRule(Button button, ScreenSize screenSize) {
-		StyleRuleset<ButtonStyleRule> ruleset = buttons.get(button.getStyleId());
-		if (ruleset == null) {
-			ruleset = buttons.get(DEFAULT_STYLE_ID);
-		}
-		return ruleset.getStyleRule(screenSize);
+		return getButtonStyleRule(button.getStyleId(), screenSize);
 	}
 
 	public ColumnStyleRule getStyleRule(Column column, ScreenSize screenSize) {
-		StyleRuleset<ColumnStyleRule> ruleset = columns.get(column.getStyleId());
-		if (ruleset == null) {
-			ruleset = columns.get(DEFAULT_STYLE_ID);
-		}
-		return ruleset.getStyleRule(screenSize);
+		return getColumnStyleRule(column.getStyleId(), screenSize);
 	}
 
 	public ContainerStyleRule getStyleRule(Container container, ScreenSize screenSize) {
-		StyleRuleset<ContainerStyleRule> ruleset = containers.get(container.getStyleId());
-		if (ruleset == null) {
-			ruleset = containers.get(DEFAULT_STYLE_ID);
-		}
-		return ruleset.getStyleRule(screenSize);
+		return getContainerStyleRule(container.getStyleId(), screenSize);
 	}
 
 	public LabelStyleRule getStyleRule(Label label, ScreenSize screenSize) {
-		StyleRuleset<LabelStyleRule> ruleset = labels.get(label.getStyleId());
-		if (ruleset == null) {
-			ruleset = labels.get(DEFAULT_STYLE_ID);
-		}
-		return ruleset.getStyleRule(screenSize);
+		return getLabelStyleRule(label.getStyleId(), screenSize);
 	}
 
 	public StyleRule getStyleRule(Image image, ScreenSize screenSize) {
@@ -249,27 +233,15 @@ public class UiTheme {
 	}
 
 	public SelectStyleRule getStyleRule(Select<?> select, ScreenSize screenSize) {
-		StyleRuleset<SelectStyleRule> ruleset = selects.get(select.getStyleId());
-		if (ruleset == null) {
-			ruleset = selects.get(DEFAULT_STYLE_ID);
-		}
-		return ruleset.getStyleRule(screenSize);
+		return getSelectStyleRule(select.getStyleId(), screenSize);
 	}
 	
 	public TabStyleRule getStyleRule(TabView tabView, ScreenSize screenSize) {
-		StyleRuleset<TabStyleRule> ruleset = tabs.get(tabView.getStyleId());
-		if (ruleset == null) {
-			ruleset = tabs.get(DEFAULT_STYLE_ID);
-		}
-		return ruleset.getStyleRule(screenSize);
+		return getTabStyleRule(tabView.getStyleId(), screenSize);
 	}
 
 	public TextBoxStyleRule getStyleRule(TextBox textbox, ScreenSize screenSize) {
-		StyleRuleset<TextBoxStyleRule> ruleset = textboxes.get(textbox.getStyleId());
-		if (ruleset == null) {
-			ruleset = textboxes.get(DEFAULT_STYLE_ID);
-		}
-		return ruleset.getStyleRule(screenSize);
+		return getTextBoxStyleRule(textbox.getStyleId(), screenSize);
 	}
 
 	private StyleRule getStyleRule(UiElement element, ScreenSize screenSize,
@@ -283,6 +255,62 @@ public class UiTheme {
 	
 	public UiFont getFont(String id) {
 		return fonts.get(id);
+	}
+	
+	public ButtonStyleRule getButtonStyleRule(String styleId, ScreenSize screenSize) {
+		StyleRuleset<ButtonStyleRule> ruleset = buttons.get(styleId);
+		if (ruleset == null) {
+			ruleset = buttons.get(DEFAULT_STYLE_ID);
+		}
+		return ruleset.getStyleRule(screenSize);
+	}
+	
+	public ColumnStyleRule getColumnStyleRule(String styleId, ScreenSize screenSize) {
+		StyleRuleset<ColumnStyleRule> ruleset = columns.get(styleId);
+		if (ruleset == null) {
+			ruleset = columns.get(DEFAULT_STYLE_ID);
+		}
+		return ruleset.getStyleRule(screenSize);
+	}
+	
+	public ContainerStyleRule getContainerStyleRule(String styleId, ScreenSize screenSize) {
+		StyleRuleset<ContainerStyleRule> ruleset = containers.get(styleId);
+		if (ruleset == null) {
+			ruleset = containers.get(DEFAULT_STYLE_ID);
+		}
+		return ruleset.getStyleRule(screenSize);
+	}
+	
+	public LabelStyleRule getLabelStyleRule(String styleId, ScreenSize screenSize) {
+		StyleRuleset<LabelStyleRule> ruleset = labels.get(styleId);
+		if (ruleset == null) {
+			ruleset = labels.get(DEFAULT_STYLE_ID);
+		}
+		return ruleset.getStyleRule(screenSize);
+	}
+	
+	public SelectStyleRule getSelectStyleRule(String styleId, ScreenSize screenSize) {
+		StyleRuleset<SelectStyleRule> ruleset = selects.get(styleId);
+		if (ruleset == null) {
+			ruleset = selects.get(DEFAULT_STYLE_ID);
+		}
+		return ruleset.getStyleRule(screenSize);
+	}
+	
+	public TabStyleRule getTabStyleRule(String styleId, ScreenSize screenSize) {
+		StyleRuleset<TabStyleRule> ruleset = tabs.get(styleId);
+		if (ruleset == null) {
+			ruleset = tabs.get(DEFAULT_STYLE_ID);
+		}
+		return ruleset.getStyleRule(screenSize);
+	}
+	
+	public TextBoxStyleRule getTextBoxStyleRule(String styleId, ScreenSize screenSize) {
+		StyleRuleset<TextBoxStyleRule> ruleset = textboxes.get(styleId);
+		if (ruleset == null) {
+			ruleset = textboxes.get(DEFAULT_STYLE_ID);
+		}
+		return ruleset.getStyleRule(screenSize);
 	}
 	
 	public void putButtonStyleRuleset(String rulesetId, ButtonStyleRuleset ruleset) {
