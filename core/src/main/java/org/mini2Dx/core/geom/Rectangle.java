@@ -302,6 +302,27 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		Rectangle rect = new Rectangle(x, y, width, height);
 		return intersects(rect);
 	}
+	
+	/**
+	 * Returns if the specified {@link Polygon} intersects this {@link Rectangle}
+	 * @param polygon The {@link Polygon} to check
+	 * @return True if this {@link Rectangle} and the {@link Polygon} intersect
+	 */
+	public boolean intersects(Polygon polygon) {
+		if(polygon.intersectsLineSegment(topLeft, topRight)) {
+			return true;
+		}
+		if(polygon.intersectsLineSegment(topLeft, bottomLeft)) {
+			return true;
+		}
+		if(polygon.intersectsLineSegment(bottomLeft, bottomRight)) {
+			return true;
+		}
+		if(polygon.intersectsLineSegment(bottomRight, topRight)) {
+			return true;
+		}
+		return false;
+	}
 
 	public Rectangle intersection(Rectangle rect) {
 		if (rotation != 0 || rect.getRotation() != 0)
