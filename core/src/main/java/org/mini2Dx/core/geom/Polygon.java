@@ -15,6 +15,8 @@ import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.math.EarClippingTriangulator;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ShortArray;
 
 /**
@@ -22,11 +24,16 @@ import com.badlogic.gdx.utils.ShortArray;
  * polygon implementation in LibGDX
  */
 public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
-	private EarClippingTriangulator triangulator;
-
+	private final EarClippingTriangulator triangulator;
+	
+	private int totalSidesCache = -1;
 	private int maxXIndex, maxYIndex;
 	private ShortArray triangles;
 
+	/**
+	 * Constructor
+	 * @param vertices All points in x,y pairs. E.g. x1,y1,x2,y2,etc.
+	 */
 	public Polygon(float[] vertices) {
 		super(vertices);
 		triangulator = new EarClippingTriangulator();
@@ -34,8 +41,16 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 		calculateMaxXY(vertices);
 	}
 
-	public Polygon(Point[] points) {
+	/**
+	 * Constructor with vectors
+	 * @param points All points in the polygon
+	 */
+	public Polygon(Vector2 [] points) {
 		this(toVertices(points));
+	}
+	
+	private void clearTotalSidesCache() {
+		totalSidesCache = -1;
 	}
 
 	private void computeTriangles(float[] vertices) {
@@ -56,7 +71,49 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 		this.maxXIndex = maxXIndex;
 		this.maxYIndex = maxYIndex;
 	}
+	
+	/**
+	 * Returns if this {@link Polygon} intersects another
+	 * @param polygon The other {@link Polygon}
+	 * @return True if the two {@link Polygon}s intersect
+	 */
+	public boolean intersects(Polygon polygon) {
+		return Intersector.intersectPolygons(this, polygon, null);
+	}
+	
+	/**
+	 * Returns if the specified {@link Rectangle} intersects this {@link Polygon}
+	 * @param rectangle The {@link Rectangle} to check
+	 * @return True if this {@link Polygon} and {@link Rectangle} intersect
+	 */
+	public boolean intersects(Rectangle rectangle) {
+		return rectangle.intersects(this);
+	}
+	
+	/**
+	 * Returns if this {@link Polygon} intersects a {@link LineSegment}
+	 * @param lineSegment The {@link LineSegment}
+	 * @return True if this {@link Polygon} intersects the {@link LineSegment}
+	 */
+	public boolean intersects(LineSegment lineSegment) {
+		return intersectsLineSegment(lineSegment.getPointA(), lineSegment.getPointB());
+	}
+	
+	/**
+	 * Returns if this {@link Polygon} intersects a line segment
+	 * @param pointA The first {@link Point} in the line segment
+	 * @param pointB The second {@link Point} in the line segment
+	 * @return True if this {@link Polygon} intersects the line segment
+	 */
+	public boolean intersectsLineSegment(Point pointA, Point pointB) {
+		return Intersector.intersectLinePolygon(pointA, pointB, this);
+	}
 
+	/**
+	 * Adds an additional point to this {@link Polygon}
+	 * @param x The x coordinate
+	 * @param y The y coordinate
+	 */
 	public void addPoint(float x, float y) {
 		float[] existingVertices = getVertices();
 		float[] newVertices = new float[existingVertices.length + 2];
@@ -68,6 +125,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 		newVertices[existingVertices.length + 1] = y;
 		super.setVertices(newVertices);
 		computeTriangles(newVertices);
+		clearTotalSidesCache();
 
 		if (x > newVertices[maxXIndex]) {
 			maxXIndex = existingVertices.length;
@@ -77,7 +135,11 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 		}
 	}
 
-	public void addPoint(Point point) {
+	/**
+	 * Adds an additional point to this {@link Polygon}
+	 * @param point The point to add as a {@link Vector2}
+	 */
+	public void addPoint(Vector2 point) {
 		addPoint(point.x, point.y);
 	}
 
@@ -92,6 +154,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 		}
 		super.setVertices(newVertices);
 		computeTriangles(newVertices);
+		clearTotalSidesCache();
 		
 		if (i == maxXIndex) {
 			calculateMaxXY(newVertices);
@@ -111,6 +174,11 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 		}
 	}
 
+	/**
+	 * Removes a point from this {@link Polygon}
+	 * @param x The x coordinate
+	 * @param y The y coordinate
+	 */
 	public void removePoint(float x, float y) {
 		float[] existingVertices = getVertices();
 		for (int i = 0; i < existingVertices.length; i += 2) {
@@ -125,14 +193,20 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 		}
 	}
 
-	public void removePoint(Point point) {
+	/**
+	 * Removes a point from this {@link Polygon}
+	 * @param point The point to remove as a {@link Vector2}
+	 */
+	public void removePoint(Vector2 point) {
 		removePoint(point.x, point.y);
 	}
 
 	@Override
 	public int getNumberOfSides() {
-		// TODO Auto-generated method stub
-		return 0;
+		if(totalSidesCache < 0) {
+			totalSidesCache = getVertices().length / 2;
+		}
+		return totalSidesCache;
 	}
 
 	@Override
@@ -150,6 +224,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 		super.setVertices(vertices);
 		calculateMaxXY(vertices);
 		computeTriangles(vertices);
+		clearTotalSidesCache();
 	}
 
 	@Override
@@ -221,7 +296,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 		return triangles;
 	}
 
-	private static float[] toVertices(Point[] points) {
+	private static float[] toVertices(Vector2 [] points) {
 		if (points == null) {
 			throw new MdxException(Point.class.getSimpleName() + " array cannot be null");
 		}
@@ -231,8 +306,8 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 		float[] result = new float[points.length * 2];
 		for (int i = 0; i < points.length; i++) {
 			int index = i * 2;
-			result[index] = points[i].getX();
-			result[index + 1] = points[i].getY();
+			result[index] = points[i].x;
+			result[index + 1] = points[i].y;
 		}
 		return result;
 	}
