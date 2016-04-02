@@ -43,7 +43,7 @@ public class CircleTest {
 		Assert.assertEquals(false, circle.intersects(circle2));
 		Assert.assertEquals(false, circle2.intersects(circle));
 
-		circle2.setCenter(5f, 0f);
+		circle2.set(5f, 0f);
 		Assert.assertEquals(true, circle.intersects(circle2));
 		Assert.assertEquals(true, circle2.intersects(circle));
 	}
@@ -59,7 +59,7 @@ public class CircleTest {
 
 	@Test
 	public void testSetCenter() {
-		circle.setCenter(20f, 25f);
+		circle.set(20f, 25f);
 
 		Assert.assertEquals(20f, circle.getX());
 		Assert.assertEquals(25f, circle.getY());

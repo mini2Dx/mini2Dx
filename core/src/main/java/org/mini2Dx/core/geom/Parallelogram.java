@@ -15,7 +15,20 @@ package org.mini2Dx.core.geom;
 /**
  * A common interface for parallelogram implementations
  */
-public interface Parallelogram extends Shape {
+public interface Parallelogram {
+	/**
+	 * Returns the x coordinate of the shape
+	 * 
+	 * @return
+	 */
+	public float getX();
+
+	/**
+	 * Returns the y coordinate of the shape
+	 * 
+	 * @return
+	 */
+	public float getY();
 
 	/**
 	 * Returns the width of the shape
@@ -95,7 +108,7 @@ public interface Parallelogram extends Shape {
 	 *            The {@link LineSegment} to test for intersection
 	 * @return True if an intersection occurs
 	 */
-	public boolean intersects(LineSegment lineSegment);
+	public boolean intersectsLineSegment(LineSegment lineSegment);
 
 	/**
 	 * Returns if this shape intersects a specified {@link Parallelogram}

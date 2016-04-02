@@ -38,6 +38,72 @@ public class Intersector {
 		return true;
 	}
 	
+	public static boolean intersectLineSegments(float segAX1, float segAY1, float segAX2, float segAY2, float segBX1, float segBY1, float segBX2, float segBY2) {
+		float x1 = segAX1, y1 = segAY1, x2 = segAX2, y2 = segAY2, x3 = segBX1, y3 = segBY1, x4 = segBX2, y4 = segBY2;
+
+		// Return false if either of the lines have zero length
+		if (x1 == x2 && y1 == y2 || x3 == x4 && y3 == y4) {
+			return false;
+		}
+		// Fastest method, based on Franklin Antonio's
+		// "Faster Line Segment Intersection" topic "in Graphics Gems III" book
+		// (http://www.graphicsgems.org/)
+		float ax = x2 - x1;
+		float ay = y2 - y1;
+		float bx = x3 - x4;
+		float by = y3 - y4;
+		float cx = x1 - x3;
+		float cy = y1 - y3;
+
+		float alphaNumerator = by * cx - bx * cy;
+		float commonDenominator = ay * bx - ax * by;
+		if (commonDenominator > 0) {
+			if (alphaNumerator < 0 || alphaNumerator > commonDenominator) {
+				return false;
+			}
+		} else if (commonDenominator < 0) {
+			if (alphaNumerator > 0 || alphaNumerator < commonDenominator) {
+				return false;
+			}
+		}
+		float betaNumerator = ax * cy - ay * cx;
+		if (commonDenominator > 0) {
+			if (betaNumerator < 0 || betaNumerator > commonDenominator) {
+				return false;
+			}
+		} else if (commonDenominator < 0) {
+			if (betaNumerator > 0 || betaNumerator < commonDenominator) {
+				return false;
+			}
+		}
+		if (commonDenominator == 0) {
+			// This code wasn't in Franklin Antonio's method. It was added by
+			// Keith Woodward.
+			// The lines are parallel.
+			// Check if they're collinear.
+			float y3LessY1 = y3 - y1;
+			float collinearityTestForP3 = x1 * (y2 - y3) + x2 * (y3LessY1) + x3
+					* (y1 - y2); // see
+									// http://mathworld.wolfram.com/Collinear.html
+			// If p3 is collinear with p1 and p2 then p4 will also be collinear,
+			// since p1-p2 is parallel with p3-p4
+			if (collinearityTestForP3 == 0) {
+				// The lines are collinear. Now check if they overlap.
+				if (x1 >= x3 && x1 <= x4 || x1 <= x3 && x1 >= x4 || x2 >= x3
+						&& x2 <= x4 || x2 <= x3 && x2 >= x4 || x3 >= x1
+						&& x3 <= x2 || x3 <= x1 && x3 >= x2) {
+					if (y1 >= y3 && y1 <= y4 || y1 <= y3 && y1 >= y4
+							|| y2 >= y3 && y2 <= y4 || y2 <= y3 && y2 >= y4
+							|| y3 >= y1 && y3 <= y2 || y3 <= y1 && y3 >= y2) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		return true;
+	}
+	
 	private static float det (float a, float b, float c, float d) {
 		return (a * d) - (b * c);
 	}

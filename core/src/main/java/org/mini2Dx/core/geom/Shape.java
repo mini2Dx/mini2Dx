@@ -15,11 +15,10 @@ import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.math.Vector2;
 
-
 /**
- * A common interface for shapes
+ * Base class for shapes
  */
-public interface Shape {
+public abstract class Shape {
 	
 	/**
 	 * Returns if a set of coordinates are contained inside this {@link Shape}
@@ -27,44 +26,87 @@ public interface Shape {
 	 * @param y The y coordinate to check
 	 * @return True if this {@link Shape} contains the specified coordinates
 	 */
-	public boolean contains(float x, float y);
+	public abstract boolean contains(float x, float y);
 	
 	/**
 	 * Returns if a {@link Vector2} is contained inside this {@link Shape}
 	 * @param point The {@link Vector2} to check
 	 * @return True if this {@link Shape} contains the specified {@link Vector2}
 	 */
-	public boolean contains(Vector2 vector2);
+	public abstract boolean contains(Vector2 vector2);
+	
+	/**
+	 * Returns if this {@link Shape} intersects the specified {@link LineSegment}
+	 * @param lineSegment The {@link LineSegment} to check
+	 * @return True if this {@link Shape} intersects the {@link LineSegment}
+	 */
+	public boolean intersects(LineSegment lineSegment) {
+		return intersectsLineSegment(lineSegment.getPointA(), lineSegment.getPointB());
+	}
+	
+	/**
+	 * Returns if this {@link Shape} intersects a line segment
+	 * @param pointA The first point in the line segment
+	 * @param pointB The second point in the line segment
+	 * @return True if this {@link Shape} intersects the line segment
+	 */
+	public abstract boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB);
 	
 	/**
 	 * Draws this shape using a {@link Graphics} instance
 	 * @param g The {@link Graphics} context to render with
 	 */
-	public void draw(Graphics g);
+	public abstract void draw(Graphics g);
 	
 	/**
 	 * Fills this shape using a {@link Graphics} instance
 	 * @param g The {@link Graphics} context to render with
 	 */
-	public void fill(Graphics g);
+	public abstract void fill(Graphics g);
 	
 	/**
 	 * Returns the x coordinate of this object
 	 * 
 	 * @return 0 by default
 	 */
-	public float getX();
+	public abstract float getX();
 
 	/**
 	 * Returns the y coordinate of this object
 	 * 
 	 * @return 0 by default
 	 */
-	public float getY();
+	public abstract float getY();
+	
+	/**
+	 * Sets the x coordinate of this object
+	 * @param x The x coordinate
+	 */
+	public abstract void setX(float x);
+
+	/**
+	 * Sets the y coordinate of this object
+	 * @param y The y coordinate
+	 */
+	public abstract void setY(float y);
+	
+	/**
+	 * Sets the x and y coordinate of this object
+	 * @param x The x coordinate
+	 * @param y The y coordinate
+	 */
+	public abstract void set(float x, float y);
+	
+	/**
+	 * Translates the x and y coordinate of this object
+	 * @param translateX The x translation amount
+	 * @param translateY The y translation amount
+	 */
+	public abstract void translate(float translateX, float translateY);
 	
 	/**
 	 * Returns the number of edges of this object
 	 * @return The number of sides/edges
 	 */
-	public int getNumberOfSides();
+	public abstract int getNumberOfSides();
 }

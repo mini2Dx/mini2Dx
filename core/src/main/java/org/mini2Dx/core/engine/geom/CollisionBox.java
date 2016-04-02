@@ -71,10 +71,10 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	}
 	
 	private void storeRenderCoordinates() {
-		renderX = MathUtils.round(renderRectangle.x);
-		renderY = MathUtils.round(renderRectangle.y);
-		renderWidth = MathUtils.round(renderRectangle.width);
-		renderHeight = MathUtils.round(renderRectangle.height);
+		renderX = MathUtils.round(renderRectangle.getX());
+		renderY = MathUtils.round(renderRectangle.getY());
+		renderWidth = MathUtils.round(renderRectangle.getWidth());
+		renderHeight = MathUtils.round(renderRectangle.getHeight());
 	}
 	
 	/**
@@ -96,16 +96,16 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 		}
 		renderRectangle.set(previousRectangle.lerp(this, alpha));
 		storeRenderCoordinates();
-		if(renderX != MathUtils.round(this.x)) {
+		if(renderX != MathUtils.round(this.getX())) {
 			return;
 		}
-		if(renderY != MathUtils.round(this.y)) {
+		if(renderY != MathUtils.round(this.getY())) {
 			return;
 		}
-		if(renderWidth != MathUtils.round(this.width)) {
+		if(renderWidth != MathUtils.round(this.getWidth())) {
 			return;
 		}
-		if(renderHeight != MathUtils.round(this.height)) {
+		if(renderHeight != MathUtils.round(this.getHeight())) {
 			return;
 		}
 		interpolate = false;
@@ -264,7 +264,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	}
 	
 	public void forceTo(Rectangle rectangle) {
-		forceTo(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+		forceTo(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
 	}
 
 	/**
@@ -322,45 +322,31 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	}
 
 	@Override
-	public com.badlogic.gdx.math.Rectangle set(
-			com.badlogic.gdx.math.Rectangle rectangle) {
-		super.set(rectangle);
+	public void set(float x, float y) {
+		super.set(x, y);
 		interpolate = true;
 		notifyPositionChangeListeners();
-		notifySizeChangeListeners();
-		return this;
 	}
 
 	@Override
-	public Rectangle setPosition(float x, float y) {
-		super.setPosition(x, y);
+	public void set(Vector2 position) {
+		super.set(position);
 		interpolate = true;
 		notifyPositionChangeListeners();
-		return this;
 	}
 
 	@Override
-	public Rectangle setPosition(Vector2 position) {
-		super.setPosition(position);
-		interpolate = true;
-		notifyPositionChangeListeners();
-		return this;
-	}
-
-	@Override
-	public Rectangle setX(float x) {
+	public void setX(float x) {
 		super.setX(x);
 		interpolate = true;
 		notifyPositionChangeListeners();
-		return this;
 	}
 
 	@Override
-	public Rectangle setY(float y) {
+	public void setY(float y) {
 		super.setY(y);
 		interpolate = true;
 		notifyPositionChangeListeners();
-		return this;
 	}
 
 	@Override
@@ -421,7 +407,7 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	
 	@Override
 	public String toString() {
-		return "CollisionBox [id=" + id + ", x=" + x + ", y=" + y + ", width="
-				+ width + ", height=" + height + ", getRotation()=" + getRotation() + ", renderRectangle=" + renderRectangle + "]";
+		return "CollisionBox [id=" + id + ", x=" + getX() + ", y=" + getY() + ", width="
+				+ getWidth() + ", height=" + getHeight() + ", getRotation()=" + getRotation() + ", renderRectangle=" + renderRectangle + "]";
 	}
 }

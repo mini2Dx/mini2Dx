@@ -16,9 +16,9 @@ import org.mini2Dx.core.graphics.Graphics;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Implements a rotatable triangle. Backed by a {@link Polygon}.
+ * Implements a triangle. Backed by a {@link Polygon}.
  */
-public class Triangle implements Shape {
+public class Triangle extends Shape {
 	private static final int TOTAL_SIDES = 3;
 
 	private final Polygon polygon;
@@ -31,18 +31,27 @@ public class Triangle implements Shape {
 		polygon = new Polygon(new float[] { x1, y1, x2, y2, x3, y3 });
 	}
 
-	@Override
-	public float getX() {
-		return polygon.getX();
+	/**
+	 * Returns if this {@link RegularShape} intersects a {@link Polygon}
+	 * 
+	 * @param polygon
+	 *            The {@link Polygon} to check
+	 * @return True if this {@link RegularShape} and {@link Polygon} intersect
+	 */
+	public boolean intersects(Polygon polygon) {
+		return polygon.intersects(polygon);
 	}
 
-	@Override
-	public float getY() {
-		return polygon.getY();
-	}
-
-	public void setPosition(float x1, float y1, float x2, float y2, float x3, float y3) {
-		polygon.setVertices(new float[] { x1, y1, x2, y2, x3, y3 });
+	/**
+	 * Returns if the specified {@link Rectangle} intersects this
+	 * {@link Triangle}
+	 * 
+	 * @param rectangle
+	 *            The {@link Rectangle} to check
+	 * @return True if this {@link Triangle} and {@link Rectangle} intersect
+	 */
+	public boolean intersects(Rectangle rectangle) {
+		return rectangle.intersects(polygon);
 	}
 
 	public void translate(float translateX, float translateY) {
@@ -86,51 +95,43 @@ public class Triangle implements Shape {
 	public boolean contains(Vector2 vector2) {
 		return polygon.contains(vector2.x, vector2.y);
 	}
-
-	/**
-	 * Returns if this {@link RegularShape} intersects a {@link Polygon}
-	 * 
-	 * @param polygon
-	 *            The {@link Polygon} to check
-	 * @return True if this {@link RegularShape} and {@link Polygon} intersect
-	 */
-	public boolean intersects(Polygon polygon) {
-		return polygon.intersects(polygon);
-	}
-
-	/**
-	 * Returns if the specified {@link Rectangle} intersects this
-	 * {@link Triangle}
-	 * 
-	 * @param rectangle
-	 *            The {@link Rectangle} to check
-	 * @return True if this {@link Triangle} and {@link Rectangle} intersect
-	 */
-	public boolean intersects(Rectangle rectangle) {
-		return rectangle.intersects(polygon);
-	}
-
-	/**
-	 * Returns if this {@link Triangle} intersects a {@link LineSegment}
-	 * 
-	 * @param lineSegment
-	 *            The {@link LineSegment}
-	 * @return True if this {@link Triangle} intersects the {@link LineSegment}
-	 */
+	
+	@Override
 	public boolean intersects(LineSegment lineSegment) {
 		return intersectsLineSegment(lineSegment.getPointA(), lineSegment.getPointB());
 	}
-
-	/**
-	 * Returns if this {@link Triangle} intersects a line segment
-	 * 
-	 * @param pointA
-	 *            The first {@link Point} in the line segment
-	 * @param pointB
-	 *            The second {@link Point} in the line segment
-	 * @return True if this {@link Triangle} intersects the line segment
-	 */
-	public boolean intersectsLineSegment(Point pointA, Point pointB) {
+	
+	@Override
+	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
 		return polygon.intersectsLineSegment(pointA, pointB);
+	}
+	
+	@Override
+	public float getX() {
+		return polygon.getX();
+	}
+	
+	@Override
+	public void setX(float x) {
+		polygon.set(x, polygon.getY());
+	}
+	
+	@Override
+	public float getY() {
+		return polygon.getY();
+	}
+
+	@Override
+	public void setY(float y) {
+		polygon.setPosition(polygon.getX(), y);
+	}
+
+	@Override
+	public void set(float x, float y) {
+		polygon.set(x, y);
+	}
+
+	public void setPosition(float x1, float y1, float x2, float y2, float x3, float y3) {
+		polygon.setVertices(new float[] { x1, y1, x2, y2, x3, y3 });
 	}
 }

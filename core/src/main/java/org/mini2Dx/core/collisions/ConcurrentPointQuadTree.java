@@ -136,7 +136,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		} else {
 			g.setColor(QUAD_COLOR);
 			g.drawShape(this);
-			g.drawRect(x, y, width, height);
+			g.drawRect(getX(), getY(), getWidth(), getHeight());
 			g.setColor(tmp);
 		}
 
@@ -191,7 +191,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		int totalElements = this.elements.size();
 		lock.writeLock().unlock();
 		
-		if (totalElements > elementLimitPerQuad && width >= 2f && height >= 2f) {
+		if (totalElements > elementLimitPerQuad && getWidth() >= 2f && getHeight() >= 2f) {
 			subdivide();
 		}
 	}
@@ -222,7 +222,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		int totalElements = elements.size();
 		lock.writeLock().unlock();
 		
-		if (totalElements > elementLimitPerQuad && width >= 2f && height >= 2f) {
+		if (totalElements > elementLimitPerQuad && getWidth() >= 2f && getHeight() >= 2f) {
 			subdivide();
 		}
 		return true;
@@ -265,13 +265,13 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 			return;
 		}
 
-		float halfWidth = width / 2f;
-		float halfHeight = height / 2f;
+		float halfWidth = getWidth() / 2f;
+		float halfHeight = getHeight() / 2f;
 
-		topLeft = new ConcurrentPointQuadTree<T>(this, x, y, halfWidth, halfHeight);
-		topRight = new ConcurrentPointQuadTree<T>(this, x + halfWidth, y, halfWidth, halfHeight);
-		bottomLeft = new ConcurrentPointQuadTree<T>(this, x, y + halfHeight, halfWidth, halfHeight);
-		bottomRight = new ConcurrentPointQuadTree<T>(this, x + halfWidth, y + halfHeight, halfWidth, halfHeight);
+		topLeft = new ConcurrentPointQuadTree<T>(this, getX(), getY(), halfWidth, halfHeight);
+		topRight = new ConcurrentPointQuadTree<T>(this, getX() + halfWidth, getY(), halfWidth, halfHeight);
+		bottomLeft = new ConcurrentPointQuadTree<T>(this, getX(), getY() + halfHeight, halfWidth, halfHeight);
+		bottomRight = new ConcurrentPointQuadTree<T>(this, getX() + halfWidth, getY() + halfHeight, halfWidth, halfHeight);
 
 		for (int i = elements.size() - 1; i >= 0; i--) {
 			T element = elements.remove(i);

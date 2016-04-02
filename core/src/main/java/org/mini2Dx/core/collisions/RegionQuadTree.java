@@ -107,7 +107,7 @@ public class RegionQuadTree<T extends CollisionBox> extends PointQuadTree<T> {
 			bottomRight.debugRender(g);
 		} else {
 			g.setColor(QUAD_COLOR);
-			g.drawRect(x, y, width, height);
+			g.drawRect(getX(), getY(), getWidth(), getHeight());
 			g.setColor(tmp);
 		}
 
@@ -186,13 +186,13 @@ public class RegionQuadTree<T extends CollisionBox> extends PointQuadTree<T> {
 		if (topLeft != null)
 			return;
 
-		float halfWidth = width / 2f;
-		float halfHeight = height / 2f;
+		float halfWidth = getWidth() / 2f;
+		float halfHeight = getHeight() / 2f;
 
-		topLeft = new RegionQuadTree<T>(this, x, y, halfWidth, halfHeight);
-		topRight = new RegionQuadTree<T>(this, x + halfWidth, y, halfWidth, halfHeight);
-		bottomLeft = new RegionQuadTree<T>(this, x, y + halfHeight, halfWidth, halfHeight);
-		bottomRight = new RegionQuadTree<T>(this, x + halfWidth, y + halfHeight, halfWidth, halfHeight);
+		topLeft = new RegionQuadTree<T>(this, getX(), getY(), halfWidth, halfHeight);
+		topRight = new RegionQuadTree<T>(this, getX() + halfWidth, getY(), halfWidth, halfHeight);
+		bottomLeft = new RegionQuadTree<T>(this, getX(), getY() + halfHeight, halfWidth, halfHeight);
+		bottomRight = new RegionQuadTree<T>(this, getX() + halfWidth, getY() + halfHeight, halfWidth, halfHeight);
 
 		for (int i = elements.size() - 1; i >= 0; i--) {
 			if (addElementToChild(elements.get(i))) {

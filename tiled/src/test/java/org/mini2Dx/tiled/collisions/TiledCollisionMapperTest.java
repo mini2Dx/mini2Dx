@@ -92,10 +92,10 @@ public class TiledCollisionMapperTest {
 
 		List<CollisionBox> collisions = quadTree.getElementsWithinRegion(quadTree);
 		Assert.assertEquals(1, collisions.size());
-		Assert.assertEquals(32f, collisions.get(0).x);
-		Assert.assertEquals(64f, collisions.get(0).y);
-		Assert.assertEquals(16f, collisions.get(0).width);
-		Assert.assertEquals(24f, collisions.get(0).height);
+		Assert.assertEquals(32f, collisions.get(0).getX());
+		Assert.assertEquals(64f, collisions.get(0).getY());
+		Assert.assertEquals(16f, collisions.get(0).getWidth());
+		Assert.assertEquals(24f, collisions.get(0).getHeight());
 	}
 
 	@Test
@@ -110,16 +110,16 @@ public class TiledCollisionMapperTest {
 		Assert.assertEquals(3, collisions.size());
 		
 		CollisionBox collision = getCollisionAt(1, 5, quadTree, tiledMap);
-		Assert.assertEquals(tiledMap.getTileWidth() * 2f, collision.width);
-		Assert.assertEquals(tiledMap.getTileHeight() * 2f, collision.height);
+		Assert.assertEquals(tiledMap.getTileWidth() * 2f, collision.getWidth());
+		Assert.assertEquals(tiledMap.getTileHeight() * 2f, collision.getHeight());
 		
 		collision = getCollisionAt(5, 4, quadTree, tiledMap);
-		Assert.assertEquals(tiledMap.getTileWidth() * 2f, collision.width);
-		Assert.assertEquals(tiledMap.getTileHeight() * 1f, collision.height);
+		Assert.assertEquals(tiledMap.getTileWidth() * 2f, collision.getWidth());
+		Assert.assertEquals(tiledMap.getTileHeight() * 1f, collision.getHeight());
 		
 		collision = getCollisionAt(6, 3, quadTree, tiledMap);
-		Assert.assertEquals(tiledMap.getTileWidth() * 1f, collision.width);
-		Assert.assertEquals(tiledMap.getTileHeight() * 1f, collision.height);
+		Assert.assertEquals(tiledMap.getTileWidth() * 1f, collision.getWidth());
+		Assert.assertEquals(tiledMap.getTileHeight() * 1f, collision.getHeight());
 	}
 
 	@Test

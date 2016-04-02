@@ -211,9 +211,9 @@ public class CollisionCircle extends Circle implements Positionable, Sizeable {
 	public void forceTo(float x, float y) {
 		boolean notifyPositionListeners = x != getX() || y != getY();
 		
-		super.setCenter(x, y);
-		previousCircle.setCenter(x, y);
-		renderCircle.setCenter(x, y);
+		super.set(x, y);
+		previousCircle.set(x, y);
+		renderCircle.set(x, y);
 		storeRenderCoordinates();
 		
 		if(!notifyPositionListeners) {
@@ -234,8 +234,8 @@ public class CollisionCircle extends Circle implements Positionable, Sizeable {
 		notifyPositionChangeListeners();
 	}
 	
-	public void setCenter(float x, float y) {
-		super.setCenter(x, y);
+	public void set(float x, float y) {
+		super.set(x, y);
 		interpolate = true;
 		notifyPositionChangeListeners();
 	}

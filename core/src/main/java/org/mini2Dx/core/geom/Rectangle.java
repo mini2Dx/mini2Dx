@@ -18,12 +18,14 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Implements a rotatable rectangle. Adds extra functionality to the default
- * rectangle implementation in LibGDX
+ * Implements a rectangle.
  */
-public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
+public class Rectangle extends Shape implements
 		Parallelogram {
 	private static final long serialVersionUID = 4016090439885217620L;
+	
+	final com.badlogic.gdx.math.Rectangle rectangle;
+	
 	private float rotation;
 	Point topLeft, topRight, bottomLeft, bottomRight, center, rotationalCenter;
 	private float minX, minY, maxX, maxY;
@@ -49,7 +51,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	 *            The height of the {@link Rectangle}
 	 */
 	public Rectangle(float x, float y, float width, float height) {
-		super(x, y, width, height);
+		rectangle = new com.badlogic.gdx.math.Rectangle(x, y, width, height);
 		topLeft = new Point(x, y);
 		topRight = new Point(x + width, y);
 		bottomLeft = new Point(x, y + height);
@@ -99,11 +101,11 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	}
 
 	private void recalculateCoordinates() {
-		topLeft.set(x, y);
-		topRight.set(x + width, y);
-		bottomLeft.set(x, y + height);
-		bottomRight.set(x + width, y + height);
-		center.set(x + (width / 2f), y + (height / 2f));
+		topLeft.set(rectangle.x, rectangle.y);
+		topRight.set(rectangle.x + rectangle.width, rectangle.y);
+		bottomLeft.set(rectangle.x, rectangle.y + rectangle.height);
+		bottomRight.set(rectangle.x + rectangle.width, rectangle.y + rectangle.height);
+		center.set(rectangle.x + (rectangle.width / 2f), rectangle.y + (rectangle.height / 2f));
 	}
 
 	private void recalculateMinMax() {
@@ -146,17 +148,11 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		return result;
 	}
 
-	/**
-	 * @see Parallelogram#getRotation()
-	 */
 	@Override
 	public float getRotation() {
 		return rotation;
 	}
 
-	/**
-	 * @see Parallelogram#setRotation(float)
-	 */
 	@Override
 	public void setRotation(float degrees) {
 		setRotationAround(topLeft, degrees);
@@ -211,15 +207,12 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		if (!rotationalCenter.equals(topLeft)) {
 			topLeft.rotateAround(rotationalCenter, degrees);
 		}
-		super.setX(topLeft.x);
-		super.setY(topLeft.y);
+		rectangle.setX(topLeft.x);
+		rectangle.setY(topLeft.y);
 	}
-
-	/**
-	 * @see Parallelogram#intersects(LineSegment)
-	 */
+	
 	@Override
-	public boolean intersects(LineSegment lineSegment) {
+	public boolean intersectsLineSegment(LineSegment lineSegment) {
 		if (lineSegment.intersectsLineSegment(topLeft.x, topLeft.y,
 				bottomLeft.x, bottomLeft.y)) {
 			return true;
@@ -239,6 +232,27 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 		return false;
 	}
 	
+	@Override
+	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
+		if (org.mini2Dx.core.geom.Intersector.intersectLineSegments(topLeft.x, topLeft.y,
+				bottomLeft.x, bottomLeft.y, pointA.x, pointA.y, pointB.x, pointB.y)) {
+			return true;
+		}
+		if (org.mini2Dx.core.geom.Intersector.intersectLineSegments(bottomLeft.x, bottomLeft.y,
+				bottomRight.x, bottomRight.y, pointA.x, pointA.y, pointB.x, pointB.y)) {
+			return true;
+		}
+		if (org.mini2Dx.core.geom.Intersector.intersectLineSegments(bottomRight.x, bottomRight.y,
+				topRight.x, topRight.y, pointA.x, pointA.y, pointB.x, pointB.y)) {
+			return true;
+		}
+		if (org.mini2Dx.core.geom.Intersector.intersectLineSegments(topRight.x, topRight.y,
+				topLeft.x, topLeft.y, pointA.x, pointA.y, pointB.x, pointB.y)) {
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Returns if the specified {@link Circle} intersects this {@link Rectangle}
 	 * 
@@ -246,7 +260,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	 * @return True if the {@link Circle} intersects
 	 */
 	public boolean intersects(Circle circle) {
-		return Intersector.overlaps(circle, this);
+		return Intersector.overlaps(circle.circle, rectangle);
 	}
 
 	/**
@@ -270,12 +284,6 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 			yAxisOverlaps = false;
 
 		return xAxisOverlaps && yAxisOverlaps;
-	}
-
-	@Override
-	public boolean overlaps(com.badlogic.gdx.math.Rectangle rectangle) {
-		return intersects(rectangle.getX(), rectangle.getY(),
-				rectangle.getWidth(), rectangle.getHeight());
 	}
 
 	/**
@@ -325,7 +333,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	}
 
 	public Rectangle intersection(Rectangle rect) {
-		if (rotation != 0 || rect.getRotation() != 0)
+		if (rotation != 0f || rect.getRotation() != 0f)
 			throw new UnsupportedOperationException(
 					"Rectangle.intersection is not implemented to handle rotated rectangles");
 
@@ -360,17 +368,6 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 				&& contains(rectangle.topRight)
 				&& contains(rectangle.bottomLeft)
 				&& contains(rectangle.bottomRight);
-	}
-
-	@Override
-	public boolean contains(com.badlogic.gdx.math.Rectangle rectangle) {
-		return contains(rectangle.getX(), rectangle.getY())
-				&& contains(rectangle.getX() + rectangle.getWidth(),
-						rectangle.getY())
-				&& contains(rectangle.getX(),
-						rectangle.getY() + rectangle.getHeight())
-				&& contains(rectangle.getX() + rectangle.getWidth(),
-						rectangle.getY() + rectangle.getHeight());
 	}
 
 	@Override
@@ -413,7 +410,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	@Override
 	public void draw(Graphics g) {
 		if (rotation == 0f) {
-			g.drawRect(topLeft.x, topLeft.y, width, height);
+			g.drawRect(topLeft.x, topLeft.y, rectangle.width, rectangle.height);
 			return;
 		}
 		g.drawLineSegment(topLeft.x, topLeft.y, topRight.x, topRight.y);
@@ -426,7 +423,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	@Override
 	public void fill(Graphics g) {
 		if (rotation == 0f) {
-			g.fillRect(topLeft.x, topLeft.y, width, height);
+			g.fillRect(topLeft.x, topLeft.y, rectangle.width, rectangle.height);
 			return;
 		}
 		throw new NotYetImplementedException("g.fillRect for rotated Rectangles has not been implemented yet. " 
@@ -434,10 +431,9 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
                 + "please send a pull request to the mini2Dx repository at https://github.com/mini2Dx/mini2Dx");
 	}
 
-	@Override
 	public Rectangle set(float x, float y, float width, float height) {
 		performRotation(-rotation);
-		super.set(x, y, width, height);
+		rectangle.set(x, y, width, height);
 		recalculateCoordinates();
 		performRotation(rotation);
 		recalculateMinMax();
@@ -446,80 +442,74 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 
 	public void set(Rectangle rectangle) {
 		performRotation(-rotation);
-		super.set(rectangle);
+		rectangle.set(rectangle);
 		recalculateCoordinates();
 		performRotation(rotation);
 		recalculateMinMax();
 	}
-
-	@Override
-	public com.badlogic.gdx.math.Rectangle set(
-			com.badlogic.gdx.math.Rectangle rectangle) {
+	
+	public void set(float x, float y) {
 		performRotation(-rotation);
-		super.set(rectangle);
+		rectangle.setPosition(x, y);
 		recalculateCoordinates();
 		performRotation(rotation);
 		recalculateMinMax();
-		return this;
 	}
-
-	@Override
-	public Rectangle setPosition(float x, float y) {
+	
+	public void set(Vector2 position) {
 		performRotation(-rotation);
-		super.setPosition(x, y);
+		rectangle.setPosition(position);
 		recalculateCoordinates();
 		performRotation(rotation);
 		recalculateMinMax();
-		return this;
 	}
-
+	
 	@Override
-	public Rectangle setPosition(Vector2 position) {
-		performRotation(-rotation);
-		super.setPosition(position);
-		recalculateCoordinates();
-		performRotation(rotation);
-		recalculateMinMax();
-		return this;
+	public float getX() {
+		return rectangle.x;
 	}
 	
 	private void internalSetX(float x) {
 		performRotation(-rotation);
-		super.setX(x);
+		rectangle.setX(x);
 		recalculateCoordinates();
 		performRotation(rotation);
 		recalculateMinMax();
 	}
-
-	@Override
-	public Rectangle setX(float x) {
+	
+	public void setX(float x) {
 		internalSetX(x);
-		return this;
 	}
 	
 	private void internalSetY(float y) {
 		performRotation(-rotation);
-		super.setY(y);
+		rectangle.setY(y);
 		recalculateCoordinates();
 		performRotation(rotation);
 		recalculateMinMax();
 	}
-
+	
 	@Override
-	public Rectangle setY(float y) {
+	public float getY() {
+		return rectangle.y;
+	}
+	
+	public void setY(float y) {
 		internalSetY(y);
-		return this;
 	}
 	
 	private void internalSetWidth(float width) {
 		performRotation(-rotation);
-		super.setWidth(width);
+		rectangle.setWidth(width);
 		recalculateCoordinates();
 		performRotation(rotation);
 		recalculateMinMax();
 	}
+	
+	public float getWidth() {
+		return rectangle.width;
+	}
 
-	@Override
 	public Rectangle setWidth(float width) {
 		internalSetWidth(width);
 		return this;
@@ -527,36 +517,42 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 	
 	private void internalSetHeight(float height) {
 		performRotation(-rotation);
-		super.setHeight(height);
+		rectangle.setHeight(height);
 		recalculateCoordinates();
 		performRotation(rotation);
 		recalculateMinMax();
 	}
+	
+	public float getHeight() {
+		return rectangle.getHeight();
+	}
 
-	@Override
 	public Rectangle setHeight(float height) {
 		internalSetHeight(height);
 		return this;
 	}
 
-	@Override
 	public Rectangle setSize(float width, float height) {
 		performRotation(-rotation);
-		super.setSize(width, height);
+		rectangle.setSize(width, height);
 		recalculateCoordinates();
 		performRotation(rotation);
 		recalculateMinMax();
 		return this;
 	}
 
-	@Override
 	public Rectangle setSize(float sizeXY) {
 		performRotation(-rotation);
-		super.setSize(sizeXY);
+		rectangle.setSize(sizeXY);
 		recalculateCoordinates();
 		performRotation(rotation);
 		recalculateMinMax();
 		return this;
+	}
+	
+	@Override
+	public void translate(float translateX, float translateY) {
+		set(getX() + translateX, getY() + translateY);
 	}
 
 	/**
@@ -615,7 +611,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements
 
 	@Override
 	public String toString() {
-		return "Rectangle [rotation=" + rotation + ", x=" + x + ", y=" + y
-				+ ", width=" + width + ", height=" + height + "]";
+		return "Rectangle [rotation=" + rotation + ", x=" + rectangle.x + ", y=" + rectangle.y
+				+ ", width=" + rectangle.width + ", height=" + rectangle.height + "]";
 	}
 }

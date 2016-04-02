@@ -18,7 +18,7 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * A {@link Shape} where all interior angles are the same
  */
-public class RegularShape implements Shape {
+public class RegularShape extends Shape {
 	private final float rotationSymmetry;
 	private final int totalSides;
 	private final Point center;
@@ -46,17 +46,7 @@ public class RegularShape implements Shape {
 		this.totalSides = totalSides;
 		setRadius(radius);
 	}
-
-	@Override
-	public boolean contains(float x, float y) {
-		return polygon.contains(x, y);
-	}
-
-	@Override
-	public boolean contains(Vector2 vector2) {
-		return polygon.contains(vector2);
-	}
-
+	
 	/**
 	 * Returns if this {@link RegularShape} intersects a {@link Polygon}
 	 * 
@@ -80,28 +70,23 @@ public class RegularShape implements Shape {
 		return rectangle.intersects(polygon);
 	}
 
-	/**
-	 * Returns if this {@link RegularShape} intersects a {@link LineSegment}
-	 * 
-	 * @param lineSegment
-	 *            The {@link LineSegment}
-	 * @return True if this {@link RegularShape} intersects the
-	 *         {@link LineSegment}
-	 */
+	@Override
+	public boolean contains(float x, float y) {
+		return polygon.contains(x, y);
+	}
+
+	@Override
+	public boolean contains(Vector2 vector2) {
+		return polygon.contains(vector2);
+	}
+
+	@Override
 	public boolean intersects(LineSegment lineSegment) {
 		return intersectsLineSegment(lineSegment.getPointA(), lineSegment.getPointB());
 	}
-
-	/**
-	 * Returns if this {@link RegularShape} intersects a line segment
-	 * 
-	 * @param pointA
-	 *            The first {@link Point} in the line segment
-	 * @param pointB
-	 *            The second {@link Point} in the line segment
-	 * @return True if this {@link RegularShape} intersects the line segment
-	 */
-	public boolean intersectsLineSegment(Point pointA, Point pointB) {
+	
+	@Override
+	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
 		return polygon.intersectsLineSegment(pointA, pointB);
 	}
 
@@ -131,6 +116,7 @@ public class RegularShape implements Shape {
 	 * @param centerX
 	 *            The center X coordinate
 	 */
+	@Override
 	public void setX(float centerX) {
 		if (this.center.getX() == centerX) {
 			return;
@@ -156,6 +142,7 @@ public class RegularShape implements Shape {
 	 * @param centerY
 	 *            The center Y coordinate
 	 */
+	@Override
 	public void setY(float centerY) {
 		if (this.center.getY() == centerY) {
 			return;
@@ -175,11 +162,18 @@ public class RegularShape implements Shape {
 	 * @param centerY
 	 *            The center Y coordinate
 	 */
+	@Override
 	public void set(float centerX, float centerY) {
 		float diffX = centerX - this.center.getX();
 		float diffY = centerY - this.center.getY();
 		polygon.translate(diffX, diffY);
 		center.set(centerX, centerY);
+	}
+	
+	
+	@Override
+	public void translate(float translateX, float translateY) {
+		set(getX() + translateX, getY() + translateY);
 	}
 
 	/**

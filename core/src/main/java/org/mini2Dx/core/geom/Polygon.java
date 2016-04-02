@@ -23,8 +23,9 @@ import com.badlogic.gdx.utils.ShortArray;
  * Implements a rotatable polygon. Adds extra functionality to the default
  * polygon implementation in LibGDX
  */
-public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
+public class Polygon extends Shape {
 	private final EarClippingTriangulator triangulator;
+	final com.badlogic.gdx.math.Polygon polygon;
 	
 	private int totalSidesCache = -1;
 	private int maxXIndex, maxYIndex;
@@ -35,7 +36,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 	 * @param vertices All points in x,y pairs. E.g. x1,y1,x2,y2,etc.
 	 */
 	public Polygon(float[] vertices) {
-		super(vertices);
+		polygon = new com.badlogic.gdx.math.Polygon(vertices);
 		triangulator = new EarClippingTriangulator();
 		computeTriangles(vertices);
 		calculateMaxXY(vertices);
@@ -78,7 +79,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 	 * @return True if the two {@link Polygon}s intersect
 	 */
 	public boolean intersects(Polygon polygon) {
-		return Intersector.intersectPolygons(this, polygon, null);
+		return Intersector.intersectPolygons(this.polygon, polygon.polygon, null);
 	}
 	
 	/**
@@ -90,23 +91,14 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 		return rectangle.intersects(this);
 	}
 	
-	/**
-	 * Returns if this {@link Polygon} intersects a {@link LineSegment}
-	 * @param lineSegment The {@link LineSegment}
-	 * @return True if this {@link Polygon} intersects the {@link LineSegment}
-	 */
+	@Override
 	public boolean intersects(LineSegment lineSegment) {
 		return intersectsLineSegment(lineSegment.getPointA(), lineSegment.getPointB());
 	}
 	
-	/**
-	 * Returns if this {@link Polygon} intersects a line segment
-	 * @param pointA The first {@link Point} in the line segment
-	 * @param pointB The second {@link Point} in the line segment
-	 * @return True if this {@link Polygon} intersects the line segment
-	 */
-	public boolean intersectsLineSegment(Point pointA, Point pointB) {
-		return Intersector.intersectLinePolygon(pointA, pointB, this);
+	@Override
+	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
+		return Intersector.intersectLinePolygon(pointA, pointB, polygon);
 	}
 
 	/**
@@ -115,7 +107,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 	 * @param y The y coordinate
 	 */
 	public void addPoint(float x, float y) {
-		float[] existingVertices = getVertices();
+		float[] existingVertices = polygon.getVertices();
 		float[] newVertices = new float[existingVertices.length + 2];
 
 		if (existingVertices.length > 0) {
@@ -123,7 +115,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 		}
 		newVertices[existingVertices.length] = x;
 		newVertices[existingVertices.length + 1] = y;
-		super.setVertices(newVertices);
+		polygon.setVertices(newVertices);
 		computeTriangles(newVertices);
 		clearTotalSidesCache();
 
@@ -144,7 +136,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 	}
 
 	private void removePoint(int i) {
-		float[] existingVertices = getVertices();
+		float[] existingVertices = polygon.getVertices();
 		float[] newVertices = new float[existingVertices.length - 2];
 		if (i > 0) {
 			System.arraycopy(existingVertices, 0, newVertices, 0, i);
@@ -152,7 +144,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 		if (i < existingVertices.length - 2) {
 			System.arraycopy(existingVertices, i + 2, newVertices, i, existingVertices.length - i - 2);
 		}
-		super.setVertices(newVertices);
+		polygon.setVertices(newVertices);
 		computeTriangles(newVertices);
 		clearTotalSidesCache();
 		
@@ -180,7 +172,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 	 * @param y The y coordinate
 	 */
 	public void removePoint(float x, float y) {
-		float[] existingVertices = getVertices();
+		float[] existingVertices = polygon.getVertices();
 		for (int i = 0; i < existingVertices.length; i += 2) {
 			if (existingVertices[i] != x) {
 				continue;
@@ -204,48 +196,52 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 	@Override
 	public int getNumberOfSides() {
 		if(totalSidesCache < 0) {
-			totalSidesCache = getVertices().length / 2;
+			totalSidesCache = polygon.getVertices().length / 2;
 		}
 		return totalSidesCache;
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		g.drawPolygon(getVertices());
+		g.drawPolygon(polygon.getVertices());
 	}
 
 	@Override
 	public void fill(Graphics g) {
-		g.fillPolygon(getVertices(), triangles.items);
+		g.fillPolygon(polygon.getVertices(), triangles.items);
 	}
 	
-	@Override
+	public float [] getVertices() {
+		return polygon.getVertices();
+	}
+	
 	public void setVertices(float[] vertices) {
-		super.setVertices(vertices);
+		polygon.setVertices(vertices);
 		calculateMaxXY(vertices);
 		computeTriangles(vertices);
 		clearTotalSidesCache();
 	}
-
-	@Override
+	
 	public void setPosition(float x, float y) {
-		super.setPosition(x, y);
-		calculateMaxXY(getVertices());
-		computeTriangles(getVertices());
-	}
-
-	@Override
-	public void setRotation(float degrees) {
-		super.setRotation(degrees);
-		calculateMaxXY(getVertices());
-		computeTriangles(getVertices());
+		polygon.setPosition(x, y);
+		calculateMaxXY(polygon.getVertices());
+		computeTriangles(polygon.getVertices());
 	}
 	
-	@Override
+	public float getRotation() {
+		return polygon.getRotation();
+	}
+	
+	public void setRotation(float degrees) {
+		polygon.setRotation(degrees);
+		calculateMaxXY(polygon.getVertices());
+		computeTriangles(polygon.getVertices());
+	}
+	
 	public void rotate(float degrees) {
-		super.rotate(degrees);
-		calculateMaxXY(getVertices());
-		computeTriangles(getVertices());
+		polygon.rotate(degrees);
+		calculateMaxXY(polygon.getVertices());
+		computeTriangles(polygon.getVertices());
 	}
 
 	/**
@@ -255,7 +251,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 	 */
 	@Override
 	public float getX() {
-		return super.getX();
+		return polygon.getX();
 	}
 
 	/**
@@ -265,7 +261,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 	 */
 	@Override
 	public float getY() {
-		return super.getY();
+		return polygon.getY();
 	}
 
 	/**
@@ -274,7 +270,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 	 * @return The right-most x coordinate
 	 */
 	public float getMaxX() {
-		return getVertices()[maxXIndex];
+		return polygon.getVertices()[maxXIndex];
 	}
 
 	/**
@@ -283,7 +279,7 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 	 * @return The bottom-most y coordinate
 	 */
 	public float getMaxY() {
-		return getVertices()[maxYIndex];
+		return polygon.getVertices()[maxYIndex];
 	}
 
 	/**
@@ -310,5 +306,35 @@ public class Polygon extends com.badlogic.gdx.math.Polygon implements Shape {
 			result[index + 1] = points[i].y;
 		}
 		return result;
+	}
+
+	@Override
+	public boolean contains(float x, float y) {
+		return polygon.contains(x, y);
+	}
+
+	@Override
+	public boolean contains(Vector2 vector2) {
+		return polygon.contains(vector2);
+	}
+
+	@Override
+	public void setX(float x) {
+		polygon.setPosition(x, polygon.getY());
+	}
+
+	@Override
+	public void setY(float y) {
+		polygon.setPosition(polygon.getX(), y);
+	}
+
+	@Override
+	public void set(float x, float y) {
+		polygon.setPosition(x, y);
+	}
+
+	@Override
+	public void translate(float translateX, float translateY) {
+		polygon.translate(translateX, translateY);
 	}
 }

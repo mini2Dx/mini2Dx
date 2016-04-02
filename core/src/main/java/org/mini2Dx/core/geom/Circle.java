@@ -13,32 +13,36 @@ package org.mini2Dx.core.geom;
 
 import org.mini2Dx.core.graphics.Graphics;
 
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /**
  * Implements a circle
  */
-public class Circle extends com.badlogic.gdx.math.Circle implements Shape {
+public class Circle extends Shape {
 	private static final long serialVersionUID = 7900371446650127192L;
+	
+	private final Vector2 tmp = new Vector2();
+	final com.badlogic.gdx.math.Circle circle;
 
 	public Circle(float radius) {
 		this(0f, 0f, radius);
 	}
 	
 	public Circle(float centerX, float centerY, float radius) {
-		super(centerX, centerY, radius);
+		this.circle = new com.badlogic.gdx.math.Circle(centerX, centerX, radius);
 	}
 	
 	public Circle(Circle circle) {
-		super(circle);
+		this.circle = new com.badlogic.gdx.math.Circle(circle.circle);
 	}
 	
 	public Circle lerp(Circle target, float alpha) {
 		final float inverseAlpha = 1.0f - alpha;
-		x = (x * inverseAlpha) + (target.getX() * alpha);
-		y = (y * inverseAlpha) + (target.getY() * alpha);
-		radius = (radius * inverseAlpha) + (target.getRadius() * alpha);
+		circle.x = (circle.x * inverseAlpha) + (target.getX() * alpha);
+		circle.y = (circle.y * inverseAlpha) + (target.getY() * alpha);
+		circle.radius = (circle.radius * inverseAlpha) + (target.getRadius() * alpha);
 		return this;
 	}
 	
@@ -47,20 +51,20 @@ public class Circle extends com.badlogic.gdx.math.Circle implements Shape {
 	}
 	
 	public boolean contains(float x, float y) {
-		float dx = Math.abs(x - this.x);
-		if(dx > radius) {
+		float dx = Math.abs(x - circle.x);
+		if(dx > circle.radius) {
 			return false;
 		}
 		
-		float dy = Math.abs(y - this.y);
-		if(dy > radius) {
+		float dy = Math.abs(y - circle.y);
+		if(dy > circle.radius) {
 			return false;
 		}
 		
-		if(dx + dy <= radius) {
+		if(dx + dy <= circle.radius) {
 			return true;
 		}
-		if((dx * dx) + (dy * dy) <= (radius * radius)) {
+		if((dx * dx) + (dy * dy) <= (circle.radius * circle.radius)) {
 			return true;
 		}
 		return false;
@@ -73,7 +77,7 @@ public class Circle extends com.badlogic.gdx.math.Circle implements Shape {
 	 * @return True if intersection occurs
 	 */
 	public boolean intersects(Rectangle rectangle) {
-		return com.badlogic.gdx.math.Intersector.overlaps(this, rectangle);
+		return com.badlogic.gdx.math.Intersector.overlaps(circle, rectangle.rectangle);
 	}
 
 	/**
@@ -83,7 +87,7 @@ public class Circle extends com.badlogic.gdx.math.Circle implements Shape {
 	 * @return True if intersection occurs
 	 */
 	public boolean intersects(Circle circle) {
-		return Vector2.dst(x, y, circle.x, circle.y) <= radius + circle.radius;
+		return Vector2.dst(this.circle.x, this.circle.y, circle.getX(), circle.getY()) <= this.circle.radius + circle.getRadius();
 	}
 
 	/**
@@ -102,11 +106,11 @@ public class Circle extends com.badlogic.gdx.math.Circle implements Shape {
 	 * @return The distance to the point
 	 */
 	public float getDistanceTo(float x, float y) {
-		float result = Vector2.dst(this.x, this.y, x, y);
-		if(result <= radius) {
+		float result = Vector2.dst(circle.x, circle.y, x, y);
+		if(result <= circle.radius) {
 			return 0f;
 		}
-		return result - radius;
+		return result - circle.radius;
 	}
 	
 	/**
@@ -115,7 +119,7 @@ public class Circle extends com.badlogic.gdx.math.Circle implements Shape {
 	 * @return The distane to the point
 	 */
 	public float getDistanceFromCenter(Vector2 point) {
-		return Vector2.dst(x, y, point.x, point.y);
+		return Vector2.dst(circle.x, circle.y, point.x, point.y);
 	}
 	
 	/**
@@ -125,7 +129,7 @@ public class Circle extends com.badlogic.gdx.math.Circle implements Shape {
 	 * @return The distane to the point
 	 */
 	public float getDistanceFromCenter(float x, float y) {
-		return Vector2.dst(this.x, this.y, x, y);
+		return Vector2.dst(circle.x, circle.y, x, y);
 	}
 	
 	@Override
@@ -135,45 +139,62 @@ public class Circle extends com.badlogic.gdx.math.Circle implements Shape {
 
 	@Override
 	public void draw(Graphics g) {
-		g.drawCircle(x, y, MathUtils.round(radius));
+		g.drawCircle(circle.x, circle.y, MathUtils.round(circle.radius));
 	}
 	
 	@Override
 	public void fill(Graphics g) {
-		g.fillCircle(x, y, MathUtils.round(radius));
+		g.fillCircle(circle.x, circle.y, MathUtils.round(circle.radius));
 	}
 	
 	public void set(Circle circle) {
-		setCenter(circle.getX(), circle.getY());
+		set(circle.getX(), circle.getY());
 		setRadius(circle.getRadius());
 	}
 
+	@Override
 	public float getX() {
-		return x;
+		return circle.x;
 	}
 
+	@Override
 	public float getY() {
-		return y;
+		return circle.y;
 	}
 	
+	@Override
 	public void setX(float x) {
-		this.x = x;
+		circle.x = x;
 	}
 	
+	@Override
 	public void setY(float y) {
-		this.y = y;
+		circle.y = y;
 	}
 	
-	public void setCenter(float x, float y) {
-		this.x = x;
-		this.y = y;
+	@Override
+	public void set(float x, float y) {
+		circle.x = x;
+		circle.y = y;
 	}
 
 	public float getRadius() {
-		return radius;
+		return circle.radius;
 	}
 
 	public void setRadius(float radius) {
-		this.radius = radius;
+		circle.radius = radius;
+	}
+
+	@Override
+	public void translate(float translateX, float translateY) {
+		circle.x += translateX;
+		circle.y += translateY;
+	}
+
+	@Override
+	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
+		tmp.set(circle.x, circle.y);
+		return Intersector.intersectSegmentCircle(pointA, pointB, tmp, circle.radius * circle.radius);
 	}
 }

@@ -109,7 +109,7 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 			bottomRight.debugRender(g);
 		} else {
 			g.setColor(QUAD_COLOR);
-			g.drawRect(x, y, width, height);
+			g.drawRect(getX(), getY(), getWidth(), getHeight());
 			g.setColor(tmp);
 		}
 
@@ -173,7 +173,7 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 		int totalElements = this.elements.size();
 		lock.writeLock().unlock();
 		
-		if (totalElements > elementLimitPerQuad && width >= 2f && height >= 2f) {
+		if (totalElements > elementLimitPerQuad && getWidth() >= 2f && getHeight() >= 2f) {
 			subdivide();
 		}
 	}
@@ -213,7 +213,7 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 		elements.add(element);
 		element.addPostionChangeListener(this);
 
-		if (elements.size() > elementLimitPerQuad && width >= 2f && height >= 2f) {
+		if (elements.size() > elementLimitPerQuad && getWidth() >= 2f && getHeight() >= 2f) {
 			subdivide();
 		}
 		lock.writeLock().unlock();
@@ -263,13 +263,13 @@ public class ConcurrentRegionQuadTree<T extends CollisionBox> extends Concurrent
 			return;
 		}
 
-		float halfWidth = width / 2f;
-		float halfHeight = height / 2f;
+		float halfWidth = getWidth() / 2f;
+		float halfHeight = getHeight() / 2f;
 
-		topLeft = new ConcurrentRegionQuadTree<T>(this, x, y, halfWidth, halfHeight);
-		topRight = new ConcurrentRegionQuadTree<T>(this, x + halfWidth, y, halfWidth, halfHeight);
-		bottomLeft = new ConcurrentRegionQuadTree<T>(this, x, y + halfHeight, halfWidth, halfHeight);
-		bottomRight = new ConcurrentRegionQuadTree<T>(this, x + halfWidth, y + halfHeight, halfWidth, halfHeight);
+		topLeft = new ConcurrentRegionQuadTree<T>(this, getX(), getY(), halfWidth, halfHeight);
+		topRight = new ConcurrentRegionQuadTree<T>(this, getX() + halfWidth, getY(), halfWidth, halfHeight);
+		bottomLeft = new ConcurrentRegionQuadTree<T>(this, getX(), getY() + halfHeight, halfWidth, halfHeight);
+		bottomRight = new ConcurrentRegionQuadTree<T>(this, getX() + halfWidth, getY() + halfHeight, halfWidth, halfHeight);
 
 		for (int i = elements.size() - 1; i >= 0; i--) {
 			lock.readLock().lock();

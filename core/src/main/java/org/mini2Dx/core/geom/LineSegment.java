@@ -11,9 +11,8 @@
  */
 package org.mini2Dx.core.geom;
 
-
 /**
- * Represents a segement of a line (the space between two points )
+ * Represents a segment of a line (the space between two points)
  */
 public class LineSegment {
 	private Point intersection;
@@ -77,80 +76,18 @@ public class LineSegment {
 	 *         point B
 	 */
 	public boolean contains(float x, float y) {
-		if(pointA.getX() == x && pointA.getY() == y)
+		if (pointA.getX() == x && pointA.getY() == y)
 			return true;
-		if(pointB.getX() == x && pointB.getY() == y)
+		if (pointB.getX() == x && pointB.getY() == y)
 			return true;
-		
+
 		Point p3 = new Point(x, y);
 		return p3.isOnLineBetween(pointA, pointB);
 	}
 
-	public boolean intersectsLineSegment(float segmentX1, float segmentY1,
-			float segmentX2, float segmentY2) {
-		float x1 = pointA.x, y1 = pointA.y, x2 = pointB.x, y2 = pointB.y, x3 = segmentX1, y3 = segmentY1, x4 = segmentX2, y4 = segmentY2;
-
-		// Return false if either of the lines have zero length
-		if (x1 == x2 && y1 == y2 || x3 == x4 && y3 == y4) {
-			return false;
-		}
-		// Fastest method, based on Franklin Antonio's
-		// "Faster Line Segment Intersection" topic "in Graphics Gems III" book
-		// (http://www.graphicsgems.org/)
-		float ax = x2 - x1;
-		float ay = y2 - y1;
-		float bx = x3 - x4;
-		float by = y3 - y4;
-		float cx = x1 - x3;
-		float cy = y1 - y3;
-
-		float alphaNumerator = by * cx - bx * cy;
-		float commonDenominator = ay * bx - ax * by;
-		if (commonDenominator > 0) {
-			if (alphaNumerator < 0 || alphaNumerator > commonDenominator) {
-				return false;
-			}
-		} else if (commonDenominator < 0) {
-			if (alphaNumerator > 0 || alphaNumerator < commonDenominator) {
-				return false;
-			}
-		}
-		float betaNumerator = ax * cy - ay * cx;
-		if (commonDenominator > 0) {
-			if (betaNumerator < 0 || betaNumerator > commonDenominator) {
-				return false;
-			}
-		} else if (commonDenominator < 0) {
-			if (betaNumerator > 0 || betaNumerator < commonDenominator) {
-				return false;
-			}
-		}
-		if (commonDenominator == 0) {
-			// This code wasn't in Franklin Antonio's method. It was added by
-			// Keith Woodward.
-			// The lines are parallel.
-			// Check if they're collinear.
-			float y3LessY1 = y3 - y1;
-			float collinearityTestForP3 = x1 * (y2 - y3) + x2 * (y3LessY1) + x3
-					* (y1 - y2); // see
-									// http://mathworld.wolfram.com/Collinear.html
-			// If p3 is collinear with p1 and p2 then p4 will also be collinear,
-			// since p1-p2 is parallel with p3-p4
-			if (collinearityTestForP3 == 0) {
-				// The lines are collinear. Now check if they overlap.
-				if (x1 >= x3 && x1 <= x4 || x1 <= x3 && x1 >= x4 || x2 >= x3
-						&& x2 <= x4 || x2 <= x3 && x2 >= x4 || x3 >= x1
-						&& x3 <= x2 || x3 <= x1 && x3 >= x2) {
-					if (y1 >= y3 && y1 <= y4 || y1 <= y3 && y1 >= y4
-							|| y2 >= y3 && y2 <= y4 || y2 <= y3 && y2 >= y4
-							|| y3 >= y1 && y3 <= y2 || y3 <= y1 && y3 >= y2) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-		return true;
+	public boolean intersectsLineSegment(float segmentX1, float segmentY1, float segmentX2, float segmentY2) {
+		return Intersector.intersectLineSegments(pointA.x, pointA.y, pointB.x, pointB.y, segmentX1, segmentY1,
+				segmentX2, segmentY2);
 	}
 
 	/**
@@ -162,8 +99,7 @@ public class LineSegment {
 	 * @return True if this line intersects with lineSegment
 	 */
 	public boolean intersects(LineSegment lineSegment) {
-		return intersectsLineSegment(lineSegment.getPointA().x,
-				lineSegment.getPointA().y, lineSegment.getPointB().x,
+		return intersectsLineSegment(lineSegment.getPointA().x, lineSegment.getPointA().y, lineSegment.getPointB().x,
 				lineSegment.getPointB().y);
 	}
 
@@ -176,8 +112,8 @@ public class LineSegment {
 	 * @return Null if the {@link LineSegment}s don't intersect
 	 */
 	public Point getIntersection(LineSegment lineSegment) {
-		if (!Intersector.intersectLines(pointA, pointB,
-				lineSegment.getPointA(), lineSegment.getPointB(), intersection)) {
+		if (!Intersector.intersectLines(pointA, pointB, lineSegment.getPointA(), lineSegment.getPointB(),
+				intersection)) {
 			return null;
 		}
 		if (!intersection.isOnLineBetween(pointA, pointB))
