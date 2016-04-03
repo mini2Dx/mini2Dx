@@ -110,7 +110,7 @@ public class Polygon extends Shape {
 	 * @param y The y coordinate
 	 */
 	public void addPoint(float x, float y) {
-		float[] existingVertices = polygon.getVertices();
+		float[] existingVertices = polygon.getTransformedVertices();
 		float[] newVertices = new float[existingVertices.length + 2];
 
 		if (existingVertices.length > 0) {
@@ -118,7 +118,10 @@ public class Polygon extends Shape {
 		}
 		newVertices[existingVertices.length] = x;
 		newVertices[existingVertices.length + 1] = y;
+		
+		polygon.translate(-polygon.getX(), -polygon.getY());
 		polygon.setVertices(newVertices);
+		
 		computeTriangles(newVertices);
 		clearTotalSidesCache();
 
@@ -139,7 +142,7 @@ public class Polygon extends Shape {
 	}
 
 	private void removePoint(int i) {
-		float[] existingVertices = polygon.getVertices();
+		float[] existingVertices = polygon.getTransformedVertices();
 		float[] newVertices = new float[existingVertices.length - 2];
 		if (i > 0) {
 			System.arraycopy(existingVertices, 0, newVertices, 0, i);
@@ -147,6 +150,7 @@ public class Polygon extends Shape {
 		if (i < existingVertices.length - 2) {
 			System.arraycopy(existingVertices, i + 2, newVertices, i, existingVertices.length - i - 2);
 		}
+		polygon.translate(-polygon.getX(), -polygon.getY());
 		polygon.setVertices(newVertices);
 		computeTriangles(newVertices);
 		clearTotalSidesCache();
@@ -175,7 +179,7 @@ public class Polygon extends Shape {
 	 * @param y The y coordinate
 	 */
 	public void removePoint(float x, float y) {
-		float[] existingVertices = polygon.getVertices();
+		float[] existingVertices = polygon.getTransformedVertices();
 		for (int i = 0; i < existingVertices.length; i += 2) {
 			if (existingVertices[i] != x) {
 				continue;
@@ -199,23 +203,23 @@ public class Polygon extends Shape {
 	@Override
 	public int getNumberOfSides() {
 		if(totalSidesCache < 0) {
-			totalSidesCache = polygon.getVertices().length / 2;
+			totalSidesCache = polygon.getTransformedVertices().length / 2;
 		}
 		return totalSidesCache;
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		g.drawPolygon(polygon.getVertices());
+		g.drawPolygon(polygon.getTransformedVertices());
 	}
 
 	@Override
 	public void fill(Graphics g) {
-		g.fillPolygon(polygon.getVertices(), triangles.items);
+		g.fillPolygon(polygon.getTransformedVertices(), triangles.items);
 	}
 	
 	public float [] getVertices() {
-		return polygon.getVertices();
+		return polygon.getTransformedVertices();
 	}
 	
 	public void setVertices(float[] vertices) {
@@ -227,8 +231,8 @@ public class Polygon extends Shape {
 	
 	public void setPosition(float x, float y) {
 		polygon.setPosition(x, y);
-		calculateMaxXY(polygon.getVertices());
-		computeTriangles(polygon.getVertices());
+		calculateMaxXY(polygon.getTransformedVertices());
+		computeTriangles(polygon.getTransformedVertices());
 	}
 	
 	public float getRotation() {
@@ -237,14 +241,14 @@ public class Polygon extends Shape {
 	
 	public void setRotation(float degrees) {
 		polygon.setRotation(degrees);
-		calculateMaxXY(polygon.getVertices());
-		computeTriangles(polygon.getVertices());
+		calculateMaxXY(polygon.getTransformedVertices());
+		computeTriangles(polygon.getTransformedVertices());
 	}
 	
 	public void rotate(float degrees) {
 		polygon.rotate(degrees);
-		calculateMaxXY(polygon.getVertices());
-		computeTriangles(polygon.getVertices());
+		calculateMaxXY(polygon.getTransformedVertices());
+		computeTriangles(polygon.getTransformedVertices());
 	}
 
 	/**
@@ -254,7 +258,7 @@ public class Polygon extends Shape {
 	 */
 	@Override
 	public float getX() {
-		return polygon.getX();
+		return getX(0);
 	}
 
 	/**
@@ -264,7 +268,7 @@ public class Polygon extends Shape {
 	 */
 	@Override
 	public float getY() {
-		return polygon.getY();
+		return getY(0);
 	}
 	
 	/**
@@ -274,7 +278,7 @@ public class Polygon extends Shape {
 	 * @return The x coordinate of the corner
 	 */
 	public float getX(int index) {
-		return polygon.getVertices()[index * 2];
+		return polygon.getTransformedVertices()[index * 2];
 	}
 	
 	/**
@@ -284,7 +288,7 @@ public class Polygon extends Shape {
 	 * @return The y coordinate of the corner
 	 */
 	public float getY(int index) {
-		return polygon.getVertices()[(index * 2) + 1];
+		return polygon.getTransformedVertices()[(index * 2) + 1];
 	}
 
 	/**
@@ -293,7 +297,7 @@ public class Polygon extends Shape {
 	 * @return The right-most x coordinate
 	 */
 	public float getMaxX() {
-		return polygon.getVertices()[maxXIndex];
+		return polygon.getTransformedVertices()[maxXIndex];
 	}
 
 	/**
@@ -302,7 +306,7 @@ public class Polygon extends Shape {
 	 * @return The bottom-most y coordinate
 	 */
 	public float getMaxY() {
-		return polygon.getVertices()[maxYIndex];
+		return polygon.getTransformedVertices()[maxYIndex];
 	}
 
 	/**

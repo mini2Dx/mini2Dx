@@ -51,4 +51,70 @@ public class PolygonTest {
 		Assert.assertEquals(5f, polygon.getMaxX());
 		Assert.assertEquals(5f, polygon.getMaxY());
 	}
+	
+	@Test
+	public void testTranslate() {
+		Polygon polygon = new Polygon(new Point [] {
+			new Point(0f, 0f),
+			new Point(10f, 0f),
+			new Point(10f, 10f),
+			new Point(0f, 10f)
+		});
+		polygon.translate(10f, 0f);
+		Assert.assertEquals(10f, polygon.getX(0));
+		Assert.assertEquals(0f, polygon.getY(0));
+		Assert.assertEquals(20f, polygon.getX(1));
+		Assert.assertEquals(0f, polygon.getY(1));
+		Assert.assertEquals(20f, polygon.getX(2));
+		Assert.assertEquals(10f, polygon.getY(2));
+		Assert.assertEquals(10f, polygon.getX(3));
+		Assert.assertEquals(10f, polygon.getY(3));
+	}
+	
+	@Test
+	public void testTranslateAndAddPoint() {
+		Point [] initialPoints = new Point [] {
+				new Point(0f, 0f),
+				new Point(10f, 0f),
+				new Point(10f, 10f),
+				new Point(5f, 10f)
+		};
+		
+		Polygon polygon = new Polygon(initialPoints);
+		polygon.translate(10f, 0f);
+		polygon.addPoint(new Point(10f, 10f));
+		Assert.assertEquals(10f, polygon.getX(0));
+		Assert.assertEquals(0f, polygon.getY(0));
+		Assert.assertEquals(20f, polygon.getX(1));
+		Assert.assertEquals(0f, polygon.getY(1));
+		Assert.assertEquals(20f, polygon.getX(2));
+		Assert.assertEquals(10f, polygon.getY(2));
+		Assert.assertEquals(15f, polygon.getX(3));
+		Assert.assertEquals(10f, polygon.getY(3));
+		Assert.assertEquals(10f, polygon.getX(4));
+		Assert.assertEquals(10f, polygon.getY(4));
+	}
+	
+	@Test
+	public void testTranslateAndRemovePoint() {
+		Point [] initialPoints = new Point [] {
+				new Point(0f, 0f),
+				new Point(10f, 0f),
+				new Point(10f, 10f),
+				new Point(5f, 10f),
+				new Point(0f, 10f)
+		};
+		
+		Polygon polygon = new Polygon(initialPoints);
+		polygon.translate(10f, 0f);
+		polygon.removePoint(15f, 10f);
+		Assert.assertEquals(10f, polygon.getX(0));
+		Assert.assertEquals(0f, polygon.getY(0));
+		Assert.assertEquals(20f, polygon.getX(1));
+		Assert.assertEquals(0f, polygon.getY(1));
+		Assert.assertEquals(20f, polygon.getX(2));
+		Assert.assertEquals(10f, polygon.getY(2));
+		Assert.assertEquals(10f, polygon.getX(3));
+		Assert.assertEquals(10f, polygon.getY(3));
+	}
 }
