@@ -114,6 +114,17 @@ public class RectangleTest {
 	}
 	
 	@Test
+	public void testSetRectangle() {
+		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
+		rectangle2 = new Rectangle(200f, 200f, 100f, 100f);
+		rectangle1.set(rectangle2);
+		Assert.assertEquals(200f, rectangle1.getX());
+		Assert.assertEquals(200f, rectangle1.getY());
+		Assert.assertEquals(100f, rectangle1.getWidth());
+		Assert.assertEquals(100f, rectangle1.getHeight());
+	}
+	
+	@Test
 	public void testRotateAround() {
 		rectangle1 = new Rectangle(0f, 0f, 10f, 10f);
 		rectangle1.rotateAround(new Point(0f, 0f), 90f);

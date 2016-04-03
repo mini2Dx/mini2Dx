@@ -445,7 +445,7 @@ public class Rectangle extends Shape implements
 
 	public void set(Rectangle rectangle) {
 		performRotation(-rotation);
-		rectangle.set(rectangle);
+		this.rectangle.set(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
 		recalculateCoordinates();
 		performRotation(rotation);
 		recalculateMinMax();
