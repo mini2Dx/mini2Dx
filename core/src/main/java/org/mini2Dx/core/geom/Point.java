@@ -50,14 +50,26 @@ public class Point extends Vector2 {
 	 *            The angle to rotate by in degrees
 	 */
 	public void rotateAround(Point center, float degrees) {
+		rotateAround(center.x, center.y, degrees);
+	}
+	
+	/**
+	 * Rotates this {@link Point} around a coordinate
+	 * 
+	 * @param centerX The x coordinate to rotate around
+	 * @param centerY The y coordinate to rotate around
+	 * @param degrees
+	 *            The angle to rotate by in degrees
+	 */
+	public void rotateAround(float centerX, float centerY, float degrees) {
 		if (degrees == 0)
 			return;
 
 		float cos = MathUtils.cos(degrees * MathUtils.degreesToRadians);
 		float sin = MathUtils.sin(degrees * MathUtils.degreesToRadians);
 
-		float newX = (cos * (x - center.x) - sin * (y - center.y) + center.x);
-		float newY = (sin * (x - center.x) + cos * (y - center.y) + center.y);
+		float newX = (cos * (x - centerX) - sin * (y - centerY) + centerX);
+		float newY = (sin * (x - centerX) + cos * (y - centerY) + centerY);
 
 		set(newX, newY);
 	}
