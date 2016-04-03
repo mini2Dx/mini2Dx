@@ -16,8 +16,8 @@ package org.mini2Dx.core.geom;
  * interior angles are 108 degrees.
  */
 public class RegularPentagon extends RegularPolygon {
+	public static final float ROTATION_SYMMETRY = 72f;
 	private static final int TOTAL_SIDES = 5;
-	private static final float ROTATION_SYMMETRY = 72f;
 
 	/**
 	 * Constructor

@@ -15,8 +15,8 @@ package org.mini2Dx.core.geom;
  * Implements an equilateral triangle
  */
 public class EquilateralTriangle extends RegularPolygon {
+	public static final float ROTATION_SYMMETRY = 120f;
 	private static final int TOTAL_SIDES = 3;
-	private static final float ROTATION_SYMMETRY = 120f;
 
 	/**
 	 * Constructor

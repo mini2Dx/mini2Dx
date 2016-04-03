@@ -16,8 +16,8 @@ package org.mini2Dx.core.geom;
  * interior angles are 120 degrees.
  */
 public class RegularHexagon extends RegularPolygon {
+	public static final float ROTATION_SYMMETRY = 60f;
 	private static final int TOTAL_SIDES = 6;
-	private static final float ROTATION_SYMMETRY = 60f;
 
 	/**
 	 * Constructor
