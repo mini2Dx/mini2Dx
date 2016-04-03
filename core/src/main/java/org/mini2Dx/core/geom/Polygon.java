@@ -396,28 +396,28 @@ public class Polygon extends Shape {
 
 		@Override
 		public float getPointAX() {
-			return polygon.getVertices()[edge * 2];
+			return polygon.getTransformedVertices()[edge * 2];
 		}
 
 		@Override
 		public float getPointAY() {
-			return polygon.getVertices()[(edge * 2) + 1];
+			return polygon.getTransformedVertices()[(edge * 2) + 1];
 		}
 
 		@Override
 		public float getPointBX() {
 			if(edge == getNumberOfSides() - 1) {
-				return polygon.getVertices()[0];
+				return polygon.getTransformedVertices()[0];
 			}
-			return polygon.getVertices()[(edge + 1) * 2];
+			return polygon.getTransformedVertices()[(edge + 1) * 2];
 		}
 
 		@Override
 		public float getPointBY() {
 			if(edge == getNumberOfSides() - 1) {
-				return polygon.getVertices()[1];
+				return polygon.getTransformedVertices()[1];
 			}
-			return polygon.getVertices()[((edge + 1) * 2) + 1];
+			return polygon.getTransformedVertices()[((edge + 1) * 2) + 1];
 		}
 		
 	}
