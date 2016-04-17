@@ -12,6 +12,8 @@
 - (#45) Added Polygon and Triangle classes
 - (#46) Fixed ParticleEffect not flipped correctly on load
 - (#48) Fixed alpha channel not being applied to line rendering
+- (#50) Fixed TiledMap rendering incorrectly when scaled down
+- (#54) Added performance benchmarking for collisions
 - Added RegularShape classes (shapes with equal interior angles)
 - Added NPE prevention to TiledCollisionMapper
 - Added additional drawTexture() methods to Graphics

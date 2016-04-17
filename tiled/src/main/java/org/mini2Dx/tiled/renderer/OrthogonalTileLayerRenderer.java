@@ -123,16 +123,16 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 				int tileRenderX = x * tiledMap.getTileWidth();
 				int tileRenderY = y * tiledMap.getTileHeight();
 				
-				if(tileRenderX < g.getTranslationX() - (tiledMap.getTileWidth() * 2)) {
+				if(tileRenderX + tiledMap.getTileWidth() < g.getTranslationX()) {
 					continue;
 				}
-				if(tileRenderY < g.getTranslationY() - (tiledMap.getTileHeight() * 2)) {
+				if(tileRenderY + tiledMap.getTileHeight() < g.getTranslationY()) {
 					continue;
 				}
-				if(tileRenderX > g.getTranslationX() + g.getCurrentWidth()) {
+				if(tileRenderX > g.getTranslationX() + g.getViewportWidth()) {
 					continue;
 				}
-				if(tileRenderY > g.getTranslationY() + g.getCurrentHeight()) {
+				if(tileRenderY > g.getTranslationY() + g.getViewportHeight()) {
 					continue;
 				}
 

@@ -67,11 +67,11 @@ public class IsometricTiledMapUAT extends BasicGameScreen {
     }
     
     private void renderFullMapInTopMiddle(Graphics g) {
-        tiledMap.draw(g, (int) g.getCurrentWidth() / 2, 0);
+        tiledMap.draw(g, (int) g.getWindowWidth() / 2, 0);
     }
     
     private void renderPartOfMapUnderTopMiddleMap(Graphics g) {
-        tiledMap.draw(g, ((int) g.getCurrentWidth() / 2) + tiledMap.getTileWidth(), tiledMap.getHeight() * tiledMap.getTileHeight(), 1, 1, 4, 8);
+        tiledMap.draw(g, ((int) g.getWindowWidth() / 2) + tiledMap.getTileWidth(), tiledMap.getHeight() * tiledMap.getTileHeight(), 1, 1, 4, 8);
     }
     
     private void renderScaledAndRotatedMapOnLeftSide(Graphics g) {
@@ -79,7 +79,7 @@ public class IsometricTiledMapUAT extends BasicGameScreen {
         g.rotate(5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 1.5f);
 
         //Render rotated map in bottom right corner
-        tiledMap.draw(g, (int) g.getCurrentWidth() / 8, (tiledMap.getHeight() * tiledMap.getTileHeight()) / 2, 1, 1, 4, 8);
+        tiledMap.draw(g, (int) g.getWindowWidth() / 8, (tiledMap.getHeight() * tiledMap.getTileHeight()) / 2, 1, 1, 4, 8);
 
         g.rotate(-5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 1.5f);
         g.scale(0.8f, 0.8f);
@@ -87,8 +87,8 @@ public class IsometricTiledMapUAT extends BasicGameScreen {
     
     private void renderTranslatedFullMapInBottomLeftCorner(Graphics g) {
         int mapWidthInPixels = (tiledMap.getWidth() * tiledMap.getTileWidth()) / 2;
-        float halfScreenWidth = (g.getCurrentWidth() / 2);
-        float halfScreenHeight = (g.getCurrentHeight() / 2);
+        float halfScreenWidth = (g.getWindowWidth() / 2);
+        float halfScreenHeight = (g.getWindowHeight() / 2);
         g.translate(-(halfScreenWidth + mapWidthInPixels), -halfScreenHeight);
         tiledMap.draw(g, 0, 0);
         g.translate(halfScreenWidth + mapWidthInPixels, halfScreenHeight);

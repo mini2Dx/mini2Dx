@@ -33,89 +33,99 @@ import com.badlogic.gdx.math.MathUtils;
  * {@link TiledMap} rendering with layer caching disabled
  */
 public class OrthogonalTiledMapNoCachingUAT extends BasicGameScreen {
-    private TiledMap tiledMap;
+	private TiledMap tiledMap;
 
-    @Override
-    public void initialise(GameContainer gc) {
-        try {
-            tiledMap = new TiledMap(Gdx.files.classpath("orthogonal.tmx"), true, false);
-        } catch (TiledException e) {
-            e.printStackTrace();
-        }
-    }
+	@Override
+	public void initialise(GameContainer gc) {
+		try {
+			tiledMap = new TiledMap(Gdx.files.classpath("orthogonal.tmx"), true, false);
+		} catch (TiledException e) {
+			e.printStackTrace();
+		}
+	}
 
-    @Override
-    public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
-            float delta) {
-    	if(Gdx.input.justTouched()) {
-            screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
-        }
-    }
+	@Override
+	public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
+		if (Gdx.input.justTouched()) {
+			screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(),
+					new FadeInTransition());
+		}
+	}
 
-    @Override
-    public void interpolate(GameContainer gc, float alpha) {
-    }
+	@Override
+	public void interpolate(GameContainer gc, float alpha) {
+	}
 
-    @Override
-    public void render(GameContainer gc, Graphics g) {
-        g.setBackgroundColor(Color.WHITE);
-        g.setColor(Color.RED);
+	@Override
+	public void render(GameContainer gc, Graphics g) {
+		g.setBackgroundColor(Color.WHITE);
+		g.setColor(Color.RED);
 
-        renderFullMapInTopLeftCorner(g);
-        renderPartOfMapUnderTopLeftMap(g);
-        renderFirstTilesetInTopRightCorner(g);
-        renderScaledAndRotatedMapInBottomRightCorner(g);
-        renderTranslatedFullMapInBottomLeftCorner(g);
-    }
-    
-    private void renderFullMapInTopLeftCorner(Graphics g) {
-        tiledMap.draw(g, 0, 0);
-    }
-    
-    private void renderFirstTilesetInTopRightCorner(Graphics g) {
-        tiledMap.getTilesets().get(0).drawTileset(g, tiledMap.getWidth() * tiledMap.getTileWidth() + 32, 0);
-    }
-    
-    private void renderScaledAndRotatedMapInBottomRightCorner(Graphics g) {
-        g.scale(1.25f, 1.25f);
-        g.rotate(5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 1.5f);
+		renderFullMapInTopLeftCorner(g);
+		renderPartOfMapUnderTopLeftMap(g);
+		renderFirstTilesetInTopRightCorner(g);
+		renderTranslatedFullMapInBottomLeftCorner(g);
+		renderScaledDownFullMap(g);
+		renderScaledAndRotatedMapInBottomRightCorner(g);
+	}
 
-        //Render rotated map in bottom right corner
-        tiledMap.draw(g, tiledMap.getWidth() * tiledMap.getTileWidth(), MathUtils.round((tiledMap.getHeight() * tiledMap.getTileHeight()) * 1.5f), 1, 1, 4, 8);
+	private void renderFullMapInTopLeftCorner(Graphics g) {
+		tiledMap.draw(g, 0, 0);
+	}
 
-        g.rotate(-5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 1.5f);
-        g.scale(0.8f, 0.8f);
-    }
-    
-    private void renderPartOfMapUnderTopLeftMap(Graphics g) {
-        tiledMap.draw(g, 32, tiledMap.getHeight() * tiledMap.getTileHeight(), 1, 1, 4, 8);
-    }
-    
-    private void renderTranslatedFullMapInBottomLeftCorner(Graphics g) {
-        int mapWidthInPixels = tiledMap.getWidth() * tiledMap.getTileWidth();
-        g.translate(mapWidthInPixels, 0);
-        tiledMap.draw(g, mapWidthInPixels, (tiledMap.getHeight() * tiledMap.getTileHeight()) + (8 * tiledMap.getTileHeight()));
-        g.translate(-mapWidthInPixels, 0);
-    }
+	private void renderFirstTilesetInTopRightCorner(Graphics g) {
+		tiledMap.getTilesets().get(0).drawTileset(g, tiledMap.getWidth() * tiledMap.getTileWidth() + 32, 0);
+	}
 
-    @Override
-    public void preTransitionIn(Transition transitionIn) {
-    }
+	private void renderScaledAndRotatedMapInBottomRightCorner(Graphics g) {
+		g.scale(1.25f, 1.25f);
+		g.rotate(5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 1.5f);
 
-    @Override
-    public void postTransitionIn(Transition transitionIn) {
-    }
+		// Render rotated map in bottom right corner
+		tiledMap.draw(g, tiledMap.getWidth() * tiledMap.getTileWidth(),
+				MathUtils.round((tiledMap.getHeight() * tiledMap.getTileHeight()) * 1.5f), 1, 1, 4, 8);
 
-    @Override
-    public void preTransitionOut(Transition transitionOut) {
-    }
+		g.rotate(-5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 1.5f);
+		g.scale(0.8f, 0.8f);
+	}
 
-    @Override
-    public void postTransitionOut(Transition transitionOut) {
-    }
+	private void renderPartOfMapUnderTopLeftMap(Graphics g) {
+		tiledMap.draw(g, 32, tiledMap.getHeight() * tiledMap.getTileHeight(), 1, 1, 4, 8);
+	}
 
-    @Override
-    public int getId() {
-        return ScreenIds.getScreenId(OrthogonalTiledMapNoCachingUAT.class);
-    }
+	private void renderTranslatedFullMapInBottomLeftCorner(Graphics g) {
+		int mapWidthInPixels = tiledMap.getWidth() * tiledMap.getTileWidth();
+		g.translate(mapWidthInPixels, 0);
+		tiledMap.draw(g, mapWidthInPixels,
+				(tiledMap.getHeight() * tiledMap.getTileHeight()) + (8 * tiledMap.getTileHeight()));
+		g.translate(-mapWidthInPixels, 0);
+	}
+
+	private void renderScaledDownFullMap(Graphics g) {
+		g.setScale(0.55f, 0.55f);
+		tiledMap.draw(g, MathUtils.round(g.getWindowWidth() - ((tiledMap.getTileWidth() / 2) * tiledMap.getWidth())),
+				MathUtils.round(g.getWindowHeight() - ((tiledMap.getTileHeight() / 2) * tiledMap.getHeight())));
+		g.setScale(1f, 1f);
+	}
+
+	@Override
+	public void preTransitionIn(Transition transitionIn) {
+	}
+
+	@Override
+	public void postTransitionIn(Transition transitionIn) {
+	}
+
+	@Override
+	public void preTransitionOut(Transition transitionOut) {
+	}
+
+	@Override
+	public void postTransitionOut(Transition transitionOut) {
+	}
+
+	@Override
+	public int getId() {
+		return ScreenIds.getScreenId(OrthogonalTiledMapNoCachingUAT.class);
+	}
 }

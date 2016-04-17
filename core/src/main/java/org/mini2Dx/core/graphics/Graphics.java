@@ -53,7 +53,7 @@ public class Graphics {
 	private float translationX, translationY;
 	private float scaleX, scaleY;
 	private float rotation, rotationX, rotationY;
-	private float currentWidth, currentHeight;
+	private float windowWidth, windowHeight;
 
 	private int defaultBlendSrcFunc = GL20.GL_SRC_ALPHA, defaultBlendDstFunc = GL20.GL_ONE_MINUS_SRC_ALPHA;
 	private int lineHeight;
@@ -100,8 +100,8 @@ public class Graphics {
 	 *            The current game window height
 	 */
 	public void preRender(int gameWidth, int gameHeight) {
-		this.currentWidth = gameWidth;
-		this.currentHeight = gameHeight;
+		this.windowWidth = gameWidth;
+		this.windowHeight = gameHeight;
 
 		Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
@@ -947,11 +947,11 @@ public class Graphics {
 	 * Applies all translation, scaling and rotation to the {@link SpriteBatch}
 	 */
 	private void applyTransformations() {
-		float viewportWidth = MathUtils.round(currentWidth / scaleX);
-		float viewportHeight = MathUtils.round(currentHeight / scaleY);
+		float viewportWidth = MathUtils.round(windowWidth / scaleX);
+		float viewportHeight = MathUtils.round(windowHeight / scaleY);
 
 		camera.setToOrtho(true, viewportWidth, viewportHeight);
-
+		
 		if (translationX != 0f || translationY != 0f) {
 			camera.translate(translationX, translationY);
 		}
@@ -1104,12 +1104,36 @@ public class Graphics {
 		return camera.combined.cpy();
 	}
 
-	public float getCurrentWidth() {
-		return currentWidth;
+	/**
+	 * Returns the width of the window width
+	 * @return
+	 */
+	public float getWindowWidth() {
+		return windowWidth;
 	}
 
-	public float getCurrentHeight() {
-		return currentHeight;
+	/**
+	 * Returns the height of the window height
+	 * @return
+	 */
+	public float getWindowHeight() {
+		return windowHeight;
+	}
+	
+	/**
+	 * Returns the width of the viewport width
+	 * @return
+	 */
+	public float getViewportWidth() {
+		return camera.viewportWidth;
+	}
+
+	/**
+	 * Returns the height of the viewport height
+	 * @return
+	 */
+	public float getViewportHeight() {
+		return camera.viewportHeight;
 	}
 
 	@Override
@@ -1117,7 +1141,7 @@ public class Graphics {
 		return "Graphics [color=" + color + ", backgroundColor=" + backgroundColor + ", tint=" + tint
 				+ ", translationX=" + translationX + ", translationY=" + translationY + ", scaleX=" + scaleX
 				+ ", scaleY=" + scaleY + ", rotation=" + rotation + ", rotationX=" + rotationX + ", rotationY="
-				+ rotationY + ", currentWidth=" + currentWidth + ", currentHeight=" + currentHeight + ", lineHeight="
+				+ rotationY + ", windowWidth=" + windowWidth + ", windowHeight=" + windowHeight + ", lineHeight="
 				+ lineHeight + "]";
 	}
 }
