@@ -33,14 +33,25 @@ public class Triangle extends Shape {
 	}
 
 	/**
-	 * Returns if this {@link RegularPolygon} intersects a {@link Polygon}
+	 * Returns if this {@link Triangle} intersects a {@link Polygon}
 	 * 
 	 * @param polygon
 	 *            The {@link Polygon} to check
-	 * @return True if this {@link RegularPolygon} and {@link Polygon} intersect
+	 * @return True if this {@link Triangle} and {@link Polygon} intersect
 	 */
 	public boolean intersects(Polygon polygon) {
 		return polygon.intersects(polygon);
+	}
+	
+	/**
+	 * Returns if this {@link Triangle} intersects another {@link Triangle}
+	 * 
+	 * @param triangle
+	 *            The {@link Triangle} to check
+	 * @return True if both {@link Triangle}s intersect
+	 */
+	public boolean intersects(Triangle triangle) {
+		return polygon.intersects(triangle.polygon);
 	}
 
 	/**
