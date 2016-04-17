@@ -335,6 +335,22 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		}
 		return removeElement(element);
 	}
+	
+	public void clear() {
+		if(topLeft != null) {
+			topLeft.clear();
+			topRight.clear();
+			bottomLeft.clear();
+			bottomRight.clear();
+			
+			topLeft = null;
+			topRight = null;
+			bottomLeft = null;
+			bottomRight = null;
+		} else {
+			elements.clear();
+		}
+	}
 
 	protected boolean removeElementFromChild(T element) {
 		if (topLeft.remove(element))

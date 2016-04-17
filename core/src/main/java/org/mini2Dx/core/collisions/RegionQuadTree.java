@@ -219,7 +219,23 @@ public class RegionQuadTree<T extends CollisionBox> extends PointQuadTree<T> {
 		}
 		return removeElementFromChild(element);
 	}
-
+	
+	@Override
+	public void clear() {
+		if(topLeft != null) {
+			topLeft.clear();
+			topRight.clear();
+			bottomLeft.clear();
+			bottomRight.clear();
+			
+			topLeft = null;
+			topRight = null;
+			bottomLeft = null;
+			bottomRight = null;
+		}
+		elements.clear();
+	}
+	
 	@Override
 	public List<T> getElementsWithinRegion(Parallelogram parallelogram) {
 		List<T> result = new ArrayList<T>();
