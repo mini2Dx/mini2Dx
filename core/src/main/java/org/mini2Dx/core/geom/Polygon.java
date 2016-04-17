@@ -86,6 +86,15 @@ public class Polygon extends Shape {
 	}
 	
 	/**
+	 * Returns if this {@link Polygon} intersects a {@link Triangle}
+	 * @param triangle The {@link Triangle} to check
+	 * @return True if this {@link Polygon} and {@link Triangle} intersect
+	 */
+	public boolean intersects(Triangle triangle) {
+		return triangle.intersects(this);
+	}
+	
+	/**
 	 * Returns if the specified {@link Rectangle} intersects this {@link Polygon}
 	 * @param rectangle The {@link Rectangle} to check
 	 * @return True if this {@link Polygon} and {@link Rectangle} intersect
