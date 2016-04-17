@@ -72,6 +72,12 @@ public class Circle extends Shape {
 		return false;
 	}
 	
+	@Override
+	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
+		tmp.set(circle.x, circle.y);
+		return Intersector.intersectSegmentCircle(pointA, pointB, tmp, circle.radius * circle.radius);
+	}
+	
 	/**
 	 * Returns if the specified {@link Rectangle} intersects this {@link Circle}
 	 * 
@@ -192,12 +198,6 @@ public class Circle extends Shape {
 	public void translate(float translateX, float translateY) {
 		circle.x += translateX;
 		circle.y += translateY;
-	}
-
-	@Override
-	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
-		tmp.set(circle.x, circle.y);
-		return Intersector.intersectSegmentCircle(pointA, pointB, tmp, circle.radius * circle.radius);
 	}
 
 	@Override

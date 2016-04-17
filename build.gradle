@@ -6,11 +6,13 @@ buildscript {
         mavenCentral()
         maven { url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/' }
         jcenter()
+        maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
 		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
         classpath 'com.android.tools.build:gradle:1.5.0'
         classpath 'org.robovm:robovm-gradle-plugin:1.12.0'
+        classpath 'gradle.plugin.me.champeau.gradle:jmh-gradle-plugin:0.3.0'
     }
 }
 
@@ -91,6 +93,8 @@ project(":" + rootProject.name + "-core") {
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
     
+    apply plugin: "me.champeau.gradle.jmh"
+    
     configurations {
 	    testOutput.extendsFrom (testCompile)
 	}
@@ -115,6 +119,15 @@ project(":" + rootProject.name + "-core") {
     
     artifacts {
 	    testOutput testJar
+	}
+	
+	jmh {
+		timeUnit = 'ns'
+		threads = Runtime.getRuntime().availableProcessors()
+		warmupIterations = 10
+		iterations = 10
+		fork = Runtime.getRuntime().availableProcessors()
+		jvmArgsPrepend = '-Xmx1024m'
 	}
 }
 
