@@ -249,6 +249,9 @@ public class Polygon extends Shape {
 	}
 	
 	public void setRotation(float degrees) {
+		if(degrees == polygon.getRotation()) {
+			return;
+		}
 		polygon.setRotation(degrees);
 		calculateMaxXY(polygon.getTransformedVertices());
 		computeTriangles(polygon.getTransformedVertices());
