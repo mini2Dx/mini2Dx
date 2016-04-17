@@ -315,6 +315,15 @@ public class Rectangle extends Shape implements
 	}
 	
 	/**
+	 * Returns if the specified {@link Triangle} intersects this {@link Rectangle}
+	 * @param triangle The {@link Triangle} to check
+	 * @return True if this {@link Rectangle} and the {@link Triangle} intersect
+	 */
+	public boolean intersects(Triangle triangle) {
+		return triangle.intersects(this);
+	}
+	
+	/**
 	 * Returns if the specified {@link Polygon} intersects this {@link Rectangle}
 	 * @param polygon The {@link Polygon} to check
 	 * @return True if this {@link Rectangle} and the {@link Polygon} intersect
