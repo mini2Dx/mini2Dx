@@ -40,6 +40,7 @@ public class Polygon extends Shape {
 	 */
 	public Polygon(float[] vertices) {
 		polygon = new com.badlogic.gdx.math.Polygon(vertices);
+		polygon.setOrigin(vertices[0], vertices[1]);
 		triangulator = new EarClippingTriangulator();
 		computeTriangles(vertices);
 		calculateMaxXY(vertices);
@@ -238,10 +239,8 @@ public class Polygon extends Shape {
 		clearTotalSidesCache();
 	}
 	
-	public void setPosition(float x, float y) {
-		polygon.setPosition(x, y);
-		calculateMaxXY(polygon.getTransformedVertices());
-		computeTriangles(polygon.getTransformedVertices());
+	public void setVertices(Vector2[] vertices) {
+		setVertices(toVertices(vertices));
 	}
 	
 	public float getRotation() {
@@ -360,21 +359,29 @@ public class Polygon extends Shape {
 	@Override
 	public void setX(float x) {
 		polygon.setPosition(x, polygon.getY());
+		calculateMaxXY(polygon.getTransformedVertices());
+		computeTriangles(polygon.getTransformedVertices());
 	}
 
 	@Override
 	public void setY(float y) {
 		polygon.setPosition(polygon.getX(), y);
+		calculateMaxXY(polygon.getTransformedVertices());
+		computeTriangles(polygon.getTransformedVertices());
 	}
 
 	@Override
 	public void set(float x, float y) {
 		polygon.setPosition(x, y);
+		calculateMaxXY(polygon.getTransformedVertices());
+		computeTriangles(polygon.getTransformedVertices());
 	}
 
 	@Override
 	public void translate(float translateX, float translateY) {
 		polygon.translate(translateX, translateY);
+		calculateMaxXY(polygon.getTransformedVertices());
+		computeTriangles(polygon.getTransformedVertices());
 	}
 
 	@Override
@@ -382,12 +389,25 @@ public class Polygon extends Shape {
 		return edgeIterator;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		for(int i = 0; i < polygon.getTransformedVertices().length; i += 2) {
+			result.append("[");
+			result.append(polygon.getTransformedVertices()[i]);
+			result.append(",");
+			result.append(polygon.getTransformedVertices()[i + 1]);
+			result.append("]");
+		}
+		return result.toString();
+	}
+	
 	private class PolygonEdgeIterator extends EdgeIterator {
 		private int edge = 0;
 
 		@Override
 		protected void beginIteration() {
-			edge = 0;
+			edge = -1;
 		}
 
 		@Override
@@ -408,16 +428,25 @@ public class Polygon extends Shape {
 
 		@Override
 		public float getPointAX() {
+			if(edge < 0) {
+				throw new MdxException("Make sure to call next() after beginning iteration");
+			}
 			return polygon.getTransformedVertices()[edge * 2];
 		}
 
 		@Override
 		public float getPointAY() {
+			if(edge < 0) {
+				throw new MdxException("Make sure to call next() after beginning iteration");
+			}
 			return polygon.getTransformedVertices()[(edge * 2) + 1];
 		}
 
 		@Override
 		public float getPointBX() {
+			if(edge < 0) {
+				throw new MdxException("Make sure to call next() after beginning iteration");
+			}
 			if(edge == getNumberOfSides() - 1) {
 				return polygon.getTransformedVertices()[0];
 			}
@@ -426,6 +455,9 @@ public class Polygon extends Shape {
 
 		@Override
 		public float getPointBY() {
+			if(edge < 0) {
+				throw new MdxException("Make sure to call next() after beginning iteration");
+			}
 			if(edge == getNumberOfSides() - 1) {
 				return polygon.getTransformedVertices()[1];
 			}

@@ -135,7 +135,7 @@ public class Triangle extends Shape {
 
 	@Override
 	public void setY(float y) {
-		polygon.setPosition(polygon.getX(), y);
+		polygon.set(polygon.getX(), y);
 	}
 
 	@Override

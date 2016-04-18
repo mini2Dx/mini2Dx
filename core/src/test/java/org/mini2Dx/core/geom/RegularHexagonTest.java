@@ -43,4 +43,10 @@ public class RegularHexagonTest {
 		Assert.assertEquals(-87, MathUtils.round(hexagon.getX(5)));
 		Assert.assertEquals(-50, MathUtils.round(hexagon.getY(5)));
 	}
+	
+	@Test
+	public void testNumberOfSides() {
+		RegularHexagon hexagon = new RegularHexagon(0f, 0f, 100f);
+		Assert.assertEquals(6, hexagon.getNumberOfSides());
+	}
 }

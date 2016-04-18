@@ -40,4 +40,10 @@ public class RegularPentagonTest {
 		Assert.assertEquals(-95, MathUtils.round(pentagon.getX(4)));
 		Assert.assertEquals(-31, MathUtils.round(pentagon.getY(4)));
 	}
+	
+	@Test
+	public void testNumberOfSides() {
+		RegularPentagon pentagon = new RegularPentagon(0f, 0f, 100f);
+		Assert.assertEquals(5, pentagon.getNumberOfSides());
+	}
 }
