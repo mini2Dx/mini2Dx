@@ -22,7 +22,7 @@ import org.openjdk.jmh.annotations.State;
  * Performance tests for {@link Triangle}
  */
 public class TrianglePerformanceTest {
-	@State(Scope.Group)
+	@State(Scope.Thread)
     public static class TestState {
 		public Triangle triangle = new Triangle(0f, 0f, 25f, 25f, -25f, 25f);
 		

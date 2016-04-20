@@ -50,6 +50,16 @@ public class RegularPolygon extends Shape {
 		setRadius(radius);
 	}
 	
+	@Override
+	public void draw(Graphics g) {
+		polygon.draw(g);
+	}
+
+	@Override
+	public void fill(Graphics g) {
+		polygon.fill(g);
+	}
+	
 	/**
 	 * Returns if this {@link RegularPolygon} intersects a {@link Polygon}
 	 * 
@@ -92,15 +102,40 @@ public class RegularPolygon extends Shape {
 	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
 		return polygon.intersectsLineSegment(pointA, pointB);
 	}
-
+	
 	@Override
-	public void draw(Graphics g) {
-		polygon.draw(g);
+	public boolean intersectsLineSegment(float x1, float y1, float x2, float y2) {
+		return polygon.intersectsLineSegment(x1, y1, x2, y2);
 	}
 
 	@Override
-	public void fill(Graphics g) {
-		polygon.fill(g);
+	public float getDistanceTo(float x, float y) {
+		return polygon.getDistanceTo(x, y);
+	}
+
+	@Override
+	public float getRotation() {
+		return polygon.getRotation();
+	}
+
+	@Override
+	public void setRotation(float degrees) {
+		polygon.setRotation(degrees);
+	}
+
+	@Override
+	public void setRotationAround(float centerX, float centerY, float degrees) {
+		polygon.setRotationAround(centerX, centerY, degrees);
+	}
+
+	@Override
+	public void rotate(float degrees) {
+		polygon.rotate(degrees);
+	}
+
+	@Override
+	public void rotateAround(float centerX, float centerY, float degrees) {
+		polygon.rotateAround(centerX, centerY, degrees);
 	}
 
 	/**

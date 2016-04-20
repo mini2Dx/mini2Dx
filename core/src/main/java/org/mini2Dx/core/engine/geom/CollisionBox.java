@@ -210,12 +210,6 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 	}
 
 	@Override
-	public void rotateAround(Point center, float degrees) {
-		super.rotateAround(center, degrees);
-		notifyPositionChangeListeners();
-	}
-
-	@Override
 	public float getDistanceTo(Positionable positionable) {
 		return getDistanceTo(positionable.getX(), positionable.getY());
 	}

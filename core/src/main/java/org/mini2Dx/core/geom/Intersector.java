@@ -12,20 +12,30 @@
 package org.mini2Dx.core.geom;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.FloatArray;
 
 /**
- * Provides implementations for detecting intersections between geom package objects.
+ * Provides implementations for detecting intersections between geom package
+ * objects.
  * 
  * Note: This exists because LibGDX implementations weren't accurate
  */
 public class Intersector {
+	private final static Vector2 ip = new Vector2();
+	private final static Vector2 ep1 = new Vector2();
+	private final static Vector2 ep2 = new Vector2();
+	private final static Vector2 s = new Vector2();
+	private final static Vector2 e = new Vector2();
+	private final static FloatArray floatArray = new FloatArray();
+	private final static FloatArray floatArray2 = new FloatArray();
+
 	public static boolean intersectLines(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection) {
 		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y, x3 = p3.x, y3 = p3.y, x4 = p4.x, y4 = p4.y;
 
 		float det3 = det(x1 - x2, y1 - y2, x3 - x4, y3 - y4);
-		if(det3 == 0)
+		if (det3 == 0)
 			return false;
-		
+
 		float det1 = det(x1, y1, x2, y2);
 		float det2 = det(x3, y3, x4, y4);
 
@@ -37,8 +47,9 @@ public class Intersector {
 
 		return true;
 	}
-	
-	public static boolean intersectLineSegments(float segAX1, float segAY1, float segAX2, float segAY2, float segBX1, float segBY1, float segBX2, float segBY2) {
+
+	public static boolean intersectLineSegments(float segAX1, float segAY1, float segAX2, float segAY2, float segBX1,
+			float segBY1, float segBX2, float segBY2) {
 		float x1 = segAX1, y1 = segAY1, x2 = segAX2, y2 = segAY2, x3 = segBX1, y3 = segBY1, x4 = segBX2, y4 = segBY2;
 
 		// Return false if either of the lines have zero length
@@ -82,18 +93,15 @@ public class Intersector {
 			// The lines are parallel.
 			// Check if they're collinear.
 			float y3LessY1 = y3 - y1;
-			float collinearityTestForP3 = x1 * (y2 - y3) + x2 * (y3LessY1) + x3
-					* (y1 - y2); // see
-									// http://mathworld.wolfram.com/Collinear.html
+			float collinearityTestForP3 = x1 * (y2 - y3) + x2 * (y3LessY1) + x3 * (y1 - y2); // see
+																								// http://mathworld.wolfram.com/Collinear.html
 			// If p3 is collinear with p1 and p2 then p4 will also be collinear,
 			// since p1-p2 is parallel with p3-p4
 			if (collinearityTestForP3 == 0) {
 				// The lines are collinear. Now check if they overlap.
-				if (x1 >= x3 && x1 <= x4 || x1 <= x3 && x1 >= x4 || x2 >= x3
-						&& x2 <= x4 || x2 <= x3 && x2 >= x4 || x3 >= x1
-						&& x3 <= x2 || x3 <= x1 && x3 >= x2) {
-					if (y1 >= y3 && y1 <= y4 || y1 <= y3 && y1 >= y4
-							|| y2 >= y3 && y2 <= y4 || y2 <= y3 && y2 >= y4
+				if (x1 >= x3 && x1 <= x4 || x1 <= x3 && x1 >= x4 || x2 >= x3 && x2 <= x4 || x2 <= x3 && x2 >= x4
+						|| x3 >= x1 && x3 <= x2 || x3 <= x1 && x3 >= x2) {
+					if (y1 >= y3 && y1 <= y4 || y1 <= y3 && y1 >= y4 || y2 >= y3 && y2 <= y4 || y2 <= y3 && y2 >= y4
 							|| y3 >= y1 && y3 <= y2 || y3 <= y1 && y3 >= y2) {
 						return true;
 					}
@@ -103,8 +111,43 @@ public class Intersector {
 		}
 		return true;
 	}
-	
-	private static float det (float a, float b, float c, float d) {
+
+	private static float det(float a, float b, float c, float d) {
 		return (a * d) - (b * c);
+	}
+
+	public static boolean intersects(Rectangle rectangle, Circle circle) {
+		float closestX = circle.getX();
+		float closestY = circle.getY();
+
+		if (circle.getX() < rectangle.getMinX()) {
+			closestX = rectangle.getMinX();
+		} else if (circle.getX() > rectangle.getMaxX()) {
+			closestX = rectangle.getMaxX();
+		}
+
+		if (circle.getY() < rectangle.getMinY()) {
+			closestY = rectangle.getMinY();
+		} else if (circle.getY() > rectangle.getMaxY()) {
+			closestY = rectangle.getMaxY();
+		}
+
+		closestX = closestX - circle.getX();
+		closestX *= closestX;
+		closestY = closestY - circle.getY();
+		closestY *= closestY;
+
+		return closestX + closestY < circle.getRadius() * circle.getRadius();
+	}
+
+	public static boolean containsPolygon(Polygon p1, Polygon p2) {
+		float[] polygonB = p2.getVertices();
+
+		for (int i = 0; i < polygonB.length; i += 2) {
+			if (!p1.contains(polygonB[i], polygonB[i + 1])) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

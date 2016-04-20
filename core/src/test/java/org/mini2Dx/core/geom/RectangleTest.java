@@ -127,22 +127,19 @@ public class RectangleTest {
 	@Test
 	public void testRotateAround() {
 		rectangle1 = new Rectangle(0f, 0f, 10f, 10f);
-		rectangle1.rotateAround(new Point(0f, 0f), 90f);
+		rectangle1.rotateAround(0f, 0f, 90f);
 		
-		Assert.assertEquals(0f, rectangle1.topLeft.x);
-		Assert.assertEquals(0f, rectangle1.topLeft.y);
+		Assert.assertEquals(0f, rectangle1.getVertices()[0]);
+		Assert.assertEquals(0f, rectangle1.getVertices()[1]);
 		
-		Assert.assertEquals(0, MathUtils.round(rectangle1.topRight.x));
-		Assert.assertEquals(10, MathUtils.round(rectangle1.topRight.y));
+		Assert.assertEquals(0, MathUtils.round(rectangle1.getVertices()[2]));
+		Assert.assertEquals(10, MathUtils.round(rectangle1.getVertices()[3]));
 		
-		Assert.assertEquals(0, MathUtils.round(rectangle1.topRight.x));
-		Assert.assertEquals(10, MathUtils.round(rectangle1.topRight.y));
+		Assert.assertEquals(-10, MathUtils.round(rectangle1.getVertices()[4]));
+		Assert.assertEquals(10, MathUtils.round(rectangle1.getVertices()[5]));
 		
-		Assert.assertEquals(-10, MathUtils.round(rectangle1.bottomRight.x));
-		Assert.assertEquals(10, MathUtils.round(rectangle1.bottomRight.y));
-		
-		Assert.assertEquals(-10, MathUtils.round(rectangle1.bottomLeft.x));
-		Assert.assertEquals(0, MathUtils.round(rectangle1.bottomLeft.y));
+		Assert.assertEquals(-10, MathUtils.round(rectangle1.getVertices()[6]));
+		Assert.assertEquals(0, MathUtils.round(rectangle1.getVertices()[7]));
 	}
 	
 	@Test
@@ -228,12 +225,23 @@ public class RectangleTest {
 		Assert.assertEquals(true, rectangle1.intersects(new LineSegment(33f, 33f, 32f, 32f)));
 		Assert.assertEquals(true, rectangle1.intersects(new LineSegment(32f, 32f, 33f, 33f)));
 	}
+	
+	@Test
+	public void testIntersectsCircle() {
+		rectangle1 = new Rectangle(0f, 0f, 50f, 50f);
+		
+		Circle intersectingCircle = new Circle(75f, 75f, 50f);
+		Circle nonIntersectingCircle = new Circle(500f, 500f, 50f);
+		
+		Assert.assertEquals(true, rectangle1.intersects(intersectingCircle));
+		Assert.assertEquals(false, rectangle1.intersects(nonIntersectingCircle));
+	}
 
 	@Test
 	public void testIntersectsRectangle() {
-		rectangle1 = new Rectangle(100f, 100f, 50f, 50f);
+		rectangle1 = new Rectangle(100f, 100f, 75f, 75f);
 		rectangle2 = new Rectangle(50f, 50f, 100f, 100f);
-
+		
 		Assert.assertEquals(true, rectangle1.intersects(rectangle2));
 		Assert.assertEquals(true, rectangle2.intersects(rectangle1));
 

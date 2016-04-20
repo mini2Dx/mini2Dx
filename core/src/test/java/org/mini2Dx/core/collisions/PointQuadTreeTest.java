@@ -34,9 +34,9 @@ public class PointQuadTreeTest {
 	public void setup() {
 		rootQuad = new PointQuadTree<CollisionPoint>(2, 0, 0, 128, 128);
 		point1 = new CollisionPoint(0, 0);
-		point2 = new CollisionPoint(128, 0);
-		point3 = new CollisionPoint(0, 128);
-		point4 = new CollisionPoint(128, 128);
+		point2 = new CollisionPoint(127, 0);
+		point3 = new CollisionPoint(0, 127);
+		point4 = new CollisionPoint(127, 127);
 	}
 	
 	@Test

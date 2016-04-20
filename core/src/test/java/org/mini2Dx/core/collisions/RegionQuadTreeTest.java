@@ -34,10 +34,10 @@ public class RegionQuadTreeTest {
 	public void setup() {
 		rootQuad = new RegionQuadTree<CollisionBox>(2, 0, 0, 128, 128);
 		
-		box1 = new CollisionBox(0, 0, 32, 32);
-		box2 = new CollisionBox(96, 0, 32, 32);
-		box3 = new CollisionBox(0, 96, 32, 32);
-		box4 = new CollisionBox(96, 96, 32, 32);
+		box1 = new CollisionBox(1, 1, 32, 32);
+		box2 = new CollisionBox(95, 1, 32, 32);
+		box3 = new CollisionBox(1, 95, 32, 32);
+		box4 = new CollisionBox(95, 95, 32, 32);
 	}
 	
 	@Test
@@ -138,16 +138,16 @@ public class RegionQuadTreeTest {
 	@Test
 	public void testMerge() {
 		rootQuad = new RegionQuadTree<CollisionBox>(4, 3, 0, 0, 128, 128);
-		rootQuad.add(box1);
+		Assert.assertEquals(true, rootQuad.add(box1));
 		Assert.assertEquals(1, rootQuad.getTotalQuads());
-		rootQuad.add(box2);
-		rootQuad.add(box3);
-		rootQuad.add(box4);
-		rootQuad.add(new CollisionBox(24, 24, 2, 2));
+		Assert.assertEquals(true, rootQuad.add(box2));
+		Assert.assertEquals(true, rootQuad.add(box3));
+		Assert.assertEquals(true, rootQuad.add(box4));
+		Assert.assertEquals(true, rootQuad.add(new CollisionBox(24, 24, 2, 2)));
 		Assert.assertEquals(4, rootQuad.getTotalQuads());
-		rootQuad.remove(box4);
-		rootQuad.remove(box3);
-		rootQuad.remove(box2);
+		Assert.assertEquals(true, rootQuad.remove(box4));
+		Assert.assertEquals(true, rootQuad.remove(box3));
+		Assert.assertEquals(true, rootQuad.remove(box2));
 		Assert.assertEquals(1, rootQuad.getTotalQuads());
 		Assert.assertEquals(2, rootQuad.getTotalElements());
 		Assert.assertEquals(true, rootQuad.getElements().contains(box1));
@@ -194,7 +194,7 @@ public class RegionQuadTreeTest {
 		CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(0, 0, 128, 128));
 		Assert.assertEquals(rootQuad.getElements().size(), CollisionBoxs.size());
 		
-		CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(33, 33, 32, 32));
+		CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(36, 36, 32, 32));
 		Assert.assertEquals(1, CollisionBoxs.size());
 		Assert.assertEquals(CollisionBox6, CollisionBoxs.get(0));
 		

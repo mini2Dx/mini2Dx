@@ -249,7 +249,7 @@ public class CollisionBoxTest implements PositionChangeListener<CollisionBox>, S
 	@Test
 	public void testIntersectsRectangle() {
 		rectangle1 = new CollisionBox(100f, 100f, 50f, 50f);
-		rectangle2 = new CollisionBox(50f, 50f, 100f, 100f);
+		rectangle2 = new CollisionBox(50f, 50f, 75f, 75f);
 
 		Assert.assertEquals(true, rectangle1.intersects(rectangle2));
 		Assert.assertEquals(true, rectangle2.intersects(rectangle1));

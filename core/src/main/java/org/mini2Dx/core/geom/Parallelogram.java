@@ -96,10 +96,10 @@ public interface Parallelogram {
 	 * Rotates the shape around a center point by the specified degrees adding
 	 * to its existing rotation
 	 * 
-	 * @param degrees
-	 *            The rotation in degrees
+	 * @param centerX
+	 * @param centerY
 	 */
-	public void rotateAround(Point center, float degrees);
+	public void rotateAround(float centerX, float centerY, float degrees);
 
 	/**
 	 * Returns if this shape intersects a specified {@link LineSegment}

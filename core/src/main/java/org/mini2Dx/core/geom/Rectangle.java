@@ -26,13 +26,10 @@ public class Rectangle extends Shape implements
 		Parallelogram {
 	private static final long serialVersionUID = 4016090439885217620L;
 	
-	private final RectangleEdgeIterator edgeIterator = new RectangleEdgeIterator();
-	final com.badlogic.gdx.math.Rectangle rectangle;
+	final Polygon polygon;
+	private float width, height;
+	private Rectangle tmp = null;
 	
-	private float rotation;
-	Point topLeft, topRight, bottomLeft, bottomRight, center, rotationalCenter;
-	private float minX, minY, maxX, maxY;
-
 	/**
 	 * Default constructor. Creates a {@link Rectangle} at 0,0 with a width and
 	 * height of 1
@@ -54,14 +51,22 @@ public class Rectangle extends Shape implements
 	 *            The height of the {@link Rectangle}
 	 */
 	public Rectangle(float x, float y, float width, float height) {
-		rectangle = new com.badlogic.gdx.math.Rectangle(x, y, width, height);
-		topLeft = new Point(x, y);
-		topRight = new Point(x + width, y);
-		bottomLeft = new Point(x, y + height);
-		bottomRight = new Point(x + width, y + height);
-		center = new Point(x + (width / 2f), y + (height / 2f));
-		rotationalCenter = topLeft;
-		recalculateMinMax();
+		this.width = width;
+		this.height = height;
+		polygon = new Polygon(determineVertices(x, y, width, height));
+	}
+	
+	private Vector2 [] determineVertices(float x, float y, float width, float height) {
+		Vector2 topLeft = new Vector2(x, y);
+		Vector2 topRight = new Vector2(x + width, y);
+		Vector2 bottomLeft = new Vector2(x, y + height);
+		Vector2 bottomRight = new Vector2(x + width, y + height);
+		return new Vector2[] {
+				topLeft,
+				topRight,
+				bottomRight,
+				bottomLeft
+			};
 	}
 
 	/**
@@ -73,187 +78,81 @@ public class Rectangle extends Shape implements
 	 */
 	public void debug(Graphics g) {
 		this.draw(g);
-		g.drawLineSegment(topLeft.x, topLeft.y, rotationalCenter.x,
-				rotationalCenter.y);
-		g.drawLineSegment(topRight.x, topRight.y, rotationalCenter.x,
-				rotationalCenter.y);
-		g.drawLineSegment(bottomLeft.x, bottomLeft.y, rotationalCenter.x,
-				rotationalCenter.y);
-		g.drawLineSegment(bottomRight.x, bottomRight.y, rotationalCenter.x,
-				rotationalCenter.y);
+//		g.drawLineSegment(topLeft.x, topLeft.y, rotationalCenter.x,
+//				rotationalCenter.y);
+//		g.drawLineSegment(topRight.x, topRight.y, rotationalCenter.x,
+//				rotationalCenter.y);
+//		g.drawLineSegment(bottomLeft.x, bottomLeft.y, rotationalCenter.x,
+//				rotationalCenter.y);
+//		g.drawLineSegment(bottomRight.x, bottomRight.y, rotationalCenter.x,
+//				rotationalCenter.y);
 	}
 	
 	public Rectangle lerp(Rectangle target, float alpha) {
 		final float inverseAlpha = 1.0f - alpha;
-		internalSetX((getX() * inverseAlpha) + (target.getX() * alpha));
-		internalSetY((getY() * inverseAlpha) + (target.getY() * alpha));
+		float x = (getX() * inverseAlpha) + (target.getX() * alpha);
+		float y = (getY() * inverseAlpha) + (target.getY() * alpha);
+		float width = this.width;
+		float height = this.height;
+		float rotation = polygon.getRotation();
 		
 		if(getWidth() != target.getWidth()) {
-			internalSetWidth((getWidth() * inverseAlpha) + (target.getWidth() * alpha));
+			width = (getWidth() * inverseAlpha) + (target.getWidth() * alpha);
 		}
 		
 		if(getHeight() != target.getHeight()) {
-			internalSetHeight((getHeight() * inverseAlpha) + (target.getHeight() * alpha));
+			height = (getHeight() * inverseAlpha) + (target.getHeight() * alpha);
 		}
 		
 		if(getRotation() != target.getRotation()) {
-			internalSetRotationAround(rotationalCenter, (getRotation() * inverseAlpha) 
-					+ (target.getRotation() * alpha));
+			rotation = (getRotation() * inverseAlpha) + (target.getRotation() * alpha);
 		}
+		set(x, y, width, height);
+		setRotation(rotation);
 		return this;
 	}
-
-	private void recalculateCoordinates() {
-		topLeft.set(rectangle.x, rectangle.y);
-		topRight.set(rectangle.x + rectangle.width, rectangle.y);
-		bottomLeft.set(rectangle.x, rectangle.y + rectangle.height);
-		bottomRight.set(rectangle.x + rectangle.width, rectangle.y + rectangle.height);
-		center.set(rectangle.x + (rectangle.width / 2f), rectangle.y + (rectangle.height / 2f));
-	}
-
-	private void recalculateMinMax() {
-		minX = topLeft.getX();
-		minY = topLeft.getY();
-		maxX = bottomRight.getX();
-		maxY = bottomRight.getY();
-
-		checkAgainstMinMax(topLeft);
-		checkAgainstMinMax(topRight);
-		checkAgainstMinMax(bottomLeft);
-		checkAgainstMinMax(bottomRight);
-	}
-
-	private void checkAgainstMinMax(Point p) {
-		if (p.getX() < minX)
-			minX = p.getX();
-		if (p.getX() > maxX)
-			maxX = p.getX();
-		if (p.getY() < minY)
-			minY = p.getY();
-		if (p.getY() > maxY)
-			maxY = p.getY();
-	}
-
+	
 	public float getDistanceTo(Point point) {
 	    return getDistanceTo(point.getX(), point.getY());
 	}
 	
 	public float getDistanceTo(float x, float y) {
-	    float topLeftDist = topLeft.getDistanceTo(x, y);
-	    float bottomLeftDist = bottomLeft.getDistanceTo(x, y);
-	    float topRightDist = topRight.getDistanceTo(x, y);
-	    float bottomRightDist = bottomRight.getDistanceTo(x, y);
-	    
-	    float result = topLeftDist;
-	    result = Math.min(result, topRightDist);
-	    result = Math.min(result, bottomLeftDist);
-	    result = Math.min(result, bottomRightDist);
-		return result;
+	    return polygon.getDistanceTo(x, y);
 	}
 
 	@Override
 	public float getRotation() {
-		return rotation;
+		return polygon.getRotation();
 	}
 
 	@Override
 	public void setRotation(float degrees) {
-		setRotationAround(topLeft, degrees);
-	}
-	
-	private void internalSetRotationAround(Point center, float degrees) {
-		//TODO: This operation is very expensive, can this be optimised somehow?
-		degrees = degrees % 360;
-		performRotation(-rotation);
-		rotation = degrees;
-		rotationalCenter = center;
-		performRotation(rotation);
-		recalculateMinMax();
+		polygon.setRotation(degrees);
 	}
 
-	/**
-	 * @see Parallelogram#setRotationAround(Point, float)
-	 */
-	@Override
-	public void setRotationAround(Point center, float degrees) {
-		internalSetRotationAround(center, degrees);
-	}
-
-	/**
-	 * @see Parallelogram#rotate(float)
-	 */
 	@Override
 	public void rotate(float degrees) {
-		rotateAround(topLeft, degrees);
+		polygon.rotate(degrees);
 	}
-
-	/**
-	 * @see Parallelogram#rotateAround(Point, float)
-	 */
+	
 	@Override
-	public void rotateAround(Point center, float degrees) {
-		rotationalCenter = center;
-		performRotation(degrees);
-		rotation += (degrees % 360);
-		recalculateMinMax();
+	public void rotateAround(float centerX, float centerY, float degrees) {
+		polygon.rotateAround(centerX, centerY, degrees);
+	}
+	
+	@Override
+	public void setRotationAround(Point center, float degrees) {
+		polygon.setRotationAround(center.x, center.y, degrees);
 	}
 
-	private void performRotation(float degrees) {
-		if (degrees == 0f)
-			return;
-
-		topRight.rotateAround(rotationalCenter, degrees);
-		bottomLeft.rotateAround(rotationalCenter, degrees);
-		bottomRight.rotateAround(rotationalCenter, degrees);
-		this.center.rotateAround(rotationalCenter, degrees);
-
-		if (!rotationalCenter.equals(topLeft)) {
-			topLeft.rotateAround(rotationalCenter, degrees);
-		}
-		rectangle.setX(topLeft.x);
-		rectangle.setY(topLeft.y);
+	@Override
+	public void setRotationAround(float centerX, float centerY, float degrees) {
+		polygon.setRotationAround(centerX, centerY, degrees);
 	}
 	
 	@Override
 	public boolean intersectsLineSegment(LineSegment lineSegment) {
-		if (lineSegment.intersectsLineSegment(topLeft.x, topLeft.y,
-				bottomLeft.x, bottomLeft.y)) {
-			return true;
-		}
-		if (lineSegment.intersectsLineSegment(bottomLeft.x, bottomLeft.y,
-				bottomRight.x, bottomRight.y)) {
-			return true;
-		}
-		if (lineSegment.intersectsLineSegment(bottomRight.x, bottomRight.y,
-				topRight.x, topRight.y)) {
-			return true;
-		}
-		if (lineSegment.intersectsLineSegment(topRight.x, topRight.y,
-				topLeft.x, topLeft.y)) {
-			return true;
-		}
-		return false;
-	}
-	
-	@Override
-	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
-		if (org.mini2Dx.core.geom.Intersector.intersectLineSegments(topLeft.x, topLeft.y,
-				bottomLeft.x, bottomLeft.y, pointA.x, pointA.y, pointB.x, pointB.y)) {
-			return true;
-		}
-		if (org.mini2Dx.core.geom.Intersector.intersectLineSegments(bottomLeft.x, bottomLeft.y,
-				bottomRight.x, bottomRight.y, pointA.x, pointA.y, pointB.x, pointB.y)) {
-			return true;
-		}
-		if (org.mini2Dx.core.geom.Intersector.intersectLineSegments(bottomRight.x, bottomRight.y,
-				topRight.x, topRight.y, pointA.x, pointA.y, pointB.x, pointB.y)) {
-			return true;
-		}
-		if (org.mini2Dx.core.geom.Intersector.intersectLineSegments(topRight.x, topRight.y,
-				topLeft.x, topLeft.y, pointA.x, pointA.y, pointB.x, pointB.y)) {
-			return true;
-		}
-		return false;
+		return polygon.intersects(lineSegment);
 	}
 	
 	/**
@@ -263,7 +162,7 @@ public class Rectangle extends Shape implements
 	 * @return True if the {@link Circle} intersects
 	 */
 	public boolean intersects(Circle circle) {
-		return Intersector.overlaps(circle.circle, rectangle);
+		return polygon.intersects(circle);
 	}
 
 	/**
@@ -277,13 +176,13 @@ public class Rectangle extends Shape implements
 		boolean xAxisOverlaps = true;
 		boolean yAxisOverlaps = true;
 
-		if (maxX < rectangle.getMinX())
+		if (polygon.getMaxX() < rectangle.getMinX())
 			xAxisOverlaps = false;
-		if (rectangle.getMaxX() < minX)
+		if (rectangle.getMaxX() < polygon.getMinX())
 			xAxisOverlaps = false;
-		if (maxY < rectangle.getMinY())
+		if (polygon.getMaxY() < rectangle.getMinY())
 			yAxisOverlaps = false;
-		if (rectangle.getMaxY() < minY)
+		if (rectangle.getMaxY() < polygon.getMinY())
 			yAxisOverlaps = false;
 
 		return xAxisOverlaps && yAxisOverlaps;
@@ -294,15 +193,16 @@ public class Rectangle extends Shape implements
 	 */
 	@Override
 	public boolean intersects(Parallelogram parallelogram) {
-		if (parallelogram instanceof Rectangle) {
-			return intersects((Rectangle) parallelogram);
-		} else {
-			Rectangle rect = new Rectangle(parallelogram.getX(),
+		if(tmp == null) {
+			tmp = new Rectangle(parallelogram.getX(),
 					parallelogram.getY(), parallelogram.getWidth(),
 					parallelogram.getHeight());
-			rect.rotate(parallelogram.getRotation());
-			return intersects(rect);
+		} else {
+			tmp.set(parallelogram.getX(),
+					parallelogram.getY(), parallelogram.getWidth(),
+					parallelogram.getHeight());
 		}
+		return intersects(tmp);
 	}
 
 	/**
@@ -310,8 +210,12 @@ public class Rectangle extends Shape implements
 	 */
 	@Override
 	public boolean intersects(float x, float y, float width, float height) {
-		Rectangle rect = new Rectangle(x, y, width, height);
-		return intersects(rect);
+		if(tmp == null) {
+			tmp = new Rectangle(x, y, width, height);
+		} else {
+			tmp.set(x, y, width, height);
+		}
+		return intersects(tmp);
 	}
 	
 	/**
@@ -320,7 +224,7 @@ public class Rectangle extends Shape implements
 	 * @return True if this {@link Rectangle} and the {@link Triangle} intersect
 	 */
 	public boolean intersects(Triangle triangle) {
-		return triangle.intersects(this);
+		return polygon.intersects(triangle);
 	}
 	
 	/**
@@ -329,30 +233,28 @@ public class Rectangle extends Shape implements
 	 * @return True if this {@link Rectangle} and the {@link Polygon} intersect
 	 */
 	public boolean intersects(Polygon polygon) {
-		if(polygon.intersectsLineSegment(topLeft, topRight)) {
-			return true;
-		}
-		if(polygon.intersectsLineSegment(topLeft, bottomLeft)) {
-			return true;
-		}
-		if(polygon.intersectsLineSegment(bottomLeft, bottomRight)) {
-			return true;
-		}
-		if(polygon.intersectsLineSegment(bottomRight, topRight)) {
-			return true;
-		}
-		return false;
+		return this.polygon.intersects(polygon);
+	}
+
+	@Override
+	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
+		return polygon.intersectsLineSegment(pointA, pointB);
+	}
+
+	@Override
+	public boolean intersectsLineSegment(float x1, float y1, float x2, float y2) {
+		return polygon.intersectsLineSegment(x1, y1, x2, y2);
 	}
 
 	public Rectangle intersection(Rectangle rect) {
-		if (rotation != 0f || rect.getRotation() != 0f)
+		if (polygon.getRotation() != 0f || rect.getRotation() != 0f)
 			throw new UnsupportedOperationException(
 					"Rectangle.intersection is not implemented to handle rotated rectangles");
 
 		float newX = Math.max(getX(), rect.getX());
 		float newY = Math.max(getY(), rect.getY());
-		float newWidth = Math.min(bottomRight.x, rect.bottomRight.x) - newX;
-		float newHeight = Math.min(bottomRight.y, rect.bottomRight.y) - newY;
+		float newWidth = Math.min(getMaxX(), rect.getMaxX()) - newX;
+		float newHeight = Math.min(getMaxY(), rect.getMaxY()) - newY;
 		return new Rectangle(newX, newY, newWidth, newHeight);
 	}
 
@@ -376,36 +278,17 @@ public class Rectangle extends Shape implements
 	 * @see Parallelogram#contains(Parallelogram)
 	 */
 	public boolean contains(Rectangle rectangle) {
-		return contains(rectangle.topLeft)
-				&& contains(rectangle.topRight)
-				&& contains(rectangle.bottomLeft)
-				&& contains(rectangle.bottomRight);
+		return this.polygon.contains(rectangle.polygon);
 	}
 
 	@Override
 	public boolean contains(float x, float y) {
-		return triangleContains(x, y, topLeft, topRight, bottomLeft)
-				|| triangleContains(x, y, bottomLeft, topRight, bottomRight);
+		return polygon.contains(x, y);
 	}
 
 	@Override
 	public boolean contains(Vector2 point) {
-		return contains(point.x, point.y);
-	}
-
-	private boolean triangleContains(float x, float y, Point p1, Point p2,
-			Point p3) {
-		boolean b1, b2, b3;
-
-		b1 = sign(x, y, p1, p2) < 0.0f;
-		b2 = sign(x, y, p2, p3) < 0.0f;
-		b3 = sign(x, y, p3, p1) < 0.0f;
-
-		return ((b1 == b2) && (b2 == b3));
-	}
-
-	private float sign(float x, float y, Point p1, Point p2) {
-		return (x - p2.x) * (p1.y - p2.y) - (p1.x - p2.x) * (y - p2.y);
+		return polygon.contains(point);
 	}
 
 	/**
@@ -421,155 +304,111 @@ public class Rectangle extends Shape implements
 	 */
 	@Override
 	public void draw(Graphics g) {
-		if (rotation == 0f) {
-			g.drawRect(topLeft.x, topLeft.y, rectangle.width, rectangle.height);
-			return;
-		}
-		g.drawLineSegment(topLeft.x, topLeft.y, topRight.x, topRight.y);
-		g.drawLineSegment(topRight.x, topRight.y, bottomRight.x, bottomRight.y);
-		g.drawLineSegment(bottomLeft.x, bottomLeft.y, bottomRight.x,
-				bottomRight.y);
-		g.drawLineSegment(topLeft.x, topLeft.y, bottomLeft.x, bottomLeft.y);
+		polygon.draw(g);
 	}
 	
 	@Override
 	public void fill(Graphics g) {
-		if (rotation == 0f) {
-			g.fillRect(topLeft.x, topLeft.y, rectangle.width, rectangle.height);
-			return;
-		}
-		throw new NotYetImplementedException("g.fillRect for rotated Rectangles has not been implemented yet. " 
-				+ "If you would like to contribute an implementation, "
-                + "please send a pull request to the mini2Dx repository at https://github.com/mini2Dx/mini2Dx");
+		polygon.fill(g);
 	}
 
 	public Rectangle set(float x, float y, float width, float height) {
-		performRotation(-rotation);
-		rectangle.set(x, y, width, height);
-		recalculateCoordinates();
-		performRotation(rotation);
-		recalculateMinMax();
+		float rotation = polygon.getRotation();
+		polygon.setRotation(-rotation);
+		polygon.setVertices(determineVertices(x, y, width, height));
+		polygon.setRotation(rotation);
+		
+		this.width = width;
+		this.height = height;
 		return this;
 	}
 
 	public void set(Rectangle rectangle) {
-		performRotation(-rotation);
-		this.rectangle.set(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
-		recalculateCoordinates();
-		performRotation(rotation);
-		recalculateMinMax();
+		set(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
 	}
 	
 	public void set(float x, float y) {
-		performRotation(-rotation);
-		rectangle.setPosition(x, y);
-		recalculateCoordinates();
-		performRotation(rotation);
-		recalculateMinMax();
+		polygon.set(x, y);
 	}
 	
 	public void set(Vector2 position) {
-		performRotation(-rotation);
-		rectangle.setPosition(position);
-		recalculateCoordinates();
-		performRotation(rotation);
-		recalculateMinMax();
+		polygon.set(position.x, position.y);
 	}
 	
 	@Override
 	public float getX() {
-		return rectangle.x;
-	}
-	
-	private void internalSetX(float x) {
-		performRotation(-rotation);
-		rectangle.setX(x);
-		recalculateCoordinates();
-		performRotation(rotation);
-		recalculateMinMax();
+		return polygon.getX();
 	}
 	
 	public void setX(float x) {
-		internalSetX(x);
-	}
-	
-	private void internalSetY(float y) {
-		performRotation(-rotation);
-		rectangle.setY(y);
-		recalculateCoordinates();
-		performRotation(rotation);
-		recalculateMinMax();
+		polygon.setX(x);
 	}
 	
 	@Override
 	public float getY() {
-		return rectangle.y;
+		return polygon.getY();
 	}
 	
 	public void setY(float y) {
-		internalSetY(y);
-	}
-	
-	private void internalSetWidth(float width) {
-		performRotation(-rotation);
-		rectangle.setWidth(width);
-		recalculateCoordinates();
-		performRotation(rotation);
-		recalculateMinMax();
+		polygon.setY(y);
 	}
 	
 	public float getWidth() {
-		return rectangle.width;
+		return width;
 	}
 
 	public Rectangle setWidth(float width) {
-		internalSetWidth(width);
+		float rotation = polygon.getRotation();
+		polygon.setRotation(-rotation);
+		polygon.setVertices(determineVertices(getX(), getY(), width, getHeight()));
+		polygon.setRotation(rotation);
+		this.width = width;
 		return this;
 	}
 	
-	private void internalSetHeight(float height) {
-		performRotation(-rotation);
-		rectangle.setHeight(height);
-		recalculateCoordinates();
-		performRotation(rotation);
-		recalculateMinMax();
-	}
-	
 	public float getHeight() {
-		return rectangle.getHeight();
+		return height;
 	}
 
 	public Rectangle setHeight(float height) {
-		internalSetHeight(height);
+		float rotation = polygon.getRotation();
+		polygon.setRotation(-rotation);
+		polygon.setVertices(determineVertices(getX(), getY(), getWidth(), height));
+		polygon.setRotation(rotation);
+		this.height = height;
 		return this;
 	}
 
 	public Rectangle setSize(float width, float height) {
-		performRotation(-rotation);
-		rectangle.setSize(width, height);
-		recalculateCoordinates();
-		performRotation(rotation);
-		recalculateMinMax();
+		float rotation = polygon.getRotation();
+		polygon.setRotation(-rotation);
+		polygon.setVertices(determineVertices(getX(), getY(), getWidth(), height));
+		polygon.setRotation(rotation);
+		
+		this.width = width;
+		this.height = height;
 		return this;
 	}
 
 	public Rectangle setSize(float sizeXY) {
-		performRotation(-rotation);
-		rectangle.setSize(sizeXY);
-		recalculateCoordinates();
-		performRotation(rotation);
-		recalculateMinMax();
+		float rotation = polygon.getRotation();
+		polygon.setRotation(-rotation);
+		polygon.setVertices(determineVertices(getX(), getY(), sizeXY, sizeXY));
+		polygon.setRotation(rotation);
+		
+		this.width = sizeXY;
+		this.height = sizeXY;
 		return this;
 	}
 	
 	@Override
 	public void translate(float translateX, float translateY) {
-		set(getX() + translateX, getY() + translateY);
+		polygon.translate(translateX, translateY);
 	}
 	
 	@Override
 	public EdgeIterator edgeIterator() {
-		return edgeIterator;
+		return polygon.edgeIterator();
 	}
 
 	/**
@@ -578,7 +417,7 @@ public class Rectangle extends Shape implements
 	 * @return
 	 */
 	public float getCenterX() {
-		return center.x;
+		return 0f;
 	}
 
 	/**
@@ -587,7 +426,7 @@ public class Rectangle extends Shape implements
 	 * @return
 	 */
 	public float getCenterY() {
-		return center.y;
+		return 0f;
 	}
 
 	/**
@@ -596,7 +435,7 @@ public class Rectangle extends Shape implements
 	 * @return
 	 */
 	public float getMinX() {
-		return minX;
+		return polygon.getMinX();
 	}
 
 	/**
@@ -605,7 +444,7 @@ public class Rectangle extends Shape implements
 	 * @return
 	 */
 	public float getMinY() {
-		return minY;
+		return polygon.getMinY();
 	}
 
 	/**
@@ -614,7 +453,7 @@ public class Rectangle extends Shape implements
 	 * @return
 	 */
 	public float getMaxX() {
-		return maxX;
+		return polygon.getMaxX();
 	}
 
 	/**
@@ -623,93 +462,20 @@ public class Rectangle extends Shape implements
 	 * @return
 	 */
 	public float getMaxY() {
-		return maxY;
+		return polygon.getMaxY();
+	}
+	
+	/**
+	 * Returns the vertices that make up this {@link Rectangle}
+	 * @return
+	 */
+	public float [] getVertices() {
+		return polygon.getVertices();
 	}
 
 	@Override
 	public String toString() {
-		return "Rectangle [rotation=" + rotation + ", x=" + rectangle.x + ", y=" + rectangle.y
-				+ ", width=" + rectangle.width + ", height=" + rectangle.height + "]";
-	}
-	
-	private class RectangleEdgeIterator extends EdgeIterator {
-		private int edge;
-
-		@Override
-		protected void beginIteration() {
-			edge = 0;
-		}
-
-		@Override
-		protected void endIteration() {}
-
-		@Override
-		protected void nextEdge() {
-			if(edge >= 4) {
-				throw new MdxException("No more edges remaining. Make sure to call end()");
-			}
-			edge++;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return edge < 4;
-		}
-
-		@Override
-		public float getPointAX() {
-			switch(edge) {
-			case 1:
-				return topRight.x;
-			case 2:
-				return bottomRight.x;
-			case 3:
-				return bottomLeft.x;
-			default:
-				return topLeft.x;
-			}
-		}
-
-		@Override
-		public float getPointAY() {
-			switch(edge) {
-			case 1:
-				return topRight.y;
-			case 2:
-				return bottomRight.y;
-			case 3:
-				return bottomLeft.y;
-			default:
-				return topLeft.y;
-			}
-		}
-
-		@Override
-		public float getPointBX() {
-			switch(edge) {
-			case 1:
-				return bottomRight.x;
-			case 2:
-				return bottomLeft.x;
-			case 3:
-				return topLeft.x;
-			default:
-				return topRight.x;
-			}
-		}
-
-		@Override
-		public float getPointBY() {
-			switch(edge) {
-			case 1:
-				return bottomRight.y;
-			case 2:
-				return bottomLeft.y;
-			case 3:
-				return topLeft.y;
-			default:
-				return topRight.y;
-			}
-		}
+		return "Rectangle [rotation=" + polygon.getRotation() + ", x=" + getX() + ", y=" + getY()
+				+ ", width=" + getWidth() + ", height=" + getHeight() + "]";
 	}
 }

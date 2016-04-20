@@ -80,6 +80,61 @@ public class PolygonTest {
 	}
 	
 	@Test
+	public void testRotateAround() {
+		Polygon polygon = new Polygon(new Point [] {
+				new Point(10f, 0f),
+				new Point(20f, 0f),
+				new Point(20f, 10f),
+				new Point(10f, 10f),
+		});
+		
+		polygon.rotateAround(0f, 0f, -90f);
+		Assert.assertEquals(-90f, polygon.getRotation());
+		
+		Assert.assertEquals(0, MathUtils.round(polygon.getX(0)));
+		Assert.assertEquals(-10, MathUtils.round(polygon.getY(0)));
+		
+		Assert.assertEquals(0, MathUtils.round(polygon.getX(1)));
+		Assert.assertEquals(-20, MathUtils.round(polygon.getY(1)));
+		
+		Assert.assertEquals(10, MathUtils.round(polygon.getX(2)));
+		Assert.assertEquals(-20, MathUtils.round(polygon.getY(2)));
+		
+		Assert.assertEquals(10, MathUtils.round(polygon.getX(3)));
+		Assert.assertEquals(-10, MathUtils.round(polygon.getY(3)));
+		
+		polygon.rotate(90f);
+		Assert.assertEquals(0f, polygon.getRotation());
+		
+		Assert.assertEquals(0, MathUtils.round(polygon.getX(0)));
+		Assert.assertEquals(-10, MathUtils.round(polygon.getY(0)));
+		
+		Assert.assertEquals(10, MathUtils.round(polygon.getX(1)));
+		Assert.assertEquals(-10, MathUtils.round(polygon.getY(1)));
+		
+		Assert.assertEquals(10, MathUtils.round(polygon.getX(2)));
+		Assert.assertEquals(0, MathUtils.round(polygon.getY(2)));
+		
+		Assert.assertEquals(0, MathUtils.round(polygon.getX(3)));
+		Assert.assertEquals(0, MathUtils.round(polygon.getY(3)));
+		
+		polygon.rotateAround(0f, 0f, 90f);
+		Assert.assertEquals(90f, polygon.getRotation());
+		
+		Assert.assertEquals(10, MathUtils.round(polygon.getX(0)));
+		Assert.assertEquals(0, MathUtils.round(polygon.getY(0)));
+		
+		Assert.assertEquals(10, MathUtils.round(polygon.getX(1)));
+		Assert.assertEquals(10, MathUtils.round(polygon.getY(1)));
+		
+		Assert.assertEquals(0, MathUtils.round(polygon.getX(2)));
+		Assert.assertEquals(10, MathUtils.round(polygon.getY(2)));
+		
+		Assert.assertEquals(0, MathUtils.round(polygon.getX(3)));
+		Assert.assertEquals(0, MathUtils.round(polygon.getY(3)));
+	}
+	
+	@Test
 	public void testSetAndRotate() {
 		Polygon polygon = new Polygon(new Point [] {
 				new Point(10f, 0f),
@@ -90,16 +145,16 @@ public class PolygonTest {
 		polygon.set(100f, 100f);
 		polygon.rotate(90f);
 		
-		Assert.assertEquals(110, MathUtils.round(polygon.getX(0)));
+		Assert.assertEquals(100, MathUtils.round(polygon.getX(0)));
 		Assert.assertEquals(100, MathUtils.round(polygon.getY(0)));
 		
-		Assert.assertEquals(110, MathUtils.round(polygon.getX(1)));
+		Assert.assertEquals(100, MathUtils.round(polygon.getX(1)));
 		Assert.assertEquals(110, MathUtils.round(polygon.getY(1)));
 		
-		Assert.assertEquals(100, MathUtils.round(polygon.getX(2)));
+		Assert.assertEquals(90, MathUtils.round(polygon.getX(2)));
 		Assert.assertEquals(110, MathUtils.round(polygon.getY(2)));
 		
-		Assert.assertEquals(100, MathUtils.round(polygon.getX(3)));
+		Assert.assertEquals(90, MathUtils.round(polygon.getX(3)));
 		Assert.assertEquals(100, MathUtils.round(polygon.getY(3)));
 	}
 	
@@ -113,6 +168,7 @@ public class PolygonTest {
 		});
 		polygon.rotate(90f);
 		Assert.assertEquals(90f, polygon.getRotation());
+		
 		polygon.setRotation(0f);
 		Assert.assertEquals(0f, polygon.getRotation());
 		
@@ -130,12 +186,49 @@ public class PolygonTest {
 	}
 	
 	@Test
+	public void testSetRotationAround() {
+		Polygon polygon = new Polygon(new Point [] {
+				new Point(10f, 0f),
+				new Point(20f, 0f),
+				new Point(20f, 10f),
+				new Point(10f, 10f),
+		});
+		polygon.setRotationAround(0f, 0f, -90f);
+		
+		Assert.assertEquals(0, MathUtils.round(polygon.getX(0)));
+		Assert.assertEquals(-10, MathUtils.round(polygon.getY(0)));
+		
+		Assert.assertEquals(0, MathUtils.round(polygon.getX(1)));
+		Assert.assertEquals(-20, MathUtils.round(polygon.getY(1)));
+		
+		Assert.assertEquals(10, MathUtils.round(polygon.getX(2)));
+		Assert.assertEquals(-20, MathUtils.round(polygon.getY(2)));
+		
+		Assert.assertEquals(10, MathUtils.round(polygon.getX(3)));
+		Assert.assertEquals(-10, MathUtils.round(polygon.getY(3)));
+		
+		polygon.setRotationAround(0f, 10f, 180f);
+		
+		Assert.assertEquals(-20, MathUtils.round(polygon.getX(0)));
+		Assert.assertEquals(10, MathUtils.round(polygon.getY(0)));
+		
+		Assert.assertEquals(-30, MathUtils.round(polygon.getX(1)));
+		Assert.assertEquals(10, MathUtils.round(polygon.getY(1)));
+		
+		Assert.assertEquals(-30, MathUtils.round(polygon.getX(2)));
+		Assert.assertEquals(0, MathUtils.round(polygon.getY(2)));
+		
+		Assert.assertEquals(-20, MathUtils.round(polygon.getX(3)));
+		Assert.assertEquals(0, MathUtils.round(polygon.getY(3)));
+	}
+	
+	@Test
 	public void testSet() {
 		Polygon polygon = new Polygon(new Point [] {
-				new Point(0f, 0f),
-				new Point(10f, 0f),
 				new Point(10f, 10f),
-				new Point(0f, 10f)
+				new Point(20f, 10f),
+				new Point(20f, 20f),
+				new Point(10f, 20f)
 			});
 		polygon.set(100f, 100f);
 		
@@ -155,10 +248,10 @@ public class PolygonTest {
 	@Test
 	public void testSetX() {
 		Polygon polygon = new Polygon(new Point [] {
-				new Point(0f, 0f),
 				new Point(10f, 0f),
-				new Point(10f, 10f),
-				new Point(0f, 10f)
+				new Point(20f, 0f),
+				new Point(20f, 10f),
+				new Point(10f, 10f)
 			});
 		polygon.setX(100f);
 		
@@ -181,10 +274,10 @@ public class PolygonTest {
 	@Test
 	public void testSetY() {
 		Polygon polygon = new Polygon(new Point [] {
-				new Point(0f, 0f),
-				new Point(10f, 0f),
+				new Point(0f, 10f),
 				new Point(10f, 10f),
-				new Point(0f, 10f)
+				new Point(10f, 20f),
+				new Point(0f, 20f)
 			});
 		polygon.setY(200f);
 		
@@ -349,13 +442,13 @@ public class PolygonTest {
 	}
 	
 	@Test
-	public void testContains() {
+	public void testContainsPoint() {
 		Polygon polygon = new Polygon(new Point [] {
 				new Point(0f, 0f),
 				new Point(10f, 5f),
 				new Point(5f, 10f),
 				new Point(-10f, 5f),
-				new Point(-5f, 10f),
+				new Point(-5f, 10f)
 			});
 		
 		Assert.assertEquals(true, polygon.contains(0f, 5f));
@@ -363,6 +456,39 @@ public class PolygonTest {
 		
 		Assert.assertEquals(true, polygon.contains(new Vector2(0f, 5f)));
 		Assert.assertEquals(false, polygon.contains(new Vector2(15f, 5f)));
+		
+		polygon = new Polygon(new Point [] {
+				new Point(100f, 100f),
+				new Point(150f, 100f),
+				new Point(150f, 150f),
+				new Point(100f, 150f)
+			});
+		Assert.assertEquals(true, polygon.contains(125f, 125f));
+	}
+	
+	@Test
+	public void testContainsPolygon() {
+		Polygon polygon = new Polygon(new Point [] {
+				new Point(100f, 100f),
+				new Point(150f, 100f),
+				new Point(150f, 150f),
+				new Point(100f, 150f)
+			});
+		Polygon containedPolygon = new Polygon(new Point [] {
+				new Point(125f, 125f),
+				new Point(130f, 125f),
+				new Point(130f, 130f),
+				new Point(125f, 130f)
+		});
+		Polygon nonContainedPolygon = new Polygon(new Point [] {
+				new Point(200f, 200f),
+				new Point(250f, 200f),
+				new Point(250f, 250f),
+				new Point(200f, 250f)
+		});
+		
+		Assert.assertEquals(true, polygon.contains(containedPolygon));
+		Assert.assertEquals(false, polygon.contains(nonContainedPolygon));
 	}
 	
 	@Test
@@ -389,10 +515,12 @@ public class PolygonTest {
 				new Point(0f, 10f)
 			});
 		
-		Rectangle intersectingRectangle = new Rectangle(5f, -5f, 10f, 10f);
+		Rectangle intersectingRectangle = new Rectangle(-5f, -5f, 10f, 10f);
+		Rectangle onLineIntersectingRectangle = new Rectangle(-5f, -5f, 10f, 5f);
 		Rectangle nonIntersectingRectangle = new Rectangle(100f, 100f, 10f, 10f);
 		
 		Assert.assertEquals(true, polygon.intersects(intersectingRectangle));
+		Assert.assertEquals(true, polygon.intersects(onLineIntersectingRectangle));
 		Assert.assertEquals(false, polygon.intersects(nonIntersectingRectangle));
 	}
 	

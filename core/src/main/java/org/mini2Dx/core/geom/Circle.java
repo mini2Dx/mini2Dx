@@ -25,7 +25,9 @@ public class Circle extends Shape {
 	private static final long serialVersionUID = 7900371446650127192L;
 	
 	private final CircleEdgeIterator edgeIterator = new CircleEdgeIterator();
-	private final Vector2 tmp = new Vector2();
+	private final Vector2 centerTmp = new Vector2();
+	private final Vector2 tmp1 = new Vector2();
+	private final Vector2 tmp2 = new Vector2();
 	final com.badlogic.gdx.math.Circle circle;
 
 	public Circle(float radius) {
@@ -74,8 +76,17 @@ public class Circle extends Shape {
 	
 	@Override
 	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
-		tmp.set(circle.x, circle.y);
-		return Intersector.intersectSegmentCircle(pointA, pointB, tmp, circle.radius * circle.radius);
+		centerTmp.set(circle.x, circle.y);
+		return Intersector.intersectSegmentCircle(pointA, pointB, centerTmp, circle.radius * circle.radius);
+	}
+	
+
+	@Override
+	public boolean intersectsLineSegment(float x1, float y1, float x2, float y2) {
+		tmp1.set(x1, y1);
+		tmp2.set(x2, y2);
+		centerTmp.set(circle.x, circle.y);
+		return Intersector.intersectSegmentCircle(tmp1, tmp2, centerTmp, circle.radius * circle.radius);
 	}
 	
 	/**
@@ -85,7 +96,7 @@ public class Circle extends Shape {
 	 * @return True if intersection occurs
 	 */
 	public boolean intersects(Rectangle rectangle) {
-		return com.badlogic.gdx.math.Intersector.overlaps(circle, rectangle.rectangle);
+		return org.mini2Dx.core.geom.Intersector.intersects(rectangle, this);
 	}
 
 	/**
@@ -240,5 +251,27 @@ public class Circle extends Shape {
 		public float getPointBY() {
 			return circle.y;
 		}
+
+		@Override
+		public LineSegment getEdgeLineSegment() {
+			return null;
+		}
 	}
+
+	@Override
+	public float getRotation() {
+		return 0f;
+	}
+
+	@Override
+	public void setRotation(float degrees) {}
+
+	@Override
+	public void setRotationAround(float centerX, float centerY, float degrees) {}
+
+	@Override
+	public void rotate(float degrees) {}
+
+	@Override
+	public void rotateAround(float centerX, float centerY, float degrees) {}
 }

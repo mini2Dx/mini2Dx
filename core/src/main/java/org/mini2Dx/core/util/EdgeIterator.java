@@ -12,6 +12,7 @@
 package org.mini2Dx.core.util;
 
 import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Shape;
 
 /**
@@ -89,4 +90,10 @@ public abstract class EdgeIterator {
 	 * @return
 	 */
 	public abstract float getPointBY();
+	
+	/**
+	 * Returns the {@link LineSegment} of the edge
+	 * @return
+	 */
+	public abstract LineSegment getEdgeLineSegment();
 }

@@ -22,7 +22,7 @@ import org.openjdk.jmh.annotations.State;
  * Performance tests for {@link Rectangle}
  */
 public class RectanglePerformanceTest {
-	@State(Scope.Group)
+	@State(Scope.Thread)
     public static class TestState {
 		public Rectangle rectangle = new Rectangle(0f, 0f, 50f, 50f);
 		public Rectangle intersectingRectangle = new Rectangle(25f, 25f, 50f, 50f);

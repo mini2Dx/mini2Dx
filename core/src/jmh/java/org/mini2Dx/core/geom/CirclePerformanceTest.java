@@ -22,7 +22,7 @@ import org.openjdk.jmh.annotations.State;
  * Performance tests for {@link Circle}
  */
 public class CirclePerformanceTest {
-	@State(Scope.Group)
+	@State(Scope.Thread)
     public static class TestState {
 		public Circle circle = new Circle(50f);
 		

@@ -59,7 +59,7 @@ public class GeometryUAT extends BasicGameScreen {
         rotation += 180f * delta;
 
         rect.set(playerX * 32f, playerY * 32f, 128, 128);
-        rect.rotateAround(new Point(originX * 32f, originY * 32f), 180f * delta);
+        rect.rotateAround(originX * 32f, originY * 32f, 180f * delta);
     }
 
     @Override

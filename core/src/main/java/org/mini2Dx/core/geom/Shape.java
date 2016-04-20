@@ -63,6 +63,35 @@ public abstract class Shape {
 	 * @return True if this {@link Shape} intersects the line segment
 	 */
 	public abstract boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB);
+	
+	/**
+	 * Returns if this {@link Shape} intersects a line segment
+	 * 
+	 * @param x1 The x coordinate of the first point
+	 * @param y1 The y coordinate of the first point
+	 * @param x2 The x coordinate of the second point
+	 * @param y2 The y coordinate of the second point
+	 * @return True if this {@link Shape} intersects the line segment
+	 */
+	public abstract boolean intersectsLineSegment(float x1, float y1, float x2, float y2);
+	
+	/**
+	 * Returns the distance from this {@link Shape} to a set of coordinates
+	 * @param x The x coordinate
+	 * @param y The y coordinate
+	 * @return The distance
+	 */
+	public abstract float getDistanceTo(float x, float y);
+	
+	public abstract float getRotation();
+	
+	public abstract void setRotation(float degrees);
+	
+	public abstract void setRotationAround(float centerX, float centerY, float degrees);
+	
+	public abstract void rotate(float degrees);
+	
+	public abstract void rotateAround(float centerX, float centerY, float degrees);
 
 	/**
 	 * Draws this shape using a {@link Graphics} instance

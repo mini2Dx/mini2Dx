@@ -22,7 +22,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Triangle extends Shape {
 	private static final int TOTAL_SIDES = 3;
 
-	private final Polygon polygon;
+	final Polygon polygon;
 
 	public Triangle(Point p1, Point p2, Point p3) {
 		this(p1.getX(), p1.getY(), p2.getX(), p2.getY(), p3.getX(), p3.getY());
@@ -63,16 +63,11 @@ public class Triangle extends Shape {
 	 * @return True if this {@link Triangle} and {@link Rectangle} intersect
 	 */
 	public boolean intersects(Rectangle rectangle) {
-		return rectangle.intersects(polygon);
+		return polygon.intersects(rectangle);
 	}
 
 	public void translate(float translateX, float translateY) {
-		float[] vertices = polygon.getVertices();
-		for (int i = 0; i < vertices.length; i += 2) {
-			vertices[i] += translateX;
-			vertices[i + 1] += translateY;
-		}
-		polygon.setVertices(vertices);
+		polygon.translate(translateX, translateY);
 	}
 
 	public void setRotation(float degrees) {
@@ -116,6 +111,31 @@ public class Triangle extends Shape {
 	@Override
 	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
 		return polygon.intersectsLineSegment(pointA, pointB);
+	}
+	
+	@Override
+	public boolean intersectsLineSegment(float x1, float y1, float x2, float y2) {
+		return polygon.intersectsLineSegment(x1, y1, x2, y2);
+	}
+	
+	@Override
+	public float getDistanceTo(float x, float y) {
+		return polygon.getDistanceTo(x, y);
+	}
+
+	@Override
+	public float getRotation() {
+		return polygon.getRotation();
+	}
+
+	@Override
+	public void setRotationAround(float centerX, float centerY, float degrees) {
+		polygon.setRotationAround(centerX, centerY, degrees);
+	}
+
+	@Override
+	public void rotateAround(float centerX, float centerY, float degrees) {
+		polygon.rotateAround(centerX, centerY, degrees);
 	}
 	
 	@Override
