@@ -24,22 +24,46 @@ import com.badlogic.gdx.math.Vector2;
 public class Circle extends Shape {
 	private static final long serialVersionUID = 7900371446650127192L;
 	
-	private final CircleEdgeIterator edgeIterator = new CircleEdgeIterator();
 	private final Vector2 centerTmp = new Vector2();
 	private final Vector2 tmp1 = new Vector2();
 	private final Vector2 tmp2 = new Vector2();
+	private final Rectangle boundingBox = new Rectangle();
+	
+	private final CircleEdgeIterator edgeIterator = new CircleEdgeIterator();
 	final com.badlogic.gdx.math.Circle circle;
 
+	/**
+	 * Constructs a {@link Circle} at 0,0 with a radius
+	 * @param radius The {@link Circle} radius
+	 */
 	public Circle(float radius) {
 		this(0f, 0f, radius);
+		determineBoundingBox();
 	}
 	
+	/**
+	 * Constructs a {@link Circle} with a center and radius
+	 * @param centerX The center x coordinate
+	 * @param centerY The center y coordinate
+	 * @param radius The radius
+	 */
 	public Circle(float centerX, float centerY, float radius) {
 		this.circle = new com.badlogic.gdx.math.Circle(centerX, centerX, radius);
+		determineBoundingBox();
 	}
 	
+	/**
+	 * Constructs a {@link Circle} as a copy of another
+	 * @param circle The {@link Circle} to copy
+	 */
 	public Circle(Circle circle) {
 		this.circle = new com.badlogic.gdx.math.Circle(circle.circle);
+		determineBoundingBox();
+	}
+	
+	private void determineBoundingBox() {
+		float diameter = circle.radius * circle.radius;
+		boundingBox.set(getMinX(), getMinY(), diameter, diameter);
 	}
 	
 	public Circle lerp(Circle target, float alpha) {
@@ -47,13 +71,16 @@ public class Circle extends Shape {
 		circle.x = (circle.x * inverseAlpha) + (target.getX() * alpha);
 		circle.y = (circle.y * inverseAlpha) + (target.getY() * alpha);
 		circle.radius = (circle.radius * inverseAlpha) + (target.getRadius() * alpha);
+		determineBoundingBox();
 		return this;
 	}
 	
+	@Override
 	public boolean contains(Vector2 point) {
 		return contains(point.x, point.y);
 	}
 	
+	@Override
 	public boolean contains(float x, float y) {
 		float dx = Math.abs(x - circle.x);
 		if(dx > circle.radius) {
@@ -75,11 +102,66 @@ public class Circle extends Shape {
 	}
 	
 	@Override
+	public boolean contains(Shape shape) {
+		if(shape.isCircle()) {
+			return contains((Circle) shape);
+		}
+		if(shape.getNumberOfSides() == 4) {
+			float distanceX = Math.max(circle.x - shape.getMinX(), shape.getMaxX() - circle.x);
+			float distanceY = Math.max(circle.y - shape.getMinY(), shape.getMaxY() - circle.y);
+			return circle.radius * circle.radius >= (distanceX * distanceX) + (distanceY * distanceY);
+		}
+		return contains(shape.getPolygon());
+	}
+	
+	/**
+	 * Returns if another {@link Circle} is contained within this one
+	 * @param circle The {@link Circle} to check
+	 * @return True if the other {@link Circle} is contained within this one
+	 */
+	public boolean contains(Circle circle) {
+		return this.circle.contains(circle.circle);
+	}
+	
+	/**
+	 * Returns if this {@link Circle} contains a {@link Rectangle}
+	 * @param rectangle The {@link Rectangle} to check
+	 * @return True if this {@link Circle} contains the {@link Rectangle}
+	 */
+	public boolean contains(Rectangle rectangle) {
+		float distanceX = Math.max(circle.x - rectangle.getMinX(), rectangle.getMaxX() - circle.x);
+		float distanceY = Math.max(circle.y - rectangle.getMinY(), rectangle.getMaxY() - circle.y);
+		return circle.radius * circle.radius >= (distanceX * distanceX) + (distanceY * distanceY);
+	}
+	
+	/**
+	 * Returns if this {@link Circle} contains a {@link Polygon}
+	 * @param rectangle The {@link Polygon} to check
+	 * @return True if this {@link Circle} contains the {@link Polygon}
+	 */
+	public boolean contains(Polygon polygon) {
+		float [] vertices = polygon.getVertices();
+		for(int i = 0; i < vertices.length; i += 2) {
+			if(!contains(vertices[i], vertices[i + 1])) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean intersects(Shape shape) {
+		if(shape.isCircle()) {
+			return intersects((Circle) shape);
+		}
+		return shape.getPolygon().intersects(this);
+	}
+	
+	@Override
 	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
 		centerTmp.set(circle.x, circle.y);
 		return Intersector.intersectSegmentCircle(pointA, pointB, centerTmp, circle.radius * circle.radius);
 	}
-	
 
 	@Override
 	public boolean intersectsLineSegment(float x1, float y1, float x2, float y2) {
@@ -184,17 +266,40 @@ public class Circle extends Shape {
 	@Override
 	public void setX(float x) {
 		circle.x = x;
+		determineBoundingBox();
 	}
 	
 	@Override
 	public void setY(float y) {
 		circle.y = y;
+		determineBoundingBox();
 	}
 	
 	@Override
 	public void set(float x, float y) {
 		circle.x = x;
 		circle.y = y;
+		determineBoundingBox();
+	}
+	
+	@Override
+	public float getMinX() {
+		return circle.x - circle.radius;
+	}
+
+	@Override
+	public float getMinY() {
+		return circle.y - circle.radius;
+	}
+
+	@Override
+	public float getMaxX() {
+		return circle.x + circle.radius;
+	}
+
+	@Override
+	public float getMaxY() {
+		return circle.y + circle.radius;
 	}
 
 	public float getRadius() {
@@ -203,17 +308,27 @@ public class Circle extends Shape {
 
 	public void setRadius(float radius) {
 		circle.radius = radius;
+		determineBoundingBox();
 	}
 
 	@Override
 	public void translate(float translateX, float translateY) {
 		circle.x += translateX;
 		circle.y += translateY;
+		determineBoundingBox();
 	}
 
 	@Override
 	public EdgeIterator edgeIterator() {
 		return edgeIterator;
+	}
+	
+	/**
+	 * Returns the bounding box of this {@link Circle}
+	 * @return A {@link Rectangle} representing the area of this {@link Circle}
+	 */
+	public Rectangle getBoundingBox() {
+		return boundingBox;
 	}
 	
 	private class CircleEdgeIterator extends EdgeIterator {
@@ -274,4 +389,14 @@ public class Circle extends Shape {
 
 	@Override
 	public void rotateAround(float centerX, float centerY, float degrees) {}
+	
+	@Override
+	public boolean isCircle() {
+		return true;
+	}
+
+	@Override
+	public Polygon getPolygon() {
+		return null;
+	}
 }

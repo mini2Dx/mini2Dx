@@ -68,24 +68,174 @@ public class Rectangle extends Shape implements
 				bottomLeft
 			};
 	}
+	
+	@Override
+	public boolean contains(float x, float y) {
+		return polygon.contains(x, y);
+	}
+
+	@Override
+	public boolean contains(Vector2 point) {
+		return polygon.contains(point);
+	}
+	
+	@Override
+	public boolean contains(Shape shape) {
+		return polygon.contains(shape);
+	}
+	
+	@Override
+	public boolean contains(Parallelogram parallelogram) {
+		if(tmp == null) {
+			tmp = new Rectangle(parallelogram.getX(),
+					parallelogram.getY(), parallelogram.getWidth(),
+					parallelogram.getHeight());
+			tmp.setRotation(parallelogram.getRotation());
+		} else {
+			tmp.set(parallelogram.getX(),
+					parallelogram.getY(), parallelogram.getWidth(),
+					parallelogram.getHeight());
+			tmp.setRotation(parallelogram.getRotation());
+		}
+		return contains(tmp);
+	}
+	
+	public boolean contains(Rectangle rectangle) {
+		return this.polygon.contains(rectangle.polygon);
+	}
+	
+	public boolean contains(Circle circle) {
+		return this.polygon.contains(circle.getBoundingBox());
+	}
+
+	@Override
+	public boolean intersects(Shape shape) {
+		return polygon.intersects(shape);
+	}
+	
+	@Override
+	public boolean intersectsLineSegment(LineSegment lineSegment) {
+		return polygon.intersects(lineSegment);
+	}
+	
+	/**
+	 * Returns if the specified {@link Circle} intersects this {@link Rectangle}
+	 * 
+	 * @param circle The {@link Circle} to test for intersection
+	 * @return True if the {@link Circle} intersects
+	 */
+	public boolean intersects(Circle circle) {
+		return polygon.intersects(circle);
+	}
 
 	/**
-	 * Renders this {@link Rectangle} and the {@link LineSegment}s between each
-	 * of its point and its rotational center
+	 * Returns if the specified {@link Rectangle} intersects this one
 	 * 
-	 * @param g
-	 *            The {@link Graphics} context to render to
+	 * @param rectangle
+	 *            The {@link Rectangle} to test for intersection
+	 * @return True if the {@link Rectangle}s intersect
 	 */
-	public void debug(Graphics g) {
-		this.draw(g);
-//		g.drawLineSegment(topLeft.x, topLeft.y, rotationalCenter.x,
-//				rotationalCenter.y);
-//		g.drawLineSegment(topRight.x, topRight.y, rotationalCenter.x,
-//				rotationalCenter.y);
-//		g.drawLineSegment(bottomLeft.x, bottomLeft.y, rotationalCenter.x,
-//				rotationalCenter.y);
-//		g.drawLineSegment(bottomRight.x, bottomRight.y, rotationalCenter.x,
-//				rotationalCenter.y);
+	public boolean intersects(Rectangle rectangle) {
+		boolean xAxisOverlaps = true;
+		boolean yAxisOverlaps = true;
+
+		if (polygon.getMaxX() < rectangle.getMinX())
+			xAxisOverlaps = false;
+		if (rectangle.getMaxX() < polygon.getMinX())
+			xAxisOverlaps = false;
+		if (polygon.getMaxY() < rectangle.getMinY())
+			yAxisOverlaps = false;
+		if (rectangle.getMaxY() < polygon.getMinY())
+			yAxisOverlaps = false;
+
+		return xAxisOverlaps && yAxisOverlaps;
+	}
+	
+	@Override
+	public boolean intersects(Parallelogram parallelogram) {
+		if(tmp == null) {
+			tmp = new Rectangle(parallelogram.getX(),
+					parallelogram.getY(), parallelogram.getWidth(),
+					parallelogram.getHeight());
+			tmp.setRotation(parallelogram.getRotation());
+		} else {
+			tmp.set(parallelogram.getX(),
+					parallelogram.getY(), parallelogram.getWidth(),
+					parallelogram.getHeight());
+			tmp.setRotation(parallelogram.getRotation());
+		}
+		return intersects(tmp);
+	}
+	
+	@Override
+	public boolean intersects(float x, float y, float width, float height) {
+		if(tmp == null) {
+			tmp = new Rectangle(x, y, width, height);
+		} else {
+			tmp.set(x, y, width, height);
+		}
+		return intersects(tmp);
+	}
+	
+	/**
+	 * Returns if the specified {@link Triangle} intersects this {@link Rectangle}
+	 * @param triangle The {@link Triangle} to check
+	 * @return True if this {@link Rectangle} and the {@link Triangle} intersect
+	 */
+	public boolean intersects(Triangle triangle) {
+		return polygon.intersects(triangle);
+	}
+	
+	/**
+	 * Returns if the specified {@link Polygon} intersects this {@link Rectangle}
+	 * @param polygon The {@link Polygon} to check
+	 * @return True if this {@link Rectangle} and the {@link Polygon} intersect
+	 */
+	public boolean intersects(Polygon polygon) {
+		return this.polygon.intersects(polygon);
+	}
+
+	@Override
+	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
+		return polygon.intersectsLineSegment(pointA, pointB);
+	}
+
+	@Override
+	public boolean intersectsLineSegment(float x1, float y1, float x2, float y2) {
+		return polygon.intersectsLineSegment(x1, y1, x2, y2);
+	}
+
+	public Rectangle intersection(Rectangle rect) {
+		if (polygon.getRotation() != 0f || rect.getRotation() != 0f)
+			throw new UnsupportedOperationException(
+					"Rectangle.intersection is not implemented to handle rotated rectangles");
+
+		float newX = Math.max(getX(), rect.getX());
+		float newY = Math.max(getY(), rect.getY());
+		float newWidth = Math.min(getMaxX(), rect.getMaxX()) - newX;
+		float newHeight = Math.min(getMaxY(), rect.getMaxY()) - newY;
+		return new Rectangle(newX, newY, newWidth, newHeight);
+	}
+
+	/**
+	 * @see Shape#getNumberOfSides()
+	 */
+	@Override
+	public int getNumberOfSides() {
+		return 4;
+	}
+
+	/**
+	 * @see Shape#draw(Graphics)
+	 */
+	@Override
+	public void draw(Graphics g) {
+		polygon.draw(g);
+	}
+	
+	@Override
+	public void fill(Graphics g) {
+		polygon.fill(g);
 	}
 	
 	public Rectangle lerp(Rectangle target, float alpha) {
@@ -148,168 +298,6 @@ public class Rectangle extends Shape implements
 	@Override
 	public void setRotationAround(float centerX, float centerY, float degrees) {
 		polygon.setRotationAround(centerX, centerY, degrees);
-	}
-	
-	@Override
-	public boolean intersectsLineSegment(LineSegment lineSegment) {
-		return polygon.intersects(lineSegment);
-	}
-	
-	/**
-	 * Returns if the specified {@link Circle} intersects this {@link Rectangle}
-	 * 
-	 * @param circle The {@link Circle} to test for intersection
-	 * @return True if the {@link Circle} intersects
-	 */
-	public boolean intersects(Circle circle) {
-		return polygon.intersects(circle);
-	}
-
-	/**
-	 * Returns if the specified {@link Rectangle} intersects this one
-	 * 
-	 * @param rectangle
-	 *            The {@link Rectangle} to test for intersection
-	 * @return True if the {@link Rectangle}s intersect
-	 */
-	public boolean intersects(Rectangle rectangle) {
-		boolean xAxisOverlaps = true;
-		boolean yAxisOverlaps = true;
-
-		if (polygon.getMaxX() < rectangle.getMinX())
-			xAxisOverlaps = false;
-		if (rectangle.getMaxX() < polygon.getMinX())
-			xAxisOverlaps = false;
-		if (polygon.getMaxY() < rectangle.getMinY())
-			yAxisOverlaps = false;
-		if (rectangle.getMaxY() < polygon.getMinY())
-			yAxisOverlaps = false;
-
-		return xAxisOverlaps && yAxisOverlaps;
-	}
-
-	/**
-	 * @see Parallelogram#intersects(Parallelogram)
-	 */
-	@Override
-	public boolean intersects(Parallelogram parallelogram) {
-		if(tmp == null) {
-			tmp = new Rectangle(parallelogram.getX(),
-					parallelogram.getY(), parallelogram.getWidth(),
-					parallelogram.getHeight());
-		} else {
-			tmp.set(parallelogram.getX(),
-					parallelogram.getY(), parallelogram.getWidth(),
-					parallelogram.getHeight());
-		}
-		return intersects(tmp);
-	}
-
-	/**
-	 * @see Parallelogram#intersects(float, float, float, float)
-	 */
-	@Override
-	public boolean intersects(float x, float y, float width, float height) {
-		if(tmp == null) {
-			tmp = new Rectangle(x, y, width, height);
-		} else {
-			tmp.set(x, y, width, height);
-		}
-		return intersects(tmp);
-	}
-	
-	/**
-	 * Returns if the specified {@link Triangle} intersects this {@link Rectangle}
-	 * @param triangle The {@link Triangle} to check
-	 * @return True if this {@link Rectangle} and the {@link Triangle} intersect
-	 */
-	public boolean intersects(Triangle triangle) {
-		return polygon.intersects(triangle);
-	}
-	
-	/**
-	 * Returns if the specified {@link Polygon} intersects this {@link Rectangle}
-	 * @param polygon The {@link Polygon} to check
-	 * @return True if this {@link Rectangle} and the {@link Polygon} intersect
-	 */
-	public boolean intersects(Polygon polygon) {
-		return this.polygon.intersects(polygon);
-	}
-
-	@Override
-	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
-		return polygon.intersectsLineSegment(pointA, pointB);
-	}
-
-	@Override
-	public boolean intersectsLineSegment(float x1, float y1, float x2, float y2) {
-		return polygon.intersectsLineSegment(x1, y1, x2, y2);
-	}
-
-	public Rectangle intersection(Rectangle rect) {
-		if (polygon.getRotation() != 0f || rect.getRotation() != 0f)
-			throw new UnsupportedOperationException(
-					"Rectangle.intersection is not implemented to handle rotated rectangles");
-
-		float newX = Math.max(getX(), rect.getX());
-		float newY = Math.max(getY(), rect.getY());
-		float newWidth = Math.min(getMaxX(), rect.getMaxX()) - newX;
-		float newHeight = Math.min(getMaxY(), rect.getMaxY()) - newY;
-		return new Rectangle(newX, newY, newWidth, newHeight);
-	}
-
-	/**
-	 * @see Parallelogram#contains(Parallelogram)
-	 */
-	@Override
-	public boolean contains(Parallelogram parallelogram) {
-		if (parallelogram instanceof Rectangle) {
-			return contains((Rectangle) parallelogram);
-		} else {
-			Rectangle rect = new Rectangle(parallelogram.getX(),
-					parallelogram.getY(), parallelogram.getWidth(),
-					parallelogram.getHeight());
-			rect.rotate(parallelogram.getRotation());
-			return contains(rect);
-		}
-	}
-
-	/**
-	 * @see Parallelogram#contains(Parallelogram)
-	 */
-	public boolean contains(Rectangle rectangle) {
-		return this.polygon.contains(rectangle.polygon);
-	}
-
-	@Override
-	public boolean contains(float x, float y) {
-		return polygon.contains(x, y);
-	}
-
-	@Override
-	public boolean contains(Vector2 point) {
-		return polygon.contains(point);
-	}
-
-	/**
-	 * @see Shape#getNumberOfSides()
-	 */
-	@Override
-	public int getNumberOfSides() {
-		return 4;
-	}
-
-	/**
-	 * @see Shape#draw(Graphics)
-	 */
-	@Override
-	public void draw(Graphics g) {
-		polygon.draw(g);
-	}
-	
-	@Override
-	public void fill(Graphics g) {
-		polygon.fill(g);
 	}
 
 	public Rectangle set(float x, float y, float width, float height) {
@@ -477,5 +465,15 @@ public class Rectangle extends Shape implements
 	public String toString() {
 		return "Rectangle [rotation=" + polygon.getRotation() + ", x=" + getX() + ", y=" + getY()
 				+ ", width=" + getWidth() + ", height=" + getHeight() + "]";
+	}
+
+	@Override
+	public boolean isCircle() {
+		return false;
+	}
+
+	@Override
+	public Polygon getPolygon() {
+		return polygon;
 	}
 }

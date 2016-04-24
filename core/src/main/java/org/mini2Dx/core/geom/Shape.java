@@ -40,6 +40,13 @@ public abstract class Shape {
 	 * @return True if this {@link Shape} contains the specified {@link Vector2}
 	 */
 	public abstract boolean contains(Vector2 vector2);
+	
+	/**
+	 * Returns if a {@link Shape} is contained inside this {@link Shape}
+	 * @param shape The {@link Shape} to check
+	 * @return True if this {@link Shape} contains the specified {@link Shape}
+	 */
+	public abstract boolean contains(Shape shape);
 
 	/**
 	 * Returns if this {@link Shape} intersects the specified
@@ -76,6 +83,13 @@ public abstract class Shape {
 	public abstract boolean intersectsLineSegment(float x1, float y1, float x2, float y2);
 	
 	/**
+	 * Returns if this {@link Shape} intersects another {@link Shape}
+	 * @param shape The {@link Shape} to check
+	 * @return True if this {@link Shape} intersects the specified {@link Shape}
+	 */
+	public abstract boolean intersects(Shape shape);
+	
+	/**
 	 * Returns the distance from this {@link Shape} to a set of coordinates
 	 * @param x The x coordinate
 	 * @param y The y coordinate
@@ -83,14 +97,38 @@ public abstract class Shape {
 	 */
 	public abstract float getDistanceTo(float x, float y);
 	
+	/**
+	 * Returns the rotation of this {@link Shape}
+	 * @return The rotation in degrees
+	 */
 	public abstract float getRotation();
 	
+	/**
+	 * Sets the rotation of this {@link Shape} with its first point as the origin
+	 * @param degrees The rotation in degrees
+	 */
 	public abstract void setRotation(float degrees);
 	
+	/**
+	 * Sets the rotation of this {@link Shape} with a specified point as the origin
+	 * @param centerX The origin/center x coordinate
+	 * @param centerY The origin/center y coordinate
+	 * @param degrees The rotation in degrees
+	 */
 	public abstract void setRotationAround(float centerX, float centerY, float degrees);
 	
+	/**
+	 * Rotates this {@link Shape} by a specified amount of degrees with its first point as the origin
+	 * @param degrees The rotation in degrees
+	 */
 	public abstract void rotate(float degrees);
 	
+	/**
+	 * Rotates this {@link Shape} by a specified amount of degrees around a specified point
+	 * @param centerX The origin/center x coordinate
+	 * @param centerY The origin/center y coordinate
+	 * @param degrees The rotation in degrees
+	 */
 	public abstract void rotateAround(float centerX, float centerY, float degrees);
 
 	/**
@@ -148,6 +186,30 @@ public abstract class Shape {
 	 *            The y coordinate
 	 */
 	public abstract void set(float x, float y);
+	
+	/**
+	 * Returns the left-most x coordinate
+	 * @return
+	 */
+	public abstract float getMinX();
+	
+	/**
+	 * Returns the top-most y coordinate
+	 * @return
+	 */
+	public abstract float getMinY();
+	
+	/**
+	 * Returns the right-most x coordinate
+	 * @return
+	 */
+	public abstract float getMaxX();
+	
+	/**
+	 * Returns the bottom-most y coordinate
+	 * @return
+	 */
+	public abstract float getMaxY();
 
 	/**
 	 * Translates the x and y coordinate of this object
@@ -173,4 +235,16 @@ public abstract class Shape {
 	 * @return The {@link EdgeIterator}
 	 */
 	public abstract EdgeIterator edgeIterator();
+	
+	/**
+	 * Returns if this {@link Shape} is a {@link Circle}
+	 * @return True if this {@link Shape} is a {@link Circle}
+	 */
+	public abstract boolean isCircle();
+	
+	/**
+	 * Returns the {@link Polygon} representing this {@link Shape}
+	 * @return Null if this {@link Shape} is a {@link Circle}
+	 */
+	public abstract Polygon getPolygon();
 }

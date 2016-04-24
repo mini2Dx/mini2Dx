@@ -92,6 +92,16 @@ public class RegularPolygon extends Shape {
 	public boolean contains(Vector2 vector2) {
 		return polygon.contains(vector2);
 	}
+	
+	@Override
+	public boolean contains(Shape shape) {
+		return polygon.contains(shape);
+	}
+
+	@Override
+	public boolean intersects(Shape shape) {
+		return polygon.intersects(shape);
+	}
 
 	@Override
 	public boolean intersects(LineSegment lineSegment) {
@@ -278,5 +288,35 @@ public class RegularPolygon extends Shape {
 	@Override
 	public EdgeIterator edgeIterator() {
 		return polygon.edgeIterator();
+	}
+
+	@Override
+	public boolean isCircle() {
+		return false;
+	}
+
+	@Override
+	public Polygon getPolygon() {
+		return polygon;
+	}
+
+	@Override
+	public float getMinX() {
+		return polygon.getMinX();
+	}
+
+	@Override
+	public float getMinY() {
+		return polygon.getMinY();
+	}
+
+	@Override
+	public float getMaxX() {
+		return polygon.getMaxX();
+	}
+
+	@Override
+	public float getMaxY() {
+		return polygon.getMaxY();
 	}
 }

@@ -30,11 +30,12 @@ public class Polygon extends Shape {
 	private final EarClippingTriangulator triangulator;
 	private final PolygonEdgeIterator edgeIterator = new PolygonEdgeIterator();
 	private final PolygonEdgeIterator internalEdgeIterator = new PolygonEdgeIterator();
+	
 	private final Vector2 tmp1 = new Vector2();
 	private final Vector2 tmp2 = new Vector2();
 
 	final com.badlogic.gdx.math.Polygon polygon;
-
+	
 	private int totalSidesCache = -1;
 	private float minX, minY, maxX, maxY;
 	private ShortArray triangles;
@@ -42,7 +43,8 @@ public class Polygon extends Shape {
 	private boolean isRectangle;
 
 	/**
-	 * Constructor
+	 * Constructor. Note that vertices must be in a clockwise order for
+	 * performance and accuracy.
 	 * 
 	 * @param vertices
 	 *            All points in x,y pairs. E.g. x1,y1,x2,y2,etc.
@@ -57,7 +59,8 @@ public class Polygon extends Shape {
 	}
 
 	/**
-	 * Constructor with vectors
+	 * Constructor with vectors. Note that vectors must be in a clockwise order
+	 * for performance and accuracy.
 	 * 
 	 * @param points
 	 *            All points in the polygon
@@ -133,8 +136,25 @@ public class Polygon extends Shape {
 		return contains(vector2.x, vector2.y);
 	}
 
+	@Override
+	public boolean contains(Shape shape) {
+		if (shape.isCircle()) {
+			Rectangle circleBox = ((Circle) shape).getBoundingBox();
+			return contains(circleBox.getPolygon());
+		}
+		return contains(shape.getPolygon());
+	}
+
 	public boolean contains(Polygon polygon) {
 		return org.mini2Dx.core.geom.Intersector.containsPolygon(this, polygon);
+	}
+
+	@Override
+	public boolean intersects(Shape shape) {
+		if (shape.isCircle()) {
+			return intersects((Circle) shape);
+		}
+		return intersects(shape.getPolygon());
 	}
 
 	/**
@@ -160,7 +180,7 @@ public class Polygon extends Shape {
 
 			return xAxisOverlaps && yAxisOverlaps;
 		}
-		
+
 		if (polygon.minX > maxX) {
 			return false;
 		}
@@ -211,7 +231,7 @@ public class Polygon extends Shape {
 	}
 
 	public boolean intersects(Circle circle) {
-		if(isRectangle) {
+		if (isRectangle) {
 			float closestX = circle.getX();
 			float closestY = circle.getY();
 
@@ -234,7 +254,7 @@ public class Polygon extends Shape {
 
 			return closestX + closestY < circle.getRadius() * circle.getRadius();
 		}
-		
+
 		boolean result = false;
 
 		internalEdgeIterator.begin();
@@ -618,6 +638,16 @@ public class Polygon extends Shape {
 	@Override
 	public EdgeIterator edgeIterator() {
 		return edgeIterator;
+	}
+
+	@Override
+	public boolean isCircle() {
+		return false;
+	}
+
+	@Override
+	public Polygon getPolygon() {
+		return this;
 	}
 
 	@Override

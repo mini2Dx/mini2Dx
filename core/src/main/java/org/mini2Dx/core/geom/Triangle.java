@@ -31,6 +31,41 @@ public class Triangle extends Shape {
 	public Triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
 		polygon = new Polygon(new float[] { x1, y1, x2, y2, x3, y3 });
 	}
+	
+	@Override
+	public boolean contains(float x, float y) {
+		return polygon.contains(x, y);
+	}
+
+	@Override
+	public boolean contains(Vector2 vector2) {
+		return polygon.contains(vector2.x, vector2.y);
+	}
+	
+	@Override
+	public boolean contains(Shape shape) {
+		return polygon.contains(shape);
+	}
+
+	@Override
+	public boolean intersects(Shape shape) {
+		return polygon.intersects(shape);
+	}
+	
+	@Override
+	public boolean intersects(LineSegment lineSegment) {
+		return intersectsLineSegment(lineSegment.getPointA(), lineSegment.getPointB());
+	}
+	
+	@Override
+	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
+		return polygon.intersectsLineSegment(pointA, pointB);
+	}
+	
+	@Override
+	public boolean intersectsLineSegment(float x1, float y1, float x2, float y2) {
+		return polygon.intersectsLineSegment(x1, y1, x2, y2);
+	}
 
 	/**
 	 * Returns if this {@link Triangle} intersects a {@link Polygon}
@@ -92,31 +127,6 @@ public class Triangle extends Shape {
 	public void fill(Graphics g) {
 		polygon.fill(g);
 	}
-
-	@Override
-	public boolean contains(float x, float y) {
-		return polygon.contains(x, y);
-	}
-
-	@Override
-	public boolean contains(Vector2 vector2) {
-		return polygon.contains(vector2.x, vector2.y);
-	}
-	
-	@Override
-	public boolean intersects(LineSegment lineSegment) {
-		return intersectsLineSegment(lineSegment.getPointA(), lineSegment.getPointB());
-	}
-	
-	@Override
-	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
-		return polygon.intersectsLineSegment(pointA, pointB);
-	}
-	
-	@Override
-	public boolean intersectsLineSegment(float x1, float y1, float x2, float y2) {
-		return polygon.intersectsLineSegment(x1, y1, x2, y2);
-	}
 	
 	@Override
 	public float getDistanceTo(float x, float y) {
@@ -166,9 +176,39 @@ public class Triangle extends Shape {
 	public void setPosition(float x1, float y1, float x2, float y2, float x3, float y3) {
 		polygon.setVertices(new float[] { x1, y1, x2, y2, x3, y3 });
 	}
+	
+	@Override
+	public float getMinX() {
+		return polygon.getMinX();
+	}
+
+	@Override
+	public float getMinY() {
+		return polygon.getMinY();
+	}
+
+	@Override
+	public float getMaxX() {
+		return polygon.getMaxX();
+	}
+
+	@Override
+	public float getMaxY() {
+		return polygon.getMaxY();
+	}
 
 	@Override
 	public EdgeIterator edgeIterator() {
 		return polygon.edgeIterator();
+	}
+
+	@Override
+	public boolean isCircle() {
+		return false;
+	}
+
+	@Override
+	public Polygon getPolygon() {
+		return polygon;
 	}
 }
