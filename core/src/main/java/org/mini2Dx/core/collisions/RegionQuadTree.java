@@ -15,10 +15,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.mini2Dx.core.engine.geom.CollisionBox;
+import org.mini2Dx.core.engine.geom.CollisionShape;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Parallelogram;
 import org.mini2Dx.core.geom.Point;
+import org.mini2Dx.core.geom.Shape;
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.graphics.Color;
@@ -29,7 +30,7 @@ import com.badlogic.gdx.graphics.Color;
  * @see <a href="http://en.wikipedia.org/wiki/Quadtree#The_region_quadtree">
  *      Wikipedia: Region Quad Tree</a>
  */
-public class RegionQuadTree<T extends CollisionBox> extends PointQuadTree<T> {
+public class RegionQuadTree<T extends CollisionShape> extends PointQuadTree<T> {
 	private static final long serialVersionUID = -2417612178966065600L;
 
 	/**
@@ -128,7 +129,7 @@ public class RegionQuadTree<T extends CollisionBox> extends PointQuadTree<T> {
 		
 		List<T> elementsWithinQuad = new ArrayList<T>();
 		for(T element : elementsToAdd) {
-			if (this.contains(element) || this.intersects(element)) {
+			if (this.contains(element.getShape()) || this.intersects(element.getShape())) {
 				elementsWithinQuad.add(element);
 			}
 		}
@@ -150,7 +151,7 @@ public class RegionQuadTree<T extends CollisionBox> extends PointQuadTree<T> {
 		if (element == null)
 			return false;
 
-		if (!this.intersects(element) && !this.contains(element)) {
+		if (!this.intersects(element.getShape()) && !this.contains(element.getShape())) {
 			return false;
 		}
 		clearTotalElementsCache();
@@ -166,16 +167,17 @@ public class RegionQuadTree<T extends CollisionBox> extends PointQuadTree<T> {
 
 	@Override
 	protected boolean addElementToChild(T element) {
-		if (topLeft.contains(element)) {
+		Shape shape = element.getShape();
+		if (topLeft.contains(shape)) {
 			return topLeft.add(element);
 		}
-		if (topRight.contains(element)) {
+		if (topRight.contains(shape)) {
 			return topRight.add(element);
 		}
-		if (bottomLeft.contains(element)) {
+		if (bottomLeft.contains(shape)) {
 			return bottomLeft.add(element);
 		}
-		if (bottomRight.contains(element)) {
+		if (bottomRight.contains(shape)) {
 			return bottomRight.add(element);
 		}
 		return false;
@@ -206,7 +208,7 @@ public class RegionQuadTree<T extends CollisionBox> extends PointQuadTree<T> {
 		if (element == null)
 			return false;
 
-		if (!this.intersects(element) && !this.contains(element)) {
+		if (!this.intersects(element.getShape()) && !this.contains(element.getShape())) {
 			return false;
 		}
 		clearTotalElementsCache();
@@ -259,7 +261,7 @@ public class RegionQuadTree<T extends CollisionBox> extends PointQuadTree<T> {
 			T element = elements.get(i);
 			if (element == null)
 				continue;
-			if (parallelogram.contains(element) || parallelogram.intersects(element)) {
+			if (parallelogram.contains(element.getShape()) || parallelogram.intersects(element.getShape())) {
 				result.add(element);
 			}
 		}
@@ -364,7 +366,7 @@ public class RegionQuadTree<T extends CollisionBox> extends PointQuadTree<T> {
 
 	@Override
 	public void positionChanged(T moved) {
-		if (this.contains(moved))
+		if (this.contains(moved.getShape()))
 			return;
 
 		removeElement(moved);

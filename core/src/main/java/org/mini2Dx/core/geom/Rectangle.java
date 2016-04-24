@@ -56,6 +56,21 @@ public class Rectangle extends Shape implements
 		polygon = new Polygon(determineVertices(x, y, width, height));
 	}
 	
+	/**
+	 * Constructs a new {@link Rectangle} as a copy of another
+	 * @param rectangle The {@link Rectangle} to copy
+	 */
+	public Rectangle(Rectangle rectangle) {
+		this.width = rectangle.getWidth();
+		this.height = rectangle.getHeight();
+		this.polygon = (Polygon) rectangle.polygon.copy();
+	}
+	
+	@Override
+	public Shape copy() {
+		return new Rectangle(this);
+	}
+	
 	private Vector2 [] determineVertices(float x, float y, float width, float height) {
 		Vector2 topLeft = new Vector2(x, y);
 		Vector2 topRight = new Vector2(x + width, y);
@@ -84,7 +99,6 @@ public class Rectangle extends Shape implements
 		return polygon.contains(shape);
 	}
 	
-	@Override
 	public boolean contains(Parallelogram parallelogram) {
 		if(tmp == null) {
 			tmp = new Rectangle(parallelogram.getX(),
@@ -151,7 +165,6 @@ public class Rectangle extends Shape implements
 		return xAxisOverlaps && yAxisOverlaps;
 	}
 	
-	@Override
 	public boolean intersects(Parallelogram parallelogram) {
 		if(tmp == null) {
 			tmp = new Rectangle(parallelogram.getX(),

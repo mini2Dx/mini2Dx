@@ -22,6 +22,7 @@ import org.mini2Dx.core.engine.SizeChangeListener;
 import org.mini2Dx.core.engine.Sizeable;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Circle;
+import org.mini2Dx.core.geom.Shape;
 
 import com.badlogic.gdx.math.MathUtils;
 
@@ -31,7 +32,7 @@ import com.badlogic.gdx.math.MathUtils;
  * appropriate rendering coordinates after interpolating between the previous
  * and current position.
  */
-public class CollisionCircle extends Circle implements Positionable, Sizeable {
+public class CollisionCircle extends Circle implements CollisionShape {
 	
 	private final int id;
 	private final ReadWriteLock positionChangeListenerLock;
@@ -282,5 +283,10 @@ public class CollisionCircle extends Circle implements Positionable, Sizeable {
 	@Override
 	public float getHeight() {
 		return getRadius() * 2f;
+	}
+	
+	@Override
+	public Shape getShape() {
+		return this;
 	}
 }

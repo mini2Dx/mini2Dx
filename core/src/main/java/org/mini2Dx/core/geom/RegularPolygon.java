@@ -50,6 +50,22 @@ public class RegularPolygon extends Shape {
 		setRadius(radius);
 	}
 	
+	/**
+	 * Constructs a new {@link RegularPolygon} as a copy of another
+	 * @param regularPolygon The {@link RegularPolygon} to copy
+	 */
+	public RegularPolygon(RegularPolygon regularPolygon) {
+		this.center = regularPolygon.center.copy();
+		this.rotationSymmetry = regularPolygon.rotationSymmetry;
+		this.totalSides = regularPolygon.totalSides;
+		setRadius(regularPolygon.getRadius());
+	}
+	
+	@Override
+	public Shape copy() {
+		return new RegularPolygon(this);
+	}
+	
 	@Override
 	public void draw(Graphics g) {
 		polygon.draw(g);

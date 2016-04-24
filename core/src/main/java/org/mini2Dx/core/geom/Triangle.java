@@ -24,12 +24,40 @@ public class Triangle extends Shape {
 
 	final Polygon polygon;
 
-	public Triangle(Point p1, Point p2, Point p3) {
-		this(p1.getX(), p1.getY(), p2.getX(), p2.getY(), p3.getX(), p3.getY());
+	/**
+	 * Constructor
+	 * @param v1 The first point in the {@link Triangle}
+	 * @param v2 The second point in the {@link Triangle}
+	 * @param v3 The third point in the {@link Triangle}
+	 */
+	public Triangle(Vector2 v1, Vector2 v2, Vector2 v3) {
+		this(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
 	}
 
+	/**
+	 * Constructor
+	 * @param x1 The first x coordinate in the {@link Triangle}
+	 * @param y1 The first y coordinate in the {@link Triangle}
+	 * @param x2 The second x coordinate in the {@link Triangle}
+	 * @param y2 The second y coordinate in the {@link Triangle}
+	 * @param x3 The third x coordinate in the {@link Triangle}
+	 * @param y3 The third y coordinate in the {@link Triangle}
+	 */
 	public Triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
 		polygon = new Polygon(new float[] { x1, y1, x2, y2, x3, y3 });
+	}
+	
+	/**
+	 * Constructs a {@link Triangle} as a copy of another
+	 * @param triangle The {@link Triangle} to copy
+	 */
+	public Triangle(Triangle triangle) {
+		polygon = (Polygon) triangle.polygon.copy();
+	}
+	
+	@Override
+	public Shape copy() {
+		return new Triangle(this);
 	}
 	
 	@Override

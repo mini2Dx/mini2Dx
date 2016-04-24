@@ -68,6 +68,43 @@ public class Polygon extends Shape {
 	public Polygon(Vector2[] points) {
 		this(toVertices(points));
 	}
+	
+	public Polygon lerp(Polygon target, float alpha) {
+		final float inverseAlpha = 1.0f - alpha;
+		
+		float [] currentVertices = polygon.getTransformedVertices();
+		float [] targetVertices = target.polygon.getTransformedVertices();
+		
+		if(currentVertices.length != targetVertices.length) {
+			throw new MdxException("Cannot lerp polygons with different vertice amounts");
+		}
+		
+		if(currentVertices[0] != targetVertices[0] || currentVertices[1] != targetVertices[1]) {
+			for(int i = 0; i < currentVertices.length; i += 2) {
+				currentVertices[i] = (currentVertices[i] * inverseAlpha) + (targetVertices[i] * alpha);
+				currentVertices[i + 1] = (currentVertices[i + 1] * inverseAlpha) + (targetVertices[i + 1] * alpha);
+			}
+			
+			float rotation = (trackedRotation * inverseAlpha) + (target.getRotation() * alpha);
+			
+			polygon.setOrigin(currentVertices[0], currentVertices[1]);
+			polygon.setRotation(rotation - trackedRotation);
+			polygon.setVertices(currentVertices);
+			trackedRotation = rotation;
+		} else {
+			float rotation = (trackedRotation * inverseAlpha) + (target.getRotation() * alpha);
+			polygon.setRotation(rotation - trackedRotation);
+			trackedRotation = rotation;
+		}
+		return this;
+	}
+	
+	@Override
+	public Shape copy() {
+		Polygon result = new Polygon(polygon.getTransformedVertices());
+		result.trackedRotation = trackedRotation;
+		return result;
+	}
 
 	private void clearTotalSidesCache() {
 		totalSidesCache = -1;
@@ -420,7 +457,11 @@ public class Polygon extends Shape {
 	}
 
 	public void setVertices(float[] vertices) {
+		polygon.setOrigin(vertices[0], vertices[1]);
+		polygon.setRotation(0f);
 		polygon.setVertices(vertices);
+		trackedRotation = 0f;
+		
 		calculateMinMaxXY(vertices);
 		computeTriangles(vertices);
 		clearTotalSidesCache();
@@ -618,6 +659,17 @@ public class Polygon extends Shape {
 
 		calculateMinMaxXY(vertices);
 		computeTriangles(vertices);
+	}
+	
+	public void set(Polygon polygon) {
+		this.polygon.setOrigin(polygon.polygon.getOriginX(), polygon.polygon.getOriginY());
+		this.polygon.setVertices(polygon.polygon.getTransformedVertices());
+		this.polygon.setRotation(0f);
+		this.trackedRotation = polygon.trackedRotation;
+		
+		calculateMinMaxXY(this.polygon.getTransformedVertices());
+		computeTriangles(this.polygon.getTransformedVertices());
+		clearTotalSidesCache();
 	}
 
 	@Override

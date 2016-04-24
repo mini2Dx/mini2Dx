@@ -111,13 +111,13 @@ public interface Parallelogram {
 	public boolean intersectsLineSegment(LineSegment lineSegment);
 
 	/**
-	 * Returns if this shape intersects a specified {@link Parallelogram}
+	 * Returns if this shape intersects a specified {@link Shape}
 	 * 
 	 * @param parallelogram
-	 *            The {@link Parallelogram} to test for intersection
+	 *            The {@link Shape} to test for intersection
 	 * @return True if an intersection occurs
 	 */
-	public boolean intersects(Parallelogram parallelogram);
+	public boolean intersects(Shape shape);
 
 	/**
 	 * Returns if this shape intersects a specified rectangle dimensions
@@ -135,13 +135,13 @@ public interface Parallelogram {
 	public boolean intersects(float x, float y, float width, float height);
 
 	/**
-	 * Returns if the specified {@link Parallelogram} is contained within this
+	 * Returns if the specified {@link Shape} is contained within this
 	 * one
 	 * 
-	 * @param parallelogram The {@link Parallelogram} to test
+	 * @param parallelogram The {@link Shape} to test
 	 * @return True if it is within this shape
 	 */
-	public boolean contains(Parallelogram parallelogram);
+	public boolean contains(Shape shape);
 	
 	
 	/**

@@ -164,4 +164,8 @@ public class Point extends Vector2 {
 	public Vector2 sub(Vector2 v) {
 		return sub(v.x, v.y);
 	}
+	
+	public Point copy() {
+		return new Point(x, y);
+	}
 }

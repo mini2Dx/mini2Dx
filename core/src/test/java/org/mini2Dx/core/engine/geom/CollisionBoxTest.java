@@ -29,12 +29,12 @@ import org.mini2Dx.core.geom.Point;
  */
 public class CollisionBoxTest implements PositionChangeListener<CollisionBox>, SizeChangeListener<CollisionBox> {
 	private CollisionBox rectangle1, rectangle2;
-	private boolean positionNotificationReceived, sizeNotificationReceived;
+	private int positionNotificationReceived, sizeNotificationReceived;
 
 	@Before
 	public void setup() {
-		positionNotificationReceived = false;
-		sizeNotificationReceived = false;
+		positionNotificationReceived = 0;
+		sizeNotificationReceived = 0;
 	}
 
 	@Test
@@ -52,7 +52,7 @@ public class CollisionBoxTest implements PositionChangeListener<CollisionBox>, S
 		Assert.assertEquals(0f, rectangle1.getY());
 		Assert.assertEquals(1f, rectangle1.getWidth());
 		Assert.assertEquals(1f, rectangle1.getHeight());
-		Assert.assertEquals(false, positionNotificationReceived);
+		Assert.assertEquals(0, positionNotificationReceived);
 	}
 
 	@Test
@@ -63,7 +63,7 @@ public class CollisionBoxTest implements PositionChangeListener<CollisionBox>, S
 		Assert.assertEquals(100f, rectangle1.getY());
 		Assert.assertEquals(50f, rectangle1.getWidth());
 		Assert.assertEquals(50f, rectangle1.getHeight());
-		Assert.assertEquals(false, positionNotificationReceived);
+		Assert.assertEquals(0, positionNotificationReceived);
 	}
 
 	@Test
@@ -90,8 +90,8 @@ public class CollisionBoxTest implements PositionChangeListener<CollisionBox>, S
 		Assert.assertEquals(100f, rectangle1.getY());
 		Assert.assertEquals(50f, rectangle1.getWidth());
 		Assert.assertEquals(50f, rectangle1.getHeight());
-		Assert.assertEquals(true, positionNotificationReceived);
-		Assert.assertEquals(false, sizeNotificationReceived);
+		Assert.assertEquals(1, positionNotificationReceived);
+		Assert.assertEquals(0, sizeNotificationReceived);
 	}
 
 	@Test
@@ -104,8 +104,8 @@ public class CollisionBoxTest implements PositionChangeListener<CollisionBox>, S
 		Assert.assertEquals(200f, rectangle1.getY());
 		Assert.assertEquals(50f, rectangle1.getWidth());
 		Assert.assertEquals(50f, rectangle1.getHeight());
-		Assert.assertEquals(true, positionNotificationReceived);
-		Assert.assertEquals(false, sizeNotificationReceived);
+		Assert.assertEquals(1, positionNotificationReceived);
+		Assert.assertEquals(0, sizeNotificationReceived);
 	}
 
 	@Test
@@ -118,8 +118,8 @@ public class CollisionBoxTest implements PositionChangeListener<CollisionBox>, S
 		Assert.assertEquals(100f, rectangle1.getY());
 		Assert.assertEquals(100f, rectangle1.getWidth());
 		Assert.assertEquals(50f, rectangle1.getHeight());
-		Assert.assertEquals(false, positionNotificationReceived);
-		Assert.assertEquals(true, sizeNotificationReceived);
+		Assert.assertEquals(0, positionNotificationReceived);
+		Assert.assertEquals(1, sizeNotificationReceived);
 	}
 
 	@Test
@@ -132,8 +132,8 @@ public class CollisionBoxTest implements PositionChangeListener<CollisionBox>, S
 		Assert.assertEquals(100f, rectangle1.getY());
 		Assert.assertEquals(50f, rectangle1.getWidth());
 		Assert.assertEquals(100f, rectangle1.getHeight());
-		Assert.assertEquals(false, positionNotificationReceived);
-		Assert.assertEquals(true, sizeNotificationReceived);
+		Assert.assertEquals(0, positionNotificationReceived);
+		Assert.assertEquals(1, sizeNotificationReceived);
 	}
 
 	@Test
@@ -147,30 +147,24 @@ public class CollisionBoxTest implements PositionChangeListener<CollisionBox>, S
 		Assert.assertEquals(0f, rectangle1.getY());
 		Assert.assertEquals(50f, rectangle1.getWidth());
 		Assert.assertEquals(50f, rectangle1.getHeight());
-		Assert.assertEquals(true, positionNotificationReceived);
-		Assert.assertEquals(false, sizeNotificationReceived);
-		
-		positionNotificationReceived = false;
-		sizeNotificationReceived = false;
+		Assert.assertEquals(1, positionNotificationReceived);
+		Assert.assertEquals(0, sizeNotificationReceived);
 		
 		rectangle1.set(0f, 0f, 100f, 100f);
 		Assert.assertEquals(0f, rectangle1.getX());
 		Assert.assertEquals(0f, rectangle1.getY());
 		Assert.assertEquals(100f, rectangle1.getWidth());
 		Assert.assertEquals(100f, rectangle1.getHeight());
-		Assert.assertEquals(false, positionNotificationReceived);
-		Assert.assertEquals(true, sizeNotificationReceived);
-		
-		positionNotificationReceived = false;
-		sizeNotificationReceived = false;
+		Assert.assertEquals(1, positionNotificationReceived);
+		Assert.assertEquals(1, sizeNotificationReceived);
 		
 		rectangle1.set(50f, 50f, 150f, 150f);
 		Assert.assertEquals(50f, rectangle1.getX());
 		Assert.assertEquals(50f, rectangle1.getY());
 		Assert.assertEquals(150f, rectangle1.getWidth());
 		Assert.assertEquals(150f, rectangle1.getHeight());
-		Assert.assertEquals(true, positionNotificationReceived);
-		Assert.assertEquals(true, sizeNotificationReceived);
+		Assert.assertEquals(2, positionNotificationReceived);
+		Assert.assertEquals(2, sizeNotificationReceived);
 	}
 
 	@Test
@@ -329,11 +323,11 @@ public class CollisionBoxTest implements PositionChangeListener<CollisionBox>, S
 
 	@Override
 	public void positionChanged(CollisionBox moved) {
-		positionNotificationReceived = true;
+		positionNotificationReceived++;
 	}
 
 	@Override
 	public void sizeChanged(CollisionBox changed) {
-		sizeNotificationReceived = true;
+		sizeNotificationReceived++;
 	}
 }

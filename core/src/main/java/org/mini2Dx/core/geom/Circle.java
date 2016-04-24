@@ -61,6 +61,11 @@ public class Circle extends Shape {
 		determineBoundingBox();
 	}
 	
+	@Override
+	public Shape copy() {
+		return new Circle(this);
+	}
+	
 	private void determineBoundingBox() {
 		float diameter = circle.radius * circle.radius;
 		boundingBox.set(getMinX(), getMinY(), diameter, diameter);

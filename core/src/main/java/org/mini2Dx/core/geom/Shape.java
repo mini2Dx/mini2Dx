@@ -20,6 +20,11 @@ import com.badlogic.gdx.math.Vector2;
  * Base class for shapes
  */
 public abstract class Shape {
+	/**
+	 * Returns an exact copy of this {@link Shape}
+	 * @return A copy (new) instance of this {@link Shape}
+	 */
+	public abstract Shape copy();
 
 	/**
 	 * Returns if a set of coordinates are contained inside this {@link Shape}

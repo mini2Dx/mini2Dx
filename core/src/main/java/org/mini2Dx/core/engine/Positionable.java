@@ -18,9 +18,11 @@ package org.mini2Dx.core.engine;
 public interface Positionable extends Updatable {
 	/**
 	 * Returns the unique id of this object
+	 * 
 	 * @return
 	 */
 	public int getId();
+
 	/**
 	 * Returns the x coordinate of this object
 	 * 
@@ -34,6 +36,18 @@ public interface Positionable extends Updatable {
 	 * @return 0 by default
 	 */
 	public float getY();
+	
+	/**
+	 * Returns the render x coordinate of this object
+	 * @return
+	 */
+	public int getRenderX();
+	
+	/**
+	 * Returns the render y coordinate of this object
+	 * @return
+	 */
+	public int getRenderY();
 
 	/**
 	 * Returns this distance between this object's x,y coordinates and the
@@ -52,8 +66,7 @@ public interface Positionable extends Updatable {
 	 * @param listener
 	 *            The {@link PositionChangeListener} to add
 	 */
-	public <T extends Positionable> void addPostionChangeListener(
-			PositionChangeListener<T> listener);
+	public <T extends Positionable> void addPostionChangeListener(PositionChangeListener<T> listener);
 
 	/**
 	 * Removes a {@link PositionChangeListener} to stop it being notified of
@@ -62,6 +75,5 @@ public interface Positionable extends Updatable {
 	 * @param listener
 	 *            The {@link PositionChangeListener} to remove
 	 */
-	public <T extends Positionable> void removePositionChangeListener(
-			PositionChangeListener<T> listener);
+	public <T extends Positionable> void removePositionChangeListener(PositionChangeListener<T> listener);
 }

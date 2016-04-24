@@ -22,6 +22,7 @@ import org.mini2Dx.core.engine.Sizeable;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Rectangle;
+import org.mini2Dx.core.geom.Shape;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -32,7 +33,7 @@ import com.badlogic.gdx.math.Vector2;
  * appropriate rendering coordinates after interpolating between the previous
  * and current position.
  */
-public class CollisionBox extends Rectangle implements Positionable, Sizeable {
+public class CollisionBox extends Rectangle implements CollisionShape {
 	private static final long serialVersionUID = -8217730724587578266L;
 
 	private final int id;
@@ -397,6 +398,11 @@ public class CollisionBox extends Rectangle implements Positionable, Sizeable {
 
 	public int getId() {
 		return id;
+	}
+	
+	@Override
+	public Shape getShape() {
+		return this;
 	}
 	
 	@Override
