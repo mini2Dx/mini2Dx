@@ -62,6 +62,11 @@ public class CollisionPolygon extends Polygon implements CollisionShape {
 		renderX = MathUtils.round(renderPolygon.getX());
 		renderY = MathUtils.round(renderPolygon.getY());
 	}
+	
+	@Override
+	public void preUpdate() {
+		previousPolygon.set(this);
+	}
 
 	@Override
 	public int getId() {

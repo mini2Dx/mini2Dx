@@ -23,6 +23,12 @@ import com.badlogic.gdx.math.Vector2;
  */
 public interface CollisionShape extends Positionable, Sizeable {
 	/**
+	 * This method needs to be called at the start of each frame
+	 * before any changes are made to this object
+	 */
+	public void preUpdate();
+	
+	/**
 	 * Sets the current x and y coordinate to the specified x and y and force updates the
 	 * rendering position to match
 	 * 

@@ -78,10 +78,7 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 		renderHeight = MathUtils.round(renderRectangle.getHeight());
 	}
 	
-	/**
-	 * This method needs to be called at the start of each frame
-	 * before any changes are made to this object
-	 */
+	@Override
 	public void preUpdate() {
 		previousRectangle.set(this);
 	}

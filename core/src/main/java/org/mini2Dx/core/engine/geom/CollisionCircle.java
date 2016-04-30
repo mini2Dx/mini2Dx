@@ -81,10 +81,7 @@ public class CollisionCircle extends Circle implements CollisionShape {
 		renderY = MathUtils.round(renderCircle.getY());
 	}
 	
-	/**
-	 * This method needs to be called at the start of each frame
-	 * before any changes are made to this object
-	 */
+	@Override
 	public void preUpdate() {
 		previousCircle.set(this);
 	}
