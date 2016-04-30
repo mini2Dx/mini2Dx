@@ -216,6 +216,18 @@ public class CollisionPolygon extends Polygon implements CollisionShape {
 	}
 	
 	@Override
+	public void forceTo(float x, float y) {
+		boolean notifyPositionListeners = x != getX() || y != getY();
+		super.set(x, y);
+		previousPolygon.set(this);
+		renderPolygon.set(previousPolygon);
+		
+		if(notifyPositionListeners) {
+			notifyPositionChangeListeners();
+		}
+	}
+	
+	@Override
 	public void setRotation(float degrees) {
 		super.setRotation(degrees);
 		notifyPositionChangeListeners();

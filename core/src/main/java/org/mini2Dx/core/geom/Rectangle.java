@@ -11,12 +11,9 @@
  */
 package org.mini2Dx.core.geom;
 
-import org.mini2Dx.core.exception.MdxException;
-import org.mini2Dx.core.exception.NotYetImplementedException;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.util.EdgeIterator;
 
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 
 /**

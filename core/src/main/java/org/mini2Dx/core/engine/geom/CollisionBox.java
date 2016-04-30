@@ -215,15 +215,7 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 		return getDistanceTo(positionable.getX(), positionable.getY());
 	}
 
-	/**
-	 * Sets the current x and y coordinate to the specified x and y and force updates the
-	 * rendering bounds to match
-	 * 
-	 * @param x
-	 *            The x coordinate to set
-	 * @param y
-	 *            The y coordinate to set
-	 */
+	@Override
 	public void forceTo(float x, float y) {
 		forceTo(x, y, getWidth(), getHeight());
 	}

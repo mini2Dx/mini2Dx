@@ -200,15 +200,7 @@ public class CollisionCircle extends Circle implements CollisionShape {
 		sizeChangeListenerLock.readLock().unlock();
 	}
 	
-	/**
-	 * Sets the current x and y coordinate to the specified x and y and force updates the
-	 * rendering position to match
-	 * 
-	 * @param x
-	 *            The x coordinate to set
-	 * @param y
-	 *            The y coordinate to set
-	 */
+	@Override
 	public void forceTo(float x, float y) {
 		boolean notifyPositionListeners = x != getX() || y != getY();
 		

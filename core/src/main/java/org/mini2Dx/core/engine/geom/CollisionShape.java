@@ -19,17 +19,78 @@ import org.mini2Dx.core.geom.Shape;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- *
+ * Common interface for collision detection {@link Shape}s
  */
 public interface CollisionShape extends Positionable, Sizeable {
+	/**
+	 * Sets the current x and y coordinate to the specified x and y and force updates the
+	 * rendering position to match
+	 * 
+	 * @param x
+	 *            The x coordinate to set
+	 * @param y
+	 *            The y coordinate to set
+	 */
+	public void forceTo(float x, float y);
 
+	/**
+	 * Returns if this {@link CollisionShape} contains the specified {@link Shape}
+	 * @param shape The {@link Shape} to check
+	 * @return True if this {@link Shape} is inside this {@link CollisionShape}
+	 */
 	public boolean contains(Shape shape);
 	
+	/**
+	 * Returns if a {@link Vector2} is contained inside this {@link CollisionShape}
+	 * 
+	 * @param point
+	 *            The {@link Vector2} to check
+	 * @return True if this {@link CollisionShape} contains the specified {@link Vector2}
+	 */
 	public boolean contains(Vector2 point);
 	
+	/**
+	 * Returns if this {@link CollisionShape} intersects a {@link Shape}
+	 * @param shape The {@link Shape} to check
+	 * @return True if this {@link CollisionShape} intersects the specified {@link Shape}
+	 */
 	public boolean intersects(Shape shape);
 	
+	/**
+	 * Returns if this {@link CollisionShape} intersects the specified
+	 * {@link LineSegment}
+	 * 
+	 * @param lineSegment
+	 *            The {@link LineSegment} to check
+	 * @return True if this {@link CollisionShape} intersects the {@link LineSegment}
+	 */
 	public boolean intersects(LineSegment lineSegment);
 	
+	/**
+	 * Returns if this {@link CollisionShape} intersects a line segment
+	 * 
+	 * @param pointA
+	 *            The first point in the line segment
+	 * @param pointB
+	 *            The second point in the line segment
+	 * @return True if this {@link CollisionShape} intersects the line segment
+	 */
+	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB);
+
+	/**
+	 * Returns if this {@link CollisionShape} intersects a line segment
+	 * 
+	 * @param x1 The x coordinate of the first point
+	 * @param y1 The y coordinate of the first point
+	 * @param x2 The x coordinate of the second point
+	 * @param y2 The y coordinate of the second point
+	 * @return True if this {@link CollisionShape} intersects the line segment
+	 */
+	public boolean intersectsLineSegment(float x1, float y1, float x2, float y2);
+	
+	/**
+	 * Returns the underlying {@link Shape} instance
+	 * @return
+	 */
 	public Shape getShape();
 }
