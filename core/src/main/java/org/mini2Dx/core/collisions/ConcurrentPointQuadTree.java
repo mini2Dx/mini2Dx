@@ -22,6 +22,7 @@ import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Parallelogram;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Rectangle;
+import org.mini2Dx.core.geom.Shape;
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.graphics.Color;
@@ -470,23 +471,25 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		return result;
 	}
 
-	public List<T> getElementsWithinRegion(Parallelogram parallelogram) {
+	@Override
+	public List<T> getElementsWithinArea(Shape area) {
 		List<T> result = new ArrayList<T>();
-		getElementsWithinRegion(result, parallelogram);
+		getElementsWithinArea(result, area);
 		return result;
 	}
-
-	public void getElementsWithinRegion(Collection<T> result, Parallelogram parallelogram) {
+	
+	@Override
+	public void getElementsWithinArea(Collection<T> result, Shape area) {
 		lock.readLock().lock();
 		if (topLeft != null) {
-			topLeft.getElementsWithinRegion(result, parallelogram);
-			topRight.getElementsWithinRegion(result, parallelogram);
-			bottomLeft.getElementsWithinRegion(result, parallelogram);
-			bottomRight.getElementsWithinRegion(result, parallelogram);
+			topLeft.getElementsWithinArea(result, area);
+			topRight.getElementsWithinArea(result, area);
+			bottomLeft.getElementsWithinArea(result, area);
+			bottomRight.getElementsWithinArea(result, area);
 		} else {
 			for (int i = elements.size() - 1; i >= 0; i--) {
 				T element = elements.get(i);
-				if (element != null && parallelogram.contains(element.getX(), element.getY())) {
+				if (element != null && area.contains(element.getX(), element.getY())) {
 					result.add(element);
 				}
 			}

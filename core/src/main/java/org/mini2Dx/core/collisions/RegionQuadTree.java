@@ -239,29 +239,29 @@ public class RegionQuadTree<T extends CollisionShape> extends PointQuadTree<T> {
 	}
 	
 	@Override
-	public List<T> getElementsWithinRegion(Parallelogram parallelogram) {
+	public List<T> getElementsWithinArea(Shape area) {
 		List<T> result = new ArrayList<T>();
-		getElementsWithinRegion(result, parallelogram);
+		getElementsWithinArea(result, area);
 		return result;
 	}
 
 	@Override
-	public void getElementsWithinRegion(Collection<T> result, Parallelogram parallelogram) {
+	public void getElementsWithinArea(Collection<T> result, Shape area) {
 		if (topLeft != null) {
-			if (topLeft.contains(parallelogram) || topLeft.intersects(parallelogram))
-				topLeft.getElementsWithinRegion(result, parallelogram);
-			if (topRight.contains(parallelogram) || topRight.intersects(parallelogram))
-				topRight.getElementsWithinRegion(result, parallelogram);
-			if (bottomLeft.contains(parallelogram) || bottomLeft.intersects(parallelogram))
-				bottomLeft.getElementsWithinRegion(result, parallelogram);
-			if (bottomRight.contains(parallelogram) || bottomRight.intersects(parallelogram))
-				bottomRight.getElementsWithinRegion(result, parallelogram);
+			if (topLeft.contains(area) || topLeft.intersects(area))
+				topLeft.getElementsWithinArea(result, area);
+			if (topRight.contains(area) || topRight.intersects(area))
+				topRight.getElementsWithinArea(result, area);
+			if (bottomLeft.contains(area) || bottomLeft.intersects(area))
+				bottomLeft.getElementsWithinArea(result, area);
+			if (bottomRight.contains(area) || bottomRight.intersects(area))
+				bottomRight.getElementsWithinArea(result, area);
 		}
 		for (int i = elements.size() - 1; i >= 0; i--) {
 			T element = elements.get(i);
 			if (element == null)
 				continue;
-			if (parallelogram.contains(element.getShape()) || parallelogram.intersects(element.getShape())) {
+			if (area.contains(element.getShape()) || area.intersects(element.getShape())) {
 				result.add(element);
 			}
 		}

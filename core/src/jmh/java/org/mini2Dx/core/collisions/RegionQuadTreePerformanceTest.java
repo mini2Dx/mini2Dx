@@ -139,20 +139,20 @@ public class RegionQuadTreePerformanceTest {
 	@BenchmarkMode(value=Mode.AverageTime)
 	@Group("RegionQuadTree_Empty")
 	public void testEmptyRegionQuadTreeIntersectingRectangle(TestState state) {
-		state.emptyQuadTree.getElementsWithinRegion(state.rectangle);
+		state.emptyQuadTree.getElementsWithinArea(state.rectangle);
 	}
 	
 	@Benchmark
 	@BenchmarkMode(value=Mode.AverageTime)
 	@Group("RegionQuadTree_Basic")
 	public void testBasicRegionQuadTreeIntersectingRectangle(TestState state) {
-		state.basicQuadTree.getElementsWithinRegion(state.rectangle);
+		state.basicQuadTree.getElementsWithinArea(state.rectangle);
 	}
 	
 	@Benchmark
 	@BenchmarkMode(value=Mode.AverageTime)
 	@Group("RegionQuadTree_Complex")
 	public void testComplexRegionQuadTreeIntersectingRectangle(TestState state) {
-		state.complexQuadTree.getElementsWithinRegion(state.rectangle);
+		state.complexQuadTree.getElementsWithinArea(state.rectangle);
 	}
 }

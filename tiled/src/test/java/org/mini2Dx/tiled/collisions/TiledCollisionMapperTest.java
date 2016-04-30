@@ -53,12 +53,13 @@ public class TiledCollisionMapperTest {
 	public void testMapCollisionsByLayer() {
 		int collisionLayerIndex = tiledMap.getLayerIndex("Collisions");
 		QuadTree<CollisionBox> quadTree = new PointQuadTree<CollisionBox>(8, 0f, 0f,
-				tiledMap.getWidth() * tiledMap.getTileWidth(),
+				tiledMap.getWidth() * tiledMap.getTileWidth(), tiledMap.getHeight() * tiledMap.getTileHeight());
+		Rectangle area = new Rectangle(0f, 0f, tiledMap.getWidth() * tiledMap.getTileWidth(),
 				tiledMap.getHeight() * tiledMap.getTileHeight());
 
 		collisionBoxMapper.mapCollisionsByLayer(quadTree, tiledMap, collisionLayerIndex);
 
-		List<CollisionBox> collisions = quadTree.getElementsWithinRegion(quadTree);
+		List<CollisionBox> collisions = quadTree.getElementsWithinArea(area);
 		Assert.assertEquals(7, collisions.size());
 
 		assertCollisionAt(6, 3, quadTree, tiledMap);
@@ -69,14 +70,14 @@ public class TiledCollisionMapperTest {
 		assertCollisionAt(1, 6, quadTree, tiledMap);
 		assertCollisionAt(2, 6, quadTree, tiledMap);
 	}
-	
+
 	@Test
 	public void testMapCollisionsByNonExistingLayer() {
 		List<CollisionBox> result = new ArrayList<CollisionBox>();
 		collisionBoxMapper.mapCollisionsByLayer(result, tiledMap, "NonExistingLayer");
 		Assert.assertEquals(0, result.size());
 	}
-	
+
 	@Test
 	public void testMapCollisionsByNonExistantObjectGroup() {
 		List<CollisionBox> result = new ArrayList<CollisionBox>();
@@ -86,11 +87,13 @@ public class TiledCollisionMapperTest {
 
 	@Test
 	public void testMapCollisionsByObjectGroup() {
-		QuadTree<CollisionBox> quadTree = new PointQuadTree<CollisionBox>(8, 0f, 0f, tiledMap.getWidth() * tiledMap.getTileWidth(),
-				tiledMap.getHeight() * tiledMap.getTileHeight());
+		QuadTree<CollisionBox> quadTree = new PointQuadTree<CollisionBox>(8, 0f, 0f,
+				tiledMap.getWidth() * tiledMap.getTileWidth(), tiledMap.getHeight() * tiledMap.getTileHeight());
 		collisionBoxMapper.mapCollisionsByObjectGroup(quadTree, tiledMap, "Objects");
+		Rectangle area = new Rectangle(0f, 0f, tiledMap.getWidth() * tiledMap.getTileWidth(),
+				tiledMap.getHeight() * tiledMap.getTileHeight());
 
-		List<CollisionBox> collisions = quadTree.getElementsWithinRegion(quadTree);
+		List<CollisionBox> collisions = quadTree.getElementsWithinArea(area);
 		Assert.assertEquals(1, collisions.size());
 		Assert.assertEquals(32f, collisions.get(0).getX());
 		Assert.assertEquals(64f, collisions.get(0).getY());
@@ -106,17 +109,17 @@ public class TiledCollisionMapperTest {
 
 		collisionBoxMapper.mapAndMergeCollisionsByLayer(quadTree, tiledMap, collisionLayerIndex);
 
-		List<CollisionBox> collisions = quadTree.getElementsWithinRegion(quadTree);
+		List<CollisionBox> collisions = quadTree.getElementsWithinArea(quadTree);
 		Assert.assertEquals(3, collisions.size());
-		
+
 		CollisionBox collision = getCollisionAt(1, 5, quadTree, tiledMap);
 		Assert.assertEquals(tiledMap.getTileWidth() * 2f, collision.getWidth());
 		Assert.assertEquals(tiledMap.getTileHeight() * 2f, collision.getHeight());
-		
+
 		collision = getCollisionAt(5, 4, quadTree, tiledMap);
 		Assert.assertEquals(tiledMap.getTileWidth() * 2f, collision.getWidth());
 		Assert.assertEquals(tiledMap.getTileHeight() * 1f, collision.getHeight());
-		
+
 		collision = getCollisionAt(6, 3, quadTree, tiledMap);
 		Assert.assertEquals(tiledMap.getTileWidth() * 1f, collision.getWidth());
 		Assert.assertEquals(tiledMap.getTileHeight() * 1f, collision.getHeight());
@@ -127,14 +130,10 @@ public class TiledCollisionMapperTest {
 		int collisionLayerIndex = tiledMap.getLayerIndex("Collisions");
 		byte[][] result = TiledCollisionMapper.mapCollisionsByLayer(tiledMap, collisionLayerIndex);
 
-		byte[][] expected = new byte[][] { 
-				new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-				new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 
-				new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-				new byte[] { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 }, 
-				new byte[] { 0, 0, 0, 0, 0, 1, 1, 0, 0, 0 },
-				new byte[] { 0, 1, 1, 0, 0, 0, 0, 0, 0, 0 }, 
-				new byte[] { 0, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
+		byte[][] expected = new byte[][] { new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+				new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+				new byte[] { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 }, new byte[] { 0, 0, 0, 0, 0, 1, 1, 0, 0, 0 },
+				new byte[] { 0, 1, 1, 0, 0, 0, 0, 0, 0, 0 }, new byte[] { 0, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
 				new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
 
 		for (int x = 0; x < tiledMap.getWidth(); x++) {
@@ -151,14 +150,10 @@ public class TiledCollisionMapperTest {
 		int collisionLayerIndex = tiledMap.getLayerIndex("Collisions");
 		byte[][] result = TiledCollisionMapper.mapCollisionsByLayer(tiledMap, collisionLayerIndex);
 
-		byte[][] expected = new byte[][] { 
-				new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-				new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 
-				new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-				new byte[] { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 }, 
-				new byte[] { 0, 0, 0, 0, 0, 1, 1, 0, 0, 0 },
-				new byte[] { 0, 1, 1, 0, 0, 0, 0, 0, 0, 0 }, 
-				new byte[] { 0, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
+		byte[][] expected = new byte[][] { new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+				new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+				new byte[] { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 }, new byte[] { 0, 0, 0, 0, 0, 1, 1, 0, 0, 0 },
+				new byte[] { 0, 1, 1, 0, 0, 0, 0, 0, 0, 0 }, new byte[] { 0, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
 				new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
 
 		for (int x = 0; x < tiledMap.getWidth(); x++) {
@@ -171,13 +166,14 @@ public class TiledCollisionMapperTest {
 	}
 
 	private void assertCollisionAt(int tileX, int tileY, QuadTree<?> quadTree, TiledMap tiledMap) {
-		List<?> collisions = quadTree.getElementsWithinRegion(new Rectangle(tileX * tiledMap.getTileWidth(),
+		List<?> collisions = quadTree.getElementsWithinArea(new Rectangle(tileX * tiledMap.getTileWidth(),
 				tileY * tiledMap.getTileHeight(), tiledMap.getTileWidth() - 1f, tiledMap.getTileHeight() - 1f));
 		Assert.assertEquals(1, collisions.size());
 	}
 
-	private CollisionBox getCollisionAt(int tileX, int tileY, RegionQuadTree<CollisionBox> quadTree, TiledMap tiledMap) {
-		List<CollisionBox> collisions = quadTree.getElementsWithinRegion(new Rectangle(tileX * tiledMap.getTileWidth(),
+	private CollisionBox getCollisionAt(int tileX, int tileY, RegionQuadTree<CollisionBox> quadTree,
+			TiledMap tiledMap) {
+		List<CollisionBox> collisions = quadTree.getElementsWithinArea(new Rectangle(tileX * tiledMap.getTileWidth(),
 				tileY * tiledMap.getTileHeight(), tiledMap.getTileWidth() - 1f, tiledMap.getTileHeight() - 1f));
 		Assert.assertEquals(1, collisions.size());
 		return collisions.get(0);

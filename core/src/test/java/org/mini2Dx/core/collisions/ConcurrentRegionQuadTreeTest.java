@@ -181,7 +181,7 @@ public class ConcurrentRegionQuadTreeTest {
 		rootQuad.add(box3);
 		rootQuad.add(box4);
 		
-		List<CollisionBox> CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(48, 48, 32, 32));
+		List<CollisionBox> CollisionBoxs = rootQuad.getElementsWithinArea(new CollisionBox(48, 48, 32, 32));
 		Assert.assertEquals(0, CollisionBoxs.size());
 		
 		CollisionBox CollisionBox5 = new CollisionBox(24, 24, 2, 2);
@@ -192,26 +192,26 @@ public class ConcurrentRegionQuadTreeTest {
 		rootQuad.add(CollisionBox6);
 		rootQuad.add(CollisionBox7);
 		
-		CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(0, 0, 128, 128));
+		CollisionBoxs = rootQuad.getElementsWithinArea(new CollisionBox(0, 0, 128, 128));
 		Assert.assertEquals(rootQuad.getElements().size(), CollisionBoxs.size());
 		
-		CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(33, 33, 32, 32));
+		CollisionBoxs = rootQuad.getElementsWithinArea(new CollisionBox(33, 33, 32, 32));
 		Assert.assertEquals(1, CollisionBoxs.size());
 		Assert.assertEquals(CollisionBox6, CollisionBoxs.get(0));
 		
-		CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(0, 0, 64, 64));
+		CollisionBoxs = rootQuad.getElementsWithinArea(new CollisionBox(0, 0, 64, 64));
 		Assert.assertEquals(4, CollisionBoxs.size());
 		Assert.assertEquals(true, CollisionBoxs.contains(box1));
 		Assert.assertEquals(true, CollisionBoxs.contains(CollisionBox5));
 		Assert.assertEquals(true, CollisionBoxs.contains(CollisionBox6));
 		Assert.assertEquals(true, CollisionBoxs.contains(CollisionBox7));
 		
-		CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(16, 16, 24, 24));
+		CollisionBoxs = rootQuad.getElementsWithinArea(new CollisionBox(16, 16, 24, 24));
 		Assert.assertEquals(2, CollisionBoxs.size());
 		Assert.assertEquals(true, CollisionBoxs.contains(box1));
 		Assert.assertEquals(true, CollisionBoxs.contains(CollisionBox5));
 		
-		CollisionBoxs = rootQuad.getElementsWithinRegion(new CollisionBox(12, 40, 48, 8));
+		CollisionBoxs = rootQuad.getElementsWithinArea(new CollisionBox(12, 40, 48, 8));
 		Assert.assertEquals(2, CollisionBoxs.size());
 		Assert.assertEquals(true, CollisionBoxs.contains(CollisionBox6));
 		Assert.assertEquals(true, CollisionBoxs.contains(CollisionBox7));

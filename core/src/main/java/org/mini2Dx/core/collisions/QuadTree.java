@@ -19,6 +19,7 @@ import org.mini2Dx.core.engine.Positionable;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Parallelogram;
 import org.mini2Dx.core.geom.Point;
+import org.mini2Dx.core.geom.Shape;
 import org.mini2Dx.core.graphics.Graphics;
 
 /**
@@ -35,9 +36,9 @@ public interface QuadTree<T extends Positionable> extends PositionChangeListener
 	
 	public void removeAll(List<T> elements);
 	
-	public List<T> getElementsWithinRegion(Parallelogram parallelogram);
+	public List<T> getElementsWithinArea(Shape area);
 	
-	public void getElementsWithinRegion(Collection<T> result, Parallelogram parallelogram);
+	public void getElementsWithinArea(Collection<T> result, Shape area);
 	
 	public List<T> getElementsIntersectingLineSegment(LineSegment lineSegment);
 	

@@ -167,19 +167,19 @@ public class ConcurrentPointQuadTreeTest {
 		rootQuad.add(point3);
 		rootQuad.add(point4);
 		
-		List<CollisionPoint> CollisionPoints = rootQuad.getElementsWithinRegion(new Rectangle(0, 0, 64, 64));
+		List<CollisionPoint> CollisionPoints = rootQuad.getElementsWithinArea(new Rectangle(0, 0, 64, 64));
 		Assert.assertEquals(1, CollisionPoints.size());
 		Assert.assertEquals(point1, CollisionPoints.get(0));
 		
-		CollisionPoints = rootQuad.getElementsWithinRegion(new Rectangle(64, 0, 64, 64));
+		CollisionPoints = rootQuad.getElementsWithinArea(new Rectangle(64, 0, 64, 64));
 		Assert.assertEquals(1, CollisionPoints.size());
 		Assert.assertEquals(point2, CollisionPoints.get(0));
 		
-		CollisionPoints = rootQuad.getElementsWithinRegion(new Rectangle(0, 64, 64, 64));
+		CollisionPoints = rootQuad.getElementsWithinArea(new Rectangle(0, 64, 64, 64));
 		Assert.assertEquals(1, CollisionPoints.size());
 		Assert.assertEquals(point3, CollisionPoints.get(0));
 		
-		CollisionPoints = rootQuad.getElementsWithinRegion(new Rectangle(64, 64, 64, 64));
+		CollisionPoints = rootQuad.getElementsWithinArea(new Rectangle(64, 64, 64, 64));
 		Assert.assertEquals(1, CollisionPoints.size());
 		Assert.assertEquals(point4, CollisionPoints.get(0));
 		
@@ -188,7 +188,7 @@ public class ConcurrentPointQuadTreeTest {
 		rootQuad.add(CollisionPoint5);
 		rootQuad.add(CollisionPoint6);
 		
-		CollisionPoints = rootQuad.getElementsWithinRegion(new Rectangle(0, 0, 64, 64));
+		CollisionPoints = rootQuad.getElementsWithinArea(new Rectangle(0, 0, 64, 64));
 		Assert.assertEquals(3, CollisionPoints.size());
 		Assert.assertEquals(true, CollisionPoints.contains(point1));
 		Assert.assertEquals(true, CollisionPoints.contains(CollisionPoint5));
