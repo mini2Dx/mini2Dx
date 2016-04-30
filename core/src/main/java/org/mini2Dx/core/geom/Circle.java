@@ -48,7 +48,7 @@ public class Circle extends Shape {
 	 * @param radius The radius
 	 */
 	public Circle(float centerX, float centerY, float radius) {
-		this.circle = new com.badlogic.gdx.math.Circle(centerX, centerX, radius);
+		this.circle = new com.badlogic.gdx.math.Circle(centerX, centerY, radius);
 		determineBoundingBox();
 	}
 	

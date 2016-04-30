@@ -42,6 +42,14 @@ public class CollisionCircleTest implements PositionChangeListener<CollisionCirc
 	}
 	
 	@Test
+	public void testGetXY() {
+		CollisionCircle collisionCircle = new CollisionCircle(50f, 100f, 25f);
+		Assert.assertEquals(50f, collisionCircle.getX());
+		Assert.assertEquals(100f, collisionCircle.getY());
+		Assert.assertEquals(25f, collisionCircle.getRadius());
+	}
+	
+	@Test
 	public void testIntersectsCircle() {
 		Circle circle2 = new Circle(20f, 20f, 4);
 		Assert.assertEquals(false, circle.intersects(circle2));

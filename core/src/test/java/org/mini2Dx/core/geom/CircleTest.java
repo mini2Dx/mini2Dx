@@ -27,6 +27,14 @@ public class CircleTest {
 	public void setup() {
 		circle = new Circle(4);
 	}
+	
+	@Test
+	public void testXY() {
+		circle = new Circle(100f, 50f, 25f);
+		Assert.assertEquals(100f, circle.getX());
+		Assert.assertEquals(50f, circle.getY());
+		Assert.assertEquals(25f, circle.getRadius());
+	}
 
 	@Test
 	public void testContains() {
