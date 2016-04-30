@@ -38,6 +38,20 @@ public interface Positionable extends Updatable {
 	public float getY();
 	
 	/**
+	 * Sets the x coordinate of this object
+	 * 
+	 * @param x The x coordinate
+	 */
+	public void setX(float x);
+
+	/**
+	 * Sets the y coordinate of this object
+	 * 
+	 * @param y The y coordinate
+	 */
+	public void setY(float y);
+	
+	/**
 	 * Returns the render x coordinate of this object
 	 * @return
 	 */

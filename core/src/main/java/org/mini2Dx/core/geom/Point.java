@@ -149,6 +149,14 @@ public class Point extends Vector2 {
 	public float getY() {
 		return this.y;
 	}
+	
+	public void setX(float x) {
+		set(x, this.y);
+	}
+	
+	public void setY(float y) {
+		set(this.x, y);
+	}
 
 	@Override
 	public Vector2 set(Vector2 v) {

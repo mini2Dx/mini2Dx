@@ -180,6 +180,20 @@ public class CollisionPoint extends Point implements Positionable {
 	}
 	
 	@Override
+	public void setX(float x) {
+		super.setX(x);
+		interpolate = true;
+		notifyPositionChangeListeners();
+	}
+
+	@Override
+	public void setY(float y) {
+		super.setY(y);
+		interpolate = true;
+		notifyPositionChangeListeners();
+	}
+	
+	@Override
 	public Vector2 set(float x, float y) {
 		super.set(x, y);
 		interpolate = true;
