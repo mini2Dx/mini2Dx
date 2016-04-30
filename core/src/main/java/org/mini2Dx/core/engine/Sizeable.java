@@ -35,6 +35,34 @@ public interface Sizeable {
 	 * @return 0 by default
 	 */
 	public float getHeight();
+	
+	/**
+	 * Returns min X coordinate of this object
+	 * 
+	 * @return The left-most x coordinate
+	 */
+	public float getMinX();
+	
+	/**
+	 * Returns min Y coordinate of this object
+	 * 
+	 * @return The up-most y coordinate
+	 */
+	public float getMinY();
+	
+	/**
+	 * Returns max X coordinate of this object
+	 * 
+	 * @return The right-most x coordinate
+	 */
+	public float getMaxX();
+	
+	/**
+	 * Returns max Y coordinate of this object
+	 * 
+	 * @return The bottom-most y coordinate
+	 */
+	public float getMaxY();
 
 	/**
 	 * Adds a {@link SizeChangeListener} to be notified of size changes
