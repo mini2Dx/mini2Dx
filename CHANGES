@@ -7,13 +7,13 @@
 - (#38) Added drawNinePatch() and clearScaling() methods to Graphics
 - (#45) Added contains and getDistanceFromCenter to Circle
 - (#45) Added fillShape() method to Graphics class
-- (#45) Added Rectangle#intersects(Circle) and Circle#intersects(Rectangle)
-- (#45) Circle now extends com.badlogic.gdx.math.Circle
-- (#45) Added Polygon and Triangle classes
+- (#45) Added Shape#intersects(Shape) and Shape#contains(Shape)
+- (#45) Added Polygon and Triangle classes. Rectangle now backed by Polygon.
 - (#46) Fixed ParticleEffect not flipped correctly on load
 - (#48) Fixed alpha channel not being applied to line rendering
 - (#50) Fixed TiledMap rendering incorrectly when scaled down
 - (#54) Added performance benchmarking for collisions
+- (#55) Added non-rectangle support to RegionQuadTree and ConcurrentRegionQuadTree
 - Added RegularShape classes (shapes with equal interior angles)
 - Added NPE prevention to TiledCollisionMapper
 - Added additional drawTexture() methods to Graphics
