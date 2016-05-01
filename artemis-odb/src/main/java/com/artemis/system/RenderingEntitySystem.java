@@ -37,8 +37,25 @@ public abstract class RenderingEntitySystem extends EntitySystem {
 		super(aspect);
 	}
 	
+	/**
+	 * An overridable method called once before the system renders
+	 * @param g
+	 */
+	protected void preRender(Graphics g) {}
+	
+	/**
+	 * Render an entity
+	 * @param entityId The entity id
+	 * @param g The {@link Graphics} context
+	 */
 	protected abstract void render(int entityId, Graphics g);
 
+	/**
+	 * An overridable method called once after the system renders
+	 * @param g
+	 */
+	protected void postRender(Graphics g) {}
+	
 	@Override
 	protected void processSystem() {
 		activeEntityBag = subscription.getEntities();
@@ -52,10 +69,11 @@ public abstract class RenderingEntitySystem extends EntitySystem {
 		if(activeEntityBag == null) {
 			return;
 		}
-		
+		preRender(g);
 		for (int i = 0, s = activeEntityBag.size(); s > i; i++) {
 			render(activeEntityIds[i], g);
 		}
+		postRender(g);
 	}
 	
 	@Override
