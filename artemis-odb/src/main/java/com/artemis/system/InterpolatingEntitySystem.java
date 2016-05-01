@@ -35,17 +35,49 @@ public abstract class InterpolatingEntitySystem extends EntitySystem {
 		super(aspect);
 	}
 	
+	/**
+	 * An overridable method called once before the system updates
+	 */
+	protected void preUpdate() {}
+	
+	/**
+	 * Updates an entity
+	 * @param entityId The entity id
+	 * @param delta The frame delta
+	 */
 	protected abstract void update(int entityId, float delta);
 	
+	/**
+	 * An overridable method called once after the system updates
+	 */
+	protected void postUpdate() {}
+	
+	/**
+	 * An overridable method called once before the system interpolates
+	 */
+	protected void preInterpolate() {}
+	
+	/**
+	 * Interpolates an entity
+	 * @param entityId The entity id
+	 * @param alpha The interpolation alpha
+	 */
 	protected abstract void interpolate(int entityId, float alpha);
+	
+	/**
+	 * An overridable method called once after the system interpolates
+	 */
+	protected void postInterpolate() {}
 
 	@Override
 	protected void processSystem() {
+		preUpdate();
 		activeEntityBag = subscription.getEntities();
 		activeEntityIds = activeEntityBag.getData();
 		for (int i = 0, s = activeEntityBag.size(); s > i; i++) {
 			update(activeEntityIds[i], world.delta);
 		}
+		postUpdate();
 	}
 	
 	public void interpolateSystem() {
@@ -55,10 +87,11 @@ public abstract class InterpolatingEntitySystem extends EntitySystem {
 		if(activeEntityBag == null) {
 			return;
 		}
-		
+		preInterpolate();
 		for (int i = 0, s = activeEntityBag.size(); s > i; i++) {
 			interpolate(activeEntityIds[i], mdxWorld.alpha);
 		}
+		postInterpolate();
 	}
 	
 	@Override
