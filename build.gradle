@@ -155,6 +155,9 @@ project(":" + rootProject.name + "-desktop") {
 }
 
 project(":" + rootProject.name + "-tiled") {
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
+	
     dependencies {
 		compile project(":" + rootProject.name + "-core")
 		
@@ -165,6 +168,9 @@ project(":" + rootProject.name + "-tiled") {
 }
 
 project(":" + rootProject.name + "-artemis-odb") {
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
+	
     dependencies {
 		compile project(":" + rootProject.name + "-core")
 		compile "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
@@ -176,6 +182,9 @@ project(":" + rootProject.name + "-artemis-odb") {
 }
 
 project(":" + rootProject.name + "-ui") {
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
+	
 	dependencies {
 		compile project(":" + rootProject.name + "-core")
 		
