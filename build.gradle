@@ -13,13 +13,22 @@ buildscript {
         classpath 'com.android.tools.build:gradle:1.5.0'
         classpath 'org.robovm:robovm-gradle-plugin:1.12.0'
         classpath 'gradle.plugin.me.champeau.gradle:jmh-gradle-plugin:0.3.0'
+		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
     }
+}
+
+if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
+	apply plugin: "io.codearte.nexus-staging"
+
+	nexusStaging {
+		username = ossrhUser
+		password = ossrhPassword
+	}
 }
 
 subprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
-	apply plugin: "maven"
 
 	group = 'org.mini2Dx'
     version = '1.3.0-SNAPSHOT'
@@ -59,30 +68,76 @@ def docProjects() {
 
 configure(docProjects()) {
 	apply plugin: "java"
-	apply plugin: "maven-publish"
+	apply plugin: "signing"
+	apply plugin: "maven"
 	
-	task sourceJar(type: Jar) {
-		from sourceSets.main.allJava
+	configurations {
+		testOutput.extendsFrom (testCompile)
 	}
 	
-	publishing {
-		repositories {
-			maven {
-				url "https://mini2dx.org/maven/content/repositories/releases"
-				if(project.hasProperty('mini2DxMavenUser')) {
-					credentials {
-						username = project.property('mini2DxMavenUser')
-						password = project.property('mini2DxMavenPassword')
-					}
-				}
-			}
+	task javadocJar(type: Jar) {
+		classifier = 'javadoc'
+		from javadoc
+	}
+
+	task sourcesJar(type: Jar) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+	
+	task testJar(type: Jar, dependsOn: testClasses) {
+		from sourceSets.test.output
+		classifier = 'test'
+	}
+
+	artifacts {
+		archives javadocJar, sourcesJar, testJar
+		testOutput testJar
+	}
+	
+	// Maven Central publication
+	if(project.hasProperty('ossrhUser')) {
+		signing {
+			sign configurations.archives
 		}
-		publications {
-			maven(MavenPublication) {
-				from components.java
-				
-				artifact sourceJar {
-					classifier "sources"
+		
+		uploadArchives {
+			repositories {
+				mavenDeployer {
+					// POM signature
+					beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+					// Target repository
+					repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+						authentication(userName: ossrhUser, password: ossrhPassword)
+					}
+					pom.project {
+						name project.name
+						description project.description
+						packaging 'jar'
+						url 'https://github.com/mini2Dx/mini2Dx'
+	
+						scm {
+							connection 'scm:git:https://github.com/mini2Dx/mini2Dx.git'
+							developerConnection 'scm:git:git@github.com:mini2Dx/mini2Dx.git'
+							url 'https://github.com/mini2Dx/mini2Dx.git'
+						}
+	
+						licenses {
+							license {
+								name 'The BSD 3-Clause License'
+								url 'https://opensource.org/licenses/BSD-3-Clause'
+								distribution 'repo'
+							}
+						}
+	
+						developers {
+							developer {
+								id = 'tomcashman'
+								name = 'Thomas Cashman'
+								email = 'thomascashman404@gmail.com'
+							}
+						}
+					}
 				}
 			}
 		}
@@ -90,14 +145,12 @@ configure(docProjects()) {
 }
 
 project(":" + rootProject.name + "-core") {
+	description = "mini2Dx core library"
+	
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
     
     apply plugin: "me.champeau.gradle.jmh"
-    
-    configurations {
-	    testOutput.extendsFrom (testCompile)
-	}
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -112,15 +165,6 @@ project(":" + rootProject.name + "-core") {
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
     }
-    
-	task testJar(type: Jar, dependsOn: testClasses) {
-	    from sourceSets.test.output
-	    classifier = 'test'
-	}
-    
-    artifacts {
-	    testOutput testJar
-	}
 	
 	jmh {
 		timeUnit = 'ns'
@@ -133,6 +177,8 @@ project(":" + rootProject.name + "-core") {
 }
 
 project(":" + rootProject.name + "-desktop") {
+	description = "mini2Dx desktop runtime"
+	
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
 
@@ -155,6 +201,8 @@ project(":" + rootProject.name + "-desktop") {
 }
 
 project(":" + rootProject.name + "-tiled") {
+	description = "mini2Dx Tiled support library"
+	
 	sourceCompatibility = 1.7
 	targetCompatibility = 1.7
 	
@@ -168,6 +216,8 @@ project(":" + rootProject.name + "-tiled") {
 }
 
 project(":" + rootProject.name + "-artemis-odb") {
+	description = "mini2Dx artemis-odb support library"
+	
 	sourceCompatibility = 1.7
 	targetCompatibility = 1.7
 	
@@ -182,6 +232,8 @@ project(":" + rootProject.name + "-artemis-odb") {
 }
 
 project(":" + rootProject.name + "-ui") {
+	description = "mini2Dx UI library"
+	
 	sourceCompatibility = 1.7
 	targetCompatibility = 1.7
 	
@@ -195,6 +247,8 @@ project(":" + rootProject.name + "-ui") {
 }
 
 project(":" + rootProject.name + "-uats") {
+	description = "mini2Dx UATs library"
+	
     apply plugin: "java"
         
     sourceCompatibility = 1.7
@@ -214,6 +268,8 @@ project(":" + rootProject.name + "-uats") {
 }
 
 project(":" + rootProject.name + "-uats-desktop") {
+	description = "mini2Dx desktop UATs launcher"
+	
     apply plugin: "java"
     
     sourceCompatibility = 1.7
@@ -227,6 +283,8 @@ project(":" + rootProject.name + "-uats-desktop") {
 
 if (hasAndroidSdk()) {
 	project(":" + rootProject.name + "-android") {
+		description = "mini2Dx Android runtime"
+		
 		dependencies {
 			compile project(":" + rootProject.name + "-core")
 			
@@ -244,6 +302,8 @@ if (hasAndroidSdk()) {
 	}
 	
 	project(":" + rootProject.name + "-uats-android") {
+		description = "mini2Dx Android UATs launcher"
+		
 		apply plugin: "android"
 		
 		ext {
@@ -265,6 +325,8 @@ if (hasAndroidSdk()) {
 
 if (Os.isFamily(Os.FAMILY_MAC)) {
 	project(":" + rootProject.name + "-ios") {
+		description = "mini2Dx iOS runtime"
+		
 		sourceCompatibility = 1.7
 		targetCompatibility = 1.7
 	
@@ -284,6 +346,8 @@ if (Os.isFamily(Os.FAMILY_MAC)) {
 	}
 	
 	project(":" + rootProject.name + "-uats-ios") {
+		description = "mini2Dx UATs iOS launcher"
+		
 		apply plugin: "java"
 		apply plugin: "robovm"
 		
