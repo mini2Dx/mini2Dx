@@ -22,6 +22,6 @@ public class AndroidDependencyInjection extends DependencyInjection {
 	
 	
 	public AndroidDependencyInjection(Context applicationContext) {
-		super(new AndroidComponentScanner(applicationContext));
+		super(new AndroidBeanUtils(), new AndroidComponentScanner(applicationContext));
 	}
 }

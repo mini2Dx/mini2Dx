@@ -24,11 +24,13 @@ import org.mini2Dx.core.di.injection.BeanInjector;
  */
 @SuppressWarnings(value = { "unchecked", "rawtypes" })
 public class DependencyInjection {
+	private final BeanUtils beanUtils;
 	private final ComponentScanner componentScanner;
 	private Map<String, Bean> beans;
 	private ExecutorService prototypeService;
 	
-	public DependencyInjection(ComponentScanner componentScanner) {
+	public DependencyInjection(BeanUtils beanUtils, ComponentScanner componentScanner) {
+		this.beanUtils = beanUtils;
 		this.componentScanner = componentScanner;
 	}
 
@@ -66,5 +68,9 @@ public class DependencyInjection {
 		if(!beans.containsKey(classKey))
 			return null;
 		return (T) beans.get(classKey).getInstance();
+	}
+	
+	public BeanUtils beanUtils() {
+		return beanUtils;
 	}
 }

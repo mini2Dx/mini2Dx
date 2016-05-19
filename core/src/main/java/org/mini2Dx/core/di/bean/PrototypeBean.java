@@ -11,12 +11,12 @@
  */
 package org.mini2Dx.core.di.bean;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 
-import org.apache.commons.beanutils.BeanUtils;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.exception.MdxException;
 
 /**
  * An implementation of {@link Bean} based on the
@@ -49,9 +49,8 @@ public class PrototypeBean extends Bean implements Runnable {
 	}
 
 	public static Object duplicate(Object object)
-			throws IllegalAccessException, InstantiationException,
-			InvocationTargetException, NoSuchMethodException {
-		return BeanUtils.cloneBean(object);
+			throws MdxException {
+		return Mdx.di.beanUtils().cloneBean(object);
 	}
 
 	@Override

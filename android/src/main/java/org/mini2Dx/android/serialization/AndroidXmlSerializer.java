@@ -17,15 +17,23 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import org.mini2Dx.core.serialization.RequiredFieldException;
 import org.mini2Dx.core.serialization.SerializationException;
 import org.mini2Dx.core.serialization.XmlSerializer;
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.util.Ref;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -56,8 +64,11 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		T result = null;
 		try {
 			xmlParser.setInput(xmlReader);
+			xmlParser.nextTag();
 			result = deserializeObject(xmlParser, clazz);
 		} catch (XmlPullParserException e) {
+			throw new SerializationException(e);
+		} catch (IOException e) {
 			throw new SerializationException(e);
 		} finally {
 			try {
@@ -234,6 +245,78 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e);
 		}
 	}
+	
+	private <T> T construct(XmlPullParser xmlParser, Ref<Boolean> isEndElement, Class<T> clazz)
+			throws InstantiationException, IllegalAccessException, SerializationException, IllegalArgumentException,
+			InvocationTargetException, XMLStreamException, XmlPullParserException, IOException {
+		Constructor<?>[] constructors = clazz.getConstructors();
+		// Single constructor with no args
+		if (constructors.length == 1 && constructors[0].getParameterAnnotations().length == 0) {
+			isEndElement.set(false);
+			return clazz.newInstance();
+		}
+
+		Map<String, String> attributes = new HashMap<String, String>();
+		for (int i = 0; i < xmlParser.getAttributeCount(); i++) {
+			attributes.put(xmlParser.getAttributeName(i).toString(), xmlParser.getAttributeValue(i));
+		}
+		xmlParser.next();
+		isEndElement.set(xmlParser.getEventType() == XmlPullParser.END_TAG);
+
+		Constructor bestMatchedConstructor = null;
+		List<ConstructorArg> detectedAnnotations = new ArrayList<ConstructorArg>(1);
+
+		for (int i = 0; i < constructors.length; i++) {
+			detectedAnnotations.clear();
+			boolean allAnnotated = true;
+
+			for (int j = 0; j < constructors[i].getParameterAnnotations().length; j++) {
+				java.lang.annotation.Annotation[] annotations = constructors[i].getParameterAnnotations()[j];
+				if (annotations.length == 0) {
+					allAnnotated = false;
+					break;
+				}
+
+				boolean hasConstructorArgAnnotation = false;
+				for (int k = 0; k < annotations.length; k++) {
+					if (!annotations[i].annotationType().isAssignableFrom(ConstructorArg.class)) {
+						continue;
+					}
+					ConstructorArg constructorArg = (ConstructorArg) annotations[i];
+					if (!attributes.containsKey(constructorArg.name())) {
+						continue;
+					}
+					detectedAnnotations.add(constructorArg);
+					hasConstructorArgAnnotation = true;
+					break;
+				}
+				if (!hasConstructorArgAnnotation) {
+					allAnnotated = false;
+				}
+			}
+			if (!allAnnotated) {
+				continue;
+			}
+			if (bestMatchedConstructor == null) {
+				bestMatchedConstructor = constructors[i];
+			} else if (detectedAnnotations.size() > bestMatchedConstructor.getParameterAnnotations().length) {
+				bestMatchedConstructor = constructors[i];
+			}
+		}
+		if (bestMatchedConstructor == null) {
+			throw new SerializationException("Could not find suitable constructor for class " + clazz.getName());
+		}
+		if (detectedAnnotations.size() == 0) {
+			return clazz.newInstance();
+		}
+
+		Object[] constructorParameters = new Object[detectedAnnotations.size()];
+		for (int i = 0; i < detectedAnnotations.size(); i++) {
+			ConstructorArg constructorArg = detectedAnnotations.get(i);
+			constructorParameters[i] = parsePrimitive(attributes.get(constructorArg.name()), constructorArg.clazz());
+		}
+		return (T) bestMatchedConstructor.newInstance(constructorParameters);
+	}
 
 	private <T> T deserializeObject(XmlPullParser xmlParser, Class<T> clazz)
 			throws SerializationException {
@@ -246,7 +329,12 @@ public class AndroidXmlSerializer implements XmlSerializer {
 						xmlParser.nextText());
 			}
 
-			T result = ClassReflection.newInstance(clazz);
+			Ref<Boolean> isEndElement = new Ref<Boolean>();
+			T result = construct(xmlParser,isEndElement, clazz);
+			if(isEndElement.get()) {
+				return result;
+			}
+			
 			int parserEventType = xmlParser.getEventType();
 
 			while (parserEventType != XmlPullParser.END_DOCUMENT) {

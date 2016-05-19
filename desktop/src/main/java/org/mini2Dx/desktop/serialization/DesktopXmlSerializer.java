@@ -17,6 +17,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,11 +35,14 @@ import javax.xml.stream.XMLStreamWriter;
 import org.mini2Dx.core.serialization.RequiredFieldException;
 import org.mini2Dx.core.serialization.SerializationException;
 import org.mini2Dx.core.serialization.XmlSerializer;
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.util.Ref;
 
 import com.badlogic.gdx.utils.reflect.Annotation;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 /**
@@ -47,15 +52,12 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 public class DesktopXmlSerializer implements XmlSerializer {
 
 	@Override
-	public <T> T fromXml(String xml, Class<T> clazz)
-			throws SerializationException {
+	public <T> T fromXml(String xml, Class<T> clazz) throws SerializationException {
 		return fromXml(new StringReader(xml), clazz);
 	}
-	
 
 	@Override
-	public <T> T fromXml(Reader xmlReader, Class<T> clazz)
-			throws SerializationException {
+	public <T> T fromXml(Reader xmlReader, Class<T> clazz) throws SerializationException {
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
 		T result = null;
@@ -82,10 +84,9 @@ public class DesktopXmlSerializer implements XmlSerializer {
 		toXml(object, writer);
 		return writer.toString();
 	}
-	
+
 	@Override
-	public <T> void toXml(T object, Writer writer)
-			throws SerializationException {
+	public <T> void toXml(T object, Writer writer) throws SerializationException {
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 		try {
 			XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(writer);
@@ -106,17 +107,15 @@ public class DesktopXmlSerializer implements XmlSerializer {
 		}
 	}
 
-	private <T> void writeObject(T object, String tagName,
-			XMLStreamWriter xmlWriter)
-			throws SerializationException {
+	private <T> void writeObject(T object, String tagName, XMLStreamWriter xmlWriter) throws SerializationException {
 		try {
-			if(object == null) {
+			if (object == null) {
 				writePrimitive(tagName, "", xmlWriter);
 				return;
 			}
 
 			Class<?> clazz = object.getClass();
-			
+
 			if (isPrimitive(clazz) || clazz.equals(String.class)) {
 				writePrimitive(tagName, object, xmlWriter);
 				return;
@@ -142,9 +141,20 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			if (tagName != null) {
 				xmlWriter.writeStartElement(tagName);
 			}
-			
+
 			Class<?> currentClass = clazz;
-			while(currentClass != null && !currentClass.equals(Object.class)) {
+			while (currentClass != null && !currentClass.equals(Object.class)) {
+				for (Method method : ClassReflection.getDeclaredMethods(currentClass)) {
+					if (method.getParameterTypes().length > 0) {
+						continue;
+					}
+					Annotation annotation = method.getDeclaredAnnotation(ConstructorArg.class);
+					if (annotation == null) {
+						continue;
+					}
+					ConstructorArg constructorArg = annotation.getAnnotation(ConstructorArg.class);
+					xmlWriter.writeAttribute(constructorArg.name(), String.valueOf(method.invoke(object)));
+				}
 				for (Field field : ClassReflection.getDeclaredFields(currentClass)) {
 					field.setAccessible(true);
 					Annotation annotation = field
@@ -161,9 +171,10 @@ public class DesktopXmlSerializer implements XmlSerializer {
 					}
 					writeObject(field.get(object), field.getName(), xmlWriter);
 				}
+
 				currentClass = currentClass.getSuperclass();
 			}
-			
+
 			if (tagName != null) {
 				xmlWriter.writeEndElement();
 			}
@@ -177,7 +188,7 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e);
 		}
 	}
-	
+
 	private <T> void writeMap(String tagName, Map map, XMLStreamWriter xmlWriter) throws SerializationException {
 		try {
 			if (tagName != null) {
@@ -200,7 +211,7 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e);
 		}
 	}
-	
+
 	private <T> void writeArray(String tagName, T array, XMLStreamWriter xmlWriter) throws SerializationException {
 		try {
 			if (tagName != null) {
@@ -211,7 +222,7 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			for (int i = 0; i < arrayLength; i++) {
 				writeObject(Array.get(array, i), "value", xmlWriter);
 			}
-			
+
 			if (tagName != null) {
 				xmlWriter.writeEndElement();
 			}
@@ -223,7 +234,7 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e);
 		}
 	}
-	
+
 	private <T> void writePrimitive(String tagName, T object, XMLStreamWriter xmlWriter) throws SerializationException {
 		try {
 			if (tagName != null) {
@@ -242,60 +253,138 @@ public class DesktopXmlSerializer implements XmlSerializer {
 		}
 	}
 
+	private <T> T construct(XMLStreamReader xmlReader, String xmlTag, Ref<Boolean> isEndElement, Class<T> clazz)
+			throws InstantiationException, IllegalAccessException, SerializationException, IllegalArgumentException,
+			InvocationTargetException, XMLStreamException {
+		Constructor<?>[] constructors = clazz.getConstructors();
+		// Single constructor with no args
+		if (constructors.length == 1 && constructors[0].getParameterAnnotations().length == 0) {
+			isEndElement.set(false);
+			return clazz.newInstance();
+		}
+
+		Map<String, String> attributes = new HashMap<String, String>();
+		for (int i = 0; i < xmlReader.getAttributeCount(); i++) {
+			attributes.put(xmlReader.getAttributeName(i).toString(), xmlReader.getAttributeValue(i));
+		}
+		xmlReader.next();
+		isEndElement.set(xmlReader.getEventType() == XMLStreamConstants.END_ELEMENT);
+
+		Constructor bestMatchedConstructor = null;
+		List<ConstructorArg> detectedAnnotations = new ArrayList<ConstructorArg>(1);
+
+		for (int i = 0; i < constructors.length; i++) {
+			detectedAnnotations.clear();
+			boolean allAnnotated = true;
+
+			for (int j = 0; j < constructors[i].getParameterAnnotations().length; j++) {
+				java.lang.annotation.Annotation[] annotations = constructors[i].getParameterAnnotations()[j];
+				if (annotations.length == 0) {
+					allAnnotated = false;
+					break;
+				}
+
+				boolean hasConstructorArgAnnotation = false;
+				for (int k = 0; k < annotations.length; k++) {
+					if (!annotations[i].annotationType().isAssignableFrom(ConstructorArg.class)) {
+						continue;
+					}
+					ConstructorArg constructorArg = (ConstructorArg) annotations[i];
+					if (!attributes.containsKey(constructorArg.name())) {
+						continue;
+					}
+					detectedAnnotations.add(constructorArg);
+					hasConstructorArgAnnotation = true;
+					break;
+				}
+				if (!hasConstructorArgAnnotation) {
+					allAnnotated = false;
+				}
+			}
+			if (!allAnnotated) {
+				continue;
+			}
+			if (bestMatchedConstructor == null) {
+				bestMatchedConstructor = constructors[i];
+			} else if (detectedAnnotations.size() > bestMatchedConstructor.getParameterAnnotations().length) {
+				bestMatchedConstructor = constructors[i];
+			}
+		}
+		if (bestMatchedConstructor == null) {
+			throw new SerializationException("Could not find suitable constructor for class " + clazz.getName());
+		}
+		if (detectedAnnotations.size() == 0) {
+			return clazz.newInstance();
+		}
+
+		Object[] constructorParameters = new Object[detectedAnnotations.size()];
+		for (int i = 0; i < detectedAnnotations.size(); i++) {
+			ConstructorArg constructorArg = detectedAnnotations.get(i);
+			constructorParameters[i] = parsePrimitive(attributes.get(constructorArg.name()), constructorArg.clazz());
+		}
+		return (T) bestMatchedConstructor.newInstance(constructorParameters);
+	}
+
 	private <T> T deserializeObject(XMLStreamReader xmlReader, String xmlTag, Class<T> clazz)
 			throws SerializationException {
 		try {
 			if (isPrimitive(clazz) || clazz.equals(String.class)) {
+				xmlReader.next();
 				return parsePrimitive(xmlReader.getText(), clazz);
 			}
 			if (clazz.isEnum()) {
-				return (T) Enum.valueOf((Class<? extends Enum>) clazz,
-						xmlReader.getText());
+				xmlReader.next();
+				return (T) Enum.valueOf((Class<? extends Enum>) clazz, xmlReader.getText());
+			}
+
+			Ref<Boolean> isEndElement = new Ref<Boolean>();
+			T result = construct(xmlReader, xmlTag, isEndElement, clazz);
+			if(isEndElement.get()) {
+				return result;
 			}
 			
-			T result = ClassReflection.newInstance(clazz);
 			int parserEventType = xmlReader.getEventType();
 			boolean finished = false;
-
+			
 			while (!finished) {
 				switch (parserEventType) {
 				case XMLStreamConstants.START_ELEMENT:
 					String currentFieldName = xmlReader.getLocalName();
 					Field currentField = findField(clazz, currentFieldName);
 					currentField.setAccessible(true);
-					
+
 					Class<?> fieldClass = currentField.getType();
-					xmlReader.next();
 					if (fieldClass.isArray()) {
-						setArrayField(xmlReader, currentField, fieldClass,
-								result);
+						xmlReader.next();
+						setArrayField(xmlReader, currentField, fieldClass, result);
 						break;
 					}
 					if (fieldClass.isEnum()) {
+						xmlReader.next();
 						setEnumField(currentField, fieldClass, result, xmlReader.getText());
 						break;
 					}
 					if (!fieldClass.isPrimitive()) {
 						if (fieldClass.equals(String.class)) {
-							setPrimitiveField(currentField, fieldClass, result,
-									xmlReader.getText());
+							xmlReader.next();
+							setPrimitiveField(currentField, fieldClass, result, xmlReader.getText());
 						} else if (Map.class.isAssignableFrom(fieldClass)) {
-							setMapField(xmlReader, currentField, fieldClass,
-									result);
+							xmlReader.next();
+							setMapField(xmlReader, currentField, fieldClass, result);
 						} else if (Collection.class.isAssignableFrom(fieldClass)) {
-							setCollectionField(xmlReader, currentField,
-									fieldClass, result);
+							xmlReader.next();
+							setCollectionField(xmlReader, currentField, fieldClass, result);
 						} else {
 							currentField.set(result, deserializeObject(xmlReader, currentFieldName, fieldClass));
 						}
 						break;
 					}
-					
-					setPrimitiveField(currentField, fieldClass, result,
-							xmlReader.getText());
+
+					xmlReader.next();
+					setPrimitiveField(currentField, fieldClass, result, xmlReader.getText());
 					break;
 				case XMLStreamConstants.END_ELEMENT:
-					if(xmlReader.getLocalName().equals(xmlTag)) {
+					if (xmlReader.getLocalName().equals(xmlTag)) {
 						finished = true;
 					}
 					break;
@@ -305,7 +394,7 @@ public class DesktopXmlSerializer implements XmlSerializer {
 				default:
 					break;
 				}
-				if(!finished) {
+				if (!finished) {
 					parserEventType = xmlReader.next();
 				}
 			}
@@ -317,39 +406,38 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e);
 		}
 	}
-	
+
 	private Field findField(Class<?> clazz, String fieldName) throws ReflectionException {
 		Class<?> currentClass = clazz;
-		while(currentClass != null && !currentClass.equals(Object.class)) {
+		while (currentClass != null && !currentClass.equals(Object.class)) {
 			try {
-				Field result = ClassReflection.getDeclaredField(
-						currentClass, fieldName);
-				if(result == null) {
+				Field result = ClassReflection.getDeclaredField(currentClass, fieldName);
+				if (result == null) {
 					continue;
 				}
 				return result;
-			} catch (ReflectionException e) {}
+			} catch (ReflectionException e) {
+			}
 			currentClass = currentClass.getSuperclass();
 		}
 		throw new ReflectionException("No field '" + fieldName + "' found in class " + clazz.getName());
 	}
 
-	private <T> void setCollectionField(XMLStreamReader xmlReader, Field field,
-			Class<?> fieldClass, T object) throws SerializationException {
+	private <T> void setCollectionField(XMLStreamReader xmlReader, Field field, Class<?> fieldClass, T object)
+			throws SerializationException {
 		try {
 			Collection collection = (Collection) (fieldClass.isInterface() ? new ArrayList()
 					: ClassReflection.newInstance(fieldClass));
 			Class<?> valueClass = field.getElementType(0);
-			
+
 			boolean finished = false;
 			while (!finished) {
-				switch(xmlReader.getEventType()) {
+				switch (xmlReader.getEventType()) {
 				case XMLStreamConstants.START_ELEMENT:
-					xmlReader.next();
 					collection.add(deserializeObject(xmlReader, "value", valueClass));
 					break;
 				case XMLStreamConstants.END_ELEMENT:
-					if(!xmlReader.getLocalName().equals("value")) {
+					if (!xmlReader.getLocalName().equals("value")) {
 						finished = true;
 					} else {
 						xmlReader.next();
@@ -369,11 +457,10 @@ public class DesktopXmlSerializer implements XmlSerializer {
 		}
 	}
 
-	private <T> void setMapField(XMLStreamReader xmlReader, Field field,
-			Class<?> fieldClass, T object) throws SerializationException {
+	private <T> void setMapField(XMLStreamReader xmlReader, Field field, Class<?> fieldClass, T object)
+			throws SerializationException {
 		try {
-			Map map = (Map) (fieldClass.isInterface() ? new HashMap()
-					: ClassReflection.newInstance(fieldClass));
+			Map map = (Map) (fieldClass.isInterface() ? new HashMap() : ClassReflection.newInstance(fieldClass));
 			Class<?> keyClass = field.getElementType(0);
 			Class<?> valueClass = field.getElementType(1);
 
@@ -381,20 +468,17 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			Object key = null;
 			Object value = null;
 			while (!finished) {
-				switch(xmlReader.getEventType()) {
-				case XMLStreamConstants.START_ELEMENT:
-				{
+				switch (xmlReader.getEventType()) {
+				case XMLStreamConstants.START_ELEMENT: {
 					String currentTag = xmlReader.getLocalName();
-					switch(currentTag) {
+					switch (currentTag) {
 					case "entry":
 						xmlReader.nextTag();
 						break;
 					case "key":
-						xmlReader.next();
 						key = deserializeObject(xmlReader, "key", keyClass);
 						break;
 					case "value":
-						xmlReader.next();
 						value = deserializeObject(xmlReader, "value", valueClass);
 						break;
 					default:
@@ -403,10 +487,9 @@ public class DesktopXmlSerializer implements XmlSerializer {
 					}
 					break;
 				}
-				case XMLStreamConstants.END_ELEMENT:
-				{
+				case XMLStreamConstants.END_ELEMENT: {
 					String currentTag = xmlReader.getLocalName();
-					switch(currentTag) {
+					switch (currentTag) {
 					case "entry":
 						xmlReader.nextTag();
 						break;
@@ -424,7 +507,7 @@ public class DesktopXmlSerializer implements XmlSerializer {
 					break;
 				}
 				default:
-					//Handle whitespace in pretty XML
+					// Handle whitespace in pretty XML
 					xmlReader.next();
 					break;
 				}
@@ -437,31 +520,28 @@ public class DesktopXmlSerializer implements XmlSerializer {
 		}
 	}
 
-	private <T> void setArrayField(XMLStreamReader xmlReader, Field field,
-			Class<?> fieldClass, T object) throws SerializationException {
+	private <T> void setArrayField(XMLStreamReader xmlReader, Field field, Class<?> fieldClass, T object)
+			throws SerializationException {
 		try {
 			Class<?> arrayType = fieldClass.getComponentType();
 			List list = new ArrayList();
 
 			boolean finished = false;
 			while (!finished) {
-				switch(xmlReader.getEventType()) {
-				case XMLStreamConstants.START_ELEMENT:
-				{
+				switch (xmlReader.getEventType()) {
+				case XMLStreamConstants.START_ELEMENT: {
 					String currentTag = xmlReader.getLocalName();
-					if(!currentTag.equals("value")) {
+					if (!currentTag.equals("value")) {
 						finished = true;
 						break;
 					}
-					xmlReader.next();
 					list.add(deserializeObject(xmlReader, "value", arrayType));
 					xmlReader.next();
 					break;
 				}
-				case XMLStreamConstants.END_ELEMENT:
-				{
+				case XMLStreamConstants.END_ELEMENT: {
 					String currentTag = xmlReader.getLocalName();
-					if(!currentTag.equals("value")) {
+					if (!currentTag.equals("value")) {
 						finished = true;
 						break;
 					} else {
@@ -470,13 +550,13 @@ public class DesktopXmlSerializer implements XmlSerializer {
 					break;
 				}
 				default:
-					//Handle whitespace in pretty XML
+					// Handle whitespace in pretty XML
 					xmlReader.next();
 					break;
 				}
 			}
 			Object targetArray = ArrayReflection.newInstance(arrayType, list.size());
-			for(int i = 0; i < list.size(); i++) {
+			for (int i = 0; i < list.size(); i++) {
 				ArrayReflection.set(targetArray, i, list.get(i));
 			}
 			field.set(object, targetArray);
@@ -488,8 +568,9 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e);
 		}
 	}
-	
-	private <T> void setEnumField(Field field, Class<?> fieldClass, T object, String value) throws SerializationException {
+
+	private <T> void setEnumField(Field field, Class<?> fieldClass, T object, String value)
+			throws SerializationException {
 		try {
 			field.set(object, Enum.valueOf((Class<Enum>) fieldClass, value));
 		} catch (ReflectionException e) {
@@ -497,32 +578,24 @@ public class DesktopXmlSerializer implements XmlSerializer {
 		}
 	}
 
-	private <T> void setPrimitiveField(Field field, Class<?> fieldClass,
-			T object, String value) throws SerializationException {
+	private <T> void setPrimitiveField(Field field, Class<?> fieldClass, T object, String value)
+			throws SerializationException {
 		try {
-			if (fieldClass.equals(Boolean.TYPE)
-					|| fieldClass.equals(Boolean.class)) {
+			if (fieldClass.equals(Boolean.TYPE) || fieldClass.equals(Boolean.class)) {
 				field.set(object, Boolean.parseBoolean(value));
-			} else if (fieldClass.equals(Byte.TYPE)
-					|| fieldClass.equals(Byte.class)) {
+			} else if (fieldClass.equals(Byte.TYPE) || fieldClass.equals(Byte.class)) {
 				field.set(object, Byte.parseByte(value));
-			} else if (fieldClass.equals(Character.TYPE)
-					|| fieldClass.equals(Character.class)) {
+			} else if (fieldClass.equals(Character.TYPE) || fieldClass.equals(Character.class)) {
 				field.set(object, value.charAt(0));
-			} else if (fieldClass.equals(Double.TYPE)
-					|| fieldClass.equals(Double.class)) {
+			} else if (fieldClass.equals(Double.TYPE) || fieldClass.equals(Double.class)) {
 				field.set(object, Double.parseDouble(value));
-			} else if (fieldClass.equals(Float.TYPE)
-					|| fieldClass.equals(Float.class)) {
+			} else if (fieldClass.equals(Float.TYPE) || fieldClass.equals(Float.class)) {
 				field.set(object, Float.parseFloat(value));
-			} else if (fieldClass.equals(Integer.TYPE)
-					|| fieldClass.equals(Integer.class)) {
+			} else if (fieldClass.equals(Integer.TYPE) || fieldClass.equals(Integer.class)) {
 				field.set(object, Integer.parseInt(value));
-			} else if (fieldClass.equals(Long.TYPE)
-					|| fieldClass.equals(Long.class)) {
+			} else if (fieldClass.equals(Long.TYPE) || fieldClass.equals(Long.class)) {
 				field.set(object, Long.parseLong(value));
-			} else if (fieldClass.equals(Short.TYPE)
-					|| fieldClass.equals(Short.class)) {
+			} else if (fieldClass.equals(Short.TYPE) || fieldClass.equals(Short.class)) {
 				field.set(object, Short.parseShort(value));
 			} else {
 				field.set(object, value);
@@ -532,32 +605,23 @@ public class DesktopXmlSerializer implements XmlSerializer {
 		}
 	}
 
-	private <T> T parsePrimitive(String value, Class<T> fieldClass)
-			throws SerializationException {
+	private <T> T parsePrimitive(String value, Class<T> fieldClass) throws SerializationException {
 		try {
-			if (fieldClass.equals(Boolean.TYPE)
-					|| fieldClass.equals(Boolean.class)) {
+			if (fieldClass.equals(Boolean.TYPE) || fieldClass.equals(Boolean.class)) {
 				return (T) new Boolean(value);
-			} else if (fieldClass.equals(Byte.TYPE)
-					|| fieldClass.equals(Byte.class)) {
+			} else if (fieldClass.equals(Byte.TYPE) || fieldClass.equals(Byte.class)) {
 				return (T) new Byte(value);
-			} else if (fieldClass.equals(Character.TYPE)
-					|| fieldClass.equals(Character.class)) {
+			} else if (fieldClass.equals(Character.TYPE) || fieldClass.equals(Character.class)) {
 				return (T) ((Character) value.charAt(0));
-			} else if (fieldClass.equals(Double.TYPE)
-					|| fieldClass.equals(Double.class)) {
+			} else if (fieldClass.equals(Double.TYPE) || fieldClass.equals(Double.class)) {
 				return (T) new Double(value);
-			} else if (fieldClass.equals(Float.TYPE)
-					|| fieldClass.equals(Float.class)) {
+			} else if (fieldClass.equals(Float.TYPE) || fieldClass.equals(Float.class)) {
 				return (T) new Float(value);
-			} else if (fieldClass.equals(Integer.TYPE)
-					|| fieldClass.equals(Integer.class)) {
+			} else if (fieldClass.equals(Integer.TYPE) || fieldClass.equals(Integer.class)) {
 				return (T) new Integer(value);
-			} else if (fieldClass.equals(Long.TYPE)
-					|| fieldClass.equals(Long.class)) {
+			} else if (fieldClass.equals(Long.TYPE) || fieldClass.equals(Long.class)) {
 				return (T) new Long(value);
-			} else if (fieldClass.equals(Short.TYPE)
-					|| fieldClass.equals(Short.class)) {
+			} else if (fieldClass.equals(Short.TYPE) || fieldClass.equals(Short.class)) {
 				return (T) new Short(value);
 			} else {
 				return (T) value;
@@ -566,7 +630,7 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e);
 		}
 	}
-	
+
 	private boolean isPrimitive(Class<?> clazz) {
 		if (clazz.isPrimitive()) {
 			return true;

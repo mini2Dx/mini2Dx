@@ -10,7 +10,7 @@ buildscript {
     }
     dependencies {
 		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:2.1.0'
         classpath 'org.robovm:robovm-gradle-plugin:1.12.0'
         classpath 'gradle.plugin.me.champeau.gradle:jmh-gradle-plugin:0.3.0'
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
@@ -48,6 +48,7 @@ subprojects {
 		langVersion="3.1"
 		reflectionsVersion="0.9.10"
 		artemisVersion="1.1.0"
+		androidBeansVersion="1.0.0-SNAPSHOT"
 		
 		junitVersion="4.8.1"
 		jmockVersion="2.5.1"
@@ -71,6 +72,9 @@ configure(docProjects()) {
 	apply plugin: "signing"
 	apply plugin: "maven"
 	
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
+	
 	configurations {
 		testOutput.extendsFrom (testCompile)
 	}
@@ -87,6 +91,7 @@ configure(docProjects()) {
 	
 	task testJar(type: Jar, dependsOn: testClasses) {
 		from sourceSets.test.output
+		include '**/serialization/**/*.class','**/di/**/*.class'
 		classifier = 'test'
 	}
 
@@ -146,9 +151,6 @@ configure(docProjects()) {
 
 project(":" + rootProject.name + "-core") {
 	description = "mini2Dx core library"
-	
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
     
     apply plugin: "me.champeau.gradle.jmh"
 
@@ -158,7 +160,6 @@ project(":" + rootProject.name + "-core") {
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         
         compile "org.apache.commons:commons-lang3:$langVersion"
-        compile "commons-beanutils:commons-beanutils:$beanutilsVersion"
         
 		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         testCompile "junit:junit:$junitVersion"
@@ -179,9 +180,6 @@ project(":" + rootProject.name + "-core") {
 project(":" + rootProject.name + "-desktop") {
 	description = "mini2Dx desktop runtime"
 	
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-
     dependencies {
     	compile project(":" + rootProject.name + "-core")
     	
@@ -191,6 +189,7 @@ project(":" + rootProject.name + "-desktop") {
         compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
     	
+		compile "commons-beanutils:commons-beanutils:$beanutilsVersion"
     	compile "org.reflections:reflections:$reflectionsVersion"
     	
     	testCompile "junit:junit:$junitVersion"
@@ -203,9 +202,6 @@ project(":" + rootProject.name + "-desktop") {
 project(":" + rootProject.name + "-tiled") {
 	description = "mini2Dx Tiled support library"
 	
-	sourceCompatibility = 1.7
-	targetCompatibility = 1.7
-	
     dependencies {
 		compile project(":" + rootProject.name + "-core")
 		
@@ -217,9 +213,6 @@ project(":" + rootProject.name + "-tiled") {
 
 project(":" + rootProject.name + "-artemis-odb") {
 	description = "mini2Dx artemis-odb support library"
-	
-	sourceCompatibility = 1.7
-	targetCompatibility = 1.7
 	
     dependencies {
 		compile project(":" + rootProject.name + "-core")
@@ -234,9 +227,6 @@ project(":" + rootProject.name + "-artemis-odb") {
 project(":" + rootProject.name + "-ui") {
 	description = "mini2Dx UI library"
 	
-	sourceCompatibility = 1.7
-	targetCompatibility = 1.7
-	
 	dependencies {
 		compile project(":" + rootProject.name + "-core")
 		
@@ -250,9 +240,9 @@ project(":" + rootProject.name + "-uats") {
 	description = "mini2Dx UATs library"
 	
     apply plugin: "java"
-        
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+	
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
 
     dependencies {
     	compile project(":" + rootProject.name + "-tiled")
@@ -287,17 +277,12 @@ if (hasAndroidSdk()) {
 		
 		dependencies {
 			compile project(":" + rootProject.name + "-core")
-			
 			compile files(fileTree(dir: 'libs', includes: ['*.jar']))
+			compile "org.mini2Dx:android-beans:$androidBeansVersion"
 			
 			compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 			compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
 			compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
-			
-			testCompile "junit:junit:$junitVersion"
-			testCompile "org.jmock:jmock-junit4:$jmockVersion"
-			testCompile "org.jmock:jmock-legacy:$jmockVersion"
-			testCompile project(path: ":" + rootProject.name + "-core", configuration: 'testOutput')
 		}
 	}
 	
@@ -306,11 +291,16 @@ if (hasAndroidSdk()) {
 		
 		apply plugin: "android"
 		
+		sourceCompatibility = 1.7
+		targetCompatibility = 1.7
+		
 		ext {
 			appName = 'mini2Dx-uats'
 		}
 		
-		configurations { natives }
+		configurations { 
+			natives
+		}
 		
 		dependencies {
 			compile project(":" + rootProject.name + "-uats")
@@ -319,6 +309,21 @@ if (hasAndroidSdk()) {
 			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
 			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
 			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+			
+			androidTestCompile (project(path: ":" + rootProject.name + "-core", configuration: 'testOutput')) {
+				exclude group: 'junit'
+				exclude group: 'org.hamcrest'
+			}
+			androidTestCompile ("org.jmock:jmock-junit4:$jmockVersion") {
+				exclude group: 'junit'
+				exclude group: 'org.hamcrest'
+			}
+			androidTestCompile ("org.jmock:jmock-legacy:$jmockVersion") {
+				exclude group: 'junit'
+				exclude group: 'org.hamcrest'
+			}
+			androidTestCompile 'com.android.support.test:runner:0.4'
+			androidTestCompile 'com.android.support.test:rules:0.4'
 		}
 	}
 }
@@ -326,18 +331,17 @@ if (hasAndroidSdk()) {
 if (Os.isFamily(Os.FAMILY_MAC)) {
 	project(":" + rootProject.name + "-ios") {
 		description = "mini2Dx iOS runtime"
-		
-		sourceCompatibility = 1.7
-		targetCompatibility = 1.7
 	
 		dependencies {
 			compile project(":" + rootProject.name + "-core")
 			
-			compile "org.reflections:reflections:$reflectionsVersion"
 			compile "org.robovm:robovm-rt:${roboVMVersion}"
 			compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
 			compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
 			compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+			
+			compile "org.reflections:reflections:$reflectionsVersion"
+			compile "commons-beanutils:commons-beanutils:$beanutilsVersion"
 			
 			testCompile "junit:junit:$junitVersion"
 			testCompile "org.jmock:jmock-junit4:$jmockVersion"

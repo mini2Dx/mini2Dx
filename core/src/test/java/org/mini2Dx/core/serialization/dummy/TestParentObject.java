@@ -54,6 +54,8 @@ public class TestParentObject extends TestSuperObject {
     private Map<String, TestChildObject> mapObjectValues;
     @Field
     private Os enumValue;
+    @Field
+    private TestConstuctorArgObject argObject;
     
     private int ignoredValue;
 
@@ -191,6 +193,14 @@ public class TestParentObject extends TestSuperObject {
 
 	public void setEnumValue(Os enumValue) {
 		this.enumValue = enumValue;
+	}
+
+	public TestConstuctorArgObject getArgObject() {
+		return argObject;
+	}
+
+	public void setArgObject(TestConstuctorArgObject argObject) {
+		this.argObject = argObject;
 	}
 
 	@Override

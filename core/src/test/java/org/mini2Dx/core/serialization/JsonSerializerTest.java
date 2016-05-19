@@ -19,6 +19,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
+import org.mini2Dx.core.serialization.dummy.TestConstuctorArgObject;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
 import org.mini2Dx.core.util.Os;
 
@@ -65,6 +66,8 @@ public class JsonSerializerTest {
 		parentObject.setMapObjectValues(new HashMap<String, TestChildObject>());
 		parentObject.getMapObjectValues().put("key1", new TestChildObject(100));
 		parentObject.getMapObjectValues().put("key2", new TestChildObject(101));
+		
+		parentObject.setArgObject(new TestConstuctorArgObject("cargValue"));
 	}
 	
 	@Test
@@ -113,6 +116,7 @@ public class JsonSerializerTest {
 		for(int i = 0; i < parentObject.getChildren().size(); i++) {
 			Assert.assertEquals(parentObject.getChildren().get(i).getIntValue(), result.getChildren().get(i).getIntValue());
 		}
+		Assert.assertEquals(parentObject.getArgObject(), result.getArgObject());
 		
 		Assert.assertNotSame(parentObject.getIgnoredValue(), result.getIgnoredValue());
 	}

@@ -9,16 +9,36 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.ios.di;
+package org.mini2Dx.uats.android;
 
-import org.mini2Dx.core.di.DependencyInjection;
+import junit.framework.Assert;
+
+import org.junit.Test;
+import org.mini2Dx.core.util.OsDetector;
 
 /**
- * iOS implementation of  {@link DependencyInjection}
+ * Unit tests for {@link OsDetector}
+ * @author Thomas Cashman
  */
-public class IOSDependencyInjection extends DependencyInjection {
-	
-	public IOSDependencyInjection() {
-		super(new IOSBeanUtils(), new IOSComponentScanner());
+public class OsDetectorTest {
+
+	@Test
+	public void testDetectDesktop() {
+		switch(OsDetector.getOs()) {
+		case ANDROID:
+			System.out.println("Detected " + OsDetector.getOs());
+			break;
+		case IOS:
+			Assert.fail("Detected iOS for Android JVM");
+			break;
+		case WINDOWS:
+		case MAC:
+		case UNIX:
+			Assert.fail("Detected desktop OS for Android JVM");
+			break;
+		case UNKNOWN:
+			Assert.fail("Could not detect OS for Android JVM");
+			break;
+		}
 	}
 }

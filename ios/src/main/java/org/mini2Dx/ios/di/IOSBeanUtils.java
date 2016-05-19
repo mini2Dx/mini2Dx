@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,14 +11,29 @@
  */
 package org.mini2Dx.ios.di;
 
-import org.mini2Dx.core.di.DependencyInjection;
+import java.lang.reflect.InvocationTargetException;
+
+import org.mini2Dx.core.di.BeanUtils;
+import org.mini2Dx.core.exception.MdxException;
 
 /**
- * iOS implementation of  {@link DependencyInjection}
+ * iOS implementation of {@link BeanUtils}
  */
-public class IOSDependencyInjection extends DependencyInjection {
-	
-	public IOSDependencyInjection() {
-		super(new IOSBeanUtils(), new IOSComponentScanner());
+public class IOSBeanUtils implements BeanUtils {
+
+	@Override
+	public Object cloneBean(Object bean) throws MdxException {
+		try {
+			return org.apache.commons.beanutils.BeanUtils.cloneBean(bean);
+		} catch (IllegalAccessException e) {
+			throw new MdxException(e.getMessage(), e);
+		} catch (InstantiationException e) {
+			throw new MdxException(e.getMessage(), e);
+		} catch (InvocationTargetException e) {
+			throw new MdxException(e.getMessage(), e);
+		} catch (NoSuchMethodException e) {
+			throw new MdxException(e.getMessage(), e);
+		}
 	}
+
 }

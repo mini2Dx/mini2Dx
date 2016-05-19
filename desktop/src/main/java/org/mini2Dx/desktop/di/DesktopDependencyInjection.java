@@ -19,6 +19,6 @@ import org.mini2Dx.core.di.DependencyInjection;
 public class DesktopDependencyInjection extends DependencyInjection {
 
 	public DesktopDependencyInjection() {
-		super(new DesktopComponentScanner());
+		super(new DesktopBeanUtils(), new DesktopComponentScanner());
 	}
 }

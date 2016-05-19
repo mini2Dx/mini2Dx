@@ -14,10 +14,15 @@ package org.mini2Dx.core.serialization;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
@@ -28,80 +33,108 @@ import com.badlogic.gdx.utils.reflect.Annotation;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.reflect.Method;
 
 /**
- * Serializes objects to/from JSON based on {@link org.mini2Dx.core.serialization.annotation.Field} annotations
+ * Serializes objects to/from JSON based on
+ * {@link org.mini2Dx.core.serialization.annotation.Field} annotations
  */
 @SuppressWarnings("unchecked")
 public class JsonSerializer {
 	/**
-	 * Reads a JSON document and converts it into an object of the specified type
-	 * @param fileHandle The {@link FileHandle} for the JSON document
-	 * @param clazz The {@link Class} to convert the document to
+	 * Reads a JSON document and converts it into an object of the specified
+	 * type
+	 * 
+	 * @param fileHandle
+	 *            The {@link FileHandle} for the JSON document
+	 * @param clazz
+	 *            The {@link Class} to convert the document to
 	 * @return The object deserialized from JSON
-	 * @throws SerializationException Thrown when the data is invalid
+	 * @throws SerializationException
+	 *             Thrown when the data is invalid
 	 */
-	public <T> T fromJson(FileHandle fileHandle, Class<T> clazz)
-			throws SerializationException {
+	public <T> T fromJson(FileHandle fileHandle, Class<T> clazz) throws SerializationException {
 		return deserialize(new JsonReader().parse(fileHandle), clazz);
 	}
-	
+
 	/**
-	 * Reads a JSON document and converts it into an object of the specified type
-	 * @param json The JSON document
-	 * @param clazz The {@link Class} to convert the document to
+	 * Reads a JSON document and converts it into an object of the specified
+	 * type
+	 * 
+	 * @param json
+	 *            The JSON document
+	 * @param clazz
+	 *            The {@link Class} to convert the document to
 	 * @return The object deserialized from JSON
-	 * @throws SerializationException Thrown when the data is invalid
+	 * @throws SerializationException
+	 *             Thrown when the data is invalid
 	 */
-	public <T> T fromJson(String json, Class<T> clazz)
-			throws SerializationException {
+	public <T> T fromJson(String json, Class<T> clazz) throws SerializationException {
 		return deserialize(new JsonReader().parse(json), clazz);
 	}
-	
+
 	/**
-	 * Writes a JSON document by searching the object for {@link org.mini2Dx.core.serialization.annotation.Field} annotations
-	 * @param fileHandle The {@link FileHandle} to write to
-	 * @param object The object to convert to JSON
+	 * Writes a JSON document by searching the object for
+	 * {@link org.mini2Dx.core.serialization.annotation.Field} annotations
+	 * 
+	 * @param fileHandle
+	 *            The {@link FileHandle} to write to
+	 * @param object
+	 *            The object to convert to JSON
 	 * @return The object serialized as JSON
-	 * @throws SerializationException Thrown when the object is invalid
+	 * @throws SerializationException
+	 *             Thrown when the object is invalid
 	 */
 	public <T> void toJson(FileHandle fileHandle, T object) throws SerializationException {
 		toJson(fileHandle, object, false);
 	}
-	
+
 	/**
-	 * Writes a JSON document by searching the object for {@link org.mini2Dx.core.serialization.annotation.Field} annotations
-	 * @param fileHandle The {@link FileHandle} to write to
-	 * @param object The object to convert to JSON
-	 * @param prettyPrint Set to true if the JSON should be prettified
+	 * Writes a JSON document by searching the object for
+	 * {@link org.mini2Dx.core.serialization.annotation.Field} annotations
+	 * 
+	 * @param fileHandle
+	 *            The {@link FileHandle} to write to
+	 * @param object
+	 *            The object to convert to JSON
+	 * @param prettyPrint
+	 *            Set to true if the JSON should be prettified
 	 * @return The object serialized as JSON
-	 * @throws SerializationException Thrown when the object is invalid
+	 * @throws SerializationException
+	 *             Thrown when the object is invalid
 	 */
 	public <T> void toJson(FileHandle fileHandle, T object, boolean prettyPrint) throws SerializationException {
 		String json = toJson(object, prettyPrint);
 		fileHandle.writeString(json, false);
 	}
 
-
 	/**
-	 * Writes a JSON document by searching the object for {@link org.mini2Dx.core.serialization.annotation.Field} annotations
-	 * @param object The object to convert to JSON
+	 * Writes a JSON document by searching the object for
+	 * {@link org.mini2Dx.core.serialization.annotation.Field} annotations
+	 * 
+	 * @param object
+	 *            The object to convert to JSON
 	 * @return The object serialized as JSON
-	 * @throws SerializationException Thrown when the object is invalid
+	 * @throws SerializationException
+	 *             Thrown when the object is invalid
 	 */
 	public <T> String toJson(T object) throws SerializationException {
 		return toJson(object, false);
 	}
 
 	/**
-	 * Writes a JSON document by searching the object for {@link org.mini2Dx.core.serialization.annotation.Field} annotations
-	 * @param object The object to convert to JSON
-	 * @param prettyPrint Set to true if the JSON should be prettified
+	 * Writes a JSON document by searching the object for
+	 * {@link org.mini2Dx.core.serialization.annotation.Field} annotations
+	 * 
+	 * @param object
+	 *            The object to convert to JSON
+	 * @param prettyPrint
+	 *            Set to true if the JSON should be prettified
 	 * @return The object serialized as JSON
-	 * @throws SerializationException Thrown when the object is invalid
+	 * @throws SerializationException
+	 *             Thrown when the object is invalid
 	 */
-	public <T> String toJson(T object, boolean prettyPrint)
-			throws SerializationException {
+	public <T> String toJson(T object, boolean prettyPrint) throws SerializationException {
 		StringWriter writer = new StringWriter();
 		Json json = new Json();
 		json.setOutputType(OutputType.json);
@@ -129,8 +162,7 @@ public class JsonSerializer {
 		}
 	}
 
-	private <T> void writeArray(String fieldName, Object array, Json json)
-			throws SerializationException {
+	private <T> void writeArray(String fieldName, Object array, Json json) throws SerializationException {
 		if (fieldName != null) {
 			json.writeArrayStart(fieldName);
 		} else {
@@ -143,8 +175,7 @@ public class JsonSerializer {
 		json.writeArrayEnd();
 	}
 
-	private <T> void writeMap(String fieldName, Map map, Json json)
-			throws SerializationException {
+	private <T> void writeMap(String fieldName, Map map, Json json) throws SerializationException {
 		if (fieldName != null) {
 			json.writeObjectStart(fieldName);
 		} else {
@@ -156,8 +187,7 @@ public class JsonSerializer {
 		json.writeObjectEnd();
 	}
 
-	private <T> void writeObject(T object, String fieldName, Json json)
-			throws SerializationException {
+	private <T> void writeObject(T object, String fieldName, Json json) throws SerializationException {
 		try {
 			if (object == null) {
 				writePrimitive(fieldName, null, json);
@@ -193,9 +223,9 @@ public class JsonSerializer {
 			} else {
 				json.writeObjectStart(fieldName);
 			}
-			
+
 			Class<?> currentClass = clazz;
-			while(currentClass != null && !currentClass.equals(Object.class)) {
+			while (currentClass != null && !currentClass.equals(Object.class)) {
 				for (Field field : ClassReflection.getDeclaredFields(currentClass)) {
 					field.setAccessible(true);
 					Annotation annotation = field
@@ -212,6 +242,17 @@ public class JsonSerializer {
 					}
 					writeObject(field.get(object), field.getName(), json);
 				}
+				for(Method method : ClassReflection.getDeclaredMethods(currentClass)) {
+					if(method.getParameterTypes().length > 0) {
+						continue;
+					}
+					Annotation annotation = method.getDeclaredAnnotation(ConstructorArg.class);
+					if(annotation == null) {
+						continue;
+					}
+					ConstructorArg constructorArg = annotation.getAnnotation(ConstructorArg.class);
+					writeObject(method.invoke(object), constructorArg.name(), json); ;
+				}
 				currentClass = currentClass.getSuperclass();
 			}
 
@@ -223,16 +264,79 @@ public class JsonSerializer {
 		}
 	}
 
-	private <T> T deserialize(JsonValue objectRoot, Class<T> clazz)
-			throws SerializationException {
+	private <T> T construct(JsonValue objectRoot, Class<T> clazz) throws InstantiationException, IllegalAccessException,
+			SerializationException, IllegalArgumentException, InvocationTargetException {
+		Constructor<?>[] constructors = clazz.getConstructors();
+		// Single constructor with no args
+		if (constructors.length == 1 && constructors[0].getParameterAnnotations().length == 0) {
+			return clazz.newInstance();
+		}
+
+		Constructor bestMatchedConstructor = null;
+		List<ConstructorArg> detectedAnnotations = new ArrayList<ConstructorArg>(1);
+
+		for (int i = 0; i < constructors.length; i++) {
+			detectedAnnotations.clear();
+			boolean allAnnotated = true;
+
+			for (int j = 0; j < constructors[i].getParameterAnnotations().length; j++) {
+				java.lang.annotation.Annotation[] annotations = constructors[i].getParameterAnnotations()[j];
+				if (annotations.length == 0) {
+					allAnnotated = false;
+					break;
+				}
+
+				boolean hasConstructorArgAnnotation = false;
+				for (int k = 0; k < annotations.length; k++) {
+					if (!annotations[i].annotationType().isAssignableFrom(ConstructorArg.class)) {
+						continue;
+					}
+					ConstructorArg constructorArg = (ConstructorArg) annotations[i];
+					if (objectRoot.get(constructorArg.name()) == null) {
+						continue;
+					}
+					detectedAnnotations.add(constructorArg);
+					hasConstructorArgAnnotation = true;
+					break;
+				}
+				if (!hasConstructorArgAnnotation) {
+					allAnnotated = false;
+				}
+			}
+			if (!allAnnotated) {
+				continue;
+			}
+			if (bestMatchedConstructor == null) {
+				bestMatchedConstructor = constructors[i];
+			} else if (detectedAnnotations.size() > bestMatchedConstructor.getParameterAnnotations().length) {
+				bestMatchedConstructor = constructors[i];
+			}
+		}
+		if (bestMatchedConstructor == null) {
+			throw new SerializationException("Could not find suitable constructor for class " + clazz.getName());
+		}
+		if (detectedAnnotations.size() == 0) {
+			return clazz.newInstance();
+		}
+
+		Object[] constructorParameters = new Object[detectedAnnotations.size()];
+		for (int i = 0; i < detectedAnnotations.size(); i++) {
+			ConstructorArg constructorArg = detectedAnnotations.get(i);
+			constructorParameters[i] = deserialize(objectRoot.get(constructorArg.name()), constructorArg.clazz());
+			objectRoot.remove(constructorArg.name());
+		}
+		return (T) bestMatchedConstructor.newInstance(constructorParameters);
+	}
+
+	private <T> T deserialize(JsonValue objectRoot, Class<T> clazz) throws SerializationException {
 		try {
 			if (objectRoot.isNull()) {
 				return null;
 			}
 			if (objectRoot.isObject()) {
-				T result = ClassReflection.newInstance(clazz);
+				T result = construct(objectRoot, clazz);
 				Class<?> currentClass = clazz;
-				while(currentClass != null && !currentClass.equals(Object.class)) {
+				while (currentClass != null && !currentClass.equals(Object.class)) {
 					for (Field field : ClassReflection.getDeclaredFields(currentClass)) {
 						field.setAccessible(true);
 						Annotation annotation = field
@@ -247,8 +351,7 @@ public class JsonSerializer {
 						JsonValue value = objectRoot.get(field.getName());
 						if (value == null || value.isNull()) {
 							if (!fieldAnnotation.optional()) {
-								throw new RequiredFieldException(currentClass,
-										field.getName());
+								throw new RequiredFieldException(currentClass, field.getName());
 							}
 							continue;
 						}
@@ -260,8 +363,7 @@ public class JsonSerializer {
 			}
 			if (objectRoot.isArray()) {
 				Class<?> arrayType = clazz.getComponentType();
-				Object array = ArrayReflection.newInstance(arrayType,
-						objectRoot.size);
+				Object array = ArrayReflection.newInstance(arrayType, objectRoot.size);
 				for (int i = 0; i < objectRoot.size; i++) {
 					Array.set(array, i, objectRoot.get(i));
 				}
@@ -270,20 +372,18 @@ public class JsonSerializer {
 			if (clazz.isEnum()) {
 				return (T) Enum.valueOf((Class<Enum>) clazz, objectRoot.asString());
 			}
-			
+
 			if (clazz.equals(Boolean.TYPE) || clazz.equals(Boolean.class)) {
 				return (T) ((Boolean) objectRoot.asBoolean());
 			} else if (clazz.equals(Byte.TYPE) || clazz.equals(Byte.class)) {
 				return (T) ((Byte) objectRoot.asByte());
-			} else if (clazz.equals(Character.TYPE)
-					|| clazz.equals(Character.class)) {
+			} else if (clazz.equals(Character.TYPE) || clazz.equals(Character.class)) {
 				return (T) ((Character) objectRoot.asChar());
 			} else if (clazz.equals(Double.TYPE) || clazz.equals(Double.class)) {
 				return (T) ((Double) objectRoot.asDouble());
 			} else if (clazz.equals(Float.TYPE) || clazz.equals(Float.class)) {
 				return (T) ((Float) objectRoot.asFloat());
-			} else if (clazz.equals(Integer.TYPE)
-					|| clazz.equals(Integer.class)) {
+			} else if (clazz.equals(Integer.TYPE) || clazz.equals(Integer.class)) {
 				return (T) ((Integer) objectRoot.asInt());
 			} else if (clazz.equals(Long.TYPE) || clazz.equals(Long.class)) {
 				return (T) ((Long) objectRoot.asLong());
@@ -300,8 +400,7 @@ public class JsonSerializer {
 		}
 	}
 
-	private <T> void setField(T targetObject, Field field, JsonValue value)
-			throws SerializationException {
+	private <T> void setField(T targetObject, Field field, JsonValue value) throws SerializationException {
 		try {
 			Class<?> clazz = field.getType();
 			if (clazz.isArray()) {
@@ -309,10 +408,7 @@ public class JsonSerializer {
 				return;
 			}
 			if (clazz.isEnum()) {
-				field.set(
-						targetObject,
-						Enum.valueOf((Class<? extends Enum>) clazz,
-								value.asString()));
+				field.set(targetObject, Enum.valueOf((Class<? extends Enum>) clazz, value.asString()));
 				return;
 			}
 			if (!clazz.isPrimitive()) {
@@ -336,8 +432,8 @@ public class JsonSerializer {
 		}
 	}
 
-	private <T> void setArrayField(T targetObject, Field field, Class<?> clazz,
-			JsonValue value) throws SerializationException {
+	private <T> void setArrayField(T targetObject, Field field, Class<?> clazz, JsonValue value)
+			throws SerializationException {
 		try {
 			if (clazz.equals(boolean[].class)) {
 				field.set(targetObject, value.asBooleanArray());
@@ -367,8 +463,8 @@ public class JsonSerializer {
 		}
 	}
 
-	private <T> void setCollectionField(T targetObject, Field field,
-			Class<?> clazz, JsonValue value) throws SerializationException {
+	private <T> void setCollectionField(T targetObject, Field field, Class<?> clazz, JsonValue value)
+			throws SerializationException {
 		try {
 			Class<?> valueClass = field.getElementType(0);
 
@@ -385,17 +481,15 @@ public class JsonSerializer {
 		}
 	}
 
-	private <T> void setMapField(T targetObject, Field field, Class<?> clazz,
-			JsonValue value) throws SerializationException {
+	private <T> void setMapField(T targetObject, Field field, Class<?> clazz, JsonValue value)
+			throws SerializationException {
 		try {
-			Map map = (Map) (clazz.isInterface() ? new HashMap()
-					: ClassReflection.newInstance(clazz));
+			Map map = (Map) (clazz.isInterface() ? new HashMap() : ClassReflection.newInstance(clazz));
 			Class<?> keyClass = field.getElementType(0);
 			Class<?> valueClass = field.getElementType(1);
 
 			for (int i = 0; i < value.size; i++) {
-				map.put(parseMapKey(value.get(i).name, keyClass),
-						deserialize(value.get(i), valueClass));
+				map.put(parseMapKey(value.get(i).name, keyClass), deserialize(value.get(i), valueClass));
 			}
 			field.set(targetObject, map);
 		} catch (SerializationException e) {
@@ -435,7 +529,7 @@ public class JsonSerializer {
 		}
 		return false;
 	}
-	
+
 	private <T> T parseMapKey(String value, Class<T> clazz) {
 		if (clazz.equals(Boolean.TYPE) || clazz.equals(Boolean.class)) {
 			return (T) new Boolean(value);

@@ -17,6 +17,7 @@ import java.util.HashMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
+import org.mini2Dx.core.serialization.dummy.TestConstuctorArgObject;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
 import org.mini2Dx.core.util.Os;
 
@@ -128,6 +129,8 @@ public abstract class XmlSerializerTest {
 		xml += "        </value>\n";
 		xml += "    </children>\n";
 		xml += "    <superField>super super</superField>\n";
+		xml += "    <argObject argValue=\"cargValue\">\n";
+		xml += "    </argObject>\n";
 		xml += "</data>";
 		
 		TestParentObject result = xmlSerializer.fromXml(xml, TestParentObject.class);
@@ -197,6 +200,8 @@ public abstract class XmlSerializerTest {
 		parentObject.setMapObjectValues(new HashMap<String, TestChildObject>());
 		parentObject.getMapObjectValues().put("key1", new TestChildObject(100));
 		parentObject.getMapObjectValues().put("key2", new TestChildObject(101));
+		
+		parentObject.setArgObject(new TestConstuctorArgObject("cargValue"));
 		return parentObject;
 	}
 }
