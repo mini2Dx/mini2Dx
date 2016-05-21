@@ -48,7 +48,7 @@ subprojects {
 		langVersion="3.1"
 		reflectionsVersion="0.9.10"
 		artemisVersion="1.1.0"
-		androidBeansVersion="1.0.0-SNAPSHOT"
+		androidBeansVersion="1.0.0"
 		
 		junitVersion="4.8.1"
 		jmockVersion="2.5.1"
