@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.serialization.JsonSerializer;
+import org.mini2Dx.core.serialization.dummy.TestAbstractImplObject;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
 import org.mini2Dx.core.serialization.dummy.TestConstuctorArgObject;
 import org.mini2Dx.core.serialization.dummy.TestInterface;
@@ -166,5 +167,8 @@ public class DesktopPlayerDataTest {
 		
         expectedParentObject.getFinalStringMap().put("fkey1", "fstr6");
         expectedParentObject.getFinalStringMap().put("fkey2", "fstr7");
+        
+        expectedParentObject.setAbstractObject(new TestAbstractImplObject());
+        expectedParentObject.getAbstractObject().setValue(91);
     }
 }

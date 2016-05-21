@@ -19,6 +19,7 @@ import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ import org.mini2Dx.core.serialization.RequiredFieldException;
 import org.mini2Dx.core.serialization.SerializationException;
 import org.mini2Dx.core.serialization.XmlSerializer;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
-import org.mini2Dx.core.serialization.annotation.Interface;
+import org.mini2Dx.core.serialization.annotation.NonConcrete;
 import org.mini2Dx.core.util.Ref;
 
 import com.badlogic.gdx.utils.reflect.Annotation;
@@ -117,35 +118,42 @@ public class DesktopXmlSerializer implements XmlSerializer {
 		
 		if(fieldDefinitionClass.isArray()) {
 			Class<?> arrayComponentType = fieldDefinitionClass.getComponentType();
-			if(arrayComponentType.isInterface() && arrayComponentType.getAnnotation(Interface.class) == null) {
-				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			if(arrayComponentType.isInterface() && arrayComponentType.getAnnotation(NonConcrete.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlWriter.writeAttribute("class", clazz.getName());
 			return;
 		}
 		if(Collection.class.isAssignableFrom(fieldDefinitionClass)) {
 			Class<?> valueClass = fieldDefinition.getElementType(0);
-			if(valueClass.isInterface() && valueClass.getAnnotation(Interface.class) == null) {
-				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			if(valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlWriter.writeAttribute("class", clazz.getName());
 			return;
 		}
 		if(Map.class.isAssignableFrom(fieldDefinitionClass)) {
 			Class<?> valueClass = fieldDefinition.getElementType(1);
-			if(valueClass.isInterface() && valueClass.getAnnotation(Interface.class) == null) {
-				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			if(valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlWriter.writeAttribute("class", clazz.getName());
 			return;
 		}
 		if(fieldDefinitionClass.isInterface()) {
-			if(fieldDefinitionClass.getAnnotation(Interface.class) == null) {
-				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			if(fieldDefinitionClass.getAnnotation(NonConcrete.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlWriter.writeAttribute("class", clazz.getName());
 			return;
 		} 
+		if(Modifier.isAbstract(fieldDefinitionClass.getModifiers())) {
+			if(fieldDefinitionClass.getAnnotation(NonConcrete.class) == null) {
+				throw new SerializationException("Cannot serialize abstract class unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
+			}
+			xmlWriter.writeAttribute("class", clazz.getName());
+			return;
+		}
 	}
 
 	private <T> void writeObject(Field fieldDefinition, T object, String tagName, XMLStreamWriter xmlWriter) throws SerializationException {
@@ -311,11 +319,9 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e.getMessage(), e);
 		}
 	}
-
-	private <T> T construct(XMLStreamReader xmlReader, String xmlTag, Ref<Boolean> isEndElement, Class<?> clazz)
-			throws InstantiationException, IllegalAccessException, SerializationException, IllegalArgumentException,
-			InvocationTargetException, XMLStreamException, ClassNotFoundException {
-		if(clazz.isInterface()) {
+	
+	private Class<?> determineImplementation(XMLStreamReader xmlReader, Class<?> clazz) throws ClassNotFoundException, SerializationException {
+		if(clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) {
 			String classValue = null;
 			for(int i = 0; i < xmlReader.getAttributeCount(); i++) {
 				if(xmlReader.getAttributeName(i).toString().equals("class")) {
@@ -323,11 +329,16 @@ public class DesktopXmlSerializer implements XmlSerializer {
 				}
 			}
 			if(classValue == null) {
-				throw new SerializationException("No class field found for deserializing interface " + clazz.getName());
+				throw new SerializationException("No class field found for deserializing " + clazz.getName());
 			}
 			clazz = Class.forName(classValue);
 		}
-		
+		return clazz;
+	}
+
+	private <T> T construct(XMLStreamReader xmlReader, String xmlTag, Ref<Boolean> isEndElement, Class<?> clazz)
+			throws InstantiationException, IllegalAccessException, SerializationException, IllegalArgumentException,
+			InvocationTargetException, XMLStreamException, ClassNotFoundException {
 		Constructor<?>[] constructors = clazz.getConstructors();
 		// Single constructor with no args
 		if (constructors.length == 1 && constructors[0].getParameterAnnotations().length == 0) {
@@ -405,25 +416,26 @@ public class DesktopXmlSerializer implements XmlSerializer {
 		return (T) bestMatchedConstructor.newInstance(constructorParameters);
 	}
 
-	private <T> T deserializeObject(XMLStreamReader xmlReader, String xmlTag, Class<T> clazz)
+	private <T> T deserializeObject(XMLStreamReader xmlReader, String xmlTag, Class<T> objClass)
 			throws SerializationException {
 		try {
-			if (isPrimitive(clazz) || clazz.equals(String.class)) {
+			if (isPrimitive(objClass) || objClass.equals(String.class)) {
 				xmlReader.next();
 				if(xmlReader.getEventType() == XMLStreamReader.END_ELEMENT) {
 					return null;
 				}
-				return parsePrimitive(xmlReader.getText(), clazz);
+				return parsePrimitive(xmlReader.getText(), objClass);
 			}
-			if (clazz.isEnum()) {
+			if (objClass.isEnum()) {
 				xmlReader.next();
 				if(xmlReader.getEventType() == XMLStreamReader.END_ELEMENT) {
 					return null;
 				}
-				return (T) Enum.valueOf((Class<? extends Enum>) clazz, xmlReader.getText());
+				return (T) Enum.valueOf((Class<? extends Enum>) objClass, xmlReader.getText());
 			}
 
 			Ref<Boolean> isEndElement = new Ref<Boolean>();
+			Class<?> clazz = determineImplementation(xmlReader, objClass);
 			T result = construct(xmlReader, xmlTag, isEndElement, clazz);
 			if(isEndElement.get()) {
 				return result;
@@ -435,6 +447,9 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			while (!finished) {
 				switch (parserEventType) {
 				case XMLStreamConstants.START_ELEMENT:
+					if (xmlReader.getLocalName().equals(xmlTag)) {
+						break;
+					}
 					String currentFieldName = xmlReader.getLocalName();
 					Field currentField = findField(clazz, currentFieldName);
 					currentField.setAccessible(true);

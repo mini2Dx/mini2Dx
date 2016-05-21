@@ -16,6 +16,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
-import org.mini2Dx.core.serialization.annotation.Interface;
+import org.mini2Dx.core.serialization.annotation.NonConcrete;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
@@ -199,31 +200,38 @@ public class JsonSerializer {
 		
 		if(fieldDefinitionClass.isArray()) {
 			Class<?> arrayComponentType = fieldDefinitionClass.getComponentType();
-			if(arrayComponentType.isInterface() && arrayComponentType.getAnnotation(Interface.class) == null) {
-				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			if(arrayComponentType.isInterface() && arrayComponentType.getAnnotation(NonConcrete.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
 			}
 			writePrimitive("class", clazz.getName(), json);
 			return;
 		}
 		if(Collection.class.isAssignableFrom(fieldDefinitionClass)) {
 			Class<?> valueClass = fieldDefinition.getElementType(0);
-			if(valueClass.isInterface() && valueClass.getAnnotation(Interface.class) == null) {
-				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			if(valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
 			}
 			writePrimitive("class", clazz.getName(), json);
 			return;
 		}
 		if(Map.class.isAssignableFrom(fieldDefinitionClass)) {
 			Class<?> valueClass = fieldDefinition.getElementType(1);
-			if(valueClass.isInterface() && valueClass.getAnnotation(Interface.class) == null) {
-				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			if(valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
 			}
 			writePrimitive("class", clazz.getName(), json);
 			return;
 		}
 		if(fieldDefinitionClass.isInterface()) {
-			if(fieldDefinitionClass.getAnnotation(Interface.class) == null) {
-				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			if(fieldDefinitionClass.getAnnotation(NonConcrete.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
+			}
+			writePrimitive("class", clazz.getName(), json);
+			return;
+		}
+		if(Modifier.isAbstract(fieldDefinitionClass.getModifiers())) {
+			if(fieldDefinitionClass.getAnnotation(NonConcrete.class) == null) {
+				throw new SerializationException("Cannot serialize abstract class unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
 			}
 			writePrimitive("class", clazz.getName(), json);
 			return;
@@ -326,14 +334,6 @@ public class JsonSerializer {
 
 	private <T> T construct(JsonValue objectRoot, Class<?> clazz) throws InstantiationException, IllegalAccessException,
 			SerializationException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
-		if(clazz.isInterface()) {
-			JsonValue classField = objectRoot.get("class");
-			if(classField == null) {
-				throw new SerializationException("No class field found for deserializing interface " + clazz.getName());
-			}
-			clazz = Class.forName(classField.asString());
-		}
-		
 		Constructor<?>[] constructors = clazz.getConstructors();
 		// Single constructor with no args
 		if (constructors.length == 1 && constructors[0].getParameterAnnotations().length == 0) {
@@ -395,13 +395,25 @@ public class JsonSerializer {
 		}
 		return (T) bestMatchedConstructor.newInstance(constructorParameters);
 	}
+	
+	private Class<?> determineImplementation(JsonValue objectRoot, Class<?> clazz) throws SerializationException, ClassNotFoundException {
+		if(clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) {
+			JsonValue classField = objectRoot.get("class");
+			if(classField == null) {
+				throw new SerializationException("No class field found for deserializing " + clazz.getName());
+			}
+			clazz = Class.forName(classField.asString());
+		}
+		return clazz;
+	}
 
-	private <T> T deserialize(JsonValue objectRoot, Class<T> clazz) throws SerializationException {
+	private <T> T deserialize(JsonValue objectRoot, Class<T> fieldClass) throws SerializationException {
 		try {
 			if (objectRoot.isNull()) {
 				return null;
 			}
 			if (objectRoot.isObject()) {
+				Class<?> clazz = determineImplementation(objectRoot, fieldClass);
 				T result = construct(objectRoot, clazz);
 				Class<?> currentClass = clazz;
 				while (currentClass != null && !currentClass.equals(Object.class)) {
@@ -430,32 +442,32 @@ public class JsonSerializer {
 				return result;
 			}
 			if (objectRoot.isArray()) {
-				Class<?> arrayType = clazz.getComponentType();
+				Class<?> arrayType = fieldClass.getComponentType();
 				Object array = ArrayReflection.newInstance(arrayType, objectRoot.size);
 				for (int i = 0; i < objectRoot.size; i++) {
 					Array.set(array, i, objectRoot.get(i));
 				}
 				return (T) array;
 			}
-			if (clazz.isEnum()) {
-				return (T) Enum.valueOf((Class<Enum>) clazz, objectRoot.asString());
+			if (fieldClass.isEnum()) {
+				return (T) Enum.valueOf((Class<Enum>) fieldClass, objectRoot.asString());
 			}
 
-			if (clazz.equals(Boolean.TYPE) || clazz.equals(Boolean.class)) {
+			if (fieldClass.equals(Boolean.TYPE) || fieldClass.equals(Boolean.class)) {
 				return (T) ((Boolean) objectRoot.asBoolean());
-			} else if (clazz.equals(Byte.TYPE) || clazz.equals(Byte.class)) {
+			} else if (fieldClass.equals(Byte.TYPE) || fieldClass.equals(Byte.class)) {
 				return (T) ((Byte) objectRoot.asByte());
-			} else if (clazz.equals(Character.TYPE) || clazz.equals(Character.class)) {
+			} else if (fieldClass.equals(Character.TYPE) || fieldClass.equals(Character.class)) {
 				return (T) ((Character) objectRoot.asChar());
-			} else if (clazz.equals(Double.TYPE) || clazz.equals(Double.class)) {
+			} else if (fieldClass.equals(Double.TYPE) || fieldClass.equals(Double.class)) {
 				return (T) ((Double) objectRoot.asDouble());
-			} else if (clazz.equals(Float.TYPE) || clazz.equals(Float.class)) {
+			} else if (fieldClass.equals(Float.TYPE) || fieldClass.equals(Float.class)) {
 				return (T) ((Float) objectRoot.asFloat());
-			} else if (clazz.equals(Integer.TYPE) || clazz.equals(Integer.class)) {
+			} else if (fieldClass.equals(Integer.TYPE) || fieldClass.equals(Integer.class)) {
 				return (T) ((Integer) objectRoot.asInt());
-			} else if (clazz.equals(Long.TYPE) || clazz.equals(Long.class)) {
+			} else if (fieldClass.equals(Long.TYPE) || fieldClass.equals(Long.class)) {
 				return (T) ((Long) objectRoot.asLong());
-			} else if (clazz.equals(Short.TYPE) || clazz.equals(Short.class)) {
+			} else if (fieldClass.equals(Short.TYPE) || fieldClass.equals(Short.class)) {
 				return (T) ((Short) objectRoot.asShort());
 			} else {
 				return (T) objectRoot.asString();

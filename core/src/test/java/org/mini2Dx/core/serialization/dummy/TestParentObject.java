@@ -68,6 +68,8 @@ public class TestParentObject extends TestSuperObject {
 	private final Map<String, String> finalStringMap = new HashMap<String, String>();
 	@Field
 	private final String [] finalStringArray = new String[5];
+	@Field
+	private TestAbstractObject abstractObject;
     
     private int ignoredValue;
 
@@ -243,18 +245,34 @@ public class TestParentObject extends TestSuperObject {
 		return finalStringArray;
 	}
 
+	public TestAbstractObject getAbstractObject() {
+		return abstractObject;
+	}
+
+	public void setAbstractObject(TestAbstractObject abstractObject) {
+		this.abstractObject = abstractObject;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
+		result = prime * result + ((abstractObject == null) ? 0 : abstractObject.hashCode());
+		result = prime * result + ((argObject == null) ? 0 : argObject.hashCode());
 		result = prime * result + (booleanValue ? 1231 : 1237);
 		result = prime * result + byteValue;
 		result = prime * result + ((childObject == null) ? 0 : childObject.hashCode());
 		result = prime * result + ((children == null) ? 0 : children.hashCode());
+		result = prime * result + ((enumValue == null) ? 0 : enumValue.hashCode());
+		result = prime * result + Arrays.hashCode(finalStringArray);
+		result = prime * result + ((finalStringList == null) ? 0 : finalStringList.hashCode());
+		result = prime * result + ((finalStringMap == null) ? 0 : finalStringMap.hashCode());
 		result = prime * result + Float.floatToIntBits(floatValue);
 		result = prime * result + ignoredValue;
 		result = prime * result + Arrays.hashCode(intArrayValue);
 		result = prime * result + intValue;
+		result = prime * result + ((interfaceObject == null) ? 0 : interfaceObject.hashCode());
+		result = prime * result + ((interfaceObjectList == null) ? 0 : interfaceObjectList.hashCode());
 		result = prime * result + ((listValues == null) ? 0 : listValues.hashCode());
 		result = prime * result + (int) (longValue ^ (longValue >>> 32));
 		result = prime * result + ((mapObjectValues == null) ? 0 : mapObjectValues.hashCode());
@@ -263,7 +281,6 @@ public class TestParentObject extends TestSuperObject {
 		result = prime * result + shortValue;
 		result = prime * result + Arrays.hashCode(stringArrayValue);
 		result = prime * result + ((stringValue == null) ? 0 : stringValue.hashCode());
-		result = prime * result + ((enumValue == null) ? 0 : enumValue.hashCode());
 		return result;
 	}
 
@@ -276,6 +293,16 @@ public class TestParentObject extends TestSuperObject {
 		if (getClass() != obj.getClass())
 			return false;
 		TestParentObject other = (TestParentObject) obj;
+		if (abstractObject == null) {
+			if (other.abstractObject != null)
+				return false;
+		} else if (!abstractObject.equals(other.abstractObject))
+			return false;
+		if (argObject == null) {
+			if (other.argObject != null)
+				return false;
+		} else if (!argObject.equals(other.argObject))
+			return false;
 		if (booleanValue != other.booleanValue)
 			return false;
 		if (byteValue != other.byteValue)
@@ -290,6 +317,20 @@ public class TestParentObject extends TestSuperObject {
 				return false;
 		} else if (!children.equals(other.children))
 			return false;
+		if (enumValue != other.enumValue)
+			return false;
+		if (!Arrays.equals(finalStringArray, other.finalStringArray))
+			return false;
+		if (finalStringList == null) {
+			if (other.finalStringList != null)
+				return false;
+		} else if (!finalStringList.equals(other.finalStringList))
+			return false;
+		if (finalStringMap == null) {
+			if (other.finalStringMap != null)
+				return false;
+		} else if (!finalStringMap.equals(other.finalStringMap))
+			return false;
 		if (Float.floatToIntBits(floatValue) != Float.floatToIntBits(other.floatValue))
 			return false;
 		if (ignoredValue != other.ignoredValue)
@@ -297,6 +338,16 @@ public class TestParentObject extends TestSuperObject {
 		if (!Arrays.equals(intArrayValue, other.intArrayValue))
 			return false;
 		if (intValue != other.intValue)
+			return false;
+		if (interfaceObject == null) {
+			if (other.interfaceObject != null)
+				return false;
+		} else if (!interfaceObject.equals(other.interfaceObject))
+			return false;
+		if (interfaceObjectList == null) {
+			if (other.interfaceObjectList != null)
+				return false;
+		} else if (!interfaceObjectList.equals(other.interfaceObjectList))
 			return false;
 		if (listValues == null) {
 			if (other.listValues != null)
@@ -328,11 +379,6 @@ public class TestParentObject extends TestSuperObject {
 			if (other.stringValue != null)
 				return false;
 		} else if (!stringValue.equals(other.stringValue))
-			return false;
-		if (enumValue == null) {
-			if (other.enumValue != null)
-				return false;
-		} else if (!enumValue.equals(other.enumValue))
 			return false;
 		return true;
 	}

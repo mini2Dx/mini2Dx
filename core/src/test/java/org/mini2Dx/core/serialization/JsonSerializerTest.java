@@ -18,6 +18,7 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.serialization.dummy.TestAbstractImplObject;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
 import org.mini2Dx.core.serialization.dummy.TestConstuctorArgObject;
 import org.mini2Dx.core.serialization.dummy.TestInterface;
@@ -84,6 +85,9 @@ public class JsonSerializerTest {
 		
 		parentObject.getFinalStringMap().put("fkey1", "fstr6");
 		parentObject.getFinalStringMap().put("fkey2", "fstr7");
+		
+		parentObject.setAbstractObject(new TestAbstractImplObject());
+		parentObject.getAbstractObject().setValue(91);
 	}
 	
 	@Test
@@ -160,5 +164,6 @@ public class JsonSerializerTest {
 		for(int i = 0; i < parentObject.getFinalStringArray().length; i++) {
 			Assert.assertEquals(parentObject.getFinalStringArray()[i], result.getFinalStringArray()[i]);
 		}
+		Assert.assertEquals(parentObject.getAbstractObject().getValue(), result.getAbstractObject().getValue());
 	}
 }

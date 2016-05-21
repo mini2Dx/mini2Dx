@@ -19,6 +19,7 @@ import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,13 +27,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.mini2Dx.core.serialization.RequiredFieldException;
 import org.mini2Dx.core.serialization.SerializationException;
 import org.mini2Dx.core.serialization.XmlSerializer;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
-import org.mini2Dx.core.serialization.annotation.Interface;
+import org.mini2Dx.core.serialization.annotation.NonConcrete;
 import org.mini2Dx.core.util.Ref;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -120,35 +120,42 @@ public class AndroidXmlSerializer implements XmlSerializer {
 
 		if (fieldDefinitionClass.isArray()) {
 			Class<?> arrayComponentType = fieldDefinitionClass.getComponentType();
-			if (arrayComponentType.isInterface() && arrayComponentType.getAnnotation(Interface.class) == null) {
+			if (arrayComponentType.isInterface() && arrayComponentType.getAnnotation(NonConcrete.class) == null) {
 				throw new SerializationException("Cannot serialize interface unless it has a @"
-						+ Interface.class.getSimpleName() + " annotation");
+						+ NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlSerializer.attribute("", "class", clazz.getName());
 			return;
 		}
 		if (Collection.class.isAssignableFrom(fieldDefinitionClass)) {
 			Class<?> valueClass = fieldDefinition.getElementType(0);
-			if (valueClass.isInterface() && valueClass.getAnnotation(Interface.class) == null) {
+			if (valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
 				throw new SerializationException("Cannot serialize interface unless it has a @"
-						+ Interface.class.getSimpleName() + " annotation");
+						+ NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlSerializer.attribute("", "class", clazz.getName());
 			return;
 		}
 		if (Map.class.isAssignableFrom(fieldDefinitionClass)) {
 			Class<?> valueClass = fieldDefinition.getElementType(1);
-			if (valueClass.isInterface() && valueClass.getAnnotation(Interface.class) == null) {
+			if (valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
 				throw new SerializationException("Cannot serialize interface unless it has a @"
-						+ Interface.class.getSimpleName() + " annotation");
+						+ NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlSerializer.attribute("", "class", clazz.getName());
 			return;
 		}
 		if (fieldDefinitionClass.isInterface()) {
-			if (fieldDefinitionClass.getAnnotation(Interface.class) == null) {
+			if (fieldDefinitionClass.getAnnotation(NonConcrete.class) == null) {
 				throw new SerializationException("Cannot serialize interface unless it has a @"
-						+ Interface.class.getSimpleName() + " annotation");
+						+ NonConcrete.class.getSimpleName() + " annotation");
+			}
+			xmlSerializer.attribute("", "class", clazz.getName());
+			return;
+		}
+		if(Modifier.isAbstract(fieldDefinitionClass.getModifiers())) {
+			if(fieldDefinitionClass.getAnnotation(NonConcrete.class) == null) {
+				throw new SerializationException("Cannot serialize abstract class unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlSerializer.attribute("", "class", clazz.getName());
 			return;
@@ -321,11 +328,9 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e.getMessage(), e);
 		}
 	}
-
-	private <T> T construct(XmlPullParser xmlParser, Ref<Boolean> isEndElement, Class<?> clazz)
-			throws InstantiationException, IllegalAccessException, SerializationException, IllegalArgumentException,
-			InvocationTargetException, XMLStreamException, XmlPullParserException, IOException, ClassNotFoundException {
-		if(clazz.isInterface()) {
+	
+	private Class<?> determineImplementation(XmlPullParser xmlParser, Class<?> clazz) throws ClassNotFoundException, SerializationException {
+		if(clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) {
 			String classValue = null;
 			for(int i = 0; i < xmlParser.getAttributeCount(); i++) {
 				if(xmlParser.getAttributeName(i).toString().equals("class")) {
@@ -333,11 +338,16 @@ public class AndroidXmlSerializer implements XmlSerializer {
 				}
 			}
 			if(classValue == null) {
-				throw new SerializationException("No class field found for deserializing interface " + clazz.getName());
+				throw new SerializationException("No class field found for deserializing " + clazz.getName());
 			}
 			clazz = Class.forName(classValue);
 		}
-		
+		return clazz;
+	}
+
+	private <T> T construct(XmlPullParser xmlParser, Ref<Boolean> isEndElement, Class<?> clazz)
+			throws InstantiationException, IllegalAccessException, SerializationException, IllegalArgumentException,
+			InvocationTargetException, XMLStreamException, XmlPullParserException, IOException, ClassNotFoundException {		
 		Constructor<?>[] constructors = clazz.getConstructors();
 		// Single constructor with no args
 		if (constructors.length == 1 && constructors[0].getParameterAnnotations().length == 0) {
@@ -412,25 +422,26 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		return (T) bestMatchedConstructor.newInstance(constructorParameters);
 	}
 
-	private <T> T deserializeObject(XmlPullParser xmlParser, String xmlTag, Class<T> clazz)
+	private <T> T deserializeObject(XmlPullParser xmlParser, String xmlTag, Class<T> objClass)
 			throws SerializationException {
 		try {
-			if (isPrimitive(clazz) || clazz.equals(String.class)) {
+			if (isPrimitive(objClass) || objClass.equals(String.class)) {
 				xmlParser.next();
 				if(xmlParser.getEventType() == XmlPullParser.END_TAG) {
 					return null;
 				}
-				return parsePrimitive(xmlParser.getText(), clazz);
+				return parsePrimitive(xmlParser.getText(), objClass);
 			}
-			if (clazz.isEnum()) {
+			if (objClass.isEnum()) {
 				xmlParser.next();
 				if(xmlParser.getEventType() == XmlPullParser.END_TAG) {
 					return null;
 				}
-				return (T) Enum.valueOf((Class<? extends Enum>) clazz, xmlParser.getText());
+				return (T) Enum.valueOf((Class<? extends Enum>) objClass, xmlParser.getText());
 			}
 
 			Ref<Boolean> isEndElement = new Ref<Boolean>();
+			Class<?> clazz = determineImplementation(xmlParser, objClass);
 			T result = construct(xmlParser, isEndElement, clazz);
 			if (isEndElement.get()) {
 				return result;
@@ -442,6 +453,9 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			while (!finished) {
 				switch (parserEventType) {
 				case XmlPullParser.START_TAG:
+					if (xmlParser.getName().equals(xmlTag)) {
+						break;
+					}
 					String currentFieldName = xmlParser.getName();
 					Field currentField = findField(clazz, currentFieldName);
 					currentField.setAccessible(true);

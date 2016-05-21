@@ -16,6 +16,7 @@ import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.serialization.dummy.TestAbstractImplObject;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
 import org.mini2Dx.core.serialization.dummy.TestConstuctorArgObject;
 import org.mini2Dx.core.serialization.dummy.TestInterface;
@@ -103,6 +104,7 @@ public abstract class XmlSerializerTest {
 		for(int i = 0; i < parentObject.getFinalStringArray().length; i++) {
 			Assert.assertEquals(parentObject.getFinalStringArray()[i], result.getFinalStringArray()[i]);
 		}
+		Assert.assertEquals(parentObject.getAbstractObject().getValue(), result.getAbstractObject().getValue());
 	}
 	
 	@Test
@@ -178,6 +180,9 @@ public abstract class XmlSerializerTest {
 		xml += "            <value>fstr7</value>\n";
 		xml += "        </entry>\n";
 		xml += "    </finalStringMap>\n";
+		xml += "    <abstractObject class=\"org.mini2Dx.core.serialization.dummy.TestAbstractImplObject\">\n";
+		xml += "        <value>91</value>\n";
+		xml += "    </abstractObject>\n";
 		xml += "</data>";
 		
 		TestParentObject result = xmlSerializer.fromXml(xml, TestParentObject.class);
@@ -218,6 +223,7 @@ public abstract class XmlSerializerTest {
 		for(int i = 0; i < parentObject.getInterfaceObjectList().size(); i++) {
 			Assert.assertEquals(parentObject.getInterfaceObjectList().get(i), result.getInterfaceObjectList().get(i));
 		}
+		Assert.assertEquals(parentObject.getAbstractObject().getValue(), result.getAbstractObject().getValue());
 	}
 	
 	protected TestParentObject createTestParentObject() {
@@ -268,6 +274,9 @@ public abstract class XmlSerializerTest {
 		
 		parentObject.getFinalStringMap().put("fkey1", "fstr6");
 		parentObject.getFinalStringMap().put("fkey2", "fstr7");
+		
+		parentObject.setAbstractObject(new TestAbstractImplObject());
+		parentObject.getAbstractObject().setValue(91);
 		return parentObject;
 	}
 }
