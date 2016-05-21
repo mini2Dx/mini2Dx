@@ -11,6 +11,8 @@
  */
 package org.mini2Dx.ui.element;
 
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.render.AbsoluteModalRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 
@@ -18,13 +20,16 @@ import org.mini2Dx.ui.render.ParentRenderNode;
  *
  */
 public class AbsoluteModal extends Modal {
-	private float x, y;
+	@Field(optional=true)
+	private float x;
+	@Field(optional=true)
+	private float y;
 	
 	public AbsoluteModal() {
 		this(null);
 	}
 	
-	public AbsoluteModal(String id) {
+	public AbsoluteModal(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 	

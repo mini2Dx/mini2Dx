@@ -18,6 +18,8 @@ import java.util.Queue;
 
 import org.mini2Dx.core.controller.button.ControllerButton;
 import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.input.ControllerHotKeyOperation;
 import org.mini2Dx.ui.input.KeyboardHotKeyOperation;
 import org.mini2Dx.ui.input.UiNavigation;
@@ -41,21 +43,24 @@ public class TabView extends UiElement implements Navigatable {
 	private final Button previousTabButton, nextTabButton;
 	private final List<TabButton> tabButtons = new ArrayList<TabButton>(1);
 
-	private final List<Tab> tabs = new ArrayList<Tab>(1);
-
 	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
 	private LayoutRuleset tabButtonLayout = new LayoutRuleset("xs-6 sm-4 md-2 xl-1");
 	private TabViewRenderNode renderNode;
 	private int currentTabIndex = 0;
-	private int availableColumnsForTabButtons = 0;
-	private int columnsPerTabButton = 0;
 	private int tabButtonViewIndex = 0;
+	
+	@Field(optional=true)
+	private final List<Tab> tabs = new ArrayList<Tab>(1);
+	@Field(optional=true)
+	private int availableColumnsForTabButtons = 0;
+	@Field(optional=true)
+	private int columnsPerTabButton = 0;
 
 	public TabView() {
 		this(null);
 	}
 
-	public TabView(String id) {
+	public TabView(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		this(id, null, null);
 	}
 

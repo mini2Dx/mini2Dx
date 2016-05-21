@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.AbstractColumnRenderNode;
 import org.mini2Dx.ui.render.ColumnRenderNode;
@@ -24,7 +26,9 @@ import org.mini2Dx.ui.render.ParentRenderNode;
  *
  */
 public class Column extends UiElement {
+	@Field(optional=true)
 	protected final List<UiElement> children = new ArrayList<UiElement>(1);
+	
 	protected AbstractColumnRenderNode<?> renderNode;
 	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
 	
@@ -32,7 +36,7 @@ public class Column extends UiElement {
 		this(null);
 	}
 	
-	public Column(String id) {
+	public Column(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 	

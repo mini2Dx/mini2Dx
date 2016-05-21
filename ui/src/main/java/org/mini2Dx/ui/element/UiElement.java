@@ -16,6 +16,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.core.serialization.annotation.NonConcrete;
 import org.mini2Dx.ui.effect.UiEffect;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.listener.HoverListener;
@@ -26,12 +29,14 @@ import org.mini2Dx.ui.util.IdAllocator;
 /**
  *
  */
+@NonConcrete
 public abstract class UiElement implements Hoverable {
 	private final String id;
 	protected final Queue<UiEffect> effects = new LinkedList<UiEffect>();
 
 	protected Visibility visibility = Visibility.HIDDEN;
 	protected String styleId = UiTheme.DEFAULT_STYLE_ID;
+	@Field(optional=true)
 	protected int zIndex = 0;
 
 	private List<HoverListener> hoverListeners;
@@ -58,6 +63,7 @@ public abstract class UiElement implements Hoverable {
 		effects.offer(effect);
 	}
 
+	@ConstructorArg(clazz=String.class, name = "id") 
 	public String getId() {
 		return id;
 	}

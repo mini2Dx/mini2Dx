@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ui.element;
 
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.ScrollBoxRenderNode;
 
@@ -24,7 +25,7 @@ public class ScrollBox extends Column {
 		this(null);
 	}
 	
-	public ScrollBox(String id) {
+	public ScrollBox(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 	

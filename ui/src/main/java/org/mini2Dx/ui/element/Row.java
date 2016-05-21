@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ui.element;
 
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.RowRenderNode;
 
@@ -23,7 +24,7 @@ public class Row extends Column {
 		this(null);
 	}
 	
-	public Row(String id) {
+	public Row(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 

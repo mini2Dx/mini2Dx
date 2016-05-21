@@ -11,6 +11,8 @@
  */
 package org.mini2Dx.ui.element;
 
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
 import org.mini2Dx.ui.render.LabelRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
@@ -25,16 +27,20 @@ public class Label extends UiElement {
 	public static final Color COLOR_BLACK = new Color(1f / 255f, 1f / 255f, 1f / 255f, 1f);
 	
 	private LabelRenderNode renderNode;
-	private String text = "";
 	private Color color = COLOR_WHITE;
+	
+	@Field(optional=true)
+	private String text = "";
+	@Field(optional=true)
 	private HorizontalAlignment horizontalAlignment = HorizontalAlignment.LEFT;
+	@Field(optional=true)
 	private boolean responsive = false;
 	
 	public Label() {
 		this(null);
 	}
 	
-	public Label(String id) {
+	public Label(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 

@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import org.mini2Dx.core.controller.button.ControllerButton;
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.ui.input.ControllerHotKeyOperation;
 import org.mini2Dx.ui.input.KeyboardHotKeyOperation;
 import org.mini2Dx.ui.input.UiNavigation;
@@ -35,7 +36,7 @@ public abstract class Modal extends Container implements Navigatable {
 		this(null);
 	}
 	
-	public Modal(String id) {
+	public Modal(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 	

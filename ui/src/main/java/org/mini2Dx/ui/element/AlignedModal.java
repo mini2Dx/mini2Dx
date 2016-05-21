@@ -11,6 +11,8 @@
  */
 package org.mini2Dx.ui.element;
 
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
 import org.mini2Dx.ui.layout.VerticalAlignment;
 import org.mini2Dx.ui.render.AlignedModalRenderNode;
@@ -20,14 +22,16 @@ import org.mini2Dx.ui.render.ParentRenderNode;
  *
  */
 public class AlignedModal extends Modal {
+	@Field(optional=true)
 	private VerticalAlignment verticalAlignment = VerticalAlignment.MIDDLE;
+	@Field(optional=true)
 	private HorizontalAlignment horizontalAlignment = HorizontalAlignment.CENTER;
 	
 	public AlignedModal() {
 		this(null);
 	}
 	
-	public AlignedModal(String id) {
+	public AlignedModal(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 	
@@ -44,6 +48,9 @@ public class AlignedModal extends Modal {
 	}
 
 	public VerticalAlignment getVerticalAlignment() {
+		if(verticalAlignment == null) {
+			verticalAlignment = VerticalAlignment.MIDDLE;
+		}
 		return verticalAlignment;
 	}
 
@@ -57,6 +64,9 @@ public class AlignedModal extends Modal {
 	}
 
 	public HorizontalAlignment getHorizontalAlignment() {
+		if(horizontalAlignment == null) {
+			horizontalAlignment = HorizontalAlignment.CENTER;
+		}
 		return horizontalAlignment;
 	}
 

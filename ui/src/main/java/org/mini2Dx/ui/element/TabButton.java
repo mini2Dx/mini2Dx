@@ -3,6 +3,7 @@
  */
 package org.mini2Dx.ui.element;
 
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.TabButtonRenderNode;
@@ -20,7 +21,7 @@ public class TabButton extends ContentButton {
 		this(null);
 	}
 	
-	public TabButton(String id) {
+	public TabButton(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		this(id, HorizontalAlignment.LEFT);
 	}
 	

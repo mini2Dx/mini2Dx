@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.ContentButtonRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
@@ -23,14 +25,16 @@ import org.mini2Dx.ui.render.ParentRenderNode;
  * Implementation of {@link Button} that allows custom inner content
  */
 public class ContentButton extends Button {
+	@Field(optional=true)
 	protected final List<UiElement> children = new ArrayList<UiElement>(1);
+	
 	protected ContentButtonRenderNode renderNode;
 	
 	public ContentButton() {
 		this(null);
 	}
 	
-	public ContentButton(String id) {
+	public ContentButton(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 	

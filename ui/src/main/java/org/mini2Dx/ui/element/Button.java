@@ -14,6 +14,8 @@ package org.mini2Dx.ui.element;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.listener.ActionListener;
 
@@ -23,13 +25,14 @@ import org.mini2Dx.ui.listener.ActionListener;
 public abstract class Button extends UiElement implements Actionable {
 	protected LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
 	private List<ActionListener> actionListeners;
+	@Field(optional=true)
 	private boolean enabled = true;
 	
 	public Button() {
 		this(null);
 	}
 	
-	public Button(String id) {
+	public Button(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 	

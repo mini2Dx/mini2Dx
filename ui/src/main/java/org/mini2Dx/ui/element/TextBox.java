@@ -14,6 +14,8 @@ package org.mini2Dx.ui.element;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.render.ParentRenderNode;
@@ -25,16 +27,19 @@ import org.mini2Dx.ui.render.TextBoxRenderNode;
 public class TextBox extends UiElement implements Actionable {
 	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
 	private List<ActionListener> actionListeners;
-	private boolean enabled = true;
-	private String value = "";
-	private boolean passwordField = false;
 	private TextBoxRenderNode renderNode;
+	private String value = "";
+	
+	@Field(optional=true)
+	private boolean enabled = true;
+	@Field(optional=true)
+	private boolean passwordField = false;
 	
 	public TextBox() {
 		this(null);
 	}
 	
-	public TextBox(String id) {
+	public TextBox(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 

@@ -14,6 +14,7 @@ package org.mini2Dx.ui.element;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.render.ParentRenderNode;
@@ -35,7 +36,7 @@ public class Select<V> extends UiElement implements Actionable {
 		this(null);
 	}
 	
-	public Select(String id) {
+	public Select(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 

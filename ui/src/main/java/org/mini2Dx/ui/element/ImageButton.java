@@ -12,6 +12,8 @@
 package org.mini2Dx.ui.element;
 
 import org.mini2Dx.core.graphics.TextureRegion;
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.ImageButtonRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
@@ -23,10 +25,21 @@ import com.badlogic.gdx.graphics.Texture;
  *
  */
 public class ImageButton extends Button {
-	private String path;
 	private ImageButtonRenderNode renderNode;
 	private TextureRegion textureRegion;
+	
+	@Field(optional=true)
+	private String path;
+	@Field(optional=true)
 	private boolean responsive = false;
+	
+	public ImageButton() {
+		super();
+	}
+	
+	public ImageButton(@ConstructorArg(clazz=String.class, name = "id") String id) {
+		super(id);
+	}
 	
 	public TextureRegion getTextureRegion(AssetManager assetManager) {
 		if(path != null) {

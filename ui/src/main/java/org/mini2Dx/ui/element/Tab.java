@@ -16,6 +16,8 @@ import java.util.Queue;
 
 import org.mini2Dx.core.controller.button.ControllerButton;
 import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.input.ControllerHotKeyOperation;
 import org.mini2Dx.ui.input.KeyboardHotKeyOperation;
 import org.mini2Dx.ui.input.UiNavigation;
@@ -33,16 +35,18 @@ public class Tab extends Row implements Navigatable {
 	private final Queue<KeyboardHotKeyOperation> keyboardHotKeyOperations = new LinkedList<KeyboardHotKeyOperation>();
 	
 	private UiNavigation navigation = new VerticalUiNavigation();
-	
-	private String title = null;
-	private String iconPath = null;
 	private boolean titleOrIconChanged = true;
+	
+	@Field(optional=true)
+	private String title = null;
+	@Field(optional=true)
+	private String iconPath = null;
 	
 	public Tab() {
 		this(null);
 	}
 	
-	public Tab(String id) {
+	public Tab(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		this(id, "");
 	}
 	
@@ -62,7 +66,7 @@ public class Tab extends Row implements Navigatable {
 		}
 		parentRenderNode.addChild(renderNode);
 	}
-
+	
 	public String getTitle() {
 		return title;
 	}
