@@ -17,3 +17,7 @@ notifications:
   email:
     on_success: change
     on_failure: always
+before_script:
+  - echo no | android create avd --force -n test -t android-20 --abi armeabi-v7a
+  - emulator -avd test -no-audio -no-window -gpu on &
+  - android-wait-for-emulator
