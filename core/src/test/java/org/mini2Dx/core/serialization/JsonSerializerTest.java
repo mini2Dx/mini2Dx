@@ -20,6 +20,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
 import org.mini2Dx.core.serialization.dummy.TestConstuctorArgObject;
+import org.mini2Dx.core.serialization.dummy.TestInterface;
+import org.mini2Dx.core.serialization.dummy.TestInterfaceImpl;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
 import org.mini2Dx.core.util.Os;
 
@@ -68,6 +70,10 @@ public class JsonSerializerTest {
 		parentObject.getMapObjectValues().put("key2", new TestChildObject(101));
 		
 		parentObject.setArgObject(new TestConstuctorArgObject("cargValue"));
+		parentObject.setInterfaceObject(new TestInterfaceImpl("id-1"));
+		parentObject.setInterfaceObjectList(new ArrayList<TestInterface>());
+		parentObject.getInterfaceObjectList().add(new TestInterfaceImpl("id-3"));
+		parentObject.getInterfaceObjectList().add(new TestInterfaceImpl("id-4"));
 	}
 	
 	@Test
@@ -78,6 +84,13 @@ public class JsonSerializerTest {
 	@Test
 	public void testJsonSerializationWithPrettyPrint() throws SerializationException {
 		testJsonSerialization(true);
+	}
+	
+	@Test(expected=RequiredFieldException.class)
+	public void testJsonSerializationWithMissingRequiredField() throws SerializationException {
+		String json = serializer.toJson(parentObject);
+		json = json.replace("intValue", "fintValue");
+		serializer.fromJson(json, TestParentObject.class);
 	}
 	
 	private void testJsonSerialization(boolean prettyPrint) throws SerializationException {
@@ -119,12 +132,10 @@ public class JsonSerializerTest {
 		Assert.assertEquals(parentObject.getArgObject(), result.getArgObject());
 		
 		Assert.assertNotSame(parentObject.getIgnoredValue(), result.getIgnoredValue());
-	}
-	
-	@Test(expected=RequiredFieldException.class)
-	public void testJsonSerializationWithMissingRequiredField() throws SerializationException {
-		String json = serializer.toJson(parentObject);
-		json = json.replace("intValue", "fintValue");
-		serializer.fromJson(json, TestParentObject.class);
+		Assert.assertEquals(parentObject.getInterfaceObject(), result.getInterfaceObject());
+		Assert.assertEquals(parentObject.getInterfaceObjectList().size(), result.getInterfaceObjectList().size());
+		for(int i = 0; i < parentObject.getInterfaceObjectList().size(); i++) {
+			Assert.assertEquals(parentObject.getInterfaceObjectList().get(i), result.getInterfaceObjectList().get(i));
+		}
 	}
 }

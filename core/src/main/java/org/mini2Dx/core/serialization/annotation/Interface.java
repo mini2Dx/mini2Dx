@@ -17,13 +17,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates a field should be serialized via constructor arguments and a getter
- * method
+ * Indicates that the object being serialized is an interface and should have
+ * class information contained in the serialized data
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value = { ElementType.PARAMETER, ElementType.METHOD })
-public @interface ConstructorArg {
-	String name();
-
-	Class<?>clazz();
+@Target(value = { ElementType.TYPE })
+public @interface Interface {
+	Class<?>[] implementations();
 }

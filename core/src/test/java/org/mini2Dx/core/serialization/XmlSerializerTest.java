@@ -18,6 +18,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
 import org.mini2Dx.core.serialization.dummy.TestConstuctorArgObject;
+import org.mini2Dx.core.serialization.dummy.TestInterface;
+import org.mini2Dx.core.serialization.dummy.TestInterfaceImpl;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
 import org.mini2Dx.core.util.Os;
 
@@ -83,6 +85,11 @@ public abstract class XmlSerializerTest {
 		}
 		
 		Assert.assertNotSame(parentObject.getIgnoredValue(), result.getIgnoredValue());
+		Assert.assertEquals(parentObject.getInterfaceObject(), result.getInterfaceObject());
+		Assert.assertEquals(parentObject.getInterfaceObjectList().size(), result.getInterfaceObjectList().size());
+		for(int i = 0; i < parentObject.getInterfaceObjectList().size(); i++) {
+			Assert.assertEquals(parentObject.getInterfaceObjectList().get(i), result.getInterfaceObjectList().get(i));
+		}
 	}
 	
 	@Test
@@ -131,6 +138,14 @@ public abstract class XmlSerializerTest {
 		xml += "    <superField>super super</superField>\n";
 		xml += "    <argObject argValue=\"cargValue\">\n";
 		xml += "    </argObject>\n";
+		xml += "    <interfaceObject id=\"id-5\" class=\"org.mini2Dx.core.serialization.dummy.TestInterfaceImpl\">\n";
+		xml += "    </interfaceObject>\n";
+		xml += "    <interfaceObjectList>\n";
+		xml += "        <value id=\"id-3\" class=\"org.mini2Dx.core.serialization.dummy.TestInterfaceImpl\">\n";
+		xml += "        </value>\n";
+		xml += "        <value id=\"id-4\" class=\"org.mini2Dx.core.serialization.dummy.TestInterfaceImpl\">\n";
+		xml += "        </value>\n";
+		xml += "    </interfaceObjectList>\n";
 		xml += "</data>";
 		
 		TestParentObject result = xmlSerializer.fromXml(xml, TestParentObject.class);
@@ -166,6 +181,11 @@ public abstract class XmlSerializerTest {
 		}
 		
 		Assert.assertNotSame(parentObject.getIgnoredValue(), result.getIgnoredValue());
+		Assert.assertEquals(parentObject.getInterfaceObject(), result.getInterfaceObject());
+		Assert.assertEquals(parentObject.getInterfaceObjectList().size(), result.getInterfaceObjectList().size());
+		for(int i = 0; i < parentObject.getInterfaceObjectList().size(); i++) {
+			Assert.assertEquals(parentObject.getInterfaceObjectList().get(i), result.getInterfaceObjectList().get(i));
+		}
 	}
 	
 	protected TestParentObject createTestParentObject() {
@@ -202,6 +222,10 @@ public abstract class XmlSerializerTest {
 		parentObject.getMapObjectValues().put("key2", new TestChildObject(101));
 		
 		parentObject.setArgObject(new TestConstuctorArgObject("cargValue"));
+		parentObject.setInterfaceObject(new TestInterfaceImpl("id-5"));
+		parentObject.setInterfaceObjectList(new ArrayList<TestInterface>());
+		parentObject.getInterfaceObjectList().add(new TestInterfaceImpl("id-3"));
+		parentObject.getInterfaceObjectList().add(new TestInterfaceImpl("id-4"));
 		return parentObject;
 	}
 }

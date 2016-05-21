@@ -56,6 +56,10 @@ public class TestParentObject extends TestSuperObject {
     private Os enumValue;
     @Field
     private TestConstuctorArgObject argObject;
+    @Field
+    private TestInterface interfaceObject;
+    @Field
+    private List<TestInterface> interfaceObjectList;
     
     private int ignoredValue;
 
@@ -201,6 +205,22 @@ public class TestParentObject extends TestSuperObject {
 
 	public void setArgObject(TestConstuctorArgObject argObject) {
 		this.argObject = argObject;
+	}
+
+	public TestInterface getInterfaceObject() {
+		return interfaceObject;
+	}
+
+	public void setInterfaceObject(TestInterface interfaceObject) {
+		this.interfaceObject = interfaceObject;
+	}
+
+	public List<TestInterface> getInterfaceObjectList() {
+		return interfaceObjectList;
+	}
+
+	public void setInterfaceObjectList(List<TestInterface> interfaceObjectList) {
+		this.interfaceObjectList = interfaceObjectList;
 	}
 
 	@Override

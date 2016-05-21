@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Interface;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
@@ -140,7 +141,7 @@ public class JsonSerializer {
 		json.setOutputType(OutputType.json);
 		json.setWriter(writer);
 
-		writeObject(object, null, json);
+		writeObject(null, object, null, json);
 
 		String result = writer.toString();
 		try {
@@ -162,32 +163,74 @@ public class JsonSerializer {
 		}
 	}
 
-	private <T> void writeArray(String fieldName, Object array, Json json) throws SerializationException {
-		if (fieldName != null) {
-			json.writeArrayStart(fieldName);
+	private <T> void writeArray(Field field, Object array, Json json) throws SerializationException {
+		if (field != null) {
+			json.writeArrayStart(field.getName());
 		} else {
 			json.writeArrayStart();
 		}
+		
 		int arrayLength = Array.getLength(array);
 		for (int i = 0; i < arrayLength; i++) {
-			writeObject(Array.get(array, i), null, json);
+			writeObject(field, Array.get(array, i), null, json);
 		}
 		json.writeArrayEnd();
 	}
 
-	private <T> void writeMap(String fieldName, Map map, Json json) throws SerializationException {
-		if (fieldName != null) {
-			json.writeObjectStart(fieldName);
+	private <T> void writeMap(Field field, Map map, Json json) throws SerializationException {
+		if (field != null) {
+			json.writeObjectStart(field.getName());
 		} else {
 			json.writeObjectStart();
 		}
+		
 		for (Object key : map.keySet()) {
-			writeObject(map.get(key), key.toString(), json);
+			writeObject(field, map.get(key), key.toString(), json);
 		}
 		json.writeObjectEnd();
 	}
+	
+	private <T> void writeClassFieldIfRequired(Field fieldDefinition, T object, String fieldName, Json json) throws SerializationException {
+		if (fieldDefinition == null) {
+			return;
+		}
+		Class<?> clazz = object.getClass();
+		Class<?> fieldDefinitionClass = fieldDefinition.getType();
+		
+		if(fieldDefinitionClass.isArray()) {
+			Class<?> arrayComponentType = fieldDefinitionClass.getComponentType();
+			if(arrayComponentType.isInterface() && arrayComponentType.getAnnotation(Interface.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			}
+			writePrimitive("class", clazz.getName(), json);
+			return;
+		}
+		if(Collection.class.isAssignableFrom(fieldDefinitionClass)) {
+			Class<?> valueClass = fieldDefinition.getElementType(0);
+			if(valueClass.isInterface() && valueClass.getAnnotation(Interface.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			}
+			writePrimitive("class", clazz.getName(), json);
+			return;
+		}
+		if(Map.class.isAssignableFrom(fieldDefinitionClass)) {
+			Class<?> valueClass = fieldDefinition.getElementType(1);
+			if(valueClass.isInterface() && valueClass.getAnnotation(Interface.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			}
+			writePrimitive("class", clazz.getName(), json);
+			return;
+		}
+		if(fieldDefinitionClass.isInterface()) {
+			if(fieldDefinitionClass.getAnnotation(Interface.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			}
+			writePrimitive("class", clazz.getName(), json);
+			return;
+		} 
+	}
 
-	private <T> void writeObject(T object, String fieldName, Json json) throws SerializationException {
+	private <T> void writeObject(Field fieldDefinition, T object, String fieldName, Json json) throws SerializationException {
 		try {
 			if (object == null) {
 				writePrimitive(fieldName, null, json);
@@ -205,16 +248,16 @@ public class JsonSerializer {
 				return;
 			}
 			if (clazz.isArray()) {
-				writeArray(fieldName, object, json);
+				writeArray(fieldDefinition, object, json);
 				return;
 			}
 			if (Collection.class.isAssignableFrom(clazz)) {
 				Collection collection = (Collection) object;
-				writeArray(fieldName, collection.toArray(), json);
+				writeArray(fieldDefinition, collection.toArray(), json);
 				return;
 			}
 			if (Map.class.isAssignableFrom(clazz)) {
-				writeMap(fieldName, (Map) object, json);
+				writeMap(fieldDefinition, (Map) object, json);
 				return;
 			}
 
@@ -223,6 +266,7 @@ public class JsonSerializer {
 			} else {
 				json.writeObjectStart(fieldName);
 			}
+			writeClassFieldIfRequired(fieldDefinition, object, fieldName, json);
 
 			Class<?> currentClass = clazz;
 			while (currentClass != null && !currentClass.equals(Object.class)) {
@@ -240,7 +284,7 @@ public class JsonSerializer {
 					if (!fieldAnnotation.optional() && field.get(object) == null) {
 						throw new RequiredFieldException(currentClass, field.getName());
 					}
-					writeObject(field.get(object), field.getName(), json);
+					writeObject(field, field.get(object), field.getName(), json);
 				}
 				for(Method method : ClassReflection.getDeclaredMethods(currentClass)) {
 					if(method.getParameterTypes().length > 0) {
@@ -251,9 +295,25 @@ public class JsonSerializer {
 						continue;
 					}
 					ConstructorArg constructorArg = annotation.getAnnotation(ConstructorArg.class);
-					writeObject(method.invoke(object), constructorArg.name(), json); ;
+					writeObject(null, method.invoke(object), constructorArg.name(), json); ;
 				}
 				currentClass = currentClass.getSuperclass();
+			}
+			
+			//Check for @ConstructorArg annotations in interface methods
+			Class<?> [] interfaces = clazz.getInterfaces();
+			for(int i = 0; i < interfaces.length; i++) {
+				for(Method method : ClassReflection.getDeclaredMethods(interfaces[i])) {
+					if(method.getParameterTypes().length > 0) {
+						continue;
+					}
+					Annotation annotation = method.getDeclaredAnnotation(ConstructorArg.class);
+					if(annotation == null) {
+						continue;
+					}
+					ConstructorArg constructorArg = annotation.getAnnotation(ConstructorArg.class);
+					writeObject(null, method.invoke(object), constructorArg.name(), json); ;
+				}
 			}
 
 			json.writeObjectEnd();
@@ -264,12 +324,20 @@ public class JsonSerializer {
 		}
 	}
 
-	private <T> T construct(JsonValue objectRoot, Class<T> clazz) throws InstantiationException, IllegalAccessException,
-			SerializationException, IllegalArgumentException, InvocationTargetException {
+	private <T> T construct(JsonValue objectRoot, Class<?> clazz) throws InstantiationException, IllegalAccessException,
+			SerializationException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
+		if(clazz.isInterface()) {
+			JsonValue classField = objectRoot.get("class");
+			if(classField == null) {
+				throw new SerializationException("No class field found for deserializing interface " + clazz.getName());
+			}
+			clazz = Class.forName(classField.asString());
+		}
+		
 		Constructor<?>[] constructors = clazz.getConstructors();
 		// Single constructor with no args
 		if (constructors.length == 1 && constructors[0].getParameterAnnotations().length == 0) {
-			return clazz.newInstance();
+			return (T) clazz.newInstance();
 		}
 
 		Constructor bestMatchedConstructor = null;
@@ -316,7 +384,7 @@ public class JsonSerializer {
 			throw new SerializationException("Could not find suitable constructor for class " + clazz.getName());
 		}
 		if (detectedAnnotations.size() == 0) {
-			return clazz.newInstance();
+			return (T) clazz.newInstance();
 		}
 
 		Object[] constructorParameters = new Object[detectedAnnotations.size()];

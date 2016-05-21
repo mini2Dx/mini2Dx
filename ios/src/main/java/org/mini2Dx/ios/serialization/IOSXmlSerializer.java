@@ -36,6 +36,7 @@ import org.mini2Dx.core.serialization.RequiredFieldException;
 import org.mini2Dx.core.serialization.SerializationException;
 import org.mini2Dx.core.serialization.XmlSerializer;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Interface;
 import org.mini2Dx.core.util.Ref;
 
 import com.badlogic.gdx.utils.reflect.Annotation;
@@ -67,7 +68,7 @@ public class IOSXmlSerializer implements XmlSerializer {
 			xmlStreamReader.next();
 			result = deserializeObject(xmlStreamReader, "data", clazz);
 		} catch (XMLStreamException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} finally {
 			try {
 				xmlReader.close();
@@ -91,14 +92,14 @@ public class IOSXmlSerializer implements XmlSerializer {
 		try {
 			XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(writer);
 			xmlWriter.writeStartDocument();
-			writeObject(object, "data", xmlWriter);
+			writeObject(null, object, "data", xmlWriter);
 			xmlWriter.writeEndDocument();
 		} catch (IllegalArgumentException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} catch (IllegalStateException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} catch (XMLStreamException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} finally {
 			try {
 				writer.close();
@@ -106,8 +107,48 @@ public class IOSXmlSerializer implements XmlSerializer {
 			}
 		}
 	}
+	
+	private <T> void writeClassFieldIfRequired(Field fieldDefinition, T object, String fieldName, XMLStreamWriter xmlWriter) throws SerializationException, XMLStreamException {
+		if (fieldDefinition == null) {
+			return;
+		}
+		Class<?> clazz = object.getClass();
+		Class<?> fieldDefinitionClass = fieldDefinition.getType();
+		
+		if(fieldDefinitionClass.isArray()) {
+			Class<?> arrayComponentType = fieldDefinitionClass.getComponentType();
+			if(arrayComponentType.isInterface() && arrayComponentType.getAnnotation(Interface.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			}
+			xmlWriter.writeAttribute("class", clazz.getName());
+			return;
+		}
+		if(Collection.class.isAssignableFrom(fieldDefinitionClass)) {
+			Class<?> valueClass = fieldDefinition.getElementType(0);
+			if(valueClass.isInterface() && valueClass.getAnnotation(Interface.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			}
+			xmlWriter.writeAttribute("class", clazz.getName());
+			return;
+		}
+		if(Map.class.isAssignableFrom(fieldDefinitionClass)) {
+			Class<?> valueClass = fieldDefinition.getElementType(1);
+			if(valueClass.isInterface() && valueClass.getAnnotation(Interface.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			}
+			xmlWriter.writeAttribute("class", clazz.getName());
+			return;
+		}
+		if(fieldDefinitionClass.isInterface()) {
+			if(fieldDefinitionClass.getAnnotation(Interface.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + Interface.class.getSimpleName() + " annotation");
+			}
+			xmlWriter.writeAttribute("class", clazz.getName());
+			return;
+		} 
+	}
 
-	private <T> void writeObject(T object, String tagName, XMLStreamWriter xmlWriter) throws SerializationException {
+	private <T> void writeObject(Field fieldDefinition, T object, String tagName, XMLStreamWriter xmlWriter) throws SerializationException {
 		try {
 			if (object == null) {
 				writePrimitive(tagName, "", xmlWriter);
@@ -121,7 +162,7 @@ public class IOSXmlSerializer implements XmlSerializer {
 				return;
 			}
 			if (clazz.isArray()) {
-				writeArray(tagName, object, xmlWriter);
+				writeArray(fieldDefinition, object, xmlWriter);
 				return;
 			}
 			if (clazz.isEnum()) {
@@ -130,16 +171,34 @@ public class IOSXmlSerializer implements XmlSerializer {
 			}
 			if (Collection.class.isAssignableFrom(clazz)) {
 				Collection collection = (Collection) object;
-				writeArray(tagName, collection.toArray(), xmlWriter);
+				writeArray(fieldDefinition, collection.toArray(), xmlWriter);
 				return;
 			}
 			if (Map.class.isAssignableFrom(clazz)) {
-				writeMap(tagName, (Map) object, xmlWriter);
+				writeMap(fieldDefinition, (Map) object, xmlWriter);
 				return;
 			}
 
 			if (tagName != null) {
 				xmlWriter.writeStartElement(tagName);
+				
+				writeClassFieldIfRequired(fieldDefinition, object, tagName, xmlWriter);
+				
+				//Check for @ConstructorArg annotations in interface methods
+				Class<?> [] interfaces = clazz.getInterfaces();
+				for(int i = 0; i < interfaces.length; i++) {
+					for(Method method : ClassReflection.getDeclaredMethods(interfaces[i])) {
+						if(method.getParameterTypes().length > 0) {
+							continue;
+						}
+						Annotation annotation = method.getDeclaredAnnotation(ConstructorArg.class);
+						if(annotation == null) {
+							continue;
+						}
+						ConstructorArg constructorArg = annotation.getAnnotation(ConstructorArg.class);
+						xmlWriter.writeAttribute(constructorArg.name(), String.valueOf(method.invoke(object)));
+					}
+				}
 			}
 
 			Class<?> currentClass = clazz;
@@ -169,7 +228,7 @@ public class IOSXmlSerializer implements XmlSerializer {
 					if (!fieldAnnotation.optional() && field.get(object) == null) {
 						throw new RequiredFieldException(currentClass, field.getName());
 					}
-					writeObject(field.get(object), field.getName(), xmlWriter);
+					writeObject(field, field.get(object), field.getName(), xmlWriter);
 				}
 
 				currentClass = currentClass.getSuperclass();
@@ -179,59 +238,59 @@ public class IOSXmlSerializer implements XmlSerializer {
 				xmlWriter.writeEndElement();
 			}
 		} catch (IllegalArgumentException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} catch (IllegalStateException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} catch (ReflectionException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} catch (XMLStreamException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		}
 	}
 
-	private <T> void writeMap(String tagName, Map map, XMLStreamWriter xmlWriter) throws SerializationException {
+	private <T> void writeMap(Field field, Map map, XMLStreamWriter xmlWriter) throws SerializationException {
 		try {
-			if (tagName != null) {
-				xmlWriter.writeStartElement(tagName);
+			if (field != null) {
+				xmlWriter.writeStartElement(field.getName());
 			}
 			for (Object key : map.keySet()) {
 				xmlWriter.writeStartElement("entry");
-				writeObject(key, "key", xmlWriter);
-				writeObject(map.get(key), "value", xmlWriter);
+				writeObject(null, key, "key", xmlWriter);
+				writeObject(field, map.get(key), "value", xmlWriter);
 				xmlWriter.writeEndElement();
 			}
-			if (tagName != null) {
+			if (field != null) {
 				xmlWriter.writeEndElement();
 			}
 		} catch (IllegalArgumentException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} catch (IllegalStateException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} catch (XMLStreamException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		}
 	}
 
-	private <T> void writeArray(String tagName, T array, XMLStreamWriter xmlWriter) throws SerializationException {
+	private <T> void writeArray(Field field, T array, XMLStreamWriter xmlWriter) throws SerializationException {
 		try {
-			if (tagName != null) {
-				xmlWriter.writeStartElement(tagName);
+			if (field != null) {
+				xmlWriter.writeStartElement(field.getName());
 			}
 
 			int arrayLength = Array.getLength(array);
 			for (int i = 0; i < arrayLength; i++) {
-				writeObject(Array.get(array, i), "value", xmlWriter);
+				writeObject(field, Array.get(array, i), "value", xmlWriter);
 			}
 
-			if (tagName != null) {
+			if (field != null) {
 				xmlWriter.writeEndElement();
 			}
 		} catch (IllegalArgumentException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} catch (IllegalStateException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} catch (XMLStreamException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		}
 	}
 
@@ -245,26 +304,42 @@ public class IOSXmlSerializer implements XmlSerializer {
 				xmlWriter.writeEndElement();
 			}
 		} catch (IllegalArgumentException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} catch (IllegalStateException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} catch (XMLStreamException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		}
 	}
 
-	private <T> T construct(XMLStreamReader xmlReader, String xmlTag, Ref<Boolean> isEndElement, Class<T> clazz)
+	private <T> T construct(XMLStreamReader xmlReader, String xmlTag, Ref<Boolean> isEndElement, Class<?> clazz)
 			throws InstantiationException, IllegalAccessException, SerializationException, IllegalArgumentException,
-			InvocationTargetException, XMLStreamException {
+			InvocationTargetException, XMLStreamException, ClassNotFoundException {
+		if(clazz.isInterface()) {
+			String classValue = null;
+			for(int i = 0; i < xmlReader.getAttributeCount(); i++) {
+				if(xmlReader.getAttributeName(i).toString().equals("class")) {
+					classValue = xmlReader.getAttributeValue(i);
+				}
+			}
+			if(classValue == null) {
+				throw new SerializationException("No class field found for deserializing interface " + clazz.getName());
+			}
+			clazz = Class.forName(classValue);
+		}
+		
 		Constructor<?>[] constructors = clazz.getConstructors();
 		// Single constructor with no args
 		if (constructors.length == 1 && constructors[0].getParameterAnnotations().length == 0) {
 			isEndElement.set(false);
-			return clazz.newInstance();
+			return (T) clazz.newInstance();
 		}
 
 		Map<String, String> attributes = new HashMap<String, String>();
 		for (int i = 0; i < xmlReader.getAttributeCount(); i++) {
+			if(xmlReader.getAttributeName(i).toString().equals("class")) {
+				continue;
+			}
 			attributes.put(xmlReader.getAttributeName(i).toString(), xmlReader.getAttributeValue(i));
 		}
 		xmlReader.next();
@@ -319,7 +394,7 @@ public class IOSXmlSerializer implements XmlSerializer {
 			throw new SerializationException("Could not find suitable constructor for class " + clazz.getName());
 		}
 		if (detectedAnnotations.size() == 0) {
-			return clazz.newInstance();
+			return (T) clazz.newInstance();
 		}
 
 		Object[] constructorParameters = new Object[detectedAnnotations.size()];
@@ -408,7 +483,7 @@ public class IOSXmlSerializer implements XmlSerializer {
 			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		}
 	}
 
@@ -456,9 +531,9 @@ public class IOSXmlSerializer implements XmlSerializer {
 
 			field.set(object, collection);
 		} catch (ReflectionException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} catch (XMLStreamException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		}
 	}
 
@@ -519,9 +594,9 @@ public class IOSXmlSerializer implements XmlSerializer {
 			}
 			field.set(object, map);
 		} catch (ReflectionException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} catch (XMLStreamException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		}
 	}
 
@@ -568,9 +643,9 @@ public class IOSXmlSerializer implements XmlSerializer {
 		} catch (SerializationException e) {
 			throw e;
 		} catch (ReflectionException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		} catch (XMLStreamException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		}
 	}
 
@@ -579,7 +654,7 @@ public class IOSXmlSerializer implements XmlSerializer {
 		try {
 			field.set(object, Enum.valueOf((Class<Enum>) fieldClass, value));
 		} catch (ReflectionException e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		}
 	}
 
@@ -606,7 +681,7 @@ public class IOSXmlSerializer implements XmlSerializer {
 				field.set(object, value);
 			}
 		} catch (Exception e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		}
 	}
 
@@ -632,7 +707,7 @@ public class IOSXmlSerializer implements XmlSerializer {
 				return (T) value;
 			}
 		} catch (Exception e) {
-			throw new SerializationException(e);
+			throw new SerializationException(e.getMessage(), e);
 		}
 	}
 

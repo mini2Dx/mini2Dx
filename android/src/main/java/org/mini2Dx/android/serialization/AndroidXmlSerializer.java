@@ -25,28 +25,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.mini2Dx.core.serialization.RequiredFieldException;
 import org.mini2Dx.core.serialization.SerializationException;
 import org.mini2Dx.core.serialization.XmlSerializer;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Interface;
 import org.mini2Dx.core.util.Ref;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.util.Log;
-import android.util.Xml;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.Annotation;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+
+import android.util.Xml;
 
 /**
  * Android implementation of {@link XmlSerializer}
@@ -55,14 +52,12 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 public class AndroidXmlSerializer implements XmlSerializer {
 
 	@Override
-	public <T> T fromXml(String xml, Class<T> clazz)
-			throws SerializationException {
+	public <T> T fromXml(String xml, Class<T> clazz) throws SerializationException {
 		return fromXml(new StringReader(xml), clazz);
 	}
-	
+
 	@Override
-	public <T> T fromXml(Reader xmlReader, Class<T> clazz)
-			throws SerializationException {
+	public <T> T fromXml(Reader xmlReader, Class<T> clazz) throws SerializationException {
 		XmlPullParser xmlParser = Xml.newPullParser();
 		T result = null;
 		try {
@@ -90,15 +85,14 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		toXml(object, writer);
 		return writer.toString();
 	}
-	
+
 	@Override
-	public <T> void toXml(T object, Writer writer)
-			throws SerializationException {
+	public <T> void toXml(T object, Writer writer) throws SerializationException {
 		org.xmlpull.v1.XmlSerializer xmlSerializer = Xml.newSerializer();
 		try {
 			xmlSerializer.setOutput(writer);
 			xmlSerializer.startDocument("UTF-8", true);
-			writeObject(object, object.getClass().getSimpleName(), xmlSerializer);
+			writeObject(null, object, object.getClass().getSimpleName(), xmlSerializer);
 			xmlSerializer.endDocument();
 		} catch (IllegalArgumentException e) {
 			throw new SerializationException(e.getMessage(), e);
@@ -114,17 +108,62 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		}
 	}
 
-	private <T> void writeObject(T object, String tagName,
+	private <T> void writeClassFieldIfRequired(Field fieldDefinition, T object, String fieldName,
 			org.xmlpull.v1.XmlSerializer xmlSerializer)
+					throws SerializationException, IllegalArgumentException, IllegalStateException, IOException {
+		if (fieldDefinition == null) {
+			return;
+		}
+		Class<?> clazz = object.getClass();
+		Class<?> fieldDefinitionClass = fieldDefinition.getType();
+
+		if (fieldDefinitionClass.isArray()) {
+			Class<?> arrayComponentType = fieldDefinitionClass.getComponentType();
+			if (arrayComponentType.isInterface() && arrayComponentType.getAnnotation(Interface.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @"
+						+ Interface.class.getSimpleName() + " annotation");
+			}
+			xmlSerializer.attribute("", "class", clazz.getName());
+			return;
+		}
+		if (Collection.class.isAssignableFrom(fieldDefinitionClass)) {
+			Class<?> valueClass = fieldDefinition.getElementType(0);
+			if (valueClass.isInterface() && valueClass.getAnnotation(Interface.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @"
+						+ Interface.class.getSimpleName() + " annotation");
+			}
+			xmlSerializer.attribute("", "class", clazz.getName());
+			return;
+		}
+		if (Map.class.isAssignableFrom(fieldDefinitionClass)) {
+			Class<?> valueClass = fieldDefinition.getElementType(1);
+			if (valueClass.isInterface() && valueClass.getAnnotation(Interface.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @"
+						+ Interface.class.getSimpleName() + " annotation");
+			}
+			xmlSerializer.attribute("", "class", clazz.getName());
+			return;
+		}
+		if (fieldDefinitionClass.isInterface()) {
+			if (fieldDefinitionClass.getAnnotation(Interface.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @"
+						+ Interface.class.getSimpleName() + " annotation");
+			}
+			xmlSerializer.attribute("", "class", clazz.getName());
+			return;
+		}
+	}
+
+	private <T> void writeObject(Field fieldDefinition, T object, String tagName, org.xmlpull.v1.XmlSerializer xmlSerializer)
 			throws SerializationException {
 		try {
-			if(object == null) {
+			if (object == null) {
 				writePrimitive(tagName, "", xmlSerializer);
 				return;
 			}
 
 			Class<?> clazz = object.getClass();
-			
+
 			if (isPrimitive(clazz) || clazz.equals(String.class)) {
 				writePrimitive(tagName, object, xmlSerializer);
 				return;
@@ -134,25 +173,43 @@ public class AndroidXmlSerializer implements XmlSerializer {
 				return;
 			}
 			if (clazz.isArray()) {
-				writeArray(tagName, object, xmlSerializer);
+				writeArray(fieldDefinition, object, xmlSerializer);
 				return;
 			}
 			if (Collection.class.isAssignableFrom(clazz)) {
 				Collection collection = (Collection) object;
-				writeArray(tagName, collection.toArray(), xmlSerializer);
+				writeArray(fieldDefinition, collection.toArray(), xmlSerializer);
 				return;
 			}
 			if (Map.class.isAssignableFrom(clazz)) {
-				writeMap(tagName, (Map) object, xmlSerializer);
+				writeMap(fieldDefinition, (Map) object, xmlSerializer);
 				return;
 			}
 
 			if (tagName != null) {
 				xmlSerializer.startTag("", tagName);
+				
+				writeClassFieldIfRequired(fieldDefinition, object, tagName, xmlSerializer);
+				
+				//Check for @ConstructorArg annotations in interface methods
+				Class<?> [] interfaces = clazz.getInterfaces();
+				for(int i = 0; i < interfaces.length; i++) {
+					for(Method method : ClassReflection.getDeclaredMethods(interfaces[i])) {
+						if(method.getParameterTypes().length > 0) {
+							continue;
+						}
+						Annotation annotation = method.getDeclaredAnnotation(ConstructorArg.class);
+						if(annotation == null) {
+							continue;
+						}
+						ConstructorArg constructorArg = annotation.getAnnotation(ConstructorArg.class);
+						xmlSerializer.attribute("", constructorArg.name(), String.valueOf(method.invoke(object)));
+					}
+				}	
 			}
-			
+
 			Class<?> currentClass = clazz;
-			while(currentClass != null && !currentClass.equals(Object.class)) {
+			while (currentClass != null && !currentClass.equals(Object.class)) {
 				for (Method method : ClassReflection.getDeclaredMethods(currentClass)) {
 					if (method.getParameterTypes().length > 0) {
 						continue;
@@ -178,11 +235,11 @@ public class AndroidXmlSerializer implements XmlSerializer {
 					if (!fieldAnnotation.optional() && field.get(object) == null) {
 						throw new RequiredFieldException(currentClass, field.getName());
 					}
-					writeObject(field.get(object), field.getName(), xmlSerializer);
+					writeObject(field, field.get(object), field.getName(), xmlSerializer);
 				}
 				currentClass = currentClass.getSuperclass();
 			}
-			
+
 			if (tagName != null) {
 				xmlSerializer.endTag("", tagName);
 			}
@@ -196,20 +253,21 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e.getMessage(), e);
 		}
 	}
-	
-	private <T> void writeMap(String tagName, Map map, org.xmlpull.v1.XmlSerializer xmlSerializer) throws SerializationException {
+
+	private <T> void writeMap(Field field, Map map, org.xmlpull.v1.XmlSerializer xmlSerializer)
+			throws SerializationException {
 		try {
-			if (tagName != null) {
-				xmlSerializer.startTag("", tagName);
+			if (field != null) {
+				xmlSerializer.startTag("", field.getName());
 			}
 			for (Object key : map.keySet()) {
 				xmlSerializer.startTag("", "entry");
-				writeObject(key, "key", xmlSerializer);
-				writeObject(map.get(key), "value", xmlSerializer);
+				writeObject(null, key, "key", xmlSerializer);
+				writeObject(field, map.get(key), "value", xmlSerializer);
 				xmlSerializer.endTag("", "entry");
 			}
-			if (tagName != null) {
-				xmlSerializer.endTag("", tagName);
+			if (field != null) {
+				xmlSerializer.endTag("", field.getName());
 			}
 		} catch (IllegalArgumentException e) {
 			throw new SerializationException(e.getMessage(), e);
@@ -219,20 +277,21 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e.getMessage(), e);
 		}
 	}
-	
-	private <T> void writeArray(String tagName, T array, org.xmlpull.v1.XmlSerializer xmlSerializer) throws SerializationException {
+
+	private <T> void writeArray(Field field, T array, org.xmlpull.v1.XmlSerializer xmlSerializer)
+			throws SerializationException {
 		try {
-			if (tagName != null) {
-				xmlSerializer.startTag("", tagName);
+			if (field != null) {
+				xmlSerializer.startTag("", field.getName());
 			}
 
 			int arrayLength = Array.getLength(array);
 			for (int i = 0; i < arrayLength; i++) {
-				writeObject(Array.get(array, i), "value", xmlSerializer);
+				writeObject(field, Array.get(array, i), "value", xmlSerializer);
 			}
-			
-			if (tagName != null) {
-				xmlSerializer.endTag("", tagName);
+
+			if (field != null) {
+				xmlSerializer.endTag("", field.getName());
 			}
 		} catch (IllegalArgumentException e) {
 			throw new SerializationException(e.getMessage(), e);
@@ -242,8 +301,9 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e.getMessage(), e);
 		}
 	}
-	
-	private <T> void writePrimitive(String tagName, T object, org.xmlpull.v1.XmlSerializer xmlSerializer) throws SerializationException {
+
+	private <T> void writePrimitive(String tagName, T object, org.xmlpull.v1.XmlSerializer xmlSerializer)
+			throws SerializationException {
 		try {
 			if (tagName != null) {
 				xmlSerializer.startTag("", tagName);
@@ -260,15 +320,28 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e.getMessage(), e);
 		}
 	}
-	
-	private <T> T construct(XmlPullParser xmlParser, Ref<Boolean> isEndElement, Class<T> clazz)
+
+	private <T> T construct(XmlPullParser xmlParser, Ref<Boolean> isEndElement, Class<?> clazz)
 			throws InstantiationException, IllegalAccessException, SerializationException, IllegalArgumentException,
-			InvocationTargetException, XMLStreamException, XmlPullParserException, IOException {
+			InvocationTargetException, XMLStreamException, XmlPullParserException, IOException, ClassNotFoundException {
+		if(clazz.isInterface()) {
+			String classValue = null;
+			for(int i = 0; i < xmlParser.getAttributeCount(); i++) {
+				if(xmlParser.getAttributeName(i).toString().equals("class")) {
+					classValue = xmlParser.getAttributeValue(i);
+				}
+			}
+			if(classValue == null) {
+				throw new SerializationException("No class field found for deserializing interface " + clazz.getName());
+			}
+			clazz = Class.forName(classValue);
+		}
+		
 		Constructor<?>[] constructors = clazz.getConstructors();
 		// Single constructor with no args
 		if (constructors.length == 1 && constructors[0].getParameterAnnotations().length == 0) {
 			isEndElement.set(false);
-			return clazz.newInstance();
+			return (T) clazz.newInstance();
 		}
 
 		Map<String, String> attributes = new HashMap<String, String>();
@@ -313,7 +386,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 				continue;
 			}
 			if (detectedAnnotations.size() == attributes.size()) {
-				//Found exact match
+				// Found exact match
 				bestMatchedConstructor = constructors[i];
 				break;
 			}
@@ -327,7 +400,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			throw new SerializationException("Could not find suitable constructor for class " + clazz.getName());
 		}
 		if (detectedAnnotations.size() == 0) {
-			return clazz.newInstance();
+			return (T) clazz.newInstance();
 		}
 
 		Object[] constructorParameters = new Object[detectedAnnotations.size()];
@@ -345,16 +418,15 @@ public class AndroidXmlSerializer implements XmlSerializer {
 				return parsePrimitive(xmlParser.nextText(), clazz);
 			}
 			if (clazz.isEnum()) {
-				return (T) Enum.valueOf((Class<? extends Enum>) clazz,
-						xmlParser.nextText());
+				return (T) Enum.valueOf((Class<? extends Enum>) clazz, xmlParser.nextText());
 			}
-			
+
 			Ref<Boolean> isEndElement = new Ref<Boolean>();
-			T result = construct(xmlParser,isEndElement, clazz);
-			if(isEndElement.get()) {
+			T result = construct(xmlParser, isEndElement, clazz);
+			if (isEndElement.get()) {
 				return result;
 			}
-			
+
 			int parserEventType = xmlParser.getEventType();
 			boolean finished = false;
 
@@ -364,12 +436,11 @@ public class AndroidXmlSerializer implements XmlSerializer {
 					String currentFieldName = xmlParser.getName();
 					Field currentField = findField(clazz, currentFieldName);
 					currentField.setAccessible(true);
-					
+
 					Class<?> fieldClass = currentField.getType();
 					if (fieldClass.isArray()) {
 						xmlParser.next();
-						setArrayField(xmlParser, currentField, fieldClass,
-								result);
+						setArrayField(xmlParser, currentField, fieldClass, result);
 						break;
 					}
 					if (fieldClass.isEnum()) {
@@ -378,23 +449,19 @@ public class AndroidXmlSerializer implements XmlSerializer {
 					}
 					if (!fieldClass.isPrimitive()) {
 						if (fieldClass.equals(String.class)) {
-							setPrimitiveField(currentField, fieldClass, result,
-									xmlParser.nextText());
+							setPrimitiveField(currentField, fieldClass, result, xmlParser.nextText());
 						} else if (Map.class.isAssignableFrom(fieldClass)) {
 							xmlParser.next();
-							setMapField(xmlParser, currentField, fieldClass,
-									result);
+							setMapField(xmlParser, currentField, fieldClass, result);
 						} else if (Collection.class.isAssignableFrom(fieldClass)) {
 							xmlParser.next();
-							setCollectionField(xmlParser, currentField,
-									fieldClass, result);
+							setCollectionField(xmlParser, currentField, fieldClass, result);
 						} else {
 							currentField.set(result, deserializeObject(xmlParser, currentFieldName, fieldClass));
 						}
 						break;
 					}
-					setPrimitiveField(currentField, fieldClass, result,
-							xmlParser.nextText());
+					setPrimitiveField(currentField, fieldClass, result, xmlParser.nextText());
 					break;
 				case XmlPullParser.END_TAG:
 					if (xmlParser.getName().equals(xmlTag)) {
@@ -418,30 +485,30 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e.getMessage(), e);
 		}
 	}
-	
+
 	private Field findField(Class<?> clazz, String fieldName) throws ReflectionException {
 		Class<?> currentClass = clazz;
-		while(currentClass != null && !currentClass.equals(Object.class)) {
+		while (currentClass != null && !currentClass.equals(Object.class)) {
 			try {
-				Field result = ClassReflection.getDeclaredField(
-						currentClass, fieldName);
-				if(result == null) {
+				Field result = ClassReflection.getDeclaredField(currentClass, fieldName);
+				if (result == null) {
 					continue;
 				}
 				return result;
-			} catch (ReflectionException e) {}
+			} catch (ReflectionException e) {
+			}
 			currentClass = currentClass.getSuperclass();
 		}
 		throw new ReflectionException("No field '" + fieldName + "' found in class " + clazz.getName());
 	}
 
-	private <T> void setCollectionField(XmlPullParser xmlParser, Field field,
-			Class<?> fieldClass, T object) throws SerializationException {
+	private <T> void setCollectionField(XmlPullParser xmlParser, Field field, Class<?> fieldClass, T object)
+			throws SerializationException {
 		try {
 			Collection collection = (Collection) (fieldClass.isInterface() ? new ArrayList()
 					: ClassReflection.newInstance(fieldClass));
 			Class<?> valueClass = field.getElementType(0);
-			
+
 			boolean finished = false;
 			while (!finished) {
 				switch (xmlParser.getEventType()) {
@@ -470,18 +537,17 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		}
 	}
 
-	private <T> void setMapField(XmlPullParser xmlParser, Field field,
-			Class<?> fieldClass, T object) throws SerializationException {
+	private <T> void setMapField(XmlPullParser xmlParser, Field field, Class<?> fieldClass, T object)
+			throws SerializationException {
 		try {
-			Map map = (Map) (fieldClass.isInterface() ? new HashMap()
-					: ClassReflection.newInstance(fieldClass));
+			Map map = (Map) (fieldClass.isInterface() ? new HashMap() : ClassReflection.newInstance(fieldClass));
 			Class<?> keyClass = field.getElementType(0);
 			Class<?> valueClass = field.getElementType(1);
 
 			boolean finished = false;
 			Object key = null;
 			Object value = null;
-			
+
 			while (!finished) {
 				switch (xmlParser.getEventType()) {
 				case XmlPullParser.START_TAG: {
@@ -537,12 +603,12 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		}
 	}
 
-	private <T> void setArrayField(XmlPullParser xmlParser, Field field,
-			Class<?> fieldClass, T object) throws SerializationException {
+	private <T> void setArrayField(XmlPullParser xmlParser, Field field, Class<?> fieldClass, T object)
+			throws SerializationException {
 		try {
 			Class<?> arrayType = fieldClass.getComponentType();
 			List list = new ArrayList();
-			
+
 			boolean finished = false;
 			while (!finished) {
 				switch (xmlParser.getEventType()) {
@@ -572,7 +638,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 					break;
 				}
 			}
-			
+
 			Object targetArray = ArrayReflection.newInstance(arrayType, list.size());
 			for (int i = 0; i < list.size(); i++) {
 				ArrayReflection.set(targetArray, i, list.get(i));
@@ -582,8 +648,9 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e.getMessage(), e);
 		}
 	}
-	
-	private <T> void setEnumField(Field field, Class<?> fieldClass, T object, String value) throws SerializationException {
+
+	private <T> void setEnumField(Field field, Class<?> fieldClass, T object, String value)
+			throws SerializationException {
 		try {
 			field.set(object, Enum.valueOf((Class<Enum>) fieldClass, value));
 		} catch (ReflectionException e) {
@@ -591,32 +658,24 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		}
 	}
 
-	private <T> void setPrimitiveField(Field field, Class<?> fieldClass,
-			T object, String value) throws SerializationException {
+	private <T> void setPrimitiveField(Field field, Class<?> fieldClass, T object, String value)
+			throws SerializationException {
 		try {
-			if (fieldClass.equals(Boolean.TYPE)
-					|| fieldClass.equals(Boolean.class)) {
+			if (fieldClass.equals(Boolean.TYPE) || fieldClass.equals(Boolean.class)) {
 				field.set(object, Boolean.parseBoolean(value));
-			} else if (fieldClass.equals(Byte.TYPE)
-					|| fieldClass.equals(Byte.class)) {
+			} else if (fieldClass.equals(Byte.TYPE) || fieldClass.equals(Byte.class)) {
 				field.set(object, Byte.parseByte(value));
-			} else if (fieldClass.equals(Character.TYPE)
-					|| fieldClass.equals(Character.class)) {
+			} else if (fieldClass.equals(Character.TYPE) || fieldClass.equals(Character.class)) {
 				field.set(object, value.charAt(0));
-			} else if (fieldClass.equals(Double.TYPE)
-					|| fieldClass.equals(Double.class)) {
+			} else if (fieldClass.equals(Double.TYPE) || fieldClass.equals(Double.class)) {
 				field.set(object, Double.parseDouble(value));
-			} else if (fieldClass.equals(Float.TYPE)
-					|| fieldClass.equals(Float.class)) {
+			} else if (fieldClass.equals(Float.TYPE) || fieldClass.equals(Float.class)) {
 				field.set(object, Float.parseFloat(value));
-			} else if (fieldClass.equals(Integer.TYPE)
-					|| fieldClass.equals(Integer.class)) {
+			} else if (fieldClass.equals(Integer.TYPE) || fieldClass.equals(Integer.class)) {
 				field.set(object, Integer.parseInt(value));
-			} else if (fieldClass.equals(Long.TYPE)
-					|| fieldClass.equals(Long.class)) {
+			} else if (fieldClass.equals(Long.TYPE) || fieldClass.equals(Long.class)) {
 				field.set(object, Long.parseLong(value));
-			} else if (fieldClass.equals(Short.TYPE)
-					|| fieldClass.equals(Short.class)) {
+			} else if (fieldClass.equals(Short.TYPE) || fieldClass.equals(Short.class)) {
 				field.set(object, Short.parseShort(value));
 			} else {
 				field.set(object, value);
@@ -626,32 +685,23 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		}
 	}
 
-	private <T> T parsePrimitive(String value, Class<T> fieldClass)
-			throws SerializationException {
+	private <T> T parsePrimitive(String value, Class<T> fieldClass) throws SerializationException {
 		try {
-			if (fieldClass.equals(Boolean.TYPE)
-					|| fieldClass.equals(Boolean.class)) {
+			if (fieldClass.equals(Boolean.TYPE) || fieldClass.equals(Boolean.class)) {
 				return (T) new Boolean(value);
-			} else if (fieldClass.equals(Byte.TYPE)
-					|| fieldClass.equals(Byte.class)) {
+			} else if (fieldClass.equals(Byte.TYPE) || fieldClass.equals(Byte.class)) {
 				return (T) new Byte(value);
-			} else if (fieldClass.equals(Character.TYPE)
-					|| fieldClass.equals(Character.class)) {
+			} else if (fieldClass.equals(Character.TYPE) || fieldClass.equals(Character.class)) {
 				return (T) ((Character) value.charAt(0));
-			} else if (fieldClass.equals(Double.TYPE)
-					|| fieldClass.equals(Double.class)) {
+			} else if (fieldClass.equals(Double.TYPE) || fieldClass.equals(Double.class)) {
 				return (T) new Double(value);
-			} else if (fieldClass.equals(Float.TYPE)
-					|| fieldClass.equals(Float.class)) {
+			} else if (fieldClass.equals(Float.TYPE) || fieldClass.equals(Float.class)) {
 				return (T) new Float(value);
-			} else if (fieldClass.equals(Integer.TYPE)
-					|| fieldClass.equals(Integer.class)) {
+			} else if (fieldClass.equals(Integer.TYPE) || fieldClass.equals(Integer.class)) {
 				return (T) new Integer(value);
-			} else if (fieldClass.equals(Long.TYPE)
-					|| fieldClass.equals(Long.class)) {
+			} else if (fieldClass.equals(Long.TYPE) || fieldClass.equals(Long.class)) {
 				return (T) new Long(value);
-			} else if (fieldClass.equals(Short.TYPE)
-					|| fieldClass.equals(Short.class)) {
+			} else if (fieldClass.equals(Short.TYPE) || fieldClass.equals(Short.class)) {
 				return (T) new Short(value);
 			} else {
 				return (T) value;
@@ -660,7 +710,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			throw new SerializationException(e.getMessage(), e);
 		}
 	}
-	
+
 	private boolean isPrimitive(Class<?> clazz) {
 		if (clazz.isPrimitive()) {
 			return true;

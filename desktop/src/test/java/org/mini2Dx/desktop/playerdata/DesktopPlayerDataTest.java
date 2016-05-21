@@ -26,6 +26,8 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.serialization.JsonSerializer;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
 import org.mini2Dx.core.serialization.dummy.TestConstuctorArgObject;
+import org.mini2Dx.core.serialization.dummy.TestInterface;
+import org.mini2Dx.core.serialization.dummy.TestInterfaceImpl;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
 import org.mini2Dx.core.util.Os;
 import org.mini2Dx.desktop.di.DesktopDependencyInjection;
@@ -150,5 +152,9 @@ public class DesktopPlayerDataTest {
         expectedParentObject.getMapObjectValues().put("key2", new TestChildObject(101));
         
         expectedParentObject.setArgObject(new TestConstuctorArgObject("cargValue"));
+        expectedParentObject.setInterfaceObject(new TestInterfaceImpl("id-5"));
+        expectedParentObject.setInterfaceObjectList(new ArrayList<TestInterface>());
+        expectedParentObject.getInterfaceObjectList().add(new TestInterfaceImpl("id-3"));
+        expectedParentObject.getInterfaceObjectList().add(new TestInterfaceImpl("id-4"));
     }
 }
