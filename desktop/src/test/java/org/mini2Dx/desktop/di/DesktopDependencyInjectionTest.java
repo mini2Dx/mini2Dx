@@ -14,6 +14,7 @@ package org.mini2Dx.desktop.di;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.di.dummy.TestBean;
 import org.mini2Dx.core.di.dummy.TestInterfaceImpl;
 
@@ -21,38 +22,27 @@ import org.mini2Dx.core.di.dummy.TestInterfaceImpl;
  * Integration test for {@link GameContext} and {@link DesktopComponentScanner}
  */
 public class DesktopDependencyInjectionTest {
-	
-	private DesktopDependencyInjection dependencyInjection;
-	
+
 	@Before
 	public void setUp() {
-		dependencyInjection = new DesktopDependencyInjection();
+		Mdx.di = new DesktopDependencyInjection();
 	}
 
 	@Test
 	public void testGameContext() throws Exception {
-		dependencyInjection.scan(new String[] { "org.mini2Dx.core.di.dummy" });
+		Mdx.di.scan(new String[] { "org.mini2Dx.core.di.dummy" });
 
-		TestBean testBean1 = dependencyInjection.getBean(TestBean.class);
-		TestBean testBean2 = dependencyInjection.getBean(TestBean.class);
+		TestBean testBean1 = Mdx.di.getBean(TestBean.class);
+		TestBean testBean2 = Mdx.di.getBean(TestBean.class);
 
 		Assert.assertEquals(false, testBean1.equals(testBean2));
-		Assert.assertEquals(true,
-				testBean1.getDependency().equals(testBean2.getDependency()));
+		Assert.assertEquals(true, testBean1.getDependency().equals(testBean2.getDependency()));
 
-		Assert.assertEquals(true,
-				testBean1.getInterfaceField() instanceof TestInterfaceImpl);
-		// Assert.assertEquals(
-		// false,
-		// testBean1.getInterfaceField().equals(
-		// testBean2.getInterfaceField()));
+		Assert.assertEquals(true, testBean1.getInterfaceField() instanceof TestInterfaceImpl);
 
-		TestInterfaceImpl testInterfaceImpl1 = dependencyInjection
-				.getBean(TestInterfaceImpl.class);
-		TestInterfaceImpl testInterfaceImpl2 = dependencyInjection
-				.getBean(TestInterfaceImpl.class);
+		TestInterfaceImpl testInterfaceImpl1 = Mdx.di.getBean(TestInterfaceImpl.class);
+		TestInterfaceImpl testInterfaceImpl2 = Mdx.di.getBean(TestInterfaceImpl.class);
 
-		Assert.assertEquals(false,
-				testInterfaceImpl1.getValue() == testInterfaceImpl2.getValue());
+		Assert.assertEquals(false, testInterfaceImpl1.getValue() == testInterfaceImpl2.getValue());
 	}
 }

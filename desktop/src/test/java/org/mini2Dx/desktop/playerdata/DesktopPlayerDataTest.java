@@ -25,8 +25,10 @@ import org.junit.Test;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.serialization.JsonSerializer;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
+import org.mini2Dx.core.serialization.dummy.TestConstuctorArgObject;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
 import org.mini2Dx.core.util.Os;
+import org.mini2Dx.desktop.di.DesktopDependencyInjection;
 import org.mini2Dx.desktop.playerdata.DesktopPlayerData;
 import org.mini2Dx.desktop.serialization.DesktopXmlSerializer;
 
@@ -52,6 +54,7 @@ public class DesktopPlayerDataTest {
         Gdx.files = new LwjglFiles();
         Mdx.json = new JsonSerializer();
         Mdx.xml = new DesktopXmlSerializer();
+        Mdx.di = new DesktopDependencyInjection();
         desktopData = new DesktopPlayerData(TEST_IDENTIFIER);
         
         createTestObjects();
@@ -145,5 +148,7 @@ public class DesktopPlayerDataTest {
         expectedParentObject.setMapObjectValues(new HashMap<String, TestChildObject>());
         expectedParentObject.getMapObjectValues().put("key1", new TestChildObject(100));
         expectedParentObject.getMapObjectValues().put("key2", new TestChildObject(101));
+        
+        expectedParentObject.setArgObject(new TestConstuctorArgObject("cargValue"));
     }
 }
