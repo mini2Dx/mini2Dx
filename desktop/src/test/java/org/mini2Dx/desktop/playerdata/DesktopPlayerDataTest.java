@@ -156,5 +156,15 @@ public class DesktopPlayerDataTest {
         expectedParentObject.setInterfaceObjectList(new ArrayList<TestInterface>());
         expectedParentObject.getInterfaceObjectList().add(new TestInterfaceImpl("id-3"));
         expectedParentObject.getInterfaceObjectList().add(new TestInterfaceImpl("id-4"));
+        
+        expectedParentObject.getFinalStringList().add("fstr1");
+        expectedParentObject.getFinalStringList().add("fstr2");
+		
+        expectedParentObject.getFinalStringArray()[0] = "fstr3";
+        expectedParentObject.getFinalStringArray()[1] = "fstr4";
+        expectedParentObject.getFinalStringArray()[2] = "fstr5";
+		
+        expectedParentObject.getFinalStringMap().put("fkey1", "fstr6");
+        expectedParentObject.getFinalStringMap().put("fkey2", "fstr7");
     }
 }

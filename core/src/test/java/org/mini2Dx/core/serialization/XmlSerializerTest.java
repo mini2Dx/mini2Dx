@@ -90,6 +90,19 @@ public abstract class XmlSerializerTest {
 		for(int i = 0; i < parentObject.getInterfaceObjectList().size(); i++) {
 			Assert.assertEquals(parentObject.getInterfaceObjectList().get(i), result.getInterfaceObjectList().get(i));
 		}
+		
+		Assert.assertEquals(parentObject.getFinalStringList().size(), result.getFinalStringList().size());
+		for(int i = 0; i < parentObject.getFinalStringList().size(); i++) {
+			Assert.assertEquals(parentObject.getFinalStringList().get(i), result.getFinalStringList().get(i));
+		}
+		Assert.assertEquals(parentObject.getFinalStringMap().size(), result.getFinalStringMap().size());
+		for(String key : parentObject.getFinalStringMap().keySet()) {
+			Assert.assertEquals(parentObject.getFinalStringMap().get(key), result.getFinalStringMap().get(key));
+		}
+		Assert.assertEquals(parentObject.getFinalStringArray().length, result.getFinalStringArray().length);
+		for(int i = 0; i < parentObject.getFinalStringArray().length; i++) {
+			Assert.assertEquals(parentObject.getFinalStringArray()[i], result.getFinalStringArray()[i]);
+		}
 	}
 	
 	@Test
@@ -146,6 +159,25 @@ public abstract class XmlSerializerTest {
 		xml += "        <value id=\"id-4\" class=\"org.mini2Dx.core.serialization.dummy.TestInterfaceImpl\">\n";
 		xml += "        </value>\n";
 		xml += "    </interfaceObjectList>\n";
+		xml += "    <finalStringList>\n";
+		xml += "        <value>fstr1</value>\n";
+		xml += "        <value>fstr2</value>\n";
+		xml += "    </finalStringList>\n";
+		xml += "    <finalStringArray>\n";
+		xml += "        <value>fstr3</value>\n";
+		xml += "        <value>fstr4</value>\n";
+		xml += "        <value>fstr5</value>\n";
+		xml += "    </finalStringArray>\n";
+		xml += "    <finalStringMap>\n";
+		xml += "        <entry>\n";
+		xml += "            <key>fkey1</key>\n";
+		xml += "            <value>fstr6</value>\n";
+		xml += "        </entry>\n";
+		xml += "        <entry>\n";
+		xml += "            <key>fkey2</key>\n";
+		xml += "            <value>fstr7</value>\n";
+		xml += "        </entry>\n";
+		xml += "    </finalStringMap>\n";
 		xml += "</data>";
 		
 		TestParentObject result = xmlSerializer.fromXml(xml, TestParentObject.class);
@@ -226,6 +258,16 @@ public abstract class XmlSerializerTest {
 		parentObject.setInterfaceObjectList(new ArrayList<TestInterface>());
 		parentObject.getInterfaceObjectList().add(new TestInterfaceImpl("id-3"));
 		parentObject.getInterfaceObjectList().add(new TestInterfaceImpl("id-4"));
+		
+		parentObject.getFinalStringList().add("fstr1");
+		parentObject.getFinalStringList().add("fstr2");
+		
+		parentObject.getFinalStringArray()[0] = "fstr3";
+		parentObject.getFinalStringArray()[1] = "fstr4";
+		parentObject.getFinalStringArray()[2] = "fstr5";
+		
+		parentObject.getFinalStringMap().put("fkey1", "fstr6");
+		parentObject.getFinalStringMap().put("fkey2", "fstr7");
 		return parentObject;
 	}
 }

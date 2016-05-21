@@ -410,10 +410,16 @@ public class DesktopXmlSerializer implements XmlSerializer {
 		try {
 			if (isPrimitive(clazz) || clazz.equals(String.class)) {
 				xmlReader.next();
+				if(xmlReader.getEventType() == XMLStreamReader.END_ELEMENT) {
+					return null;
+				}
 				return parsePrimitive(xmlReader.getText(), clazz);
 			}
 			if (clazz.isEnum()) {
 				xmlReader.next();
+				if(xmlReader.getEventType() == XMLStreamReader.END_ELEMENT) {
+					return null;
+				}
 				return (T) Enum.valueOf((Class<? extends Enum>) clazz, xmlReader.getText());
 			}
 
@@ -455,6 +461,9 @@ public class DesktopXmlSerializer implements XmlSerializer {
 							xmlReader.next();
 							setCollectionField(xmlReader, currentField, fieldClass, result);
 						} else {
+							if(currentField.isFinal()) {
+								throw new SerializationException("Cannot use @Field on final " + fieldClass.getName() + " fields.");
+							}
 							currentField.set(result, deserializeObject(xmlReader, currentFieldName, fieldClass));
 						}
 						break;
@@ -506,8 +515,14 @@ public class DesktopXmlSerializer implements XmlSerializer {
 	private <T> void setCollectionField(XMLStreamReader xmlReader, Field field, Class<?> fieldClass, T object)
 			throws SerializationException {
 		try {
-			Collection collection = (Collection) (fieldClass.isInterface() ? new ArrayList()
-					: ClassReflection.newInstance(fieldClass));
+			Collection collection = null;
+			if(field.isFinal()) {
+				collection = (Collection) field.get(object);
+			} else {
+				collection = (Collection) (fieldClass.isInterface() ? new ArrayList()
+						: ClassReflection.newInstance(fieldClass));
+			}
+			
 			Class<?> valueClass = field.getElementType(0);
 
 			boolean finished = false;
@@ -529,7 +544,9 @@ public class DesktopXmlSerializer implements XmlSerializer {
 				}
 			}
 
-			field.set(object, collection);
+			if(!field.isFinal()) {
+				field.set(object, collection);
+			}
 		} catch (ReflectionException e) {
 			throw new SerializationException(e.getMessage(), e);
 		} catch (XMLStreamException e) {
@@ -540,7 +557,13 @@ public class DesktopXmlSerializer implements XmlSerializer {
 	private <T> void setMapField(XMLStreamReader xmlReader, Field field, Class<?> fieldClass, T object)
 			throws SerializationException {
 		try {
-			Map map = (Map) (fieldClass.isInterface() ? new HashMap() : ClassReflection.newInstance(fieldClass));
+			Map map = null;
+			if(field.isFinal()) {
+				map = (Map) field.get(object);
+			} else {
+				map = (Map) (fieldClass.isInterface() ? new HashMap() : ClassReflection.newInstance(fieldClass));
+			}
+			
 			Class<?> keyClass = field.getElementType(0);
 			Class<?> valueClass = field.getElementType(1);
 
@@ -592,7 +615,10 @@ public class DesktopXmlSerializer implements XmlSerializer {
 					break;
 				}
 			}
-			field.set(object, map);
+			
+			if(!field.isFinal()) {
+				field.set(object, map);
+			}
 		} catch (ReflectionException e) {
 			throw new SerializationException(e.getMessage(), e);
 		} catch (XMLStreamException e) {
@@ -635,11 +661,18 @@ public class DesktopXmlSerializer implements XmlSerializer {
 					break;
 				}
 			}
-			Object targetArray = ArrayReflection.newInstance(arrayType, list.size());
+			Object targetArray = null;
+			if(field.isFinal()) {
+				targetArray = field.get(object);
+			} else {
+				targetArray = ArrayReflection.newInstance(arrayType, list.size());
+			}
 			for (int i = 0; i < list.size(); i++) {
 				ArrayReflection.set(targetArray, i, list.get(i));
 			}
-			field.set(object, targetArray);
+			if(!field.isFinal()) {
+				field.set(object, targetArray);
+			}
 		} catch (SerializationException e) {
 			throw e;
 		} catch (ReflectionException e) {
@@ -651,6 +684,9 @@ public class DesktopXmlSerializer implements XmlSerializer {
 
 	private <T> void setEnumField(Field field, Class<?> fieldClass, T object, String value)
 			throws SerializationException {
+		if(field.isFinal()) {
+			throw new SerializationException("Cannot use @Field on final enum fields. Use the @ConstructorArg method instead.");
+		}
 		try {
 			field.set(object, Enum.valueOf((Class<Enum>) fieldClass, value));
 		} catch (ReflectionException e) {
@@ -660,6 +696,9 @@ public class DesktopXmlSerializer implements XmlSerializer {
 
 	private <T> void setPrimitiveField(Field field, Class<?> fieldClass, T object, String value)
 			throws SerializationException {
+		if(field.isFinal()) {
+			throw new SerializationException("Cannot use @Field on final " + fieldClass.getName() + " fields.");
+		}
 		try {
 			if (fieldClass.equals(Boolean.TYPE) || fieldClass.equals(Boolean.class)) {
 				field.set(object, Boolean.parseBoolean(value));

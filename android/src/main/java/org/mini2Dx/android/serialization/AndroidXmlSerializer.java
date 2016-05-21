@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.mini2Dx.core.serialization.RequiredFieldException;
 import org.mini2Dx.core.serialization.SerializationException;
@@ -415,10 +416,18 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			throws SerializationException {
 		try {
 			if (isPrimitive(clazz) || clazz.equals(String.class)) {
-				return parsePrimitive(xmlParser.nextText(), clazz);
+				xmlParser.next();
+				if(xmlParser.getEventType() == XmlPullParser.END_TAG) {
+					return null;
+				}
+				return parsePrimitive(xmlParser.getText(), clazz);
 			}
 			if (clazz.isEnum()) {
-				return (T) Enum.valueOf((Class<? extends Enum>) clazz, xmlParser.nextText());
+				xmlParser.next();
+				if(xmlParser.getEventType() == XmlPullParser.END_TAG) {
+					return null;
+				}
+				return (T) Enum.valueOf((Class<? extends Enum>) clazz, xmlParser.getText());
 			}
 
 			Ref<Boolean> isEndElement = new Ref<Boolean>();
@@ -457,6 +466,9 @@ public class AndroidXmlSerializer implements XmlSerializer {
 							xmlParser.next();
 							setCollectionField(xmlParser, currentField, fieldClass, result);
 						} else {
+							if(currentField.isFinal()) {
+								throw new SerializationException("Cannot use @Field on final " + fieldClass.getName() + " fields.");
+							}
 							currentField.set(result, deserializeObject(xmlParser, currentFieldName, fieldClass));
 						}
 						break;
@@ -505,8 +517,14 @@ public class AndroidXmlSerializer implements XmlSerializer {
 	private <T> void setCollectionField(XmlPullParser xmlParser, Field field, Class<?> fieldClass, T object)
 			throws SerializationException {
 		try {
-			Collection collection = (Collection) (fieldClass.isInterface() ? new ArrayList()
-					: ClassReflection.newInstance(fieldClass));
+			Collection collection = null;
+			if(field.isFinal()) {
+				collection = (Collection) field.get(object);
+			} else {
+				collection = (Collection) (fieldClass.isInterface() ? new ArrayList()
+						: ClassReflection.newInstance(fieldClass));
+			}
+			
 			Class<?> valueClass = field.getElementType(0);
 
 			boolean finished = false;
@@ -527,7 +545,9 @@ public class AndroidXmlSerializer implements XmlSerializer {
 					break;
 				}
 			}
-			field.set(object, collection);
+			if(!field.isFinal()) {
+				field.set(object, collection);
+			}
 		} catch (XmlPullParserException e) {
 			throw new SerializationException(e.getMessage(), e);
 		} catch (IOException e) {
@@ -540,7 +560,13 @@ public class AndroidXmlSerializer implements XmlSerializer {
 	private <T> void setMapField(XmlPullParser xmlParser, Field field, Class<?> fieldClass, T object)
 			throws SerializationException {
 		try {
-			Map map = (Map) (fieldClass.isInterface() ? new HashMap() : ClassReflection.newInstance(fieldClass));
+			Map map = null;
+			if(field.isFinal()) {
+				map = (Map) field.get(object);
+			} else {
+				map = (Map) (fieldClass.isInterface() ? new HashMap() : ClassReflection.newInstance(fieldClass));
+			}
+			
 			Class<?> keyClass = field.getElementType(0);
 			Class<?> valueClass = field.getElementType(1);
 
@@ -593,7 +619,9 @@ public class AndroidXmlSerializer implements XmlSerializer {
 					break;
 				}
 			}
-			field.set(object, map);
+			if(!field.isFinal()) {
+				field.set(object, map);
+			}
 		} catch (XmlPullParserException e) {
 			throw new SerializationException(e.getMessage(), e);
 		} catch (IOException e) {
@@ -639,11 +667,18 @@ public class AndroidXmlSerializer implements XmlSerializer {
 				}
 			}
 
-			Object targetArray = ArrayReflection.newInstance(arrayType, list.size());
+			Object targetArray = null;
+			if(field.isFinal()) {
+				targetArray = field.get(object);
+			} else {
+				targetArray = ArrayReflection.newInstance(arrayType, list.size());
+			}
 			for (int i = 0; i < list.size(); i++) {
 				ArrayReflection.set(targetArray, i, list.get(i));
 			}
-			field.set(object, targetArray);
+			if(!field.isFinal()) {
+				field.set(object, targetArray);
+			}
 		} catch (Exception e) {
 			throw new SerializationException(e.getMessage(), e);
 		}
@@ -651,6 +686,9 @@ public class AndroidXmlSerializer implements XmlSerializer {
 
 	private <T> void setEnumField(Field field, Class<?> fieldClass, T object, String value)
 			throws SerializationException {
+		if(field.isFinal()) {
+			throw new SerializationException("Cannot use @Field on final enum fields. Use the @ConstructorArg method instead.");
+		}
 		try {
 			field.set(object, Enum.valueOf((Class<Enum>) fieldClass, value));
 		} catch (ReflectionException e) {
@@ -660,6 +698,9 @@ public class AndroidXmlSerializer implements XmlSerializer {
 
 	private <T> void setPrimitiveField(Field field, Class<?> fieldClass, T object, String value)
 			throws SerializationException {
+		if(field.isFinal()) {
+			throw new SerializationException("Cannot use @Field on final " + fieldClass.getName() + " fields.");
+		}
 		try {
 			if (fieldClass.equals(Boolean.TYPE) || fieldClass.equals(Boolean.class)) {
 				field.set(object, Boolean.parseBoolean(value));

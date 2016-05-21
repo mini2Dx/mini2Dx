@@ -11,7 +11,9 @@
  */
 package org.mini2Dx.core.serialization.dummy;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,6 +62,12 @@ public class TestParentObject extends TestSuperObject {
     private TestInterface interfaceObject;
     @Field
     private List<TestInterface> interfaceObjectList;
+	@Field
+	private final List<String> finalStringList = new ArrayList<String>();
+	@Field
+	private final Map<String, String> finalStringMap = new HashMap<String, String>();
+	@Field
+	private final String [] finalStringArray = new String[5];
     
     private int ignoredValue;
 
@@ -221,6 +229,18 @@ public class TestParentObject extends TestSuperObject {
 
 	public void setInterfaceObjectList(List<TestInterface> interfaceObjectList) {
 		this.interfaceObjectList = interfaceObjectList;
+	}
+
+	public List<String> getFinalStringList() {
+		return finalStringList;
+	}
+
+	public Map<String, String> getFinalStringMap() {
+		return finalStringMap;
+	}
+
+	public String[] getFinalStringArray() {
+		return finalStringArray;
 	}
 
 	@Override

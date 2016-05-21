@@ -74,6 +74,16 @@ public class JsonSerializerTest {
 		parentObject.setInterfaceObjectList(new ArrayList<TestInterface>());
 		parentObject.getInterfaceObjectList().add(new TestInterfaceImpl("id-3"));
 		parentObject.getInterfaceObjectList().add(new TestInterfaceImpl("id-4"));
+		
+		parentObject.getFinalStringList().add("fstr1");
+		parentObject.getFinalStringList().add("fstr2");
+		
+		parentObject.getFinalStringArray()[0] = "fstr3";
+		parentObject.getFinalStringArray()[1] = "fstr4";
+		parentObject.getFinalStringArray()[2] = "fstr5";
+		
+		parentObject.getFinalStringMap().put("fkey1", "fstr6");
+		parentObject.getFinalStringMap().put("fkey2", "fstr7");
 	}
 	
 	@Test
@@ -136,6 +146,19 @@ public class JsonSerializerTest {
 		Assert.assertEquals(parentObject.getInterfaceObjectList().size(), result.getInterfaceObjectList().size());
 		for(int i = 0; i < parentObject.getInterfaceObjectList().size(); i++) {
 			Assert.assertEquals(parentObject.getInterfaceObjectList().get(i), result.getInterfaceObjectList().get(i));
+		}
+		
+		Assert.assertEquals(parentObject.getFinalStringList().size(), result.getFinalStringList().size());
+		for(int i = 0; i < parentObject.getFinalStringList().size(); i++) {
+			Assert.assertEquals(parentObject.getFinalStringList().get(i), result.getFinalStringList().get(i));
+		}
+		Assert.assertEquals(parentObject.getFinalStringMap().size(), result.getFinalStringMap().size());
+		for(String key : parentObject.getFinalStringMap().keySet()) {
+			Assert.assertEquals(parentObject.getFinalStringMap().get(key), result.getFinalStringMap().get(key));
+		}
+		Assert.assertEquals(parentObject.getFinalStringArray().length, result.getFinalStringArray().length);
+		for(int i = 0; i < parentObject.getFinalStringArray().length; i++) {
+			Assert.assertEquals(parentObject.getFinalStringArray()[i], result.getFinalStringArray()[i]);
 		}
 	}
 }

@@ -476,20 +476,32 @@ public class JsonSerializer {
 				return;
 			}
 			if (clazz.isEnum()) {
+				if(field.isFinal()) {
+					throw new SerializationException("Cannot use @Field on final enum fields. Use the @ConstructorArg method instead.");
+				}
 				field.set(targetObject, Enum.valueOf((Class<? extends Enum>) clazz, value.asString()));
 				return;
 			}
 			if (!clazz.isPrimitive()) {
 				if (clazz.equals(String.class)) {
+					if(field.isFinal()) {
+						throw new SerializationException("Cannot use @Field on final String fields. Use the @ConstructorArg method instead.");
+					}
 					field.set(targetObject, value.asString());
 				} else if (Map.class.isAssignableFrom(clazz)) {
 					setMapField(targetObject, field, clazz, value);
 				} else if (Collection.class.isAssignableFrom(clazz)) {
 					setCollectionField(targetObject, field, clazz, value);
 				} else {
+					if(field.isFinal()) {
+						throw new SerializationException("Cannot use @Field on final " + clazz.getName() +" fields.");
+					}
 					field.set(targetObject, deserialize(value, clazz));
 				}
 				return;
+			}
+			if(field.isFinal()) {
+				throw new SerializationException("Cannot use @Field on final " + clazz.getName() +" fields. Use the @ConstructorArg method instead.");
 			}
 			field.set(targetObject, deserialize(value, clazz));
 		} catch (SerializationException e) {
@@ -504,25 +516,106 @@ public class JsonSerializer {
 			throws SerializationException {
 		try {
 			if (clazz.equals(boolean[].class)) {
-				field.set(targetObject, value.asBooleanArray());
+				boolean [] result = value.asBooleanArray();
+				if(field.isFinal()) {
+					Object targetArray = field.get(targetObject);
+					for(int i = 0; i < result.length; i++) {
+						ArrayReflection.set(targetArray, i, result[i]);
+					}
+				} else {
+					field.set(targetObject, result);
+				}
 			} else if (clazz.equals(byte[].class)) {
-				field.set(targetObject, value.asByteArray());
+				byte [] result = value.asByteArray();
+				if(field.isFinal()) {
+					Object targetArray = field.get(targetObject);
+					for(int i = 0; i < result.length; i++) {
+						ArrayReflection.set(targetArray, i, result[i]);
+					}
+				} else {
+					field.set(targetObject, result);
+				}
 			} else if (clazz.equals(char[].class)) {
-				field.set(targetObject, value.asCharArray());
+				char [] result = value.asCharArray();
+				if(field.isFinal()) {
+					Object targetArray = field.get(targetObject);
+					for(int i = 0; i < result.length; i++) {
+						ArrayReflection.set(targetArray, i, result[i]);
+					}
+				} else {
+					field.set(targetObject, result);
+				}
 			} else if (clazz.equals(double[].class)) {
-				field.set(targetObject, value.asDoubleArray());
+				double [] result = value.asDoubleArray();
+				if(field.isFinal()) {
+					Object targetArray = field.get(targetObject);
+					for(int i = 0; i < result.length; i++) {
+						ArrayReflection.set(targetArray, i, result[i]);
+					}
+				} else {
+					field.set(targetObject, result);
+				}
 			} else if (clazz.equals(float[].class)) {
-				field.set(targetObject, value.asFloatArray());
+				float [] result = value.asFloatArray();
+				if(field.isFinal()) {
+					Object targetArray = field.get(targetObject);
+					for(int i = 0; i < result.length; i++) {
+						ArrayReflection.set(targetArray, i, result[i]);
+					}
+				} else {
+					field.set(targetObject, result);
+				}
 			} else if (clazz.equals(int[].class)) {
-				field.set(targetObject, value.asIntArray());
+				int [] result = value.asIntArray();
+				if(field.isFinal()) {
+					Object targetArray = field.get(targetObject);
+					for(int i = 0; i < result.length; i++) {
+						ArrayReflection.set(targetArray, i, result[i]);
+					}
+				} else {
+					field.set(targetObject, result);
+				}
 			} else if (clazz.equals(long[].class)) {
-				field.set(targetObject, value.asLongArray());
+				long [] result = value.asLongArray();
+				if(field.isFinal()) {
+					Object targetArray = field.get(targetObject);
+					for(int i = 0; i < result.length; i++) {
+						ArrayReflection.set(targetArray, i, result[i]);
+					}
+				} else {
+					field.set(targetObject, result);
+				}
 			} else if (clazz.equals(short[].class)) {
-				field.set(targetObject, value.asShortArray());
+				short [] result = value.asShortArray();
+				if(field.isFinal()) {
+					Object targetArray = field.get(targetObject);
+					for(int i = 0; i < result.length; i++) {
+						ArrayReflection.set(targetArray, i, result[i]);
+					}
+				} else {
+					field.set(targetObject, result);
+				}
 			} else if (clazz.equals(String[].class)) {
-				field.set(targetObject, value.asStringArray());
+				String [] result = value.asStringArray();
+				if(field.isFinal()) {
+					Object targetArray = field.get(targetObject);
+					for(int i = 0; i < result.length; i++) {
+						ArrayReflection.set(targetArray, i, result[i]);
+					}
+				} else {
+					field.set(targetObject, result);
+				}
 			} else {
-				field.set(targetObject, deserialize(value, clazz));
+				Object result = deserialize(value, clazz);
+				if(field.isFinal()) {
+					Object targetArray = field.get(targetObject);
+					int length = ArrayReflection.getLength(result);
+					for(int i = 0; i < length; i++) {
+						ArrayReflection.set(targetArray, i, ArrayReflection.get(result, i));
+					}
+				} else {
+					field.set(targetObject, result);
+				}
 			}
 		} catch (SerializationException e) {
 			throw e;
@@ -536,12 +629,21 @@ public class JsonSerializer {
 		try {
 			Class<?> valueClass = field.getElementType(0);
 
-			Collection collection = (Collection) (clazz.isInterface() ? new ArrayList()
-					: ClassReflection.newInstance(clazz));
+			Collection collection = null;
+			
+			if(field.isFinal()) {
+				collection = (Collection) field.get(targetObject);
+			} else {
+				collection = (Collection) (clazz.isInterface() ? new ArrayList()
+						: ClassReflection.newInstance(clazz));
+			}
 			for (int i = 0; i < value.size; i++) {
 				collection.add(deserialize(value.get(i), valueClass));
 			}
-			field.set(targetObject, collection);
+			
+			if(!field.isFinal()) {
+				field.set(targetObject, collection);
+			}
 		} catch (SerializationException e) {
 			throw e;
 		} catch (Exception e) {
@@ -552,14 +654,24 @@ public class JsonSerializer {
 	private <T> void setMapField(T targetObject, Field field, Class<?> clazz, JsonValue value)
 			throws SerializationException {
 		try {
-			Map map = (Map) (clazz.isInterface() ? new HashMap() : ClassReflection.newInstance(clazz));
+			Map map = null;
+			
+			if(field.isFinal()) {
+				map = (Map) field.get(targetObject);
+			} else {
+				map = (Map) (clazz.isInterface() ? new HashMap() : ClassReflection.newInstance(clazz));
+			}
+			
 			Class<?> keyClass = field.getElementType(0);
 			Class<?> valueClass = field.getElementType(1);
 
 			for (int i = 0; i < value.size; i++) {
 				map.put(parseMapKey(value.get(i).name, keyClass), deserialize(value.get(i), valueClass));
 			}
-			field.set(targetObject, map);
+			
+			if(!field.isFinal()) {
+				field.set(targetObject, map);
+			}
 		} catch (SerializationException e) {
 			throw e;
 		} catch (Exception e) {
