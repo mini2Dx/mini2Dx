@@ -312,6 +312,11 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			if (!allAnnotated) {
 				continue;
 			}
+			if (detectedAnnotations.size() == attributes.size()) {
+				//Found exact match
+				bestMatchedConstructor = constructors[i];
+				break;
+			}
 			if (bestMatchedConstructor == null) {
 				bestMatchedConstructor = constructors[i];
 			} else if (detectedAnnotations.size() > bestMatchedConstructor.getParameterAnnotations().length) {
