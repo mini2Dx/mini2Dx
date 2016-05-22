@@ -446,6 +446,9 @@ public class Polygon extends Shape {
 
 	@Override
 	public void setRotationAround(float centerX, float centerY, float degrees) {
+		if(polygon.getRotation() == degrees - trackedRotation) {
+			return;
+		}
 		polygon.setVertices(polygon.getTransformedVertices());
 		polygon.setOrigin(centerX, centerY);
 		polygon.setRotation(degrees - trackedRotation);
@@ -575,6 +578,10 @@ public class Polygon extends Shape {
 
 	@Override
 	public void setX(float x) {
+		if(x == getX()) {
+			return;
+		}
+		
 		float[] vertices = polygon.getTransformedVertices();
 		float xDiff = x - getX();
 
@@ -588,6 +595,10 @@ public class Polygon extends Shape {
 
 	@Override
 	public void setY(float y) {
+		if(y == getY()) {
+			return;
+		}
+		
 		float[] vertices = polygon.getTransformedVertices();
 		float yDiff = y - getY();
 
@@ -601,6 +612,10 @@ public class Polygon extends Shape {
 
 	@Override
 	public void set(float x, float y) {
+		if(x == getX() && y == getY()) {
+			return;
+		}
+		
 		float[] vertices = polygon.getTransformedVertices();
 		float xDiff = x - getX();
 		float yDiff = y - getY();
