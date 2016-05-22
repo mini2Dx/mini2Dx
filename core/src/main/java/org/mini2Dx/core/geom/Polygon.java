@@ -39,6 +39,8 @@ public class Polygon extends Shape {
 	private ShortArray triangles;
 	private float trackedRotation = 0f;
 	private boolean isRectangle;
+	private boolean minMaxDirty = true;
+	private boolean trianglesDirty = true;
 
 	/**
 	 * Constructor. Note that vertices must be in a clockwise order for
@@ -51,8 +53,6 @@ public class Polygon extends Shape {
 		polygon = new com.badlogic.gdx.math.Polygon(vertices);
 		polygon.setOrigin(vertices[0], vertices[1]);
 		triangulator = new EarClippingTriangulator();
-		computeTriangles(polygon.getTransformedVertices());
-		calculateMinMaxXY(polygon.getTransformedVertices());
 		getNumberOfSides();
 	}
 
@@ -106,36 +106,6 @@ public class Polygon extends Shape {
 
 	private void clearTotalSidesCache() {
 		totalSidesCache = -1;
-	}
-
-	private void computeTriangles(float[] vertices) {
-		triangles = triangulator.computeTriangles(vertices);
-	}
-
-	private void calculateMinMaxXY(float[] vertices) {
-		int minXIndex = 0;
-		int minYIndex = 1;
-		int maxXIndex = 0;
-		int maxYIndex = 1;
-		for (int i = 2; i < vertices.length; i += 2) {
-			if (vertices[i] < vertices[minXIndex]) {
-				minXIndex = i;
-			}
-			if (vertices[i + 1] < vertices[minYIndex]) {
-				minYIndex = i + 1;
-			}
-			if (vertices[i] > vertices[maxXIndex]) {
-				maxXIndex = i;
-			}
-			if (vertices[i + 1] > vertices[maxYIndex]) {
-				maxYIndex = i + 1;
-			}
-
-		}
-		this.minX = vertices[minXIndex];
-		this.minY = vertices[minYIndex];
-		this.maxX = vertices[maxXIndex];
-		this.maxY = vertices[maxYIndex];
 	}
 
 	protected boolean triangleContains(float x, float y, float p1x, float p1y, float p2x, float p2y, float p3x,
@@ -200,6 +170,8 @@ public class Polygon extends Shape {
 	 * @return True if the two {@link Polygon}s intersect
 	 */
 	public boolean intersects(Polygon polygon) {
+		minMaxDirtyCheck();
+		polygon.minMaxDirtyCheck();
 		if (isRectangle && polygon.isRectangle) {
 			boolean xAxisOverlaps = true;
 			boolean yAxisOverlaps = true;
@@ -267,6 +239,7 @@ public class Polygon extends Shape {
 
 	public boolean intersects(Circle circle) {
 		if (isRectangle) {
+			minMaxDirtyCheck();
 			float closestX = circle.getX();
 			float closestY = circle.getY();
 
@@ -357,20 +330,9 @@ public class Polygon extends Shape {
 
 		polygon.translate(-polygon.getX(), -polygon.getY());
 		polygon.setVertices(newVertices);
-
-		computeTriangles(newVertices);
+		
 		clearTotalSidesCache();
-
-		if (x > maxX) {
-			maxX = x;
-		} else if (x < minX) {
-			minX = x;
-		}
-		if (y > maxY) {
-			maxY = y;
-		} else if (y < minY) {
-			minY = y;
-		}
+		setDirty();
 	}
 
 	/**
@@ -394,8 +356,7 @@ public class Polygon extends Shape {
 		}
 		polygon.translate(-polygon.getX(), -polygon.getY());
 		polygon.setVertices(newVertices);
-		computeTriangles(newVertices);
-		calculateMinMaxXY(newVertices);
+		setDirty();
 		clearTotalSidesCache();
 	}
 
@@ -460,9 +421,8 @@ public class Polygon extends Shape {
 		polygon.setVertices(vertices);
 		trackedRotation = 0f;
 		
-		calculateMinMaxXY(vertices);
-		computeTriangles(vertices);
 		clearTotalSidesCache();
+		setDirty();
 	}
 
 	public void setVertices(Vector2[] vertices) {
@@ -490,9 +450,7 @@ public class Polygon extends Shape {
 		polygon.setOrigin(centerX, centerY);
 		polygon.setRotation(degrees - trackedRotation);
 		trackedRotation = degrees;
-
-		calculateMinMaxXY(polygon.getTransformedVertices());
-		computeTriangles(polygon.getTransformedVertices());
+		setDirty();
 	}
 
 	@Override
@@ -503,9 +461,7 @@ public class Polygon extends Shape {
 		polygon.setOrigin(centerX, centerY);
 		polygon.setVertices(vertices);
 		polygon.rotate(degrees);
-
-		calculateMinMaxXY(polygon.getTransformedVertices());
-		computeTriangles(polygon.getTransformedVertices());
+		setDirty();
 	}
 
 	/**
@@ -556,6 +512,7 @@ public class Polygon extends Shape {
 	 * @return The left-most x coordinate
 	 */
 	public float getMinX() {
+		minMaxDirtyCheck();
 		return minX;
 	}
 
@@ -565,6 +522,7 @@ public class Polygon extends Shape {
 	 * @return The up-most y coordinate
 	 */
 	public float getMinY() {
+		minMaxDirtyCheck();
 		return minY;
 	}
 
@@ -574,6 +532,7 @@ public class Polygon extends Shape {
 	 * @return The right-most x coordinate
 	 */
 	public float getMaxX() {
+		minMaxDirtyCheck();
 		return maxX;
 	}
 
@@ -583,6 +542,7 @@ public class Polygon extends Shape {
 	 * @return The bottom-most y coordinate
 	 */
 	public float getMaxY() {
+		minMaxDirtyCheck();
 		return maxY;
 	}
 
@@ -593,6 +553,7 @@ public class Polygon extends Shape {
 	 * @return Array of triangle indices
 	 */
 	public ShortArray getTriangles() {
+		trianglesDirtyCheck();
 		return triangles;
 	}
 
@@ -622,9 +583,7 @@ public class Polygon extends Shape {
 		}
 		polygon.setOrigin(x, getY());
 		polygon.setVertices(vertices);
-
-		calculateMinMaxXY(vertices);
-		computeTriangles(vertices);
+		setDirty();
 	}
 
 	@Override
@@ -637,9 +596,7 @@ public class Polygon extends Shape {
 		}
 		polygon.setOrigin(getX(), y);
 		polygon.setVertices(vertices);
-
-		calculateMinMaxXY(vertices);
-		computeTriangles(vertices);
+		setDirty();
 	}
 
 	@Override
@@ -654,9 +611,7 @@ public class Polygon extends Shape {
 		}
 		polygon.setOrigin(x, y);
 		polygon.setVertices(vertices);
-
-		calculateMinMaxXY(vertices);
-		computeTriangles(vertices);
+		setDirty();
 	}
 	
 	public void set(Polygon polygon) {
@@ -664,10 +619,8 @@ public class Polygon extends Shape {
 		this.polygon.setVertices(polygon.polygon.getTransformedVertices());
 		this.polygon.setRotation(0f);
 		this.trackedRotation = polygon.trackedRotation;
-		
-		calculateMinMaxXY(this.polygon.getTransformedVertices());
-		computeTriangles(this.polygon.getTransformedVertices());
 		clearTotalSidesCache();
+		setDirty();
 	}
 
 	@Override
@@ -680,9 +633,7 @@ public class Polygon extends Shape {
 		}
 		polygon.setOrigin(vertices[0], vertices[1]);
 		polygon.setVertices(vertices);
-
-		calculateMinMaxXY(vertices);
-		computeTriangles(vertices);
+		setDirty();
 	}
 
 	@Override
@@ -698,6 +649,57 @@ public class Polygon extends Shape {
 	@Override
 	public Polygon getPolygon() {
 		return this;
+	}
+	
+	private void setDirty() {
+		minMaxDirty = true;
+		trianglesDirty = true;
+	}
+	
+	private void minMaxDirtyCheck() {
+		if(!minMaxDirty) {
+			return;
+		}
+		calculateMinMaxXY(polygon.getTransformedVertices());
+		minMaxDirty = false;
+	}
+	
+	private void trianglesDirtyCheck() {
+		if(!trianglesDirty) {
+			return;
+		}
+		computeTriangles(polygon.getTransformedVertices());
+		trianglesDirty = false;
+	}
+	
+	private void computeTriangles(float[] vertices) {
+		triangles = triangulator.computeTriangles(vertices);
+	}
+
+	private void calculateMinMaxXY(float[] vertices) {
+		int minXIndex = 0;
+		int minYIndex = 1;
+		int maxXIndex = 0;
+		int maxYIndex = 1;
+		for (int i = 2; i < vertices.length; i += 2) {
+			if (vertices[i] < vertices[minXIndex]) {
+				minXIndex = i;
+			}
+			if (vertices[i + 1] < vertices[minYIndex]) {
+				minYIndex = i + 1;
+			}
+			if (vertices[i] > vertices[maxXIndex]) {
+				maxXIndex = i;
+			}
+			if (vertices[i + 1] > vertices[maxYIndex]) {
+				maxYIndex = i + 1;
+			}
+
+		}
+		this.minX = vertices[minXIndex];
+		this.minY = vertices[minYIndex];
+		this.maxX = vertices[maxXIndex];
+		this.maxY = vertices[maxYIndex];
 	}
 
 	@Override
