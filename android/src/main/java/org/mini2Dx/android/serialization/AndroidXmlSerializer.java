@@ -64,7 +64,6 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		try {
 			xmlParser.setInput(xmlReader);
 			xmlParser.nextTag();
-			xmlParser.nextTag();
 			result = deserializeObject(xmlParser, "data", clazz);
 		} catch (XmlPullParserException e) {
 			throw new SerializationException(e.getMessage(), e);

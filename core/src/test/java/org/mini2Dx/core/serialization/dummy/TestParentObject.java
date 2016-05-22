@@ -74,6 +74,12 @@ public class TestParentObject extends TestSuperObject {
 	private TestAbstractObject abstractObject;
     
     private int ignoredValue;
+    
+    public TestParentObject() {}
+    
+    public TestParentObject(int intValue) {
+    	this.intValue = intValue;
+    }
 
     public int getIntValue() {
         return intValue;

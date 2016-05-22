@@ -66,7 +66,6 @@ public class DesktopXmlSerializer implements XmlSerializer {
 		try {
 			XMLStreamReader xmlStreamReader = inputFactory.createXMLStreamReader(xmlReader);
 			xmlStreamReader.next();
-			xmlStreamReader.next();
 			result = deserializeObject(xmlStreamReader, "data", clazz);
 		} catch (XMLStreamException e) {
 			throw new SerializationException(e.getMessage(), e);
@@ -411,7 +410,7 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			throw new SerializationException("Could not find suitable constructor for class " + clazz.getName());
 		}
 		if (detectedAnnotations.size() == 0) {
-			return (T) clazz.newInstance();
+			return (T) bestMatchedConstructor.newInstance();
 		}
 
 		Object[] constructorParameters = new Object[detectedAnnotations.size()];

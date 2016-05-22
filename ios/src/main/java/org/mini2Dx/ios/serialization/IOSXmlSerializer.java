@@ -66,7 +66,6 @@ public class IOSXmlSerializer implements XmlSerializer {
 		try {
 			XMLStreamReader xmlStreamReader = inputFactory.createXMLStreamReader(xmlReader);
 			xmlStreamReader.next();
-			xmlStreamReader.next();
 			result = deserializeObject(xmlStreamReader, "data", clazz);
 		} catch (XMLStreamException e) {
 			throw new SerializationException(e.getMessage(), e);
