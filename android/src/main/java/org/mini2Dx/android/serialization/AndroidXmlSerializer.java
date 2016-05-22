@@ -289,13 +289,18 @@ public class AndroidXmlSerializer implements XmlSerializer {
 	private <T> void writeArray(Field field, T array, org.xmlpull.v1.XmlSerializer xmlSerializer)
 			throws SerializationException {
 		try {
+			int arrayLength = Array.getLength(array);
 			if (field != null) {
 				xmlSerializer.startTag("", field.getName());
+				xmlSerializer.attribute("", "length", String.valueOf(arrayLength));
 			}
-
-			int arrayLength = Array.getLength(array);
+			
 			for (int i = 0; i < arrayLength; i++) {
-				writeObject(field, Array.get(array, i), "value", xmlSerializer);
+				Object object = Array.get(array, i);
+				if(object == null) {
+					continue;
+				}
+				writeObject(field, object, "value", xmlSerializer);
 			}
 
 			if (field != null) {
@@ -462,8 +467,9 @@ public class AndroidXmlSerializer implements XmlSerializer {
 
 					Class<?> fieldClass = currentField.getType();
 					if (fieldClass.isArray()) {
+						int arraySize = Integer.parseInt(xmlParser.getAttributeValue("", "length"));
 						xmlParser.next();
-						setArrayField(xmlParser, currentField, fieldClass, result);
+						setArrayField(xmlParser, currentField, fieldClass, result, arraySize);
 						break;
 					}
 					if (fieldClass.isEnum()) {
@@ -645,7 +651,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		}
 	}
 
-	private <T> void setArrayField(XmlPullParser xmlParser, Field field, Class<?> fieldClass, T object)
+	private <T> void setArrayField(XmlPullParser xmlParser, Field field, Class<?> fieldClass, T object, int size)
 			throws SerializationException {
 		try {
 			Class<?> arrayType = fieldClass.getComponentType();
@@ -685,7 +691,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			if(field.isFinal()) {
 				targetArray = field.get(object);
 			} else {
-				targetArray = ArrayReflection.newInstance(arrayType, list.size());
+				targetArray = ArrayReflection.newInstance(arrayType, size);
 			}
 			for (int i = 0; i < list.size(); i++) {
 				ArrayReflection.set(targetArray, i, list.get(i));

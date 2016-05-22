@@ -74,6 +74,11 @@ public abstract class XmlSerializerTest {
 		}
 		
 		Assert.assertEquals(parentObject.getChildObject().getIntValue(), result.getChildObject().getIntValue());
+		Assert.assertEquals(parentObject.getChildObjectArray().length, result.getChildObjectArray().length);
+		for(int i = 0; i < parentObject.getChildObjectArray().length; i++) {
+			Assert.assertEquals(parentObject.getChildObjectArray()[i], result.getChildObjectArray()[i]);
+		}
+		
 		Assert.assertEquals(parentObject.getChildren().size(), result.getChildren().size());
 		for(int i = 0; i < parentObject.getChildren().size(); i++) {
 			Assert.assertEquals(parentObject.getChildren().get(i).getIntValue(), result.getChildren().get(i).getIntValue());
@@ -117,12 +122,12 @@ public abstract class XmlSerializerTest {
 		xml += "    <shortValue>655</shortValue>\n";
 		xml += "    <longValue>9223372036854775807</longValue>\n";
 		xml += "    <floatValue>2.5</floatValue>\n";
-		xml += "    <intArrayValue>\n";
+		xml += "    <intArrayValue length=\"3\">\n";
 		xml += "        <value>1</value>\n";
 		xml += "        <value>2</value>\n";
 		xml += "        <value>3</value>\n";
 		xml += "    </intArrayValue>\n";
-		xml += "    <stringArrayValue>\n";
+		xml += "    <stringArrayValue length=\"2\">\n";
 		xml += "        <value>item1</value>\n";
 		xml += "        <value>item2</value>\n";
 		xml += "    </stringArrayValue>\n";
@@ -141,6 +146,14 @@ public abstract class XmlSerializerTest {
 		xml += "    <childObject>\n";
 		xml += "        <intValue>34</intValue>\n";
 		xml += "    </childObject>\n";
+		xml += "    <childObjectArray length=\"3\">\n";
+		xml += "        <value>\n";
+		xml += "            <intValue>51</intValue>\n";
+		xml += "        </value>\n";
+		xml += "        <value>\n";
+		xml += "            <intValue>57</intValue>\n";
+		xml += "        </value>\n";
+		xml += "    </childObjectArray>\n";
 		xml += "    <optionalChildObject/>\n";
 		xml += "    <children>\n";
 		xml += "        <value>\n";
@@ -165,7 +178,7 @@ public abstract class XmlSerializerTest {
 		xml += "        <value>fstr1</value>\n";
 		xml += "        <value>fstr2</value>\n";
 		xml += "    </finalStringList>\n";
-		xml += "    <finalStringArray>\n";
+		xml += "    <finalStringArray length=\"3\">\n";
 		xml += "        <value>fstr3</value>\n";
 		xml += "        <value>fstr4</value>\n";
 		xml += "        <value>fstr5</value>\n";
@@ -212,6 +225,11 @@ public abstract class XmlSerializerTest {
 		}
 		
 		Assert.assertEquals(parentObject.getChildObject().getIntValue(), result.getChildObject().getIntValue());
+		Assert.assertEquals(parentObject.getChildObjectArray().length, result.getChildObjectArray().length);
+		for(int i = 0; i < parentObject.getChildObjectArray().length; i++) {
+			Assert.assertEquals(parentObject.getChildObjectArray()[i], result.getChildObjectArray()[i]);
+		}
+		
 		Assert.assertEquals(parentObject.getChildren().size(), result.getChildren().size());
 		for(int i = 0; i < parentObject.getChildren().size(); i++) {
 			Assert.assertEquals(parentObject.getChildren().get(i).getIntValue(), result.getChildren().get(i).getIntValue());
@@ -250,6 +268,9 @@ public abstract class XmlSerializerTest {
 		parentObject.setIntArrayValue(new int[] { 1, 2, 3 });
 		
 		parentObject.setChildObject(new TestChildObject(34));
+		parentObject.setChildObjectArray(new TestChildObject[3]);
+		parentObject.getChildObjectArray()[0] = new TestChildObject(51);
+		parentObject.getChildObjectArray()[1] = new TestChildObject(57);
 		
 		parentObject.setChildren(new ArrayList<TestChildObject>());
 		parentObject.getChildren().add(new TestChildObject(35));

@@ -142,7 +142,11 @@ public class DesktopPlayerDataTest {
         
         expectedChildObject = new TestChildObject();
         expectedChildObject.setIntValue(random.nextInt() + 1);
+        
         expectedParentObject.setChildObject(expectedChildObject);
+        expectedParentObject.setChildObjectArray(new TestChildObject[3]);
+        expectedParentObject.getChildObjectArray()[0] = new TestChildObject(51);
+        expectedParentObject.getChildObjectArray()[1] = new TestChildObject(57);
         
         expectedParentObject.setChildren(new ArrayList<TestChildObject>());
         expectedParentObject.setIntArrayValue(new int [] { 0, 1, 2 });

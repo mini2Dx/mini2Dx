@@ -61,6 +61,9 @@ public class JsonSerializerTest {
 		parentObject.setIntArrayValue(new int[] { 1, 2, 3 });
 		
 		parentObject.setChildObject(new TestChildObject(34));
+		parentObject.setChildObjectArray(new TestChildObject[3]);
+		parentObject.getChildObjectArray()[0] = new TestChildObject(51);
+		parentObject.getChildObjectArray()[1] = new TestChildObject(57);
 		
 		parentObject.setChildren(new ArrayList<TestChildObject>());
 		parentObject.getChildren().add(new TestChildObject(35));
@@ -139,6 +142,11 @@ public class JsonSerializerTest {
 		}
 		
 		Assert.assertEquals(parentObject.getChildObject().getIntValue(), result.getChildObject().getIntValue());
+		Assert.assertEquals(parentObject.getChildObjectArray().length, result.getChildObjectArray().length);
+		for(int i = 0; i < parentObject.getChildObjectArray().length; i++) {
+			Assert.assertEquals(parentObject.getChildObjectArray()[i], result.getChildObjectArray()[i]);
+		}
+		
 		Assert.assertEquals(parentObject.getChildren().size(), result.getChildren().size());
 		for(int i = 0; i < parentObject.getChildren().size(); i++) {
 			Assert.assertEquals(parentObject.getChildren().get(i).getIntValue(), result.getChildren().get(i).getIntValue());

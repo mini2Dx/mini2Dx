@@ -445,7 +445,7 @@ public class JsonSerializer {
 				Class<?> arrayType = fieldClass.getComponentType();
 				Object array = ArrayReflection.newInstance(arrayType, objectRoot.size);
 				for (int i = 0; i < objectRoot.size; i++) {
-					Array.set(array, i, objectRoot.get(i));
+					Array.set(array, i, deserialize(objectRoot.get(i), arrayType));
 				}
 				return (T) array;
 			}

@@ -283,11 +283,16 @@ public class IOSXmlSerializer implements XmlSerializer {
 		try {
 			if (field != null) {
 				xmlWriter.writeStartElement(field.getName());
+				xmlWriter.writeAttribute("length", String.valueOf(Array.getLength(array)));
 			}
 
 			int arrayLength = Array.getLength(array);
 			for (int i = 0; i < arrayLength; i++) {
-				writeObject(field, Array.get(array, i), "value", xmlWriter);
+				Object object = Array.get(array, i);
+				if(object == null) {
+					continue;
+				}
+				writeObject(field, object, "value", xmlWriter);
 			}
 
 			if (field != null) {
@@ -456,8 +461,9 @@ public class IOSXmlSerializer implements XmlSerializer {
 
 					Class<?> fieldClass = currentField.getType();
 					if (fieldClass.isArray()) {
+						int arraySize = Integer.parseInt(xmlReader.getAttributeValue("", "length"));
 						xmlReader.next();
-						setArrayField(xmlReader, currentField, fieldClass, result);
+						setArrayField(xmlReader, currentField, fieldClass, result, arraySize);
 						break;
 					}
 					if (fieldClass.isEnum()) {
@@ -641,7 +647,7 @@ public class IOSXmlSerializer implements XmlSerializer {
 		}
 	}
 
-	private <T> void setArrayField(XMLStreamReader xmlReader, Field field, Class<?> fieldClass, T object)
+	private <T> void setArrayField(XMLStreamReader xmlReader, Field field, Class<?> fieldClass, T object, int size)
 			throws SerializationException {
 		try {
 			Class<?> arrayType = fieldClass.getComponentType();
@@ -680,7 +686,7 @@ public class IOSXmlSerializer implements XmlSerializer {
 			if(field.isFinal()) {
 				targetArray = field.get(object);
 			} else {
-				targetArray = ArrayReflection.newInstance(arrayType, list.size());
+				targetArray = ArrayReflection.newInstance(arrayType, size);
 			}
 			for (int i = 0; i < list.size(); i++) {
 				ArrayReflection.set(targetArray, i, list.get(i));

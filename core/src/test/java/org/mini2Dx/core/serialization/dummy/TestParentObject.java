@@ -48,6 +48,8 @@ public class TestParentObject extends TestSuperObject {
     private List<String> listValues;
     @Field
     private TestChildObject childObject;
+    @Field
+    private TestChildObject [] childObjectArray;
     @Field(optional=true)
     private TestChildObject optionalChildObject;
     @Field
@@ -153,7 +155,15 @@ public class TestParentObject extends TestSuperObject {
         this.childObject = childObject;
     }
 
-    public float getFloatValue() {
+    public TestChildObject[] getChildObjectArray() {
+		return childObjectArray;
+	}
+
+	public void setChildObjectArray(TestChildObject[] childObjectArray) {
+		this.childObjectArray = childObjectArray;
+	}
+
+	public float getFloatValue() {
         return floatValue;
     }
 
