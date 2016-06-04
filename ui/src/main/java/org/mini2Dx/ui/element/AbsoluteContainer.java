@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ui.element;
 
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.ui.render.AbsoluteContainerRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 
@@ -24,7 +25,7 @@ public class AbsoluteContainer extends Container {
 		this(null);
 	}
 	
-	public AbsoluteContainer(String id) {
+	public AbsoluteContainer(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 	

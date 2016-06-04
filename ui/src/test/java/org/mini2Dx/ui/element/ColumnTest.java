@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,18 +11,43 @@
  */
 package org.mini2Dx.ui.element;
 
-import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.serialization.SerializationException;
+import org.mini2Dx.desktop.serialization.DesktopXmlSerializer;
 
 /**
- *
+ * Unit and integration tests for {@link Column}
  */
-public abstract class Container extends Column {
-	
-	public Container() {
-		this(null);
+public class ColumnTest {
+	@Before
+	public void setUp() {
+		Mdx.xml = new DesktopXmlSerializer();
 	}
-	
-	public Container(@ConstructorArg(clazz=String.class, name = "id") String id) {
-		super(id);
+
+	@Test
+	public void testSerialization() {
+		Column column = new Column("column-1");
+		column.setZIndex(22);
+		column.add(new Label());
+		column.add(new TextButton("button-1"));
+		
+		try {
+			String xml = Mdx.xml.toXml(column);
+			System.out.println(xml);
+			Column result = Mdx.xml.fromXml(xml, Column.class);
+			
+			Assert.assertEquals(column.getId(), result.getId());
+			Assert.assertEquals(column.getZIndex(), result.getZIndex());
+			Assert.assertEquals(column.children.size(), result.children.size());
+			for(int i = 0; i < column.children.size(); i++) {
+				Assert.assertEquals(column.children.get(i).getId(), result.children.get(i).getId());
+			}
+		} catch (SerializationException e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
 	}
 }

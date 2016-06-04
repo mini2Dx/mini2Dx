@@ -16,12 +16,12 @@ import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.ui.dummy.DummyRenderNode;
+import org.mini2Dx.ui.dummy.DummyUiElement;
 import org.mini2Dx.ui.element.Row;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.layout.ScreenSize;
-import org.mini2Dx.ui.mock.DummyRenderNode;
-import org.mini2Dx.ui.mock.DummyUiElement;
 import org.mini2Dx.ui.style.ColumnStyleRule;
 import org.mini2Dx.ui.style.UiTheme;
 

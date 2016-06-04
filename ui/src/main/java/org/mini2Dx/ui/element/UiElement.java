@@ -20,7 +20,6 @@ import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.core.serialization.annotation.NonConcrete;
 import org.mini2Dx.ui.effect.UiEffect;
-import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.listener.HoverListener;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.style.UiTheme;
@@ -46,7 +45,7 @@ public abstract class UiElement implements Hoverable {
 		this(null);
 	}
 
-	public UiElement(String id) {
+	public UiElement(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		if (id == null) {
 			id = IdAllocator.getNextId();
 		}

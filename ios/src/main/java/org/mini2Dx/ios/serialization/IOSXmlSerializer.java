@@ -221,6 +221,10 @@ public class IOSXmlSerializer implements XmlSerializer {
 					ConstructorArg constructorArg = annotation.getAnnotation(ConstructorArg.class);
 					xmlWriter.writeAttribute(constructorArg.name(), String.valueOf(method.invoke(object)));
 				}
+				currentClass = currentClass.getSuperclass();
+			}
+			currentClass = clazz;
+			while(currentClass != null && !currentClass.equals(Object.class)) {
 				for (Field field : ClassReflection.getDeclaredFields(currentClass)) {
 					field.setAccessible(true);
 					Annotation annotation = field
@@ -237,7 +241,6 @@ public class IOSXmlSerializer implements XmlSerializer {
 					}
 					writeObject(field, field.get(object), field.getName(), xmlWriter);
 				}
-
 				currentClass = currentClass.getSuperclass();
 			}
 
@@ -280,12 +283,13 @@ public class IOSXmlSerializer implements XmlSerializer {
 
 	private <T> void writeArray(Field field, T array, XMLStreamWriter xmlWriter) throws SerializationException {
 		try {
+			int arrayLength = Array.getLength(array);
+			
 			if (field != null) {
 				xmlWriter.writeStartElement(field.getName());
-				xmlWriter.writeAttribute("length", String.valueOf(Array.getLength(array)));
+				xmlWriter.writeAttribute("length", String.valueOf(arrayLength));
 			}
-
-			int arrayLength = Array.getLength(array);
+			
 			for (int i = 0; i < arrayLength; i++) {
 				Object object = Array.get(array, i);
 				if(object == null) {
@@ -376,10 +380,10 @@ public class IOSXmlSerializer implements XmlSerializer {
 
 				boolean hasConstructorArgAnnotation = false;
 				for (int k = 0; k < annotations.length; k++) {
-					if (!annotations[i].annotationType().isAssignableFrom(ConstructorArg.class)) {
+					if (!annotations[k].annotationType().isAssignableFrom(ConstructorArg.class)) {
 						continue;
 					}
-					ConstructorArg constructorArg = (ConstructorArg) annotations[i];
+					ConstructorArg constructorArg = (ConstructorArg) annotations[k];
 					if (!attributes.containsKey(constructorArg.name())) {
 						continue;
 					}
@@ -409,7 +413,7 @@ public class IOSXmlSerializer implements XmlSerializer {
 			throw new SerializationException("Could not find suitable constructor for class " + clazz.getName());
 		}
 		if (detectedAnnotations.size() == 0) {
-			return (T) clazz.newInstance();
+			return (T) bestMatchedConstructor.newInstance();
 		}
 
 		Object[] constructorParameters = new Object[detectedAnnotations.size()];
@@ -473,7 +477,12 @@ public class IOSXmlSerializer implements XmlSerializer {
 					if (!fieldClass.isPrimitive()) {
 						if (fieldClass.equals(String.class)) {
 							xmlReader.next();
-							setPrimitiveField(currentField, fieldClass, result, xmlReader.getText());
+							if(xmlReader.getEventType() == XMLStreamConstants.END_ELEMENT) {
+								//Empty string
+								setPrimitiveField(currentField, fieldClass, result, "");
+							} else {
+								setPrimitiveField(currentField, fieldClass, result, xmlReader.getText());
+							}
 						} else if (Map.class.isAssignableFrom(fieldClass)) {
 							xmlReader.next();
 							setMapField(xmlReader, currentField, fieldClass, result);

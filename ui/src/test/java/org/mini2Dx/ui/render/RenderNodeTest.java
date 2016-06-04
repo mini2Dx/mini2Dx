@@ -15,9 +15,9 @@ import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.ui.dummy.DummyRenderNode;
+import org.mini2Dx.ui.dummy.DummyUiElement;
 import org.mini2Dx.ui.layout.LayoutState;
-import org.mini2Dx.ui.mock.DummyRenderNode;
-import org.mini2Dx.ui.mock.DummyUiElement;
 
 import junit.framework.Assert;
 

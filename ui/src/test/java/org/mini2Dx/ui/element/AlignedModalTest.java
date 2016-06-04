@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,18 +11,46 @@
  */
 package org.mini2Dx.ui.element;
 
-import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.junit.Before;
+import org.junit.Test;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.desktop.serialization.DesktopXmlSerializer;
+import org.mini2Dx.ui.layout.HorizontalAlignment;
+import org.mini2Dx.ui.layout.VerticalAlignment;
+
+import junit.framework.Assert;
 
 /**
- *
+ * Unit and integration tests for {@link AlignedModal}
  */
-public abstract class Container extends Column {
-	
-	public Container() {
-		this(null);
+public class AlignedModalTest {
+	@Before
+	public void setUp() {
+		Mdx.xml = new DesktopXmlSerializer();
 	}
-	
-	public Container(@ConstructorArg(clazz=String.class, name = "id") String id) {
-		super(id);
+
+	@Test
+	public void testSerialization() {
+		AlignedModal modal = new AlignedModal("modal-92");
+		modal.setHorizontalAlignment(HorizontalAlignment.RIGHT);
+		modal.setVerticalAlignment(VerticalAlignment.TOP);
+		modal.add(new Label("label-33"));
+		modal.add(new TextButton("button-73"));
+		
+		try {
+			String xml = Mdx.xml.toXml(modal);
+			System.out.println(xml);
+			AlignedModal result = Mdx.xml.fromXml(xml, AlignedModal.class);
+			Assert.assertEquals(modal.getId(), result.getId());
+			Assert.assertEquals(modal.getHorizontalAlignment(), result.getHorizontalAlignment());
+			Assert.assertEquals(modal.getVerticalAlignment(), result.getVerticalAlignment());
+			Assert.assertEquals(modal.children.size(), result.children.size());
+			for(int i = 0; i < modal.children.size(); i++) {
+				Assert.assertEquals(modal.children.get(i).getId(), result.children.get(i).getId());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
 	}
 }

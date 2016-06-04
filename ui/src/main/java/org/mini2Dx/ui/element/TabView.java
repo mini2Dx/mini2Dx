@@ -51,9 +51,8 @@ public class TabView extends UiElement implements Navigatable {
 	
 	@Field(optional=true)
 	private final List<Tab> tabs = new ArrayList<Tab>(1);
-	@Field(optional=true)
+	
 	private int availableColumnsForTabButtons = 0;
-	@Field(optional=true)
 	private int columnsPerTabButton = 0;
 
 	public TabView() {
@@ -155,6 +154,14 @@ public class TabView extends UiElement implements Navigatable {
 
 	public boolean remove(int index) {
 		return remove(tabs.get(index));
+	}
+	
+	public Tab getTab(int index) {
+		return tabs.get(index);
+	}
+	
+	public int getTotalTabs() {
+		return tabs.size();
 	}
 
 	@Override

@@ -221,6 +221,10 @@ public class DesktopXmlSerializer implements XmlSerializer {
 					ConstructorArg constructorArg = annotation.getAnnotation(ConstructorArg.class);
 					xmlWriter.writeAttribute(constructorArg.name(), String.valueOf(method.invoke(object)));
 				}
+				currentClass = currentClass.getSuperclass();
+			}
+			currentClass = clazz;
+			while(currentClass != null && !currentClass.equals(Object.class)) {
 				for (Field field : ClassReflection.getDeclaredFields(currentClass)) {
 					field.setAccessible(true);
 					Annotation annotation = field
@@ -237,7 +241,6 @@ public class DesktopXmlSerializer implements XmlSerializer {
 					}
 					writeObject(field, field.get(object), field.getName(), xmlWriter);
 				}
-
 				currentClass = currentClass.getSuperclass();
 			}
 
@@ -377,10 +380,10 @@ public class DesktopXmlSerializer implements XmlSerializer {
 
 				boolean hasConstructorArgAnnotation = false;
 				for (int k = 0; k < annotations.length; k++) {
-					if (!annotations[i].annotationType().isAssignableFrom(ConstructorArg.class)) {
+					if (!annotations[k].annotationType().isAssignableFrom(ConstructorArg.class)) {
 						continue;
 					}
-					ConstructorArg constructorArg = (ConstructorArg) annotations[i];
+					ConstructorArg constructorArg = (ConstructorArg) annotations[k];
 					if (!attributes.containsKey(constructorArg.name())) {
 						continue;
 					}
@@ -474,7 +477,12 @@ public class DesktopXmlSerializer implements XmlSerializer {
 					if (!fieldClass.isPrimitive()) {
 						if (fieldClass.equals(String.class)) {
 							xmlReader.next();
-							setPrimitiveField(currentField, fieldClass, result, xmlReader.getText());
+							if(xmlReader.getEventType() == XMLStreamConstants.END_ELEMENT) {
+								//Empty string
+								setPrimitiveField(currentField, fieldClass, result, "");
+							} else {
+								setPrimitiveField(currentField, fieldClass, result, xmlReader.getText());
+							}
 						} else if (Map.class.isAssignableFrom(fieldClass)) {
 							xmlReader.next();
 							setMapField(xmlReader, currentField, fieldClass, result);

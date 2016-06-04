@@ -228,6 +228,11 @@ public class AndroidXmlSerializer implements XmlSerializer {
 					ConstructorArg constructorArg = annotation.getAnnotation(ConstructorArg.class);
 					xmlSerializer.attribute("", constructorArg.name(), String.valueOf(method.invoke(object)));
 				}
+				currentClass = currentClass.getSuperclass();
+			}
+			
+			currentClass = clazz;
+			while(currentClass != null && !currentClass.equals(Object.class)) {
 				for (Field field : ClassReflection.getDeclaredFields(currentClass)) {
 					field.setAccessible(true);
 					Annotation annotation = field
@@ -382,10 +387,10 @@ public class AndroidXmlSerializer implements XmlSerializer {
 
 				boolean hasConstructorArgAnnotation = false;
 				for (int k = 0; k < annotations.length; k++) {
-					if (!annotations[i].annotationType().isAssignableFrom(ConstructorArg.class)) {
+					if (!annotations[k].annotationType().isAssignableFrom(ConstructorArg.class)) {
 						continue;
 					}
-					ConstructorArg constructorArg = (ConstructorArg) annotations[i];
+					ConstructorArg constructorArg = (ConstructorArg) annotations[k];
 					if (!attributes.containsKey(constructorArg.name())) {
 						continue;
 					}
@@ -477,7 +482,12 @@ public class AndroidXmlSerializer implements XmlSerializer {
 					}
 					if (!fieldClass.isPrimitive()) {
 						if (fieldClass.equals(String.class)) {
-							setPrimitiveField(currentField, fieldClass, result, xmlParser.nextText());
+							xmlParser.next();
+							if(xmlParser.getEventType() == XmlPullParser.END_TAG) {
+								setPrimitiveField(currentField, fieldClass, result, "");
+							} else {
+								setPrimitiveField(currentField, fieldClass, result, xmlParser.getText());
+							}
 						} else if (Map.class.isAssignableFrom(fieldClass)) {
 							xmlParser.next();
 							setMapField(xmlParser, currentField, fieldClass, result);

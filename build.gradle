@@ -233,6 +233,7 @@ project(":" + rootProject.name + "-ui") {
 		testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+		testCompile project(":" + rootProject.name + "-desktop")
 	}
 }
 

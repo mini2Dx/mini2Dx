@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,18 +11,41 @@
  */
 package org.mini2Dx.ui.element;
 
-import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.junit.Before;
+import org.junit.Test;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.desktop.serialization.DesktopXmlSerializer;
+import org.mini2Dx.ui.layout.HorizontalAlignment;
+
+import junit.framework.Assert;
 
 /**
- *
+ * Unit and integration tests for {@link Label}
  */
-public abstract class Container extends Column {
-	
-	public Container() {
-		this(null);
+public class LabelTest {
+	@Before
+	public void setUp() {
+		Mdx.xml = new DesktopXmlSerializer();
 	}
-	
-	public Container(@ConstructorArg(clazz=String.class, name = "id") String id) {
-		super(id);
+
+	@Test
+	public void testSerialization() {
+		Label label = new Label("label-1");
+		label.setText("Example text");
+		label.setHorizontalAlignment(HorizontalAlignment.CENTER);
+		label.setResponsive(true);
+		
+		try {
+			String xml = Mdx.xml.toXml(label);
+			System.out.println(xml);
+			Label result = Mdx.xml.fromXml(xml, Label.class);
+			Assert.assertEquals(label.getId(), result.getId());
+			Assert.assertEquals(label.getHorizontalAlignment(), result.getHorizontalAlignment());
+			Assert.assertEquals(label.getText(), result.getText());
+			Assert.assertEquals(label.isResponsive(), result.isResponsive());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
 	}
 }

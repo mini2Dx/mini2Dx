@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,18 +11,43 @@
  */
 package org.mini2Dx.ui.element;
 
-import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.serialization.SerializationException;
+import org.mini2Dx.desktop.serialization.DesktopXmlSerializer;
 
 /**
- *
+ * Unit and integration tests for {@link Row}
  */
-public abstract class Container extends Column {
-	
-	public Container() {
-		this(null);
+public class RowTest {
+	@Before
+	public void setUp() {
+		Mdx.xml = new DesktopXmlSerializer();
 	}
-	
-	public Container(@ConstructorArg(clazz=String.class, name = "id") String id) {
-		super(id);
+
+	@Test
+	public void testSerialization() {
+		Row row = new Row("row-1");
+		row.setZIndex(27);
+		row.add(new Label());
+		row.add(new TextButton("button-2"));
+		
+		try {
+			String xml = Mdx.xml.toXml(row);
+			System.out.println(xml);
+			Row result = Mdx.xml.fromXml(xml, Row.class);
+			
+			Assert.assertEquals(row.getId(), result.getId());
+			Assert.assertEquals(row.getZIndex(), result.getZIndex());
+			Assert.assertEquals(row.children.size(), result.children.size());
+			for(int i = 0; i < row.children.size(); i++) {
+				Assert.assertEquals(row.children.get(i).getId(), result.children.get(i).getId());
+			}
+		} catch (SerializationException e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
 	}
 }

@@ -105,6 +105,10 @@ public class Image extends UiElement {
 		}
 	}
 	
+	public String getTexturePath() {
+		return path;
+	}
+	
 	public void setTexturePath(String texturePath) {
 		this.path = texturePath;
 		

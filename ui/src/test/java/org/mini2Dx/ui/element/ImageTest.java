@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,18 +11,38 @@
  */
 package org.mini2Dx.ui.element;
 
-import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.desktop.serialization.DesktopXmlSerializer;
+import org.mini2Dx.ui.element.Image;
 
 /**
- *
+ * Unit and integration tests for {@link Image}
  */
-public abstract class Container extends Column {
-	
-	public Container() {
-		this(null);
+public class ImageTest {
+	@Before
+	public void setUp() {
+		Mdx.xml = new DesktopXmlSerializer();
 	}
-	
-	public Container(@ConstructorArg(clazz=String.class, name = "id") String id) {
-		super(id);
+
+	@Test
+	public void testSerialization() {
+		Image image = new Image("image-34");
+		image.setResponsive(true);
+		image.setTexturePath("/path/texture.png");
+		
+		try {
+			String xml = Mdx.xml.toXml(image);
+			System.out.println(xml);
+			Image result = Mdx.xml.fromXml(xml, Image.class);
+			Assert.assertEquals(image.getId(), result.getId());
+			Assert.assertEquals(image.isResponsive(), result.isResponsive());
+			Assert.assertEquals(image.getTexturePath(), result.getTexturePath());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
 	}
 }
