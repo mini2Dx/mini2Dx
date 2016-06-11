@@ -13,6 +13,7 @@ package org.mini2Dx.ui.animation;
 
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.serialization.annotation.NonConcrete;
+import org.mini2Dx.ui.listener.TextAnimationListener;
 
 /**
  *
@@ -29,4 +30,8 @@ public interface TextAnimation {
 	public void skip();
 	
 	public boolean isFinished();
+	
+	public void addTextAnimationListener(TextAnimationListener listener);
+	
+	public void removeTextAnimationListener(TextAnimationListener listener);
 }

@@ -11,61 +11,56 @@
  */
 package org.mini2Dx.ui.animation;
 
-import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.mini2Dx.ui.listener.TextAnimationListener;
 
 /**
  *
  */
-public class TypingTextAnimation extends BaseTextAnimation implements TextAnimation {
-	private final float charactersPerSecond;
-	private final float speed;
+public abstract class BaseTextAnimation implements TextAnimation {
+	private List<TextAnimationListener> listeners;
 	
-	private float timer = 0f;
-	private int characterIndex = 0;
+	private boolean finished;
 
-	public TypingTextAnimation() {
-		this(24f);
-	}
-	
-	public TypingTextAnimation(@ConstructorArg(clazz=Float.class, name="charactersPerSecond") float charactersPerSecond) {
-		this.charactersPerSecond = charactersPerSecond;
-		speed = 1f / charactersPerSecond;
-	}
-	
 	@Override
-	public void update(String text, float delta) {
-		if(characterIndex >= text.length() - 1) {
-			setFinished(true);
+	public boolean isFinished() {
+		return finished;
+	}
+	
+	protected void setFinished(boolean finished) {
+		if(this.finished) {
 			return;
 		}
-		
-		timer += delta;
-		if(timer >= speed) {
-			timer -= speed;
-			characterIndex++;
-		}
-	}
-	
-	@Override
-	public void interpolate(String text, float alpha) {}
-
-	@Override
-	public void render(String text, Graphics g, float x, float y, float width, int hAlign) {
-		if(isFinished()) {
-			g.drawString(text, x, y, width, hAlign);
-		} else {
-			g.drawString(text.substring(0, characterIndex), x, y, width, hAlign);
+		this.finished = finished;
+		if(finished) {
+			notifyTextAnimationListeners();
 		}
 	}
 
 	@Override
-	public void skip() {
-		setFinished(true);
+	public void addTextAnimationListener(TextAnimationListener listener) {
+		if(listeners == null) {
+			listeners = new ArrayList<TextAnimationListener>(1);
+		}
+		listeners.add(listener);
 	}
 
-	@ConstructorArg(clazz=Float.class, name="charactersPerSecond")
-	public float getCharactersPerSecond() {
-		return charactersPerSecond;
+	@Override
+	public void removeTextAnimationListener(TextAnimationListener listener) {
+		if(listeners == null) {
+			return;
+		}
+		listeners.remove(listener);
+	}
+
+	private void notifyTextAnimationListeners() {
+		if(listeners == null) {
+			return;
+		}
+		for(int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).onAnimationFinished(this);
+		}
 	}
 }

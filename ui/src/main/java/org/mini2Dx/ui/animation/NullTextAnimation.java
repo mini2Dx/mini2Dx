@@ -16,10 +16,12 @@ import org.mini2Dx.core.graphics.Graphics;
 /**
  *
  */
-public class NullTextAnimation implements TextAnimation {
+public class NullTextAnimation extends BaseTextAnimation implements TextAnimation {
 
 	@Override
-	public void update(String text, float delta) {}
+	public void update(String text, float delta) {
+		setFinished(true);
+	}
 	
 	@Override
 	public void interpolate(String text, float alpha) {}
@@ -31,9 +33,4 @@ public class NullTextAnimation implements TextAnimation {
 
 	@Override
 	public void skip() {}
-
-	@Override
-	public boolean isFinished() {
-		return true;
-	}
 }
