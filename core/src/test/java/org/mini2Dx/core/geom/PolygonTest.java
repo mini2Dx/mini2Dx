@@ -240,6 +240,51 @@ public class PolygonTest {
 	}
 	
 	@Test
+	public void testDuplicateSetRotationDoesNotSetDirtyFlag() {
+		Polygon polygon = new Polygon(new Point [] {
+				new Point(10f, 0f),
+				new Point(20f, 0f),
+				new Point(20f, 10f),
+				new Point(10f, 10f),
+		});
+		polygon.rotate(10f);
+		Assert.assertEquals(true, polygon.isDirty());
+		clearDirtyBit(polygon);
+		polygon.setRotation(10f);
+		Assert.assertEquals(false, polygon.isDirty());
+		
+		polygon = new Polygon(new Point [] {
+				new Point(10f, 0f),
+				new Point(20f, 0f),
+				new Point(20f, 10f),
+				new Point(10f, 10f),
+		});
+		polygon.rotate(10f);
+		Assert.assertEquals(true, polygon.isDirty());
+		clearDirtyBit(polygon);
+		polygon.setRotation(-10f);
+		Assert.assertEquals(true, polygon.isDirty());
+		clearDirtyBit(polygon);
+		polygon.setRotation(-10f);
+		Assert.assertEquals(false, polygon.isDirty());
+	}
+	
+	@Test
+	public void testRotateByZeroDegreesDoesNothing() {
+		Polygon polygon = new Polygon(new Point [] {
+				new Point(10f, 0f),
+				new Point(20f, 0f),
+				new Point(20f, 10f),
+				new Point(10f, 10f),
+		});
+		polygon.rotate(10f);
+		Assert.assertEquals(true, polygon.isDirty());
+		clearDirtyBit(polygon);
+		polygon.rotate(0f);
+		Assert.assertEquals(false, polygon.isDirty());
+	}
+	
+	@Test
 	public void testSetRotationAround() {
 		Polygon polygon = new Polygon(new Point [] {
 				new Point(10f, 0f),
@@ -670,5 +715,10 @@ public class PolygonTest {
 			}
 		}
 		iterator.end();
+	}
+	
+	private void clearDirtyBit(Polygon polygon) {
+		polygon.getMaxX();
+		polygon.getTriangles();
 	}
 }

@@ -1,4 +1,5 @@
 /**
+
  * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
@@ -446,7 +447,7 @@ public class Polygon extends Shape {
 
 	@Override
 	public void setRotationAround(float centerX, float centerY, float degrees) {
-		if(polygon.getRotation() == degrees - trackedRotation) {
+		if(trackedRotation == degrees) {
 			return;
 		}
 		polygon.setVertices(polygon.getTransformedVertices());
@@ -458,6 +459,9 @@ public class Polygon extends Shape {
 
 	@Override
 	public void rotateAround(float centerX, float centerY, float degrees) {
+		if(degrees == 0f) {
+			return;
+		}
 		trackedRotation += degrees;
 		float[] vertices = polygon.getTransformedVertices();
 		polygon.setRotation(0);
@@ -664,6 +668,10 @@ public class Polygon extends Shape {
 	@Override
 	public Polygon getPolygon() {
 		return this;
+	}
+	
+	boolean isDirty() {
+		return minMaxDirty || trianglesDirty;
 	}
 	
 	private void setDirty() {
