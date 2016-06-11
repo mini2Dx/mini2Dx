@@ -236,10 +236,14 @@ public class DesktopXmlSerializer implements XmlSerializer {
 					org.mini2Dx.core.serialization.annotation.Field fieldAnnotation = annotation
 							.getAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
 
-					if (!fieldAnnotation.optional() && field.get(object) == null) {
+					Object value = field.get(object);
+					if (!fieldAnnotation.optional() && value == null) {
 						throw new RequiredFieldException(currentClass, field.getName());
 					}
-					writeObject(field, field.get(object), field.getName(), xmlWriter);
+					if(fieldAnnotation.optional() && value == null) {
+						continue;
+					}
+					writeObject(field, value, field.getName(), xmlWriter);
 				}
 				currentClass = currentClass.getSuperclass();
 			}

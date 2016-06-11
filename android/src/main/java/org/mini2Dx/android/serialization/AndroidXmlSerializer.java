@@ -244,10 +244,14 @@ public class AndroidXmlSerializer implements XmlSerializer {
 					org.mini2Dx.core.serialization.annotation.Field fieldAnnotation = annotation
 							.getAnnotation(org.mini2Dx.core.serialization.annotation.Field.class);
 
-					if (!fieldAnnotation.optional() && field.get(object) == null) {
+					Object value = field.get(object);
+					if (!fieldAnnotation.optional() &&  value == null) {
 						throw new RequiredFieldException(currentClass, field.getName());
 					}
-					writeObject(field, field.get(object), field.getName(), xmlSerializer);
+					if (fieldAnnotation.optional() && value == null) {
+						continue;
+					}
+					writeObject(field, value, field.getName(), xmlSerializer);
 				}
 				currentClass = currentClass.getSuperclass();
 			}
