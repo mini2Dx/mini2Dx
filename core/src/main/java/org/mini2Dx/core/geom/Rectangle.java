@@ -254,7 +254,6 @@ public class Rectangle extends Shape implements
 		float y = (getY() * inverseAlpha) + (target.getY() * alpha);
 		float width = this.width;
 		float height = this.height;
-		float rotation = polygon.getRotation();
 		
 		if(getWidth() != target.getWidth()) {
 			width = (getWidth() * inverseAlpha) + (target.getWidth() * alpha);
@@ -265,10 +264,10 @@ public class Rectangle extends Shape implements
 		}
 		
 		if(getRotation() != target.getRotation()) {
-			rotation = (getRotation() * inverseAlpha) + (target.getRotation() * alpha);
+			float rotation = (getRotation() * inverseAlpha) + (target.getRotation() * alpha);
+			setRotation(rotation);
 		}
 		set(x, y, width, height);
-		setRotation(rotation);
 		return this;
 	}
 	
@@ -323,6 +322,7 @@ public class Rectangle extends Shape implements
 
 	public void set(Rectangle rectangle) {
 		set(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
+		setRotation(rectangle.getRotation());
 	}
 	
 	public void set(float x, float y) {

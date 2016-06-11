@@ -13,13 +13,11 @@ package org.mini2Dx.core.geom;
 
 import java.util.Random;
 
-import junit.framework.Assert;
-
-import org.junit.Before;
 import org.junit.Test;
-import org.mini2Dx.core.engine.PositionChangeListener;
 
 import com.badlogic.gdx.math.MathUtils;
+
+import junit.framework.Assert;
 
 /**
  * Unit tests for {@link Rectangle}
@@ -318,5 +316,18 @@ public class RectangleTest {
 			line.setPointB(new Point(200, y));
 			Assert.assertEquals(false, rectangle1.intersects(line));
 		}
+	}
+	
+	@Test
+	public void testLerp() {
+		rectangle1 = new Rectangle(0, 0, 50, 50);
+		rectangle2 = new Rectangle(50, 50, 100f, 100f);
+		
+		rectangle1.lerp(rectangle2, 0.5f);
+		Assert.assertEquals(25f, rectangle1.getX());
+		Assert.assertEquals(25f, rectangle1.getY());
+		Assert.assertEquals(75f, rectangle1.getWidth());
+		Assert.assertEquals(75f, rectangle1.getHeight());
+		Assert.assertEquals(0f, rectangle1.getRotation());
 	}
 }
