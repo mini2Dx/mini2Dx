@@ -12,6 +12,7 @@
 package org.mini2Dx.ui.render;
 
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.ui.animation.NullTextAnimation;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.LabelStyleRule;
@@ -24,12 +25,29 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
  *
  */
 public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
-	private static GlyphLayout glyphLayout = new GlyphLayout();
-
+	private static final GlyphLayout glyphLayout = new GlyphLayout();
+	private static final NullTextAnimation NULL_TEXT_ANIMATION = new NullTextAnimation();
+	
 	private BitmapFont font = new BitmapFont(true);
 
 	public LabelRenderNode(ParentRenderNode<?, ?> parent, Label element) {
 		super(parent, element);
+	}
+	
+	@Override
+	public void update(UiContainerRenderTree uiContainer, float delta) {
+		super.update(uiContainer, delta);
+		if(element.getTextAnimation() != null) {
+			element.getTextAnimation().update(element.getText(), delta);
+		}
+	}
+	
+	@Override
+	public void interpolate(float alpha) {
+		super.interpolate(alpha);
+		if(element.getTextAnimation() != null) {
+			element.getTextAnimation().interpolate(element.getText(), alpha);
+		}
 	}
 
 	@Override
@@ -44,9 +62,15 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 		}
 
 		g.setColor(style.getColor());
-		g.drawString(element.getText(), getRenderX() + style.getPaddingLeft(), getRenderY() + style.getPaddingTop(),
-				getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight(),
-				element.getHorizontalAlignment().getAlignValue());
+		if(element.getTextAnimation() == null) {
+			NULL_TEXT_ANIMATION.render(element.getText(), g, getRenderX() + style.getPaddingLeft(), getRenderY() + style.getPaddingTop(),
+					getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight(),
+					element.getHorizontalAlignment().getAlignValue());
+		} else {
+			element.getTextAnimation().render(element.getText(), g, getRenderX() + style.getPaddingLeft(), getRenderY() + style.getPaddingTop(),
+					getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight(),
+					element.getHorizontalAlignment().getAlignValue());
+		}
 		g.setColor(tmpColor);
 		g.setFont(tmpFont);
 	}

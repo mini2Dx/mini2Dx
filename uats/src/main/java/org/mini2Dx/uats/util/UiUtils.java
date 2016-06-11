@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.uats.util;
 
+import org.mini2Dx.ui.animation.TextAnimation;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.element.TextBox;
@@ -29,16 +30,29 @@ public class UiUtils {
 		return createLabel(text, "header", Label.COLOR_BLACK);
 	}
 	
+	public static Label createHeader(String text, TextAnimation textAnimation) {
+		return createLabel(text, "header", Label.COLOR_BLACK, textAnimation);
+	}
+	
 	public static Label createLabel(String text) {
 		return createLabel(text, "default", Label.COLOR_BLACK);
 	}
+	
+	public static Label createLabel(String text, TextAnimation textAnimation) {
+		return createLabel(text, "default", Label.COLOR_BLACK, textAnimation);
+	}
 
 	private static Label createLabel(String text, String styleId, Color color) {
+		return createLabel(text, styleId, color, null);
+	}
+	
+	private static Label createLabel(String text, String styleId, Color color, TextAnimation textAnimation) {
 		Label label = new Label("Label: " + text);
 		label.setText(text);
 		label.setStyleId(styleId);
 		label.setColor(color);
 		label.setVisibility(Visibility.VISIBLE);
+		label.setTextAnimation(textAnimation);
 		return label;
 	}
 

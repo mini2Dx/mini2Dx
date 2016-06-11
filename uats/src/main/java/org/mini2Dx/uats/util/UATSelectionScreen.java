@@ -32,6 +32,7 @@ import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
 import org.mini2Dx.uats.ParticleEffectsUAT;
 import org.mini2Dx.uats.UiUAT;
 import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.animation.TypingTextAnimation;
 import org.mini2Dx.ui.effect.SlideIn;
 import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.AlignedModal;
@@ -134,7 +135,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 		uatsDialog.setLayout(new LayoutRuleset("xs-12 sm-10 md-8 lg-6 sm-offset-1 md-offset-2 lg-offset-3"));
 
 		uatsDialog.add(Row.withElements("row-os", UiUtils.createLabel("Detected OS: " + Mdx.os)));
-		uatsDialog.add(Row.withElements("row-header", UiUtils.createHeader("User Acceptance Tests")));
+		uatsDialog.add(Row.withElements("row-header", UiUtils.createHeader("User Acceptance Tests", new TypingTextAnimation())));
 		uatsDialog.add(Row.withElements("row-blending", UiUtils.createButton("Blending", false, new ActionListener() {
 			@Override
 			public void onActionBegin(Actionable source) {

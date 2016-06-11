@@ -13,6 +13,7 @@ package org.mini2Dx.ui.element;
 
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.ui.animation.TextAnimation;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
 import org.mini2Dx.ui.render.LabelRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
@@ -35,6 +36,8 @@ public class Label extends UiElement {
 	private HorizontalAlignment horizontalAlignment = HorizontalAlignment.LEFT;
 	@Field(optional=true)
 	private boolean responsive = false;
+	@Field(optional=true)
+	private TextAnimation textAnimation;
 	
 	public Label() {
 		this(null);
@@ -153,5 +156,13 @@ public class Label extends UiElement {
 
 	public void setColor(Color color) {
 		this.color = color;
+	}
+
+	public TextAnimation getTextAnimation() {
+		return textAnimation;
+	}
+
+	public void setTextAnimation(TextAnimation textAnimation) {
+		this.textAnimation = textAnimation;
 	}
 }
