@@ -213,24 +213,36 @@ public class CollisionCircle extends Circle implements CollisionShape {
 	}
 
 	public void setX(float x) {
+		if(x == getX()) {
+			return;
+		}
 		super.setX(x);
 		interpolate = true;
 		notifyPositionChangeListeners();
 	}
 	
 	public void setY(float y) {
+		if(y == getY()) {
+			return;
+		}
 		super.setY(y);
 		interpolate = true;
 		notifyPositionChangeListeners();
 	}
 	
 	public void set(float x, float y) {
+		if(x == getX() && y == getY()) {
+			return;
+		}
 		super.set(x, y);
 		interpolate = true;
 		notifyPositionChangeListeners();
 	}
 	
 	public void setRadius(float radius) {
+		if(radius == getRadius()) {
+			return;
+		}
 		super.setRadius(radius);
 		interpolate = true;
 		notifySizeChangeListeners();

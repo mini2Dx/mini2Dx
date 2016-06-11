@@ -181,6 +181,9 @@ public class CollisionPoint extends Point implements Positionable {
 	
 	@Override
 	public void setX(float x) {
+		if(x == getX()) {
+			return;
+		}
 		super.setX(x);
 		interpolate = true;
 		notifyPositionChangeListeners();
@@ -188,6 +191,9 @@ public class CollisionPoint extends Point implements Positionable {
 
 	@Override
 	public void setY(float y) {
+		if(y == getY()) {
+			return;
+		}
 		super.setY(y);
 		interpolate = true;
 		notifyPositionChangeListeners();
@@ -195,6 +201,9 @@ public class CollisionPoint extends Point implements Positionable {
 	
 	@Override
 	public Vector2 set(float x, float y) {
+		if(x == getX() && y == getY()) {
+			return this;
+		}
 		super.set(x, y);
 		interpolate = true;
 		notifyPositionChangeListeners();
@@ -203,6 +212,9 @@ public class CollisionPoint extends Point implements Positionable {
 
 	@Override
 	public Vector2 add(float x, float y) {
+		if(x == 0f && y == 0f) {
+			return this;
+		}
 		super.add(x, y);
 		interpolate = true;
 		notifyPositionChangeListeners();
@@ -211,6 +223,9 @@ public class CollisionPoint extends Point implements Positionable {
 
 	@Override
 	public Vector2 sub(float x, float y) {
+		if(x == 0f && y == 0f) {
+			return this;
+		}
 		super.sub(x, y);
 		interpolate = true;
 		notifyPositionChangeListeners();

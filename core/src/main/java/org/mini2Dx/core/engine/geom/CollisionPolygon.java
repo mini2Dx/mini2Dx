@@ -201,6 +201,9 @@ public class CollisionPolygon extends Polygon implements CollisionShape {
 	
 	@Override
 	public void setX(float x) {
+		if(x == getX()) {
+			return;
+		}
 		super.setX(x);
 		notifyPositionChangeListeners();
 		interpolate = true;
@@ -208,6 +211,9 @@ public class CollisionPolygon extends Polygon implements CollisionShape {
 	
 	@Override
 	public void setY(float y) {
+		if(y == getY()) {
+			return;
+		}
 		super.setY(y);
 		notifyPositionChangeListeners();
 		interpolate = true;
@@ -215,6 +221,9 @@ public class CollisionPolygon extends Polygon implements CollisionShape {
 	
 	@Override
 	public void set(float x, float y) {
+		if(x == getX() && y == getY()) {
+			return;
+		}
 		super.set(x, y);
 		notifyPositionChangeListeners();
 		interpolate = true;
@@ -234,6 +243,9 @@ public class CollisionPolygon extends Polygon implements CollisionShape {
 	
 	@Override
 	public void setRotation(float degrees) {
+		if(getRotation() == degrees) {
+			return;
+		}
 		super.setRotation(degrees);
 		notifyPositionChangeListeners();
 		interpolate = true;
@@ -241,6 +253,9 @@ public class CollisionPolygon extends Polygon implements CollisionShape {
 	
 	@Override
 	public void rotate(float degrees) {
+		if(degrees == 0) {
+			return;
+		}
 		super.rotate(degrees);
 		notifyPositionChangeListeners();
 		interpolate = true;
@@ -248,6 +263,9 @@ public class CollisionPolygon extends Polygon implements CollisionShape {
 	
 	@Override
 	public void setRotationAround(float centerX, float centerY, float degrees) {
+		if(getRotation() == degrees && centerX == getOriginX() && centerY == getOriginY()) {
+			return;
+		}
 		super.setRotationAround(centerX, centerY, degrees);
 		notifyPositionChangeListeners();
 		interpolate = true;
@@ -255,6 +273,9 @@ public class CollisionPolygon extends Polygon implements CollisionShape {
 	
 	@Override
 	public void rotateAround(float centerX, float centerY, float degrees) {
+		if(degrees == 0) {
+			return;
+		}
 		super.rotateAround(centerX, centerY, degrees);
 		notifyPositionChangeListeners();
 		interpolate = true;

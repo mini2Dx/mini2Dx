@@ -116,11 +116,11 @@ public abstract class Shape {
 	
 	/**
 	 * Sets the rotation of this {@link Shape} with a specified point as the origin
-	 * @param centerX The origin/center x coordinate
-	 * @param centerY The origin/center y coordinate
+	 * @param originX The origin/center x coordinate
+	 * @param originY The origin/center y coordinate
 	 * @param degrees The rotation in degrees
 	 */
-	public abstract void setRotationAround(float centerX, float centerY, float degrees);
+	public abstract void setRotationAround(float originX, float originY, float degrees);
 	
 	/**
 	 * Rotates this {@link Shape} by a specified amount of degrees with its first point as the origin
@@ -130,11 +130,23 @@ public abstract class Shape {
 	
 	/**
 	 * Rotates this {@link Shape} by a specified amount of degrees around a specified point
-	 * @param centerX The origin/center x coordinate
-	 * @param centerY The origin/center y coordinate
+	 * @param originX The origin/center x coordinate
+	 * @param originY The origin/center y coordinate
 	 * @param degrees The rotation in degrees
 	 */
-	public abstract void rotateAround(float centerX, float centerY, float degrees);
+	public abstract void rotateAround(float originX, float originY, float degrees);
+	
+	/**
+	 * Returns the rotational center/origin x coordinate
+	 * @return
+	 */
+	public abstract float getOriginX();
+	
+	/**
+	 * Returns the rotational center/origin y coordinate
+	 * @return
+	 */
+	public abstract float getOriginY();
 
 	/**
 	 * Draws this shape using a {@link Graphics} instance

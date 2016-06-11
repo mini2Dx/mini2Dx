@@ -200,10 +200,49 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 		}
 		sizeChangeListenerLock.readLock().unlock();
 	}
+	
+	@Override
+	public void setRotation(float degrees) {
+		if(degrees == getRotation()) {
+			return;
+		}
+		super.setRotation(degrees);
+		notifyPositionChangeListeners();
+	}
 
 	@Override
+	public void rotate(float degrees) {
+		if(degrees == 0f) {
+			return;
+		}
+		super.rotate(degrees);
+		notifyPositionChangeListeners();
+	}
+	
+	@Override
+	public void rotateAround(float centerX, float centerY, float degrees) {
+		if(degrees == 0f) {
+			return;
+		}
+		super.rotateAround(centerX, centerY, degrees);
+		notifyPositionChangeListeners();
+	}
+	
+	@Override
 	public void setRotationAround(Point center, float degrees) {
+		if(center.x == getOriginX() && center.y == getOriginX() && degrees == getRotation()) {
+			return;
+		}
 		super.setRotationAround(center, degrees);
+		notifyPositionChangeListeners();
+	}
+
+	@Override
+	public void setRotationAround(float centerX, float centerY, float degrees) {
+		if(centerX == getOriginX() && centerY == getOriginX() && degrees == getRotation()) {
+			return;
+		}
+		super.setRotationAround(centerX, centerY, degrees);
 		notifyPositionChangeListeners();
 	}
 
@@ -307,6 +346,9 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 
 	@Override
 	public void set(float x, float y) {
+		if(x == getX() && y == getY()) {
+			return;
+		}
 		super.set(x, y);
 		interpolate = true;
 		notifyPositionChangeListeners();
@@ -314,6 +356,9 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 
 	@Override
 	public void set(Vector2 position) {
+		if(getX() == position.x && getY() == position.y) {
+			return;
+		}
 		super.set(position);
 		interpolate = true;
 		notifyPositionChangeListeners();
@@ -321,6 +366,9 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 
 	@Override
 	public void setX(float x) {
+		if(x == getX()) {
+			return;
+		}
 		super.setX(x);
 		interpolate = true;
 		notifyPositionChangeListeners();
@@ -328,6 +376,9 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 
 	@Override
 	public void setY(float y) {
+		if(y == getY()) {
+			return;
+		}
 		super.setY(y);
 		interpolate = true;
 		notifyPositionChangeListeners();
@@ -335,6 +386,9 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 
 	@Override
 	public Rectangle setWidth(float width) {
+		if(width == getWidth()) {
+			return this;
+		}
 		super.setWidth(width);
 		interpolate = true;
 		notifySizeChangeListeners();
@@ -343,6 +397,9 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 
 	@Override
 	public Rectangle setHeight(float height) {
+		if(height == getHeight()) {
+			return this;
+		}
 		super.setHeight(height);
 		interpolate = true;
 		notifySizeChangeListeners();
@@ -351,6 +408,9 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 
 	@Override
 	public Rectangle setSize(float width, float height) {
+		if(width == getWidth() && height == getHeight()) {
+			return this;
+		}
 		super.setSize(width, height);
 		interpolate = true;
 		notifySizeChangeListeners();
@@ -359,6 +419,9 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 
 	@Override
 	public Rectangle setSize(float sizeXY) {
+		if(getWidth() == sizeXY && getHeight() == sizeXY) {
+			return this;
+		}
 		super.setSize(sizeXY);
 		interpolate = true;
 		notifySizeChangeListeners();

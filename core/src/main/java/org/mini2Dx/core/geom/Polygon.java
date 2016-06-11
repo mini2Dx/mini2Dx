@@ -83,17 +83,15 @@ public class Polygon extends Shape {
 				currentVertices[i] = (currentVertices[i] * inverseAlpha) + (targetVertices[i] * alpha);
 				currentVertices[i + 1] = (currentVertices[i + 1] * inverseAlpha) + (targetVertices[i + 1] * alpha);
 			}
-			
-			float rotation = (trackedRotation * inverseAlpha) + (target.getRotation() * alpha);
-			
 			polygon.setOrigin(currentVertices[0], currentVertices[1]);
-			polygon.setRotation(rotation - trackedRotation);
 			polygon.setVertices(currentVertices);
-			trackedRotation = rotation;
-		} else {
+			setDirty();
+		}
+		if(getRotation() != target.getRotation()) {
 			float rotation = (trackedRotation * inverseAlpha) + (target.getRotation() * alpha);
 			polygon.setRotation(rotation - trackedRotation);
 			trackedRotation = rotation;
+			setDirty();
 		}
 		return this;
 	}
@@ -447,7 +445,7 @@ public class Polygon extends Shape {
 
 	@Override
 	public void setRotationAround(float centerX, float centerY, float degrees) {
-		if(trackedRotation == degrees) {
+		if(trackedRotation == degrees && centerX == polygon.getOriginX() && centerY == polygon.getOriginY()) {
 			return;
 		}
 		polygon.setVertices(polygon.getTransformedVertices());
@@ -668,6 +666,14 @@ public class Polygon extends Shape {
 	@Override
 	public Polygon getPolygon() {
 		return this;
+	}
+	
+	public float getOriginX() {
+		return polygon.getOriginX();
+	}
+	
+	public float getOriginY() {
+		return polygon.getOriginY();
 	}
 	
 	boolean isDirty() {

@@ -463,6 +463,16 @@ public class Rectangle extends Shape implements
 		return polygon.getMaxY();
 	}
 	
+	@Override
+	public float getOriginX() {
+		return polygon.getOriginX();
+	}
+	
+	@Override
+	public float getOriginY() {
+		return polygon.getOriginY();
+	}
+	
 	/**
 	 * Returns the vertices that make up this {@link Rectangle}
 	 * @return
