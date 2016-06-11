@@ -20,30 +20,81 @@ import org.mini2Dx.ui.render.UiContainerRenderTree;
  *
  */
 public class SlideOut implements UiEffect {
+	private static final float DEFAULT_SPEED = 8f;
+	
+	private final SlideDirection direction;
+	private final float speed;
+	
+	private boolean finished = false;
+	
+	public SlideOut() {
+		this(DEFAULT_SPEED);
+	}
+	
+	public SlideOut(float speed) {
+		this(SlideDirection.UP, speed);
+	}
+	
+	public SlideOut(SlideDirection direction) {
+		this(direction, DEFAULT_SPEED);
+	}
+
+	public SlideOut(SlideDirection direction, float speed) {
+		this.direction = direction;
+		this.speed = speed;
+	}
 
 	@Override
 	public boolean update(UiContainerRenderTree uiContainer, CollisionBox currentArea, Rectangle targetArea,
 			float delta) {
-		// TODO Auto-generated method stub
-		return false;
+		if(finished) {
+			return false;
+		}
+		
+		switch(direction) {
+		case UP:
+			if(currentArea.getY() + currentArea.getHeight() > 0f) {
+				currentArea.setY(currentArea.getY() - speed);
+			} else {
+				finished = true;
+			}
+			break;
+		case DOWN:
+			if(currentArea.getY() < uiContainer.getHeight()) {
+				currentArea.setY(currentArea.getY() + speed);
+			} else {
+				finished = true;
+			}
+			break;
+		case LEFT:
+			if(currentArea.getX() + currentArea.getWidth() > 0f) {
+				currentArea.setX(currentArea.getX() - speed);
+			} else {
+				finished = true;
+			}
+			break;
+		case RIGHT:
+			if(currentArea.getX() < uiContainer.getWidth()) {
+				currentArea.setX(currentArea.getX() + speed);
+			} else {
+				finished = true;
+			}
+			break;
+		default:
+			break;
+		}
+		return true;
 	}
 
 	@Override
-	public void preRender(Graphics g) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void preRender(Graphics g) {}
 
 	@Override
-	public void postRender(Graphics g) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void postRender(Graphics g) {}
 
 	@Override
 	public boolean isFinished() {
-		// TODO Auto-generated method stub
-		return false;
+		return finished;
 	}
 
 }
