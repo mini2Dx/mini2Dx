@@ -13,6 +13,8 @@ package org.mini2Dx.ui.element;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
@@ -28,6 +30,8 @@ import org.mini2Dx.ui.render.ParentRenderNode;
 public class Column extends UiElement {
 	@Field(optional=true)
 	protected final List<UiElement> children = new ArrayList<UiElement>(1);
+	
+	protected final Queue<UiElement> asyncQueue = new ConcurrentLinkedQueue<UiElement>();
 	
 	protected AbstractColumnRenderNode<?> renderNode;
 	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
@@ -60,6 +64,14 @@ public class Column extends UiElement {
 			return;
 		}
 		element.attach(renderNode);
+	}
+	
+	/**
+	 * Adds a {@link UiElement} safely from a non-OpenGL thread
+	 * @param element
+	 */
+	public void addAsync(UiElement element) {
+		asyncQueue.offer(element);
 	}
 	
 	public boolean remove(UiElement element) {
@@ -133,6 +145,9 @@ public class Column extends UiElement {
 	public void syncWithRenderNode() {
 		while(!effects.isEmpty()) {
 			renderNode.applyEffect(effects.poll());
+		}
+		while(!asyncQueue.isEmpty()) {
+			add(asyncQueue.poll());
 		}
 	}
 	
