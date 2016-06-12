@@ -17,7 +17,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 /**
- * Wraps {@link Gdx.files} with a URI scheme
+ * Wraps Gdx.files with a URI scheme
  */
 public class UriFileHandle {
 

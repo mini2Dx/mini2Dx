@@ -120,9 +120,7 @@ public abstract class UiElement implements Hoverable {
 	}
 
 	/**
-	 * Searches the UI for a {@link UiElement} with a given id
-	 * <br /><br />
-	 * <u><b>Warning</b></u>: This can be an expensive operation for complex UIs. It is
+	 * Searches the UI for a {@link UiElement} with a given id. Warning: This can be an expensive operation for complex UIs. It is
 	 * recommended you cache results.
 	 * 
 	 * @param id

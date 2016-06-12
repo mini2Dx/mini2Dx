@@ -37,7 +37,7 @@ public class RegionQuadTree<T extends CollisionShape> extends PointQuadTree<T> {
 	 * Constructs a {@link RegionQuadTree} with a specified element limit and
 	 * watermark
 	 * 
-	 * @param elementLimitPerQuad
+	 * @param elementLimit
 	 *            The maximum number of elements in a {@link RegionQuadTree}
 	 *            before it is split into 4 child quads
 	 * @param mergeWatermark
@@ -62,7 +62,7 @@ public class RegionQuadTree<T extends CollisionShape> extends PointQuadTree<T> {
 	 * merging watermark. As elements are removed, small sized child
 	 * {@link RegionQuadTree}s will not be merged back together.
 	 * 
-	 * @param elementLimitPerQuad
+	 * @param elementLimit
 	 *            The maximum number of elements in a quad before it is split
 	 *            into 4 child {@link RegionQuadTree}s
 	 * @param x

@@ -113,7 +113,7 @@ public interface Parallelogram {
 	/**
 	 * Returns if this shape intersects a specified {@link Shape}
 	 * 
-	 * @param parallelogram
+	 * @param shape
 	 *            The {@link Shape} to test for intersection
 	 * @return True if an intersection occurs
 	 */
@@ -138,7 +138,7 @@ public interface Parallelogram {
 	 * Returns if the specified {@link Shape} is contained within this
 	 * one
 	 * 
-	 * @param parallelogram The {@link Shape} to test
+	 * @param shape The {@link Shape} to test
 	 * @return True if it is within this shape
 	 */
 	public boolean contains(Shape shape);

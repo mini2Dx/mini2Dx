@@ -53,9 +53,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 /**
- * Launches Android-based mini2Dx games<br />
- * <br />
- * Based on <a href=
+ * Launches Android-based mini2Dx games. Based on <a href=
  * "https://github.com/libgdx/libgdx/blob/master/backends/gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplication.java">
  * LibGDX's AndroidApplication class</a>
  */

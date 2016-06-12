@@ -40,7 +40,7 @@ public abstract class Shape {
 	/**
 	 * Returns if a {@link Vector2} is contained inside this {@link Shape}
 	 * 
-	 * @param point
+	 * @param vector2
 	 *            The {@link Vector2} to check
 	 * @return True if this {@link Shape} contains the specified {@link Vector2}
 	 */

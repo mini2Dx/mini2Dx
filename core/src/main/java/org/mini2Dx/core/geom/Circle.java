@@ -141,7 +141,7 @@ public class Circle extends Shape {
 	
 	/**
 	 * Returns if this {@link Circle} contains a {@link Polygon}
-	 * @param rectangle The {@link Polygon} to check
+	 * @param polygon The {@link Polygon} to check
 	 * @return True if this {@link Circle} contains the {@link Polygon}
 	 */
 	public boolean contains(Polygon polygon) {

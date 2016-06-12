@@ -31,7 +31,7 @@ package org.mini2Dx.core.engine.interpolator;
  *     }
  *   }
  *
- *   class LinearHealthInterpolator implements Interpolator<Health> {
+ *   class LinearHealthInterpolator implements Interpolator&lt;Health&gt; {
  *     void interpolate(Health flyweight, Health initialValue, Health currentValue, float alpha) {
  *       // Note that we're cascading the interpolators to individual fields within the Health component.
  *       flyweight.hp = Interpolators.linearFloat().interpolate(initialValue.hp, currentValue.hp, alpha);
@@ -40,7 +40,7 @@ package org.mini2Dx.core.engine.interpolator;
  *   }
  *
  *   // Initialize the interpolated health value
- *   InterpolatedValue<Health> health = new InterpolatedValue<>(new LinearHealthInterpolator(), new Health(), new Health());
+ *   InterpolatedValue&lt;Health&gt; health = new InterpolatedValue&lt;&gt;(new LinearHealthInterpolator(), new Health(), new Health());
  *   health.getInitialValue().set(10f, 10f);
  *   Health currentValue = health.getCurrentValue().set(10f, 10f);
  *

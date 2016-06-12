@@ -39,9 +39,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
- * Launches desktop-based mini2Dx games<br />
- * <br />
- * Based on <a href=
+ * Launches desktop-based mini2Dx games. Based on <a href=
  * "https://github.com/libgdx/libgdx/blob/master/backends/gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglApplication.java">
  * LibGDX's LwjglApplication class</a>
  */

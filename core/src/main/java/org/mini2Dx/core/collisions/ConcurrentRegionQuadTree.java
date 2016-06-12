@@ -37,7 +37,7 @@ public class ConcurrentRegionQuadTree<T extends CollisionShape> extends Concurre
 	 * Constructs a {@link ConcurrentRegionQuadTree} with a specified element
 	 * limit and watermark
 	 * 
-	 * @param elementLimitPerQuad
+	 * @param elementLimit
 	 *            The maximum number of elements in a
 	 *            {@link ConcurrentRegionQuadTree} before it is split into 4
 	 *            child quads
@@ -63,7 +63,7 @@ public class ConcurrentRegionQuadTree<T extends CollisionShape> extends Concurre
 	 * limit and no merging watermark. As elements are removed, small sized
 	 * child {@link ConcurrentRegionQuadTree}s will not be merged back together.
 	 * 
-	 * @param elementLimitPerQuad
+	 * @param elementLimit
 	 *            The maximum number of elements in a quad before it is split
 	 *            into 4 child {@link ConcurrentRegionQuadTree}s
 	 * @param x

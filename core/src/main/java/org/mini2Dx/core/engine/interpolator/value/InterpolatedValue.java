@@ -18,7 +18,7 @@ import org.mini2Dx.core.engine.interpolator.Interpolator;
  *
  * <pre>
  *   // Example: Updating health stored as a struct
- *   InterpolatedValue<Health> health = mHealth.get(entityId).health;
+ *   InterpolatedValue&lt;Health&gt; health = mHealth.get(entityId).health;
  *   Health currentHealth = health.getCurrentValue();
  *
  *   // Set initial value prior to any changes

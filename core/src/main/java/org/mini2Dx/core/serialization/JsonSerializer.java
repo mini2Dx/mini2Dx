@@ -83,7 +83,6 @@ public class JsonSerializer {
 	 *            The {@link FileHandle} to write to
 	 * @param object
 	 *            The object to convert to JSON
-	 * @return The object serialized as JSON
 	 * @throws SerializationException
 	 *             Thrown when the object is invalid
 	 */
@@ -101,7 +100,6 @@ public class JsonSerializer {
 	 *            The object to convert to JSON
 	 * @param prettyPrint
 	 *            Set to true if the JSON should be prettified
-	 * @return The object serialized as JSON
 	 * @throws SerializationException
 	 *             Thrown when the object is invalid
 	 */

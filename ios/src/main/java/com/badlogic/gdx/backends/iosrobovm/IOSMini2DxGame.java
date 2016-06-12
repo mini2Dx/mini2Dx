@@ -55,9 +55,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 
 /**
- * Launches iOS-based mini2Dx games<br />
- * <br />
- * Based on <a href=
+ * Launches iOS-based mini2Dx games. Based on <a href=
  * "https://github.com/libgdx/libgdx/blob/master/backends/gdx-backend-robovm/src/com/badlogic/gdx/backends/iosrobovm/IOSApplication.java">
  * LibGDX's IOSApplication class</a>
  */

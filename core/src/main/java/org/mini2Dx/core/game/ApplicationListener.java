@@ -14,8 +14,8 @@ package org.mini2Dx.core.game;
 import com.badlogic.gdx.Application;
 
 /**
- * Extends {@link com.badlogic.gdx.ApplicationListener} to add update and interpolate methods.<br />
- * <br />
+ * Extends {@link com.badlogic.gdx.ApplicationListener} to add update and interpolate methods.
+ * 
  * An <code>ApplicationListener</code> is called when the {@link Application} is created, resumed, rendering, paused or destroyed.
  * All methods are called in a thread that has the OpenGL context current. You can thus safely create and manipulate graphics
  * resources.
