@@ -44,6 +44,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	protected boolean initialLayoutOccurred = false;
 	private float relativeX, relativeY;
 	private boolean dirty;
+	private boolean includeInRender = false;
 	private NodeState state = NodeState.NORMAL;
 
 	public RenderNode(ParentRenderNode<?, ?> parent, T element) {
@@ -73,24 +74,24 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 
 		element.syncWithRenderNode();
 
-		boolean visible = isIncludedInRender();
+		boolean visible = isScheduledToRender();
 		if (effects.size() == 0) {
 			currentArea.forceTo(targetArea);
 		} else {
 			for (int i = 0; i < effects.size(); i++) {
 				UiEffect effect = effects.get(i);
 				if (effect.isFinished()) {
+					effect.postEnd(element);
 					effects.remove(i);
 					i--;
 					continue;
 				}
 
-				visible |= effect.update(uiContainer, currentArea, targetArea, delta);
+				visible &= effect.update(uiContainer, currentArea, targetArea, delta);
 			}
 		}
-		if (visible) {
-			//element.setVisibility(Visibility.VISIBLE);
-		}
+		includeInRender = visible;
+		
 		if (element.isDebugEnabled()) {
 			Gdx.app.log(element.getId(), "UPDATE - currentArea: " + currentArea + ", targetArea: " + targetArea
 					+ ", visibility: " + element.getVisibility());
@@ -207,8 +208,8 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		}
 		return getPreferredInnerWidth() > 0f || getPreferredInnerHeight() > 0f;
 	}
-
-	public boolean isIncludedInRender() {
+	
+	private boolean isScheduledToRender() {
 		if (!initialLayoutOccurred) {
 			return false;
 		}
@@ -224,6 +225,10 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		return getPreferredInnerWidth() > 0f || getPreferredInnerHeight() > 0f;
 	}
 
+	public boolean isIncludedInRender() {
+		return includeInRender;
+	}
+
 	public boolean isDirty() {
 		return dirty;
 	}
@@ -237,6 +242,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public void applyEffect(UiEffect effect) {
+		effect.preBegin(element);
 		effects.add(effect);
 	}
 

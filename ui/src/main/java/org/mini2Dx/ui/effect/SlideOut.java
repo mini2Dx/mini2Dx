@@ -14,6 +14,8 @@ package org.mini2Dx.ui.effect;
 import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.ui.element.UiElement;
+import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.render.UiContainerRenderTree;
 
 /**
@@ -84,6 +86,14 @@ public class SlideOut implements UiEffect {
 			break;
 		}
 		return true;
+	}
+	
+	@Override
+	public void preBegin(UiElement element) {}
+
+	@Override
+	public void postEnd(UiElement element) {
+		element.setVisibility(Visibility.HIDDEN);
 	}
 
 	@Override
