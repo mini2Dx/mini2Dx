@@ -34,6 +34,7 @@ import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.Row;
 import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.element.Tab;
+import org.mini2Dx.ui.element.TabButton;
 import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.TextButton;
@@ -114,7 +115,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 
 	private void initialiseUi() {
 		topLeftFrame = new AbsoluteContainer("top-left-frame");
-		topLeftFrame.setLayout(new LayoutRuleset("xs-12 sm-6 md-4 lg-3"));
+		topLeftFrame.setLayout(new LayoutRuleset("xs-12c sm-6c md-4c lg-3c"));
 		topLeftFrame.add(Row.withElements("top-left-header", UiUtils.createHeader("UI UAT")));
 		
 		Row backRow = Row.withElements("behind-header", UiUtils.createButton("", new ActionListener() {
@@ -177,18 +178,10 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		select.addOption("Item 3", "3");
 		
 		modal = new AlignedModal("main-modal");
-		modal.setLayout(new LayoutRuleset("xs-12 md-8 lg-6 md-offset-2 lg-offset-3"));
+		modal.setLayout(new LayoutRuleset("xs-12c md-8c lg-6c md-offset-2c lg-offset-3c"));
 		modal.setVerticalAlignment(VerticalAlignment.MIDDLE);
 		
-		TextButton previousTabButton = new TextButton();
-		previousTabButton.setText("<");
-		previousTabButton.setVisibility(Visibility.VISIBLE);
-		
-		TextButton nextTabButton = new TextButton();
-		nextTabButton.setText(">");
-		nextTabButton.setVisibility(Visibility.VISIBLE);
-		
-		TabView tabView = new TabView("tabView", previousTabButton, nextTabButton);
+		TabView tabView = new TabView("tabView");
 		tabView.setVisibility(Visibility.VISIBLE);
 		
 		Tab tab1 = new Tab("tab1", "Tab 1");
@@ -202,7 +195,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		
 		Tab tab2 = new Tab("tab2", "Tab 2");
 		Column xsHiddenColumn = Column.withElements("col-not-visible-xs", UiUtils.createLabel("Not visible on XS screen size"));
-		xsHiddenColumn.setLayout(new LayoutRuleset("xs-0 sm-12"));
+		xsHiddenColumn.setLayout(new LayoutRuleset("xs-0c sm-12c"));
 		tab2.add(Row.withElements("row-not-visible-xs", xsHiddenColumn));
 		tabView.add(tab2);
 		
@@ -226,7 +219,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		uiContainer.setActiveNavigation(modal);
 		
 		bottomRightFrame = new AbsoluteContainer("bottom-right-frame");
-		bottomRightFrame.setLayout(new LayoutRuleset("xs-12 sm-6 md-4 lg-3"));
+		bottomRightFrame.setLayout(new LayoutRuleset("xs-12c sm-6c md-4c lg-3c"));
 		bottomRightFrame.setVisibility(Visibility.VISIBLE);
 		bottomRightFrame.add(Row.withElements("row-os", UiUtils.createHeader("Detected OS: " + Mdx.os)));
 		uiContainer.add(bottomRightFrame);

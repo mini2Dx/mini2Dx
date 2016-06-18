@@ -17,17 +17,22 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.ui.input.InputSource;
 
 /**
  *
  */
 public class LayoutRuleset {
-	public static final LayoutRuleset DEFAULT_RULESET = new LayoutRuleset("xs-12");
+	public static final LayoutRuleset DEFAULT_RULESET = new LayoutRuleset("xs-12c");
 	
-	private final Map<ScreenSize, SizeRule> sizeRules = new HashMap<ScreenSize, SizeRule>();
-	private final Set<InputSource> hiddenByInput = new HashSet<InputSource>();
-	private final Map<ScreenSize, OffsetRule> offsetRules = new HashMap<ScreenSize, OffsetRule>();
+	protected static final String PIXEL_SUFFIX = "px";
+	protected static final String COLUMN_SUFFIX = "c";
+	protected static final String EMPTY_STRING = "";
+	
+	protected final Map<ScreenSize, SizeRule> sizeRules = new HashMap<ScreenSize, SizeRule>();
+	protected final Set<InputSource> hiddenByInput = new HashSet<InputSource>();
+	protected final Map<ScreenSize, OffsetRule> offsetRules = new HashMap<ScreenSize, OffsetRule>();
 
 	private boolean hiddenByInputSource = false;
 	private int currentSizeInColumns = 0;
@@ -70,20 +75,32 @@ public class LayoutRuleset {
 		}
 		default:
 			ScreenSize screenSize = ScreenSize.fromString(ruleDetails[0]);
-			sizeRules.put(screenSize, new SizeRule(Integer.parseInt(ruleDetails[1])));
+			if(ruleDetails[1].endsWith(PIXEL_SUFFIX)) {
+				sizeRules.put(screenSize, new AbsoluteSizeRule(Integer.parseInt(ruleDetails[1].replace(PIXEL_SUFFIX, EMPTY_STRING))));
+			} else if(ruleDetails[1].endsWith(COLUMN_SUFFIX)) {
+				sizeRules.put(screenSize, new ResponsiveSizeRule(Integer.parseInt(ruleDetails[1].replace(COLUMN_SUFFIX, EMPTY_STRING))));
+			} else {
+				throw new MdxException("Invalid size - must end with c (columns) or px (pixels");
+			}
 			break;
 		}
 	}
 
 	private void storeOffsetRule(String[] ruleDetails) {
 		ScreenSize screenSize = ScreenSize.fromString(ruleDetails[0]);
-		offsetRules.put(screenSize, new OffsetRule(Integer.parseInt(ruleDetails[2])));
+		if(ruleDetails[2].endsWith(PIXEL_SUFFIX)) {
+			offsetRules.put(screenSize, new AbsoluteOffsetRule(Integer.parseInt(ruleDetails[2].replace(PIXEL_SUFFIX, EMPTY_STRING))));
+		} else if(ruleDetails[2].endsWith(COLUMN_SUFFIX)) {
+			offsetRules.put(screenSize, new ResponsiveOffsetRule(Integer.parseInt(ruleDetails[2].replace(COLUMN_SUFFIX, EMPTY_STRING))));
+		} else {
+			throw new MdxException("Invalid offset - must end with c (columns) or px (pixels");
+		}
 	}
 	
 	private void finaliseRuleset() {
 		Iterator<ScreenSize> screenSizes = ScreenSize.smallestToLargest();
-		SizeRule lastSizeRule = new SizeRule(12);
-		OffsetRule lastOffsetRule = new OffsetRule(0);
+		SizeRule lastSizeRule = new ResponsiveSizeRule(12);
+		OffsetRule lastOffsetRule = new AbsoluteOffsetRule(0);
 		
 		while(screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
@@ -108,19 +125,11 @@ public class LayoutRuleset {
 	}
 	
 	public float getPreferredWidth(LayoutState layoutState) {
-		currentSizeInColumns = sizeRules.get(layoutState.getScreenSize()).getColumns();
-		if(currentSizeInColumns == layoutState.getTotalColumns()) {
-			return layoutState.getParentWidth();
-		}
-		return layoutState.getColumnWidth(currentSizeInColumns);
+		return sizeRules.get(layoutState.getScreenSize()).getWidth(layoutState);
 	}
 	
 	public float getXOffset(LayoutState layoutState) {
-		return layoutState.getColumnWidth(offsetRules.get(layoutState.getScreenSize()).getColumns());
-	}
-
-	public int getCurrentSizeInColumns() {
-		return currentSizeInColumns;
+		return offsetRules.get(layoutState.getScreenSize()).getOffset(layoutState);
 	}
 
 	public boolean isHiddenByInputSource() {

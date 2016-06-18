@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -14,7 +14,22 @@ package org.mini2Dx.ui.layout;
 /**
  *
  */
-public interface OffsetRule {
+public class ResponsiveSizeRule implements SizeRule {
+	private final int columns;
+	
+	public ResponsiveSizeRule(int columns) {
+		this.columns = columns;
+	}
+	
+	@Override
+	public float getWidth(LayoutState layoutState) {
+		if(columns == layoutState.getTotalColumns()) {
+			return layoutState.getParentWidth();
+		}
+		return layoutState.getColumnWidth(columns);
+	}
 
-	public float getOffset(LayoutState layoutState);
+	public int getColumns() {
+		return columns;
+	}
 }

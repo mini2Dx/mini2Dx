@@ -14,14 +14,7 @@ package org.mini2Dx.ui.layout;
 /**
  *
  */
-public class SizeRule {
-	private final int columns;
-	
-	public SizeRule(int columns) {
-		this.columns = columns;
-	}
+public interface SizeRule {
 
-	public int getColumns() {
-		return columns;
-	}
+	public float getWidth(LayoutState layoutState);
 }

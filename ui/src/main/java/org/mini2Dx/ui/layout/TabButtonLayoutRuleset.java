@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,10 +11,30 @@
  */
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.core.exception.MdxException;
+
 /**
  *
  */
-public interface OffsetRule {
+public class TabButtonLayoutRuleset extends LayoutRuleset {
+	public static final TabButtonLayoutRuleset DEFAULT_RULESET = new TabButtonLayoutRuleset("xs-12c");
+	
+	private int currentSizeInColumns;
 
-	public float getOffset(LayoutState layoutState);
+	public TabButtonLayoutRuleset(String rules) {
+		super(rules);
+		if(rules.contains(PIXEL_SUFFIX)) {
+			throw new MdxException("Tab buttons do not support pixel sizes, please use columns");
+		}
+	}
+
+	public float getPreferredWidth(LayoutState layoutState) {
+		ResponsiveSizeRule sizeRule = (ResponsiveSizeRule) sizeRules.get(layoutState.getScreenSize());
+		currentSizeInColumns = sizeRule.getColumns();
+		return sizeRule.getWidth(layoutState);
+	}
+	
+	public int getCurrentSizeInColumns() {
+		return currentSizeInColumns;
+	}
 }

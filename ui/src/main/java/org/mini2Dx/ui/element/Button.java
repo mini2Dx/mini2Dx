@@ -87,8 +87,4 @@ public abstract class Button extends UiElement implements Actionable {
 	}
 	
 	public abstract void setLayout(LayoutRuleset layoutRuleset);
-	
-	int getCurrentSizeInColumns() {
-		return layout.getCurrentSizeInColumns();
-	}
 }

@@ -132,7 +132,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 		uatsDialog = new AlignedModal("uats-dialog");
 		uatsDialog.setHorizontalAlignment(HorizontalAlignment.CENTER);
 		uatsDialog.setVerticalAlignment(VerticalAlignment.TOP);
-		uatsDialog.setLayout(new LayoutRuleset("xs-12 sm-10 md-8 lg-6 sm-offset-1 md-offset-2 lg-offset-3"));
+		uatsDialog.setLayout(new LayoutRuleset("xs-12c sm-10c md-8c lg-6c sm-offset-1c md-offset-2c lg-offset-3c"));
 
 		uatsDialog.add(Row.withElements("row-os", UiUtils.createLabel("Detected OS: " + Mdx.os)));
 		uatsDialog.add(Row.withElements("row-header", UiUtils.createHeader("User Acceptance Tests", new TypingTextAnimation())));

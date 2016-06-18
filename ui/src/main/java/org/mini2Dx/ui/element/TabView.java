@@ -24,6 +24,7 @@ import org.mini2Dx.ui.input.ControllerHotKeyOperation;
 import org.mini2Dx.ui.input.KeyboardHotKeyOperation;
 import org.mini2Dx.ui.input.UiNavigation;
 import org.mini2Dx.ui.layout.LayoutRuleset;
+import org.mini2Dx.ui.layout.TabButtonLayoutRuleset;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.render.ActionableRenderNode;
 import org.mini2Dx.ui.render.NavigatableRenderNode;
@@ -34,17 +35,17 @@ import org.mini2Dx.ui.render.TabViewRenderNode;
  *
  */
 public class TabView extends UiElement implements Navigatable {
-	private static final LayoutRuleset DEFAULT_CHANGE_TAB_BTN_LAYOUT = new LayoutRuleset("xs-3 sm-2 lg-1");
+	private static final TabButtonLayoutRuleset DEFAULT_CHANGE_TAB_BTN_LAYOUT = new TabButtonLayoutRuleset("xs-3c sm-2c lg-1c");
 
 	private final Queue<ControllerHotKeyOperation> controllerHotKeyOperations = new LinkedList<ControllerHotKeyOperation>();
 	private final Queue<KeyboardHotKeyOperation> keyboardHotKeyOperations = new LinkedList<KeyboardHotKeyOperation>();
 
 	private final Row tabMenuRow;
-	private final Button previousTabButton, nextTabButton;
+	private final TabButton previousTabButton, nextTabButton;
 	private final List<TabButton> tabButtons = new ArrayList<TabButton>(1);
 
 	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
-	private LayoutRuleset tabButtonLayout = new LayoutRuleset("xs-6 sm-4 md-2 xl-1");
+	private TabButtonLayoutRuleset tabButtonLayout = new TabButtonLayoutRuleset("xs-6c sm-4c md-2c xl-1c");
 	private TabViewRenderNode renderNode;
 	private int currentTabIndex = 0;
 	private int tabButtonViewIndex = 0;
@@ -63,13 +64,13 @@ public class TabView extends UiElement implements Navigatable {
 		this(id, null, null);
 	}
 
-	public TabView(String id, Button previousTabButton, Button nextTabButton) {
+	public TabView(String id, TabButton previousTabButton, TabButton nextTabButton) {
 		super(id);
 		tabMenuRow = new Row(getId() + "-tabMenuRow");
 		tabMenuRow.setVisibility(Visibility.VISIBLE);
 
 		if (previousTabButton == null) {
-			TextButton previousButton = new TextButton(getId() + "-previousTabButton");
+			TabButton previousButton = new TabButton(getId() + "-previousTabButton");
 			previousButton.setLayout(DEFAULT_CHANGE_TAB_BTN_LAYOUT);
 			previousButton.setText("<");
 			previousButton.setVisibility(Visibility.VISIBLE);
@@ -81,7 +82,7 @@ public class TabView extends UiElement implements Navigatable {
 		this.previousTabButton.setEnabled(false);
 
 		if (nextTabButton == null) {
-			TextButton nextButton = new TextButton(getId() + "-nextTabButton");
+			TabButton nextButton = new TabButton(getId() + "-nextTabButton");
 			nextButton.setLayout(DEFAULT_CHANGE_TAB_BTN_LAYOUT);
 			nextButton.setText(">");
 			nextButton.setVisibility(Visibility.VISIBLE);
@@ -256,7 +257,12 @@ public class TabView extends UiElement implements Navigatable {
 			tabButtons.get(i).setIconStyle(renderNode.getTabButtonImageStyleId());
 		}
 		previousTabButton.setStyleId(renderNode.getPreviousTabButtonStyleId());
+		previousTabButton.setLabelStyle(renderNode.getTabButtonLabelStyleId());
+		previousTabButton.setIconStyle(renderNode.getTabButtonImageStyleId());
+		
 		nextTabButton.setStyleId(renderNode.getNextTabButtonStyleId());
+		nextTabButton.setLabelStyle(renderNode.getTabButtonLabelStyleId());
+		nextTabButton.setIconStyle(renderNode.getTabButtonImageStyleId());
 	}
 
 	@Override
@@ -516,7 +522,7 @@ public class TabView extends UiElement implements Navigatable {
 		nextTabButton.setLayout(layoutRuleset);
 	}
 
-	public void setTabButtonLayout(LayoutRuleset tabButtonLayout) {
+	public void setTabButtonLayout(TabButtonLayoutRuleset tabButtonLayout) {
 		this.tabButtonLayout = tabButtonLayout;
 		for (int i = 0; i < tabs.size(); i++) {
 			tabs.get(i).setLayout(tabButtonLayout);

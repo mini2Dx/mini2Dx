@@ -3,8 +3,11 @@
  */
 package org.mini2Dx.ui.element;
 
+import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
+import org.mini2Dx.ui.layout.LayoutRuleset;
+import org.mini2Dx.ui.layout.TabButtonLayoutRuleset;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.TabButtonRenderNode;
 
@@ -12,9 +15,10 @@ import org.mini2Dx.ui.render.TabButtonRenderNode;
  *
  */
 public class TabButton extends ContentButton {
-	private final Label label;
-	private final Image icon;
+	protected final Label label;
+	protected final Image icon;
 	
+	private TabButtonLayoutRuleset tabButtonLayoutRuleset = TabButtonLayoutRuleset.DEFAULT_RULESET;
 	private boolean currentTab = false;
 	
 	public TabButton() {
@@ -87,5 +91,19 @@ public class TabButton extends ContentButton {
 
 	void setCurrentTab(boolean currentTab) {
 		this.currentTab = currentTab;
+	}
+	
+	int getCurrentSizeInColumns() {
+		return tabButtonLayoutRuleset.getCurrentSizeInColumns();
+	}
+	
+	@Override
+	public void setLayout(LayoutRuleset layoutRuleset) {
+		throw new MdxException("setLayout(LayoutRuleset) not supported by TabButton");
+	}
+	
+	public void setLayout(TabButtonLayoutRuleset layoutRuleset) {
+		this.tabButtonLayoutRuleset = layoutRuleset;
+		super.setLayout(layoutRuleset);
 	}
 }

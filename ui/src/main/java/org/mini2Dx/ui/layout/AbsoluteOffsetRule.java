@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -14,7 +14,16 @@ package org.mini2Dx.ui.layout;
 /**
  *
  */
-public interface OffsetRule {
+public class AbsoluteOffsetRule implements OffsetRule {
+	private final float offset;
+	
+	public AbsoluteOffsetRule(float offset) {
+		this.offset = offset;
+	}
 
-	public float getOffset(LayoutState layoutState);
+	@Override
+	public float getOffset(LayoutState layoutState) {
+		return offset;
+	}
+
 }
