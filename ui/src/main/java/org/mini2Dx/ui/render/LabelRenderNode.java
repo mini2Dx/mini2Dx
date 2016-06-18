@@ -27,25 +27,25 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 	private static final GlyphLayout glyphLayout = new GlyphLayout();
 	private static final NullTextAnimation NULL_TEXT_ANIMATION = new NullTextAnimation();
-	
+
 	private BitmapFont font = new BitmapFont(true);
 
 	public LabelRenderNode(ParentRenderNode<?, ?> parent, Label element) {
 		super(parent, element);
 	}
-	
+
 	@Override
 	public void update(UiContainerRenderTree uiContainer, float delta) {
 		super.update(uiContainer, delta);
-		if(element.getTextAnimation() != null) {
+		if (element.getTextAnimation() != null) {
 			element.getTextAnimation().update(element.getText(), delta);
 		}
 	}
-	
+
 	@Override
 	public void interpolate(float alpha) {
 		super.interpolate(alpha);
-		if(element.getTextAnimation() != null) {
+		if (element.getTextAnimation() != null) {
 			element.getTextAnimation().interpolate(element.getText(), alpha);
 		}
 	}
@@ -62,14 +62,12 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 		}
 
 		g.setColor(style.getColor());
-		if(element.getTextAnimation() == null) {
-			NULL_TEXT_ANIMATION.render(element.getText(), g, getRenderX() + style.getPaddingLeft(), getRenderY() + style.getPaddingTop(),
-					getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight(),
-					element.getHorizontalAlignment().getAlignValue());
+		if (element.getTextAnimation() == null) {
+			NULL_TEXT_ANIMATION.render(element.getText(), g, getContentRenderX(), getContentRenderY(),
+					getContentRenderWidth(), element.getHorizontalAlignment().getAlignValue());
 		} else {
-			element.getTextAnimation().render(element.getText(), g, getRenderX() + style.getPaddingLeft(), getRenderY() + style.getPaddingTop(),
-					getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight(),
-					element.getHorizontalAlignment().getAlignValue());
+			element.getTextAnimation().render(element.getText(), g, getContentRenderX(), getContentRenderY(),
+					getContentRenderWidth(), element.getHorizontalAlignment().getAlignValue());
 		}
 		g.setColor(tmpColor);
 		g.setFont(tmpFont);
@@ -77,7 +75,8 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		float availableWidth = layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight();
+		float availableWidth = layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight()
+				- style.getMarginLeft() - style.getMarginRight();
 		if (element.isResponsive()) {
 			return availableWidth;
 		} else {

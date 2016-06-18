@@ -89,7 +89,7 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		if (currentArea.contains(screenX, screenY)) {
+		if (outerArea.contains(screenX, screenY)) {
 			setState(NodeState.HOVER);
 			boolean result = false;
 			NavigableSet<Integer> descendingLayerKeys = layers.descendingKeySet();

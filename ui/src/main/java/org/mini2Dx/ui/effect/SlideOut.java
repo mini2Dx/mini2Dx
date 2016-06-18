@@ -62,7 +62,7 @@ public class SlideOut implements UiEffect {
 			}
 			break;
 		case DOWN:
-			if(currentArea.getY() < uiContainer.getHeight()) {
+			if(currentArea.getY() < uiContainer.getOuterHeight()) {
 				currentArea.setY(currentArea.getY() + speed);
 			} else {
 				finished = true;
@@ -76,7 +76,7 @@ public class SlideOut implements UiEffect {
 			}
 			break;
 		case RIGHT:
-			if(currentArea.getX() < uiContainer.getWidth()) {
+			if(currentArea.getX() < uiContainer.getOuterWidth()) {
 				currentArea.setX(currentArea.getX() + speed);
 			} else {
 				finished = true;

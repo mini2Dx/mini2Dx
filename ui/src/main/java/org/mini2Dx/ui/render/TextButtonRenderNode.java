@@ -29,7 +29,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
  */
 public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule>implements ActionableRenderNode {
 	private static GlyphLayout glyphLayout = new GlyphLayout();
-	
+
 	public TextButtonRenderNode(ParentRenderNode<?, ?> parent, TextButton element) {
 		super(parent, element);
 	}
@@ -45,7 +45,7 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 		if (!element.isEnabled()) {
 			return null;
 		}
-		if (currentArea.contains(screenX, screenY)) {
+		if (outerArea.contains(screenX, screenY)) {
 			setState(NodeState.ACTION);
 			return this;
 		}
@@ -57,7 +57,7 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 		if (getState() != NodeState.ACTION) {
 			return;
 		}
-		if (currentArea.contains(screenX, screenY)) {
+		if (outerArea.contains(screenX, screenY)) {
 			setState(NodeState.HOVER);
 		} else {
 			setState(NodeState.NORMAL);
@@ -83,13 +83,14 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 			ninePatch = style.getDisabledNinePatch();
 		}
 
-		if(ninePatch != null) {
-			g.drawNinePatch(ninePatch, getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight());
+		if (ninePatch != null) {
+			g.drawNinePatch(ninePatch, getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(),
+					getInnerRenderHeight());
 		}
-		
-		float textRenderX = getRenderX() + style.getPaddingLeft();
-		float textRenderY = getRenderY() + style.getPaddingTop();
-		float textRenderWidth = getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight();
+
+		float textRenderX = getContentRenderX();
+		float textRenderY = getContentRenderY();
+		float textRenderWidth = getContentRenderWidth();
 
 		BitmapFont tmpFont = g.getFont();
 		Color tmpColor = g.getColor();
@@ -104,22 +105,24 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if(element.getLayout().isHiddenByInputSource(layoutState.getLastInputSource())) {
+		if (element.getLayout().isHiddenByInputSource(layoutState.getLastInputSource())) {
 			return 0f;
 		}
 		float layoutRuleResult = element.getLayout().getPreferredWidth(layoutState);
-		if(layoutRuleResult <= 0f) {
+		if (layoutRuleResult <= 0f) {
 			hiddenByLayoutRule = true;
 			return 0f;
 		} else {
 			hiddenByLayoutRule = false;
 		}
-		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight();
+		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft()
+				- style.getMarginRight();
 	}
 
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
-		glyphLayout.setText(style.getBitmapFont(), element.getText(), Color.WHITE, preferredContentWidth, element.getTextAlignment().getAlignValue(), true);
+		glyphLayout.setText(style.getBitmapFont(), element.getText(), Color.WHITE, preferredContentWidth,
+				element.getTextAlignment().getAlignValue(), true);
 		return glyphLayout.height;
 	}
 

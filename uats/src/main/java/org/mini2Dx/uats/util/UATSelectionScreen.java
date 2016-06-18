@@ -258,6 +258,11 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 	}
 
 	@Override
+	public void onResize(int width, int height) {
+		uiContainer.set(width, height);
+	}
+	
+	@Override
 	public void onScreenSizeChanged(ScreenSize screenSize) {
 		System.out.println("Current Screen Size: " + screenSize);
 	}

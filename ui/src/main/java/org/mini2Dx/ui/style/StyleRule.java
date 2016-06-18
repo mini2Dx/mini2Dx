@@ -116,4 +116,11 @@ public class StyleRule {
 		this.marginLeft = margin;
 		this.marginRight = margin;
 	}
+
+	@Override
+	public String toString() {
+		return "StyleRule [paddingTop=" + paddingTop + ", paddingBottom=" + paddingBottom + ", paddingLeft="
+				+ paddingLeft + ", paddingRight=" + paddingRight + ", marginTop=" + marginTop + ", marginBottom="
+				+ marginBottom + ", marginLeft=" + marginLeft + ", marginRight=" + marginRight + "]";
+	}
 }

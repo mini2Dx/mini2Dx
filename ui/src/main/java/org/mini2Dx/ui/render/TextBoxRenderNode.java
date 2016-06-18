@@ -83,10 +83,10 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 			ninePatch = style.getDisabledNinePatch();
 		}
 
-		float textRenderX = getRenderX() + style.getPaddingLeft();
-		float textRenderY = getRenderY() + style.getPaddingTop();
+		float textRenderX = getContentRenderX();
+		float textRenderY = getContentRenderY();
 
-		g.drawNinePatch(ninePatch, getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight());
+		g.drawNinePatch(ninePatch, getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(), getInnerRenderHeight());
 
 		BitmapFont previousFont = g.getFont();
 		Color previousColor = g.getColor();
@@ -116,7 +116,7 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 		} else {
 			hiddenByLayoutRule = false;
 		}
-		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight();
+		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft() - style.getMarginRight();
 	}
 
 	@Override
@@ -145,12 +145,12 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 		case ACTION:
 			return false;
 		case NORMAL:
-			if (currentArea.contains(screenX, screenY)) {
+			if (outerArea.contains(screenX, screenY)) {
 				super.setState(NodeState.HOVER);
 			}
 			break;
 		case HOVER:
-			if (!currentArea.contains(screenX, screenY)) {
+			if (!outerArea.contains(screenX, screenY)) {
 				super.setState(NodeState.NORMAL);
 			}
 			break;
@@ -171,13 +171,13 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 		}
 		switch (getState()) {
 		case ACTION:
-			if (!currentArea.contains(screenX, screenY)) {
+			if (!outerArea.contains(screenX, screenY)) {
 				endAction();
 				return null;
 			}
 			return this;
 		default:
-			if (currentArea.contains(screenX, screenY)) {
+			if (outerArea.contains(screenX, screenY)) {
 				return this;
 			}
 			return null;
@@ -191,14 +191,14 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 		}
 		switch (getState()) {
 		case ACTION:
-			if (currentArea.contains(screenX, screenY)) {
+			if (outerArea.contains(screenX, screenY)) {
 				setCursorIndex(screenX, screenY);
 			} else {
 				endAction();
 			}
 			break;
 		default:
-			if (currentArea.contains(screenX, screenY)) {
+			if (outerArea.contains(screenX, screenY)) {
 				beginAction();
 				switch (Mdx.os) {
 				case ANDROID:
@@ -358,7 +358,7 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 		}
 		BitmapFont font = style.getBitmapFont();
 
-		float clickX = screenX - getRenderX() - style.getPaddingLeft();
+		float clickX = screenX - getOuterRenderX() - style.getPaddingLeft();
 
 		for (int i = 0; i < element.getValue().length(); i++) {
 			glyphLayout.setText(font, element.getValue().substring(0, i + 1));

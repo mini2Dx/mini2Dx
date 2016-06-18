@@ -90,13 +90,13 @@ public class AbsoluteContainer extends Container {
 		if(renderNode == null) {
 			return 0f;
 		}
-		return renderNode.getWidth();
+		return renderNode.getOuterWidth();
 	}
 	
 	public float getHeight() {
 		if(renderNode == null) {
 			return 0f;
 		}
-		return renderNode.getHeight();
+		return renderNode.getOuterHeight();
 	}
 }

@@ -19,14 +19,15 @@ import org.mini2Dx.ui.style.ColumnStyleRule;
  *
  */
 public class RowRenderNode extends AbstractColumnRenderNode<ColumnStyleRule> {
-	
+
 	public RowRenderNode(ParentRenderNode<?, ?> parent, Row row) {
 		super(parent, row);
 	}
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		return layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight();
+		return layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft()
+				- style.getMarginRight();
 	}
 
 	@Override

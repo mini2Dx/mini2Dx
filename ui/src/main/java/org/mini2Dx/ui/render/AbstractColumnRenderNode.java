@@ -25,19 +25,19 @@ public abstract class AbstractColumnRenderNode<S extends ColumnStyleRule> extend
 	public AbstractColumnRenderNode(ParentRenderNode<?, ?> parent, Column column) {
 		super(parent, column);
 	}
-	
+
 	@Override
 	protected void renderElement(Graphics g) {
-		if(style.getBackgroundNinePatch() != null) {
-			g.drawNinePatch(style.getBackgroundNinePatch(), getRenderX() + style.getMarginLeft(),
-					getRenderY() + style.getMarginTop(), getRenderWidth(), getRenderHeight());
+		if (style.getBackgroundNinePatch() != null) {
+			g.drawNinePatch(style.getBackgroundNinePatch(), getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(),
+					getInnerRenderHeight());
 		}
 		super.renderElement(g);
 	}
 
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
-		if(preferredContentWidth <= 0f) {
+		if (preferredContentWidth <= 0f) {
 			return 0f;
 		}
 		float maxHeight = 0f;
@@ -53,17 +53,18 @@ public abstract class AbstractColumnRenderNode<S extends ColumnStyleRule> extend
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if(element.getLayout().isHiddenByInputSource(layoutState.getLastInputSource())) {
+		if (element.getLayout().isHiddenByInputSource(layoutState.getLastInputSource())) {
 			return 0f;
 		}
 		float layoutRuleResult = element.getLayout().getPreferredWidth(layoutState);
-		if(layoutRuleResult <= 0f) {
+		if (layoutRuleResult <= 0f) {
 			hiddenByLayoutRule = true;
 			return 0f;
 		} else {
 			hiddenByLayoutRule = false;
 		}
-		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight();
+		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft()
+				- style.getMarginRight();
 	}
 
 	@Override

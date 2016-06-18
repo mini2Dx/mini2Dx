@@ -32,8 +32,8 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 		if (textureRegion == null) {
 			return;
 		}
-		g.drawTextureRegion(textureRegion, getRenderX() + style.getPaddingLeft(), getRenderY() + style.getPaddingTop(),
-				getRenderWidth(), getRenderHeight());
+		g.drawTextureRegion(textureRegion, getContentRenderX(), getContentRenderY(),
+				getContentRenderWidth(), getContentRenderHeight());
 	}
 
 	@Override
@@ -48,7 +48,8 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 			return 0f;
 		}
 		if (element.isResponsive()) {
-			return layoutState.getParentWidth();
+			return layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight()
+					- style.getMarginLeft() - style.getMarginRight();
 		} else {
 			return textureRegion.getRegionWidth();
 		}

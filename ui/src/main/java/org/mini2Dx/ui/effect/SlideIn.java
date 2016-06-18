@@ -60,7 +60,7 @@ public class SlideIn implements UiEffect {
 		switch(direction) {
 		case UP:
 			if(!started) {
-				currentArea.forceTo(targetX, uiContainer.getRenderY() + uiContainer.getHeight() + 1f, targetArea.getWidth(), targetArea.getHeight());
+				currentArea.forceTo(targetX, uiContainer.getOuterRenderY() + uiContainer.getOuterHeight() + 1f, targetArea.getWidth(), targetArea.getHeight());
 				started = true;
 			}
 			if(currentArea.getY() > targetY) {
@@ -73,7 +73,7 @@ public class SlideIn implements UiEffect {
 			break;
 		case DOWN:
 			if(!started) {
-				currentArea.forceTo(targetX, uiContainer.getRenderY() - targetArea.getHeight() - 1f, targetArea.getWidth(), targetArea.getHeight());
+				currentArea.forceTo(targetX, uiContainer.getOuterRenderY() - targetArea.getHeight() - 1f, targetArea.getWidth(), targetArea.getHeight());
 				started = true;
 			}
 			if(currentArea.getY() < targetY) {
@@ -86,7 +86,7 @@ public class SlideIn implements UiEffect {
 			break;
 		case LEFT:
 			if(!started) {
-				currentArea.forceTo(uiContainer.getRenderX() + uiContainer.getWidth() + 1f, targetY, targetArea.getWidth(), targetArea.getHeight());
+				currentArea.forceTo(uiContainer.getOuterRenderX() + uiContainer.getOuterWidth() + 1f, targetY, targetArea.getWidth(), targetArea.getHeight());
 				started = true;
 			}
 			if(currentArea.getX() > targetX) {
@@ -99,7 +99,7 @@ public class SlideIn implements UiEffect {
 			break;
 		case RIGHT:
 			if(!started) {
-				currentArea.forceTo(uiContainer.getRenderX() - targetArea.getWidth() - 1f, targetY, targetArea.getWidth(), targetArea.getHeight());
+				currentArea.forceTo(uiContainer.getOuterRenderX() - targetArea.getWidth() - 1f, targetY, targetArea.getWidth(), targetArea.getHeight());
 				started = true;
 			}
 			if(currentArea.getX() < targetX) {

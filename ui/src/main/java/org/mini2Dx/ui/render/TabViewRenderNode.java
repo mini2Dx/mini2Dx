@@ -109,7 +109,7 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> i
 		} else {
 			hiddenByLayoutRule = false;
 		}
-		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight();
+		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft() - style.getMarginRight();
 	}
 
 	@Override

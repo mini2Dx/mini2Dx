@@ -14,11 +14,13 @@ package org.mini2Dx.ui.render;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.ui.dummy.DummyParentRenderNode;
 import org.mini2Dx.ui.dummy.DummyRenderNode;
 import org.mini2Dx.ui.dummy.DummyUiElement;
+import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.layout.LayoutState;
 
 import junit.framework.Assert;
@@ -42,12 +44,63 @@ public class RenderLayerTest {
 	
 	@Before
 	public void setUp() {
+		parentElement.setVisibility(Visibility.VISIBLE);
+		uiElement1.setVisibility(Visibility.VISIBLE);
+		uiElement2.setVisibility(Visibility.VISIBLE);
+		
 		mockery = new Mockery();
 		mockery.setImposteriser(ClassImposteriser.INSTANCE);
 		
 		layoutState = mockery.mock(LayoutState.class);
 		renderLayer.add(renderNode1);
 		renderLayer.add(renderNode2);
+	}
+	
+	@After
+	public void teardown() {
+		mockery.assertIsSatisfied();
+	}
+	
+	@Test
+	public void testSetChildRelativePositionWithParentPadding() {
+		configureParentWithWidth(500f);
+		final float preferredWidth = 150f;
+		final float preferredHeight = 200f;
+		
+		parentRenderNode.getStyle().setPaddingTop(4);
+		parentRenderNode.getStyle().setPaddingLeft(8);
+		uiElement1.setPreferredContentWidth(preferredWidth);
+		uiElement1.setPreferredContentHeight(preferredHeight);
+		uiElement2.setPreferredContentWidth(preferredWidth);
+		uiElement2.setPreferredContentHeight(preferredHeight);
+		
+		renderNode1.setDirty(true);
+		renderNode2.setDirty(true);
+		renderLayer.layout(layoutState);
+		
+		Assert.assertEquals(8f, renderNode1.getRelativeX());
+		Assert.assertEquals(4f, renderNode1.getRelativeY());
+	}
+	
+	@Test
+	public void testSetChildRelativePositionWithParentMargin() {
+		configureParentWithWidth(500f);
+		final float preferredWidth = 150f;
+		final float preferredHeight = 200f;
+		
+		parentRenderNode.getStyle().setMarginTop(4);
+		parentRenderNode.getStyle().setMarginLeft(8);
+		uiElement1.setPreferredContentWidth(preferredWidth);
+		uiElement1.setPreferredContentHeight(preferredHeight);
+		uiElement2.setPreferredContentWidth(preferredWidth);
+		uiElement2.setPreferredContentHeight(preferredHeight);
+		
+		renderNode1.setDirty(true);
+		renderNode2.setDirty(true);
+		renderLayer.layout(layoutState);
+		
+		Assert.assertEquals(0f, renderNode1.getRelativeX());
+		Assert.assertEquals(0f, renderNode1.getRelativeY());
 	}
 
 	@Test

@@ -48,7 +48,7 @@ public class ImageButtonRenderNode extends RenderNode<ImageButton, ButtonStyleRu
 		if (!element.isEnabled()) {
 			return null;
 		}
-		if (currentArea.contains(screenX, screenY)) {
+		if (outerArea.contains(screenX, screenY)) {
 			setState(NodeState.ACTION);
 			return this;
 		}
@@ -60,7 +60,7 @@ public class ImageButtonRenderNode extends RenderNode<ImageButton, ButtonStyleRu
 		if (getState() != NodeState.ACTION) {
 			return;
 		}
-		if (currentArea.contains(screenX, screenY)) {
+		if (outerArea.contains(screenX, screenY)) {
 			setState(NodeState.HOVER);
 		} else {
 			setState(NodeState.NORMAL);
@@ -87,13 +87,13 @@ public class ImageButtonRenderNode extends RenderNode<ImageButton, ButtonStyleRu
 		}
 
 		if (ninePatch != null) {
-			g.drawNinePatch(ninePatch, getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight());
+			g.drawNinePatch(ninePatch, getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(), getInnerRenderHeight());
 		}
 
-		float imageRenderX = getRenderX() + style.getPaddingLeft();
-		float imageRenderY = getRenderY() + style.getPaddingTop();
-		float imageRenderWidth = getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight();
-		float imageRenderHeight = getRenderHeight() - style.getPaddingTop() - style.getPaddingBottom();
+		float imageRenderX = getContentRenderX();
+		float imageRenderY = getContentRenderY();
+		float imageRenderWidth = getContentRenderWidth();
+		float imageRenderHeight = getContentRenderHeight();
 
 		g.drawTextureRegion(textureRegion, imageRenderX, imageRenderY, imageRenderWidth, imageRenderHeight);
 	}

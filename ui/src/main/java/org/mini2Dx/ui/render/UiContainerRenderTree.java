@@ -66,7 +66,7 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRu
 		preferredContentHeight = determinePreferredContentHeight(layoutState);
 		xOffset = determineXOffset(layoutState);
 		yOffset = determineYOffset(layoutState);
-		currentArea.forceTo(xOffset, yOffset, preferredContentWidth, preferredContentHeight);
+		outerArea.forceTo(xOffset, yOffset, preferredContentWidth, preferredContentHeight);
 		
 		for(RenderLayer layer : layers.values()) {
 			layer.layout(layoutState);

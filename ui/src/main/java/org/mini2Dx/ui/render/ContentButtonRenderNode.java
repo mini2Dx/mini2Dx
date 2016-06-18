@@ -40,7 +40,7 @@ public class ContentButtonRenderNode extends ParentRenderNode<ContentButton, But
 		if (!element.isEnabled()) {
 			return null;
 		}
-		if (currentArea.contains(screenX, screenY)) {
+		if (outerArea.contains(screenX, screenY)) {
 			setState(NodeState.ACTION);
 			return this;
 		}
@@ -52,7 +52,7 @@ public class ContentButtonRenderNode extends ParentRenderNode<ContentButton, But
 		if (getState() != NodeState.ACTION) {
 			return;
 		}
-		if (currentArea.contains(screenX, screenY)) {
+		if (outerArea.contains(screenX, screenY)) {
 			setState(NodeState.HOVER);
 		} else {
 			setState(NodeState.NORMAL);
@@ -79,7 +79,7 @@ public class ContentButtonRenderNode extends ParentRenderNode<ContentButton, But
 		}
 
 		if(ninePatch != null) {
-			g.drawNinePatch(ninePatch, getRenderX(), getRenderY(), getRenderWidth(), getRenderHeight());
+			g.drawNinePatch(ninePatch, getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(), getInnerRenderHeight());
 		}
 		super.renderElement(g);
 	}
@@ -96,7 +96,7 @@ public class ContentButtonRenderNode extends ParentRenderNode<ContentButton, But
 		} else {
 			hiddenByLayoutRule = false;
 		}
-		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight();
+		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft() - style.getMarginRight();
 	}
 
 	@Override

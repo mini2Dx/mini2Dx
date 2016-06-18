@@ -31,8 +31,9 @@ import com.badlogic.gdx.Gdx;
  */
 public abstract class RenderNode<T extends UiElement, S extends StyleRule> implements HoverableRenderNode {
 	protected final List<UiEffect> effects = new ArrayList<UiEffect>(1);
-	protected final CollisionBox currentArea = new CollisionBox();
-	protected final Rectangle targetArea = new Rectangle();
+	protected final CollisionBox outerArea = new CollisionBox();
+	protected final CollisionBox innerArea = new CollisionBox();
+	protected final Rectangle targetOuterArea = new Rectangle();
 	protected final ParentRenderNode<?, ?> parent;
 	protected final T element;
 
@@ -51,8 +52,14 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		this.parent = parent;
 		this.element = element;
 		this.zIndex = element.getZIndex();
-		
+
 		setDirty(true);
+	}
+
+	private void setInnerArea() {
+		innerArea.set(outerArea.getX() + style.getMarginLeft(), outerArea.getY() + style.getMarginTop(),
+				outerArea.getWidth() - style.getMarginLeft() - style.getMarginRight(),
+				outerArea.getHeight() - style.getMarginTop() - style.getMarginBottom());
 	}
 
 	public void update(UiContainerRenderTree uiContainer, float delta) {
@@ -63,20 +70,21 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 			throw new MdxException("No style found for element: " + getId());
 		}
 		if (parent == null) {
-			targetArea.set(relativeX + style.getMarginLeft(), relativeY + style.getMarginTop(),
-					getPreferredInnerWidth(), getPreferredInnerHeight());
+			targetOuterArea.set(relativeX, relativeY,
+					getPreferredOuterWidth(), getPreferredOuterHeight());
 		} else {
-			targetArea.set(parent.getX() + relativeX + style.getMarginLeft(),
-					parent.getY() + style.getMarginTop() + relativeY, getPreferredInnerWidth(),
-					getPreferredInnerHeight());
+			targetOuterArea.set(parent.getInnerX() + relativeX,
+					parent.getInnerY() + relativeY, getPreferredOuterWidth(),
+					getPreferredOuterHeight());
 		}
-		currentArea.preUpdate();
+		outerArea.preUpdate();
+		innerArea.preUpdate();
 
 		element.syncWithRenderNode();
 
 		boolean visible = isScheduledToRender();
 		if (effects.size() == 0) {
-			currentArea.forceTo(targetArea);
+			outerArea.forceTo(targetOuterArea);
 		} else {
 			for (int i = 0; i < effects.size(); i++) {
 				UiEffect effect = effects.get(i);
@@ -87,13 +95,14 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 					continue;
 				}
 
-				visible &= effect.update(uiContainer, currentArea, targetArea, delta);
+				visible &= effect.update(uiContainer, outerArea, targetOuterArea, delta);
 			}
 		}
+		setInnerArea();
 		includeInRender = visible;
-		
+
 		if (element.isDebugEnabled()) {
-			Gdx.app.log(element.getId(), "UPDATE - currentArea: " + currentArea + ", targetArea: " + targetArea
+			Gdx.app.log(element.getId(), "UPDATE - outerArea: " + outerArea + ", innerArea: " + innerArea + ", targetArea: " + targetOuterArea
 					+ ", visibility: " + element.getVisibility());
 		}
 	}
@@ -102,7 +111,8 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		if (!initialLayoutOccurred) {
 			return;
 		}
-		currentArea.interpolate(null, alpha);
+		outerArea.interpolate(null, alpha);
+		innerArea.interpolate(null, alpha);
 	}
 
 	public void render(Graphics g) {
@@ -113,8 +123,8 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 			return;
 		}
 		if (element.isDebugEnabled()) {
-			Gdx.app.log(element.getId(), "RENDER - x,y: " + getRenderX() + "," + getRenderY() + " width: "
-					+ getRenderWidth() + ", height: " + getRenderHeight());
+			Gdx.app.log(element.getId(), "RENDER - x,y: " + getOuterRenderX() + "," + getOuterRenderY() + " width: "
+					+ getOuterRenderWidth() + ", height: " + getOuterRenderHeight());
 		}
 
 		for (int i = 0; i < effects.size(); i++) {
@@ -127,7 +137,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public boolean mouseMoved(int screenX, int screenY) {
-		if (currentArea.contains(screenX, screenY)) {
+		if (outerArea.contains(screenX, screenY)) {
 			beginHover();
 			return true;
 		} else if (state != NodeState.NORMAL) {
@@ -144,7 +154,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public boolean contains(float screenX, float screenY) {
-		return currentArea.contains(screenX, screenY);
+		return outerArea.contains(screenX, screenY);
 	}
 
 	public void beginHover() {
@@ -174,8 +184,8 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 			return;
 		}
 		style = determineStyleRule(layoutState);
-		
-		if(this.zIndex != element.getZIndex()) {
+
+		if (this.zIndex != element.getZIndex()) {
 			parent.removeChild(this);
 			zIndex = element.getZIndex();
 			parent.addChild(this);
@@ -208,7 +218,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		}
 		return getPreferredInnerWidth() > 0f || getPreferredInnerHeight() > 0f;
 	}
-	
+
 	private boolean isScheduledToRender() {
 		if (!initialLayoutOccurred) {
 			return false;
@@ -296,36 +306,84 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		return yOffset;
 	}
 
-	public float getX() {
-		return currentArea.getX();
+	public float getOuterX() {
+		return outerArea.getX();
 	}
 
-	public float getY() {
-		return currentArea.getY();
+	public float getOuterY() {
+		return outerArea.getY();
 	}
 
-	public float getWidth() {
-		return currentArea.getWidth();
+	public float getOuterWidth() {
+		return outerArea.getWidth();
 	}
 
-	public float getHeight() {
-		return currentArea.getHeight();
+	public float getOuterHeight() {
+		return outerArea.getHeight();
 	}
 
-	public int getRenderX() {
-		return currentArea.getRenderX();
+	public int getOuterRenderX() {
+		return outerArea.getRenderX();
 	}
 
-	public int getRenderY() {
-		return currentArea.getRenderY();
+	public int getOuterRenderY() {
+		return outerArea.getRenderY();
 	}
 
-	public int getRenderWidth() {
-		return currentArea.getRenderWidth();
+	public int getOuterRenderWidth() {
+		return outerArea.getRenderWidth();
 	}
 
-	public int getRenderHeight() {
-		return currentArea.getRenderHeight();
+	public int getOuterRenderHeight() {
+		return outerArea.getRenderHeight();
+	}
+	
+	public float getInnerX() {
+		return innerArea.getX();
+	}
+
+	public float getInnerY() {
+		return innerArea.getY();
+	}
+
+	public float getInnerWidth() {
+		return innerArea.getWidth();
+	}
+
+	public float getInnerHeight() {
+		return innerArea.getHeight();
+	}
+
+	public int getInnerRenderX() {
+		return innerArea.getRenderX();
+	}
+
+	public int getInnerRenderY() {
+		return innerArea.getRenderY();
+	}
+
+	public int getInnerRenderWidth() {
+		return innerArea.getRenderWidth();
+	}
+
+	public int getInnerRenderHeight() {
+		return innerArea.getRenderHeight();
+	}
+	
+	public int getContentRenderX() {
+		return innerArea.getRenderX() + style.getPaddingLeft();
+	}
+	
+	public int getContentRenderY() {
+		return innerArea.getRenderY() + style.getPaddingTop();
+	}
+	
+	public int getContentRenderWidth() {
+		return innerArea.getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight();
+	}
+	
+	public int getContentRenderHeight() {
+		return innerArea.getRenderHeight() - style.getPaddingTop() - style.getPaddingBottom();
 	}
 
 	public NodeState getState() {
@@ -358,7 +416,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	public String getId() {
 		return element.getId();
 	}
-	
+
 	public int getZIndex() {
 		return zIndex;
 	}
@@ -369,7 +427,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 
 	@Override
 	public String toString() {
-		return "RenderNode [currentArea=" + currentArea + ", targetArea=" + targetArea + ", parent=" + parent.getId()
+		return "RenderNode [currentArea=" + outerArea + ", targetArea=" + targetOuterArea + ", parent=" + parent.getId()
 				+ ", style=" + style + ", preferredWidth=" + preferredContentWidth + ", preferredHeight="
 				+ preferredContentHeight + ", xOffset=" + xOffset + ", yOffset=" + yOffset + "]";
 	}

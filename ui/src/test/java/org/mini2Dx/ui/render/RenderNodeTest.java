@@ -11,12 +11,16 @@
  */
 package org.mini2Dx.ui.render;
 
+import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.ui.dummy.DummyParentRenderNode;
 import org.mini2Dx.ui.dummy.DummyRenderNode;
 import org.mini2Dx.ui.dummy.DummyUiElement;
+import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.layout.LayoutState;
 
 import junit.framework.Assert;
@@ -25,18 +29,162 @@ import junit.framework.Assert;
  * Unit tests for {@link RenderNode}
  */
 public class RenderNodeTest {
+	private static final int PARENT_WIDTH = 400;
+	private static final int PARENT_HEIGHT = 300;
+	private static final int ELEMENT_WIDTH = 200;
+	private static final int ELEMENT_HEIGHT = 150;
+	
 	private Mockery mockery;
 	private LayoutState layoutState;
 	
 	private DummyUiElement uiElement = new DummyUiElement();
-	private DummyRenderNode renderNode = new DummyRenderNode(null, uiElement);
+	private DummyUiElement parentElement = new DummyUiElement();
+	
+	private DummyParentRenderNode parentRenderNode = new DummyParentRenderNode(null, parentElement);
+	private DummyRenderNode renderNode = new DummyRenderNode(parentRenderNode, uiElement);
 	
 	@Before
 	public void setUp() {
+		parentElement.setVisibility(Visibility.VISIBLE);
+		parentElement.setPreferredContentWidth(PARENT_WIDTH);
+		parentElement.setPreferredContentHeight(PARENT_HEIGHT);
+		
+		uiElement.setVisibility(Visibility.VISIBLE);
+		uiElement.setPreferredContentWidth(ELEMENT_WIDTH);
+		uiElement.setPreferredContentHeight(ELEMENT_HEIGHT);
+		parentRenderNode.addChild(renderNode);
+		
 		mockery = new Mockery();
 		mockery.setImposteriser(ClassImposteriser.INSTANCE);
 		
 		layoutState = mockery.mock(LayoutState.class);
+	}
+	
+	@After
+	public void teardown() {
+		mockery.assertIsSatisfied();
+	}
+	
+	@Test
+	public void testRenderCoordinatesWithParentMargin() {
+		configureParentWidth();
+		
+		parentRenderNode.getStyle().setMarginLeft(4);
+		parentRenderNode.getStyle().setMarginTop(8);
+		parentRenderNode.getStyle().setMarginRight(7);
+		parentRenderNode.getStyle().setMarginBottom(3);
+		
+		renderNode.setDirty(true);
+		parentRenderNode.layout(layoutState);
+		parentRenderNode.update(null, 0.1f);
+		parentRenderNode.interpolate(1f);
+		
+		Assert.assertEquals(0, parentRenderNode.getOuterRenderX());
+		Assert.assertEquals(0, parentRenderNode.getOuterRenderY());
+		Assert.assertEquals(4, parentRenderNode.getInnerRenderX());
+		Assert.assertEquals(8, parentRenderNode.getInnerRenderY());
+		Assert.assertEquals(PARENT_WIDTH + 11, parentRenderNode.getOuterRenderWidth());
+		Assert.assertEquals(PARENT_WIDTH, parentRenderNode.getInnerRenderWidth());
+		
+		Assert.assertEquals(4, renderNode.getOuterRenderX());
+		Assert.assertEquals(8, renderNode.getOuterRenderY());
+		Assert.assertEquals(ELEMENT_WIDTH, renderNode.getOuterRenderWidth());
+		Assert.assertEquals(ELEMENT_HEIGHT, renderNode.getOuterRenderHeight());
+	}
+	
+	@Test
+	public void testRenderCoordinatesWithParentPadding() {
+		configureParentWidth();
+		
+		parentRenderNode.getStyle().setPaddingLeft(4);
+		parentRenderNode.getStyle().setPaddingTop(8);
+		parentRenderNode.getStyle().setPaddingRight(3);
+		parentRenderNode.getStyle().setPaddingBottom(7);
+		
+		renderNode.setDirty(true);
+		parentRenderNode.layout(layoutState);
+		parentRenderNode.update(null, 0.1f);
+		parentRenderNode.interpolate(1f);
+		
+		Assert.assertEquals(0, parentRenderNode.getOuterRenderX());
+		Assert.assertEquals(0, parentRenderNode.getOuterRenderY());
+		Assert.assertEquals(0, parentRenderNode.getInnerRenderX());
+		Assert.assertEquals(0, parentRenderNode.getInnerRenderY());
+		Assert.assertEquals(4, parentRenderNode.getContentRenderX());
+		Assert.assertEquals(8, parentRenderNode.getContentRenderY());
+		
+		Assert.assertEquals(4, renderNode.getOuterRenderX());
+		Assert.assertEquals(8, renderNode.getOuterRenderY());
+		Assert.assertEquals(4, renderNode.getInnerRenderX());
+		Assert.assertEquals(8, renderNode.getInnerRenderY());
+		Assert.assertEquals(ELEMENT_WIDTH, renderNode.getOuterRenderWidth());
+		Assert.assertEquals(ELEMENT_HEIGHT, renderNode.getOuterRenderHeight());
+	}
+	
+	@Test
+	public void testRenderCoordinatesWithParentMarginAndPadding() {
+		configureParentWidth();
+		
+		parentRenderNode.getStyle().setPaddingLeft(12);
+		parentRenderNode.getStyle().setPaddingTop(8);
+		parentRenderNode.getStyle().setPaddingRight(3);
+		parentRenderNode.getStyle().setPaddingBottom(7);
+		
+		parentRenderNode.getStyle().setMarginLeft(4);
+		parentRenderNode.getStyle().setMarginTop(-4);
+		parentRenderNode.getStyle().setMarginRight(7);
+		parentRenderNode.getStyle().setMarginBottom(3);
+		
+		renderNode.setDirty(true);
+		parentRenderNode.layout(layoutState);
+		parentRenderNode.update(null, 0.1f);
+		parentRenderNode.interpolate(1f);
+		
+		Assert.assertEquals(0, parentRenderNode.getOuterRenderX());
+		Assert.assertEquals(0, parentRenderNode.getOuterRenderY());
+		Assert.assertEquals(4, parentRenderNode.getInnerRenderX());
+		Assert.assertEquals(-4, parentRenderNode.getInnerRenderY());
+		Assert.assertEquals(16, parentRenderNode.getContentRenderX());
+		Assert.assertEquals(4, parentRenderNode.getContentRenderY());
+		
+		Assert.assertEquals(16, renderNode.getOuterRenderX());
+		Assert.assertEquals(4, renderNode.getOuterRenderY());
+		Assert.assertEquals(ELEMENT_WIDTH, renderNode.getOuterRenderWidth());
+		Assert.assertEquals(16, renderNode.getInnerRenderX());
+		Assert.assertEquals(4, renderNode.getInnerRenderY());
+	}
+	
+	@Test
+	public void testRenderCoordinatesWithChildAndParentMarginAndPadding() {
+		configureParentWidth();
+		
+		parentRenderNode.getStyle().setPadding(8);
+		parentRenderNode.getStyle().setMargin(4);
+		
+		renderNode.getStyle().setMarginTop(-3);
+		renderNode.getStyle().setMarginBottom(9);
+		renderNode.getStyle().setMarginLeft(5);
+		renderNode.getStyle().setMarginRight(7);
+		
+		renderNode.getStyle().setPaddingTop(1);
+		renderNode.getStyle().setPaddingBottom(2);
+		renderNode.getStyle().setPaddingLeft(3);
+		renderNode.getStyle().setPaddingRight(4);
+		
+		renderNode.setDirty(true);
+		parentRenderNode.layout(layoutState);
+		parentRenderNode.update(null, 0.1f);
+		parentRenderNode.interpolate(1f);
+		
+		Assert.assertEquals(12, renderNode.getOuterRenderX());
+		Assert.assertEquals(12, renderNode.getOuterRenderY());
+		Assert.assertEquals(ELEMENT_WIDTH + 19, renderNode.getOuterRenderWidth());
+		Assert.assertEquals(17, renderNode.getInnerRenderX());
+		Assert.assertEquals(9, renderNode.getInnerRenderY());
+		Assert.assertEquals(ELEMENT_WIDTH + 7, renderNode.getInnerRenderWidth());
+		Assert.assertEquals(20, renderNode.getContentRenderX());
+		Assert.assertEquals(10, renderNode.getContentRenderY());
+		Assert.assertEquals(ELEMENT_WIDTH, renderNode.getContentRenderWidth());
 	}
 
 	@Test
@@ -119,5 +267,16 @@ public class RenderNodeTest {
 		Assert.assertEquals(preferredHeight + (padding * 2), renderNode.getPreferredInnerHeight());
 		Assert.assertEquals(preferredWidth + (padding * 2) + (margin * 2), renderNode.getPreferredOuterWidth());
 		Assert.assertEquals(preferredHeight + (padding * 2) + (margin * 2), renderNode.getPreferredOuterHeight());
+	}
+	
+	private void configureParentWidth() {
+		mockery.checking(new Expectations() {
+			{
+				atLeast(1).of(layoutState).getParentWidth();
+				will(returnValue(0f + PARENT_WIDTH));
+				atLeast(1).of(layoutState).setParentWidth(with(any(Float.class)));
+			}
+		});
+		parentElement.setPreferredContentWidth(PARENT_WIDTH);
 	}
 }

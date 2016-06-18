@@ -25,6 +25,7 @@ public class DummyRenderNode extends RenderNode<DummyUiElement, StyleRule> {
 
 	public DummyRenderNode(ParentRenderNode<?, ?> parent, DummyUiElement element) {
 		super(parent, element);
+		this.style = element.getStyleRule();
 	}
 
 	@Override
