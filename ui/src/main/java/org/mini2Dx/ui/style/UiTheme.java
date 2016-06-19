@@ -21,6 +21,7 @@ import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.element.Container;
 import org.mini2Dx.ui.element.Image;
 import org.mini2Dx.ui.element.Label;
+import org.mini2Dx.ui.element.ScrollBox;
 import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.TextBox;
@@ -31,6 +32,7 @@ import org.mini2Dx.ui.style.ruleset.ColumnStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.ContainerStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.DefaultStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.LabelStyleRuleset;
+import org.mini2Dx.ui.style.ruleset.ScrollBoxStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.SelectStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.TabStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.TextBoxStyleRuleset;
@@ -67,6 +69,8 @@ public class UiTheme {
 	@Field
 	private Map<String, SelectStyleRuleset> selects;
 	@Field
+	private Map<String, ScrollBoxStyleRuleset> scrollBoxes;
+	@Field
 	private Map<String, TabStyleRuleset> tabs;
 	@Field
 	private Map<String, TextBoxStyleRuleset> textboxes;
@@ -90,6 +94,9 @@ public class UiTheme {
 		if (!selects.containsKey(DEFAULT_STYLE_ID)) {
 			throw new MdxException("No style with id 'default' for selects");
 		}
+		if (!scrollBoxes.containsKey(DEFAULT_STYLE_ID)) {
+			throw new MdxException("No style with id 'default' for scrollBoxes");
+		}
 		if (!tabs.containsKey(DEFAULT_STYLE_ID)) {
 			throw new MdxException("No style with id 'default' for tabs");
 		}
@@ -111,6 +118,9 @@ public class UiTheme {
 		}
 		for (StyleRuleset<LabelStyleRule> labelRuleset : labels.values()) {
 			labelRuleset.validate(this);
+		}
+		for (StyleRuleset<ScrollBoxStyleRule> scrollBoxRuleset : scrollBoxes.values()) {
+			scrollBoxRuleset.validate(this);
 		}
 		for (StyleRuleset<SelectStyleRule> selectRuleset : selects.values()) {
 			selectRuleset.validate(this);
@@ -149,6 +159,11 @@ public class UiTheme {
 			labelRuleset.loadDependencies(this, dependencies);
 			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Label Ruleset: " + id + "] Dependencies loaded");
 		}
+		for (String id : scrollBoxes.keySet()) {
+			StyleRuleset<ScrollBoxStyleRule> scrollBoxRuleset = scrollBoxes.get(id);
+			scrollBoxRuleset.loadDependencies(this, dependencies);
+			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", ScrollBox Ruleset: " + id + "] Dependencies loaded");
+		}
 		for (String id : selects.keySet()) {
 			StyleRuleset<SelectStyleRule> selectRuleset = selects.get(id);
 			selectRuleset.loadDependencies(this, dependencies);
@@ -184,6 +199,9 @@ public class UiTheme {
 		}
 		for (StyleRuleset<LabelStyleRule> labelRuleset : labels.values()) {
 			labelRuleset.prepareAssets(this, fileHandleResolver, assetManager);
+		}
+		for (StyleRuleset<ScrollBoxStyleRule> scrollBoxRuleset : scrollBoxes.values()) {
+			scrollBoxRuleset.prepareAssets(this, fileHandleResolver, assetManager);
 		}
 		for (StyleRuleset<SelectStyleRule> selectRuleset : selects.values()) {
 			selectRuleset.prepareAssets(this, fileHandleResolver, assetManager);
@@ -230,6 +248,10 @@ public class UiTheme {
 
 	public StyleRule getStyleRule(Image image, ScreenSize screenSize) {
 		return getStyleRule(image, screenSize, images);
+	}
+	
+	public ScrollBoxStyleRule getStyleRule(ScrollBox scrollBox, ScreenSize screenSize) {
+		return getScrollBoxStyleRule(scrollBox.getStyleId(), screenSize);
 	}
 
 	public SelectStyleRule getStyleRule(Select<?> select, ScreenSize screenSize) {
@@ -285,6 +307,14 @@ public class UiTheme {
 		StyleRuleset<LabelStyleRule> ruleset = labels.get(styleId);
 		if (ruleset == null) {
 			ruleset = labels.get(DEFAULT_STYLE_ID);
+		}
+		return ruleset.getStyleRule(screenSize);
+	}
+	
+	public ScrollBoxStyleRule getScrollBoxStyleRule(String styleId, ScreenSize screenSize) {
+		StyleRuleset<ScrollBoxStyleRule> ruleset = scrollBoxes.get(styleId);
+		if(ruleset == null) {
+			ruleset = scrollBoxes.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
 	}
@@ -346,6 +376,13 @@ public class UiTheme {
 			labels = new HashMap<String, LabelStyleRuleset>();
 		}
 		labels.put(rulesetId, ruleset);
+	}
+	
+	public void putScrollBoxStyleRuleset(String rulesetId, ScrollBoxStyleRuleset ruleset) {
+		if(scrollBoxes == null) {
+			scrollBoxes = new HashMap<String, ScrollBoxStyleRuleset>();
+		}
+		scrollBoxes.put(rulesetId, ruleset);
 	}
 	
 	public void putSelectStyleRuleset(String rulesetId, SelectStyleRuleset ruleset) {

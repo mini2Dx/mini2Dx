@@ -228,8 +228,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		screenX = MathUtils.round(screenX / scaleX);
 		screenY = MathUtils.round(screenY / scaleY);
-		
-		return false;
+		return renderTree.mouseMoved(screenX, screenY);
 	}
 
 	@Override

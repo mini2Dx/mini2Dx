@@ -224,6 +224,28 @@
       }
     }
   },
+  "scrollBoxes": {
+    "default": {
+      "rules": {
+        "XS": {
+          "scrollButtonStyle": "default",
+          "scrollBarSize": "16",
+          "scrollTrack": "default-mdx-theme/scrolltrack.png",
+          "scrollTrackNinePatchTop": 5,
+          "scrollTrackNinePatchBottom": 5,
+          "scrollTrackNinePatchLeft": 4,
+          "scrollTrackNinePatchRight": 4,
+          "scrollThumbNormal": "default-mdx-theme/button_default_normal.png",
+          "scrollThumbHover": "default-mdx-theme/button_default_action.png",
+          "scrollThumbAction": "default-mdx-theme/button_default_action.png",
+          "scrollThumbNinePatchTop": 12,
+          "scrollThumbNinePatchBottom": 12,
+          "scrollThumbNinePatchLeft": 12,
+          "scrollThumbNinePatchRight": 12
+        }
+      }
+    }
+  },
   "selects": {
     "default": {
       "rules": {

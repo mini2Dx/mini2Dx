@@ -32,6 +32,7 @@ import org.mini2Dx.ui.element.Button;
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.Row;
+import org.mini2Dx.ui.element.ScrollBox;
 import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.element.Tab;
 import org.mini2Dx.ui.element.TabButton;
@@ -200,7 +201,6 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		tabView.add(tab2);
 		
 		Tab tab3 = new Tab("tab3", "Tab 3");
-		tab3.add(Row.withElements(UiUtils.createLabel("Third tab")));
 		Button hiddenButton = UiUtils.createButton("Hidden", new ActionListener() {
 			
 			@Override
@@ -211,6 +211,17 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		});
 		hiddenButton.setVisibility(Visibility.HIDDEN);
 		tab3.add(Row.withElements(hiddenButton));
+		ScrollBox scrollBox = new ScrollBox("scrollBox");
+		scrollBox.setLayout(new LayoutRuleset("xs-12c"));
+		scrollBox.setVisibility(Visibility.VISIBLE);
+		scrollBox.setMaxHeight(300f);
+		for(int i = 0; i < 25; i++) {
+			Label label = UiUtils.createLabel("Label " + i);
+			Row row = Row.withElements(label);
+			row.setVisibility(Visibility.VISIBLE);
+			scrollBox.add(row);
+		}
+		tab3.add(scrollBox);
 		tabView.add(tab3);
 		
 		modal.add(tabView);
