@@ -59,7 +59,7 @@ public class TabButton extends ContentButton {
 		parentRenderNode.addChild(renderNode);
 	}
 	
-	void setText(String text) {
+	public void setText(String text) {
 		label.setText(text);
 		if(text == null) {
 			label.setVisibility(Visibility.HIDDEN);
@@ -68,7 +68,7 @@ public class TabButton extends ContentButton {
 		}
 	}
 	
-	void setIconPath(String imagePath) {
+	public void setIconPath(String imagePath) {
 		icon.setTexturePath(imagePath);
 		if(imagePath == null) {
 			icon.setVisibility(Visibility.HIDDEN);
