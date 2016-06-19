@@ -2,6 +2,7 @@ target/
 .DS_Store
 .classpath
 .project
+.idea/
 *.prefs
 *.mp3
 *.releaseBackup
