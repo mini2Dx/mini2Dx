@@ -407,7 +407,7 @@ public class Polygon extends Shape {
 
 	@Override
 	public void fill(Graphics g) {
-		g.fillPolygon(polygon.getTransformedVertices(), triangles.items);
+		g.fillPolygon(polygon.getTransformedVertices(), getTriangles().items);
 	}
 
 	public float[] getVertices() {
