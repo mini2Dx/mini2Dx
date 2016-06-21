@@ -59,10 +59,8 @@ public class ScrollBoxStyleRule extends ColumnStyleRule {
 	@Override
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
 		super.prepareAssets(theme, fileHandleResolver, assetManager);
-		System.out.println(scrollTrackNinePatchLeft + " " + scrollTrackNinePatchRight + " " + scrollTrackNinePatchTop + " " + scrollTrackNinePatchBottom);
 		scrollTrackNinePatch = new NinePatch(assetManager.get(scrollTrack, Texture.class), scrollTrackNinePatchLeft,
 				scrollTrackNinePatchRight, scrollTrackNinePatchTop, scrollTrackNinePatchBottom);
-		System.out.println(scrollTrackNinePatch.getLeftWidth() + " " + scrollTrackNinePatch.getRightWidth() + " " + scrollTrackNinePatch.getTopHeight() + " " + scrollTrackNinePatch.getBottomHeight());
 		
 		scrollThumbNormalNinePatch = new NinePatch(assetManager.get(scrollThumbNormal, Texture.class), scrollThumbNinePatchLeft,
 				scrollThumbNinePatchRight, scrollThumbNinePatchTop, scrollThumbNinePatchBottom);
