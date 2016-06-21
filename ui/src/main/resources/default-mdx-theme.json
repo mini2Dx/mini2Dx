@@ -229,7 +229,8 @@
       "rules": {
         "XS": {
           "scrollButtonStyle": "default",
-          "scrollBarSize": "16",
+          "scrollButtonHeight": "16",
+          "scrollBarWidth": "16",
           "scrollTrack": "default-mdx-theme/scrolltrack.png",
           "scrollTrackNinePatchTop": 5,
           "scrollTrackNinePatchBottom": 5,

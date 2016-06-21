@@ -19,24 +19,27 @@ import org.mini2Dx.ui.render.ScrollBoxRenderNode;
  *
  */
 public class ScrollBox extends Column {
+	private static final float DEFAULT_SCROLL_FACTOR = 0.005f;
+
+	private float scrollFactor = DEFAULT_SCROLL_FACTOR;
 	private float minHeight = Float.MIN_VALUE;
 	private float maxHeight = Float.MAX_VALUE;
-	
+
 	public ScrollBox() {
 		this(null);
 	}
-	
-	public ScrollBox(@ConstructorArg(clazz=String.class, name = "id") String id) {
+
+	public ScrollBox(@ConstructorArg(clazz = String.class, name = "id") String id) {
 		super(id);
 	}
-	
+
 	@Override
 	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode != null) {
+		if (renderNode != null) {
 			return;
 		}
 		renderNode = new ScrollBoxRenderNode(parentRenderNode, this);
-		for(int i = 0; i < children.size(); i++) {
+		for (int i = 0; i < children.size(); i++) {
 			children.get(i).attach(renderNode);
 		}
 		parentRenderNode.addChild(renderNode);
@@ -48,7 +51,7 @@ public class ScrollBox extends Column {
 
 	public void setMinHeight(float minHeight) {
 		this.minHeight = minHeight;
-		if(renderNode == null) {
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
@@ -60,9 +63,29 @@ public class ScrollBox extends Column {
 
 	public void setMaxHeight(float maxHeight) {
 		this.maxHeight = maxHeight;
-		if(renderNode == null) {
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
+	}
+
+	/**
+	 * Returns how much this {@link ScrollBox} scrolls when the up/down buttons
+	 * are clicked (expressed as a % between 0.0 and 1.0)
+	 * 
+	 * @return {@link #DEFAULT_SCROLL_FACTOR} by default
+	 */
+	public float getScrollFactor() {
+		return scrollFactor;
+	}
+
+	/**
+	 * Sets how much this {@link ScrollBox} scrolls when the up/down buttons
+	 * are clicked
+	 * 
+	 * @param scrollFactor A % between 0.0 and 1.0
+	 */
+	public void setScrollFactor(float scrollFactor) {
+		this.scrollFactor = scrollFactor;
 	}
 }

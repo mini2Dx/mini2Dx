@@ -19,19 +19,27 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.ui.element.ScrollBox;
 import org.mini2Dx.ui.layout.LayoutState;
+import org.mini2Dx.ui.style.ButtonStyleRule;
 import org.mini2Dx.ui.style.ScrollBoxStyleRule;
+import org.mini2Dx.ui.style.UiTheme;
 
 /**
  *
  */
 public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyleRule>implements ActionableRenderNode {
+	private final CollisionBox topScrollButton = new CollisionBox();
+	private final CollisionBox bottomScrollButton = new CollisionBox();
 	private final CollisionBox scrollThumb = new CollisionBox();
 	private final CollisionBox scrollTrack = new CollisionBox();
 
+	private ButtonStyleRule scrollButtonStyleRule;
 	private float contentHeight;
 	private float scrollThumbPosition;
+
+	private NodeState topScrollButtonState = NodeState.NORMAL;
+	private NodeState bottomScrollButtonState = NodeState.NORMAL;
 	private NodeState scrollThumbState = NodeState.NORMAL;
-	
+
 	private float thumbDragStartY;
 
 	public ScrollBoxRenderNode(ParentRenderNode<?, ?> parent, ScrollBox row) {
@@ -42,9 +50,30 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 	public void update(UiContainerRenderTree uiContainer, float delta) {
 		scrollTrack.preUpdate();
 		scrollThumb.preUpdate();
+		topScrollButton.preUpdate();
+		bottomScrollButton.preUpdate();
+		
 		super.update(uiContainer, delta);
-		scrollTrack.set(innerArea.getX() + innerArea.getWidth() - style.getScrollBarSize(), innerArea.getY());
-		scrollThumb.set(scrollTrack.getX(), innerArea.getY() + (scrollThumbPosition * scrollTrack.getHeight()));
+		
+		switch(topScrollButtonState) {
+		case ACTION:
+			setScrollThumbPosition(scrollThumbPosition - ((ScrollBox) element).getScrollFactor());
+			break;
+		default:
+			break;
+		}
+		switch(bottomScrollButtonState) {
+		case ACTION:
+			setScrollThumbPosition(scrollThumbPosition + ((ScrollBox) element).getScrollFactor());
+			break;
+		default:
+			break;
+		}
+		
+		topScrollButton.set(innerArea.getX() + innerArea.getWidth() - style.getScrollBarWidth(), innerArea.getY());
+		scrollTrack.set(topScrollButton.getX(), topScrollButton.getY() + topScrollButton.getHeight());
+		bottomScrollButton.set(scrollTrack.getX(), scrollTrack.getY() + scrollTrack.getHeight());
+		scrollThumb.set(scrollTrack.getX(), scrollTrack.getY() + (scrollThumbPosition * scrollTrack.getHeight()));
 	}
 
 	@Override
@@ -52,6 +81,8 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 		super.interpolate(alpha);
 		scrollTrack.interpolate(null, alpha);
 		scrollThumb.interpolate(null, alpha);
+		topScrollButton.interpolate(null, alpha);
+		bottomScrollButton.interpolate(null, alpha);
 	}
 
 	@Override
@@ -82,6 +113,22 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 		g.drawNinePatch(scrollTrackPatch, scrollTrack.getRenderX(), scrollTrack.getRenderY(),
 				scrollTrack.getRenderWidth(), scrollTrack.getRenderHeight());
 
+		switch (topScrollButtonState) {
+		case ACTION:
+			g.drawNinePatch(scrollButtonStyleRule.getActionNinePatch(), topScrollButton.getRenderX(),
+					topScrollButton.getRenderY(), topScrollButton.getRenderWidth(), topScrollButton.getRenderHeight());
+			break;
+		case HOVER:
+			g.drawNinePatch(scrollButtonStyleRule.getHoverNinePatch(), topScrollButton.getRenderX(),
+					topScrollButton.getRenderY(), topScrollButton.getRenderWidth(), topScrollButton.getRenderHeight());
+			break;
+		case NORMAL:
+		default:
+			g.drawNinePatch(scrollButtonStyleRule.getNormalNinePatch(), topScrollButton.getRenderX(),
+					topScrollButton.getRenderY(), topScrollButton.getRenderWidth(), topScrollButton.getRenderHeight());
+			break;
+		}
+
 		switch (scrollThumbState) {
 		case ACTION:
 			g.drawNinePatch(style.getScrollThumbActiveNinePatch(), scrollThumb.getRenderX(), scrollThumb.getRenderY(),
@@ -96,47 +143,106 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 					scrollThumb.getRenderWidth(), scrollThumb.getRenderHeight());
 			break;
 		}
+
+		switch (bottomScrollButtonState) {
+		case ACTION:
+			g.drawNinePatch(scrollButtonStyleRule.getActionNinePatch(), bottomScrollButton.getRenderX(),
+					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(), bottomScrollButton.getRenderHeight());
+			break;
+		case HOVER:
+			g.drawNinePatch(scrollButtonStyleRule.getHoverNinePatch(), bottomScrollButton.getRenderX(),
+					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(), bottomScrollButton.getRenderHeight());
+			break;
+		case NORMAL:
+		default:
+			g.drawNinePatch(scrollButtonStyleRule.getNormalNinePatch(), bottomScrollButton.getRenderX(),
+					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(), bottomScrollButton.getRenderHeight());
+			break;
+		}
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+		boolean outerAreaContains = false;
+		if (outerArea.contains(screenX, screenY)) {
+			setState(NodeState.HOVER);
+			outerAreaContains = true;
+		} else {
+			setState(NodeState.NORMAL);
+		}
+		boolean result = handleScrollThumbMouseMoved(outerAreaContains, screenX, screenY);
+		result |= handleTopScrollButtonMouseMoved(outerAreaContains, screenX, screenY);
+		result |= handleBottomScrollButtonMouseMoved(outerAreaContains, screenX, screenY);
+
+		if (!result) {
+			NavigableSet<Integer> descendingLayerKeys = layers.descendingKeySet();
+			for (Integer layerIndex : descendingLayerKeys) {
+				if (layers.get(layerIndex).mouseMoved(screenX, screenY)) {
+					result = true;
+				}
+			}
+		}
+		return result;
+	}
+
+	private boolean handleScrollThumbMouseMoved(boolean outerAreaContains, int screenX, int screenY) {
 		switch (scrollThumbState) {
 		case ACTION:
 			float yDiff = screenY - thumbDragStartY;
-			float maxPosition = (innerArea.getHeight() - scrollThumb.getHeight()) / innerArea.getHeight();
-			scrollThumbPosition = ((scrollThumb.getY() + yDiff) - innerArea.getY()) / innerArea.getHeight();
-			if(scrollThumbPosition < 0f) {
-				scrollThumbPosition = 0f;
-			} else if(scrollThumbPosition > maxPosition) {
-				scrollThumbPosition = maxPosition;
-			}
+			setScrollThumbPosition(((scrollThumb.getY() + yDiff) - scrollTrack.getY()) / scrollTrack.getHeight());
 			thumbDragStartY = screenY;
 			return true;
 		case HOVER:
 		case NORMAL:
 		default:
-			if (outerArea.contains(screenX, screenY)) {
-				setState(NodeState.HOVER);
+			if (outerAreaContains) {
 				if (scrollThumb.contains(screenX, screenY)) {
 					scrollThumbState = NodeState.HOVER;
 				} else {
 					scrollThumbState = NodeState.NORMAL;
 				}
-				boolean result = false;
-				NavigableSet<Integer> descendingLayerKeys = layers.descendingKeySet();
-				for (Integer layerIndex : descendingLayerKeys) {
-					if (layers.get(layerIndex).mouseMoved(screenX, screenY)) {
-						result = true;
-					}
-				}
-				return result;
 			} else {
-				if (getState() != NodeState.NORMAL) {
-					setState(NodeState.NORMAL);
-				}
 				if (scrollThumbState != NodeState.NORMAL) {
 					scrollThumbState = NodeState.NORMAL;
 				}
+			}
+			return false;
+		}
+	}
+
+	private boolean handleTopScrollButtonMouseMoved(boolean outerAreaContains, int screenX, int screenY) {
+		if(scrollThumbState == NodeState.ACTION) {
+			return false;
+		}
+		switch (topScrollButtonState) {
+		case ACTION:
+			return false;
+		case HOVER:
+		case NORMAL:
+		default:
+			if (topScrollButton.contains(screenX, screenY)) {
+				topScrollButtonState = NodeState.HOVER;
+			} else {
+				topScrollButtonState = NodeState.NORMAL;
+			}
+			return false;
+		}
+	}
+
+	private boolean handleBottomScrollButtonMouseMoved(boolean outerAreaContains, int screenX, int screenY) {
+		if(scrollThumbState == NodeState.ACTION) {
+			return false;
+		}
+		switch (bottomScrollButtonState) {
+		case ACTION:
+			return false;
+		case HOVER:
+		case NORMAL:
+		default:
+			if (bottomScrollButton.contains(screenX, screenY)) {
+				bottomScrollButtonState = NodeState.HOVER;
+			} else {
+				bottomScrollButtonState = NodeState.NORMAL;
 			}
 			return false;
 		}
@@ -148,7 +254,16 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 			return null;
 		}
 		if (scrollThumb.contains(screenX, screenY)) {
+			scrollThumbState = NodeState.ACTION;
 			thumbDragStartY = screenY;
+			return this;
+		}
+		if (topScrollButton.contains(screenX, screenY)) {
+			topScrollButtonState = NodeState.ACTION;
+			return this;
+		}
+		if (bottomScrollButton.contains(screenX, screenY)) {
+			bottomScrollButtonState = NodeState.ACTION;
 			return this;
 		}
 
@@ -161,7 +276,7 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void mouseUp(int screenX, int screenY, int pointer, int button) {
 		endAction();
@@ -185,27 +300,53 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 			scrollThumbHeightPercentage = 1f;
 		}
 
-		scrollTrack.setWidth(style.getScrollBarSize());
-		scrollTrack.setHeight(result);
+		topScrollButton.setWidth(style.getScrollBarWidth());
+		topScrollButton.setHeight(style.getScrollButtonHeight());
 
-		scrollThumb.setWidth(style.getScrollBarSize());
-		scrollThumb.setHeight(result * scrollThumbHeightPercentage);
+		bottomScrollButton.setWidth(style.getScrollBarWidth());
+		bottomScrollButton.setHeight(style.getScrollButtonHeight());
+
+		float scrollTrackHeight = result - topScrollButton.getHeight() - bottomScrollButton.getHeight();
+		scrollTrack.setWidth(style.getScrollBarWidth());
+		scrollTrack.setHeight(scrollTrackHeight);
+
+		scrollThumb.setWidth(style.getScrollBarWidth());
+		scrollThumb.setHeight(scrollTrackHeight * scrollThumbHeightPercentage);
 		return result;
 	}
 
 	@Override
 	public void beginAction() {
-		scrollThumbState = NodeState.ACTION;
 	}
 
 	@Override
 	public void endAction() {
 		scrollThumbState = NodeState.NORMAL;
+		topScrollButtonState = NodeState.NORMAL;
+		bottomScrollButtonState = NodeState.NORMAL;
 	}
 
 	@Override
 	protected ScrollBoxStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(((ScrollBox) element), layoutState.getScreenSize());
+		ScrollBoxStyleRule result = layoutState.getTheme().getStyleRule(((ScrollBox) element),
+				layoutState.getScreenSize());
+		if (result.getScrollButtonStyle() != null) {
+			scrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(result.getScrollButtonStyle(),
+					layoutState.getScreenSize());
+		} else {
+			scrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(UiTheme.DEFAULT_STYLE_ID,
+					layoutState.getScreenSize());
+		}
+		return result;
 	}
 
+	private void setScrollThumbPosition(float position) {
+		float maxPosition = (scrollTrack.getHeight() - scrollThumb.getHeight()) / scrollTrack.getHeight();
+		scrollThumbPosition = position;
+		if (scrollThumbPosition < 0f) {
+			scrollThumbPosition = 0f;
+		} else if (scrollThumbPosition > maxPosition) {
+			scrollThumbPosition = maxPosition;
+		}
+	}
 }

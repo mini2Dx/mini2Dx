@@ -20,7 +20,9 @@ public class ScrollBoxStyleRule extends ColumnStyleRule {
 	@Field(optional=true)
 	private String scrollButtonStyle;
 	@Field
-	private int scrollBarSize;
+	private int scrollButtonHeight;
+	@Field
+	private int scrollBarWidth;
 	@Field
 	private String scrollTrack;
 	@Field
@@ -78,12 +80,20 @@ public class ScrollBoxStyleRule extends ColumnStyleRule {
 		this.scrollButtonStyle = scrollButtonStyle;
 	}
 
-	public int getScrollBarSize() {
-		return scrollBarSize;
+	public int getScrollBarWidth() {
+		return scrollBarWidth;
 	}
 
-	public void setScrollBarSize(int scrollBarSize) {
-		this.scrollBarSize = scrollBarSize;
+	public void setScrollBarWidth(int scrollBarSize) {
+		this.scrollBarWidth = scrollBarSize;
+	}
+
+	public int getScrollButtonHeight() {
+		return scrollButtonHeight;
+	}
+
+	public void setScrollButtonHeight(int scrollButtonHeight) {
+		this.scrollButtonHeight = scrollButtonHeight;
 	}
 
 	public String getScrollTrack() {
