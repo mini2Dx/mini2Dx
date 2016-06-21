@@ -18,7 +18,9 @@ import com.badlogic.gdx.utils.Array;
  */
 public class ScrollBoxStyleRule extends ColumnStyleRule {
 	@Field(optional=true)
-	private String scrollButtonStyle;
+	private String topScrollButtonStyle;
+	@Field(optional=true)
+	private String bottomScrollButtonStyle;
 	@Field
 	private int scrollButtonHeight;
 	@Field
@@ -42,8 +44,8 @@ public class ScrollBoxStyleRule extends ColumnStyleRule {
 	public void validate(UiTheme theme) {
 		super.validate(theme);
 		
-		if(scrollButtonStyle != null && !theme.containsButtonStyleRuleset(scrollButtonStyle)) {
-			throw new MdxException("No style with id '" + scrollButtonStyle + "' for buttons. Required by " + ScrollBoxStyleRule.class.getSimpleName());
+		if(topScrollButtonStyle != null && !theme.containsButtonStyleRuleset(topScrollButtonStyle)) {
+			throw new MdxException("No style with id '" + topScrollButtonStyle + "' for buttons. Required by " + ScrollBoxStyleRule.class.getSimpleName());
 		}
 	}
 
@@ -70,12 +72,20 @@ public class ScrollBoxStyleRule extends ColumnStyleRule {
 				scrollThumbNinePatchRight, scrollThumbNinePatchTop, scrollThumbNinePatchBottom);
 	}
 
-	public String getScrollButtonStyle() {
-		return scrollButtonStyle;
+	public String getTopScrollButtonStyle() {
+		return topScrollButtonStyle;
 	}
 
-	public void setScrollButtonStyle(String scrollButtonStyle) {
-		this.scrollButtonStyle = scrollButtonStyle;
+	public void setTopScrollButtonStyle(String scrollButtonStyle) {
+		this.topScrollButtonStyle = scrollButtonStyle;
+	}
+
+	public String getBottomScrollButtonStyle() {
+		return bottomScrollButtonStyle;
+	}
+
+	public void setBottomScrollButtonStyle(String bottomScrollButtonStyle) {
+		this.bottomScrollButtonStyle = bottomScrollButtonStyle;
 	}
 
 	public int getScrollBarWidth() {

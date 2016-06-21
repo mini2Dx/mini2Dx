@@ -32,7 +32,7 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 	private final CollisionBox scrollThumb = new CollisionBox();
 	private final CollisionBox scrollTrack = new CollisionBox();
 
-	private ButtonStyleRule scrollButtonStyleRule;
+	private ButtonStyleRule topScrollButtonStyleRule, bottomScrollButtonStyleRule;
 	private float contentHeight;
 	private float scrollThumbPosition;
 
@@ -115,16 +115,16 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 
 		switch (topScrollButtonState) {
 		case ACTION:
-			g.drawNinePatch(scrollButtonStyleRule.getActionNinePatch(), topScrollButton.getRenderX(),
+			g.drawNinePatch(topScrollButtonStyleRule.getActionNinePatch(), topScrollButton.getRenderX(),
 					topScrollButton.getRenderY(), topScrollButton.getRenderWidth(), topScrollButton.getRenderHeight());
 			break;
 		case HOVER:
-			g.drawNinePatch(scrollButtonStyleRule.getHoverNinePatch(), topScrollButton.getRenderX(),
+			g.drawNinePatch(topScrollButtonStyleRule.getHoverNinePatch(), topScrollButton.getRenderX(),
 					topScrollButton.getRenderY(), topScrollButton.getRenderWidth(), topScrollButton.getRenderHeight());
 			break;
 		case NORMAL:
 		default:
-			g.drawNinePatch(scrollButtonStyleRule.getNormalNinePatch(), topScrollButton.getRenderX(),
+			g.drawNinePatch(topScrollButtonStyleRule.getNormalNinePatch(), topScrollButton.getRenderX(),
 					topScrollButton.getRenderY(), topScrollButton.getRenderWidth(), topScrollButton.getRenderHeight());
 			break;
 		}
@@ -146,16 +146,16 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 
 		switch (bottomScrollButtonState) {
 		case ACTION:
-			g.drawNinePatch(scrollButtonStyleRule.getActionNinePatch(), bottomScrollButton.getRenderX(),
+			g.drawNinePatch(bottomScrollButtonStyleRule.getActionNinePatch(), bottomScrollButton.getRenderX(),
 					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(), bottomScrollButton.getRenderHeight());
 			break;
 		case HOVER:
-			g.drawNinePatch(scrollButtonStyleRule.getHoverNinePatch(), bottomScrollButton.getRenderX(),
+			g.drawNinePatch(bottomScrollButtonStyleRule.getHoverNinePatch(), bottomScrollButton.getRenderX(),
 					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(), bottomScrollButton.getRenderHeight());
 			break;
 		case NORMAL:
 		default:
-			g.drawNinePatch(scrollButtonStyleRule.getNormalNinePatch(), bottomScrollButton.getRenderX(),
+			g.drawNinePatch(bottomScrollButtonStyleRule.getNormalNinePatch(), bottomScrollButton.getRenderX(),
 					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(), bottomScrollButton.getRenderHeight());
 			break;
 		}
@@ -330,11 +330,18 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 	protected ScrollBoxStyleRule determineStyleRule(LayoutState layoutState) {
 		ScrollBoxStyleRule result = layoutState.getTheme().getStyleRule(((ScrollBox) element),
 				layoutState.getScreenSize());
-		if (result.getScrollButtonStyle() != null) {
-			scrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(result.getScrollButtonStyle(),
+		if (result.getTopScrollButtonStyle() != null) {
+			topScrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(result.getTopScrollButtonStyle(),
 					layoutState.getScreenSize());
 		} else {
-			scrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(UiTheme.DEFAULT_STYLE_ID,
+			topScrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(UiTheme.DEFAULT_STYLE_ID,
+					layoutState.getScreenSize());
+		}
+		if(result.getBottomScrollButtonStyle() != null) {
+			bottomScrollButtonStyleRule = topScrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(result.getBottomScrollButtonStyle(),
+					layoutState.getScreenSize());
+		} else {
+			bottomScrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(UiTheme.DEFAULT_STYLE_ID,
 					layoutState.getScreenSize());
 		}
 		return result;

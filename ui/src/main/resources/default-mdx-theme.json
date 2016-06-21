@@ -228,7 +228,8 @@
     "default": {
       "rules": {
         "XS": {
-          "scrollButtonStyle": "default",
+          "topScrollButtonStyle": "default",
+          "bottomScrollButtonStyle": "default",
           "scrollButtonHeight": "16",
           "scrollBarWidth": "16",
           "scrollTrack": "default-mdx-theme/scrolltrack.png",
