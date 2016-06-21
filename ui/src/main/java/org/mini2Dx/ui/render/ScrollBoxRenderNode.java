@@ -110,7 +110,7 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 			} else if(scrollThumbPosition > maxPosition) {
 				scrollThumbPosition = maxPosition;
 			}
-			System.out.println(scrollThumbPosition);
+			thumbDragStartY = screenY;
 			return true;
 		case HOVER:
 		case NORMAL:
