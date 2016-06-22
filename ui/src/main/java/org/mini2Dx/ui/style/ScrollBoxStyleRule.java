@@ -47,6 +47,9 @@ public class ScrollBoxStyleRule extends ColumnStyleRule {
 		if(topScrollButtonStyle != null && !theme.containsButtonStyleRuleset(topScrollButtonStyle)) {
 			throw new MdxException("No style with id '" + topScrollButtonStyle + "' for buttons. Required by " + ScrollBoxStyleRule.class.getSimpleName());
 		}
+		if(bottomScrollButtonStyle != null && !theme.containsButtonStyleRuleset(bottomScrollButtonStyle)) {
+			throw new MdxException("No style with id '" + bottomScrollButtonStyle + "' for buttons. Required by " + ScrollBoxStyleRule.class.getSimpleName());
+		}
 	}
 
 	@Override
