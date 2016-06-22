@@ -64,6 +64,48 @@
         }
       }
     },
+    "select-left": {
+      "rules": {
+        "XS": {
+          "normal": "default-mdx-theme/select_left_normal.png",
+          "hover": "default-mdx-theme/select_left_hover.png",
+          "action": "default-mdx-theme/select_left_action.png",
+          "disabled": "default-mdx-theme/select_left_disabled.png",
+          "fontSize": 12,
+          "font": "default",
+          "textColor": "254,254,254",
+          "paddingTop": 12,
+          "paddingBottom": 16,
+          "paddingLeft": 14,
+          "paddingRight": 8,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    },
+    "select-right": {
+      "rules": {
+        "XS": {
+          "normal": "default-mdx-theme/select_right_normal.png",
+          "hover": "default-mdx-theme/select_right_hover.png",
+          "action": "default-mdx-theme/select_right_action.png",
+          "disabled": "default-mdx-theme/select_right_disabled.png",
+          "fontSize": 12,
+          "font": "default",
+          "textColor": "254,254,254",
+          "paddingTop": 12,
+          "paddingBottom": 16,
+          "paddingLeft": 8,
+          "paddingRight": 14,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    },
     "tab-button": {
       "rules": {
         "XS": {
@@ -252,12 +294,18 @@
     "default": {
       "rules": {
         "XS": {
+          "buttonWidth": 38,
+          "minHeight": 32,
+          "enabledLabelStyle": "default",
+          "disabledLabelStyle": "default",
+          "leftButtonStyle": "select-left",
+          "rightButtonStyle": "select-right",
           "paddingTop": 0,
           "paddingBottom": 0,
           "paddingLeft": 0,
           "paddingRight": 0,
-          "marginTop": 0,
-          "marginBottom": 0,
+          "marginTop": 4,
+          "marginBottom": 4,
           "marginLeft": 0,
           "marginRight": 0
         }

@@ -20,6 +20,8 @@ import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.SelectRenderNode;
 
+import com.badlogic.gdx.graphics.Color;
+
 /**
  *
  */
@@ -31,6 +33,8 @@ public class Select<V> extends UiElement implements Actionable {
 	private boolean enabled = true;
 	private SelectRenderNode renderNode;
 	private int selectedIndex = 0;
+	private Color enabledTextColor = null;
+	private Color disabledTextColor = null;
 	
 	public Select() {
 		this(null);
@@ -93,8 +97,14 @@ public class Select<V> extends UiElement implements Actionable {
 		}
 	}
 	
-	public void addOption(String label, V value) {
-		options.add(new SelectOption<V>(label, value));
+	public SelectOption<V> addOption(String label, V value) {
+		SelectOption<V> option = new SelectOption<V>(label, value);
+		options.add(option);
+		return option;
+	}
+	
+	public void addOption(SelectOption<V> option) {
+		options.add(option);
 	}
 	
 	public void removeOption(SelectOption<V> option) {
@@ -123,6 +133,10 @@ public class Select<V> extends UiElement implements Actionable {
 		return options.get(selectedIndex);
 	}
 	
+	public String getSelectedLabel() {
+		return options.get(selectedIndex).getLabel();
+	}
+	
 	public V getSelectedValue() {
 		return options.get(selectedIndex).getValue();
 	}
@@ -133,6 +147,24 @@ public class Select<V> extends UiElement implements Actionable {
 	
 	public int getSelectedIndex() {
 		return selectedIndex;
+	}
+	
+	public void setSelectedIndex(int index) {
+		this.selectedIndex = index;
+	}
+	
+	public void nextOption() {
+		if(selectedIndex >= options.size() - 1) {
+			return;
+		}
+		selectedIndex++;
+	}
+	
+	public void previousOption() {
+		if(selectedIndex <= 0) {
+			return;
+		}
+		selectedIndex--;
 	}
 
 	@Override
@@ -179,6 +211,11 @@ public class Select<V> extends UiElement implements Actionable {
 	@Override
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
 	}
 	
 	@Override
@@ -204,5 +241,21 @@ public class Select<V> extends UiElement implements Actionable {
 			return;
 		}
 		renderNode.setDirty(true);
+	}
+
+	public Color getEnabledTextColor() {
+		return enabledTextColor;
+	}
+
+	public void setEnabledTextColor(Color enabledTextColor) {
+		this.enabledTextColor = enabledTextColor;
+	}
+
+	public Color getDisabledTextColor() {
+		return disabledTextColor;
+	}
+
+	public void setDisabledTextColor(Color disabledTextColor) {
+		this.disabledTextColor = disabledTextColor;
 	}
 }
