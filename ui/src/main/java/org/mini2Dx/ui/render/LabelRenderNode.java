@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ui.render;
 
+import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.animation.NullTextAnimation;
 import org.mini2Dx.ui.element.Label;
@@ -61,7 +62,14 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 			g.setFont(style.getBitmapFont());
 		}
 
-		g.setColor(style.getColor());
+		if(element.getColor() != null) {
+			g.setColor(element.getColor());
+		} else if(style.getColor() != null) {
+			g.setColor(style.getColor());
+		} else {
+			throw new MdxException("Could not determine color for Label " + element.getId() + ". Please use Label#setColor or set a Color on the label style rule");
+		}
+		
 		if (element.getTextAnimation() == null) {
 			NULL_TEXT_ANIMATION.render(element.getText(), g, getContentRenderX(), getContentRenderY(),
 					getContentRenderWidth(), element.getHorizontalAlignment().getAlignValue());

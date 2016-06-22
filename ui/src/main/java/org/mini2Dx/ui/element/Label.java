@@ -28,7 +28,7 @@ public class Label extends UiElement {
 	public static final Color COLOR_BLACK = new Color(1f / 255f, 1f / 255f, 1f / 255f, 1f);
 	
 	private LabelRenderNode renderNode;
-	private Color color = COLOR_WHITE;
+	private Color color = null;
 	
 	@Field(optional=true)
 	private String text = "";
