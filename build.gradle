@@ -71,7 +71,7 @@ configure(docProjects()) {
 	apply plugin: "maven"
 	
 	group = 'org.mini2Dx'
-	version = '1.3.0-beta4'
+	version = '1.3.0-SNAPSHOT'
 	
 	sourceCompatibility = 1.7
 	targetCompatibility = 1.7
