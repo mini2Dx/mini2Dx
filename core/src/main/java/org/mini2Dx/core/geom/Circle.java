@@ -31,6 +31,8 @@ public class Circle extends Shape {
 	
 	private final CircleEdgeIterator edgeIterator = new CircleEdgeIterator();
 	final com.badlogic.gdx.math.Circle circle;
+	
+	private boolean dirty = true;
 
 	/**
 	 * Constructs a {@link Circle} at 0,0 with a radius
@@ -38,7 +40,6 @@ public class Circle extends Shape {
 	 */
 	public Circle(float radius) {
 		this(0f, 0f, radius);
-		determineBoundingBox();
 	}
 	
 	/**
@@ -49,7 +50,6 @@ public class Circle extends Shape {
 	 */
 	public Circle(float centerX, float centerY, float radius) {
 		this.circle = new com.badlogic.gdx.math.Circle(centerX, centerY, radius);
-		determineBoundingBox();
 	}
 	
 	/**
@@ -58,7 +58,6 @@ public class Circle extends Shape {
 	 */
 	public Circle(Circle circle) {
 		this.circle = new com.badlogic.gdx.math.Circle(circle.circle);
-		determineBoundingBox();
 	}
 	
 	@Override
@@ -66,17 +65,12 @@ public class Circle extends Shape {
 		return new Circle(this);
 	}
 	
-	private void determineBoundingBox() {
-		float diameter = circle.radius * circle.radius;
-		boundingBox.set(getMinX(), getMinY(), diameter, diameter);
-	}
-	
 	public Circle lerp(Circle target, float alpha) {
 		final float inverseAlpha = 1.0f - alpha;
 		circle.x = (circle.x * inverseAlpha) + (target.getX() * alpha);
 		circle.y = (circle.y * inverseAlpha) + (target.getY() * alpha);
 		circle.radius = (circle.radius * inverseAlpha) + (target.getRadius() * alpha);
-		determineBoundingBox();
+		setDirty();
 		return this;
 	}
 	
@@ -271,20 +265,20 @@ public class Circle extends Shape {
 	@Override
 	public void setX(float x) {
 		circle.x = x;
-		determineBoundingBox();
+		setDirty();
 	}
 	
 	@Override
 	public void setY(float y) {
 		circle.y = y;
-		determineBoundingBox();
+		setDirty();
 	}
 	
 	@Override
 	public void set(float x, float y) {
 		circle.x = x;
 		circle.y = y;
-		determineBoundingBox();
+		setDirty();
 	}
 	
 	@Override
@@ -313,14 +307,26 @@ public class Circle extends Shape {
 
 	public void setRadius(float radius) {
 		circle.radius = radius;
-		determineBoundingBox();
+		setDirty();
 	}
 
 	@Override
 	public void translate(float translateX, float translateY) {
 		circle.x += translateX;
 		circle.y += translateY;
-		determineBoundingBox();
+		setDirty();
+	}
+	
+	private void setDirty() {
+		dirty = true;
+	}
+	
+	private void computeBoundingBox() {
+		if(!dirty) {
+			return;
+		}
+		float diameter = circle.radius * circle.radius;
+		boundingBox.set(getMinX(), getMinY(), diameter, diameter);
 	}
 
 	@Override
@@ -333,6 +339,7 @@ public class Circle extends Shape {
 	 * @return A {@link Rectangle} representing the area of this {@link Circle}
 	 */
 	public Rectangle getBoundingBox() {
+		computeBoundingBox();
 		return boundingBox;
 	}
 	
