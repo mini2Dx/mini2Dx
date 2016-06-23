@@ -311,9 +311,13 @@ public class Rectangle extends Shape implements
 
 	public Rectangle set(float x, float y, float width, float height) {
 		float rotation = polygon.getRotation();
-		polygon.setRotation(-rotation);
+		if(rotation != 0f) {
+			polygon.setRotation(-rotation);
+		}
 		polygon.setVertices(determineVertices(x, y, width, height));
-		polygon.setRotation(rotation);
+		if(rotation != 0f) {
+			polygon.setRotation(rotation);
+		}
 		
 		this.width = width;
 		this.height = height;
