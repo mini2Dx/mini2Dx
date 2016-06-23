@@ -1,5 +1,5 @@
 [1.3.0][beta]
-- Updated to libGDX 1.9.2, roboVM 1.12.0, and artemis-odb 1.1.0
+- Updated to libGDX 1.9.2, roboVM 1.12.0, and artemis-odb 1.4.0
 - Updated to Android build tools 23.0.1
 - Added controller mappings - Xbox One, Xbox 360 controllers
 - Added render pipeline feature
@@ -24,6 +24,8 @@
 - Positionable instances now have getId() method
 - Improved pixel rounding and reduced interpolation for CollisionBox, CollisionCircle and CollisionPoint
 - Mdx.json can now read/write to/from FileHandle instances
+- Added @NonConcrete annotation for interface serialization in Mdx.xml and Mdx.json
+- Added @ConstructorArg for constructor based serialization in Mdx.xml and Mdx.json
 - Fixed Mdx.xml not deserializing maps correctly when values are objects
 - Fixed Mdx.xml and Mdx.json not serializing/deserialzing super class fields
 - Fixed Mdx.xml and Mdx.json not deserialzing enum fields correctly
