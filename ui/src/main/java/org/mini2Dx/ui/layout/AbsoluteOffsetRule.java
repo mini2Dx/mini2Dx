@@ -12,11 +12,15 @@
 package org.mini2Dx.ui.layout;
 
 /**
- *
+ * An implementation of {@link OffsetRule} that returns a fixed offset in pixels
  */
 public class AbsoluteOffsetRule implements OffsetRule {
 	private final float offset;
 	
+	/**
+	 * Constructor
+	 * @param offset The offset in pixels
+	 */
 	public AbsoluteOffsetRule(float offset) {
 		this.offset = offset;
 	}

@@ -19,10 +19,10 @@ import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.render.UiContainerRenderTree;
 
 /**
- *
+ * A {@link UiEffect} that moves a {@link UiElement} off the screen from its current position
  */
 public class SlideOut implements UiEffect {
-	private static final float DEFAULT_SPEED = 8f;
+	public static final float DEFAULT_SPEED = 8f;
 	
 	private final SlideDirection direction;
 	private final float speed;

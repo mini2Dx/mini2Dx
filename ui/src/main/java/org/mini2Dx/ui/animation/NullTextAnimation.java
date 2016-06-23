@@ -14,9 +14,9 @@ package org.mini2Dx.ui.animation;
 import org.mini2Dx.core.graphics.Graphics;
 
 /**
- *
+ * A {@link TextAnimation} that just renders the text directly
  */
-public class NullTextAnimation extends BaseTextAnimation implements TextAnimation {
+public class NullTextAnimation extends BaseTextAnimation {
 
 	@Override
 	public void update(String text, float delta) {

@@ -11,12 +11,21 @@
  */
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.ui.element.UiElement;
+
 /**
- *
+ * An implementation of {@link OffsetRule} that changes the offset of the current
+ * {@link UiElement} based on the size of the parent {@link UiElement}. The
+ * parent element is split into 12 columns and the {@link ResponsiveOffsetRule}
+ * sets how many columns to offset by.
  */
 public class ResponsiveOffsetRule implements OffsetRule {
 	private final int columns;
 	
+	/**
+	 * Constructor
+	 * @param columns The offset in columns
+	 */
 	public ResponsiveOffsetRule(int columns) {
 		this.columns = columns;
 	}

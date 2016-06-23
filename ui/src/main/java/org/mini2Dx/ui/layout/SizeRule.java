@@ -11,10 +11,17 @@
  */
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.ui.element.UiElement;
+
 /**
- *
+ * Common interface for {@link UiElement} width rules
  */
 public interface SizeRule {
-
+	/**
+	 * Determines the preferred width of a {@link UiElement}
+	 * 
+	 * @param layoutState The current {@link LayoutState}
+	 * @return The {@link UiElement} preferred width
+	 */
 	public float getWidth(LayoutState layoutState);
 }

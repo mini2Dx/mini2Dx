@@ -17,14 +17,21 @@ import org.mini2Dx.ui.animation.TextAnimation;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
 import org.mini2Dx.ui.render.LabelRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
+import org.mini2Dx.ui.style.UiTheme;
 
 import com.badlogic.gdx.graphics.Color;
 
 /**
- *
+ * A text label {@link UiElement}
  */
 public class Label extends UiElement {
+	/**
+	 * A blending-safe white {@link Color} value
+	 */
 	public static final Color COLOR_WHITE = new Color(254f / 255f, 254f / 255f, 254f / 255f, 1f);
+	/**
+	 * A blending-safe black {@link Color} value
+	 */
 	public static final Color COLOR_BLACK = new Color(1f / 255f, 1f / 255f, 1f / 255f, 1f);
 	
 	private LabelRenderNode renderNode;
@@ -39,18 +46,33 @@ public class Label extends UiElement {
 	@Field(optional=true)
 	private TextAnimation textAnimation;
 	
+	/**
+	 * Constructor. Generates a unique ID for the {@link Label}
+	 */
 	public Label() {
 		this(null);
 	}
 	
+	/**
+	 * Constructor
+	 * @param id The unique ID of the {@link Label}
+	 */
 	public Label(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 
+	/**
+	 * Returns the current text of the label
+	 * @return A non-null {@link String}
+	 */
 	public String getText() {
 		return text;
 	}
 
+	/**
+	 * Sets the current text of the label
+	 * @param text A non-null {@link String}
+	 */
 	public void setText(String text) {
 		if(text == null) {
 			return;
@@ -126,10 +148,18 @@ public class Label extends UiElement {
 		renderNode.setDirty(true);
 	}
 
+	/**
+	 * Returns the {@link HorizontalAlignment} of the text
+	 * @return {@link HorizontalAlignment#LEFT} by default
+	 */
 	public HorizontalAlignment getHorizontalAlignment() {
 		return horizontalAlignment;
 	}
 
+	/**
+	 * Sets the {@link HorizontalAlignment} of the text
+	 * @param horizontalAlignment
+	 */
 	public void setHorizontalAlignment(HorizontalAlignment horizontalAlignment) {
 		if(horizontalAlignment == null) {
 			return;
@@ -137,10 +167,18 @@ public class Label extends UiElement {
 		this.horizontalAlignment = horizontalAlignment;
 	}
 	
+	/**
+	 * Returns if this label should fill its available space
+	 * @return False if the width matches the text width
+	 */
 	public boolean isResponsive() {
 		return responsive;
 	}
 
+	/**
+	 * Sets if this label should fill its available space
+	 * @param responsive False if the width should match the text width
+	 */
 	public void setResponsive(boolean responsive) {
 		this.responsive = responsive;
 		
@@ -150,18 +188,34 @@ public class Label extends UiElement {
 		renderNode.setDirty(true);
 	}
 
+	/**
+	 * Returns the {@link Color} of the label
+	 * @return Null if the {@link Color} is set by the {@link UiTheme}
+	 */
 	public Color getColor() {
 		return color;
 	}
 
+	/**
+	 * Sets the {@link Color} of the label
+	 * @param color Null if the {@link Color} should be retrieved from the {@link UiTheme}
+	 */
 	public void setColor(Color color) {
 		this.color = color;
 	}
 
+	/**
+	 * Returns the current {@link TextAnimation} of the label
+	 * @return Null by default
+	 */
 	public TextAnimation getTextAnimation() {
 		return textAnimation;
 	}
 
+	/**
+	 * Sets the current {@link TextAnimation} of the label
+	 * @param textAnimation Null if no animation is to be played
+	 */
 	public void setTextAnimation(TextAnimation textAnimation) {
 		this.textAnimation = textAnimation;
 	}

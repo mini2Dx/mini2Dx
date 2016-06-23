@@ -14,7 +14,7 @@ package org.mini2Dx.ui.input;
 import org.mini2Dx.ui.element.Actionable;
 
 /**
- *
+ * Internal class for setting/unsetting keyboard hotkeys
  */
 public class KeyboardHotKeyOperation {
 	private final int keycode;

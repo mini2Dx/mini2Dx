@@ -12,11 +12,15 @@
 package org.mini2Dx.ui.layout;
 
 /**
- *
+ * An implementation of {@link SizeRule} that returns a fixed size in pixels
  */
 public class AbsoluteSizeRule implements SizeRule {
 	private final float width;
 
+	/**
+	 * Constructor
+	 * @param width The width in pixels
+	 */
 	public AbsoluteSizeRule(float width) {
 		this.width = width;
 	}

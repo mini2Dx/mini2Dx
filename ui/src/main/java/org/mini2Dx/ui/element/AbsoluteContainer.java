@@ -12,89 +12,132 @@
 package org.mini2Dx.ui.element;
 
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.AbsoluteContainerRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 
 /**
- *
+ * A {@link Container} that can be positioned manually
  */
 public class AbsoluteContainer extends Container {
 	private float x, y;
-	
+
+	/**
+	 * Constructor. Generates a unique ID for this {@link AbsoluteContainer}
+	 */
 	public AbsoluteContainer() {
 		this(null);
 	}
-	
-	public AbsoluteContainer(@ConstructorArg(clazz=String.class, name = "id") String id) {
+
+	/**
+	 * Constructor
+	 * 
+	 * @param id
+	 *            The unique ID of the {@link AbsoluteContainer}
+	 */
+	public AbsoluteContainer(@ConstructorArg(clazz = String.class, name = "id") String id) {
 		super(id);
 	}
-	
+
 	@Override
 	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode != null) {
+		if (renderNode != null) {
 			return;
 		}
 		renderNode = new AbsoluteContainerRenderNode(parentRenderNode, this);
-		for(int i = 0; i < children.size(); i++) {
+		for (int i = 0; i < children.size(); i++) {
 			children.get(i).attach(renderNode);
 		}
 		parentRenderNode.addChild(renderNode);
 	}
 
+	/**
+	 * Returns the x coordinate of this {@link AbsoluteContainer}
+	 * @return 0 by default
+	 */
 	public float getX() {
 		return x;
 	}
 
+	/**
+	 * Sets the x coordinate of this {@link AbsoluteContainer}
+	 * @param x The x coordinate in pixels
+	 */
 	public void setX(float x) {
-		if(this.x == x) {
+		if (this.x == x) {
 			return;
 		}
 		this.x = x;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
 
+	/**
+	 * Returns the y coordinate of this {@link AbsoluteContainer}
+	 * @return 0 by default
+	 */
 	public float getY() {
 		return y;
 	}
 
+	/**
+	 * Sets the y coordinate of this {@link AbsoluteContainer}
+	 * @param y The y coordinate in pixels
+	 */
 	public void setY(float y) {
-		if(this.y == y) {
+		if (this.y == y) {
 			return;
 		}
 		this.y = y;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
-	
+
+	/**
+	 * Sets the x and y coordinate of this {@link AbsoluteContainer}
+	 * @param x The x coordinate in pixels
+	 * @param y The y coordinate in pixels
+	 */
 	public void set(float x, float y) {
-		if(this.x == x && this.y == y) {
+		if (this.x == x && this.y == y) {
 			return;
 		}
 		this.x = x;
 		this.y = y;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
-	
+
+	/**
+	 * Returns the width of the {@link AbsoluteContainer} as determined by its
+	 * {@link LayoutRuleset}
+	 * 
+	 * @return
+	 */
 	public float getWidth() {
-		if(renderNode == null) {
+		if (renderNode == null) {
 			return 0f;
 		}
 		return renderNode.getOuterWidth();
 	}
-	
+
+	/**
+	 * Returns the height of the {@link AbsoluteContainer} as determined by its
+	 * child {@link UiElement}s
+	 * 
+	 * @return 0 is no elements have been added
+	 */
 	public float getHeight() {
-		if(renderNode == null) {
+		if (renderNode == null) {
 			return 0f;
 		}
 		return renderNode.getOuterHeight();

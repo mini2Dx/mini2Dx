@@ -15,24 +15,63 @@ import org.mini2Dx.core.controller.button.ControllerButton;
 import org.mini2Dx.ui.input.UiNavigation;
 import org.mini2Dx.ui.render.ActionableRenderNode;
 
+import com.badlogic.gdx.Input.Keys;
+
 /**
  * Common interface for {@link UiElement}s that can be navigated by keyboard or
  * controller
  */
 public interface Navigatable {
+	/**
+	 * Triggers a navigation and returns the newly highlighted {@link ActionableRenderNode}
+	 * @param keycode The navigation {@link Keys} value
+	 * @return Null if no {@link UiNavigation} is available
+	 */
 	public ActionableRenderNode navigate(int keycode);
 
+	/**
+	 * Returns the corresponding {@Link ActionableRenderNode} mapped to a keyboard hotkey
+	 * @param keycode The {@link Keys} keycode that is the hotkey
+	 * @return Null if there is no mapping
+	 */
 	public ActionableRenderNode hotkey(int keycode);
 
+	/**
+	 * Returns the corresponding {@Link ActionableRenderNode} mapped to a {@link ControllerButton} hotkey
+	 * @param button The {@link ControllerButton} that is the hotkey
+	 * @return Null if there is no mapping
+	 */
 	public ActionableRenderNode hotkey(ControllerButton button);
 
+	/**
+	 * Maps a {@link ControllerButton} to a {@link Actionable}
+	 * @param button The {@link ControllerButton} that is the hotkey
+	 * @param actionable The {@link Actionable} to trigger when the hotkey is pressed
+	 */
 	public void setHotkey(ControllerButton button, Actionable actionable);
 
+	/**
+	 * Maps a keyboard button to a {@link Actionable}
+	 * @param keycode The {@link Keys} keycode that is the hotkey
+	 * @param actionable The {@link Actionable} to trigger when the key is pressed
+	 */
 	public void setHotkey(int keycode, Actionable actionable);
 
-	public void unsetHotkey(ControllerButton button, Actionable actionable);
+	/**
+	 * Unmaps a {@link ControllerButton} hotkey
+	 * @param button The {@link ControllerButton} that is the hotkey
+	 */
+	public void unsetHotkey(ControllerButton button);
 
-	public void unsetHotkey(int keycode, Actionable actionable);
+	/**
+	 * Unmaps a keyboard hotkey
+	 * @param keycode The {@link Keys} keycode that is the hotkey
+	 */
+	public void unsetHotkey(int keycode);
 
+	/**
+	 * Returns the {@link UiNavigation} currently being navigated
+	 * @return Null if no navigation is occurring
+	 */
 	public UiNavigation getNavigation();
 }

@@ -26,7 +26,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.utils.Array;
 
 /**
- *
+ * {@link StyleRuleset} implementation for {@link ButtonStyleRule}s
  */
 public class ButtonStyleRuleset extends StyleRuleset<ButtonStyleRule> {
 	@Field

@@ -19,7 +19,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.utils.Array;
 
 /**
- *
+ * {@link StyleRuleset} implementation for {@link ColumnStyleRule}s
  */
 public class ColumnStyleRuleset extends StyleRuleset<ColumnStyleRule> {
 	@Field

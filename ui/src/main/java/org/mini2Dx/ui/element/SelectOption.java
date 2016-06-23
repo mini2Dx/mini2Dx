@@ -12,7 +12,7 @@
 package org.mini2Dx.ui.element;
 
 /**
- *
+ * Represents an available option in a {@link Select}
  */
 public class SelectOption<V> {
 	private final String label;

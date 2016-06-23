@@ -11,8 +11,18 @@
  */
 package org.mini2Dx.ui.listener;
 
+import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.layout.ScreenSize;
 
+/**
+ * Common interface for listening to {@link ScreenSize} changes
+ */
 public interface ScreenSizeListener {
+	/**
+	 * Called when the {@link ScreenSize} changes and the listener is registered
+	 * with a {@link UiContainer}
+	 * 
+	 * @param screenSize The new {@link ScreenSize}
+	 */
 	public void onScreenSizeChanged(ScreenSize screenSize);
 }

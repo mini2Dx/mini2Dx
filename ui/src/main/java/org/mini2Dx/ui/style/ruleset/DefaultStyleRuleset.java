@@ -26,7 +26,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.utils.Array;
 
 /**
- *
+ * {@link StyleRuleset} implementation for regular {@link StyleRule}s
  */
 public class DefaultStyleRuleset extends StyleRuleset<StyleRule> {
 	@Field

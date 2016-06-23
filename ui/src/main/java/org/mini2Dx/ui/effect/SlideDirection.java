@@ -12,7 +12,7 @@
 package org.mini2Dx.ui.effect;
 
 /**
- *
+ * Describes the direction to slide towards
  */
 public enum SlideDirection {
 	UP,

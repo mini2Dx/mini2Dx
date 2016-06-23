@@ -13,11 +13,12 @@ package org.mini2Dx.ui.element;
 
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.AbsoluteModalRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 
 /**
- *
+ * A {@link Modal} that can be positioned manually
  */
 public class AbsoluteModal extends Modal {
 	@Field(optional=true)
@@ -25,10 +26,17 @@ public class AbsoluteModal extends Modal {
 	@Field(optional=true)
 	private float y;
 	
+	/**
+	 * Constructor. Generates a unique ID for this {@link Modal}
+	 */
 	public AbsoluteModal() {
 		this(null);
 	}
 	
+	/**
+	 * Constructor
+	 * @param id The unique ID of the {@link AbsoluteModal}
+	 */
 	public AbsoluteModal(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
@@ -45,10 +53,18 @@ public class AbsoluteModal extends Modal {
 		parentRenderNode.addChild(renderNode);
 	}
 	
+	/**
+	 * Returns the x coordinate of this {@link AbsoluteModal}
+	 * @return 0 by default
+	 */
 	public float getX() {
 		return x;
 	}
 
+	/**
+	 * Sets the x coordinate of this {@link AbsoluteModal}
+	 * @param x The x coordinate in pixels
+	 */
 	public void setX(float x) {
 		if(this.x == x) {
 			return;
@@ -61,10 +77,18 @@ public class AbsoluteModal extends Modal {
 		renderNode.setDirty(true);
 	}
 
+	/**
+	 * Returns the y coordinate of this {@link AbsoluteModal}
+	 * @return 0 by default
+	 */
 	public float getY() {
 		return y;
 	}
 
+	/**
+	 * Sets the y coordinate of this {@link AbsoluteModal}
+	 * @param y The y coordinate in pixels
+	 */
 	public void setY(float y) {
 		if(this.y == y) {
 			return;
@@ -77,6 +101,11 @@ public class AbsoluteModal extends Modal {
 		renderNode.setDirty(true);
 	}
 	
+	/**
+	 * Sets the x and y coordinate of this {@link AbsoluteModal}
+	 * @param x The x coordinate in pixels
+	 * @param y The y coordinate in pixels
+	 */
 	public void set(float x, float y) {
 		if(this.x == x && this.y == y) {
 			return;
@@ -90,6 +119,12 @@ public class AbsoluteModal extends Modal {
 		renderNode.setDirty(true);
 	}
 	
+	/**
+	 * Returns the width of the {@link AbsoluteModal} as determined by its
+	 * {@link LayoutRuleset}
+	 * 
+	 * @return
+	 */
 	public float getWidth() {
 		if(renderNode == null) {
 			return 0f;
@@ -97,6 +132,12 @@ public class AbsoluteModal extends Modal {
 		return renderNode.getOuterWidth();
 	}
 	
+	/**
+	 * Returns the height of the {@link AbsoluteModal} as determined by its
+	 * child {@link UiElement}s
+	 * 
+	 * @return 0 is no elements have been added
+	 */
 	public float getHeight() {
 		if(renderNode == null) {
 			return 0f;

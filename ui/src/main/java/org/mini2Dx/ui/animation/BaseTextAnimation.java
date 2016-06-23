@@ -17,31 +17,38 @@ import java.util.List;
 import org.mini2Dx.ui.listener.TextAnimationListener;
 
 /**
- *
+ * A base class for {@link TextAnimation} implementations
  */
 public abstract class BaseTextAnimation implements TextAnimation {
 	private List<TextAnimationListener> listeners;
-	
+
 	private boolean finished;
 
 	@Override
 	public boolean isFinished() {
 		return finished;
 	}
-	
+
+	/**
+	 * Sets if this {@link TextAnimation} has finished. Will notify all
+	 * {@link TextAnimationListener}s when true.
+	 * 
+	 * @param finished
+	 *            True if finished
+	 */
 	protected void setFinished(boolean finished) {
-		if(this.finished) {
+		if (this.finished) {
 			return;
 		}
 		this.finished = finished;
-		if(finished) {
+		if (finished) {
 			notifyTextAnimationListeners();
 		}
 	}
 
 	@Override
 	public void addTextAnimationListener(TextAnimationListener listener) {
-		if(listeners == null) {
+		if (listeners == null) {
 			listeners = new ArrayList<TextAnimationListener>(1);
 		}
 		listeners.add(listener);
@@ -49,17 +56,17 @@ public abstract class BaseTextAnimation implements TextAnimation {
 
 	@Override
 	public void removeTextAnimationListener(TextAnimationListener listener) {
-		if(listeners == null) {
+		if (listeners == null) {
 			return;
 		}
 		listeners.remove(listener);
 	}
 
 	private void notifyTextAnimationListeners() {
-		if(listeners == null) {
+		if (listeners == null) {
 			return;
 		}
-		for(int i = listeners.size() - 1; i >= 0; i--) {
+		for (int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).onAnimationFinished(this);
 		}
 	}

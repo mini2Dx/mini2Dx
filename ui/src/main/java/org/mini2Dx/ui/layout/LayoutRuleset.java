@@ -18,25 +18,30 @@ import java.util.Map;
 import java.util.Set;
 
 import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.input.InputSource;
 
 /**
- *
+ * The width and offset ruleset of a {@link UiElement} for different
+ * {@link ScreenSize}s
  */
 public class LayoutRuleset {
 	public static final LayoutRuleset DEFAULT_RULESET = new LayoutRuleset("xs-12c");
-	
+
 	protected static final String PIXEL_SUFFIX = "px";
 	protected static final String COLUMN_SUFFIX = "c";
 	protected static final String EMPTY_STRING = "";
-	
+
 	protected final Map<ScreenSize, SizeRule> sizeRules = new HashMap<ScreenSize, SizeRule>();
 	protected final Set<InputSource> hiddenByInput = new HashSet<InputSource>();
 	protected final Map<ScreenSize, OffsetRule> offsetRules = new HashMap<ScreenSize, OffsetRule>();
 
 	private boolean hiddenByInputSource = false;
-	private int currentSizeInColumns = 0;
-	
+
+	/**
+	 * Constructor
+	 * @param rules The ruleset, e.g. xs-12c xs-offset-4c sm-500px sm-offset-20px
+	 */
 	public LayoutRuleset(String rules) {
 		String[] rule = rules.split(" ");
 		for (int i = 0; i < rule.length; i++) {
@@ -45,11 +50,12 @@ public class LayoutRuleset {
 			case 1:
 				break;
 			case 2:
-				//e.g. xs-12, hidden-controller, visible-touchscreen, hidden-keyboardmouse
+				// e.g. xs-12, hidden-controller, visible-touchscreen,
+				// hidden-keyboardmouse
 				storeWidthRule(ruleDetails);
 				break;
 			case 3:
-				//e.g. xs-offset-12
+				// e.g. xs-offset-12
 				storeOffsetRule(ruleDetails);
 				break;
 			}
@@ -58,9 +64,9 @@ public class LayoutRuleset {
 	}
 
 	private void storeWidthRule(String[] ruleDetails) {
-		switch(ruleDetails[0].toLowerCase()) {
+		switch (ruleDetails[0].toLowerCase()) {
 		case "hidden": {
-			switch(InputSource.fromString(ruleDetails[1])) {
+			switch (InputSource.fromString(ruleDetails[1])) {
 			case CONTROLLER:
 				hiddenByInput.add(InputSource.CONTROLLER);
 				break;
@@ -75,10 +81,12 @@ public class LayoutRuleset {
 		}
 		default:
 			ScreenSize screenSize = ScreenSize.fromString(ruleDetails[0]);
-			if(ruleDetails[1].endsWith(PIXEL_SUFFIX)) {
-				sizeRules.put(screenSize, new AbsoluteSizeRule(Integer.parseInt(ruleDetails[1].replace(PIXEL_SUFFIX, EMPTY_STRING))));
-			} else if(ruleDetails[1].endsWith(COLUMN_SUFFIX)) {
-				sizeRules.put(screenSize, new ResponsiveSizeRule(Integer.parseInt(ruleDetails[1].replace(COLUMN_SUFFIX, EMPTY_STRING))));
+			if (ruleDetails[1].endsWith(PIXEL_SUFFIX)) {
+				sizeRules.put(screenSize,
+						new AbsoluteSizeRule(Integer.parseInt(ruleDetails[1].replace(PIXEL_SUFFIX, EMPTY_STRING))));
+			} else if (ruleDetails[1].endsWith(COLUMN_SUFFIX)) {
+				sizeRules.put(screenSize,
+						new ResponsiveSizeRule(Integer.parseInt(ruleDetails[1].replace(COLUMN_SUFFIX, EMPTY_STRING))));
 			} else {
 				throw new MdxException("Invalid size - must end with c (columns) or px (pixels");
 			}
@@ -88,46 +96,48 @@ public class LayoutRuleset {
 
 	private void storeOffsetRule(String[] ruleDetails) {
 		ScreenSize screenSize = ScreenSize.fromString(ruleDetails[0]);
-		if(ruleDetails[2].endsWith(PIXEL_SUFFIX)) {
-			offsetRules.put(screenSize, new AbsoluteOffsetRule(Integer.parseInt(ruleDetails[2].replace(PIXEL_SUFFIX, EMPTY_STRING))));
-		} else if(ruleDetails[2].endsWith(COLUMN_SUFFIX)) {
-			offsetRules.put(screenSize, new ResponsiveOffsetRule(Integer.parseInt(ruleDetails[2].replace(COLUMN_SUFFIX, EMPTY_STRING))));
+		if (ruleDetails[2].endsWith(PIXEL_SUFFIX)) {
+			offsetRules.put(screenSize,
+					new AbsoluteOffsetRule(Integer.parseInt(ruleDetails[2].replace(PIXEL_SUFFIX, EMPTY_STRING))));
+		} else if (ruleDetails[2].endsWith(COLUMN_SUFFIX)) {
+			offsetRules.put(screenSize,
+					new ResponsiveOffsetRule(Integer.parseInt(ruleDetails[2].replace(COLUMN_SUFFIX, EMPTY_STRING))));
 		} else {
 			throw new MdxException("Invalid offset - must end with c (columns) or px (pixels");
 		}
 	}
-	
+
 	private void finaliseRuleset() {
 		Iterator<ScreenSize> screenSizes = ScreenSize.smallestToLargest();
 		SizeRule lastSizeRule = new ResponsiveSizeRule(12);
 		OffsetRule lastOffsetRule = new AbsoluteOffsetRule(0);
-		
-		while(screenSizes.hasNext()) {
+
+		while (screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
-			
-			if(!sizeRules.containsKey(nextSize)) {
+
+			if (!sizeRules.containsKey(nextSize)) {
 				sizeRules.put(nextSize, lastSizeRule);
 			} else {
 				lastSizeRule = sizeRules.get(nextSize);
 			}
-			
-			if(!offsetRules.containsKey(nextSize)) {
+
+			if (!offsetRules.containsKey(nextSize)) {
 				offsetRules.put(nextSize, lastOffsetRule);
 			} else {
 				lastOffsetRule = offsetRules.get(nextSize);
 			}
 		}
 	}
-	
+
 	public boolean isHiddenByInputSource(InputSource lastInputSource) {
 		hiddenByInputSource = hiddenByInput.contains(lastInputSource);
 		return hiddenByInputSource;
 	}
-	
+
 	public float getPreferredWidth(LayoutState layoutState) {
 		return sizeRules.get(layoutState.getScreenSize()).getWidth(layoutState);
 	}
-	
+
 	public float getXOffset(LayoutState layoutState) {
 		return offsetRules.get(layoutState.getScreenSize()).getOffset(layoutState);
 	}

@@ -28,7 +28,7 @@ import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.TabRenderNode;
 
 /**
- *
+ * A tab that contains {@link UiElement}s. Add to a {@link TabView}
  */
 public class Tab extends Row implements Navigatable {
 	private final Queue<ControllerHotKeyOperation> controllerHotKeyOperations = new LinkedList<ControllerHotKeyOperation>();
@@ -164,13 +164,13 @@ public class Tab extends Row implements Navigatable {
 	}
 	
 	@Override
-	public void unsetHotkey(ControllerButton button, Actionable actionable) {
-		controllerHotKeyOperations.offer(new ControllerHotKeyOperation(button, actionable, false));
+	public void unsetHotkey(ControllerButton button) {
+		controllerHotKeyOperations.offer(new ControllerHotKeyOperation(button, null, false));
 	}
 	
 	@Override
-	public void unsetHotkey(int keycode, Actionable actionable) {
-		keyboardHotKeyOperations.offer(new KeyboardHotKeyOperation(keycode, actionable, false));
+	public void unsetHotkey(int keycode) {
+		keyboardHotKeyOperations.offer(new KeyboardHotKeyOperation(keycode, null, false));
 	}
 
 	@Override

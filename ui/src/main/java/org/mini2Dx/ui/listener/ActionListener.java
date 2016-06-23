@@ -14,10 +14,18 @@ package org.mini2Dx.ui.listener;
 import org.mini2Dx.ui.element.Actionable;
 
 /**
- *
+ * Common interface for listening to {@link Actionable} events
  */
 public interface ActionListener {
+	/**
+	 * Called when an action event begins (e.g. mouse down)
+	 * @param source The {@link Actionable} that triggered the event
+	 */
 	public void onActionBegin(Actionable source);
 	
+	/**
+	 * Called when an action event ends (e.g. mouse up)
+	 * @param source The {@link Actionable} that triggered the event
+	 */
 	public void onActionEnd(Actionable source);
 }

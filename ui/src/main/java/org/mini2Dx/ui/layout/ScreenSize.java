@@ -16,13 +16,28 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- *
+ * Represents different screen size categories
  */
 public enum ScreenSize {
+	/**
+	 * Extra small window size: 0px - 765px
+	 */
 	XS(0),
+	/**
+	 * Small window size: 768px - 991px
+	 */
 	SM(768),
+	/**
+	 * Medium window size: 992px - 1199px 
+	 */
 	MD(992),
+	/**
+	 * Large window size: 1200px - 1599px
+	 */
 	LG(1200),
+	/**
+	 * Extra large window size: 1600px+
+	 */
 	XL(1600);
 	
 	private static final List<ScreenSize> smallestToLargest = new ArrayList<ScreenSize>() {
@@ -50,14 +65,26 @@ public enum ScreenSize {
 		this.minSize = minSize;
 	}
 
+	/**
+	 * Returns the minimum screen size in pixels
+	 * @return
+	 */
 	public int getMinSize() {
 		return minSize;
 	}
 	
+	/**
+	 * Returns an {@link Iterator} of smallest to largest {@link ScreenSize}s
+	 * @return
+	 */
 	public static Iterator<ScreenSize> smallestToLargest() {
 		return smallestToLargest.iterator();
 	}
 	
+	/**
+	 * Returns an {@link Iterator} of largest to smallest {@link ScreenSize}s
+	 * @return
+	 */
 	public static Iterator<ScreenSize> largestToSmallest() {
 		return largestToSmallest.iterator();
 	}

@@ -12,7 +12,7 @@
 package org.mini2Dx.ui.layout;
 
 /**
- *
+ * Represents vertical alignment of elements
  */
 public enum VerticalAlignment {
 	TOP,

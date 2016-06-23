@@ -22,11 +22,12 @@ import org.mini2Dx.core.serialization.annotation.NonConcrete;
 import org.mini2Dx.ui.effect.UiEffect;
 import org.mini2Dx.ui.listener.HoverListener;
 import org.mini2Dx.ui.render.ParentRenderNode;
+import org.mini2Dx.ui.render.RenderNode;
 import org.mini2Dx.ui.style.UiTheme;
 import org.mini2Dx.ui.util.IdAllocator;
 
 /**
- *
+ * Base class for all user interface elements
  */
 @NonConcrete
 public abstract class UiElement implements Hoverable {
@@ -35,54 +36,120 @@ public abstract class UiElement implements Hoverable {
 
 	protected Visibility visibility = Visibility.HIDDEN;
 	protected String styleId = UiTheme.DEFAULT_STYLE_ID;
-	@Field(optional=true)
+	@Field(optional = true)
 	protected int zIndex = 0;
 
 	private List<HoverListener> hoverListeners;
 	private boolean debugEnabled = false;
 
+	/**
+	 * Constructor. Generates a unique ID for this element.
+	 */
 	public UiElement() {
 		this(null);
 	}
 
-	public UiElement(@ConstructorArg(clazz=String.class, name = "id") String id) {
+	/**
+	 * Constructor
+	 * 
+	 * @param id
+	 *            The unique ID for this element
+	 */
+	public UiElement(@ConstructorArg(clazz = String.class, name = "id") String id) {
 		if (id == null) {
 			id = IdAllocator.getNextId();
 		}
 		this.id = id;
 	}
 
+	/**
+	 * Syncs data between the {@link UiElement} and {@link RenderNode}
+	 */
 	public abstract void syncWithRenderNode();
 
+	/**
+	 * Attaches a {@link RenderNode} for this element to a parent
+	 * {@link RenderNode}
+	 * 
+	 * @param parentRenderNode
+	 *            The parent {@link RenderNode} to attach to
+	 */
 	public abstract void attach(ParentRenderNode<?, ?> parentRenderNode);
 
+	/**
+	 * Detaches this element's {@link RenderNode} from a parent
+	 * {@link RenderNode}
+	 * 
+	 * @param parentRenderNode
+	 *            The parent {@link RenderNode} to detach from
+	 */
 	public abstract void detach(ParentRenderNode<?, ?> parentRenderNode);
 
+	/**
+	 * Applies a {@link UiEffect} to this element
+	 * 
+	 * @param effect
+	 *            The {@link UiEffect} to be applied
+	 */
 	public void applyEffect(UiEffect effect) {
 		effects.offer(effect);
 	}
 
-	@ConstructorArg(clazz=String.class, name = "id") 
+	@Override
+	@ConstructorArg(clazz = String.class, name = "id")
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Returns the current {@link Visibility} of this {@link UiElement}
+	 * 
+	 * @return
+	 */
 	public Visibility getVisibility() {
 		return visibility;
 	}
 
+	/**
+	 * Sets the current {@link Visibility} of this {@link UiElement}
+	 * 
+	 * @param visibility
+	 *            The {@link Visibility} to set
+	 */
 	public abstract void setVisibility(Visibility visibility);
 
+	/**
+	 * Returns the current style id of this {@link UiElement}
+	 * 
+	 * @return {@link UiTheme.DEFAULT_STYLE_ID} by default
+	 */
 	public String getStyleId() {
 		return styleId;
 	}
 
+	/**
+	 * Sets the style if for this {@link UiElement}
+	 * 
+	 * @param styleId
+	 *            The style id to set
+	 */
 	public abstract void setStyleId(String styleId);
 
+	/**
+	 * Returns the Z index of this {@link UiElement}
+	 * 
+	 * @return 0 by default
+	 */
 	public int getZIndex() {
 		return zIndex;
 	}
 
+	/**
+	 * Sets the Z index of this {@link UiElement}. Elements will be rendered on
+	 * different Z layers in ascending Z order (negatives values first, positive values last)
+	 * 
+	 * @param zIndex The Z index
+	 */
 	public abstract void setZIndex(int zIndex);
 
 	@Override
@@ -101,6 +168,9 @@ public abstract class UiElement implements Hoverable {
 		hoverListeners.remove(listener);
 	}
 
+	/**
+	 * Notifies all {@link HoverListener}s of the begin hover event
+	 */
 	public void notifyHoverListenersOnBeginHover() {
 		if (hoverListeners == null) {
 			return;
@@ -110,6 +180,9 @@ public abstract class UiElement implements Hoverable {
 		}
 	}
 
+	/**
+	 * Notifies all {@link HoverListener}s of the end hover event
+	 */
 	public void notifyHoverListenersOnEndHover() {
 		if (hoverListeners == null) {
 			return;
@@ -120,8 +193,9 @@ public abstract class UiElement implements Hoverable {
 	}
 
 	/**
-	 * Searches the UI for a {@link UiElement} with a given id. Warning: This can be an expensive operation for complex UIs. It is
-	 * recommended you cache results.
+	 * Searches the UI for a {@link UiElement} with a given id. Warning: This
+	 * can be an expensive operation for complex UIs. It is recommended you
+	 * cache results.
 	 * 
 	 * @param id
 	 *            The {@link UiElement} identifier to search for

@@ -14,9 +14,13 @@ package org.mini2Dx.ui.listener;
 import org.mini2Dx.ui.animation.TextAnimation;
 
 /**
- *
+ * Common interface for listening to {@link TextAnimation} events
  */
 public interface TextAnimationListener {
 
+	/**
+	 * Called when the {@link TextAnimation} finishes
+	 * @param source The {@link TextAnimation} that finished
+	 */
 	public void onAnimationFinished(TextAnimation source);
 }

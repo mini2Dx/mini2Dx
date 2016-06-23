@@ -18,37 +18,43 @@ import java.util.List;
 import java.util.Map;
 
 import org.mini2Dx.ui.element.Actionable;
+import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.layout.ScreenSize;
 
 import com.badlogic.gdx.Input.Keys;
 
 /**
- *
+ * A {@link UiNavigation} implementation that treats all {@link UiElement}s as
+ * placed inside a grid
  */
 public class GridUiNavigation implements UiNavigation {
 	private final List<Actionable> navigation = new ArrayList<Actionable>();
-	private final Map<ScreenSize, Integer> widths = new HashMap<ScreenSize, Integer>();
-	
-	private int width;
+	private final Map<ScreenSize, Integer> screenSizeColumns = new HashMap<ScreenSize, Integer>();
+
+	private int columns;
 	private int cursorX, cursorY;
-	
-	public GridUiNavigation(int xsWidth) {
-		widths.put(ScreenSize.XS, xsWidth);
-		width = xsWidth;
+
+	/**
+	 * Constructor
+	 * @param xsColumns The amount of columns of the grid on a {@link ScreenSize#XS} screen
+	 */
+	public GridUiNavigation(int xsColumns) {
+		screenSizeColumns.put(ScreenSize.XS, xsColumns);
+		columns = xsColumns;
 	}
-	
+
 	@Override
 	public void layout(ScreenSize screenSize) {
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
-		while(screenSizes.hasNext()) {
+		while (screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
-			if(nextSize.getMinSize() > screenSize.getMinSize()) {
+			if (nextSize.getMinSize() > screenSize.getMinSize()) {
 				continue;
 			}
-			if(!widths.containsKey(nextSize)) {
+			if (!screenSizeColumns.containsKey(nextSize)) {
 				continue;
 			}
-			width = widths.get(nextSize);
+			columns = screenSizeColumns.get(nextSize);
 			break;
 		}
 		resetCursor();
@@ -56,49 +62,55 @@ public class GridUiNavigation implements UiNavigation {
 
 	@Override
 	public void set(int index, Actionable actionable) {
-		if(navigation.size() > index) {
+		if (navigation.size() > index) {
 			navigation.set(index, actionable);
 		} else {
 			navigation.add(index, actionable);
 		}
 	}
-	
+
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param actionable
+	 */
 	public void set(int x, int y, Actionable actionable) {
-		set((y * width) + x, actionable);
+		set((y * columns) + x, actionable);
 	}
 
 	@Override
 	public Actionable navigate(int keycode) {
-		if(navigation.size() == 0) {
+		if (navigation.size() == 0) {
 			return null;
 		}
-		switch(keycode) {
+		switch (keycode) {
 		case Keys.UP:
-			if(cursorY > 0) {
+			if (cursorY > 0) {
 				cursorY--;
 			}
 			break;
 		case Keys.DOWN:
-			if(cursorY < getTotalRows() - 1) {
+			if (cursorY < getTotalRows() - 1) {
 				cursorY++;
 			} else {
 				cursorY = getTotalRows() - 1;
 			}
 			break;
 		case Keys.LEFT:
-			if(cursorX > 0) {
+			if (cursorX > 0) {
 				cursorX--;
 			}
 			break;
 		case Keys.RIGHT:
-			if(cursorX < width - 1) {
+			if (cursorX < columns - 1) {
 				cursorX++;
 			} else {
-				cursorX = width - 1;
+				cursorX = columns - 1;
 			}
 			break;
 		}
-		return navigation.get((cursorY * width) + cursorX);
+		return navigation.get((cursorY * columns) + cursorX);
 	}
 
 	@Override
@@ -106,21 +118,34 @@ public class GridUiNavigation implements UiNavigation {
 		cursorX = 0;
 		cursorY = 0;
 	}
-	
-	public void setWidth(ScreenSize screenSize, int width) {
-		if(screenSize == null) {
+
+	/**
+	 * Sets the amount columns of the grid on a specific {@link ScreenSize}
+	 * @param screenSize The {@link ScreenSize}
+	 * @param columns The amount of columns in the grid
+	 */
+	public void setWidth(ScreenSize screenSize, int columns) {
+		if (screenSize == null) {
 			return;
 		}
-		widths.put(screenSize, width);
+		screenSizeColumns.put(screenSize, columns);
 	}
-	
+
+	/**
+	 * Returns the total amount of columns for the current {@link ScreenSize}
+	 * @return
+	 */
 	public int getTotalColumns() {
-		return width;
+		return columns;
 	}
-	
+
+	/**
+	 * Returns the total amount of rows for the current {@link ScreenSize}
+	 * @return
+	 */
 	public int getTotalRows() {
-		int rows = navigation.size() / width;
-		if(navigation.size() % width != 0) {
+		int rows = navigation.size() / columns;
+		if (navigation.size() % columns != 0) {
 			rows++;
 		}
 		return rows;

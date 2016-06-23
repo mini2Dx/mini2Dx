@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.element.Button;
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.element.Container;
@@ -44,7 +45,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.utils.Array;
 
 /**
- *
+ * Represents a user interface theme applied to a {@link UiContainer}
  */
 public class UiTheme {
 	private static final String LOGGING_TAG = UiTheme.class.getSimpleName();

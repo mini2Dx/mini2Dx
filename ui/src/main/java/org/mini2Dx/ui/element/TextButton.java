@@ -19,7 +19,7 @@ import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.TextButtonRenderNode;
 
 /**
- *
+ * Implementation of {@link Button} that only contains text
  */
 public class TextButton extends Button {
 	private TextButtonRenderNode renderNode;
@@ -29,18 +29,33 @@ public class TextButton extends Button {
 	@Field(optional=true)
 	private HorizontalAlignment textAlignment = HorizontalAlignment.CENTER;
 	
+	/**
+	 * Constructor. Generates a unique ID for this {@link TextButton}
+	 */
 	public TextButton() {
 		this(null);
 	}
 	
+	/**
+	 * Constructor
+	 * @param id The unique ID for this {@link TextButton}
+	 */
 	public TextButton(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 	
+	/**
+	 * Returns the text of this {@link TextButton}
+	 * @return An empty {@link String} by default
+	 */
 	public String getText() {
 		return text;
 	}
 
+	/**
+	 * Sets the text of this {@link TextButton}
+	 * @param text A non-null {@link String}
+	 */
 	public void setText(String text) {
 		if(text == null) {
 			return;
@@ -116,10 +131,18 @@ public class TextButton extends Button {
 		}
 	}
 
+	/**
+	 * Returns the {@link HorizontalAlignment} of the button's text
+	 * @return {@link HorizontalAlignment#CENTER} by default
+	 */
 	public HorizontalAlignment getTextAlignment() {
 		return textAlignment;
 	}
 
+	/**
+	 * Sets the {@link HorizontalAlignment} of the button's text
+	 * @param textAlignment The text alignment
+	 */
 	public void setTextAlignment(HorizontalAlignment textAlignment) {
 		if(textAlignment == null) {
 			return;

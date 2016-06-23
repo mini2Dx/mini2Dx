@@ -12,17 +12,27 @@
 package org.mini2Dx.ui.element;
 
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.style.UiTheme;
 
 /**
- *
+ * A base class for containing {@link UiElement}s to be added to a
+ * {@link UiContainer}. {@link Container} can act as a window through
+ * {@link UiTheme} styles.
  */
 public abstract class Container extends Column {
-	
+	/**
+	 * Constructor. Generates a unique ID for the {@link Container}
+	 */
 	public Container() {
 		this(null);
 	}
-	
-	public Container(@ConstructorArg(clazz=String.class, name = "id") String id) {
+
+	/**
+	 * Constructor
+	 * @param id The unique ID for the {@link Container}
+	 */
+	public Container(@ConstructorArg(clazz = String.class, name = "id") String id) {
 		super(id);
 	}
 }

@@ -24,70 +24,71 @@ import org.mini2Dx.ui.render.ActionableRenderNode;
 import org.mini2Dx.ui.render.ModalRenderNode;
 
 /**
- *
+ * A {@link Container} implementation that can be navigated by player input and
+ * supports hotkeys
  */
 public abstract class Modal extends Container implements Navigatable {
 	private final Queue<ControllerHotKeyOperation> controllerHotKeyOperations = new LinkedList<ControllerHotKeyOperation>();
 	private final Queue<KeyboardHotKeyOperation> keyboardHotKeyOperations = new LinkedList<KeyboardHotKeyOperation>();
-	
+
 	private UiNavigation navigation = new VerticalUiNavigation();
-	
+
 	public Modal() {
 		this(null);
 	}
-	
-	public Modal(@ConstructorArg(clazz=String.class, name = "id") String id) {
+
+	public Modal(@ConstructorArg(clazz = String.class, name = "id") String id) {
 		super(id);
 	}
-	
+
 	@Override
 	public void syncWithRenderNode() {
 		super.syncWithRenderNode();
 		((ModalRenderNode) renderNode).syncHotkeys(controllerHotKeyOperations, keyboardHotKeyOperations);
 	}
-	
+
 	@Override
 	public ActionableRenderNode navigate(int keycode) {
-		if(renderNode == null) {
+		if (renderNode == null) {
 			return null;
 		}
 		return ((ModalRenderNode) renderNode).navigate(keycode);
 	}
-	
+
 	@Override
 	public ActionableRenderNode hotkey(int keycode) {
-		if(renderNode == null) {
+		if (renderNode == null) {
 			return null;
 		}
 		return ((ModalRenderNode) renderNode).hotkey(keycode);
 	}
-	
+
 	@Override
 	public ActionableRenderNode hotkey(ControllerButton button) {
-		if(renderNode == null) {
+		if (renderNode == null) {
 			return null;
 		}
 		return ((ModalRenderNode) renderNode).hotkey(button);
 	}
-	
+
 	@Override
 	public void setHotkey(ControllerButton button, Actionable actionable) {
 		controllerHotKeyOperations.offer(new ControllerHotKeyOperation(button, actionable, true));
 	}
-	
+
 	@Override
 	public void setHotkey(int keycode, Actionable actionable) {
 		keyboardHotKeyOperations.offer(new KeyboardHotKeyOperation(keycode, actionable, true));
 	}
-	
+
 	@Override
-	public void unsetHotkey(ControllerButton button, Actionable actionable) {
-		controllerHotKeyOperations.offer(new ControllerHotKeyOperation(button, actionable, false));
+	public void unsetHotkey(ControllerButton button) {
+		controllerHotKeyOperations.offer(new ControllerHotKeyOperation(button, null, false));
 	}
-	
+
 	@Override
-	public void unsetHotkey(int keycode, Actionable actionable) {
-		keyboardHotKeyOperations.offer(new KeyboardHotKeyOperation(keycode, actionable, false));
+	public void unsetHotkey(int keycode) {
+		keyboardHotKeyOperations.offer(new KeyboardHotKeyOperation(keycode, null, false));
 	}
 
 	@Override
@@ -96,7 +97,7 @@ public abstract class Modal extends Container implements Navigatable {
 	}
 
 	public void setNavigation(UiNavigation navigation) {
-		if(navigation == null) {
+		if (navigation == null) {
 			return;
 		}
 		this.navigation = navigation;

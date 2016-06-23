@@ -15,7 +15,7 @@ import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.layout.ScreenSize;
 
 /**
- *
+ * Common interface for user interface navigation
  */
 public interface UiNavigation {
 	

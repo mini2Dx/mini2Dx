@@ -26,7 +26,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.utils.Array;
 
 /**
- *
+ * {@link StyleRuleset} implementation for {@link ContainerStyleRule}s
  */
 public class ContainerStyleRuleset extends StyleRuleset<ContainerStyleRule> {
 	@Field

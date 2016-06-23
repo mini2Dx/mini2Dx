@@ -23,7 +23,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.utils.Array;
 
 /**
- *
+ * Base class for a group of {@link StyleRule}s for multiple {@link ScreenSize}s
  */
 public abstract class StyleRuleset<T extends StyleRule> {
 	

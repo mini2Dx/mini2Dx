@@ -14,7 +14,7 @@ package org.mini2Dx.ui.layout;
 import com.badlogic.gdx.utils.Align;
 
 /**
- *
+ * Wraps {@link Align} as an enum. Represents horizontal alignment of elements.
  */
 public enum HorizontalAlignment {
 	LEFT(Align.left),

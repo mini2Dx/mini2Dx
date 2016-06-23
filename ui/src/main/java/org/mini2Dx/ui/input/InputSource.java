@@ -12,7 +12,7 @@
 package org.mini2Dx.ui.input;
 
 /**
- *
+ * Represents a game's input source
  */
 public enum InputSource {
 	KEYBOARD_MOUSE,

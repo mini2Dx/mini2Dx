@@ -12,7 +12,7 @@ import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.TabButtonRenderNode;
 
 /**
- *
+ * Represents the button associated with each {@link Tab}
  */
 public class TabButton extends ContentButton {
 	protected final Label label;

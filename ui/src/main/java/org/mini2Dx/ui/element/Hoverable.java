@@ -14,17 +14,34 @@ package org.mini2Dx.ui.element;
 import org.mini2Dx.ui.listener.HoverListener;
 
 /**
- *
+ * Common interface for hoverable {@link UiElement}s
  */
 public interface Hoverable {
-	
+	/**
+	 * Returns the unique id
+	 * @return
+	 */
 	public String getId();
 	
+	/**
+	 * Adds a {@link HoverListener} to listen for hover events
+	 * @param listener The {@link HoverListener} to add
+	 */
 	public void addHoverListener(HoverListener listener);
 	
+	/**
+	 * Removes a {@link HoverListener} from this {@link Hoverable}
+	 * @param listener The {@link HoverListener} to remove
+	 */
 	public void removeHoverListener(HoverListener listener);
 	
+	/**
+	 * Notifies all {@link HoverListener}s of a begin hover event
+	 */
 	public void notifyHoverListenersOnBeginHover();
 	
+	/**
+	 * Notifies all {@link HoverListener}s of an end hover event
+	 */
 	public void notifyHoverListenersOnEndHover();
 }

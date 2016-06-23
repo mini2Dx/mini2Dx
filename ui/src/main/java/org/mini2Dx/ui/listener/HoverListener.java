@@ -14,10 +14,18 @@ package org.mini2Dx.ui.listener;
 import org.mini2Dx.ui.element.Hoverable;
 
 /**
- *
+ * Common interface for listening to mouse hover events
  */
 public interface HoverListener {
+	/**
+	 * Called when the mouse begins hovering a {@link Hoverable}
+	 * @param source The {@link Hoverable} that the mouse began hovering
+	 */
 	public void onHoverBegin(Hoverable source);
 	
+	/**
+	 * Called when the mouse finishes hovering a {@link Hoverable}
+	 * @param source The {@link Hoverable} that the mouse finished hovering
+	 */
 	public void onHoverEnd(Hoverable source);
 }

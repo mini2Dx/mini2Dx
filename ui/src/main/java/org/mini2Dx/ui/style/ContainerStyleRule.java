@@ -11,8 +11,10 @@
  */
 package org.mini2Dx.ui.style;
 
+import org.mini2Dx.ui.element.Container;
+
 /**
- *
+ * Extends {@link StyleRule} for {@link Container} styling
  */
 public class ContainerStyleRule extends ColumnStyleRule {
 }

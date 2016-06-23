@@ -19,61 +19,85 @@ import org.mini2Dx.ui.render.AlignedModalRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 
 /**
- *
+ * A {@link Modal} that can be auto-aligned using {@link VerticalAlignment} and
+ * {@link HorizontalAlignment}
  */
 public class AlignedModal extends Modal {
-	@Field(optional=true)
+	@Field(optional = true)
 	private VerticalAlignment verticalAlignment = VerticalAlignment.MIDDLE;
-	@Field(optional=true)
+	@Field(optional = true)
 	private HorizontalAlignment horizontalAlignment = HorizontalAlignment.CENTER;
-	
+
+	/**
+	 * Constructor. Generates a unique ID for this {@link AlignedModal}
+	 */
 	public AlignedModal() {
 		this(null);
 	}
-	
-	public AlignedModal(@ConstructorArg(clazz=String.class, name = "id") String id) {
+
+	/**
+	 * Constructor
+	 * @param id The unique ID for this {@link AlignedModal}
+	 */
+	public AlignedModal(@ConstructorArg(clazz = String.class, name = "id") String id) {
 		super(id);
 	}
-	
+
 	@Override
 	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode != null) {
+		if (renderNode != null) {
 			return;
 		}
 		renderNode = new AlignedModalRenderNode(parentRenderNode, this);
-		for(int i = 0; i < children.size(); i++) {
+		for (int i = 0; i < children.size(); i++) {
 			children.get(i).attach(renderNode);
 		}
 		parentRenderNode.addChild(renderNode);
 	}
 
+	/**
+	 * Returns the {@link VerticalAlignment} of this {@link AlignedModal}
+	 * @return {@link VerticalAlignment#MIDDLE} by default
+	 */
 	public VerticalAlignment getVerticalAlignment() {
-		if(verticalAlignment == null) {
+		if (verticalAlignment == null) {
 			verticalAlignment = VerticalAlignment.MIDDLE;
 		}
 		return verticalAlignment;
 	}
 
+	/**
+	 * Sets the {@link VerticalAlignment} of this {@link AlignedModal}
+	 * @param verticalAlignment
+	 */
 	public void setVerticalAlignment(VerticalAlignment verticalAlignment) {
 		this.verticalAlignment = verticalAlignment;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
 
+	/**
+	 * Returns the {@link HorizontalAlignment} of this {@link AlignedModal}
+	 * @return {@link HorizontalAlignment#CENTER} by default
+	 */
 	public HorizontalAlignment getHorizontalAlignment() {
-		if(horizontalAlignment == null) {
+		if (horizontalAlignment == null) {
 			horizontalAlignment = HorizontalAlignment.CENTER;
 		}
 		return horizontalAlignment;
 	}
 
+	/**
+	 * Sets the {@link HorizontalAlignment} of this {@link AlignedModal}
+	 * @param horizontalAlignment
+	 */
 	public void setHorizontalAlignment(HorizontalAlignment horizontalAlignment) {
 		this.horizontalAlignment = horizontalAlignment;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);

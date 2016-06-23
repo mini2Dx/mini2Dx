@@ -13,13 +13,16 @@ package org.mini2Dx.ui.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mini2Dx.ui.element.UiElement;
+
 /**
- *
+ * Utility class for generating {@link UiElement} identifiers for none is
+ * provided to the element
  */
 public class IdAllocator {
 	private static final String ID_PREFIX = "ui-element-";
 	private static final AtomicInteger NEXT_ID = new AtomicInteger();
-	
+
 	public static String getNextId() {
 		return ID_PREFIX + NEXT_ID.incrementAndGet();
 	}

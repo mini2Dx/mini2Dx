@@ -13,6 +13,7 @@ package org.mini2Dx.ui.style;
 
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.core.util.ColorUtils;
+import org.mini2Dx.ui.element.Label;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -21,7 +22,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 /**
- *
+ * Extends {@link StyleRule} for {@link Label} styling
  */
 public class LabelStyleRule extends StyleRule {
 	@Field

@@ -16,7 +16,7 @@ import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.ScrollBoxRenderNode;
 
 /**
- *
+ * A scrollable view for {@link UiElement}s
  */
 public class ScrollBox extends Column {
 	private static final float DEFAULT_SCROLL_FACTOR = 0.005f;
@@ -25,10 +25,17 @@ public class ScrollBox extends Column {
 	private float minHeight = Float.MIN_VALUE;
 	private float maxHeight = Float.MAX_VALUE;
 
+	/**
+	 * Constructor. Generates a unique ID for this {@link ScrollBox}
+	 */
 	public ScrollBox() {
 		this(null);
 	}
 
+	/**
+	 * Constructor
+	 * @param id The unique ID for this {@link ScrollBox}
+	 */
 	public ScrollBox(@ConstructorArg(clazz = String.class, name = "id") String id) {
 		super(id);
 	}
@@ -45,10 +52,18 @@ public class ScrollBox extends Column {
 		parentRenderNode.addChild(renderNode);
 	}
 
+	/**
+	 * Returns the minimum height for this {@link ScrollBox}
+	 * @return {@link Float#MIN_VALUE} by default
+	 */
 	public float getMinHeight() {
 		return minHeight;
 	}
 
+	/**
+	 * Sets the minimum height for this {@link ScrollBox}
+	 * @param minHeight The minimum height to set
+	 */
 	public void setMinHeight(float minHeight) {
 		this.minHeight = minHeight;
 		if (renderNode == null) {
@@ -57,10 +72,18 @@ public class ScrollBox extends Column {
 		renderNode.setDirty(true);
 	}
 
+	/**
+	 * Returns the maximum height for this {@link ScrollBox}
+	 * @return {@link Float#MAX_VALUE} by default
+	 */
 	public float getMaxHeight() {
 		return maxHeight;
 	}
 
+	/**
+	 * Sets the maximum height for this {@link ScrollBox}
+	 * @param maxHeight The maximum height to set
+	 */
 	public void setMaxHeight(float maxHeight) {
 		this.maxHeight = maxHeight;
 		if (renderNode == null) {

@@ -18,7 +18,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.utils.Array;
 
 /**
- *
+ * {@link StyleRuleset} implementation for {@link TabStyleRule}s
  */
 public class TabStyleRuleset extends StyleRuleset<TabStyleRule> {
 	@Field

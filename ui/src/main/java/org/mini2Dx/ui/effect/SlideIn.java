@@ -19,26 +19,26 @@ import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.render.UiContainerRenderTree;
 
 /**
- *
+ * A {@link UiEffect} that moves a {@link UiElement} from off-screen to its
+ * target position
  */
 public class SlideIn implements UiEffect {
+	public static final float DEFAULT_SPEED = 8f;
 
-	private static final float DEFAULT_SPEED = 8f;
-	
 	private final SlideDirection direction;
 	private final float speed;
-	
+
 	private boolean started = false;
 	private boolean finished = false;
-	
+
 	public SlideIn() {
 		this(DEFAULT_SPEED);
 	}
-	
+
 	public SlideIn(float speed) {
 		this(SlideDirection.UP, speed);
 	}
-	
+
 	public SlideIn(SlideDirection direction) {
 		this(direction, DEFAULT_SPEED);
 	}
@@ -49,21 +49,23 @@ public class SlideIn implements UiEffect {
 	}
 
 	@Override
-	public boolean update(UiContainerRenderTree uiContainer, CollisionBox currentArea, Rectangle targetArea, float delta) {
-		if(finished) {
+	public boolean update(UiContainerRenderTree uiContainer, CollisionBox currentArea, Rectangle targetArea,
+			float delta) {
+		if (finished) {
 			return true;
 		}
-		
+
 		float targetX = targetArea.getX();
 		float targetY = targetArea.getY();
-		
-		switch(direction) {
+
+		switch (direction) {
 		case UP:
-			if(!started) {
-				currentArea.forceTo(targetX, uiContainer.getOuterRenderY() + uiContainer.getOuterHeight() + 1f, targetArea.getWidth(), targetArea.getHeight());
+			if (!started) {
+				currentArea.forceTo(targetX, uiContainer.getOuterRenderY() + uiContainer.getOuterHeight() + 1f,
+						targetArea.getWidth(), targetArea.getHeight());
 				started = true;
 			}
-			if(currentArea.getY() > targetY) {
+			if (currentArea.getY() > targetY) {
 				currentArea.setWidth(targetArea.getWidth());
 				currentArea.setHeight(targetArea.getHeight());
 				currentArea.setY(Math.max(targetY, currentArea.getY() - speed));
@@ -72,11 +74,12 @@ public class SlideIn implements UiEffect {
 			}
 			break;
 		case DOWN:
-			if(!started) {
-				currentArea.forceTo(targetX, uiContainer.getOuterRenderY() - targetArea.getHeight() - 1f, targetArea.getWidth(), targetArea.getHeight());
+			if (!started) {
+				currentArea.forceTo(targetX, uiContainer.getOuterRenderY() - targetArea.getHeight() - 1f,
+						targetArea.getWidth(), targetArea.getHeight());
 				started = true;
 			}
-			if(currentArea.getY() < targetY) {
+			if (currentArea.getY() < targetY) {
 				currentArea.setWidth(targetArea.getWidth());
 				currentArea.setHeight(targetArea.getHeight());
 				currentArea.setY(Math.min(targetY, currentArea.getY() + speed));
@@ -85,11 +88,12 @@ public class SlideIn implements UiEffect {
 			}
 			break;
 		case LEFT:
-			if(!started) {
-				currentArea.forceTo(uiContainer.getOuterRenderX() + uiContainer.getOuterWidth() + 1f, targetY, targetArea.getWidth(), targetArea.getHeight());
+			if (!started) {
+				currentArea.forceTo(uiContainer.getOuterRenderX() + uiContainer.getOuterWidth() + 1f, targetY,
+						targetArea.getWidth(), targetArea.getHeight());
 				started = true;
 			}
-			if(currentArea.getX() > targetX) {
+			if (currentArea.getX() > targetX) {
 				currentArea.setWidth(targetArea.getWidth());
 				currentArea.setHeight(targetArea.getHeight());
 				currentArea.setX(Math.max(targetX, currentArea.getX() - speed));
@@ -98,11 +102,12 @@ public class SlideIn implements UiEffect {
 			}
 			break;
 		case RIGHT:
-			if(!started) {
-				currentArea.forceTo(uiContainer.getOuterRenderX() - targetArea.getWidth() - 1f, targetY, targetArea.getWidth(), targetArea.getHeight());
+			if (!started) {
+				currentArea.forceTo(uiContainer.getOuterRenderX() - targetArea.getWidth() - 1f, targetY,
+						targetArea.getWidth(), targetArea.getHeight());
 				started = true;
 			}
-			if(currentArea.getX() < targetX) {
+			if (currentArea.getX() < targetX) {
 				currentArea.setWidth(targetArea.getWidth());
 				currentArea.setHeight(targetArea.getHeight());
 				currentArea.setX(Math.min(targetX, currentArea.getX() + speed));
@@ -113,14 +118,15 @@ public class SlideIn implements UiEffect {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void preBegin(UiElement element) {
 		element.setVisibility(Visibility.VISIBLE);
 	}
 
 	@Override
-	public void postEnd(UiElement element) {}
+	public void postEnd(UiElement element) {
+	}
 
 	@Override
 	public void preRender(Graphics g) {

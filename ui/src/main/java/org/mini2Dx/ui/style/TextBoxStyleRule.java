@@ -14,6 +14,7 @@ package org.mini2Dx.ui.style;
 import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.core.util.ColorUtils;
+import org.mini2Dx.ui.element.TextBox;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
@@ -25,7 +26,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.utils.Array;
 
 /**
- *
+ * Extends {@link StyleRule} for {@link TextBox} styling
  */
 public class TextBoxStyleRule extends StyleRule {
 	@Field

@@ -11,10 +11,17 @@
  */
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.ui.element.UiElement;
+
 /**
- *
+ * Common interface for {@link UiElement} x/y offset rules
  */
 public interface OffsetRule {
-
+	/**
+	 * Determines the preferred offset of a {@link UiElement}
+	 * 
+	 * @param layoutState The current {@link LayoutState}
+	 * @return The {@link UiElement} preferred offset
+	 */
 	public float getOffset(LayoutState layoutState);
 }

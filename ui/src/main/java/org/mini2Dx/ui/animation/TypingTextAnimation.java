@@ -15,19 +15,26 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 
 /**
- *
+ * A {@link TextAnimation} that reveals the text as if it were being typed
  */
-public class TypingTextAnimation extends BaseTextAnimation implements TextAnimation {
+public class TypingTextAnimation extends BaseTextAnimation {
 	private final float charactersPerSecond;
 	private final float speed;
 	
 	private float timer = 0f;
 	private int characterIndex = 0;
 
+	/**
+	 * Constructor. Defaults to 24 characters revealed per second.
+	 */
 	public TypingTextAnimation() {
 		this(24f);
 	}
 	
+	/**
+	 * Constructor
+	 * @param charactersPerSecond The amount of characters to reveal per second
+	 */
 	public TypingTextAnimation(@ConstructorArg(clazz=Float.class, name="charactersPerSecond") float charactersPerSecond) {
 		this.charactersPerSecond = charactersPerSecond;
 		speed = 1f / charactersPerSecond;

@@ -21,43 +21,89 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
- *
+ * Wraps a {@link Texture} or {@link TextureRegion} as a {@link UiElement}
  */
 public class Image extends UiElement {
 	private ImageRenderNode renderNode;
 	private TextureRegion textureRegion;
-	
+
 	@Field
 	private String path;
-	@Field(optional=true)
+	@Field(optional = true)
 	private boolean responsive = false;
-	
+
+	/**
+	 * Constructor. Generates a unique ID for this {@link Image}
+	 */
 	public Image() {
 		super(null);
 	}
-	
-	public Image(@ConstructorArg(clazz=String.class, name = "id") String id) {
+
+	/**
+	 * Constructor
+	 * 
+	 * @param id
+	 *            The unique ID for this {@link Image}
+	 */
+	public Image(@ConstructorArg(clazz = String.class, name = "id") String id) {
 		super(id);
 	}
-	
+
+	/**
+	 * Constructor
+	 * 
+	 * @param id
+	 *            The unique ID for this {@link Image}
+	 * @param texturePath
+	 *            The path for the {@link Texture} to be loaded by the
+	 *            {@link AssetManager}
+	 */
 	public Image(String id, String texturePath) {
 		super(id);
 		setTexturePath(texturePath);
 	}
-	
+
+	/**
+	 * Constructor. Generates a unique ID for this {@link Image}
+	 * 
+	 * @param texture
+	 *            The {@link Texture} to use
+	 */
 	public Image(Texture texture) {
 		this(null, texture);
 	}
-	
+
+	/**
+	 * Constructor. Generates a unique ID for this {@link Image}
+	 * 
+	 * @param textureRegion
+	 *            The {@link TextureRegion} to use
+	 */
 	public Image(TextureRegion textureRegion) {
 		this(null, textureRegion);
 	}
-	
+
+	/**
+	 * Constructor
+	 * 
+	 * @param id
+	 *            The unique ID for this {@link Image}
+	 * @param texture
+	 *            The {@link Texture} to use
+	 */
 	public Image(String id, Texture texture) {
 		super(id);
 		this.textureRegion = new TextureRegion(texture);
 	}
-	
+
+	/**
+	 * Constructor
+	 * 
+	 * @param id
+	 *            The unique ID for this {@link Image}
+	 * @param textureRegion
+	 *            The {@link TextureRegion} to use
+	 */
 	public Image(String id, TextureRegion textureRegion) {
 		super(id);
 		this.textureRegion = textureRegion;
@@ -65,7 +111,7 @@ public class Image extends UiElement {
 
 	@Override
 	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode != null) {
+		if (renderNode != null) {
 			return;
 		}
 		renderNode = new ImageRenderNode(parentRenderNode, this);
@@ -74,106 +120,147 @@ public class Image extends UiElement {
 
 	@Override
 	public void detach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode == null) {
+		if (renderNode == null) {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
 	}
-	
+
+	/**
+	 * Returns the current {@link TextureRegion} for this {@link Image}
+	 * 
+	 * @param assetManager
+	 *            The game's {@link AssetManager}
+	 * @return Null if no {@link TextureRegion} has been set
+	 */
 	public TextureRegion getTextureRegion(AssetManager assetManager) {
-		if(path != null) {
+		if (path != null) {
 			textureRegion = new TextureRegion(assetManager.get(path, Texture.class));
 			path = null;
 		}
 		return textureRegion;
 	}
 
+	/**
+	 * Sets the current {@link TextureRegion} used by this {@link Image}
+	 * 
+	 * @param textureRegion
+	 *            The {@link TextureRegion} to use
+	 */
 	public void setTextureRegion(TextureRegion textureRegion) {
 		this.textureRegion = textureRegion;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
-	
+
+	/**
+	 * Sets the current {@link Texture} used by this {@link Image}
+	 * 
+	 * @param texture
+	 *            The {@link Texture} to use
+	 */
 	public void setTexture(Texture texture) {
-		if(texture == null) {
+		if (texture == null) {
 			setTextureRegion(null);
 		} else {
 			setTextureRegion(new TextureRegion(texture));
 		}
 	}
-	
+
+	/**
+	 * Returns the current texture path
+	 * 
+	 * @return Null if no path is used
+	 */
 	public String getTexturePath() {
 		return path;
 	}
-	
+
+	/**
+	 * Sets the current texture path. This will set the current
+	 * {@link TextureRegion} by loading it via the {@link AssetManager}
+	 * 
+	 * @param texturePath
+	 *            The path to the texture
+	 */
 	public void setTexturePath(String texturePath) {
 		this.path = texturePath;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
 
+	/**
+	 * Returns if this {@link Image} should scale to the size of its parent
+	 * 
+	 * @return False by default
+	 */
 	public boolean isResponsive() {
 		return responsive;
 	}
 
+	/**
+	 * Sets if this {@link Image} should scale to the size of its parent
+	 * @param responsive
+	 */
 	public void setResponsive(boolean responsive) {
 		this.responsive = responsive;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
 
+	@Override
 	public void setVisibility(Visibility visibility) {
-		if(visibility == null) {
+		if (visibility == null) {
 			return;
 		}
-		if(this.visibility == visibility) {
+		if (this.visibility == visibility) {
 			return;
 		}
 		this.visibility = visibility;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
-	
+
 	@Override
 	public void syncWithRenderNode() {
-		while(!effects.isEmpty()) {
+		while (!effects.isEmpty()) {
 			renderNode.applyEffect(effects.poll());
 		}
 	}
 
 	@Override
 	public void setStyleId(String styleId) {
-		if(styleId == null) {
+		if (styleId == null) {
 			return;
 		}
-		if(this.styleId.equals(styleId)) {
+		if (this.styleId.equals(styleId)) {
 			return;
 		}
 		this.styleId = styleId;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
-	
+
 	@Override
 	public void setZIndex(int zIndex) {
 		this.zIndex = zIndex;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);

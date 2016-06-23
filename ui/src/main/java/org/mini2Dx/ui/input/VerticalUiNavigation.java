@@ -15,12 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mini2Dx.ui.element.Actionable;
+import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.layout.ScreenSize;
 
 import com.badlogic.gdx.Input.Keys;
 
 /**
- *
+ * A {@link UiNavigation} implementation that treats all {@link UiElement}s as
+ * stacked vertically
  */
 public class VerticalUiNavigation implements UiNavigation {
 	private final List<Actionable> navigation = new ArrayList<Actionable>();
@@ -28,7 +30,7 @@ public class VerticalUiNavigation implements UiNavigation {
 
 	@Override
 	public void set(int index, Actionable actionable) {
-		if(navigation.size() > index) {
+		if (navigation.size() > index) {
 			navigation.set(index, actionable);
 		} else {
 			navigation.add(index, actionable);
@@ -37,7 +39,7 @@ public class VerticalUiNavigation implements UiNavigation {
 
 	@Override
 	public Actionable navigate(int keycode) {
-		if(navigation.size() == 0) {
+		if (navigation.size() == 0) {
 			return null;
 		}
 		switch (keycode) {
@@ -57,5 +59,6 @@ public class VerticalUiNavigation implements UiNavigation {
 	}
 
 	@Override
-	public void layout(ScreenSize screenSize) {}
+	public void layout(ScreenSize screenSize) {
+	}
 }

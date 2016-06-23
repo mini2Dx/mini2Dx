@@ -16,14 +16,20 @@ import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.RowRenderNode;
 
 /**
- *
+ * A row of {@link UiElement}s. Equivalent to 12 {@link Column}s
  */
 public class Row extends Column {
-	
+	/**
+	 * Constructor. Generates a unique ID for this {@link Row}
+	 */
 	public Row() {
 		this(null);
 	}
 	
+	/**
+	 * Constructor
+	 * @param id The unique ID for this {@link Row}
+	 */
 	public Row(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
@@ -40,10 +46,25 @@ public class Row extends Column {
 		parentRenderNode.addChild(renderNode);
 	}
 	
+	/**
+	 * Creates a {@link Visibility#VISIBLE} {@link Row} containing the
+	 * specified {@link UiElement}s
+	 * 
+	 * @param elements The {@link UiElement}s to add to the {@link Row}
+	 * @return A new {@link Row} containing the {@link UiElement}s
+	 */
 	public static Row withElements(UiElement ...elements) {
 		return withElements(null, elements);
 	}
 	
+	/**
+	 * Creates a {@link Visibility#VISIBLE} {@link Row} containing the
+	 * specified {@link UiElement}s
+	 * 
+	 * @param rowId The unique ID of the {@link Row}
+	 * @param elements The {@link UiElement}s to add to the {@link Row}
+	 * @return A new {@link Row} containing the {@link UiElement}s
+	 */
 	public static Row withElements(String rowId, UiElement ...elements) {
 		Row result = new Row(rowId);
 		for(int i = 0; i < elements.length; i++) {

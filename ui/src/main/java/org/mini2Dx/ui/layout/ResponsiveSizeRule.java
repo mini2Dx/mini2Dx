@@ -11,19 +11,28 @@
  */
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.ui.element.UiElement;
+
 /**
- *
+ * An implementation of {@link SizeRule} that changes the size of the current
+ * {@link UiElement} based on the size of the parent {@link UiElement}. The
+ * parent element is split into 12 columns and the {@link ResponsiveSizeRule}
+ * sets how many columns to occupy.
  */
 public class ResponsiveSizeRule implements SizeRule {
 	private final int columns;
-	
+
+	/**
+	 * Constructor
+	 * @param columns The amount of columns to occupy
+	 */
 	public ResponsiveSizeRule(int columns) {
 		this.columns = columns;
 	}
-	
+
 	@Override
 	public float getWidth(LayoutState layoutState) {
-		if(columns == layoutState.getTotalColumns()) {
+		if (columns == layoutState.getTotalColumns()) {
 			return layoutState.getParentWidth();
 		}
 		return layoutState.getColumnWidth(columns);

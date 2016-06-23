@@ -30,14 +30,25 @@ public class ContentButton extends Button {
 	
 	protected ContentButtonRenderNode renderNode;
 	
+	/**
+	 * Constructor. Generates a unique ID for the {@link ContentButton}
+	 */
 	public ContentButton() {
 		this(null);
 	}
 	
+	/**
+	 * Constructor
+	 * @param id The unique ID of the {@link ContentButton}
+	 */
 	public ContentButton(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 	
+	/**
+	 * Adds a {@link UiElement} to this {@link ContentButton}
+	 * @param element The {@link UiElement} to be added
+	 */
 	public void add(UiElement element) {
 		if(element == null) {
 			throw new MdxException("Cannot add null element to ContentButton");
@@ -49,6 +60,11 @@ public class ContentButton extends Button {
 		element.attach(renderNode);
 	}
 	
+	/**
+	 * Removes a {@link UiElement} from this {@link ContentButton}
+	 * @param element The {@link UiElement} to be removed
+	 * @return True if the {@link ContentButton} contained the {@link UiElement}
+	 */
 	public boolean remove(UiElement element) {
 		if(renderNode != null) {
 			element.detach(renderNode);

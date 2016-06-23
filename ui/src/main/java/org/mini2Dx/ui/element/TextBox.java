@@ -22,30 +22,37 @@ import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.TextBoxRenderNode;
 
 /**
- *
+ * A text box {@link UiElement}. Can optionally function as a password field.
  */
 public class TextBox extends UiElement implements Actionable {
 	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
 	private List<ActionListener> actionListeners;
 	private TextBoxRenderNode renderNode;
 	private String value = "";
-	
-	@Field(optional=true)
+
+	@Field(optional = true)
 	private boolean enabled = true;
-	@Field(optional=true)
+	@Field(optional = true)
 	private boolean passwordField = false;
-	
+
+	/**
+	 * Constructor. Generates a unique ID for this {@link TextBox}
+	 */
 	public TextBox() {
 		this(null);
 	}
-	
-	public TextBox(@ConstructorArg(clazz=String.class, name = "id") String id) {
+
+	/**
+	 * Constructor
+	 * @param id The unique ID for this {@link TextBox}
+	 */
+	public TextBox(@ConstructorArg(clazz = String.class, name = "id") String id) {
 		super(id);
 	}
 
 	@Override
 	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode != null) {
+		if (renderNode != null) {
 			return;
 		}
 		renderNode = new TextBoxRenderNode(parentRenderNode, this);
@@ -54,90 +61,106 @@ public class TextBox extends UiElement implements Actionable {
 
 	@Override
 	public void detach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode == null) {
+		if (renderNode == null) {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
 	}
-	
+
 	@Override
 	public void setVisibility(Visibility visibility) {
-		if(this.visibility == visibility) {
+		if (this.visibility == visibility) {
 			return;
 		}
 		this.visibility = visibility;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
-	
+
 	@Override
 	public void setStyleId(String styleId) {
-		if(styleId == null) {
+		if (styleId == null) {
 			return;
 		}
-		if(this.styleId.equals(styleId)) {
+		if (this.styleId.equals(styleId)) {
 			return;
 		}
 		this.styleId = styleId;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
-	
+
 	@Override
 	public void syncWithRenderNode() {
-		while(!effects.isEmpty()) {
+		while (!effects.isEmpty()) {
 			renderNode.applyEffect(effects.poll());
 		}
 	}
 
+	/**
+	 * Returns the text value entered into this {@link TextBox}
+	 * @return An empty {@link String} by default
+	 */
 	public String getValue() {
 		return value;
 	}
 
+	/**
+	 * Sets the text value entered into this {@link TextBox}
+	 * @param value A non-null {@link String}
+	 */
 	public void setValue(String value) {
-		if(value == null) {
+		if (value == null) {
 			return;
 		}
 		this.value = value;
 	}
 
+	/**
+	 * Returns if this {@link TextBox} is a password field
+	 * @return True if characters are hidden by * characters
+	 */
 	public boolean isPasswordField() {
 		return passwordField;
 	}
 
+	/**
+	 * Sets if this {@link TextBox} is a password field
+	 * @param passwordField True if characters should be hidden by * characters
+	 */
 	public void setPasswordField(boolean passwordField) {
 		this.passwordField = passwordField;
 	}
-	
+
 	@Override
 	public void notifyActionListenersOfBeginEvent() {
-		if(actionListeners == null) {
+		if (actionListeners == null) {
 			return;
 		}
-		for(int i = actionListeners.size() - 1; i >= 0; i--) {
+		for (int i = actionListeners.size() - 1; i >= 0; i--) {
 			actionListeners.get(i).onActionBegin(this);
 		}
 	}
-	
+
 	@Override
 	public void notifyActionListenersOfEndEvent() {
-		if(actionListeners == null) {
+		if (actionListeners == null) {
 			return;
 		}
-		for(int i = actionListeners.size() - 1; i >= 0; i--) {
+		for (int i = actionListeners.size() - 1; i >= 0; i--) {
 			actionListeners.get(i).onActionEnd(this);
 		}
 	}
-	
+
 	@Override
 	public void addActionListener(ActionListener listener) {
-		if(actionListeners == null) {
+		if (actionListeners == null) {
 			actionListeners = new ArrayList<ActionListener>(1);
 		}
 		actionListeners.add(listener);
@@ -145,7 +168,7 @@ public class TextBox extends UiElement implements Actionable {
 
 	@Override
 	public void removeActionListener(ActionListener listener) {
-		if(actionListeners == null) {
+		if (actionListeners == null) {
 			return;
 		}
 		actionListeners.remove(listener);
@@ -155,32 +178,32 @@ public class TextBox extends UiElement implements Actionable {
 	public boolean isEnabled() {
 		return enabled;
 	}
-	
+
 	@Override
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-	
+
 	@Override
 	public void setZIndex(int zIndex) {
 		this.zIndex = zIndex;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
-	
+
 	public LayoutRuleset getLayout() {
 		return layout;
 	}
-	
+
 	public void setLayout(LayoutRuleset layoutRuleset) {
-		if(layoutRuleset == null) {
+		if (layoutRuleset == null) {
 			return;
 		}
 		this.layout = layoutRuleset;
-		if(renderNode == null) {
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);

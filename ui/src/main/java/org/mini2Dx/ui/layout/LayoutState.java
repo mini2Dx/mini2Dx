@@ -11,6 +11,8 @@
  */
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.input.InputSource;
 import org.mini2Dx.ui.render.UiContainerRenderTree;
 import org.mini2Dx.ui.style.UiTheme;
@@ -19,7 +21,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.MathUtils;
 
 /**
- *
+ * Represents the current flow state during layout
  */
 public class LayoutState {
 	private final UiContainerRenderTree uiContainer;
@@ -42,26 +44,51 @@ public class LayoutState {
 		setParentWidth(parentWidth);
 	}
 
+	/**
+	 * Returns the width of the parent {@link UiElement}
+	 * @return
+	 */
 	public float getParentWidth() {
 		return parentWidth;
 	}
 
+	/**
+	 * Sets the width of the parent {@link UiElement}
+	 * @param parentWidth
+	 */
 	public void setParentWidth(float parentWidth) {
 		this.parentWidth = parentWidth;
 	}
 
+	/**
+	 * Returns the {@link AssetManager} belonging to the {@link UiContainer}
+	 * @return
+	 */
 	public AssetManager getAssetManager() {
 		return assetManager;
 	}
 
+	/**
+	 * Returns the current {@link ScreenSize}
+	 * @return
+	 */
 	public ScreenSize getScreenSize() {
 		return screenSize;
 	}
 
+	/**
+	 * Returns the total columns the UI is split into
+	 * @return
+	 */
 	public int getTotalColumns() {
 		return (int) totalColumns;
 	}
 
+	/**
+	 * Returns the pixel width for a given column amount
+	 * @param columns The amount of columns
+	 * @return The width in pixels
+	 */
 	public float getColumnWidth(int columns) {
 		if(columns <= 0) {
 			return 0f;
@@ -69,10 +96,18 @@ public class LayoutState {
 		return (int) ((columns / totalColumns) * parentWidth);
 	}
 
+	/**
+	 * Returns the current {@link UiTheme}
+	 * @return
+	 */
 	public UiTheme getTheme() {
 		return theme;
 	}
 
+	/**
+	 * Returns the {@link UiContainerRenderTree}
+	 * @return
+	 */
 	public UiContainerRenderTree getUiContainer() {
 		return uiContainer;
 	}
@@ -81,6 +116,10 @@ public class LayoutState {
 		return uiContainer.getLastInputSource();
 	}
 
+	/**
+	 * Returns if the layout was triggered by a {@link ScreenSize} change
+	 * @return True if the layout was triggered by a {@link ScreenSize} change
+	 */
 	public boolean isScreenSizeChanged() {
 		return screenSizeChanged;
 	}

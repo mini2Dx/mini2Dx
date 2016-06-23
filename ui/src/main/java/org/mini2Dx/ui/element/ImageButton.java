@@ -22,7 +22,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
- *
+ * Implementation of {@link Button} that only contains an image
  */
 public class ImageButton extends Button {
 	private ImageButtonRenderNode renderNode;
@@ -33,14 +33,28 @@ public class ImageButton extends Button {
 	@Field(optional=true)
 	private boolean responsive = false;
 	
+	/**
+	 * Constructor. Generates a unique ID for this {@link ImageButton}
+	 */
 	public ImageButton() {
 		super();
 	}
 	
+	/**
+	 * Constructor
+	 * @param id The unique ID for this {@link ImageButton}
+	 */
 	public ImageButton(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
 	}
 	
+	/**
+	 * Returns the current {@link TextureRegion} for this {@link ImageButton}
+	 * 
+	 * @param assetManager
+	 *            The game's {@link AssetManager}
+	 * @return Null if no {@link TextureRegion} has been set
+	 */
 	public TextureRegion getTextureRegion(AssetManager assetManager) {
 		if(path != null) {
 			textureRegion = new TextureRegion(assetManager.get(path, Texture.class));
@@ -49,6 +63,12 @@ public class ImageButton extends Button {
 		return textureRegion;
 	}
 
+	/**
+	 * Sets the current {@link TextureRegion} used by this {@link ImageButton}
+	 * 
+	 * @param textureRegion
+	 *            The {@link TextureRegion} to use
+	 */
 	public void setTextureRegion(TextureRegion textureRegion) {
 		this.textureRegion = textureRegion;
 		
@@ -58,10 +78,23 @@ public class ImageButton extends Button {
 		renderNode.setDirty(true);
 	}
 	
+	/**
+	 * Sets the current {@link Texture} used by this {@link ImageButton}
+	 * 
+	 * @param texture
+	 *            The {@link Texture} to use
+	 */
 	public void setTexture(Texture texture) {
 		setTextureRegion(new TextureRegion(texture));
 	}
 	
+	/**
+	 * Sets the current texture path. This will set the current
+	 * {@link TextureRegion} by loading it via the {@link AssetManager}
+	 * 
+	 * @param texturePath
+	 *            The path to the texture
+	 */
 	public void setTexturePath(String texturePath) {
 		this.path = texturePath;
 		
@@ -71,10 +104,18 @@ public class ImageButton extends Button {
 		renderNode.setDirty(true);
 	}
 
+	/**
+	 * Returns if the image should scale to the size of the {@link ImageButton}
+	 * @return False by default
+	 */
 	public boolean isResponsive() {
 		return responsive;
 	}
 
+	/**
+	 * Sets if the image should scale to the size of the {@link ImageButton}
+	 * @param responsive
+	 */
 	public void setResponsive(boolean responsive) {
 		this.responsive = responsive;
 		

@@ -26,12 +26,16 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
 /**
- *
+ * A {@link AsynchronousAssetLoader} for loading {@link UiTheme}s
  */
 public class UiThemeLoader extends AsynchronousAssetLoader<UiTheme, UiThemeParameter> {
 	private volatile UiTheme theme;
 	private final FileHandleResolver fileHandleResolver;
 	
+	/**
+	 * Constructor
+	 * @param resolver The {@link FileHandleResolver} to use
+	 */
 	public UiThemeLoader(FileHandleResolver resolver) {
 		super(resolver);
 		this.fileHandleResolver = resolver;

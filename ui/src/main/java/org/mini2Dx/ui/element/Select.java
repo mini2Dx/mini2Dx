@@ -23,30 +23,40 @@ import org.mini2Dx.ui.render.SelectRenderNode;
 import com.badlogic.gdx.graphics.Color;
 
 /**
- *
+ * A {@link UiElement} with preset options. Uses left/right buttons to change
+ * the selection.
  */
 public class Select<V> extends UiElement implements Actionable {
 	private final List<SelectOption<V>> options = new ArrayList<SelectOption<V>>(1);
 	private List<ActionListener> actionListeners;
-	
+
 	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
 	private boolean enabled = true;
 	private SelectRenderNode renderNode;
 	private int selectedIndex = 0;
 	private Color enabledTextColor = null;
 	private Color disabledTextColor = null;
-	
+
+	/**
+	 * Constructor. Generates a unique ID for this {@link Select}
+	 */
 	public Select() {
 		this(null);
 	}
-	
-	public Select(@ConstructorArg(clazz=String.class, name = "id") String id) {
+
+	/**
+	 * Constructor
+	 * 
+	 * @param id
+	 *            The unique ID for this {@link Select}
+	 */
+	public Select(@ConstructorArg(clazz = String.class, name = "id") String id) {
 		super(id);
 	}
 
 	@Override
 	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode != null) {
+		if (renderNode != null) {
 			return;
 		}
 		renderNode = new SelectRenderNode(parentRenderNode, this);
@@ -55,113 +65,192 @@ public class Select<V> extends UiElement implements Actionable {
 
 	@Override
 	public void detach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode == null) {
+		if (renderNode == null) {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
 	}
-	
+
 	@Override
 	public void setVisibility(Visibility visibility) {
-		if(this.visibility == visibility) {
+		if (this.visibility == visibility) {
 			return;
 		}
 		this.visibility = visibility;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
-	
+
 	@Override
 	public void setStyleId(String styleId) {
-		if(styleId == null) {
+		if (styleId == null) {
 			return;
 		}
-		if(this.styleId.equals(styleId)) {
+		if (this.styleId.equals(styleId)) {
 			return;
 		}
 		this.styleId = styleId;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
-	
+
 	@Override
 	public void syncWithRenderNode() {
-		while(!effects.isEmpty()) {
+		while (!effects.isEmpty()) {
 			renderNode.applyEffect(effects.poll());
 		}
 	}
-	
+
+	/**
+	 * Adds a selectable option to this {@link Select}
+	 * 
+	 * @param label
+	 *            The visible text of the option
+	 * @param value
+	 *            The value of the option
+	 * @return The {@link SelectOption} that was generated
+	 */
 	public SelectOption<V> addOption(String label, V value) {
 		SelectOption<V> option = new SelectOption<V>(label, value);
 		options.add(option);
 		return option;
 	}
-	
+
+	/**
+	 * Adds a selectable option to this {@link Select}
+	 * 
+	 * @param option
+	 *            The {@link SelectOption} to add
+	 */
 	public void addOption(SelectOption<V> option) {
 		options.add(option);
 	}
-	
+
+	/**
+	 * Removes a selectable option from this {@link Select}
+	 * 
+	 * @param option
+	 *            The {@link SelectOption} to remove
+	 */
 	public void removeOption(SelectOption<V> option) {
 		options.remove(option);
 	}
-	
-	public void removeOptionByLabel(String label) {
-		for(int i = 0; i < options.size(); i++) {
-			if(options.get(i).getLabel().equals(label)) {
+
+	/**
+	 * Removes a selectable option from this {@link Select} based on the
+	 * option's label
+	 * 
+	 * @param label
+	 *            The label to search for
+	 * @return True if the option was found
+	 */
+	public boolean removeOptionByLabel(String label) {
+		for (int i = 0; i < options.size(); i++) {
+			if (options.get(i).getLabel().equals(label)) {
 				options.remove(i);
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
-	
-	public void removeOptionByValue(V value) {
-		for(int i = 0; i < options.size(); i++) {
-			if(options.get(i).getValue().equals(value)) {
+
+	/**
+	 * Removes a selectable option from this {@link Select} based on the
+	 * option's value
+	 * 
+	 * @param value
+	 *            The value to search for
+	 * @return True if the option was found
+	 */
+	public boolean removeOptionByValue(V value) {
+		for (int i = 0; i < options.size(); i++) {
+			if (options.get(i).getValue().equals(value)) {
 				options.remove(i);
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
-	
+
+	/**
+	 * Returns the currently selected option
+	 * 
+	 * @return The selected {@link SelectOption}
+	 */
 	public SelectOption<V> getSelectedOption() {
 		return options.get(selectedIndex);
 	}
-	
+
+	/**
+	 * Returns the label of the currently selected option
+	 * 
+	 * @return The text that the player sees
+	 */
 	public String getSelectedLabel() {
 		return options.get(selectedIndex).getLabel();
 	}
-	
+
+	/**
+	 * Returns the value of the currently selected option
+	 * 
+	 * @return The selected value
+	 */
 	public V getSelectedValue() {
 		return options.get(selectedIndex).getValue();
 	}
-	
+
+	/**
+	 * Returns the total amount of options
+	 * 
+	 * @return 0 if no options have been added
+	 */
 	public int getTotalOptions() {
 		return options.size();
 	}
-	
+
+	/**
+	 * Returns the index of the currently selected option
+	 * 
+	 * @return 0 by default
+	 */
 	public int getSelectedIndex() {
 		return selectedIndex;
 	}
-	
+
+	/**
+	 * Sets the index of the currently selected option
+	 * 
+	 * @param index
+	 *            The index to set as selected
+	 */
 	public void setSelectedIndex(int index) {
 		this.selectedIndex = index;
 	}
-	
+
+	/**
+	 * Changes the current selection to the next available option. If the
+	 * current selection is the last option then this method does nothing.
+	 */
 	public void nextOption() {
-		if(selectedIndex >= options.size() - 1) {
+		if (selectedIndex >= options.size() - 1) {
 			return;
 		}
 		selectedIndex++;
 	}
-	
+
+	/**
+	 * Changes the current selection to the option before the currently selected
+	 * option. If this current selection is the first option then this method
+	 * does nothing.
+	 */
 	public void previousOption() {
-		if(selectedIndex <= 0) {
+		if (selectedIndex <= 0) {
 			return;
 		}
 		selectedIndex--;
@@ -169,27 +258,27 @@ public class Select<V> extends UiElement implements Actionable {
 
 	@Override
 	public void notifyActionListenersOfBeginEvent() {
-		if(actionListeners == null) {
+		if (actionListeners == null) {
 			return;
 		}
-		for(int i = actionListeners.size() - 1; i >= 0; i--) {
+		for (int i = actionListeners.size() - 1; i >= 0; i--) {
 			actionListeners.get(i).onActionBegin(this);
 		}
 	}
-	
+
 	@Override
 	public void notifyActionListenersOfEndEvent() {
-		if(actionListeners == null) {
+		if (actionListeners == null) {
 			return;
 		}
-		for(int i = actionListeners.size() - 1; i >= 0; i--) {
+		for (int i = actionListeners.size() - 1; i >= 0; i--) {
 			actionListeners.get(i).onActionEnd(this);
 		}
 	}
 
 	@Override
 	public void addActionListener(ActionListener listener) {
-		if(actionListeners == null) {
+		if (actionListeners == null) {
 			actionListeners = new ArrayList<ActionListener>(1);
 		}
 		actionListeners.add(listener);
@@ -197,12 +286,12 @@ public class Select<V> extends UiElement implements Actionable {
 
 	@Override
 	public void removeActionListener(ActionListener listener) {
-		if(actionListeners == null) {
+		if (actionListeners == null) {
 			return;
 		}
 		actionListeners.remove(listener);
 	}
-	
+
 	@Override
 	public boolean isEnabled() {
 		return enabled;
@@ -211,33 +300,33 @@ public class Select<V> extends UiElement implements Actionable {
 	@Override
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
-	
+
 	@Override
 	public void setZIndex(int zIndex) {
 		this.zIndex = zIndex;
-		
-		if(renderNode == null) {
+
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
-	
+
 	public LayoutRuleset getLayout() {
 		return layout;
 	}
-	
+
 	public void setLayout(LayoutRuleset layoutRuleset) {
-		if(layoutRuleset == null) {
+		if (layoutRuleset == null) {
 			return;
 		}
 		this.layout = layoutRuleset;
-		if(renderNode == null) {
+		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);

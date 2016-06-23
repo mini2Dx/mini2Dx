@@ -24,6 +24,7 @@ import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.input.InputSource;
 import org.mini2Dx.ui.layout.LayoutRuleset;
+import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
 import org.mini2Dx.ui.render.ActionableRenderNode;
 import org.mini2Dx.ui.render.NodeState;
@@ -39,7 +40,9 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.MathUtils;
 
 /**
- *
+ * The container for all UI elements. {@link #update(float)},
+ * {@link #interpolate(float)} and {@link #render(Graphics)} must be called by
+ * your {@link GameContainer}
  */
 public class UiContainer extends UiElement implements InputProcessor {
 	private static final String LOGGING_TAG = UiContainer.class.getSimpleName();
@@ -58,6 +61,11 @@ public class UiContainer extends UiElement implements InputProcessor {
 	private ActionableRenderNode activeAction;
 	private TextInputableRenderNode activeTextInput;
 
+	/**
+	 * Constructor
+	 * @param gc Your game's {@link GameContainer}
+	 * @param assetManager The {@link AssetManager} for the game
+	 */
 	public UiContainer(GameContainer gc, AssetManager assetManager) {
 		super("ui-container-root");
 		this.width = gc.getWidth();
@@ -81,6 +89,10 @@ public class UiContainer extends UiElement implements InputProcessor {
 		setVisibility(Visibility.VISIBLE);
 	}
 
+	/**
+	 * Updates all {@link UiElement}s
+	 * @param delta The time since the last frame (in seconds)
+	 */
 	public void update(float delta) {
 		if (!isThemeApplied()) {
 			if (!themeWarningIssued) {
@@ -96,6 +108,10 @@ public class UiContainer extends UiElement implements InputProcessor {
 		renderTree.update(delta);
 	}
 
+	/**
+	 * Interpolates all {@link UiElement}s
+	 * @param alpha The interpolation alpha
+	 */
 	public void interpolate(float alpha) {
 		if (!isThemeApplied()) {
 			return;
@@ -103,6 +119,10 @@ public class UiContainer extends UiElement implements InputProcessor {
 		renderTree.interpolate(alpha);
 	}
 
+	/**
+	 * Renders all visible {@link UiElement}s
+	 * @param g The {@link Graphics} context
+	 */
 	public void render(Graphics g) {
 		if (!isThemeApplied()) {
 			return;
@@ -130,11 +150,19 @@ public class UiContainer extends UiElement implements InputProcessor {
 		}
 	}
 
+	/**
+	 * Adds a {@link Container} to this {@link UiContainer}
+	 * @param container The {@link Container} to add
+	 */
 	public void add(Container container) {
 		container.attach(renderTree);
 		children.add(container);
 	}
 
+	/**
+	 * Removes a {@link Container} from this {@link UiContainer}
+	 * @param container The {@link Container} to remove
+	 */
 	public void remove(Container container) {
 		children.remove(container);
 		container.detach(renderTree);
@@ -147,7 +175,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 	@Override
 	public void detach(ParentRenderNode<?, ?> parentRenderNode) {
 	}
-
+	
 	@Override
 	public void setVisibility(Visibility visibility) {
 		this.visibility = visibility;
@@ -160,22 +188,42 @@ public class UiContainer extends UiElement implements InputProcessor {
 		}
 	}
 
+	/**
+	 * Adds a {@link ScreenSizeListener} to listen for {@link ScreenSize} change
+	 * @param listener The {@link ScreenSizeListener} to add
+	 */
 	public void addScreenSizeListener(ScreenSizeListener listener) {
 		renderTree.addScreenSizeListener(listener);
 	}
 
+	/**
+	 * Removes a {@link ScreenSizeListener} from this {@link UiContainer}
+	 * @param listener The {@link ScreenSizeListener} to remove
+	 */
 	public void removeScreenSizeListener(ScreenSizeListener listener) {
 		renderTree.removeScreenSizeListener(listener);
 	}
 
+	/**
+	 * Returns if a {@link UiTheme} has been applied to thi {@link UiContainer}
+	 * @return True if the {@link UiTheme} has been applied
+	 */
 	public boolean isThemeApplied() {
 		return theme != null;
 	}
 
+	/**
+	 * Returns the {@link UiTheme} currently applied to this {@link UiContainer}
+	 * @return Null if no {@link UiTheme} has been applied
+	 */
 	public UiTheme getTheme() {
 		return theme;
 	}
 
+	/**
+	 * Sets the current {@link UiTheme} for this {@link UiContainer}
+	 * @param theme The {@link UiTheme} to apply
+	 */
 	public void setTheme(UiTheme theme) {
 		if (theme == null) {
 			return;
@@ -197,7 +245,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		screenX = MathUtils.round(screenX / scaleX);
 		screenY = MathUtils.round(screenY / scaleY);
-		
+
 		if (activeTextInput != null && activeTextInput.mouseDown(screenX, screenY, pointer, button) == null) {
 			// Release textbox control
 			activeTextInput = null;
@@ -298,7 +346,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 				activeAction.setState(NodeState.NORMAL);
 			}
 			ActionableRenderNode result = activeNavigation.navigate(keycode);
-			if(result != null) {
+			if (result != null) {
 				result.setState(NodeState.HOVER);
 				setActiveAction(result);
 			}
@@ -348,20 +396,35 @@ public class UiContainer extends UiElement implements InputProcessor {
 		activeAction = actionable;
 	}
 
+	/**
+	 * Sets the current {@link Navigatable} for UI navigation
+	 * @param activeNavigation The current {@link Navigatable} being navigated
+	 */
 	public void setActiveNavigation(Navigatable activeNavigation) {
 		this.activeNavigation = activeNavigation;
 	}
 
+	/**
+	 * Clears the current {@link Navigatable} being navigated
+	 */
 	public void clearActiveNavigation() {
 		this.activeTextInput = null;
 		this.activeAction = null;
 		this.activeNavigation = null;
 	}
 
+	/**
+	 * Returns the width of the {@link UiContainer}
+	 * @return The width in pixels
+	 */
 	public int getWidth() {
 		return width;
 	}
 
+	/**
+	 * Returns the height of the {@link UiContainer} 
+	 * @return The height in pixels
+	 */
 	public int getHeight() {
 		return height;
 	}
@@ -369,8 +432,10 @@ public class UiContainer extends UiElement implements InputProcessor {
 	/**
 	 * Sets the width and height of the {@link UiContainer}
 	 * 
-	 * @param width The width in pixels
-	 * @param height The height in pixels
+	 * @param width
+	 *            The width in pixels
+	 * @param height
+	 *            The height in pixels
 	 */
 	public void set(int width, int height) {
 		this.width = width;
@@ -392,6 +457,10 @@ public class UiContainer extends UiElement implements InputProcessor {
 		this.scaleY = scaleY;
 	}
 
+	/**
+	 * Returns the last {@link InputSource} the {@link UiContainer} detected
+	 * @return
+	 */
 	public InputSource getLastInputSource() {
 		return lastInputSource;
 	}

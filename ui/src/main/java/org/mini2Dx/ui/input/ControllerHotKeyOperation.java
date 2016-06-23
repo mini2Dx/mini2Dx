@@ -15,7 +15,7 @@ import org.mini2Dx.core.controller.button.ControllerButton;
 import org.mini2Dx.ui.element.Actionable;
 
 /**
- *
+ * Internal class for setting/unsetting {@link ControllerButton} hotkeys
  */
 public class ControllerHotKeyOperation {
 	private final ControllerButton controllerButton;

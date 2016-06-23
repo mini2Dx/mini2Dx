@@ -16,22 +16,56 @@ import org.mini2Dx.core.serialization.annotation.NonConcrete;
 import org.mini2Dx.ui.listener.TextAnimationListener;
 
 /**
- *
+ * Common interface for text animation implementations
  */
 @NonConcrete
 public interface TextAnimation {
 
+	/**
+	 * Update the animation
+	 * @param text The target text to display
+	 * @param delta The time since the last frame (in seconds)
+	 */
 	public void update(String text, float delta);
 	
+	/**
+	 * Interpolate the animation
+	 * @param text The target text to display
+	 * @param alpha The interpolation alpha value
+	 */
 	public void interpolate(String text, float alpha);
 	
+	/**
+	 * Renders the animation
+	 * @param text The target text to display
+	 * @param g The {@link Graphics} context
+	 * @param renderX The render X coordinate
+	 * @param renderY The render Y coordinate
+	 * @param renderWidth The text render width
+	 * @param hAlign The horizontal alignment of the text
+	 */
 	public void render(String text, Graphics g, float renderX, float renderY, float renderWidth, int hAlign);
 	
+	/**
+	 * Sets the {@link TextAnimation} to be skipped
+	 */
 	public void skip();
 	
+	/**
+	 * Returns if the {@link TextAnimation} has finished
+	 * @return True if the animation has finished
+	 */
 	public boolean isFinished();
 	
+	/**
+	 * Adds a {@link TextAnimationListener} to this {@link TextAnimation}
+	 * @param listener The {@link TextAnimationListener} to be added
+	 */
 	public void addTextAnimationListener(TextAnimationListener listener);
 	
+	/**
+	 * Removes a {@link TextAnimationListener} from this {@link TextAnimation}
+	 * @param listener The {@link TextAnimationListener} to be removed
+	 */
 	public void removeTextAnimationListener(TextAnimationListener listener);
 }
