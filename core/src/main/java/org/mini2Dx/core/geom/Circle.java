@@ -327,6 +327,7 @@ public class Circle extends Shape {
 		}
 		float diameter = circle.radius * circle.radius;
 		boundingBox.set(getMinX(), getMinY(), diameter, diameter);
+		dirty = false;
 	}
 
 	@Override
