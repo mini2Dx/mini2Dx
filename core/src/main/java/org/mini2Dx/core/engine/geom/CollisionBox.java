@@ -23,6 +23,7 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.geom.Shape;
+import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -107,6 +108,16 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 			return;
 		}
 		interpolate = false;
+	}
+	
+	@Override
+	public void draw(Graphics g) {
+		renderRectangle.draw(g);
+	}
+	
+	@Override
+	public void fill(Graphics g) {
+		renderRectangle.fill(g);
 	}
 
 	/**

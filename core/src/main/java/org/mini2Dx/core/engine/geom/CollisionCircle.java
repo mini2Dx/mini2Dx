@@ -23,6 +23,7 @@ import org.mini2Dx.core.engine.Sizeable;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Circle;
 import org.mini2Dx.core.geom.Shape;
+import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.math.MathUtils;
 
@@ -104,6 +105,16 @@ public class CollisionCircle extends Circle implements CollisionShape {
 			return;
 		}
 		interpolate = false;
+	}
+	
+	@Override
+	public void draw(Graphics g) {
+		renderCircle.draw(g);
+	}
+	
+	@Override
+	public void fill(Graphics g) {
+		renderCircle.fill(g);
 	}
 	
 	@Override

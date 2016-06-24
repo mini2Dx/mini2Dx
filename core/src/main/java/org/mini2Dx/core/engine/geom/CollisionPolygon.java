@@ -14,6 +14,7 @@ import org.mini2Dx.core.engine.Sizeable;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Polygon;
 import org.mini2Dx.core.geom.Shape;
+import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -66,6 +67,35 @@ public class CollisionPolygon extends Polygon implements CollisionShape {
 	@Override
 	public void preUpdate() {
 		previousPolygon.set(this);
+	}
+	
+	@Override
+	public void update(GameContainer gc, float delta) {}
+
+	@Override
+	public void interpolate(GameContainer gc, float alpha) {
+		if(!interpolate) {
+			return;
+		}
+		renderPolygon.set(previousPolygon.lerp(this, alpha));
+		storeRenderCoordinates();
+		if(renderX != MathUtils.round(this.getX())) {
+			return;
+		}
+		if(renderY != MathUtils.round(this.getY())) {
+			return;
+		}
+		interpolate = false;
+	}
+	
+	@Override
+	public void draw(Graphics g) {
+		renderPolygon.draw(g);
+	}
+	
+	@Override
+	public void fill(Graphics g) {
+		renderPolygon.fill(g);
 	}
 
 	@Override
@@ -162,25 +192,6 @@ public class CollisionPolygon extends Polygon implements CollisionShape {
 			sizeChangeListenerLock.readLock().lock();
 		}
 		sizeChangeListenerLock.readLock().unlock();
-	}
-
-	@Override
-	public void update(GameContainer gc, float delta) {}
-
-	@Override
-	public void interpolate(GameContainer gc, float alpha) {
-		if(!interpolate) {
-			return;
-		}
-		renderPolygon.set(previousPolygon.lerp(this, alpha));
-		storeRenderCoordinates();
-		if(renderX != MathUtils.round(this.getX())) {
-			return;
-		}
-		if(renderY != MathUtils.round(this.getY())) {
-			return;
-		}
-		interpolate = false;
 	}
 	
 	@Override
