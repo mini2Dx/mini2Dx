@@ -21,6 +21,7 @@ import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.core.serialization.annotation.NonConcrete;
 import org.mini2Dx.ui.effect.UiEffect;
 import org.mini2Dx.ui.listener.HoverListener;
+import org.mini2Dx.ui.listener.UiEffectListener;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.RenderNode;
 import org.mini2Dx.ui.style.UiTheme;
@@ -34,11 +35,14 @@ public abstract class UiElement implements Hoverable {
 	private final String id;
 	protected final Queue<UiEffect> effects = new LinkedList<UiEffect>();
 
+	@Field(optional = true)
 	protected Visibility visibility = Visibility.HIDDEN;
+	@Field(optional = true)
 	protected String styleId = UiTheme.DEFAULT_STYLE_ID;
 	@Field(optional = true)
 	protected int zIndex = 0;
 
+	private List<UiEffectListener> effectListeners;
 	private List<HoverListener> hoverListeners;
 	private boolean debugEnabled = false;
 
@@ -179,6 +183,28 @@ public abstract class UiElement implements Hoverable {
 			hoverListeners.get(i).onHoverBegin(this);
 		}
 	}
+	
+	/**
+	 * Adds a {@link UiEffectListener} to this {@link UiElement}
+	 * @param listener The {@link UiEffectListener} to add
+	 */
+	public void addEffectListener(UiEffectListener listener) {
+		if(effectListeners == null) {
+			effectListeners = new ArrayList<UiEffectListener>(1);
+		}
+		effectListeners.add(listener);
+	}
+	
+	/**
+	 * Removes a {@link UiEffectListener} from this {@link UiElement}
+	 * @param listener The {@link UiEffectListener} to remove
+	 */
+	public void removeEffectListener(UiEffectListener listener) {
+		if(effectListeners == null) {
+			return;
+		}
+		effectListeners.remove(listener);
+	}
 
 	/**
 	 * Notifies all {@link HoverListener}s of the end hover event
@@ -189,6 +215,19 @@ public abstract class UiElement implements Hoverable {
 		}
 		for (int i = hoverListeners.size() - 1; i >= 0; i--) {
 			hoverListeners.get(i).onHoverEnd(this);
+		}
+	}
+	
+	/**
+	 * Notifies all {@link UiEffectListener}s of the finished event
+	 * @param effect The {@link UiEffect} that finished
+	 */
+	public void notifyEffectListenersOnFinished(UiEffect effect) {
+		if(effectListeners == null) {
+			return;
+		}
+		for (int i = effectListeners.size() - 1; i >= 0; i--) {
+			effectListeners.get(i).onEffectFinished(this, effect);
 		}
 	}
 

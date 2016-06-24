@@ -91,6 +91,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 				if (effect.isFinished()) {
 					effect.postEnd(element);
 					effects.remove(i);
+					element.notifyEffectListenersOnFinished(effect);
 					i--;
 					continue;
 				}
