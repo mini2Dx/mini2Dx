@@ -653,6 +653,23 @@ public class Graphics {
 		this.rotationX = x;
 		this.rotationY = y;
 	}
+	
+	/**
+	 * Sets the canvas rotation around a provided point
+	 * @param degrees The degree value in a clockwise direction
+	 * @param x The x coordinate to rotate around
+	 * @param y The y coordinate to rotate around
+	 */
+	public void setRotation(float degrees, float x, float y) {
+		if (rendering) {
+			endRendering();
+		}
+
+		this.rotation = degrees;
+		this.rotation = this.rotation % 360f;
+		this.rotationX = x;
+		this.rotationY = y;
+	}
 
 	/**
 	 * Scales the canvas (multiplies scale value)
