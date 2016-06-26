@@ -32,6 +32,7 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 		if (textureRegion == null) {
 			return;
 		}
+		textureRegion.setFlip(element.isFlipX(), element.isFlipY());
 		g.drawTextureRegion(textureRegion, getContentRenderX(), getContentRenderY(),
 				getContentRenderWidth(), getContentRenderHeight());
 	}

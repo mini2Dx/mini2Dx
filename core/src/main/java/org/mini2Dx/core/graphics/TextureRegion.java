@@ -57,4 +57,36 @@ public class TextureRegion extends com.badlogic.gdx.graphics.g2d.TextureRegion {
 	public TextureRegion (TextureRegion region, int x, int y, int width, int height) {
 		super(region, x, y, width, height);
 	}
+	
+	/**
+	 * Sets if the {@link TextureRegion} is flipped
+	 * @param flipX True if the region is flipped horizontally
+	 * @param flipY True if the region is flipped vertically
+	 */
+	public void setFlip(boolean flipX, boolean flipY) {
+		setFlipX(flipX);
+		setFlipY(flipY);
+	}
+	
+	/**
+	 * Sets if the {@link TextureRegion} is flipped horizontally
+	 * @param flipX True if the region is flipped horizontally
+	 */
+	public void setFlipX(boolean flipX) {
+		if(flipX == isFlipX()) {
+			return;
+		}
+		flip(true, false);
+	}
+	
+	/**
+	 * Sets if the {@link TextureRegion} is flipped vertically
+	 * @param flipY True if the region is flipped vertically
+	 */
+	public void setFlipY(boolean flipY) {
+		if(flipY == isFlipY()) {
+			return;
+		}
+		flip(false, true);
+	}
 }

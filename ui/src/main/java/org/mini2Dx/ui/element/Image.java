@@ -31,6 +31,10 @@ public class Image extends UiElement {
 	private String path;
 	@Field(optional = true)
 	private boolean responsive = false;
+	@Field(optional=true)
+	private boolean flipX = false;
+	@Field(optional=true)
+	private boolean flipY = false;
 
 	/**
 	 * Constructor. Generates a unique ID for this {@link Image}
@@ -264,5 +268,37 @@ public class Image extends UiElement {
 			return;
 		}
 		renderNode.setDirty(true);
+	}
+
+	/**
+	 * Returns if the texture should be flipped horizontally during rendering
+	 * @return
+	 */
+	public boolean isFlipX() {
+		return flipX;
+	}
+
+	/**
+	 * Sets if the texture should be flipped horizontally during rendering
+	 * @param flipX True if the texture should be flipped
+	 */
+	public void setFlipX(boolean flipX) {
+		this.flipX = flipX;
+	}
+
+	/**
+	 * Returns if the texture should be flipped vertically during rendering
+	 * @return
+	 */
+	public boolean isFlipY() {
+		return flipY;
+	}
+	
+	/**
+	 * Sets if the texture should be flipped vertically during rendering
+	 * @param flipY True if the texture should be flipped
+	 */
+	public void setFlipY(boolean flipY) {
+		this.flipY = flipY;
 	}
 }
