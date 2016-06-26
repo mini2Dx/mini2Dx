@@ -271,6 +271,7 @@ public class UiTheme {
 			Map<String, DefaultStyleRuleset> rules) {
 		StyleRuleset<?> ruleset = rules.get(element.getStyleId());
 		if (ruleset == null) {
+			Gdx.app.error(LOGGING_TAG, "No style found with ID " + element.getStyleId());
 			ruleset = rules.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
@@ -283,6 +284,7 @@ public class UiTheme {
 	public ButtonStyleRule getButtonStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<ButtonStyleRule> ruleset = buttons.get(styleId);
 		if (ruleset == null) {
+			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = buttons.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
@@ -291,6 +293,7 @@ public class UiTheme {
 	public ColumnStyleRule getColumnStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<ColumnStyleRule> ruleset = columns.get(styleId);
 		if (ruleset == null) {
+			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = columns.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
@@ -299,6 +302,7 @@ public class UiTheme {
 	public ContainerStyleRule getContainerStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<ContainerStyleRule> ruleset = containers.get(styleId);
 		if (ruleset == null) {
+			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = containers.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
@@ -307,6 +311,7 @@ public class UiTheme {
 	public LabelStyleRule getLabelStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<LabelStyleRule> ruleset = labels.get(styleId);
 		if (ruleset == null) {
+			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = labels.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
@@ -315,6 +320,7 @@ public class UiTheme {
 	public ScrollBoxStyleRule getScrollBoxStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<ScrollBoxStyleRule> ruleset = scrollBoxes.get(styleId);
 		if(ruleset == null) {
+			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = scrollBoxes.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
@@ -323,6 +329,7 @@ public class UiTheme {
 	public SelectStyleRule getSelectStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<SelectStyleRule> ruleset = selects.get(styleId);
 		if (ruleset == null) {
+			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = selects.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
@@ -331,6 +338,7 @@ public class UiTheme {
 	public TabStyleRule getTabStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<TabStyleRule> ruleset = tabs.get(styleId);
 		if (ruleset == null) {
+			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = tabs.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
@@ -339,6 +347,7 @@ public class UiTheme {
 	public TextBoxStyleRule getTextBoxStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<TextBoxStyleRule> ruleset = textboxes.get(styleId);
 		if (ruleset == null) {
+			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = textboxes.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
