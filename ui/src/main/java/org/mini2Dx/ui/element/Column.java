@@ -35,7 +35,9 @@ public class Column extends UiElement {
 	protected final Queue<UiElement> asyncQueue = new ConcurrentLinkedQueue<UiElement>();
 
 	protected AbstractColumnRenderNode<?> renderNode;
-	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
+	
+	@Field(optional=true)
+	private String layout = LayoutRuleset.DEFAULT_LAYOUT;
 
 	/**
 	 * Constructor. Generates a unique ID for this {@link Column}
@@ -162,22 +164,22 @@ public class Column extends UiElement {
 	}
 
 	/**
-	 * 
+	 * Returns the current layout
 	 * @return
 	 */
-	public LayoutRuleset getLayout() {
+	public String getLayout() {
 		return layout;
 	}
 	
 	/**
-	 * 
-	 * @param layoutRuleset
+	 * Sets the current layout
+	 * @param layout
 	 */
-	public void setLayout(LayoutRuleset layoutRuleset) {
-		if (layoutRuleset == null) {
+	public void setLayout(String layout) {
+		if (layout == null) {
 			return;
 		}
-		this.layout = layoutRuleset;
+		this.layout = layout;
 		if (renderNode == null) {
 			return;
 		}

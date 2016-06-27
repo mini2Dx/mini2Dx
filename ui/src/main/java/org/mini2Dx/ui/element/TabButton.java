@@ -6,8 +6,7 @@ package org.mini2Dx.ui.element;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
-import org.mini2Dx.ui.layout.LayoutRuleset;
-import org.mini2Dx.ui.layout.TabButtonLayoutRuleset;
+import org.mini2Dx.ui.layout.ResponsiveSizeRule;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.TabButtonRenderNode;
 
@@ -18,7 +17,6 @@ public class TabButton extends ContentButton {
 	protected final Label label;
 	protected final Image icon;
 	
-	private TabButtonLayoutRuleset tabButtonLayoutRuleset = TabButtonLayoutRuleset.DEFAULT_RULESET;
 	private boolean currentTab = false;
 	
 	public TabButton() {
@@ -94,16 +92,23 @@ public class TabButton extends ContentButton {
 	}
 	
 	int getCurrentSizeInColumns() {
-		return tabButtonLayoutRuleset.getCurrentSizeInColumns();
+		if(renderNode == null) {
+			return 0;
+		}
+		if(renderNode.getLayoutRuleset() == null) {
+			return 0;
+		}
+		if(renderNode.getLayoutRuleset().getCurrentSizeRule() == null) {
+			return 0;
+		}
+		return ((ResponsiveSizeRule) renderNode.getLayoutRuleset().getCurrentSizeRule()).getColumns();
 	}
 	
 	@Override
-	public void setLayout(LayoutRuleset layoutRuleset) {
-		throw new MdxException("setLayout(LayoutRuleset) not supported by TabButton");
-	}
-	
-	public void setLayout(TabButtonLayoutRuleset layoutRuleset) {
-		this.tabButtonLayoutRuleset = layoutRuleset;
-		super.setLayout(layoutRuleset);
+	public void setLayout(String layout) {
+		if(layout.contains("px")) {
+			throw new MdxException("Tab buttons do not support pixel sizes, please use columns");
+		}
+		super.setLayout(layout);
 	}
 }

@@ -14,7 +14,6 @@ package org.mini2Dx.ui.element;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
-import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.TextButtonRenderNode;
 
@@ -151,11 +150,11 @@ public class TextButton extends Button {
 	}
 	
 	@Override
-	public void setLayout(LayoutRuleset layoutRuleset) {
-		if(layoutRuleset == null) {
+	public void setLayout(String layout) {
+		if(layout == null) {
 			return;
 		}
-		this.layout = layoutRuleset;
+		this.layout = layout;
 		if(renderNode == null) {
 			return;
 		}

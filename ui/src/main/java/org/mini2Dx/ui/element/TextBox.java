@@ -25,11 +25,12 @@ import org.mini2Dx.ui.render.TextBoxRenderNode;
  * A text box {@link UiElement}. Can optionally function as a password field.
  */
 public class TextBox extends UiElement implements Actionable {
-	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
 	private List<ActionListener> actionListeners;
 	private TextBoxRenderNode renderNode;
 	private String value = "";
 
+	@Field(optional=true)
+	private String layout = LayoutRuleset.DEFAULT_LAYOUT;
 	@Field(optional = true)
 	private boolean enabled = true;
 	@Field(optional = true)
@@ -194,15 +195,15 @@ public class TextBox extends UiElement implements Actionable {
 		renderNode.setDirty(true);
 	}
 
-	public LayoutRuleset getLayout() {
+	public String getLayout() {
 		return layout;
 	}
 
-	public void setLayout(LayoutRuleset layoutRuleset) {
-		if (layoutRuleset == null) {
+	public void setLayout(String layout) {
+		if (layout == null) {
 			return;
 		}
-		this.layout = layoutRuleset;
+		this.layout = layout;
 		if (renderNode == null) {
 			return;
 		}

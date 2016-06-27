@@ -23,8 +23,10 @@ import org.mini2Dx.ui.listener.ActionListener;
  * Base class for button implementations
  */
 public abstract class Button extends UiElement implements Actionable {
-	protected LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
 	private List<ActionListener> actionListeners;
+	
+	@Field(optional=true)
+	protected String layout = LayoutRuleset.DEFAULT_LAYOUT;
 	@Field(optional=true)
 	private boolean enabled = true;
 	
@@ -90,16 +92,16 @@ public abstract class Button extends UiElement implements Actionable {
 	}
 	
 	/**
-	 * Returns the current {@link LayoutRuleset} for this {@link Button}
-	 * @return {@link LayoutRuleset#DEFAULT_RULESET} by default
+	 * Returns the current layout for this {@link Button}
+	 * @return {@link LayoutRuleset#DEFAULT_LAYOUT} by default
 	 */
-	public LayoutRuleset getLayout() {
+	public String getLayout() {
 		return layout;
 	}
 	
 	/**
-	 * Sets the current {@link LayoutRuleset} for this {@link Button}
-	 * @param layoutRuleset
+	 * Sets the current layout for this {@link Button}
+	 * @param layout
 	 */
-	public abstract void setLayout(LayoutRuleset layoutRuleset);
+	public abstract void setLayout(String layout);
 }

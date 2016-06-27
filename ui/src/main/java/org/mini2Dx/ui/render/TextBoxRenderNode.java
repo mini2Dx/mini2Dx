@@ -16,6 +16,7 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.Visibility;
+import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.TextBoxStyleRule;
 
@@ -40,9 +41,20 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 	private boolean cursorVisible;
 	private float renderCursorX;
 	private float renderCursorHeight;
+	
+	protected LayoutRuleset layoutRuleset;
 
 	public TextBoxRenderNode(ParentRenderNode<?, ?> parent, TextBox element) {
 		super(parent, element);
+		layoutRuleset = new LayoutRuleset(element.getLayout());
+	}
+	
+	@Override
+	public void layout(LayoutState layoutState) {
+		if(!layoutRuleset.equals(element.getLayout())) {
+			layoutRuleset = new LayoutRuleset(element.getLayout());
+		}
+		super.layout(layoutState);
 	}
 
 	@Override
@@ -106,10 +118,10 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if(element.getLayout().isHiddenByInputSource(layoutState.getLastInputSource())) {
+		if(layoutRuleset.isHiddenByInputSource(layoutState.getLastInputSource())) {
 			return 0f;
 		}
-		float layoutRuleResult = element.getLayout().getPreferredWidth(layoutState);
+		float layoutRuleResult = layoutRuleset.getPreferredWidth(layoutState);
 		if(layoutRuleResult <= 0f) {
 			hiddenByLayoutRule = true;
 			return 0f;
@@ -401,5 +413,9 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 			return;
 		}
 		super.setState(state);
+	}
+
+	public LayoutRuleset getLayoutRuleset() {
+		return layoutRuleset;
 	}
 }

@@ -21,6 +21,7 @@ import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.input.ControllerHotKeyOperation;
 import org.mini2Dx.ui.input.KeyboardHotKeyOperation;
+import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.TabStyleRule;
 
@@ -31,8 +32,19 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> i
 	private Map<Integer, ActionableRenderNode> keyboardHotkeys = new HashMap<Integer, ActionableRenderNode>();
 	private Map<String, ActionableRenderNode> controllerHotkeys = new HashMap<String, ActionableRenderNode>();
 	
+	protected LayoutRuleset layoutRuleset;
+	
 	public TabViewRenderNode(ParentRenderNode<?, ?> parent, TabView tabView) {
 		super(parent, tabView);
+		layoutRuleset = new LayoutRuleset(element.getLayout());
+	}
+	
+	@Override
+	public void layout(LayoutState layoutState) {
+		if(!layoutRuleset.equals(element.getLayout())) {
+			layoutRuleset = new LayoutRuleset(element.getLayout());
+		}
+		super.layout(layoutState);
 	}
 
 	@Override
@@ -99,10 +111,10 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> i
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if(element.getLayout().isHiddenByInputSource(layoutState.getLastInputSource())) {
+		if(layoutRuleset.isHiddenByInputSource(layoutState.getLastInputSource())) {
 			return 0f;
 		}
-		float layoutRuleResult = element.getLayout().getPreferredWidth(layoutState);
+		float layoutRuleResult = layoutRuleset.getPreferredWidth(layoutState);
 		if(layoutRuleResult <= 0f) {
 			hiddenByLayoutRule = true;
 			return 0f;
@@ -114,7 +126,7 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> i
 
 	@Override
 	protected float determineXOffset(LayoutState layoutState) {
-		return element.getLayout().getXOffset(layoutState);
+		return layoutRuleset.getXOffset(layoutState);
 	}
 
 	@Override
@@ -148,5 +160,9 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> i
 	
 	public String getTabContentStyleId() {
 		return style.getTabStyle();
+	}
+
+	public LayoutRuleset getLayoutRuleset() {
+		return layoutRuleset;
 	}
 }

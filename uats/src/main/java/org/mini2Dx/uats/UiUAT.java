@@ -116,7 +116,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 
 	private void initialiseUi() {
 		topLeftFrame = new AbsoluteContainer("top-left-frame");
-		topLeftFrame.setLayout(new LayoutRuleset("xs-12c sm-6c md-4c lg-3c"));
+		topLeftFrame.setLayout("xs-12c sm-6c md-4c lg-3c");
 		topLeftFrame.add(Row.withElements("top-left-header", UiUtils.createHeader("UI UAT")));
 		
 		Row backRow = Row.withElements("behind-header", UiUtils.createButton("", new ActionListener() {
@@ -179,7 +179,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		select.addOption("Item 3", "3");
 		
 		modal = new AlignedModal("main-modal");
-		modal.setLayout(new LayoutRuleset("xs-12c md-8c lg-6c md-offset-2c lg-offset-3c"));
+		modal.setLayout("xs-12c md-8c lg-6c md-offset-2c lg-offset-3c");
 		modal.setVerticalAlignment(VerticalAlignment.MIDDLE);
 		
 		TabView tabView = new TabView("tabView");
@@ -196,7 +196,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		
 		Tab tab2 = new Tab("tab2", "Tab 2");
 		Column xsHiddenColumn = Column.withElements("col-not-visible-xs", UiUtils.createLabel("Not visible on XS screen size"));
-		xsHiddenColumn.setLayout(new LayoutRuleset("xs-0c sm-12c"));
+		xsHiddenColumn.setLayout("xs-0c sm-12c");
 		tab2.add(Row.withElements("row-not-visible-xs", xsHiddenColumn));
 		tabView.add(tab2);
 		
@@ -212,7 +212,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		hiddenButton.setVisibility(Visibility.HIDDEN);
 		tab3.add(Row.withElements(hiddenButton));
 		ScrollBox scrollBox = new ScrollBox("scrollBox");
-		scrollBox.setLayout(new LayoutRuleset("xs-12c"));
+		scrollBox.setLayout("xs-12c");
 		scrollBox.setVisibility(Visibility.VISIBLE);
 		scrollBox.setMaxHeight(300f);
 		for(int i = 0; i < 25; i++) {
@@ -230,7 +230,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		uiContainer.setActiveNavigation(modal);
 		
 		bottomRightFrame = new AbsoluteContainer("bottom-right-frame");
-		bottomRightFrame.setLayout(new LayoutRuleset("xs-12c sm-6c md-4c lg-3c"));
+		bottomRightFrame.setLayout("xs-12c sm-6c md-4c lg-3c");
 		bottomRightFrame.setVisibility(Visibility.VISIBLE);
 		bottomRightFrame.add(Row.withElements("row-os", UiUtils.createHeader("Detected OS: " + Mdx.os)));
 		uiContainer.add(bottomRightFrame);

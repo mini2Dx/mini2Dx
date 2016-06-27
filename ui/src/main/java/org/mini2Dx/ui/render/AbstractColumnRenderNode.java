@@ -14,6 +14,7 @@ package org.mini2Dx.ui.render;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.element.Visibility;
+import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ColumnStyleRule;
 
@@ -21,9 +22,19 @@ import org.mini2Dx.ui.style.ColumnStyleRule;
  *
  */
 public abstract class AbstractColumnRenderNode<S extends ColumnStyleRule> extends ParentRenderNode<Column, S> {
-
+	protected LayoutRuleset layoutRuleset;
+	
 	public AbstractColumnRenderNode(ParentRenderNode<?, ?> parent, Column column) {
 		super(parent, column);
+		layoutRuleset = new LayoutRuleset(element.getLayout());
+	}
+	
+	@Override
+	public void layout(LayoutState layoutState) {
+		if(!layoutRuleset.equals(element.getLayout())) {
+			layoutRuleset = new LayoutRuleset(element.getLayout());
+		}
+		super.layout(layoutState);
 	}
 
 	@Override
@@ -53,10 +64,10 @@ public abstract class AbstractColumnRenderNode<S extends ColumnStyleRule> extend
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if (element.getLayout().isHiddenByInputSource(layoutState.getLastInputSource())) {
+		if (layoutRuleset.isHiddenByInputSource(layoutState.getLastInputSource())) {
 			return 0f;
 		}
-		float layoutRuleResult = element.getLayout().getPreferredWidth(layoutState);
+		float layoutRuleResult = layoutRuleset.getPreferredWidth(layoutState);
 		if (layoutRuleResult <= 0f) {
 			hiddenByLayoutRule = true;
 			return 0f;
@@ -69,11 +80,15 @@ public abstract class AbstractColumnRenderNode<S extends ColumnStyleRule> extend
 
 	@Override
 	protected float determineXOffset(LayoutState layoutState) {
-		return element.getLayout().getXOffset(layoutState);
+		return layoutRuleset.getXOffset(layoutState);
 	}
 
 	@Override
 	protected float determineYOffset(LayoutState layoutState) {
 		return 0f;
+	}
+
+	public LayoutRuleset getLayoutRuleset() {
+		return layoutRuleset;
 	}
 }

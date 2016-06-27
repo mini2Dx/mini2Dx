@@ -189,11 +189,11 @@ public class ImageButton extends Button {
 	}
 	
 	@Override
-	public void setLayout(LayoutRuleset layoutRuleset) {
-		if(layoutRuleset == null) {
+	public void setLayout(String layout) {
+		if(layout == null) {
 			return;
 		}
-		this.layout = layoutRuleset;
+		this.layout = layout;
 		if(renderNode == null) {
 			return;
 		}

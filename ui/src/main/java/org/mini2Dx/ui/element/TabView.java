@@ -24,7 +24,6 @@ import org.mini2Dx.ui.input.ControllerHotKeyOperation;
 import org.mini2Dx.ui.input.KeyboardHotKeyOperation;
 import org.mini2Dx.ui.input.UiNavigation;
 import org.mini2Dx.ui.layout.LayoutRuleset;
-import org.mini2Dx.ui.layout.TabButtonLayoutRuleset;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.render.ActionableRenderNode;
 import org.mini2Dx.ui.render.NavigatableRenderNode;
@@ -37,8 +36,7 @@ import com.badlogic.gdx.Input.Keys;
  * A {@link UiElement} of tabs that can be switched between by the player
  */
 public class TabView extends UiElement implements Navigatable {
-	private static final TabButtonLayoutRuleset DEFAULT_CHANGE_TAB_BTN_LAYOUT = new TabButtonLayoutRuleset(
-			"xs-3c sm-2c lg-1c");
+	private static final String DEFAULT_CHANGE_TAB_BTN_LAYOUT = "xs-3c sm-2c lg-1c";
 
 	private final Queue<ControllerHotKeyOperation> controllerHotKeyOperations = new LinkedList<ControllerHotKeyOperation>();
 	private final Queue<KeyboardHotKeyOperation> keyboardHotKeyOperations = new LinkedList<KeyboardHotKeyOperation>();
@@ -46,13 +44,15 @@ public class TabView extends UiElement implements Navigatable {
 	private final Row tabMenuRow;
 	private final TabButton previousTabButton, nextTabButton;
 	private final List<TabButton> tabButtons = new ArrayList<TabButton>(1);
-
-	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
-	private TabButtonLayoutRuleset tabButtonLayout = new TabButtonLayoutRuleset("xs-6c sm-4c md-2c xl-1c");
+	
 	private TabViewRenderNode renderNode;
 	private int currentTabIndex = 0;
 	private int tabButtonViewIndex = 0;
 
+	@Field(optional=true)
+	private String layout = LayoutRuleset.DEFAULT_LAYOUT;
+	@Field(optional=true)
+	private String tabButtonLayout = "xs-6c sm-4c md-2c xl-1c";
 	@Field(optional = true)
 	private final List<Tab> tabs = new ArrayList<Tab>(1);
 
@@ -627,33 +627,33 @@ public class TabView extends UiElement implements Navigatable {
 				+ " only allows unsetPreviousTabHotkey and unsetNextTabHotkey methods. Unset hotkeys within individual Tab instances.");
 	}
 
-	public LayoutRuleset getLayout() {
+	public String getLayout() {
 		return layout;
 	}
 
-	public void setLayout(LayoutRuleset layoutRuleset) {
-		if (layoutRuleset == null) {
+	public void setLayout(String layout) {
+		if (layout == null) {
 			return;
 		}
-		this.layout = layoutRuleset;
+		this.layout = layout;
 		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
 	}
 
-	public void setPreviousTabButtonLayout(LayoutRuleset layoutRuleset) {
-		previousTabButton.setLayout(layoutRuleset);
+	public void setPreviousTabButtonLayout(String layout) {
+		previousTabButton.setLayout(layout);
 	}
 
-	public void setNextTabButtonLayout(LayoutRuleset layoutRuleset) {
-		nextTabButton.setLayout(layoutRuleset);
+	public void setNextTabButtonLayout(String layout) {
+		nextTabButton.setLayout(layout);
 	}
 
-	public void setTabButtonLayout(TabButtonLayoutRuleset tabButtonLayout) {
-		this.tabButtonLayout = tabButtonLayout;
+	public void setTabButtonLayout(String layout) {
+		this.tabButtonLayout = layout;
 		for (int i = 0; i < tabs.size(); i++) {
-			tabs.get(i).setLayout(tabButtonLayout);
+			tabs.get(i).setLayout(layout);
 		}
 	}
 

@@ -29,9 +29,20 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
  */
 public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule>implements ActionableRenderNode {
 	private static GlyphLayout glyphLayout = new GlyphLayout();
+	
+	protected LayoutRuleset layoutRuleset;
 
 	public TextButtonRenderNode(ParentRenderNode<?, ?> parent, TextButton element) {
 		super(parent, element);
+		layoutRuleset = new LayoutRuleset(element.getLayout());
+	}
+	
+	@Override
+	public void layout(LayoutState layoutState) {
+		if(!layoutRuleset.equals(element.getLayout())) {
+			layoutRuleset = new LayoutRuleset(element.getLayout());
+		}
+		super.layout(layoutState);
 	}
 
 	@Override
@@ -105,10 +116,10 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if (element.getLayout().isHiddenByInputSource(layoutState.getLastInputSource())) {
+		if (layoutRuleset.isHiddenByInputSource(layoutState.getLastInputSource())) {
 			return 0f;
 		}
-		float layoutRuleResult = element.getLayout().getPreferredWidth(layoutState);
+		float layoutRuleResult = layoutRuleset.getPreferredWidth(layoutState);
 		if (layoutRuleResult <= 0f) {
 			hiddenByLayoutRule = true;
 			return 0f;
@@ -128,7 +139,7 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 
 	@Override
 	protected float determineXOffset(LayoutState layoutState) {
-		return element.getLayout().getXOffset(layoutState);
+		return layoutRuleset.getXOffset(layoutState);
 	}
 
 	@Override
@@ -149,5 +160,9 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 	@Override
 	public void endAction() {
 		element.notifyActionListenersOfEndEvent();
+	}
+
+	public LayoutRuleset getLayoutRuleset() {
+		return layoutRuleset;
 	}
 }

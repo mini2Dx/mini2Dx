@@ -26,7 +26,8 @@ import org.mini2Dx.ui.input.InputSource;
  * {@link ScreenSize}s
  */
 public class LayoutRuleset {
-	public static final LayoutRuleset DEFAULT_RULESET = new LayoutRuleset("xs-12c");
+	public static final String DEFAULT_LAYOUT = "xs-12c";
+	public static final LayoutRuleset DEFAULT_RULESET = new LayoutRuleset(DEFAULT_LAYOUT);
 
 	protected static final String PIXEL_SUFFIX = "px";
 	protected static final String COLUMN_SUFFIX = "c";
@@ -36,13 +37,19 @@ public class LayoutRuleset {
 	protected final Set<InputSource> hiddenByInput = new HashSet<InputSource>();
 	protected final Map<ScreenSize, OffsetRule> offsetRules = new HashMap<ScreenSize, OffsetRule>();
 
+	private final String rules;
 	private boolean hiddenByInputSource = false;
+	
+	private SizeRule currentSizeRule = null;
+	private OffsetRule currentOffsetRule = null;
 
 	/**
 	 * Constructor
 	 * @param rules The ruleset, e.g. xs-12c xs-offset-4c sm-500px sm-offset-20px
 	 */
 	public LayoutRuleset(String rules) {
+		this.rules = rules;
+		
 		String[] rule = rules.split(" ");
 		for (int i = 0; i < rule.length; i++) {
 			String[] ruleDetails = rule[i].split("-");
@@ -135,14 +142,28 @@ public class LayoutRuleset {
 	}
 
 	public float getPreferredWidth(LayoutState layoutState) {
-		return sizeRules.get(layoutState.getScreenSize()).getWidth(layoutState);
+		currentSizeRule = sizeRules.get(layoutState.getScreenSize());
+		return currentSizeRule.getWidth(layoutState);
 	}
 
 	public float getXOffset(LayoutState layoutState) {
-		return offsetRules.get(layoutState.getScreenSize()).getOffset(layoutState);
+		currentOffsetRule = offsetRules.get(layoutState.getScreenSize());
+		return currentOffsetRule.getOffset(layoutState);
 	}
 
 	public boolean isHiddenByInputSource() {
 		return hiddenByInputSource;
+	}
+	
+	public SizeRule getCurrentSizeRule() {
+		return currentSizeRule;
+	}
+
+	public OffsetRule getCurrentOffsetRule() {
+		return currentOffsetRule;
+	}
+
+	public boolean equals(String rules) {
+		return this.rules.equals(rules);
 	}
 }
