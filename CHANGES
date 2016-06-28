@@ -3,7 +3,7 @@
 - Updated to Android build tools 23.0.1
 - Added controller mappings - Xbox One, Xbox 360 controllers
 - Added render pipeline feature
-- Implemented responsive UI framework (mini2Dx-ui)
+- Implemented UI framework (mini2Dx-ui)
 - (#38) Added drawNinePatch() and clearScaling() methods to Graphics
 - (#45) Added contains and getDistanceFromCenter to Circle
 - (#45) Added fillShape() method to Graphics class
@@ -21,6 +21,8 @@
 - Added GameResizeListener and removed onResize method from GameContainer
 - Added MdxException for mini2Dx runtime exceptions
 - Added WorldListener interface to listen for entity creation/deletion
+- Added TextureRegion setFlip, setFlipX and setFlipY
+- Added Graphics.setRotation
 - Positionable instances now have getId() method
 - Improved pixel rounding and reduced interpolation for CollisionBox, CollisionCircle and CollisionPoint
 - Mdx.json can now read/write to/from FileHandle instances
