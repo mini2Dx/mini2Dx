@@ -13,6 +13,7 @@ package org.mini2Dx.core.controller.xbox360;
 
 import org.mini2Dx.core.controller.Xbox360Controller;
 import org.mini2Dx.core.controller.button.Xbox360Button;
+import org.mini2Dx.core.controller.deadzone.DeadZone;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.PovDirection;
@@ -53,6 +54,10 @@ public class WindowsXbox360Controller extends Xbox360Controller {
 	
 	public WindowsXbox360Controller(Controller controller) {
 		super(controller);
+	}
+	
+	public WindowsXbox360Controller(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) {
+		super(controller, leftStickDeadZone, rightStickDeadZone);
 	}
 	
 	@Override

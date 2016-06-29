@@ -50,4 +50,10 @@ public interface DeadZone {
 	 * @param deadZone The threshold
 	 */
 	public void setDeadZone(float deadZone);
+	
+	/**
+	 * Creates a copy of this {@link DeadZone}
+	 * @return A new {@link DeadZone} instance
+	 */
+	public DeadZone copy();
 }

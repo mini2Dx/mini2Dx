@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mini2Dx.core.controller.button.Xbox360Button;
+import org.mini2Dx.core.controller.deadzone.DeadZone;
+import org.mini2Dx.core.controller.deadzone.NoopDeadZone;
 import org.mini2Dx.core.controller.xbox360.Xbox360ControllerListener;
 
 import com.badlogic.gdx.controllers.Controller;
@@ -26,8 +28,16 @@ public abstract class Xbox360Controller implements MdxController<Xbox360Controll
     private final Controller controller;
     private final List<Xbox360ControllerListener> listeners = new ArrayList<>();
     
+    private DeadZone leftStickDeadZone, rightStickDeadZone;
+    
 	public Xbox360Controller(Controller controller) {
+		this(controller, new NoopDeadZone(), new NoopDeadZone());
+	}
+	
+	public Xbox360Controller(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) {
 		this.controller = controller;
+		this.leftStickDeadZone = leftStickDeadZone;
+		this.rightStickDeadZone = rightStickDeadZone;
 		controller.addListener(this);
 	}
 
@@ -75,8 +85,9 @@ public abstract class Xbox360Controller implements MdxController<Xbox360Controll
 	}
 	
 	protected boolean notifyLeftStickXMoved(float value) {
+		leftStickDeadZone.updateX(value);
 		for(Xbox360ControllerListener listener : listeners) {
-			if(listener.leftStickXMoved(this, value)) {
+			if(listener.leftStickXMoved(this, leftStickDeadZone.getX())) {
 				return true;
 			}
 		}
@@ -84,8 +95,9 @@ public abstract class Xbox360Controller implements MdxController<Xbox360Controll
 	}
 	
 	protected boolean notifyLeftStickYMoved(float value) {
+		leftStickDeadZone.updateY(value);
 		for(Xbox360ControllerListener listener : listeners) {
-			if(listener.leftStickYMoved(this, value)) {
+			if(listener.leftStickYMoved(this, leftStickDeadZone.getY())) {
 				return true;
 			}
 		}
@@ -93,8 +105,9 @@ public abstract class Xbox360Controller implements MdxController<Xbox360Controll
 	}
 	
 	protected boolean notifyRightStickXMoved(float value) {
+		rightStickDeadZone.updateX(value);
 		for(Xbox360ControllerListener listener : listeners) {
-			if(listener.rightStickXMoved(this, value)) {
+			if(listener.rightStickXMoved(this, rightStickDeadZone.getX())) {
 				return true;
 			}
 		}
@@ -102,8 +115,9 @@ public abstract class Xbox360Controller implements MdxController<Xbox360Controll
 	}
 	
 	protected boolean notifyRightStickYMoved(float value) {
+		rightStickDeadZone.updateY(value);
 		for(Xbox360ControllerListener listener : listeners) {
-			if(listener.rightStickYMoved(this, value)) {
+			if(listener.rightStickYMoved(this, rightStickDeadZone.getY())) {
 				return true;
 			}
 		}
@@ -121,4 +135,20 @@ public abstract class Xbox360Controller implements MdxController<Xbox360Controll
     public ControllerType getControllerType() {
     	return ControllerType.XBOX_360;
     }
+
+	public DeadZone getLeftStickDeadZone() {
+		return leftStickDeadZone;
+	}
+
+	public void setLeftStickDeadZone(DeadZone leftStickDeadZone) {
+		this.leftStickDeadZone = leftStickDeadZone;
+	}
+
+	public DeadZone getRightStickDeadZone() {
+		return rightStickDeadZone;
+	}
+
+	public void setRightStickDeadZone(DeadZone rightStickDeadZone) {
+		this.rightStickDeadZone = rightStickDeadZone;
+	}
 }

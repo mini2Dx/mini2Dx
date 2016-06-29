@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mini2Dx.core.controller.button.XboxOneButton;
+import org.mini2Dx.core.controller.deadzone.DeadZone;
+import org.mini2Dx.core.controller.deadzone.NoopDeadZone;
 import org.mini2Dx.core.controller.xboxone.XboxOneControllerListener;
 
 import com.badlogic.gdx.controllers.Controller;
@@ -28,8 +30,16 @@ public abstract class XboxOneController implements MdxController<XboxOneControll
 	private final Controller controller;
 	private final List<XboxOneControllerListener> listeners = new ArrayList<>();
 	
+	private DeadZone leftStickDeadZone, rightStickDeadZone;
+	
 	public XboxOneController(Controller controller) {
+		this(controller, new NoopDeadZone(), new NoopDeadZone());
+	}
+	
+	public XboxOneController(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) {
 		this.controller = controller;
+		this.leftStickDeadZone = leftStickDeadZone;
+		this.rightStickDeadZone = rightStickDeadZone;
 		controller.addListener(this);
 	}
 	
@@ -77,8 +87,9 @@ public abstract class XboxOneController implements MdxController<XboxOneControll
 	}
 	
 	protected boolean notifyLeftStickXMoved(float value) {
+		leftStickDeadZone.updateX(value);
 		for(XboxOneControllerListener listener : listeners) {
-			if(listener.leftStickXMoved(this, value)) {
+			if(listener.leftStickXMoved(this, leftStickDeadZone.getX())) {
 				return true;
 			}
 		}
@@ -86,8 +97,9 @@ public abstract class XboxOneController implements MdxController<XboxOneControll
 	}
 	
 	protected boolean notifyLeftStickYMoved(float value) {
+		leftStickDeadZone.updateY(value);
 		for(XboxOneControllerListener listener : listeners) {
-			if(listener.leftStickYMoved(this, value)) {
+			if(listener.leftStickYMoved(this, leftStickDeadZone.getY())) {
 				return true;
 			}
 		}
@@ -95,8 +107,9 @@ public abstract class XboxOneController implements MdxController<XboxOneControll
 	}
 	
 	protected boolean notifyRightStickXMoved(float value) {
+		rightStickDeadZone.updateX(value);
 		for(XboxOneControllerListener listener : listeners) {
-			if(listener.rightStickXMoved(this, value)) {
+			if(listener.rightStickXMoved(this, rightStickDeadZone.getX())) {
 				return true;
 			}
 		}
@@ -104,8 +117,9 @@ public abstract class XboxOneController implements MdxController<XboxOneControll
 	}
 	
 	protected boolean notifyRightStickYMoved(float value) {
+		rightStickDeadZone.updateY(value);
 		for(XboxOneControllerListener listener : listeners) {
-			if(listener.rightStickYMoved(this, value)) {
+			if(listener.rightStickYMoved(this, rightStickDeadZone.getY())) {
 				return true;
 			}
 		}
@@ -123,5 +137,27 @@ public abstract class XboxOneController implements MdxController<XboxOneControll
 	@Override
 	public ControllerType getControllerType() {
 		return ControllerType.XBOX_ONE;
+	}
+
+	public DeadZone getLeftStickDeadZone() {
+		return leftStickDeadZone;
+	}
+
+	public void setLeftStickDeadZone(DeadZone leftStickDeadZone) {
+		if(leftStickDeadZone == null) {
+			leftStickDeadZone = new NoopDeadZone();
+		}
+		this.leftStickDeadZone = leftStickDeadZone;
+	}
+
+	public DeadZone getRightStickDeadZone() {
+		return rightStickDeadZone;
+	}
+
+	public void setRightStickDeadZone(DeadZone rightStickDeadZone) {
+		if(rightStickDeadZone == null) {
+			rightStickDeadZone = new NoopDeadZone();
+		}
+		this.rightStickDeadZone = rightStickDeadZone;
 	}
 }

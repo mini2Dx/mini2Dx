@@ -12,6 +12,7 @@
 package org.mini2Dx.core.controller;
 
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.controller.deadzone.DeadZone;
 import org.mini2Dx.core.controller.xbox360.LinuxXbox360Controller;
 import org.mini2Dx.core.controller.xbox360.MacXbox360Controller;
 import org.mini2Dx.core.controller.xbox360.WindowsXbox360Controller;
@@ -30,13 +31,29 @@ import com.badlogic.gdx.controllers.mappings.Ouya;
 public class ControllerMapping {
 	
 	public Xbox360Controller xbox360(Controller controller) throws ControllerPlatformException {
+		return xbox360(controller, null, null);
+	}
+	
+	public Xbox360Controller xbox360(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) throws ControllerPlatformException {
 		switch(Mdx.os) {
 		case WINDOWS:
-			return new WindowsXbox360Controller(controller);
+			if(leftStickDeadZone == null || rightStickDeadZone == null) {
+				return new WindowsXbox360Controller(controller);
+			} else {
+				return new WindowsXbox360Controller(controller, leftStickDeadZone, rightStickDeadZone);
+			}
 		case MAC:
-			return new MacXbox360Controller(controller);
+			if(leftStickDeadZone == null || rightStickDeadZone == null) {
+				return new MacXbox360Controller(controller);
+			} else {
+				return new MacXbox360Controller(controller, leftStickDeadZone, rightStickDeadZone);
+			}
 		case UNIX:
-			return new LinuxXbox360Controller(controller);
+			if(leftStickDeadZone == null || rightStickDeadZone == null) {
+				return new LinuxXbox360Controller(controller);
+			} else {
+				return new LinuxXbox360Controller(controller, leftStickDeadZone, rightStickDeadZone);
+			}
 		case ANDROID:
 		case IOS:
 		case UNKNOWN:
@@ -46,13 +63,29 @@ public class ControllerMapping {
 	}
 	
 	public XboxOneController xboxOne(Controller controller) throws ControllerPlatformException {
+		return xboxOne(controller, null, null);
+	}
+	
+	public XboxOneController xboxOne(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) throws ControllerPlatformException {
 		switch(Mdx.os) {
 		case WINDOWS:
-			return new WindowsXboxOneController(controller);
+			if(leftStickDeadZone == null || rightStickDeadZone == null) {
+				return new WindowsXboxOneController(controller);
+			} else {
+				return new WindowsXboxOneController(controller, leftStickDeadZone, rightStickDeadZone);
+			}
 		case MAC:
-			return new MacXboxOneController(controller);
+			if(leftStickDeadZone == null || rightStickDeadZone == null) {
+				return new MacXboxOneController(controller);
+			} else {
+				return new MacXboxOneController(controller, leftStickDeadZone, rightStickDeadZone);
+			}
 		case UNIX:
-			return new LinuxXboxOneController(controller);
+			if(leftStickDeadZone == null || rightStickDeadZone == null) {
+				return new LinuxXboxOneController(controller);
+			} else {
+				return new LinuxXboxOneController(controller, leftStickDeadZone, rightStickDeadZone);
+			}
 		case ANDROID:
 		case IOS:
 		case UNKNOWN:

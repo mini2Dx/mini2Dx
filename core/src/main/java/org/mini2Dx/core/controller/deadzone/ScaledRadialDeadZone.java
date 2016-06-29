@@ -81,4 +81,9 @@ public class ScaledRadialDeadZone implements DeadZone {
 		}
 		dirty = false;
 	}
+
+	@Override
+	public DeadZone copy() {
+		return new ScaledRadialDeadZone();
+	}
 }

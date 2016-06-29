@@ -13,6 +13,7 @@ package org.mini2Dx.core.controller.xboxone;
 
 import org.mini2Dx.core.controller.XboxOneController;
 import org.mini2Dx.core.controller.button.XboxOneButton;
+import org.mini2Dx.core.controller.deadzone.DeadZone;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.PovDirection;
@@ -54,6 +55,10 @@ public class LinuxXboxOneController extends XboxOneController {
 	
 	public LinuxXboxOneController(Controller controller) {
 		super(controller);
+	}
+	
+	public LinuxXboxOneController(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) {
+		super(controller, leftStickDeadZone, rightStickDeadZone);
 	}
 	
 	@Override

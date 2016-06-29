@@ -14,71 +14,42 @@ package org.mini2Dx.core.controller.deadzone;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Implements an axis-based dead zone - suitable for tile-based games. See
- * <a href=
- * "http://www.gamasutra.com/blogs/JoshSutphin/20130416/190541/Doing_Thumbstick_Dead_Zones_Right.php">
- * Doing Thumbstick Dead Zones Right</a>.
+ * A {@link DeadZone} implementation that returns the raw controller values
  */
-public class AxialDeadZone implements DeadZone {
-	private final Vector2 rawValues = new Vector2(0f, 0f);
-	private final Vector2 filteredValues = new Vector2(0f, 0f);
-
-	private float threshold = 0.25f;
-	private boolean dirty = true;
+public class NoopDeadZone implements DeadZone {
+	private Vector2 rawValues = new Vector2(0f, 0f);
 
 	@Override
 	public void updateX(float x) {
 		rawValues.x = x;
-		dirty = true;
 	}
 
 	@Override
 	public void updateY(float y) {
 		rawValues.y = y;
-		dirty = true;
 	}
 
 	@Override
 	public float getX() {
-		dirtyCheck();
-		return filteredValues.x;
+		return rawValues.x;
 	}
 
 	@Override
 	public float getY() {
-		dirtyCheck();
-		return filteredValues.y;
+		return rawValues.y;
 	}
 
 	@Override
 	public float getDeadZone() {
-		return threshold;
+		return 0f;
 	}
 
 	@Override
-	public void setDeadZone(float deadZone) {
-		this.threshold = deadZone;
-	}
-
-	private void dirtyCheck() {
-		if (!dirty) {
-			return;
-		}
-		if (Math.abs(rawValues.x) < threshold) {
-			filteredValues.x = 0f;
-		} else {
-			filteredValues.x = rawValues.x;
-		}
-		if (Math.abs(rawValues.y) < threshold) {
-			filteredValues.y = 0f;
-		} else {
-			filteredValues.y = rawValues.y;
-		}
-		dirty = false;
-	}
+	public void setDeadZone(float deadZone) {}
 
 	@Override
 	public DeadZone copy() {
-		return new AxialDeadZone();
+		return new NoopDeadZone();
 	}
+
 }

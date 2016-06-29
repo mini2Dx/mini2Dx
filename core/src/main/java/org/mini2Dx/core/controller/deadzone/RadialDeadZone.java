@@ -76,4 +76,9 @@ public class RadialDeadZone implements DeadZone {
 		}
 		dirty = false;
 	}
+
+	@Override
+	public DeadZone copy() {
+		return new RadialDeadZone();
+	}
 }
