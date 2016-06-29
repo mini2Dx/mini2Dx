@@ -9,33 +9,55 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.ui.input;
+package org.mini2Dx.ui.navigation;
 
 import org.mini2Dx.ui.element.Actionable;
+import org.mini2Dx.ui.layout.ScreenSize;
 
 /**
- * Internal class for setting/unsetting keyboard hotkeys
+ * Common interface for user interface navigation
  */
-public class KeyboardHotKeyOperation {
-	private final int keycode;
-	private final Actionable actionable;
-	private final boolean mapOperation;
-	
-	public KeyboardHotKeyOperation(int keycode, Actionable actionable, boolean mapOperation) {
-		this.keycode = keycode;
-		this.actionable = actionable;
-		this.mapOperation = mapOperation;
-	}
+public interface UiNavigation {
+	/**
+	 * Re-orders elements based on screen size if necessary
+	 * 
+	 * @param screenSize
+	 *            The current {@link ScreenSize}
+	 */
+	public void layout(ScreenSize screenSize);
 
-	public int getKeycode() {
-		return keycode;
-	}
+	/**
+	 * Resets the selection back to the first {@link Actionable}
+	 * @return The first {@link Actionable}
+	 */
+	public Actionable resetCursor();
 
-	public Actionable getActionable() {
-		return actionable;
-	}
+	/**
+	 * Adds a {@link Actionable} to end of the navigation
+	 * 
+	 * @param actionable The {@link Actionable} to add
+	 */
+	public void add(Actionable actionable);
 
-	public boolean isMapOperation() {
-		return mapOperation;
-	}
+	/**
+	 * Removes a {@link Actionable} from the navigation and shifts any following
+	 * {@link Actionable}s by 1 place
+	 * 
+	 * @param actionable The {@link Actionable} to remove
+	 */
+	public void remove(Actionable actionable);
+
+	/**
+	 * Replace an {@link Actionable} at a specific index
+	 * @param index The index to replace
+	 * @param actionable The new {@link Actionable}
+	 */
+	public void set(int index, Actionable actionable);
+
+	/**
+	 * Update (if required) navigation from key input
+	 * @param keycode The key that was pressed
+	 * @return The currently highlighted {@link Actionable}
+	 */
+	public Actionable navigate(int keycode);
 }

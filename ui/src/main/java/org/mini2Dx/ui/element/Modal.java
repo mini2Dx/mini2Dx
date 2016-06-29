@@ -16,10 +16,10 @@ import java.util.Queue;
 
 import org.mini2Dx.core.controller.button.ControllerButton;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
-import org.mini2Dx.ui.input.ControllerHotKeyOperation;
-import org.mini2Dx.ui.input.KeyboardHotKeyOperation;
-import org.mini2Dx.ui.input.UiNavigation;
-import org.mini2Dx.ui.input.VerticalUiNavigation;
+import org.mini2Dx.ui.navigation.ControllerHotKeyOperation;
+import org.mini2Dx.ui.navigation.KeyboardHotKeyOperation;
+import org.mini2Dx.ui.navigation.UiNavigation;
+import org.mini2Dx.ui.navigation.VerticalUiNavigation;
 import org.mini2Dx.ui.render.ActionableRenderNode;
 import org.mini2Dx.ui.render.ModalRenderNode;
 

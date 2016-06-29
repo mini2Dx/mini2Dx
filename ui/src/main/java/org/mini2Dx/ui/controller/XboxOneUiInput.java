@@ -16,8 +16,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.mini2Dx.core.controller.XboxOneController;
 import org.mini2Dx.core.controller.button.XboxOneButton;
 import org.mini2Dx.core.controller.xboxone.XboxOneControllerAdapter;
+import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.UiContainer;
-import org.mini2Dx.ui.input.InputSource;
 
 import com.badlogic.gdx.Input.Keys;
 

@@ -19,9 +19,9 @@ import org.mini2Dx.core.controller.button.ControllerButton;
 import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.element.Modal;
-import org.mini2Dx.ui.input.ControllerHotKeyOperation;
-import org.mini2Dx.ui.input.KeyboardHotKeyOperation;
 import org.mini2Dx.ui.layout.LayoutState;
+import org.mini2Dx.ui.navigation.ControllerHotKeyOperation;
+import org.mini2Dx.ui.navigation.KeyboardHotKeyOperation;
 import org.mini2Dx.ui.style.ContainerStyleRule;
 
 /**

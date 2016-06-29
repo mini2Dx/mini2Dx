@@ -43,10 +43,10 @@ import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.TextButton;
 import org.mini2Dx.ui.element.Visibility;
-import org.mini2Dx.ui.input.VerticalUiNavigation;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.VerticalAlignment;
 import org.mini2Dx.ui.listener.ActionListener;
+import org.mini2Dx.ui.navigation.VerticalUiNavigation;
 import org.mini2Dx.ui.style.UiTheme;
 
 import com.badlogic.gdx.Gdx;

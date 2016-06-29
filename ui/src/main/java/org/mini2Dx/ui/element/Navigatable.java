@@ -12,7 +12,7 @@
 package org.mini2Dx.ui.element;
 
 import org.mini2Dx.core.controller.button.ControllerButton;
-import org.mini2Dx.ui.input.UiNavigation;
+import org.mini2Dx.ui.navigation.UiNavigation;
 import org.mini2Dx.ui.render.ActionableRenderNode;
 
 import com.badlogic.gdx.Input.Keys;

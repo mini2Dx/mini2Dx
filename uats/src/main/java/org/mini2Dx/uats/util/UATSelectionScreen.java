@@ -40,13 +40,13 @@ import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.AlignedModal;
 import org.mini2Dx.ui.element.Row;
 import org.mini2Dx.ui.element.Visibility;
-import org.mini2Dx.ui.input.VerticalUiNavigation;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.layout.VerticalAlignment;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
+import org.mini2Dx.ui.navigation.VerticalUiNavigation;
 import org.mini2Dx.ui.style.UiTheme;
 
 import com.badlogic.gdx.Gdx;

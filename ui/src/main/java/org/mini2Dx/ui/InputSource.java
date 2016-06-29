@@ -9,67 +9,25 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.ui.input;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.mini2Dx.ui.element.Actionable;
-import org.mini2Dx.ui.element.UiElement;
-import org.mini2Dx.ui.layout.ScreenSize;
-
-import com.badlogic.gdx.Input.Keys;
+package org.mini2Dx.ui;
 
 /**
- * A {@link UiNavigation} implementation that treats all {@link UiElement}s as
- * stacked vertically
+ * Represents a game's input source
  */
-public class VerticalUiNavigation implements UiNavigation {
-	private final List<Actionable> navigation = new ArrayList<Actionable>();
-	private int cursor;
+public enum InputSource {
+	KEYBOARD_MOUSE,
+	TOUCHSCREEN,
+	CONTROLLER;
 	
-	@Override
-	public void add(Actionable actionable) {
-		navigation.add(actionable);
-	}
-
-	@Override
-	public void remove(Actionable actionable) {
-		navigation.remove(actionable);
-	}
-
-	@Override
-	public void set(int index, Actionable actionable) {
-		if (navigation.size() > index) {
-			navigation.set(index, actionable);
-		} else {
-			navigation.add(index, actionable);
+	public static InputSource fromString(String value) {
+		switch(value.toLowerCase()) {
+		case "touchscreen":
+			return InputSource.TOUCHSCREEN;
+		case "keyboardmouse":
+			return InputSource.KEYBOARD_MOUSE;
+		case "controller":
+			return InputSource.CONTROLLER;
 		}
-	}
-
-	@Override
-	public Actionable navigate(int keycode) {
-		if (navigation.size() == 0) {
-			return null;
-		}
-		switch (keycode) {
-		case Keys.UP:
-			cursor = cursor > 0 ? cursor - 1 : navigation.size() - 1;
-			break;
-		case Keys.DOWN:
-			cursor = cursor < navigation.size() - 1 ? cursor + 1 : 0;
-			break;
-		}
-		return navigation.get(cursor);
-	}
-
-	@Override
-	public Actionable resetCursor() {
-		cursor = 0;
-		return navigation.get(cursor);
-	}
-
-	@Override
-	public void layout(ScreenSize screenSize) {
+		return null;
 	}
 }

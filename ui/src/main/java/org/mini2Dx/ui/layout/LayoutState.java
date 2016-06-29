@@ -11,9 +11,9 @@
  */
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.element.UiElement;
-import org.mini2Dx.ui.input.InputSource;
 import org.mini2Dx.ui.render.UiContainerRenderTree;
 import org.mini2Dx.ui.style.UiTheme;
 

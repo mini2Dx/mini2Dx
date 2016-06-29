@@ -30,8 +30,8 @@ import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.TextButton;
 import org.mini2Dx.ui.element.Visibility;
-import org.mini2Dx.ui.input.UiNavigation;
 import org.mini2Dx.ui.listener.ActionListener;
+import org.mini2Dx.ui.navigation.UiNavigation;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.controllers.Controller;

@@ -11,7 +11,7 @@
  */
 package org.mini2Dx.ui.listener;
 
-import org.mini2Dx.ui.input.InputSource;
+import org.mini2Dx.ui.InputSource;
 
 /**
  * Common interface for listening to {@link InputSource} changes

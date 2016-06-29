@@ -9,55 +9,67 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.ui.input;
+package org.mini2Dx.ui.navigation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.mini2Dx.ui.element.Actionable;
+import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.layout.ScreenSize;
 
+import com.badlogic.gdx.Input.Keys;
+
 /**
- * Common interface for user interface navigation
+ * A {@link UiNavigation} implementation that treats all {@link UiElement}s as
+ * stacked vertically
  */
-public interface UiNavigation {
-	/**
-	 * Re-orders elements based on screen size if necessary
-	 * 
-	 * @param screenSize
-	 *            The current {@link ScreenSize}
-	 */
-	public void layout(ScreenSize screenSize);
+public class VerticalUiNavigation implements UiNavigation {
+	private final List<Actionable> navigation = new ArrayList<Actionable>();
+	private int cursor;
+	
+	@Override
+	public void add(Actionable actionable) {
+		navigation.add(actionable);
+	}
 
-	/**
-	 * Resets the selection back to the first {@link Actionable}
-	 * @return The first {@link Actionable}
-	 */
-	public Actionable resetCursor();
+	@Override
+	public void remove(Actionable actionable) {
+		navigation.remove(actionable);
+	}
 
-	/**
-	 * Adds a {@link Actionable} to end of the navigation
-	 * 
-	 * @param actionable The {@link Actionable} to add
-	 */
-	public void add(Actionable actionable);
+	@Override
+	public void set(int index, Actionable actionable) {
+		if (navigation.size() > index) {
+			navigation.set(index, actionable);
+		} else {
+			navigation.add(index, actionable);
+		}
+	}
 
-	/**
-	 * Removes a {@link Actionable} from the navigation and shifts any following
-	 * {@link Actionable}s by 1 place
-	 * 
-	 * @param actionable The {@link Actionable} to remove
-	 */
-	public void remove(Actionable actionable);
+	@Override
+	public Actionable navigate(int keycode) {
+		if (navigation.size() == 0) {
+			return null;
+		}
+		switch (keycode) {
+		case Keys.UP:
+			cursor = cursor > 0 ? cursor - 1 : navigation.size() - 1;
+			break;
+		case Keys.DOWN:
+			cursor = cursor < navigation.size() - 1 ? cursor + 1 : 0;
+			break;
+		}
+		return navigation.get(cursor);
+	}
 
-	/**
-	 * Replace an {@link Actionable} at a specific index
-	 * @param index The index to replace
-	 * @param actionable The new {@link Actionable}
-	 */
-	public void set(int index, Actionable actionable);
+	@Override
+	public Actionable resetCursor() {
+		cursor = 0;
+		return navigation.get(cursor);
+	}
 
-	/**
-	 * Update (if required) navigation from key input
-	 * @param keycode The key that was pressed
-	 * @return The currently highlighted {@link Actionable}
-	 */
-	public Actionable navigate(int keycode);
+	@Override
+	public void layout(ScreenSize screenSize) {
+	}
 }

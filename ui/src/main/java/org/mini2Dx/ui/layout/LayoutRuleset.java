@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.element.UiElement;
-import org.mini2Dx.ui.input.InputSource;
 
 /**
  * The width and offset ruleset of a {@link UiElement} for different

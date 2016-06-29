@@ -1,7 +1,7 @@
 /**
  * Copyright 2016 Thomas Cashman
  */
-package org.mini2Dx.ui.input;
+package org.mini2Dx.ui.navigation;
 
 import java.util.List;
 

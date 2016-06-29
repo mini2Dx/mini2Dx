@@ -14,8 +14,8 @@ package org.mini2Dx.ui.render;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.UiContainer;
-import org.mini2Dx.ui.input.InputSource;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ScreenSizeListener;

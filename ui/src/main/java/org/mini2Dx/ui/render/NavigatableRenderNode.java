@@ -14,8 +14,8 @@ package org.mini2Dx.ui.render;
 import java.util.Queue;
 
 import org.mini2Dx.core.controller.button.ControllerButton;
-import org.mini2Dx.ui.input.ControllerHotKeyOperation;
-import org.mini2Dx.ui.input.KeyboardHotKeyOperation;
+import org.mini2Dx.ui.navigation.ControllerHotKeyOperation;
+import org.mini2Dx.ui.navigation.KeyboardHotKeyOperation;
 
 /**
  *
