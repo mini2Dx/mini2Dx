@@ -1,9 +1,6 @@
 [1.3.0][beta]
 - Updated to libGDX 1.9.2, roboVM 1.12.0, and artemis-odb 1.4.0
 - Updated to Android build tools 23.0.1
-- Added controller mappings - Xbox One, Xbox 360 controllers
-- Added render pipeline feature
-- Implemented UI framework (mini2Dx-ui)
 - (#38) Added drawNinePatch() and clearScaling() methods to Graphics
 - (#45) Added contains and getDistanceFromCenter to Circle
 - (#45) Added fillShape() method to Graphics class
@@ -14,6 +11,10 @@
 - (#50) Fixed TiledMap rendering incorrectly when scaled down
 - (#54) Added performance benchmarking for collisions
 - (#55) Added non-rectangle support to RegionQuadTree and ConcurrentRegionQuadTree
+- Added controller mappings - Xbox One, Xbox 360 controllers
+- Added controller dead zone implementations - axial, radial and scaled radial
+- Added render pipeline feature
+- Added UI framework (mini2Dx-ui)
 - Added RegularShape classes (shapes with equal interior angles)
 - Added NPE prevention to TiledCollisionMapper
 - Added additional drawTexture() methods to Graphics
