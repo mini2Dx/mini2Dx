@@ -35,14 +35,14 @@ public interface Navigatable {
 	public ActionableRenderNode navigate(int keycode);
 
 	/**
-	 * Returns the corresponding {@Link ActionableRenderNode} mapped to a keyboard hotkey
+	 * Returns the corresponding {@link ActionableRenderNode} mapped to a keyboard hotkey
 	 * @param keycode The {@link Keys} keycode that is the hotkey
 	 * @return Null if there is no mapping
 	 */
 	public ActionableRenderNode hotkey(int keycode);
 
 	/**
-	 * Returns the corresponding {@Link ActionableRenderNode} mapped to a {@link ControllerButton} hotkey
+	 * Returns the corresponding {@link ActionableRenderNode} mapped to a {@link ControllerButton} hotkey
 	 * @param button The {@link ControllerButton} that is the hotkey
 	 * @return Null if there is no mapping
 	 */
