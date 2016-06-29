@@ -12,6 +12,7 @@
 package org.mini2Dx.uats;
 
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.exception.ControllerPlatformException;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.GameResizeListener;
 import org.mini2Dx.core.graphics.Graphics;
@@ -22,9 +23,11 @@ import org.mini2Dx.core.screen.Transition;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import org.mini2Dx.uats.util.ScreenIds;
+import org.mini2Dx.uats.util.UATApplication;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 import org.mini2Dx.uats.util.UiUtils;
 import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.controller.ControllerUiInput;
 import org.mini2Dx.ui.element.AbsoluteContainer;
 import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.AlignedModal;
@@ -40,13 +43,16 @@ import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.TextButton;
 import org.mini2Dx.ui.element.Visibility;
+import org.mini2Dx.ui.input.VerticalUiNavigation;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.VerticalAlignment;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.style.UiTheme;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.controllers.Controllers;
 
 /**
  * A user acceptance test for the mini2Dx responsive UI framework
@@ -55,9 +61,12 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 	private final AssetManager assetManager;
 	
 	private UiContainer uiContainer;
+	private ControllerUiInput<?> controllerInput;
+	
 	private AbsoluteContainer topLeftFrame, bottomRightFrame;
 	private AlignedModal modal;
 	
+	private TabView tabView;
 	private Select<String> select;
 	private TextBox textBox;
 	private Label textBoxResult;
@@ -71,8 +80,21 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 	@Override
 	public void initialise(GameContainer gc) {
 		uiContainer = new UiContainer(gc, assetManager);
+		uiContainer.setKeyboardNavigationEnabled(UATApplication.USE_KEYBOARD_NAVIGATION);
 		gc.addResizeListener(this);
 		initialiseUi();
+		
+		if(Controllers.getControllers().size > 0) {
+			try {
+				System.out.println(uiContainer.getId());
+				controllerInput = UiUtils.setUpControllerInput(Controllers.getControllers().get(0), uiContainer);
+				if(controllerInput != null) {
+					controllerInput.disable();
+				}
+			} catch (ControllerPlatformException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	@Override
@@ -108,6 +130,22 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
     	}
     	Gdx.input.setInputProcessor(uiContainer);
 	}
+	
+	@Override
+	public void postTransitionIn(Transition transitionIn) {
+		uiContainer.setActiveNavigation(tabView);
+		if(controllerInput != null) {
+			controllerInput.enable();
+			System.out.println("here2");
+		}
+	}
+	
+	@Override
+	public void preTransitionOut(Transition transitionOut) {
+		if(controllerInput != null) {
+			controllerInput.disable();
+		}
+	}
 
 	@Override
 	public int getId() {
@@ -119,7 +157,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		topLeftFrame.setLayout("xs-12c sm-6c md-4c lg-3c");
 		topLeftFrame.add(Row.withElements("top-left-header", UiUtils.createHeader("UI UAT")));
 		
-		Row backRow = Row.withElements("behind-header", UiUtils.createButton("", new ActionListener() {
+		Row backRow = Row.withElements("behind-header", UiUtils.createButton(null, "", new ActionListener() {
 			
 			@Override
 			public void onActionEnd(Actionable source) {
@@ -139,7 +177,8 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		topLeftFrame.setVisibility(Visibility.VISIBLE);
 		uiContainer.add(topLeftFrame);
 		
-		textBox = UiUtils.createTextBox("textbox", new ActionListener() {
+		VerticalUiNavigation tab1Navigation = new VerticalUiNavigation();
+		textBox = UiUtils.createTextBox(tab1Navigation, "textbox", new ActionListener() {
 			
 			@Override
 			public void onActionEnd(Actionable source) {
@@ -150,7 +189,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 			public void onActionBegin(Actionable source) {
 			}
 		});
-		select = UiUtils.createSelect("select", new ActionListener() {
+		select = UiUtils.createSelect(tab1Navigation, "select", new ActionListener() {
 			
 			@Override
 			public void onActionEnd(Actionable source) {
@@ -163,7 +202,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		});
 		textBoxResult = UiUtils.createLabel("");
 		
-		TextButton returnButton = UiUtils.createButton("Return to UAT Selection Screen", new ActionListener() {
+		TextButton returnButton = UiUtils.createButton(tab1Navigation, "Return to UAT Selection Screen", new ActionListener() {
 			
 			@Override
 			public void onActionBegin(Actionable source) {}
@@ -182,16 +221,14 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		modal.setLayout("xs-12c md-8c lg-6c md-offset-2c lg-offset-3c");
 		modal.setVerticalAlignment(VerticalAlignment.MIDDLE);
 		
-		TabView tabView = new TabView("tabView");
+		tabView = new TabView("tabView");
 		tabView.setVisibility(Visibility.VISIBLE);
 		
 		Tab tab1 = new Tab("tab1", "Tab 1");
 		tab1.add(Row.withElements("row-textbox", textBox, textBoxResult));
 		tab1.add(Row.withElements("row-select", select));
 		tab1.add(Row.withElements("row-return-button", returnButton));
-		tab1.getNavigation().set(0, textBox);
-		tab1.getNavigation().set(1, select);
-		tab1.getNavigation().set(2, returnButton);
+		tab1.setNavigation(tab1Navigation);
 		tabView.add(tab1);
 		
 		Tab tab2 = new Tab("tab2", "Tab 2");
@@ -201,7 +238,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		tabView.add(tab2);
 		
 		Tab tab3 = new Tab("tab3", "Tab 3");
-		Button hiddenButton = UiUtils.createButton("Hidden", new ActionListener() {
+		Button hiddenButton = UiUtils.createButton(null, "Hidden", new ActionListener() {
 			
 			@Override
 			public void onActionEnd(Actionable source) {}
@@ -224,10 +261,13 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		tab3.add(scrollBox);
 		tabView.add(tab3);
 		
+		tabView.setNextTabHotkey(Keys.E);
+		tabView.setPreviousTabHotkey(Keys.Q);
+		
 		modal.add(tabView);
 		modal.setVisibility(Visibility.VISIBLE);
+		modal.setNavigation(tabView.getNavigation());
 		uiContainer.add(modal);
-		uiContainer.setActiveNavigation(modal);
 		
 		bottomRightFrame = new AbsoluteContainer("bottom-right-frame");
 		bottomRightFrame.setLayout("xs-12c sm-6c md-4c lg-3c");

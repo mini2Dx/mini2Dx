@@ -15,11 +15,6 @@ import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.element.TabView;
 
-import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.FileHandleResolver;
-import com.badlogic.gdx.utils.Array;
-
 /**
  * Extends {@link StyleRule} for {@link TabView} styling
  */

@@ -23,4 +23,6 @@ public interface MdxController<T extends MdxControllerListener> extends Controll
 	public void addListener(T listener);
 	
 	public void removeListener(T listener);
+	
+	public void clearListeners();
 }

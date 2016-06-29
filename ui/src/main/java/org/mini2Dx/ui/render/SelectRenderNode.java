@@ -161,6 +161,32 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule>impl
 		g.setColor(tmpColor);
 		g.setFont(tmpFont);
 	}
+	
+	@Override
+	public void setState(NodeState state) {
+		switch(state) {
+		case HOVER:
+			if(leftButtonState != NodeState.ACTION) {
+				leftButtonState = NodeState.HOVER;
+			}
+			if(rightButtonState != NodeState.ACTION) {
+				rightButtonState = NodeState.HOVER;
+			}
+			break;
+		case NORMAL:
+			if(leftButtonState != NodeState.ACTION) {
+				leftButtonState = NodeState.NORMAL;
+			}
+			if(rightButtonState != NodeState.ACTION) {
+				rightButtonState = NodeState.NORMAL;
+			}
+			break;
+		case ACTION:
+		default:
+			break;
+		}
+		super.setState(state);
+	}
 
 	@Override
 	public ActionableRenderNode mouseDown(int screenX, int screenY, int pointer, int button) {
@@ -224,12 +250,6 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule>impl
 			return true;
 		} else {
 			setState(NodeState.NORMAL);
-			if (leftButtonState != NodeState.ACTION) {
-				leftButtonState = NodeState.NORMAL;
-			}
-			if (rightButtonState != NodeState.ACTION) {
-				rightButtonState = NodeState.NORMAL;
-			}
 		}
 		return false;
 	}

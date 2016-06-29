@@ -25,8 +25,10 @@ import com.badlogic.gdx.controllers.Controller;
  * Base class for Xbox 360 controller implementations
  */
 public abstract class Xbox360Controller implements MdxController<Xbox360ControllerListener> {
-    private final Controller controller;
-    private final List<Xbox360ControllerListener> listeners = new ArrayList<>();
+	public static final String ID = "360";
+	
+	private final Controller controller;
+    private final List<Xbox360ControllerListener> listeners = new ArrayList<>(1);
     
     private DeadZone leftStickDeadZone, rightStickDeadZone;
     
@@ -123,14 +125,21 @@ public abstract class Xbox360Controller implements MdxController<Xbox360Controll
 		}
 		return false;
 	}
-    
+	
+	@Override
     public void addListener(Xbox360ControllerListener listener) {
     	listeners.add(listener);
     }
     
+    @Override
     public void removeListener(Xbox360ControllerListener listener) {
     	listeners.remove(listener);
     }
+
+	@Override
+	public void clearListeners() {
+		listeners.clear();
+	}
     
     public ControllerType getControllerType() {
     	return ControllerType.XBOX_360;

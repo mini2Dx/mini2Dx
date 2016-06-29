@@ -14,7 +14,6 @@ package org.mini2Dx.ui.render;
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ColumnStyleRule;
-import org.mini2Dx.ui.style.StyleRule;
 
 /**
  *

@@ -17,7 +17,6 @@ import java.util.List;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
-import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.ContentButtonRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 

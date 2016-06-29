@@ -28,8 +28,8 @@ import org.mini2Dx.ui.style.ContainerStyleRule;
  *
  */
 public abstract class ModalRenderNode extends ContainerRenderNode implements NavigatableRenderNode {
-	private Map<Integer, ActionableRenderNode> keyboardHotkeys = new HashMap<Integer, ActionableRenderNode>();
-	private Map<String, ActionableRenderNode> controllerHotkeys = new HashMap<String, ActionableRenderNode>();
+	private final Map<Integer, String> keyboardHotkeys = new HashMap<Integer, String>();
+	private final Map<String, String> controllerHotkeys = new HashMap<String, String>();
 
 	public ModalRenderNode(ParentRenderNode<?, ?> parent, Column column) {
 		super(parent, column);
@@ -43,12 +43,28 @@ public abstract class ModalRenderNode extends ContainerRenderNode implements Nav
 
 	@Override
 	public ActionableRenderNode hotkey(int keycode) {
-		return keyboardHotkeys.get(keycode);
+		String id = keyboardHotkeys.get(keycode);
+		if (id == null) {
+			return null;
+		}
+		RenderNode<?, ?> renderNode = getElementById(id);
+		if (renderNode == null) {
+			return null;
+		}
+		return (ActionableRenderNode) renderNode;
 	}
 
 	@Override
 	public ActionableRenderNode hotkey(ControllerButton controllerButton) {
-		return controllerHotkeys.get(controllerButton.getAbsoluteValue());
+		String id = controllerHotkeys.get(controllerButton.getAbsoluteValue());
+		if (id == null) {
+			return null;
+		}
+		RenderNode<?, ?> renderNode = getElementById(id);
+		if (renderNode == null) {
+			return null;
+		}
+		return (ActionableRenderNode) renderNode;
 	}
 
 	@Override
@@ -58,15 +74,15 @@ public abstract class ModalRenderNode extends ContainerRenderNode implements Nav
 			ControllerHotKeyOperation hotKeyOperation = controllerHotKeyOperations.poll();
 			if (hotKeyOperation.isMapOperation()) {
 				controllerHotkeys.put(hotKeyOperation.getControllerButton().getAbsoluteValue(),
-						(ActionableRenderNode) getElementById(hotKeyOperation.getActionable().getId()));
+						hotKeyOperation.getActionable().getId());
 			} else {
 				controllerHotkeys.remove(hotKeyOperation.getControllerButton().getAbsoluteValue());
 			}
 		}
 		while (!keyboardHotKeyOperations.isEmpty()) {
 			KeyboardHotKeyOperation hotKeyOperation = keyboardHotKeyOperations.poll();
-			if(hotKeyOperation.isMapOperation()) {
-				keyboardHotkeys.put(hotKeyOperation.getKeycode(), (ActionableRenderNode) getElementById(hotKeyOperation.getActionable().getId()));
+			if (hotKeyOperation.isMapOperation()) {
+				keyboardHotkeys.put(hotKeyOperation.getKeycode(), hotKeyOperation.getActionable().getId());
 			} else {
 				keyboardHotkeys.remove(hotKeyOperation.getKeycode());
 			}
@@ -76,7 +92,7 @@ public abstract class ModalRenderNode extends ContainerRenderNode implements Nav
 	@Override
 	public ActionableRenderNode navigate(int keycode) {
 		Actionable actionable = ((Modal) element).getNavigation().navigate(keycode);
-		if(actionable == null) {
+		if (actionable == null) {
 			return null;
 		}
 		return (ActionableRenderNode) getElementById(actionable.getId());

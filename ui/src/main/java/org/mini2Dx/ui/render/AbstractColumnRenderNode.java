@@ -13,7 +13,6 @@ package org.mini2Dx.ui.render;
 
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Column;
-import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ColumnStyleRule;

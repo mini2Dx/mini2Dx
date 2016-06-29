@@ -18,12 +18,46 @@ import org.mini2Dx.ui.layout.ScreenSize;
  * Common interface for user interface navigation
  */
 public interface UiNavigation {
-	
+	/**
+	 * Re-orders elements based on screen size if necessary
+	 * 
+	 * @param screenSize
+	 *            The current {@link ScreenSize}
+	 */
 	public void layout(ScreenSize screenSize);
 
-	public void resetCursor();
-	
+	/**
+	 * Resets the selection back to the first {@link Actionable}
+	 * @return The first {@link Actionable}
+	 */
+	public Actionable resetCursor();
+
+	/**
+	 * Adds a {@link Actionable} to end of the navigation
+	 * 
+	 * @param actionable The {@link Actionable} to add
+	 */
+	public void add(Actionable actionable);
+
+	/**
+	 * Removes a {@link Actionable} from the navigation and shifts any following
+	 * {@link Actionable}s by 1 place
+	 * 
+	 * @param actionable The {@link Actionable} to remove
+	 */
+	public void remove(Actionable actionable);
+
+	/**
+	 * Replace an {@link Actionable} at a specific index
+	 * @param index The index to replace
+	 * @param actionable The new {@link Actionable}
+	 */
 	public void set(int index, Actionable actionable);
-	
+
+	/**
+	 * Update (if required) navigation from key input
+	 * @param keycode The key that was pressed
+	 * @return The currently highlighted {@link Actionable}
+	 */
 	public Actionable navigate(int keycode);
 }

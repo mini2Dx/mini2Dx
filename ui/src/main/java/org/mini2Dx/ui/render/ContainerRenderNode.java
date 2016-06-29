@@ -14,7 +14,6 @@ package org.mini2Dx.ui.render;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ContainerStyleRule;

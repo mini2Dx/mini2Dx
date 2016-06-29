@@ -23,6 +23,11 @@ import com.badlogic.gdx.Input.Keys;
  */
 public interface Navigatable {
 	/**
+	 * Returns the unique id of the {@link Navigatable}
+	 * @return A non-null {@link String} that is the id
+	 */
+	public String getId();
+	/**
 	 * Triggers a navigation and returns the newly highlighted {@link ActionableRenderNode}
 	 * @param keycode The navigation {@link Keys} value
 	 * @return Null if no {@link UiNavigation} is available

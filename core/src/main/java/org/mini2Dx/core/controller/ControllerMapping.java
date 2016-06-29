@@ -30,11 +30,11 @@ import com.badlogic.gdx.controllers.mappings.Ouya;
  */
 public class ControllerMapping {
 	
-	public Xbox360Controller xbox360(Controller controller) throws ControllerPlatformException {
+	public static Xbox360Controller xbox360(Controller controller) throws ControllerPlatformException {
 		return xbox360(controller, null, null);
 	}
 	
-	public Xbox360Controller xbox360(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) throws ControllerPlatformException {
+	public static Xbox360Controller xbox360(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) throws ControllerPlatformException {
 		switch(Mdx.os) {
 		case WINDOWS:
 			if(leftStickDeadZone == null || rightStickDeadZone == null) {
@@ -62,11 +62,11 @@ public class ControllerMapping {
 		}
 	}
 	
-	public XboxOneController xboxOne(Controller controller) throws ControllerPlatformException {
+	public static XboxOneController xboxOne(Controller controller) throws ControllerPlatformException {
 		return xboxOne(controller, null, null);
 	}
 	
-	public XboxOneController xboxOne(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) throws ControllerPlatformException {
+	public static XboxOneController xboxOne(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) throws ControllerPlatformException {
 		switch(Mdx.os) {
 		case WINDOWS:
 			if(leftStickDeadZone == null || rightStickDeadZone == null) {
@@ -94,12 +94,15 @@ public class ControllerMapping {
 		}
 	}
 
-	public ControllerType getControllerType(Controller controller) {
+	public static ControllerType getControllerType(Controller controller) {
 		if(controller.getName().equals(Ouya.ID)) {
 			return ControllerType.OUYA;
 		}
 		if(controller.getName().toLowerCase().contains(XboxOneController.ID)) {
 			return ControllerType.XBOX_ONE;
+		}
+		if(controller.getName().toLowerCase().contains(Xbox360Controller.ID)) {
+			return ControllerType.XBOX_360;
 		}
 		return ControllerType.UNKNOWN;
 	}

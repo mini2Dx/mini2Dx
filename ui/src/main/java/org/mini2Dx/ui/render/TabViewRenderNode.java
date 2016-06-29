@@ -18,7 +18,6 @@ import java.util.Queue;
 import org.mini2Dx.core.controller.button.ControllerButton;
 import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.TabView;
-import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.input.ControllerHotKeyOperation;
 import org.mini2Dx.ui.input.KeyboardHotKeyOperation;
 import org.mini2Dx.ui.layout.LayoutRuleset;
@@ -28,20 +27,24 @@ import org.mini2Dx.ui.style.TabStyleRule;
 /**
  *
  */
-public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> implements NavigatableRenderNode {
-	private Map<Integer, ActionableRenderNode> keyboardHotkeys = new HashMap<Integer, ActionableRenderNode>();
-	private Map<String, ActionableRenderNode> controllerHotkeys = new HashMap<String, ActionableRenderNode>();
-	
+public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule>implements NavigatableRenderNode {
+	private final Map<String, RenderNode<?, ?>> elementIdLookupCache = new HashMap<String, RenderNode<?, ?>>();
+	private final Map<Integer, String> keyboardHotkeys = new HashMap<Integer, String>();
+	private final Map<String, String> controllerHotkeys = new HashMap<String, String>();
+
 	protected LayoutRuleset layoutRuleset;
-	
+
 	public TabViewRenderNode(ParentRenderNode<?, ?> parent, TabView tabView) {
 		super(parent, tabView);
 		layoutRuleset = new LayoutRuleset(element.getLayout());
 	}
-	
+
 	@Override
 	public void layout(LayoutState layoutState) {
-		if(!layoutRuleset.equals(element.getLayout())) {
+		if(isDirty()) {
+			elementIdLookupCache.clear();
+		}
+		if (!layoutRuleset.equals(element.getLayout())) {
 			layoutRuleset = new LayoutRuleset(element.getLayout());
 		}
 		super.layout(layoutState);
@@ -49,12 +52,28 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> i
 
 	@Override
 	public ActionableRenderNode hotkey(int keycode) {
-		return keyboardHotkeys.get(keycode);
+		String id = keyboardHotkeys.get(keycode);
+		if (id == null) {
+			return null;
+		}
+		RenderNode<?, ?> renderNode = getElementById(id);
+		if (renderNode == null) {
+			return null;
+		}
+		return (ActionableRenderNode) renderNode;
 	}
 
 	@Override
 	public ActionableRenderNode hotkey(ControllerButton controllerButton) {
-		return controllerHotkeys.get(controllerButton.getAbsoluteValue());
+		String id = controllerHotkeys.get(controllerButton.getAbsoluteValue());
+		if (id == null) {
+			return null;
+		}
+		RenderNode<?, ?> renderNode = getElementById(id);
+		if (renderNode == null) {
+			return null;
+		}
+		return (ActionableRenderNode) renderNode;
 	}
 
 	@Override
@@ -64,15 +83,15 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> i
 			ControllerHotKeyOperation hotKeyOperation = controllerHotKeyOperations.poll();
 			if (hotKeyOperation.isMapOperation()) {
 				controllerHotkeys.put(hotKeyOperation.getControllerButton().getAbsoluteValue(),
-						(ActionableRenderNode) getElementById(hotKeyOperation.getActionable().getId()));
+						hotKeyOperation.getActionable().getId());
 			} else {
 				controllerHotkeys.remove(hotKeyOperation.getControllerButton().getAbsoluteValue());
 			}
 		}
 		while (!keyboardHotKeyOperations.isEmpty()) {
 			KeyboardHotKeyOperation hotKeyOperation = keyboardHotKeyOperations.poll();
-			if(hotKeyOperation.isMapOperation()) {
-				keyboardHotkeys.put(hotKeyOperation.getKeycode(), (ActionableRenderNode) getElementById(hotKeyOperation.getActionable().getId()));
+			if (hotKeyOperation.isMapOperation()) {
+				keyboardHotkeys.put(hotKeyOperation.getKeycode(), hotKeyOperation.getActionable().getId());
 			} else {
 				keyboardHotkeys.remove(hotKeyOperation.getKeycode());
 			}
@@ -82,7 +101,7 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> i
 	@Override
 	public ActionableRenderNode navigate(int keycode) {
 		Actionable actionable = ((TabView) element).getNavigation().navigate(keycode);
-		if(actionable == null) {
+		if (actionable == null) {
 			return null;
 		}
 		return (ActionableRenderNode) getElementById(actionable.getId());
@@ -95,7 +114,7 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> i
 
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
-		if(preferredContentWidth <= 0f) {
+		if (preferredContentWidth <= 0f) {
 			return 0f;
 		}
 		float maxHeight = 0f;
@@ -111,17 +130,18 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> i
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if(layoutRuleset.isHiddenByInputSource(layoutState.getLastInputSource())) {
+		if (layoutRuleset.isHiddenByInputSource(layoutState.getLastInputSource())) {
 			return 0f;
 		}
 		float layoutRuleResult = layoutRuleset.getPreferredWidth(layoutState);
-		if(layoutRuleResult <= 0f) {
+		if (layoutRuleResult <= 0f) {
 			hiddenByLayoutRule = true;
 			return 0f;
 		} else {
 			hiddenByLayoutRule = false;
 		}
-		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft() - style.getMarginRight();
+		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft()
+				- style.getMarginRight();
 	}
 
 	@Override
@@ -134,30 +154,48 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule> i
 		return 0f;
 	}
 	
+	@Override
+	public RenderNode<?, ?> getElementById(String id) {
+		if (element.getId().equals(id)) {
+			return this;
+		}
+		if(elementIdLookupCache.containsKey(id)) {
+			return elementIdLookupCache.get(id);
+		}
+		for (RenderLayer layer : layers.values()) {
+			RenderNode<?, ?> result = layer.getElementById(id);
+			if (result != null) {
+				elementIdLookupCache.put(id, result);
+				return result;
+			}
+		}
+		return null;
+	}
+
 	public String getTabMenuStyleId() {
 		return style.getMenuStyle();
 	}
-	
+
 	public String getTabButtonStyleId() {
 		return style.getTabButtonStyle();
 	}
-	
+
 	public String getNextTabButtonStyleId() {
 		return style.getNextTabButtonStyle();
 	}
-	
+
 	public String getPreviousTabButtonStyleId() {
 		return style.getPreviousTabButtonStyle();
 	}
-	
+
 	public String getTabButtonLabelStyleId() {
 		return style.getButtonLabelStyle();
 	}
-	
+
 	public String getTabButtonImageStyleId() {
 		return style.getButtonImageStyle();
 	}
-	
+
 	public String getTabContentStyleId() {
 		return style.getTabStyle();
 	}

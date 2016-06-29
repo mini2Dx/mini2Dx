@@ -15,7 +15,6 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.ui.element.TextBox;
-import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.TextBoxStyleRule;
@@ -396,7 +395,11 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 				return;
 			}
 			BitmapFont font = style.getBitmapFont();
-			glyphLayout.setText(font, element.getValue().substring(0, cursor));
+			if(cursor > element.getValue().length()) {
+				glyphLayout.setText(font, element.getValue());
+			} else {
+				glyphLayout.setText(font, element.getValue().substring(0, cursor));
+			}
 			setCursorRender(glyphLayout.width + 1f, glyphLayout.height);
 			break;
 		}

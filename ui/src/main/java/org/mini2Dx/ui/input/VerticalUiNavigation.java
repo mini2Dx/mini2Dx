@@ -27,6 +27,16 @@ import com.badlogic.gdx.Input.Keys;
 public class VerticalUiNavigation implements UiNavigation {
 	private final List<Actionable> navigation = new ArrayList<Actionable>();
 	private int cursor;
+	
+	@Override
+	public void add(Actionable actionable) {
+		navigation.add(actionable);
+	}
+
+	@Override
+	public void remove(Actionable actionable) {
+		navigation.remove(actionable);
+	}
 
 	@Override
 	public void set(int index, Actionable actionable) {
@@ -54,8 +64,9 @@ public class VerticalUiNavigation implements UiNavigation {
 	}
 
 	@Override
-	public void resetCursor() {
+	public Actionable resetCursor() {
 		cursor = 0;
+		return navigation.get(cursor);
 	}
 
 	@Override

@@ -12,6 +12,7 @@
 package org.mini2Dx.uats.util;
 
 import org.mini2Dx.core.assets.FallbackFileHandleResolver;
+import org.mini2Dx.core.controller.MdxController;
 import org.mini2Dx.core.game.ScreenBasedGame;
 import org.mini2Dx.uats.BlendingUAT;
 import org.mini2Dx.uats.ClippingUAT;
@@ -25,6 +26,7 @@ import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
 import org.mini2Dx.uats.ParticleEffectsUAT;
 import org.mini2Dx.uats.UiUAT;
 import org.mini2Dx.ui.UiThemeLoader;
+import org.mini2Dx.ui.controller.ControllerUiInput;
 import org.mini2Dx.ui.style.UiTheme;
 
 import com.badlogic.gdx.Application;
@@ -38,6 +40,8 @@ import com.badlogic.gdx.utils.Logger;
  * @author Thomas Cashman
  */
 public class UATApplication extends ScreenBasedGame {
+	public static final boolean USE_KEYBOARD_NAVIGATION = false;
+	
 	private AssetManager assetManager;
 
 	@Override

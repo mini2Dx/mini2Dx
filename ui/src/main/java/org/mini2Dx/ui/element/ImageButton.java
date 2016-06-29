@@ -14,7 +14,6 @@ package org.mini2Dx.ui.element;
 import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
-import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.ImageButtonRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 

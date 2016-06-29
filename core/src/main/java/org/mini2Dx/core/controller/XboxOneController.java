@@ -126,13 +126,20 @@ public abstract class XboxOneController implements MdxController<XboxOneControll
 		return false;
 	}
 	
+	@Override
     public void addListener(XboxOneControllerListener listener) {
     	listeners.add(listener);
     }
     
+    @Override
     public void removeListener(XboxOneControllerListener listener) {
     	listeners.remove(listener);
     }
+    
+    @Override
+	public void clearListeners() {
+		listeners.clear();
+	}
 	
 	@Override
 	public ControllerType getControllerType() {

@@ -22,6 +22,7 @@ import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.input.ControllerHotKeyOperation;
 import org.mini2Dx.ui.input.KeyboardHotKeyOperation;
+import org.mini2Dx.ui.input.TabViewUiNavigation;
 import org.mini2Dx.ui.input.UiNavigation;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.listener.ActionListener;
@@ -56,6 +57,8 @@ public class TabView extends UiElement implements Navigatable {
 	@Field(optional = true)
 	private final List<Tab> tabs = new ArrayList<Tab>(1);
 
+	private final TabViewUiNavigation navigation = new TabViewUiNavigation(this, tabs);
+	
 	private int availableColumnsForTabButtons = 0;
 	private int columnsPerTabButton = 0;
 
@@ -533,10 +536,7 @@ public class TabView extends UiElement implements Navigatable {
 
 	@Override
 	public UiNavigation getNavigation() {
-		if (currentTabIndex >= tabs.size()) {
-			return null;
-		}
-		return tabs.get(currentTabIndex).getNavigation();
+		return navigation;
 	}
 
 	/**

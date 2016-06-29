@@ -317,7 +317,7 @@
       "rules": {
         "XS": {
           "normal": "default-mdx-theme/textbox_normal.png",
-          "hover": "default-mdx-theme/textbox_normal.png",
+          "hover": "default-mdx-theme/textbox_hover.png",
           "action": "default-mdx-theme/textbox_normal.png",
           "disabled": "default-mdx-theme/textbox_disabled.png",
           "fontSize": 12,

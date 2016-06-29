@@ -15,23 +15,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.controller.button.ControllerButton;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.ui.controller.ControllerUiInput;
+import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.Container;
-import org.mini2Dx.ui.element.Modal;
 import org.mini2Dx.ui.element.Navigatable;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.input.InputSource;
-import org.mini2Dx.ui.layout.LayoutRuleset;
+import org.mini2Dx.ui.input.UiNavigation;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
 import org.mini2Dx.ui.render.ActionableRenderNode;
+import org.mini2Dx.ui.render.NavigatableRenderNode;
 import org.mini2Dx.ui.render.NodeState;
 import org.mini2Dx.ui.render.ParentRenderNode;
+import org.mini2Dx.ui.render.RenderNode;
 import org.mini2Dx.ui.render.TextInputableRenderNode;
 import org.mini2Dx.ui.render.UiContainerRenderTree;
 import org.mini2Dx.ui.style.UiTheme;
+import org.mini2Dx.ui.util.IdAllocator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -48,6 +53,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 	private static final String LOGGING_TAG = UiContainer.class.getSimpleName();
 
 	private final List<Container> children = new ArrayList<Container>(1);
+	private final List<ControllerUiInput<?>> controllerInputs = new ArrayList<ControllerUiInput<?>>(1);
 	private final UiContainerRenderTree renderTree;
 
 	private InputSource lastInputSource;
@@ -57,17 +63,24 @@ public class UiContainer extends UiElement implements InputProcessor {
 	private boolean themeWarningIssued, initialThemeLayoutComplete;
 	private UiTheme theme;
 
+	private int actionKey = Keys.ENTER;
 	private Navigatable activeNavigation;
 	private ActionableRenderNode activeAction;
 	private TextInputableRenderNode activeTextInput;
 
+	private boolean keyboardNavigationEnabled = false;
+	private boolean textInputIgnoredFirstEnter = false;
+
 	/**
 	 * Constructor
-	 * @param gc Your game's {@link GameContainer}
-	 * @param assetManager The {@link AssetManager} for the game
+	 * 
+	 * @param gc
+	 *            Your game's {@link GameContainer}
+	 * @param assetManager
+	 *            The {@link AssetManager} for the game
 	 */
 	public UiContainer(GameContainer gc, AssetManager assetManager) {
-		super("ui-container-root");
+		super(IdAllocator.getNextId("ui-container-root"));
 		this.width = gc.getWidth();
 		this.height = gc.getHeight();
 
@@ -91,7 +104,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	/**
 	 * Updates all {@link UiElement}s
-	 * @param delta The time since the last frame (in seconds)
+	 * 
+	 * @param delta
+	 *            The time since the last frame (in seconds)
 	 */
 	public void update(float delta) {
 		if (!isThemeApplied()) {
@@ -100,6 +115,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 				themeWarningIssued = true;
 			}
 			return;
+		}
+		for (int i = controllerInputs.size() - 1; i >= 0; i--) {
+			controllerInputs.get(i).update(delta);
 		}
 		if (renderTree.isDirty()) {
 			renderTree.layout();
@@ -110,7 +128,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	/**
 	 * Interpolates all {@link UiElement}s
-	 * @param alpha The interpolation alpha
+	 * 
+	 * @param alpha
+	 *            The interpolation alpha
 	 */
 	public void interpolate(float alpha) {
 		if (!isThemeApplied()) {
@@ -121,7 +141,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	/**
 	 * Renders all visible {@link UiElement}s
-	 * @param g The {@link Graphics} context
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context
 	 */
 	public void render(Graphics g) {
 		if (!isThemeApplied()) {
@@ -152,7 +174,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	/**
 	 * Adds a {@link Container} to this {@link UiContainer}
-	 * @param container The {@link Container} to add
+	 * 
+	 * @param container
+	 *            The {@link Container} to add
 	 */
 	public void add(Container container) {
 		container.attach(renderTree);
@@ -161,7 +185,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	/**
 	 * Removes a {@link Container} from this {@link UiContainer}
-	 * @param container The {@link Container} to remove
+	 * 
+	 * @param container
+	 *            The {@link Container} to remove
 	 */
 	public void remove(Container container) {
 		children.remove(container);
@@ -175,7 +201,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 	@Override
 	public void detach(ParentRenderNode<?, ?> parentRenderNode) {
 	}
-	
+
 	@Override
 	public void setVisibility(Visibility visibility) {
 		this.visibility = visibility;
@@ -190,7 +216,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	/**
 	 * Adds a {@link ScreenSizeListener} to listen for {@link ScreenSize} change
-	 * @param listener The {@link ScreenSizeListener} to add
+	 * 
+	 * @param listener
+	 *            The {@link ScreenSizeListener} to add
 	 */
 	public void addScreenSizeListener(ScreenSizeListener listener) {
 		renderTree.addScreenSizeListener(listener);
@@ -198,7 +226,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	/**
 	 * Removes a {@link ScreenSizeListener} from this {@link UiContainer}
-	 * @param listener The {@link ScreenSizeListener} to remove
+	 * 
+	 * @param listener
+	 *            The {@link ScreenSizeListener} to remove
 	 */
 	public void removeScreenSizeListener(ScreenSizeListener listener) {
 		renderTree.removeScreenSizeListener(listener);
@@ -206,6 +236,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	/**
 	 * Returns if a {@link UiTheme} has been applied to thi {@link UiContainer}
+	 * 
 	 * @return True if the {@link UiTheme} has been applied
 	 */
 	public boolean isThemeApplied() {
@@ -214,6 +245,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	/**
 	 * Returns the {@link UiTheme} currently applied to this {@link UiContainer}
+	 * 
 	 * @return Null if no {@link UiTheme} has been applied
 	 */
 	public UiTheme getTheme() {
@@ -222,7 +254,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	/**
 	 * Sets the current {@link UiTheme} for this {@link UiContainer}
-	 * @param theme The {@link UiTheme} to apply
+	 * 
+	 * @param theme
+	 *            The {@link UiTheme} to apply
 	 */
 	public void setTheme(UiTheme theme) {
 		if (theme == null) {
@@ -243,6 +277,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		if(keyNavigationInUse()) {
+			return false;
+		}
 		screenX = MathUtils.round(screenX / scaleX);
 		screenY = MathUtils.round(screenY / scaleY);
 
@@ -263,6 +300,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		if(keyNavigationInUse()) {
+			return false;
+		}
 		screenX = MathUtils.round(screenX / scaleX);
 		screenY = MathUtils.round(screenY / scaleY);
 		if (activeAction == null) {
@@ -274,6 +314,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		if(keyNavigationInUse()) {
+			return false;
+		}
 		screenX = MathUtils.round(screenX / scaleX);
 		screenY = MathUtils.round(screenY / scaleY);
 		return renderTree.mouseMoved(screenX, screenY);
@@ -281,6 +324,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+		if(keyNavigationInUse()) {
+			return false;
+		}
 		screenX = MathUtils.round(screenX / scaleX);
 		screenY = MathUtils.round(screenY / scaleY);
 		return renderTree.mouseMoved(screenX, screenY);
@@ -304,7 +350,14 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (activeTextInput != null) {
+		if (activeTextInput != null && activeTextInput.isReceivingInput()) {
+			return true;
+		}
+		if (keycode == actionKey && activeAction != null) {
+			activeAction.beginAction();
+			if (activeTextInput != null) {
+				textInputIgnoredFirstEnter = false;
+			}
 			return true;
 		}
 		if (handleModalKeyDown(keycode)) {
@@ -318,10 +371,55 @@ public class UiContainer extends UiElement implements InputProcessor {
 		if (handleTextInputKeyUp(keycode)) {
 			return true;
 		}
+		if (keycode == actionKey && activeAction != null) {
+			activeAction.endAction();
+			return true;
+		}
 		if (handleModalKeyUp(keycode)) {
 			return true;
 		}
 		return false;
+	}
+
+	public boolean buttonDown(ControllerUiInput<?> controllerUiInput, ControllerButton button) {
+		if (activeNavigation == null) {
+			return false;
+		}
+		ActionableRenderNode hotkeyAction = activeNavigation.hotkey(button);
+		if (hotkeyAction != null) {
+			hotkeyAction.beginAction();
+		} else if (activeAction != null) {
+			if (button.equals(controllerUiInput.getActionButton())) {
+				if (activeTextInput != null) {
+					if(!textInputIgnoredFirstEnter) {
+						activeAction.beginAction();
+					}
+				} else {
+					activeAction.beginAction();
+				}
+			}
+		}
+		return true;
+	}
+
+	public boolean buttonUp(ControllerUiInput<?> controllerUiInput, ControllerButton button) {
+		if (activeNavigation == null) {
+			return false;
+		}
+		ActionableRenderNode hotkeyAction = activeNavigation.hotkey(button);
+		if (hotkeyAction != null) {
+			hotkeyAction.endAction();
+		} else if (activeAction != null) {
+			if(activeTextInput != null && !textInputIgnoredFirstEnter) {
+				textInputIgnoredFirstEnter = true;
+				return true;
+			}
+			if (button.equals(controllerUiInput.getActionButton())) {
+				activeAction.endAction();
+				textInputIgnoredFirstEnter = false;
+			}
+		}
+		return true;
 	}
 
 	private boolean handleModalKeyDown(int keycode) {
@@ -330,9 +428,19 @@ public class UiContainer extends UiElement implements InputProcessor {
 		}
 		ActionableRenderNode hotkeyAction = activeNavigation.hotkey(keycode);
 		if (hotkeyAction == null) {
-			return true;
+			if (keyNavigationInUse()) {
+				if (activeAction != null) {
+					activeAction.setState(NodeState.NORMAL);
+				}
+				ActionableRenderNode result = activeNavigation.navigate(keycode);
+				if (result != null) {
+					result.setState(NodeState.HOVER);
+					setActiveAction(result);
+				}
+			}
+		} else {
+			hotkeyAction.beginAction();
 		}
-		hotkeyAction.beginAction();
 		return true;
 	}
 
@@ -341,16 +449,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 			return false;
 		}
 		ActionableRenderNode hotkeyAction = activeNavigation.hotkey(keycode);
-		if (hotkeyAction == null) {
-			if (activeAction != null) {
-				activeAction.setState(NodeState.NORMAL);
-			}
-			ActionableRenderNode result = activeNavigation.navigate(keycode);
-			if (result != null) {
-				result.setState(NodeState.HOVER);
-				setActiveAction(result);
-			}
-		} else {
+		if (hotkeyAction != null) {
 			hotkeyAction.endAction();
 		}
 		return true;
@@ -360,33 +459,31 @@ public class UiContainer extends UiElement implements InputProcessor {
 		if (activeTextInput == null) {
 			return false;
 		}
-		if (activeTextInput.isReceivingInput()) {
-			switch (keycode) {
-			case Keys.BACKSPACE:
-				activeTextInput.backspace();
-				break;
-			case Keys.ENTER:
-				if (activeTextInput.enter()) {
-					activeTextInput = null;
-					activeAction = null;
-				}
-				break;
-			case Keys.RIGHT:
-				activeTextInput.moveCursorRight();
-				break;
-			case Keys.LEFT:
-				activeTextInput.moveCursorLeft();
-				break;
-			}
-			return true;
+		if (!activeTextInput.isReceivingInput()) {
+			return false;
 		}
-
 		switch (keycode) {
+		case Keys.BACKSPACE:
+			activeTextInput.backspace();
+			break;
 		case Keys.ENTER:
-			activeTextInput.beginAction();
-			return true;
+			if (!textInputIgnoredFirstEnter) {
+				textInputIgnoredFirstEnter = true;
+				return true;
+			}
+			if (activeTextInput.enter()) {
+				activeTextInput = null;
+				activeAction = null;
+			}
+			break;
+		case Keys.RIGHT:
+			activeTextInput.moveCursorRight();
+			break;
+		case Keys.LEFT:
+			activeTextInput.moveCursorLeft();
+			break;
 		}
-		return false;
+		return true;
 	}
 
 	private void setActiveAction(ActionableRenderNode actionable) {
@@ -398,10 +495,36 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	/**
 	 * Sets the current {@link Navigatable} for UI navigation
-	 * @param activeNavigation The current {@link Navigatable} being navigated
+	 * 
+	 * @param activeNavigation
+	 *            The current {@link Navigatable} being navigated
 	 */
 	public void setActiveNavigation(Navigatable activeNavigation) {
 		this.activeNavigation = activeNavigation;
+		
+		if(renderTree == null) {
+			return;
+		}
+		if(!keyNavigationInUse()) {
+			return;
+		}
+		if (activeAction != null) {
+			activeAction.setState(NodeState.NORMAL);
+		}
+		UiNavigation navigation = activeNavigation.getNavigation();
+		if(navigation == null) {
+			return;
+		}
+		Actionable firstActionable = navigation.resetCursor();
+		if(firstActionable == null) {
+			return;
+		}
+		RenderNode<?, ?> renderNode = renderTree.getElementById(firstActionable.getId());
+		if(renderNode == null) {
+			return;
+		}
+		setActiveAction(((ActionableRenderNode) renderNode));
+		((ActionableRenderNode) renderNode).setState(NodeState.HOVER);
 	}
 
 	/**
@@ -415,6 +538,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	/**
 	 * Returns the width of the {@link UiContainer}
+	 * 
 	 * @return The width in pixels
 	 */
 	public int getWidth() {
@@ -422,7 +546,8 @@ public class UiContainer extends UiElement implements InputProcessor {
 	}
 
 	/**
-	 * Returns the height of the {@link UiContainer} 
+	 * Returns the height of the {@link UiContainer}
+	 * 
 	 * @return The height in pixels
 	 */
 	public int getHeight() {
@@ -458,14 +583,86 @@ public class UiContainer extends UiElement implements InputProcessor {
 	}
 
 	/**
-	 * Returns the last {@link InputSource} the {@link UiContainer} detected
+	 * Returns the last {@link InputSource} used on the {@link UiContainer}
+	 * 
 	 * @return
 	 */
 	public InputSource getLastInputSource() {
 		return lastInputSource;
 	}
 
+	/**
+	 * Sets the last {@link InputSource} used on the {@link UiContainer}
+	 * 
+	 * @param lastInputSource
+	 *            The {@link InputSource} last used
+	 */
+	public void setLastInputSource(InputSource lastInputSource) {
+		if (lastInputSource == null) {
+			return;
+		}
+		if (this.lastInputSource.equals(lastInputSource)) {
+			return;
+		}
+		this.lastInputSource = lastInputSource;
+	}
+
+	/**
+	 * Adds a {@link ControllerUiInput} instance to this {@link UiContainer}
+	 * 
+	 * @param input
+	 *            The instance to add
+	 */
+	public void addControllerInput(ControllerUiInput<?> input) {
+		controllerInputs.add(input);
+	}
+
+	/**
+	 * Removes a {@link ControllerUiInput} instance from this
+	 * {@link UiContainer}
+	 * 
+	 * @param input
+	 *            The instance to remove
+	 */
+	public void removeControllerInput(ControllerUiInput<?> input) {
+		controllerInputs.remove(input);
+	}
+
 	@Override
 	public void setZIndex(int zIndex) {
+	}
+
+	/**
+	 * Sets the key used for triggering actions (i.e. selecting a menu option)
+	 * 
+	 * @param actionKey
+	 *            The {@link Keys} value
+	 */
+	public void setActionKey(int actionKey) {
+		this.actionKey = actionKey;
+	}
+
+	private boolean keyNavigationInUse() {
+		switch (Mdx.os) {
+		case ANDROID:
+		case IOS:
+			return false;
+		case MAC:
+		case UNIX:
+		case UNKNOWN:
+		case WINDOWS:
+		default:
+			return keyboardNavigationEnabled || lastInputSource == InputSource.CONTROLLER;
+		}
+	}
+
+	/**
+	 * Sets if desktop-based games uses keyboard navigation instead of mouse
+	 * navigation. Note: This does not effect hotkeys
+	 * 
+	 * @param keyboardNavigationEnabled True if the desktop-based game should only navigate by keyboard
+	 */
+	public void setKeyboardNavigationEnabled(boolean keyboardNavigationEnabled) {
+		this.keyboardNavigationEnabled = keyboardNavigationEnabled;
 	}
 }

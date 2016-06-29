@@ -61,6 +61,16 @@ public class GridUiNavigation implements UiNavigation {
 	}
 
 	@Override
+	public void add(Actionable actionable) {
+		navigation.add(actionable);
+	}
+
+	@Override
+	public void remove(Actionable actionable) {
+		navigation.remove(actionable);
+	}
+	
+	@Override
 	public void set(int index, Actionable actionable) {
 		if (navigation.size() > index) {
 			navigation.set(index, actionable);
@@ -70,10 +80,10 @@ public class GridUiNavigation implements UiNavigation {
 	}
 
 	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @param actionable
+	 * Replaces the {@link Actionable} at the specified grid coordinate
+	 * @param x The grid x coordinate
+	 * @param y The grid y coordinate
+	 * @param actionable The new {@link Actionable}
 	 */
 	public void set(int x, int y, Actionable actionable) {
 		set((y * columns) + x, actionable);
@@ -114,9 +124,10 @@ public class GridUiNavigation implements UiNavigation {
 	}
 
 	@Override
-	public void resetCursor() {
+	public Actionable resetCursor() {
 		cursorX = 0;
 		cursorY = 0;
+		return navigation.get((cursorY * columns) + cursorX);
 	}
 
 	/**

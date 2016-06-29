@@ -20,10 +20,14 @@ import org.mini2Dx.ui.element.UiElement;
  * provided to the element
  */
 public class IdAllocator {
-	private static final String ID_PREFIX = "ui-element-";
+	private static final String ID_SUFFIX = "::ui-element";
 	private static final AtomicInteger NEXT_ID = new AtomicInteger();
 
 	public static String getNextId() {
-		return ID_PREFIX + NEXT_ID.incrementAndGet();
+		return getNextId(ID_SUFFIX);
+	}
+	
+	public static String getNextId(String suffix) {
+		return NEXT_ID.incrementAndGet() + suffix;
 	}
 }
