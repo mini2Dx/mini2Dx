@@ -12,6 +12,7 @@
 package org.mini2Dx.ui.element;
 
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.ScrollBoxRenderNode;
 
@@ -21,8 +22,11 @@ import org.mini2Dx.ui.render.ScrollBoxRenderNode;
 public class ScrollBox extends Column {
 	private static final float DEFAULT_SCROLL_FACTOR = 0.005f;
 
+	@Field(optional=true)
 	private float scrollFactor = DEFAULT_SCROLL_FACTOR;
+	@Field(optional=true)
 	private float minHeight = Float.MIN_VALUE;
+	@Field(optional=true)
 	private float maxHeight = Float.MAX_VALUE;
 
 	/**

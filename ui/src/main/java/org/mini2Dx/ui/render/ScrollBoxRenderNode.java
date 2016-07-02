@@ -52,24 +52,24 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 		scrollThumb.preUpdate();
 		topScrollButton.preUpdate();
 		bottomScrollButton.preUpdate();
-		
+
 		super.update(uiContainer, delta);
-		
-		switch(topScrollButtonState) {
+
+		switch (topScrollButtonState) {
 		case ACTION:
 			setScrollThumbPosition(scrollThumbPosition - ((ScrollBox) element).getScrollFactor());
 			break;
 		default:
 			break;
 		}
-		switch(bottomScrollButtonState) {
+		switch (bottomScrollButtonState) {
 		case ACTION:
 			setScrollThumbPosition(scrollThumbPosition + ((ScrollBox) element).getScrollFactor());
 			break;
 		default:
 			break;
 		}
-		
+
 		topScrollButton.set(innerArea.getX() + innerArea.getWidth() - style.getScrollBarWidth(), innerArea.getY());
 		scrollTrack.set(topScrollButton.getX(), topScrollButton.getY() + topScrollButton.getHeight());
 		bottomScrollButton.set(scrollTrack.getX(), scrollTrack.getY() + scrollTrack.getHeight());
@@ -147,16 +147,19 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 		switch (bottomScrollButtonState) {
 		case ACTION:
 			g.drawNinePatch(bottomScrollButtonStyleRule.getActionNinePatch(), bottomScrollButton.getRenderX(),
-					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(), bottomScrollButton.getRenderHeight());
+					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(),
+					bottomScrollButton.getRenderHeight());
 			break;
 		case HOVER:
 			g.drawNinePatch(bottomScrollButtonStyleRule.getHoverNinePatch(), bottomScrollButton.getRenderX(),
-					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(), bottomScrollButton.getRenderHeight());
+					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(),
+					bottomScrollButton.getRenderHeight());
 			break;
 		case NORMAL:
 		default:
 			g.drawNinePatch(bottomScrollButtonStyleRule.getNormalNinePatch(), bottomScrollButton.getRenderX(),
-					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(), bottomScrollButton.getRenderHeight());
+					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(),
+					bottomScrollButton.getRenderHeight());
 			break;
 		}
 	}
@@ -211,7 +214,7 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 	}
 
 	private boolean handleTopScrollButtonMouseMoved(boolean outerAreaContains, int screenX, int screenY) {
-		if(scrollThumbState == NodeState.ACTION) {
+		if (scrollThumbState == NodeState.ACTION) {
 			return false;
 		}
 		switch (topScrollButtonState) {
@@ -230,7 +233,7 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 	}
 
 	private boolean handleBottomScrollButtonMouseMoved(boolean outerAreaContains, int screenX, int screenY) {
-		if(scrollThumbState == NodeState.ACTION) {
+		if (scrollThumbState == NodeState.ACTION) {
 			return false;
 		}
 		switch (bottomScrollButtonState) {
@@ -280,6 +283,14 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 	@Override
 	public void mouseUp(int screenX, int screenY, int pointer, int button) {
 		endAction();
+	}
+
+	@Override
+	public boolean mouseScrolled(int screenX, int screenY, float amount) {
+		if (outerArea.contains(screenX, screenY)) {
+			setScrollThumbPosition(scrollThumbPosition + (amount * ((ScrollBox) element).getScrollFactor()));
+		}
+		return false;
 	}
 
 	@Override
@@ -337,9 +348,9 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 			topScrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(UiTheme.DEFAULT_STYLE_ID,
 					layoutState.getScreenSize());
 		}
-		if(result.getBottomScrollButtonStyle() != null) {
-			bottomScrollButtonStyleRule = topScrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(result.getBottomScrollButtonStyle(),
-					layoutState.getScreenSize());
+		if (result.getBottomScrollButtonStyle() != null) {
+			bottomScrollButtonStyleRule = topScrollButtonStyleRule = layoutState.getTheme()
+					.getButtonStyleRule(result.getBottomScrollButtonStyle(), layoutState.getScreenSize());
 		} else {
 			bottomScrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(UiTheme.DEFAULT_STYLE_ID,
 					layoutState.getScreenSize());

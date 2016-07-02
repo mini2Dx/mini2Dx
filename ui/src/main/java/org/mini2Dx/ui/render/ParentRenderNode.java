@@ -104,7 +104,22 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 		}
 		return false;
 	}
-
+	
+	@Override
+	public boolean mouseScrolled(int screenX, int screenY, float amount) {
+		if (outerArea.contains(screenX, screenY)) {
+			boolean result = false;
+			NavigableSet<Integer> descendingLayerKeys = layers.descendingKeySet();
+			for (Integer layerIndex : descendingLayerKeys) {
+				if (layers.get(layerIndex).mouseScrolled(screenX, screenY, amount)) {
+					result = true;
+				}
+			}
+			return result;
+		}
+		return false;
+	}
+	
 	@Override
 	public ActionableRenderNode mouseDown(int screenX, int screenY, int pointer, int button) {
 		if (!isIncludedInRender()) {

@@ -146,6 +146,10 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		}
 		return false;
 	}
+	
+	public boolean mouseScrolled(int screenX, int screenY, float amount) {
+		return false;
+	}
 
 	public ActionableRenderNode mouseDown(int screenX, int screenY, int pointer, int button) {
 		return null;

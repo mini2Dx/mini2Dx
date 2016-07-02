@@ -57,6 +57,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	private InputSource lastInputSource;
 	private int width, height;
+	private int lastMouseX, lastMouseY;
 	private float scaleX = 1f;
 	private float scaleY = 1f;
 	private boolean themeWarningIssued, initialThemeLayoutComplete;
@@ -281,6 +282,8 @@ public class UiContainer extends UiElement implements InputProcessor {
 		}
 		screenX = MathUtils.round(screenX / scaleX);
 		screenY = MathUtils.round(screenY / scaleY);
+		lastMouseX = screenX;
+		lastMouseY = screenY;
 
 		if (activeTextInput != null && activeTextInput.mouseDown(screenX, screenY, pointer, button) == null) {
 			// Release textbox control
@@ -304,6 +307,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 		}
 		screenX = MathUtils.round(screenX / scaleX);
 		screenY = MathUtils.round(screenY / scaleY);
+		lastMouseX = screenX;
+		lastMouseY = screenY;
+		
 		if (activeAction == null) {
 			return false;
 		}
@@ -318,6 +324,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 		}
 		screenX = MathUtils.round(screenX / scaleX);
 		screenY = MathUtils.round(screenY / scaleY);
+		lastMouseX = screenX;
+		lastMouseY = screenY;
+		
 		return renderTree.mouseMoved(screenX, screenY);
 	}
 
@@ -328,12 +337,18 @@ public class UiContainer extends UiElement implements InputProcessor {
 		}
 		screenX = MathUtils.round(screenX / scaleX);
 		screenY = MathUtils.round(screenY / scaleY);
+		lastMouseX = screenX;
+		lastMouseY = screenY;
+		
 		return renderTree.mouseMoved(screenX, screenY);
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		return false;
+		if(keyNavigationInUse()) {
+			return false;
+		}
+		return renderTree.mouseScrolled(lastMouseX, lastMouseY, amount);
 	}
 
 	@Override
