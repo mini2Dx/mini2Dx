@@ -349,8 +349,8 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 					layoutState.getScreenSize());
 		}
 		if (result.getBottomScrollButtonStyle() != null) {
-			bottomScrollButtonStyleRule = topScrollButtonStyleRule = layoutState.getTheme()
-					.getButtonStyleRule(result.getBottomScrollButtonStyle(), layoutState.getScreenSize());
+			bottomScrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(result.getBottomScrollButtonStyle(),
+					layoutState.getScreenSize());
 		} else {
 			bottomScrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(UiTheme.DEFAULT_STYLE_ID,
 					layoutState.getScreenSize());
