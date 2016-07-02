@@ -223,6 +223,20 @@ public class TabView extends UiElement implements Navigatable {
 	public Tab getTab(int index) {
 		return tabs.get(index);
 	}
+	
+	/**
+	 * Returns if the {@link TabView} contains a {@link Tab}
+	 * @param tab The {@link Tab} to search for
+	 * @return True if the {@link Tab} is added to this {@link TabView}
+	 */
+	public boolean containsTab(Tab tab) {
+		for(int i = 0; i < tabs.size(); i++) {
+			if(tabs.get(i).getId().equals(tab.getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Returns the total number of tabs in this {@link TabView}
