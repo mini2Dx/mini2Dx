@@ -50,6 +50,7 @@ import com.badlogic.gdx.math.MathUtils;
  */
 public class UiContainer extends UiElement implements InputProcessor {
 	private static final String LOGGING_TAG = UiContainer.class.getSimpleName();
+	private static Visibility defaultVisibility = Visibility.HIDDEN;
 
 	private final List<Container> children = new ArrayList<Container>(1);
 	private final List<ControllerUiInput<?>> controllerInputs = new ArrayList<ControllerUiInput<?>>(1);
@@ -678,5 +679,24 @@ public class UiContainer extends UiElement implements InputProcessor {
 	 */
 	public void setKeyboardNavigationEnabled(boolean keyboardNavigationEnabled) {
 		this.keyboardNavigationEnabled = keyboardNavigationEnabled;
+	}
+
+	/**
+	 * Returns the default {@link Visibility} for newly created {@link UiElement} objects
+	 * @return A non-null {@link Visibility} value. {@link Visibility#HIDDEN} by default
+	 */
+	public static Visibility getDefaultVisibility() {
+		return defaultVisibility;
+	}
+
+	/**
+	 * Sets the default {@link Visibility} for newly created {@link UiElement} objects
+	 * @param defaultVisibility The {@link Visibility} to set as default
+	 */
+	public static void setDefaultVisibility(Visibility defaultVisibility) {
+		if(defaultVisibility == null) {
+			return;
+		}
+		UiContainer.defaultVisibility = defaultVisibility;
 	}
 }

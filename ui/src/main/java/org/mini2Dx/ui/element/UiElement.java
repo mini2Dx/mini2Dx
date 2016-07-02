@@ -19,6 +19,7 @@ import java.util.Queue;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.core.serialization.annotation.NonConcrete;
+import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.effect.UiEffect;
 import org.mini2Dx.ui.listener.HoverListener;
 import org.mini2Dx.ui.listener.UiEffectListener;
@@ -36,7 +37,7 @@ public abstract class UiElement implements Hoverable {
 	protected final Queue<UiEffect> effects = new LinkedList<UiEffect>();
 
 	@Field(optional = true)
-	protected Visibility visibility = Visibility.HIDDEN;
+	protected Visibility visibility = UiContainer.getDefaultVisibility();
 	@Field(optional = true)
 	protected String styleId = UiTheme.DEFAULT_STYLE_ID;
 	@Field(optional = true)
