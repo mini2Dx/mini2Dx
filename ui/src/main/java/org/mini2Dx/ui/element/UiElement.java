@@ -126,7 +126,7 @@ public abstract class UiElement implements Hoverable {
 	/**
 	 * Returns the current style id of this {@link UiElement}
 	 * 
-	 * @return {@link UiTheme.DEFAULT_STYLE_ID} by default
+	 * @return {@link UiTheme#DEFAULT_STYLE_ID} by default
 	 */
 	public String getStyleId() {
 		return styleId;
