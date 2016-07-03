@@ -17,7 +17,7 @@ import com.badlogic.gdx.math.Vector2;
  * A {@link DeadZone} implementation that returns the raw controller values
  */
 public class NoopDeadZone implements DeadZone {
-	private Vector2 rawValues = new Vector2(0f, 0f);
+	private final Vector2 rawValues = new Vector2(0f, 0f);
 
 	@Override
 	public void updateX(float x) {
