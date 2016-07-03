@@ -432,4 +432,14 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 		this.scrollTo = scrollTo;
 		return true;
 	}
+	
+	@Override
+	public float getPreferredContentWidth() {
+		return preferredContentWidth - scrollTrack.getWidth();
+	}
+
+	@Override
+	public float getPreferredInnerWidth() {
+		return preferredContentWidth + style.getPaddingLeft() + style.getPaddingRight() + scrollTrack.getWidth();
+	}
 }
