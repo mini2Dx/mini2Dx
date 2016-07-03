@@ -26,6 +26,7 @@ public class Rectangle extends Shape implements
 	final Polygon polygon;
 	private float width, height;
 	private Rectangle tmp = null;
+	private Vector2 [] tmpVectors = null;
 	
 	/**
 	 * Default constructor. Creates a {@link Rectangle} at 0,0 with a width and
@@ -69,16 +70,24 @@ public class Rectangle extends Shape implements
 	}
 	
 	private Vector2 [] determineVertices(float x, float y, float width, float height) {
-		Vector2 topLeft = new Vector2(x, y);
-		Vector2 topRight = new Vector2(x + width, y);
-		Vector2 bottomLeft = new Vector2(x, y + height);
-		Vector2 bottomRight = new Vector2(x + width, y + height);
-		return new Vector2[] {
-				topLeft,
-				topRight,
-				bottomRight,
-				bottomLeft
-			};
+		if(tmpVectors == null) {
+			Vector2 topLeft = new Vector2(x, y);
+			Vector2 topRight = new Vector2(x + width, y);
+			Vector2 bottomLeft = new Vector2(x, y + height);
+			Vector2 bottomRight = new Vector2(x + width, y + height);
+			tmpVectors = new Vector2[] {
+					topLeft,
+					topRight,
+					bottomRight,
+					bottomLeft
+				};
+		} else {
+			tmpVectors[0].set(x, y);
+			tmpVectors[1].set(x + width, y);
+			tmpVectors[2].set(x + width, y + height);
+			tmpVectors[3].set(x, y + height);
+		}
+		return tmpVectors;
 	}
 	
 	@Override
