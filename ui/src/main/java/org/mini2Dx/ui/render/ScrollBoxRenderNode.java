@@ -23,6 +23,8 @@ import org.mini2Dx.ui.style.ButtonStyleRule;
 import org.mini2Dx.ui.style.ScrollBoxStyleRule;
 import org.mini2Dx.ui.style.UiTheme;
 
+import com.badlogic.gdx.math.MathUtils;
+
 /**
  *
  */
@@ -40,6 +42,7 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 	private NodeState bottomScrollButtonState = NodeState.NORMAL;
 	private NodeState scrollThumbState = NodeState.NORMAL;
 
+	private int scrollTranslationY;
 	private float thumbDragStartY;
 
 	public ScrollBoxRenderNode(ParentRenderNode<?, ?> parent, ScrollBox row) {
@@ -91,11 +94,10 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 			g.drawNinePatch(style.getBackgroundNinePatch(), getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(),
 					getInnerRenderHeight());
 		}
-		float scrollTranslation = scrollThumbPosition * contentHeight;
-		g.translate(0f, scrollTranslation);
+		g.translate(0f, scrollTranslationY);
 
 		Rectangle existingClip = g.removeClip();
-		g.setClip(getInnerRenderX(), getInnerRenderY() + scrollTranslation, getInnerRenderWidth(),
+		g.setClip(getInnerRenderX(), getInnerRenderY() + scrollTranslationY, getInnerRenderWidth(),
 				getInnerRenderHeight());
 
 		for (RenderLayer layer : layers.values()) {
@@ -107,7 +109,7 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 		} else {
 			g.removeClip();
 		}
-		g.translate(0f, -scrollTranslation);
+		g.translate(0f, -scrollTranslationY);
 
 		NinePatch scrollTrackPatch = style.getScrollTrackNinePatch();
 		g.drawNinePatch(scrollTrackPatch, scrollTrack.getRenderX(), scrollTrack.getRenderY(),
@@ -180,7 +182,7 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 		if (!result) {
 			NavigableSet<Integer> descendingLayerKeys = layers.descendingKeySet();
 			for (Integer layerIndex : descendingLayerKeys) {
-				if (layers.get(layerIndex).mouseMoved(screenX, screenY)) {
+				if (layers.get(layerIndex).mouseMoved(screenX, screenY + scrollTranslationY)) {
 					result = true;
 				}
 			}
@@ -272,7 +274,7 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 
 		NavigableSet<Integer> descendingLayerKeys = layers.descendingKeySet();
 		for (Integer layerIndex : descendingLayerKeys) {
-			ActionableRenderNode result = layers.get(layerIndex).mouseDown(screenX, screenY, pointer, button);
+			ActionableRenderNode result = layers.get(layerIndex).mouseDown(screenX, screenY + scrollTranslationY, pointer, button);
 			if (result != null) {
 				return result;
 			}
@@ -300,8 +302,8 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 
 		if (result > ((ScrollBox) element).getMaxHeight()) {
 			result = ((ScrollBox) element).getMaxHeight();
-		} else if (result < ((ScrollBox) element).getMinHeight()) {
-			result = ((ScrollBox) element).getMinHeight();
+		} else if (result < style.getMinHeight()) {
+			result = style.getMinHeight();
 		}
 
 		float scrollThumbHeightPercentage = result / contentHeight;
@@ -366,5 +368,6 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 		} else if (scrollThumbPosition > maxPosition) {
 			scrollThumbPosition = maxPosition;
 		}
+		scrollTranslationY = MathUtils.round(scrollThumbPosition * contentHeight);
 	}
 }

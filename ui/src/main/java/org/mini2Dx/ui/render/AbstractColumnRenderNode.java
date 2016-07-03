@@ -58,6 +58,9 @@ public abstract class AbstractColumnRenderNode<S extends ColumnStyleRule> extend
 				maxHeight = height;
 			}
 		}
+		if(maxHeight < style.getMinHeight()) {
+			return style.getMinHeight();
+		}
 		return maxHeight;
 	}
 

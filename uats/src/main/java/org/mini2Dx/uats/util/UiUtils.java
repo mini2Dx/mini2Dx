@@ -128,7 +128,9 @@ public class UiUtils {
 	public static TextButton createButton(UiNavigation navigation, String text, boolean debug, ActionListener listener) {
 		TextButton button = new TextButton("TextButton: " + text);
 		button.setText(text);
-		button.addActionListener(listener);
+		if(listener != null) {
+			button.addActionListener(listener);
+		}
 		button.setDebugEnabled(debug);
 		button.setVisibility(Visibility.VISIBLE);
 		

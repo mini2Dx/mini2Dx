@@ -270,6 +270,7 @@
     "default": {
       "rules": {
         "XS": {
+          "minHeight": 32,
           "topScrollButtonStyle": "default",
           "bottomScrollButtonStyle": "default",
           "scrollButtonHeight": "16",

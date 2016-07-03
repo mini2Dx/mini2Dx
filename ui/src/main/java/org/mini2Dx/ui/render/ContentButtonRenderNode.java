@@ -119,6 +119,9 @@ public class ContentButtonRenderNode extends ParentRenderNode<ContentButton, But
 				maxHeight = height;
 			}
 		}
+		if(maxHeight < style.getMinHeight()) {
+			return style.getMinHeight();
+		}
 		return maxHeight;
 	}
 

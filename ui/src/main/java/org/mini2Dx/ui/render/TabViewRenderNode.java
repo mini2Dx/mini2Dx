@@ -125,6 +125,9 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule>im
 				maxHeight = height;
 			}
 		}
+		if(maxHeight < style.getMinHeight()) {
+			return style.getMinHeight();
+		}
 		return maxHeight;
 	}
 

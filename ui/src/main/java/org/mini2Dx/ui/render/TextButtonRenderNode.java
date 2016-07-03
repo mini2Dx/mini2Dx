@@ -133,6 +133,9 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
 		glyphLayout.setText(style.getBitmapFont(), element.getText(), Color.WHITE, preferredContentWidth,
 				element.getTextAlignment().getAlignValue(), true);
+		if(glyphLayout.height < style.getMinHeight()) {
+			return style.getMinHeight();
+		}
 		return glyphLayout.height;
 	}
 

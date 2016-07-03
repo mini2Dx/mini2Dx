@@ -252,11 +252,18 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		scrollBox.setLayout("xs-12c");
 		scrollBox.setVisibility(Visibility.VISIBLE);
 		scrollBox.setMaxHeight(300f);
-		for(int i = 0; i < 25; i++) {
-			Label label = UiUtils.createLabel("Label " + i);
-			Row row = Row.withElements(label);
-			row.setVisibility(Visibility.VISIBLE);
-			scrollBox.add(row);
+		for(int i = 0; i < 30; i++) {
+			if(i % 2 == 0) {
+				Label label = UiUtils.createLabel("Label " + i);
+				Row row = Row.withElements(label);
+				row.setVisibility(Visibility.VISIBLE);
+				scrollBox.add(row);
+			} else {
+				Button button = UiUtils.createButton(null, "Test", null);
+				Row row = Row.withElements(button);
+				row.setVisibility(Visibility.VISIBLE);
+				scrollBox.add(row);
+			}
 		}
 		tab3.add(scrollBox);
 		tabView.add(tab3);

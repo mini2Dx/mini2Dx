@@ -25,8 +25,6 @@ public class ScrollBox extends Column {
 	@Field(optional=true)
 	private float scrollFactor = DEFAULT_SCROLL_FACTOR;
 	@Field(optional=true)
-	private float minHeight = Float.MIN_VALUE;
-	@Field(optional=true)
 	private float maxHeight = Float.MAX_VALUE;
 
 	/**
@@ -54,26 +52,6 @@ public class ScrollBox extends Column {
 			children.get(i).attach(renderNode);
 		}
 		parentRenderNode.addChild(renderNode);
-	}
-
-	/**
-	 * Returns the minimum height for this {@link ScrollBox}
-	 * @return {@link Float#MIN_VALUE} by default
-	 */
-	public float getMinHeight() {
-		return minHeight;
-	}
-
-	/**
-	 * Sets the minimum height for this {@link ScrollBox}
-	 * @param minHeight The minimum height to set
-	 */
-	public void setMinHeight(float minHeight) {
-		this.minHeight = minHeight;
-		if (renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
 	}
 
 	/**

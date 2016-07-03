@@ -123,11 +123,16 @@ public class ImageButtonRenderNode extends RenderNode<ImageButton, ButtonStyleRu
 		if (textureRegion == null) {
 			return 0f;
 		}
+		float result = 0f;
 		if (element.isResponsive()) {
-			return textureRegion.getRegionHeight() * (preferredContentWidth / textureRegion.getRegionWidth());
+			result = textureRegion.getRegionHeight() * (preferredContentWidth / textureRegion.getRegionWidth());
 		} else {
-			return textureRegion.getRegionHeight();
+			result = textureRegion.getRegionHeight();
 		}
+		if(result < style.getMinHeight()) {
+			return style.getMinHeight();
+		}
+		return result;
 	}
 
 	@Override

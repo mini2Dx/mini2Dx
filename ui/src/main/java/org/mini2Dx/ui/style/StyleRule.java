@@ -27,6 +27,8 @@ public class StyleRule {
 	private int paddingTop, paddingBottom, paddingLeft, paddingRight;
 	@Field(optional=true)
 	private int marginTop, marginBottom, marginLeft, marginRight;
+	@Field(optional=true)
+	private int minHeight;
 	
 	public void validate(UiTheme theme) {
 		
@@ -118,10 +120,19 @@ public class StyleRule {
 		this.marginRight = margin;
 	}
 
+	public int getMinHeight() {
+		return minHeight;
+	}
+
+	public void setMinHeight(int minHeight) {
+		this.minHeight = minHeight;
+	}
+
 	@Override
 	public String toString() {
 		return "StyleRule [paddingTop=" + paddingTop + ", paddingBottom=" + paddingBottom + ", paddingLeft="
 				+ paddingLeft + ", paddingRight=" + paddingRight + ", marginTop=" + marginTop + ", marginBottom="
-				+ marginBottom + ", marginLeft=" + marginLeft + ", marginRight=" + marginRight + "]";
+				+ marginBottom + ", marginLeft=" + marginLeft + ", marginRight=" + marginRight + ", minHeight="
+				+ minHeight + "]";
 	}
 }

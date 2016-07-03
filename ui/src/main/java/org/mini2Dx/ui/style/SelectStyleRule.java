@@ -29,8 +29,6 @@ public class SelectStyleRule extends StyleRule {
 	@Field
 	private int buttonWidth;
 	@Field(optional=true)
-	private int minHeight;
-	@Field(optional=true)
 	private String background;
 	@Field(optional=true)
 	private int ninePatchTop, ninePatchBottom, ninePatchLeft, ninePatchRight;
@@ -86,14 +84,6 @@ public class SelectStyleRule extends StyleRule {
 
 	public void setButtonWidth(int buttonWidth) {
 		this.buttonWidth = buttonWidth;
-	}
-
-	public int getMinHeight() {
-		return minHeight;
-	}
-
-	public void setMinHeight(int minHeight) {
-		this.minHeight = minHeight;
 	}
 
 	public String getBackground() {

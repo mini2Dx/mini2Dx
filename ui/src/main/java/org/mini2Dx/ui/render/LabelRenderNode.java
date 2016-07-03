@@ -109,6 +109,9 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 			glyphLayout.setText(style.getBitmapFont(), element.getText(), Color.WHITE, preferredContentWidth,
 					element.getHorizontalAlignment().getAlignValue(), true);
 		}
+		if(glyphLayout.height < style.getMinHeight()) {
+			return style.getMinHeight();
+		}
 		return glyphLayout.height;
 	}
 

@@ -132,7 +132,11 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
-		return style.getFontSize();
+		float result = style.getFontSize();
+		if(result < style.getMinHeight()) {
+			return style.getMinHeight();
+		}
+		return result;
 	}
 
 	@Override
