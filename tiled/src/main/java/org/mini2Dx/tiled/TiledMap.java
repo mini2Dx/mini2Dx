@@ -82,17 +82,34 @@ public class TiledMap implements TiledParserListener {
 	 */
 	public TiledMap(FileHandle fileHandle, boolean loadTilesets,
 			boolean cacheLayers) throws TiledException {
+		this(new TiledParser(), fileHandle, loadTilesets, cacheLayers);
+	}
+	
+	/**
+	 * Constructs a map from a TMX file
+	 * 
+	 * @param parser An existing {@link TiledParser} instance
+	 * @param fileHandle
+	 *            A {@link FileHandle} to a .tmx file
+	 * @param loadTilesets
+	 *            True if the tileset images should be loaded and the map
+	 *            pre-rendered
+	 * @throws TiledException
+	 *             Thrown if there were issues with the loaded map
+	 */
+	public TiledMap(TiledParser parser, FileHandle fileHandle, boolean loadTilesets,
+			boolean cacheLayers) throws TiledException {
 		this();
 		this.fileHandle = fileHandle;
-
+		
+		parser.addListener(this);
 		try {
-			TiledParser parser = new TiledParser();
-			parser.addListener(this);
 			parser.parse(fileHandle);
 		} catch (IOException e) {
 			throw new TiledParsingException(e);
 		}
-
+		parser.removeListener(this);
+		
 		if (loadTilesets) {
 			loadTilesets();
 		}
