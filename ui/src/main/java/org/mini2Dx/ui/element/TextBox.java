@@ -66,6 +66,7 @@ public class TextBox extends UiElement implements Actionable {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode = null;
 	}
 
 	@Override

@@ -57,6 +57,7 @@ public class DummyUiElement extends UiElement {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode = null;
 	}
 
 	@Override

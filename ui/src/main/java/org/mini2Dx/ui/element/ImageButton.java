@@ -139,6 +139,7 @@ public class ImageButton extends Button {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode = null;
 	}
 	
 	@Override

@@ -82,6 +82,7 @@ public class TextButton extends Button {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode = null;
 	}
 	
 	@Override

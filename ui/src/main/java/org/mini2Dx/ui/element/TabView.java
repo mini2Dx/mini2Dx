@@ -366,6 +366,7 @@ public class TabView extends UiElement implements Navigatable {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode = null;
 	}
 
 	@Override

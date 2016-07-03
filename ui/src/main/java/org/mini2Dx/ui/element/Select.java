@@ -69,6 +69,7 @@ public class Select<V> extends UiElement implements Actionable {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode = null;
 	}
 
 	@Override

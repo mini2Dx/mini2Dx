@@ -89,6 +89,7 @@ public class ContentButton extends Button {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode = null;
 	}
 	
 	@Override

@@ -100,6 +100,7 @@ public class Label extends UiElement {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode = null;
 	}
 	
 	@Override

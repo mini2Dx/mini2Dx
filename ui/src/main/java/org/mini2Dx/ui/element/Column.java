@@ -161,6 +161,7 @@ public class Column extends UiElement {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode = null;
 	}
 
 	/**

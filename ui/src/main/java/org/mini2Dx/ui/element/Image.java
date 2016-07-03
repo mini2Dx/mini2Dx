@@ -128,6 +128,7 @@ public class Image extends UiElement {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode = null;
 	}
 
 	/**
