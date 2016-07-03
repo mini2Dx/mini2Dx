@@ -56,10 +56,16 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		setDirty(true);
 	}
 
-	private void setInnerArea() {
-		innerArea.set(outerArea.getX() + style.getMarginLeft(), outerArea.getY() + style.getMarginTop(),
-				outerArea.getWidth() - style.getMarginLeft() - style.getMarginRight(),
-				outerArea.getHeight() - style.getMarginTop() - style.getMarginBottom());
+	private void setInnerArea(boolean force) {
+		if(force) {
+			innerArea.forceTo(outerArea.getX() + style.getMarginLeft(), outerArea.getY() + style.getMarginTop(),
+					outerArea.getWidth() - style.getMarginLeft() - style.getMarginRight(),
+					outerArea.getHeight() - style.getMarginTop() - style.getMarginBottom());
+		} else {
+			innerArea.set(outerArea.getX() + style.getMarginLeft(), outerArea.getY() + style.getMarginTop(),
+					outerArea.getWidth() - style.getMarginLeft() - style.getMarginRight(),
+					outerArea.getHeight() - style.getMarginTop() - style.getMarginBottom());
+		}
 	}
 
 	public void update(UiContainerRenderTree uiContainer, float delta) {
@@ -85,6 +91,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		boolean visible = isScheduledToRender();
 		if (effects.size() == 0) {
 			outerArea.forceTo(targetOuterArea);
+			setInnerArea(true);
 		} else {
 			for (int i = 0; i < effects.size(); i++) {
 				UiEffect effect = effects.get(i);
@@ -98,8 +105,8 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 
 				visible &= effect.update(uiContainer, outerArea, targetOuterArea, delta);
 			}
+			setInnerArea(false);
 		}
-		setInnerArea();
 		includeInRender = visible;
 
 		if (element.isDebugEnabled()) {

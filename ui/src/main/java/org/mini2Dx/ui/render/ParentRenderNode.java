@@ -82,6 +82,7 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 
 		yOffset = determineYOffset(layoutState);
 		preferredContentHeight = determinePreferredContentHeight(layoutState);
+		super.setDirty(false);
 		setDirty(false);
 		childDirty = false;
 		initialLayoutOccurred = true;
@@ -173,6 +174,10 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 		}
 	}
 
+	boolean isChildDirty() {
+		return childDirty;
+	}
+	
 	public void setChildDirty(boolean childDirty) {
 		if (!childDirty) {
 			return;
