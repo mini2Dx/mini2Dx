@@ -248,7 +248,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		});
 		hiddenButton.setVisibility(Visibility.HIDDEN);
 		tab3.add(Row.withElements(hiddenButton));
-		ScrollBox scrollBox = new ScrollBox("scrollBox");
+		final ScrollBox scrollBox = new ScrollBox("scrollBox");
 		scrollBox.setLayout("xs-12c");
 		scrollBox.setVisibility(Visibility.VISIBLE);
 		scrollBox.setMaxHeight(300f);
@@ -265,7 +265,56 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 				scrollBox.add(row);
 			}
 		}
-		tab3.add(scrollBox);
+		tab3.add(Row.withElements(scrollBox));
+		
+		Button scrollToTopButton = UiUtils.createButton(null, "Scroll to top (immediate)", new ActionListener() {
+			
+			@Override
+			public void onActionEnd(Actionable source) {
+				scrollBox.scrollToTop(true);
+			}
+			
+			@Override
+			public void onActionBegin(Actionable source) {}
+		});
+		tab3.add(Row.withElements(scrollToTopButton));
+		
+		Button scrollToBottomButton = UiUtils.createButton(null, "Scroll to bottom (immediate)", new ActionListener() {
+			
+			@Override
+			public void onActionEnd(Actionable source) {
+				scrollBox.scrollToBottom(true);
+			}
+			
+			@Override
+			public void onActionBegin(Actionable source) {}
+		});
+		tab3.add(Row.withElements(scrollToBottomButton));
+		
+		scrollToTopButton = UiUtils.createButton(null, "Scroll to top (smooth)", new ActionListener() {
+			
+			@Override
+			public void onActionEnd(Actionable source) {
+				scrollBox.scrollToTop(false);
+			}
+			
+			@Override
+			public void onActionBegin(Actionable source) {}
+		});
+		tab3.add(Row.withElements(scrollToTopButton));
+		
+		scrollToBottomButton = UiUtils.createButton(null, "Scroll to bottom (smooth)", new ActionListener() {
+			
+			@Override
+			public void onActionEnd(Actionable source) {
+				scrollBox.scrollToBottom(false);
+			}
+			
+			@Override
+			public void onActionBegin(Actionable source) {}
+		});
+		tab3.add(Row.withElements(scrollToBottomButton));
+		
 		tabView.add(tab3);
 		
 		tabView.setNextTabHotkey(Keys.E);

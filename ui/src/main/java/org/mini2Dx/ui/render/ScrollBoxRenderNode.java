@@ -11,12 +11,15 @@
  */
 package org.mini2Dx.ui.render;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NavigableSet;
 
 import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.NinePatch;
+import org.mini2Dx.ui.animation.ScrollTo;
 import org.mini2Dx.ui.element.ScrollBox;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ButtonStyleRule;
@@ -33,6 +36,8 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 	private final CollisionBox bottomScrollButton = new CollisionBox();
 	private final CollisionBox scrollThumb = new CollisionBox();
 	private final CollisionBox scrollTrack = new CollisionBox();
+	
+	private ScrollTo scrollTo = null;
 
 	private ButtonStyleRule topScrollButtonStyleRule, bottomScrollButtonStyleRule;
 	private float contentHeight;
@@ -72,6 +77,7 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 		default:
 			break;
 		}
+		updateScrollTo(delta);
 
 		topScrollButton.set(innerArea.getX() + innerArea.getWidth() - style.getScrollBarWidth(), innerArea.getY());
 		scrollTrack.set(topScrollButton.getX(), topScrollButton.getY() + topScrollButton.getHeight());
@@ -163,6 +169,46 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(),
 					bottomScrollButton.getRenderHeight());
 			break;
+		}
+	}
+	
+	private void updateScrollTo(float delta) {
+		if(scrollTo == null) {
+			return;
+		}
+		RenderNode<?, ?> scrollToNode = scrollTo.getTargetRenderNode();
+		if(scrollToNode == null) {
+			scrollToNode = getElementById(scrollTo.getTargetElement().getId());
+			if(scrollToNode == null) {
+				scrollTo = null;
+				return;
+			}
+		}
+		
+		float currentScrollY = innerArea.getY() + scrollTranslationY;
+		float scrollFactor = ((ScrollBox) element).getScrollFactor() * contentHeight;
+		if(scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + innerArea.getHeight() + scrollFactor) {
+			if(scrollTo.isImmediate()) {
+				//TODO: Optimise this
+				while(scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + innerArea.getHeight() + scrollFactor) {
+					setScrollThumbPosition(scrollThumbPosition + ((ScrollBox) element).getScrollFactor());
+					currentScrollY = innerArea.getY() + scrollTranslationY;
+				}
+			} else {
+				setScrollThumbPosition(scrollThumbPosition + ((ScrollBox) element).getScrollFactor());
+			}
+		} else if(scrollToNode.getOuterY() < currentScrollY - scrollFactor) {
+			if(scrollTo.isImmediate()) {
+				//TODO: Optimise this
+				while(scrollToNode.getOuterY() < currentScrollY - scrollFactor) {
+					setScrollThumbPosition(scrollThumbPosition - ((ScrollBox) element).getScrollFactor());
+					currentScrollY = innerArea.getY() + scrollTranslationY;
+				}
+			} else {
+				setScrollThumbPosition(scrollThumbPosition - ((ScrollBox) element).getScrollFactor());
+			}
+		} else {
+			scrollTo = null;
 		}
 	}
 
@@ -359,8 +405,12 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 		}
 		return result;
 	}
+	
+	public float getScrollThumbPosition() {
+		return scrollThumbPosition;
+	}
 
-	private void setScrollThumbPosition(float position) {
+	public void setScrollThumbPosition(float position) {
 		float maxPosition = (scrollTrack.getHeight() - scrollThumb.getHeight()) / scrollTrack.getHeight();
 		scrollThumbPosition = position;
 		if (scrollThumbPosition < 0f) {
@@ -369,5 +419,17 @@ public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyle
 			scrollThumbPosition = maxPosition;
 		}
 		scrollTranslationY = MathUtils.round(scrollThumbPosition * contentHeight);
+		((ScrollBox) element).notifyScrollListeners(scrollThumbPosition);
+	}
+	
+	public boolean offerScrollTo(ScrollTo scrollTo) {
+		if(scrollTo == null) {
+			return false;
+		}
+		if(this.scrollTo != null) {
+			return false;
+		}
+		this.scrollTo = scrollTo;
+		return true;
 	}
 }
