@@ -288,6 +288,7 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 		previousRectangle.set(x, y, width, height);
 		renderRectangle.set(previousRectangle);
 		storeRenderCoordinates();
+		interpolate = false;
 		
 		if(notifyPositionListeners) {
 			notifyPositionChangeListeners();
@@ -336,9 +337,11 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 		boolean notifyPositionListeners = x != getX() || y != getY();
 		boolean notifySizeListeners = width != getWidth() || height != getHeight();
 		
-		super.set(x, y, width, height);
+		if(notifyPositionListeners || notifySizeListeners) {
+			super.set(x, y, width, height);
+			interpolate = true;
+		}
 		
-		interpolate = true;
 		if(notifyPositionListeners) {
 			notifyPositionChangeListeners();
 		}
@@ -349,10 +352,19 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 	}
 
 	public void set(Rectangle rectangle) {
-		super.set(rectangle);
-		interpolate = true;
-		notifyPositionChangeListeners();
-		notifySizeChangeListeners();
+		boolean notifyPositionListeners = rectangle.getX() != getX() || rectangle.getY() != getY();
+		boolean notifySizeListeners = rectangle.getWidth() != getWidth() || rectangle.getHeight() != getHeight();
+		
+		if(notifyPositionListeners || notifySizeListeners) {
+			super.set(rectangle);
+			interpolate = true;
+		}
+		if(notifyPositionListeners) {
+			notifyPositionChangeListeners();
+		}
+		if(notifySizeListeners) {
+			notifySizeChangeListeners();
+		}
 	}
 
 	@Override
