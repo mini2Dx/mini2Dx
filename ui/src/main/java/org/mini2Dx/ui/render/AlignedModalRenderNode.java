@@ -15,6 +15,8 @@ import org.mini2Dx.ui.element.AlignedModal;
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.layout.LayoutState;
 
+import com.badlogic.gdx.math.MathUtils;
+
 /**
  *
  */
@@ -31,7 +33,7 @@ public class AlignedModalRenderNode extends ModalRenderNode {
 		case RIGHT:
 			return layoutState.getUiContainer().getOuterWidth() - outerWidth;
 		case CENTER:
-			return (layoutState.getUiContainer().getOuterWidth() / 2f) - (outerWidth / 2f);
+			return MathUtils.round((layoutState.getUiContainer().getOuterWidth() / 2f) - (outerWidth / 2f));
 		default:
 			return 0f;
 		}
@@ -44,7 +46,7 @@ public class AlignedModalRenderNode extends ModalRenderNode {
 		case BOTTOM:
 			return layoutState.getUiContainer().getOuterHeight() - outerHeight;
 		case MIDDLE:
-			return (layoutState.getUiContainer().getOuterHeight() / 2f) - (outerHeight / 2f);
+			return MathUtils.round((layoutState.getUiContainer().getOuterHeight() / 2f) - (outerHeight / 2f));
 		default:
 			return 0f;
 		}
