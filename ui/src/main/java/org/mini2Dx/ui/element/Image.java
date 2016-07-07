@@ -19,6 +19,7 @@ import org.mini2Dx.ui.render.ParentRenderNode;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 /**
  * Wraps a {@link Texture} or {@link TextureRegion} as a {@link UiElement}
@@ -28,7 +29,9 @@ public class Image extends UiElement {
 	private TextureRegion textureRegion;
 
 	@Field
-	private String path;
+	private String texturePath;
+	@Field(optional = true)
+	private String atlas;
 	@Field(optional = true)
 	private boolean responsive = false;
 	@Field(optional=true)
@@ -139,9 +142,15 @@ public class Image extends UiElement {
 	 * @return Null if no {@link TextureRegion} has been set
 	 */
 	public TextureRegion getTextureRegion(AssetManager assetManager) {
-		if (path != null) {
-			textureRegion = new TextureRegion(assetManager.get(path, Texture.class));
-			path = null;
+		if (atlas != null) {
+			if (texturePath != null) {
+				TextureAtlas textureAtlas = assetManager.get(atlas, TextureAtlas.class);
+				textureRegion = new TextureRegion(textureAtlas.findRegion(texturePath));
+				texturePath = null;
+			}
+		} else if (texturePath != null) {
+			textureRegion = new TextureRegion(assetManager.get(texturePath, Texture.class));
+			texturePath = null;
 		}
 		return textureRegion;
 	}
@@ -181,7 +190,7 @@ public class Image extends UiElement {
 	 * @return Null if no path is used
 	 */
 	public String getTexturePath() {
-		return path;
+		return texturePath;
 	}
 
 	/**
@@ -192,8 +201,29 @@ public class Image extends UiElement {
 	 *            The path to the texture
 	 */
 	public void setTexturePath(String texturePath) {
-		this.path = texturePath;
+		this.texturePath = texturePath;
 
+		if (renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+
+	/**
+	 * Returns the atlas (if any) to look up the texture in
+	 * @return Null by default
+	 */
+	public String getAtlas() {
+		return atlas;
+	}
+
+	/**
+	 * Sets the atlas to look up the texture in
+	 * @param atlas Null if the texture should not be looked up via an atlas
+	 */
+	public void setAtlas(String atlas) {
+		this.atlas = atlas;
+		
 		if (renderNode == null) {
 			return;
 		}

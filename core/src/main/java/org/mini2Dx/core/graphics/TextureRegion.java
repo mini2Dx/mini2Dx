@@ -12,6 +12,7 @@
 package org.mini2Dx.core.graphics;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 /**
  *
@@ -58,6 +59,14 @@ public class TextureRegion extends com.badlogic.gdx.graphics.g2d.TextureRegion {
 		super(region, x, y, width, height);
 	}
 	
+	/**
+	 * Constructs a region from an {@link AtlasRegion}
+	 * @param atlasRegion
+	 */
+	public TextureRegion(AtlasRegion atlasRegion) {
+		super(atlasRegion);
+	}
+
 	/**
 	 * Sets if the {@link TextureRegion} is flipped
 	 * @param flipX True if the region is flipped horizontally
