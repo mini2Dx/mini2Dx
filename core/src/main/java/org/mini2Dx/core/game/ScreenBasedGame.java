@@ -79,8 +79,8 @@ public abstract class ScreenBasedGame extends GameContainer {
 	}
 	
 	@Override
-	protected void preinit() {
-		super.preinit();
+	protected void preinit(Graphics g) {
+		super.preinit(g);
 		screenManager = new BasicScreenManager<GameScreen>();
 		addResizeListener(screenManager);
 	}

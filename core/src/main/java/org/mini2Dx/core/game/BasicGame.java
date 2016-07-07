@@ -11,6 +11,8 @@
  */
 package org.mini2Dx.core.game;
 
+import org.mini2Dx.core.graphics.Graphics;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 
@@ -19,8 +21,8 @@ import com.badlogic.gdx.InputProcessor;
  */
 public abstract class BasicGame extends GameContainer implements InputProcessor {
 	@Override
-	protected void preinit() {
-		super.preinit();
+	protected void preinit(Graphics g) {
+		super.preinit(g);
 		Gdx.input.setInputProcessor(this);
 	}
 	

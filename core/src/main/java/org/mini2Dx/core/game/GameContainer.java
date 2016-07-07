@@ -93,13 +93,9 @@ public abstract class GameContainer {
 	/**
 	 * Internal pre-initialisation code
 	 */
-	protected void preinit() {
+	protected void preinit(Graphics g) {
 		this.gameResizeListeners = new ArrayList<GameResizeListener>(1);
-		this.spriteBatch = new SpriteBatch();
-		this.polygonSpriteBatch = new PolygonSpriteBatch();
-		this.shapeRenderer = new ShapeRenderer();
-		
-		this.graphics = new Graphics(spriteBatch, polygonSpriteBatch, shapeRenderer);
+		this.graphics = g;
 	}
 	
 	/**
@@ -107,12 +103,12 @@ public abstract class GameContainer {
 	 */
 	protected void postinit() {}
 	
-	public void start() {
-		this.width = Gdx.graphics.getWidth();
-		this.height = Gdx.graphics.getHeight();
+	public void start(Graphics g) {
+		this.width = g.getWindowWidth();
+		this.height = g.getWindowHeight();
 		
 		if(!isInitialised) {
-			preinit();
+			preinit(g);
 			initialise();
 			postinit();
 			isInitialised = true;

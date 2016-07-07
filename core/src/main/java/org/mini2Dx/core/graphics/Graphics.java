@@ -35,60 +35,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Align;
 
 /**
- * Implements graphics rendering functionality
+ * Common interface to graphics rendering functionality
  */
-public class Graphics {
-	private final SpriteBatch spriteBatch;
-	private final ShapeTextureCache colorTextureCache;
-	private final ShapeRenderer shapeRenderer;
-	private final PolygonSpriteBatch polygonSpriteBatch;
-	private final EarClippingTriangulator triangulator = new EarClippingTriangulator();
-	
-	private Color color, backgroundColor, tint, defaultTint;
-	private OrthographicCamera camera;
-	private BitmapFont font;
-	private ShaderProgram defaultShader;
-
-	private float translationX, translationY;
-	private float scaleX, scaleY;
-	private float rotation, rotationX, rotationY;
-	private float windowWidth, windowHeight;
-
-	private int defaultBlendSrcFunc = GL20.GL_SRC_ALPHA, defaultBlendDstFunc = GL20.GL_ONE_MINUS_SRC_ALPHA;
-	private int lineHeight;
-	private boolean rendering, renderingShapes;
-	private Rectangle clip;
-	
-	private float [] triangleVertices = new float[6];
-	//3 edge polygon by default, expanded as needed during rendering
-	private float [] polygonRenderData = new float[15];
-
-	public Graphics(SpriteBatch spriteBatch, PolygonSpriteBatch polygonSpriteBatch, ShapeRenderer shapeRenderer) {
-		this.spriteBatch = spriteBatch;
-		this.shapeRenderer = shapeRenderer;
-		this.polygonSpriteBatch = polygonSpriteBatch;
-
-		defaultTint = spriteBatch.getColor();
-		if (defaultTint != null) {
-			font = new BitmapFont(true);
-		}
-
-		lineHeight = 1;
-		color = Color.WHITE;
-		backgroundColor = Color.BLACK;
-		colorTextureCache = new ShapeTextureCache();
-
-		translationX = 0;
-		translationY = 0;
-		scaleX = 1f;
-		scaleY = 1f;
-		rotation = 0f;
-		rotationX = 0f;
-		rotationY = 0f;
-
-		/* Create Ortho camera so that 0,0 is in top-left */
-		camera = new OrthographicCamera();
-	}
+public interface Graphics {
 
 	/**
 	 * Called by mini2Dx before rendering begins
@@ -98,29 +47,12 @@ public class Graphics {
 	 * @param gameHeight
 	 *            The current game window height
 	 */
-	public void preRender(int gameWidth, int gameHeight) {
-		this.windowWidth = gameWidth;
-		this.windowHeight = gameHeight;
-
-		Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
-
-		rendering = false;
-
-		if (defaultShader == null) {
-			defaultShader = SpriteBatch.createDefaultShader();
-		}
-	}
+	public void preRender(int gameWidth, int gameHeight);
 
 	/**
 	 * Called by mini2Dx after rendering
 	 */
-	public void postRender() {
-		endRendering();
-		resetTransformations();
-		clearShaderProgram();
-		clearBlendFunction();
-	}
+	public void postRender();
 
 	/**
 	 * Renders a line segment to the window in the current {@link Color} with
@@ -135,21 +67,7 @@ public class Graphics {
 	 * @param y2
 	 *            Y coordinate of point B
 	 */
-	public void drawLineSegment(float x1, float y1, float x2, float y2) {
-		beginRendering();
-		endRendering();
-
-		/* TODO: Move all shape rendering over to using ShapeRenderer */
-		renderingShapes = true;
-		shapeRenderer.begin(ShapeType.Filled);
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-	    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		shapeRenderer.setColor(color);
-		shapeRenderer.rectLine(x1, y1, x2, y2, lineHeight);
-		shapeRenderer.end();
-
-		beginRendering();
-	}
+	public void drawLineSegment(float x1, float y1, float x2, float y2);
 
 	/**
 	 * Renders a rectangle to the window in the current {@link Color} with the
@@ -164,15 +82,7 @@ public class Graphics {
 	 * @param height
 	 *            The height of the rectangle
 	 */
-	public void drawRect(float x, float y, float width, float height) {
-		beginRendering();
-
-		int roundWidth = MathUtils.round(width);
-		int roundHeight = MathUtils.round(height);
-
-		spriteBatch.draw(colorTextureCache.getRectangleTexture(color, roundWidth, roundHeight, getLineHeight()), x, y,
-				0, 0, roundWidth, roundHeight, 1f, 1f, 0, 0, 0, roundWidth, roundHeight, false, false);
-	}
+	public void drawRect(float x, float y, float width, float height);
 
 	/**
 	 * Fills a rectangle to the window in the current {@link Color}
@@ -186,12 +96,7 @@ public class Graphics {
 	 * @param height
 	 *            The height of the rectangle
 	 */
-	public void fillRect(float x, float y, float width, float height) {
-		beginRendering();
-
-		spriteBatch.draw(colorTextureCache.getFilledRectangleTexture(color), x, y, 0, 0, width, height, 1f, 1f, 0, 0, 0,
-				1, 1, false, false);
-	}
+	public void fillRect(float x, float y, float width, float height);
 
 	/**
 	 * Draws a circle to the window in the current {@link Color} with the set
@@ -204,16 +109,7 @@ public class Graphics {
 	 * @param radius
 	 *            The radius of the circle
 	 */
-	public void drawCircle(float centerX, float centerY, int radius) {
-		beginRendering();
-
-		float renderX = (centerX - radius);
-		float renderY = (centerY - radius);
-
-		Texture texture = colorTextureCache.getCircleTexture(color, radius, getLineHeight());
-		spriteBatch.draw(texture, renderX, renderY, 0, 0, texture.getWidth(), texture.getHeight(), 1f, 1f, 0, 0, 0,
-				texture.getWidth(), texture.getHeight(), false, false);
-	}
+	public void drawCircle(float centerX, float centerY, int radius);
 
 	/**
 	 * Fills a circle to the window in the current {@link Color}
@@ -225,16 +121,7 @@ public class Graphics {
 	 * @param radius
 	 *            The radius of the circle
 	 */
-	public void fillCircle(float centerX, float centerY, int radius) {
-		Texture texture = colorTextureCache.getFilledCircleTexture(color, radius);
-
-		float renderX = (centerX - radius);
-		float renderY = (centerY - radius);
-
-		beginRendering();
-		spriteBatch.draw(texture, renderX, renderY, 0, 0, texture.getWidth(), texture.getHeight(), 1f, 1f, 0, 0, 0,
-				texture.getWidth(), texture.getHeight(), false, false);
-	}
+	public void fillCircle(float centerX, float centerY, int radius);
 	
 	/**
 	 * Draws a triangle to the window in the current {@link Color}
@@ -245,15 +132,7 @@ public class Graphics {
 	 * @param x3 The x coordinate of the third point
 	 * @param y3 The y coordinate of the third point
 	 */
-	public void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
-		triangleVertices[0] = x1;
-		triangleVertices[1] = y1;
-		triangleVertices[2] = x2;
-		triangleVertices[3] = y2;
-		triangleVertices[4] = x3;
-		triangleVertices[5] = y3;
-		drawPolygon(triangleVertices);
-	}
+	public void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3);
 	
 	/**
 	 * Draws a triangle to the window in the current {@link Color}
@@ -264,67 +143,20 @@ public class Graphics {
 	 * @param x3 The x coordinate of the third point
 	 * @param y3 The y coordinate of the third point
 	 */
-	public void fillTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
-		triangleVertices[0] = x1;
-		triangleVertices[1] = y1;
-		triangleVertices[2] = x2;
-		triangleVertices[3] = y2;
-		triangleVertices[4] = x3;
-		triangleVertices[5] = y3;
-		fillPolygon(triangleVertices, triangulator.computeTriangles(triangleVertices).items);
-	}
+	public void fillTriangle(float x1, float y1, float x2, float y2, float x3, float y3);
 	
 	/**
 	 * Draws a polygon to the window in the current {@link Color}
 	 * @param vertices The vertices of the polygon in format x1,y1,x2,y2,x3,y3,etc.
 	 */
-	public void drawPolygon(float[] vertices) {
-		beginRendering();
-		endRendering();
-
-		/* TODO: Move all shape rendering over to using ShapeRenderer */
-		renderingShapes = true;
-		shapeRenderer.begin(ShapeType.Line);
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-	    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		shapeRenderer.setColor(color);
-		shapeRenderer.polygon(vertices);
-		shapeRenderer.end();
-
-		beginRendering();
-	}
+	public void drawPolygon(float[] vertices);
 	
 	/**
 	 * Fills a polygon to the window in the current {@link Color}
 	 * @param vertices The vertices of the polygon in format x1,y1,x2,y2,x3,y3,etc.
 	 * @param triangles The indices in the vertices parameter that make up the triangles of the polygon
 	 */
-	public void fillPolygon(float [] vertices, short [] triangles) {
-		beginRendering();
-		endRendering();
-		
-		renderingShapes = true;
-		if(vertices.length * 5 > polygonRenderData.length) {
-			polygonRenderData = new float[vertices.length * 5];
-		}
-		
-		int totalPoints = vertices.length / 2;
-		for(int i = 0; i < totalPoints; i++) {
-			int verticesIndex = i * 2;
-			int renderIndex = i * 5;
-			polygonRenderData[renderIndex] = vertices[verticesIndex];
-			polygonRenderData[renderIndex + 1] = vertices[verticesIndex + 1];
-			polygonRenderData[renderIndex + 2] = color.toFloatBits();
-			polygonRenderData[renderIndex + 3] = vertices[verticesIndex];
-			polygonRenderData[renderIndex + 4] = vertices[verticesIndex + 1];
-		}
-		
-		polygonSpriteBatch.begin();
-		polygonSpriteBatch.draw(colorTextureCache.getFilledRectangleTexture(color), polygonRenderData, 0, vertices.length * 5, triangles, 0, triangles.length);
-		polygonSpriteBatch.end();
-		
-		beginRendering();
-	}
+	public void fillPolygon(float [] vertices, short [] triangles);
 
 	/**
 	 * Draws a string to the window
@@ -336,14 +168,7 @@ public class Graphics {
 	 * @param y
 	 *            The y coordinate to draw at
 	 */
-	public void drawString(String text, float x, float y) {
-		if (font == null) {
-			return;
-		}
-		beginRendering();
-		font.setColor(color);
-		font.draw(spriteBatch, text, x, y);
-	}
+	public void drawString(String text, float x, float y);
 
 	/**
 	 * Draws a string to the window, automatically wrapping it within a
@@ -359,9 +184,7 @@ public class Graphics {
 	 *            The width to render the {@link String} at. Note: The string
 	 *            will automatically wrapped if it is longer.
 	 */
-	public void drawString(String text, float x, float y, float targetWidth) {
-		drawString(text, x, y, targetWidth, Align.left);
-	}
+	public void drawString(String text, float x, float y, float targetWidth);
 
 	/**
 	 * Draws a string to the window, automatically wrapping it within a
@@ -380,14 +203,7 @@ public class Graphics {
 	 *            The horizontal alignment. Note: Use {@link Align} to retrieve
 	 *            the appropriate value.
 	 */
-	public void drawString(String text, float x, float y, float targetWidth, int horizontalAlign) {
-		if (font == null) {
-			return;
-		}
-		beginRendering();
-		font.setColor(color);
-		font.draw(spriteBatch, text, x, y, targetWidth, horizontalAlign, true);
-	}
+	public void drawString(String text, float x, float y, float targetWidth, int horizontalAlign);
 
 	/**
 	 * Draws a texture to this graphics context
@@ -399,9 +215,7 @@ public class Graphics {
 	 * @param y
 	 *            The y coordinate to draw at
 	 */
-	public void drawTexture(Texture texture, float x, float y) {
-		drawTexture(texture, x, y, texture.getWidth(), texture.getHeight());
-	}
+	public void drawTexture(Texture texture, float x, float y);
 
 	/**
 	 * Draws a texture to this graphics context
@@ -415,9 +229,7 @@ public class Graphics {
 	 * @param flipY
 	 *            True if the texture should be flipped vertically
 	 */
-	public void drawTexture(Texture texture, float x, float y, boolean flipY) {
-		drawTexture(texture, x, y, texture.getWidth(), texture.getHeight(), flipY);
-	}
+	public void drawTexture(Texture texture, float x, float y, boolean flipY);
 
 	/**
 	 * Draws a texture to this graphics context
@@ -435,9 +247,7 @@ public class Graphics {
 	 *            The height to draw the texture (this can stretch/shrink the
 	 *            texture if not matching the texture's height)
 	 */
-	public void drawTexture(Texture texture, float x, float y, float width, float height) {
-		drawTexture(texture, x, y, width, height, true);
-	}
+	public void drawTexture(Texture texture, float x, float y, float width, float height);
 
 	/**
 	 * 
@@ -456,11 +266,7 @@ public class Graphics {
 	 * @param flipY
 	 *            True if the texture should be flipped vertically
 	 */
-	public void drawTexture(Texture texture, float x, float y, float width, float height, boolean flipY) {
-		beginRendering();
-		spriteBatch.draw(texture, x, y, 0, 0, width, height, 1f, 1f, 0, 0, 0, texture.getWidth(), texture.getHeight(),
-				false, flipY);
-	}
+	public void drawTexture(Texture texture, float x, float y, float width, float height, boolean flipY);
 
 	/**
 	 * Draws a texture region to this graphics context
@@ -472,9 +278,7 @@ public class Graphics {
 	 * @param y
 	 *            The y coordinate to draw at
 	 */
-	public void drawTextureRegion(TextureRegion textureRegion, float x, float y) {
-		drawTextureRegion(textureRegion, x, y, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
-	}
+	public void drawTextureRegion(TextureRegion textureRegion, float x, float y);
 
 	/**
 	 * Draws a texture region to this graphics context
@@ -492,10 +296,7 @@ public class Graphics {
 	 *            The height to draw the region (this can stretch/shrink the
 	 *            texture if not matching the region's height)
 	 */
-	public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height) {
-		beginRendering();
-		spriteBatch.draw(textureRegion, x, y, 0f, 0f, width, height, 1f, 1f, 0f);
-	}
+	public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height);
 
 	/**
 	 * Draws an instance of {@link Shape}
@@ -503,9 +304,7 @@ public class Graphics {
 	 * @param shape
 	 *            The implementation of {@link Shape} to draw
 	 */
-	public void drawShape(Shape shape) {
-		shape.draw(this);
-	}
+	public void drawShape(Shape shape);
 
 	/**
 	 * Fills an instance of {@link Shape}
@@ -513,9 +312,7 @@ public class Graphics {
 	 * @param shape
 	 *            The implementation of {@link Shape} to fill
 	 */
-	public void fillShape(Shape shape) {
-		shape.fill(this);
-	}
+	public void fillShape(Shape shape);
 
 	/**
 	 * Draws a {@link Sprite} with all transformations applied to this graphics
@@ -524,10 +321,7 @@ public class Graphics {
 	 * @param sprite
 	 *            The {@link Sprite} to draw
 	 */
-	public void drawSprite(Sprite sprite) {
-		beginRendering();
-		sprite.draw(spriteBatch);
-	}
+	public void drawSprite(Sprite sprite);
 
 	/**
 	 * Draws a {@link Sprite} at the given coordinates with all transformations
@@ -540,19 +334,7 @@ public class Graphics {
 	 * @param y
 	 *            The y coordinate to render at
 	 */
-	public void drawSprite(Sprite sprite, float x, float y) {
-		beginRendering();
-		float oldX = sprite.getX();
-		float oldY = sprite.getY();
-		Color oldTint = sprite.getColor();
-
-		if (tint != null)
-			sprite.setColor(tint);
-		sprite.setPosition(x, y);
-		sprite.draw(spriteBatch);
-		sprite.setPosition(oldX, oldY);
-		sprite.setColor(oldTint);
-	}
+	public void drawSprite(Sprite sprite, float x, float y);
 
 	/**
 	 * Draws a {@link SpriteCache}
@@ -562,16 +344,7 @@ public class Graphics {
 	 * @param cacheId
 	 *            The cacheId to draw
 	 */
-	public void drawSpriteCache(SpriteCache spriteCache, int cacheId) {
-		beginRendering();
-		spriteCache.getProjectionMatrix().set(spriteBatch.getProjectionMatrix().cpy());
-		spriteCache.getTransformMatrix().set(spriteBatch.getTransformMatrix().cpy());
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-
-		spriteCache.begin();
-		spriteCache.draw(cacheId);
-		spriteCache.end();
-	}
+	public void drawSpriteCache(SpriteCache spriteCache, int cacheId);
 
 	/**
 	 * Draws an instance of a LibGDX {@link Stage}
@@ -579,10 +352,7 @@ public class Graphics {
 	 * @param stage
 	 *            The {@link Stage} to be drawn to screen
 	 */
-	public void drawStage(Stage stage) {
-		endRendering();
-		stage.draw();
-	}
+	public void drawStage(Stage stage);
 
 	/**
 	 * Draws a {@link ParticleEffect} or {@link PooledParticleEffect} to screen
@@ -590,11 +360,8 @@ public class Graphics {
 	 * @param effect
 	 *            The effect to be drawn
 	 */
-	public void drawParticleEffect(ParticleEffect effect) {
-		beginRendering();
-		effect.render(spriteBatch);
-	}
-
+	public void drawParticleEffect(ParticleEffect effect);
+	
 	/**
 	 * Draws a {@link NinePatch} to screen
 	 * 
@@ -609,10 +376,7 @@ public class Graphics {
 	 * @param height
 	 *            The height to apply to the {@link NinePatch}
 	 */
-	public void drawNinePatch(NinePatch ninePatch, float x, float y, float width, float height) {
-		beginRendering();
-		ninePatch.draw(spriteBatch, x, y, width, height);
-	}
+	public void drawNinePatch(NinePatch ninePatch, float x, float y, float width, float height);
 
 	/**
 	 * Draws a {@link NinePatchDrawable} to screen
@@ -628,10 +392,7 @@ public class Graphics {
 	 * @param height
 	 *            The height to apply to the {@link NinePatchDrawable}
 	 */
-	public void drawNinePatch(NinePatchDrawable ninePatchDrawable, float x, float y, float width, float height) {
-		beginRendering();
-		ninePatchDrawable.draw(spriteBatch, x, y, width, height);
-	}
+	public void drawNinePatch(NinePatchDrawable ninePatchDrawable, float x, float y, float width, float height);
 
 	/**
 	 * Rotates the canvas by the provided degrees around the provided point
@@ -643,16 +404,7 @@ public class Graphics {
 	 * @param y
 	 *            The y coordinate to rotate around
 	 */
-	public void rotate(float degrees, float x, float y) {
-		if (rendering) {
-			endRendering();
-		}
-
-		this.rotation += degrees;
-		this.rotation = this.rotation % 360f;
-		this.rotationX = x;
-		this.rotationY = y;
-	}
+	public void rotate(float degrees, float x, float y);
 	
 	/**
 	 * Sets the canvas rotation around a provided point
@@ -660,16 +412,7 @@ public class Graphics {
 	 * @param x The x coordinate to rotate around
 	 * @param y The y coordinate to rotate around
 	 */
-	public void setRotation(float degrees, float x, float y) {
-		if (rendering) {
-			endRendering();
-		}
-
-		this.rotation = degrees;
-		this.rotation = this.rotation % 360f;
-		this.rotationX = x;
-		this.rotationY = y;
-	}
+	public void setRotation(float degrees, float x, float y);
 
 	/**
 	 * Scales the canvas (multiplies scale value)
@@ -679,14 +422,7 @@ public class Graphics {
 	 * @param scaleY
 	 *            Scaling along the Y axis
 	 */
-	public void scale(float scaleX, float scaleY) {
-		if (rendering) {
-			endRendering();
-		}
-
-		this.scaleX *= scaleX;
-		this.scaleY *= scaleY;
-	}
+	public void scale(float scaleX, float scaleY);
 	
 	/**
 	 * Sets the canvas scale
@@ -695,26 +431,12 @@ public class Graphics {
 	 * @param scaleY
 	 *            Scaling along the Y axis
 	 */
-	public void setScale(float scaleX, float scaleY) {
-		if (rendering) {
-			endRendering();
-		}
-
-		this.scaleX = scaleX;
-		this.scaleY = scaleY;
-	}
+	public void setScale(float scaleX, float scaleY);
 
 	/**
 	 * Resets scaling back to default values
 	 */
-	public void clearScaling() {
-		if (rendering) {
-			endRendering();
-		}
-
-		scaleX = 1f;
-		scaleY = 1f;
-	}
+	public void clearScaling();
 
 	/**
 	 * Moves the graphics context by a certain amount of the X and Y axis
@@ -724,14 +446,7 @@ public class Graphics {
 	 * @param translateY
 	 *            The y axis translation
 	 */
-	public void translate(float translateX, float translateY) {
-		if (rendering) {
-			endRendering();
-		}
-
-		this.translationX += translateX;
-		this.translationY += translateY;
-	}
+	public void translate(float translateX, float translateY);
 	
 	/**
 	 * Sets the translation coordinates 
@@ -740,14 +455,7 @@ public class Graphics {
 	 * @param translateY
 	 *            The y axis translation
 	 */
-	public void setTranslation(float translateX, float translateY) {
-		if (rendering) {
-			endRendering();
-		}
-
-		this.translationX = translateX;
-		this.translationY = translateY;
-	}
+	public void setTranslation(float translateX, float translateY);
 
 	/**
 	 * Sets the graphics context clip. Only pixels within this area will be
@@ -762,13 +470,7 @@ public class Graphics {
 	 * @param height
 	 *            The height of the clip
 	 */
-	public void setClip(float x, float y, float width, float height) {
-		if (rendering) {
-			endRendering();
-		}
-
-		clip = new Rectangle(x, y, width, height);
-	}
+	public void setClip(float x, float y, float width, float height);
 
 	/**
 	 * Sets the graphics context clip. Only pixels within this area will be
@@ -777,26 +479,12 @@ public class Graphics {
 	 * @param clip
 	 *            The clip area
 	 */
-	public void setClip(Rectangle clip) {
-		if (rendering) {
-			endRendering();
-		}
-
-		this.clip = clip;
-	}
+	public void setClip(Rectangle clip);
 
 	/**
 	 * Removes the applied clip
 	 */
-	public Rectangle removeClip() {
-		if (rendering) {
-			endRendering();
-		}
-
-		Rectangle result = clip;
-		clip = null;
-		return result;
-	}
+	public Rectangle removeClip();
 
 	/**
 	 * Sets the {@link Color} to apply to draw operations
@@ -804,14 +492,7 @@ public class Graphics {
 	 * @param tint
 	 *            The {@link Color} to tint with
 	 */
-	public void setTint(Color tint) {
-		if (rendering) {
-			endRendering();
-		}
-
-		this.tint = tint;
-		spriteBatch.setColor(tint);
-	}
+	public void setTint(Color tint);
 
 	/**
 	 * Sets the {@link BitmapFont} to draw {@link String}s with
@@ -819,36 +500,22 @@ public class Graphics {
 	 * @param font
 	 *            A non-null instance of {@link BitmapFont}
 	 */
-	public void setFont(BitmapFont font) {
-		if (font != null) {
-			if (rendering) {
-				endRendering();
-			}
-
-			this.font = font;
-		}
-	}
+	public void setFont(BitmapFont font);
 
 	/**
 	 * Removes the tinting {@link Color}
 	 */
-	public void removeTint() {
-		setTint(defaultTint);
-	}
+	public void removeTint();
 
 	/**
 	 * Enables blending during rendering
 	 */
-	public void enableBlending() {
-		spriteBatch.enableBlending();
-	}
+	public void enableBlending();
 
 	/**
 	 * Disables blending during rendering
 	 */
-	public void disableBlending() {
-		spriteBatch.disableBlending();
-	}
+	public void disableBlending();
 
 	/**
 	 * Applies a {@link ShaderProgram} to this instance
@@ -856,25 +523,19 @@ public class Graphics {
 	 * @param shaderProgram
 	 *            The {@link ShaderProgram} to apply
 	 */
-	public void setShaderProgram(ShaderProgram shaderProgram) {
-		spriteBatch.setShader(shaderProgram);
-	}
+	public void setShaderProgram(ShaderProgram shaderProgram);
 
 	/**
 	 * Returns the currently applied {@link ShaderProgram}
 	 * 
 	 * @return
 	 */
-	public ShaderProgram getShaderProgram() {
-		return spriteBatch.getShader();
-	}
+	public ShaderProgram getShaderProgram();
 
 	/**
 	 * Clears the {@link ShaderProgram} applied to this instance
 	 */
-	public void clearShaderProgram() {
-		spriteBatch.setShader(defaultShader);
-	}
+	public void clearShaderProgram();
 
 	/**
 	 * Sets the blend function to be applied
@@ -888,138 +549,25 @@ public class Graphics {
 	 * @param dstFunc
 	 *            Destination GL function
 	 */
-	public void setBlendFunction(int srcFunc, int dstFunc) {
-		spriteBatch.setBlendFunction(srcFunc, dstFunc);
-	}
+	public void setBlendFunction(int srcFunc, int dstFunc);
 
 	/**
 	 * Resets the blend function to its default
 	 */
-	public void clearBlendFunction() {
-		spriteBatch.setBlendFunction(defaultBlendSrcFunc, defaultBlendDstFunc);
-	}
+	public void clearBlendFunction();
 
 	/**
 	 * Immediately flushes everything rendered rather than waiting until the end
 	 * of rendering
 	 */
-	public void flush() {
-		spriteBatch.flush();
-	}
-
-	/**
-	 * This method allows for translation, scaling, etc. to be set before the
-	 * {@link SpriteBatch} begins
-	 */
-	private void beginRendering() {
-		if (!rendering) {
-			applyTransformations();
-			spriteBatch.begin();
-			Gdx.gl.glClearStencil(0);
-			Gdx.gl.glClear(GL20.GL_STENCIL_BUFFER_BIT);
-			if (clip != null) {
-				Gdx.gl.glEnable(GL20.GL_STENCIL_TEST);
-				Gdx.gl.glColorMask(false, false, false, false);
-				Gdx.gl.glDepthMask(false);
-				Gdx.gl.glStencilFunc(GL20.GL_ALWAYS, 1, 1);
-				Gdx.gl.glStencilOp(GL20.GL_REPLACE, GL20.GL_REPLACE, GL20.GL_REPLACE);
-
-				spriteBatch.draw(colorTextureCache.getFilledRectangleTexture(Color.WHITE), clip.getX(), clip.getY(), 0f,
-						0f, clip.getWidth(), clip.getHeight(), 1f, 1f, 0, 0, 0, 1, 1, false, false);
-				spriteBatch.end();
-
-				Gdx.gl.glColorMask(true, true, true, true);
-				Gdx.gl.glDepthMask(true);
-				Gdx.gl.glStencilFunc(GL20.GL_EQUAL, 1, 1);
-				Gdx.gl.glStencilOp(GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_KEEP);
-
-				spriteBatch.begin();
-			}
-
-			rendering = true;
-		}
-	}
-
-	/**
-	 * Ends rendering
-	 */
-	private void endRendering() {
-		if (rendering) {
-			undoTransformations();
-			spriteBatch.end();
-			if (renderingShapes) {
-				shapeRenderer.end();
-			}
-
-			if (clip != null) {
-				Gdx.gl.glDisable(GL20.GL_STENCIL_TEST);
-			}
-		}
-		rendering = false;
-		renderingShapes = false;
-	}
-
-	/**
-	 * Applies all translation, scaling and rotation to the {@link SpriteBatch}
-	 */
-	private void applyTransformations() {
-		float viewportWidth = MathUtils.round(windowWidth / scaleX);
-		float viewportHeight = MathUtils.round(windowHeight / scaleY);
-
-		camera.setToOrtho(true, viewportWidth, viewportHeight);
-		
-		if (translationX != 0f || translationY != 0f) {
-			camera.translate(translationX, translationY);
-		}
-		camera.update();
-
-		if (rotation != 0f) {
-			camera.rotateAround(new Vector3(rotationX, rotationY, 0), new Vector3(0, 0, 1), -rotation);
-		}
-		camera.update();
-
-		spriteBatch.setProjectionMatrix(camera.combined);
-		shapeRenderer.setProjectionMatrix(camera.combined);
-		polygonSpriteBatch.setProjectionMatrix(camera.combined);
-	}
-
-	/**
-	 * Cleans up all translations, scaling and rotation
-	 */
-	private void undoTransformations() {
-
-		if (rotation != 0f) {
-			camera.rotateAround(new Vector3(rotationX, rotationY, 0), new Vector3(0, 0, 1), rotation);
-		}
-		camera.update();
-
-		if (translationX != 0f || translationY != 0f) {
-			camera.translate(-translationX, -translationY);
-		}
-		camera.update();
-	}
-
-	/**
-	 * Resets transformation values
-	 */
-	private void resetTransformations() {
-		this.translationX = 0;
-		this.translationY = 0;
-		this.scaleX = 1f;
-		this.scaleY = 1f;
-		this.rotation = 0f;
-		this.rotationX = 0f;
-		this.rotationY = 0f;
-	}
+	public void flush();
 
 	/**
 	 * Returns the line height used
 	 * 
 	 * @return A value greater than 0
 	 */
-	public int getLineHeight() {
-		return lineHeight;
-	}
+	public int getLineHeight();
 
 	/**
 	 * Sets the line height to be used
@@ -1027,137 +575,85 @@ public class Graphics {
 	 * @param lineHeight
 	 *            A value greater than 0
 	 */
-	public void setLineHeight(int lineHeight) {
-		if (lineHeight > 0)
-			this.lineHeight = lineHeight;
-	}
+	public void setLineHeight(int lineHeight);
 
 	/**
 	 * Returns the {@link Color} to draw shapes with
 	 * 
 	 * @return A non-null value
 	 */
-	public Color getColor() {
-		return color;
-	}
+	public Color getColor();
 
 	/**
 	 * Sets the {@link Color} to draw shapes with
 	 * 
 	 * @param color
 	 */
-	public void setColor(Color color) {
-		if (color == null) {
-			return;
-		}
-		this.color = color;
-	}
+	public void setColor(Color color);
 
 	/**
 	 * Returns the background {@link Color}
 	 * 
 	 * @return A non-null value
 	 */
-	public Color getBackgroundColor() {
-		return backgroundColor;
-	}
+	public Color getBackgroundColor();
 
 	/**
 	 * Sets the background {@link Color} to be used
 	 */
-	public void setBackgroundColor(Color backgroundColor) {
-		if (backgroundColor != null)
-			this.backgroundColor = backgroundColor;
-	}
+	public void setBackgroundColor(Color backgroundColor);
 
 	/**
 	 * Returns the {@link BitmapFont} to draw {@link String}s with
 	 * 
 	 * @return 15pt Arial font by default unless setFont() is called
 	 */
-	public BitmapFont getFont() {
-		return font;
-	}
+	public BitmapFont getFont();
 
 	/**
 	 * Returns the {@link Color} tint being applied to all draw operations
 	 * 
 	 * @return
 	 */
-	public Color getTint() {
-		return tint;
-	}
+	public Color getTint();
 
-	public float getScaleX() {
-		return scaleX;
-	}
+	public float getScaleX();
 
-	public float getScaleY() {
-		return scaleY;
-	}
+	public float getScaleY();
 
-	public float getTranslationX() {
-		return translationX;
-	}
+	public float getTranslationX();
 
-	public float getTranslationY() {
-		return translationY;
-	}
+	public float getTranslationY();
 
-	public float getRotation() {
-		return rotation;
-	}
+	public float getRotation();
 
-	public float getRotationX() {
-		return rotationX;
-	}
+	public float getRotationX();
 
-	public float getRotationY() {
-		return rotationY;
-	}
+	public float getRotationY();
 
-	public Matrix4 getProjectionMatrix() {
-		return camera.combined.cpy();
-	}
+	public Matrix4 getProjectionMatrix();
 
 	/**
 	 * Returns the width of the window width
 	 * @return
 	 */
-	public float getWindowWidth() {
-		return windowWidth;
-	}
+	public int getWindowWidth();
 
 	/**
 	 * Returns the height of the window height
 	 * @return
 	 */
-	public float getWindowHeight() {
-		return windowHeight;
-	}
+	public int getWindowHeight();
 	
 	/**
 	 * Returns the width of the viewport width
 	 * @return
 	 */
-	public float getViewportWidth() {
-		return camera.viewportWidth;
-	}
+	public float getViewportWidth();
 
 	/**
 	 * Returns the height of the viewport height
 	 * @return
 	 */
-	public float getViewportHeight() {
-		return camera.viewportHeight;
-	}
-
-	@Override
-	public String toString() {
-		return "Graphics [color=" + color + ", backgroundColor=" + backgroundColor + ", tint=" + tint
-				+ ", translationX=" + translationX + ", translationY=" + translationY + ", scaleX=" + scaleX
-				+ ", scaleY=" + scaleY + ", rotation=" + rotation + ", rotationX=" + rotationX + ", rotationY="
-				+ rotationY + ", windowWidth=" + windowWidth + ", windowHeight=" + windowHeight + ", lineHeight="
-				+ lineHeight + "]";
-	}
+	public float getViewportHeight();
 }

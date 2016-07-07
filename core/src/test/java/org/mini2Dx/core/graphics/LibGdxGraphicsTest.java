@@ -11,8 +11,6 @@
  */
 package org.mini2Dx.core.graphics;
 
-import junit.framework.Assert;
-
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -23,10 +21,12 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+import junit.framework.Assert;
+
 /**
  * Unit tests for {@link Graphics}
  */
-public class GraphicsTest {
+public class LibGdxGraphicsTest {
 	private Mockery mockery;
 	
 	private SpriteBatch spriteBatch;
@@ -49,7 +49,7 @@ public class GraphicsTest {
 			}
 		});
 		
-		graphics = new Graphics(spriteBatch, polygonSpriteBatch, shapeRenderer);
+		graphics = new LibGdxGraphics(spriteBatch, polygonSpriteBatch, shapeRenderer);
 	}
 
 	@Test
