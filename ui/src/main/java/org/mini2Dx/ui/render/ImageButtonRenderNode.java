@@ -72,6 +72,14 @@ public class ImageButtonRenderNode extends RenderNode<ImageButton, ButtonStyleRu
 		}
 		endAction();
 	}
+	
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		if (getState() == NodeState.ACTION) {
+			return true;
+		}
+		return super.mouseMoved(screenX, screenY);
+	}
 
 	@Override
 	protected void renderElement(Graphics g) {

@@ -71,6 +71,14 @@ public class ContentButtonRenderNode extends ParentRenderNode<ContentButton, But
 	}
 	
 	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		if (getState() == NodeState.ACTION) {
+			return true;
+		}
+		return super.mouseMoved(screenX, screenY);
+	}
+	
+	@Override
 	protected void renderElement(Graphics g) {
 		NinePatch ninePatch = style.getNormalNinePatch();
 		if (element.isEnabled()) {
