@@ -17,6 +17,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -32,6 +33,8 @@ public class LibGdxGraphicsTest {
 	private SpriteBatch spriteBatch;
 	private PolygonSpriteBatch polygonSpriteBatch;
 	private ShapeRenderer shapeRenderer;
+	private com.badlogic.gdx.Graphics gdxGraphics;
+	
 	private Graphics graphics;
 	
 	@Before
@@ -41,9 +44,15 @@ public class LibGdxGraphicsTest {
 		spriteBatch = mockery.mock(SpriteBatch.class);
 		polygonSpriteBatch = mockery.mock(PolygonSpriteBatch.class);
 		shapeRenderer = mockery.mock(ShapeRenderer.class);
+		gdxGraphics = mockery.mock(com.badlogic.gdx.Graphics.class);
+		Gdx.graphics = gdxGraphics;
 		
 		mockery.checking(new Expectations() {
 			{
+				one(gdxGraphics).getWidth();
+				will(returnValue(800));
+				one(gdxGraphics).getHeight();
+				will(returnValue(600));
 				one(spriteBatch).getColor();
 				will(returnValue(null));
 			}
