@@ -12,6 +12,7 @@
 package org.mini2Dx.ui.element;
 
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.AbsoluteContainerRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
@@ -20,7 +21,10 @@ import org.mini2Dx.ui.render.ParentRenderNode;
  * A {@link Container} that can be positioned manually
  */
 public class AbsoluteContainer extends Container {
-	private float x, y;
+	@Field(optional=true)
+	private float x;
+	@Field(optional=true)
+	private float y;
 
 	/**
 	 * Constructor. Generates a unique ID for this {@link AbsoluteContainer}
