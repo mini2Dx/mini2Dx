@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,7 +21,7 @@ import org.mini2Dx.desktop.playerdata.DesktopPlayerData;
 import org.mini2Dx.desktop.serialization.DesktopXmlSerializer;
 
 /**
- * Desktop implementation of {@link GameWrapper}
+ * Headless implementation of {@link GameWrapper}
  */
 public class HeadlessGameWrapper extends GameWrapper {
 

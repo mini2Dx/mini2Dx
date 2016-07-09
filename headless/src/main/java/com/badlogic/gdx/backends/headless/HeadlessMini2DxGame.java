@@ -39,9 +39,11 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /**
- * Launches desktop-based headless mini2Dx games. Based on <a href=
+ * Launches headless mini2Dx games. Based on <a href=
  * "https://github.com/libgdx/libgdx/blob/master/backends/gdx-backend-headless/src/com/badlogic/gdx/backends/headless/HeadlessApplication.java">
  * LibGDX's LwjglApplication class</a>
+ * 
+ * The executeGame loop follows mini2Dx sequence: update, interpolate, render and tries to stay close to targetFps 
  */
 public class HeadlessMini2DxGame implements Application {
 	protected final HeadlessMini2DxConfig config;

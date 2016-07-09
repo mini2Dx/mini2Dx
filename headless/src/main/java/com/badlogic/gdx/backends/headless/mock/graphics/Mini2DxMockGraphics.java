@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 See AUTHORS file.
+ * Copyright 2011 See LIBGDX_AUTHORS file.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,9 @@ import com.badlogic.gdx.utils.TimeUtils;
  * libgdx: The headless backend does its best to mock elements. This is intended to make code-sharing between
  * server and client as simple as possible.
  * 
- * extending to give fps 
- * added sleep within framerate 
+ * extending:
+ *   return value for getFramesPerSecond() 
+ *   added sleepTillDeltaTime making use of updateTime values 
  * 
  */
 public class Mini2DxMockGraphics extends MockGraphics {
