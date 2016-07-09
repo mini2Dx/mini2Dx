@@ -200,6 +200,25 @@ project(":" + rootProject.name + "-desktop") {
     }
 }
 
+project(":" + rootProject.name + "-headless") {
+	description = "mini2Dx headless runtime"
+	
+    dependencies {
+    	compile project(":" + rootProject.name + "-core")
+    	compile project(":" + rootProject.name + "-desktop")
+    	
+    	compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+    	
+		compile "commons-beanutils:commons-beanutils:$beanutilsVersion"
+    	compile "org.reflections:reflections:$reflectionsVersion"
+    	
+    	testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+		testCompile project(path: ":" + rootProject.name + "-core", configuration: 'testOutput')
+    }
+}
+
 project(":" + rootProject.name + "-tiled") {
 	description = "mini2Dx Tiled support library"
 	
