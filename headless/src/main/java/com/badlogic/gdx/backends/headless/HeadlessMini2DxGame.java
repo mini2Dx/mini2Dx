@@ -206,7 +206,7 @@ public class HeadlessMini2DxGame implements Application {
 
 	@Override
 	public ApplicationType getType() {
-		return ApplicationType.Desktop;
+		return ApplicationType.HeadlessDesktop;
 	}
 
 	@Override
