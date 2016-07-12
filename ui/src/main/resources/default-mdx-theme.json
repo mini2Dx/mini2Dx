@@ -1,13 +1,14 @@
 {
   "id": "default-mdx-theme",
+  "atlas": "default-mdx-theme.atlas",
   "buttons": {
     "default": {
       "rules": {
         "XS": {
-          "normal": "default-mdx-theme/button_default_normal.png",
-          "hover": "default-mdx-theme/button_default_hover.png",
-          "action": "default-mdx-theme/button_default_action.png",
-          "disabled": "default-mdx-theme/button_default_disabled.png",
+          "normal": "button_default_normal",
+          "hover": "button_default_hover",
+          "action": "button_default_action",
+          "disabled": "button_default_disabled",
           "fontSize": 12,
           "font": "default",
           "textColor": "254,254,254",
@@ -25,10 +26,10 @@
     "success": {
       "rules": {
         "XS": {
-          "normal": "default-mdx-theme/button_success_normal.png",
-          "hover": "default-mdx-theme/button_success_hover.png",
-          "action": "default-mdx-theme/button_success_action.png",
-          "disabled": "default-mdx-theme/button_default_disabled.png",
+          "normal": "button_success_normal",
+          "hover": "button_success_hover",
+          "action": "button_success_action",
+          "disabled": "button_default_disabled",
           "fontSize": 12,
           "font": "default",
           "textColor": "254,254,254",
@@ -46,10 +47,10 @@
     "danger": {
       "rules": {
         "XS": {
-          "normal": "default-mdx-theme/button_danger_normal.png",
-          "hover": "default-mdx-theme/button_danger_hover.png",
-          "action": "default-mdx-theme/button_danger_action.png",
-          "disabled": "default-mdx-theme/button_default_disabled.png",
+          "normal": "button_danger_normal",
+          "hover": "button_danger_hover",
+          "action": "button_danger_action",
+          "disabled": "button_default_disabled",
           "fontSize": 12,
           "font": "default",
           "textColor": "254,254,254",
@@ -67,10 +68,10 @@
     "select-left": {
       "rules": {
         "XS": {
-          "normal": "default-mdx-theme/select_left_normal.png",
-          "hover": "default-mdx-theme/select_left_hover.png",
-          "action": "default-mdx-theme/select_left_action.png",
-          "disabled": "default-mdx-theme/select_left_disabled.png",
+          "normal": "select_left_normal",
+          "hover": "select_left_hover",
+          "action": "select_left_action",
+          "disabled": "select_left_disabled",
           "fontSize": 12,
           "font": "default",
           "textColor": "254,254,254",
@@ -88,10 +89,10 @@
     "select-right": {
       "rules": {
         "XS": {
-          "normal": "default-mdx-theme/select_right_normal.png",
-          "hover": "default-mdx-theme/select_right_hover.png",
-          "action": "default-mdx-theme/select_right_action.png",
-          "disabled": "default-mdx-theme/select_right_disabled.png",
+          "normal": "select_right_normal",
+          "hover": "select_right_hover",
+          "action": "select_right_action",
+          "disabled": "select_right_disabled",
           "fontSize": 12,
           "font": "default",
           "textColor": "254,254,254",
@@ -109,10 +110,10 @@
     "tab-button": {
       "rules": {
         "XS": {
-          "normal": "default-mdx-theme/button_tab_normal.png",
-          "hover": "default-mdx-theme/button_tab_hover.png",
-          "action": "default-mdx-theme/button_tab_active.png",
-          "disabled": "default-mdx-theme/button_tab_disabled.png",
+          "normal": "button_tab_normal",
+          "hover": "button_tab_hover",
+          "action": "button_tab_active",
+          "disabled": "button_tab_disabled",
           "fontSize": 12,
           "font": "default",
           "textColor": "254,254,254",
@@ -146,7 +147,7 @@
     "tab-menu": {
       "rules": {
         "XS": {
-          "background": "default-mdx-theme/tab_menu_bg.png",
+          "background": "tab_menu_bg",
           "paddingTop": 12,
           "paddingBottom": 0,
           "paddingLeft": 12,
@@ -162,7 +163,7 @@
     "tab-content": {
       "rules": {
         "XS": {
-          "background": "default-mdx-theme/tab_bg.png",
+          "background": "tab_bg",
           "paddingTop": 12,
           "paddingBottom": 12,
           "paddingLeft": 12,
@@ -179,7 +180,7 @@
     "default": {
       "rules": {
         "XS": {
-          "background": "default-mdx-theme/frame.png",
+          "background": "frame",
           "paddingTop": 24,
           "paddingBottom": 24,
           "paddingLeft": 24,
@@ -194,7 +195,7 @@
   },
   "fonts": {
     "default": {
-      "path": "default-mdx-theme/kenvector_future.ttf"
+      "path": "kenvector_future.ttf"
     }
   },
   "images": {
@@ -275,14 +276,14 @@
           "bottomScrollButtonStyle": "default",
           "scrollButtonHeight": "16",
           "scrollBarWidth": "16",
-          "scrollTrack": "default-mdx-theme/scrolltrack.png",
+          "scrollTrack": "scrolltrack",
           "scrollTrackNinePatchTop": 5,
           "scrollTrackNinePatchBottom": 5,
           "scrollTrackNinePatchLeft": 4,
           "scrollTrackNinePatchRight": 4,
-          "scrollThumbNormal": "default-mdx-theme/button_default_normal.png",
-          "scrollThumbHover": "default-mdx-theme/button_default_action.png",
-          "scrollThumbAction": "default-mdx-theme/button_default_action.png",
+          "scrollThumbNormal": "button_default_normal",
+          "scrollThumbHover": "button_default_action",
+          "scrollThumbAction": "button_default_action",
           "scrollThumbNinePatchTop": 12,
           "scrollThumbNinePatchBottom": 12,
           "scrollThumbNinePatchLeft": 12,
@@ -317,10 +318,10 @@
     "default": {
       "rules": {
         "XS": {
-          "normal": "default-mdx-theme/textbox_normal.png",
-          "hover": "default-mdx-theme/textbox_hover.png",
-          "action": "default-mdx-theme/textbox_normal.png",
-          "disabled": "default-mdx-theme/textbox_disabled.png",
+          "normal": "textbox_normal",
+          "hover": "textbox_hover",
+          "action": "textbox_normal",
+          "disabled": "textbox_disabled",
           "fontSize": 12,
           "font": "default",
           "textColor": "1,1,1",

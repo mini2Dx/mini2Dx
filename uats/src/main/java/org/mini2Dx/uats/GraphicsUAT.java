@@ -15,6 +15,7 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Polygon;
 import org.mini2Dx.core.graphics.Animation;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.core.screen.BasicGameScreen;
@@ -28,23 +29,33 @@ import org.mini2Dx.uats.util.UATSelectionScreen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 /**
  * A {@link GameScreen} that allows visual user acceptance testing of
  * {@link Graphics} functionality
  */
 public class GraphicsUAT extends BasicGameScreen {
+	private final AssetManager assetManager;
+	
 	private int playerX, playerY;
 	private float scaleX, scaleY;
 	private int rotation;
 	
 	private Texture texture;
-	private TextureRegion textureRegion;
+	private TextureRegion textureRegion, atlasTextureRegion;
 	private Sprite spriteWithTexture, spriteWithTextureRegion;
 	private Animation<Sprite> animation;
 	private Polygon polygon;
+	private TextureAtlas textureAtlas;
+	private NinePatch ninePatch;
+	
+	public GraphicsUAT(AssetManager assetManager) {
+		this.assetManager = assetManager;
+	}
 
     @Override
     public void initialise(GameContainer gc) {
@@ -73,6 +84,12 @@ public class GraphicsUAT extends BasicGameScreen {
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager,
             float delta) {
+    	if(ninePatch == null) {
+    		textureAtlas = assetManager.get("default-mdx-theme.atlas", TextureAtlas.class);
+    		atlasTextureRegion = new TextureRegion(textureAtlas.findRegion("frame"));
+    		ninePatch = new NinePatch(atlasTextureRegion, 4, 4, 4, 4);
+    	}
+    	
         detectKeyPress(screenManager);
         rotation += 180f * delta;
         
@@ -140,6 +157,11 @@ public class GraphicsUAT extends BasicGameScreen {
         g.drawSprite(spriteWithTextureRegion, 512, 320);
         
         g.drawLineSegment(512, 160, 620, 224);
+        
+        if(ninePatch != null) {
+        	g.drawTextureRegion(atlasTextureRegion, 0, 360);
+        	g.drawNinePatch(ninePatch, 512, 360, 128, 128);
+        }
     }
     
     public void detectKeyPress(ScreenManager<? extends GameScreen> screenManager) {

@@ -5,6 +5,7 @@ package org.mini2Dx.ui.style;
 
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.graphics.NinePatch;
+import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.element.ScrollBox;
 
@@ -52,27 +53,18 @@ public class ScrollBoxStyleRule extends ColumnStyleRule {
 			throw new MdxException("No style with id '" + bottomScrollButtonStyle + "' for buttons. Required by " + ScrollBoxStyleRule.class.getSimpleName());
 		}
 	}
-
-	@Override
-	public void loadDependencies(UiTheme theme, Array<AssetDescriptor> dependencies) {
-		super.loadDependencies(theme, dependencies);
-		dependencies.add(new AssetDescriptor<Texture>(scrollTrack, Texture.class));
-		dependencies.add(new AssetDescriptor<Texture>(scrollThumbNormal, Texture.class));
-		dependencies.add(new AssetDescriptor<Texture>(scrollThumbHover, Texture.class));
-		dependencies.add(new AssetDescriptor<Texture>(scrollThumbAction, Texture.class));
-	}
 	
 	@Override
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
 		super.prepareAssets(theme, fileHandleResolver, assetManager);
-		scrollTrackNinePatch = new NinePatch(assetManager.get(scrollTrack, Texture.class), scrollTrackNinePatchLeft,
+		scrollTrackNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(scrollTrack)), scrollTrackNinePatchLeft,
 				scrollTrackNinePatchRight, scrollTrackNinePatchTop, scrollTrackNinePatchBottom);
 		
-		scrollThumbNormalNinePatch = new NinePatch(assetManager.get(scrollThumbNormal, Texture.class), scrollThumbNinePatchLeft,
+		scrollThumbNormalNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(scrollThumbNormal)), scrollThumbNinePatchLeft,
 				scrollThumbNinePatchRight, scrollThumbNinePatchTop, scrollThumbNinePatchBottom);
-		scrollThumbHoverNinePatch = new NinePatch(assetManager.get(scrollThumbHover, Texture.class), scrollThumbNinePatchLeft,
+		scrollThumbHoverNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(scrollThumbHover)), scrollThumbNinePatchLeft,
 				scrollThumbNinePatchRight, scrollThumbNinePatchTop, scrollThumbNinePatchBottom);
-		scrollThumbActiveNinePatch = new NinePatch(assetManager.get(scrollThumbAction, Texture.class), scrollThumbNinePatchLeft,
+		scrollThumbActiveNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(scrollThumbAction)), scrollThumbNinePatchLeft,
 				scrollThumbNinePatchRight, scrollThumbNinePatchTop, scrollThumbNinePatchBottom);
 	}
 

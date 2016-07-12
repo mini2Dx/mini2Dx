@@ -42,6 +42,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -55,6 +57,8 @@ public class UiTheme {
 
 	@Field
 	private String id;
+	@Field
+	private String atlas;
 	@Field
 	private Map<String, ButtonStyleRuleset> buttons;
 	@Field
@@ -75,6 +79,8 @@ public class UiTheme {
 	private Map<String, TabStyleRuleset> tabs;
 	@Field
 	private Map<String, TextBoxStyleRuleset> textboxes;
+	
+	private TextureAtlas textureAtlas;
 
 	public void validate() {
 		if (!buttons.containsKey(DEFAULT_STYLE_ID)) {
@@ -135,6 +141,8 @@ public class UiTheme {
 	}
 
 	public void loadDependencies(Array<AssetDescriptor> dependencies) {
+		dependencies.add(new AssetDescriptor<TextureAtlas>(atlas, TextureAtlas.class));
+		Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Atlas: " + atlas + "]");
 		for (String id : buttons.keySet()) {
 			StyleRuleset<ButtonStyleRule> buttonRuleset = buttons.get(id);
 			buttonRuleset.loadDependencies(this, dependencies);
@@ -183,6 +191,7 @@ public class UiTheme {
 	}
 
 	public void prepareAssets(FileHandleResolver fileHandleResolver, AssetManager assetManager) {
+		textureAtlas = assetManager.get(atlas, TextureAtlas.class);
 		for (UiFont font : fonts.values()) {
 			font.prepareAssets(fileHandleResolver);
 		}
@@ -431,5 +440,9 @@ public class UiTheme {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public TextureAtlas getTextureAtlas() {
+		return textureAtlas;
 	}
 }

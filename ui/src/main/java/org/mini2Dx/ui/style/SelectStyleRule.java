@@ -13,6 +13,7 @@ package org.mini2Dx.ui.style;
 
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.graphics.NinePatch;
+import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.element.Select;
 
@@ -62,18 +63,10 @@ public class SelectStyleRule extends StyleRule {
 	}
 	
 	@Override
-	public void loadDependencies(UiTheme theme, Array<AssetDescriptor> dependencies) {
-		super.loadDependencies(theme, dependencies);
-		if(background != null) {
-			dependencies.add(new AssetDescriptor<Texture>(background, Texture.class));
-		}
-	}
-	
-	@Override
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
 		super.prepareAssets(theme, fileHandleResolver, assetManager);
 		if(background != null) {
-			backgroundNinePatch = new NinePatch(assetManager.get(background, Texture.class), getNinePatchLeft(),
+			backgroundNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(background)), getNinePatchLeft(),
 					getNinePatchRight(), getNinePatchTop(), getNinePatchBottom());
 		}
 	}

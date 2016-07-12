@@ -1,4 +1,5 @@
 import org.apache.tools.ant.taskdefs.condition.Os
+import com.badlogic.gdx.tools.texturepacker.TexturePacker
 
 buildscript {
     repositories {
@@ -14,6 +15,7 @@ buildscript {
         classpath 'org.robovm:robovm-gradle-plugin:1.12.0'
         classpath 'gradle.plugin.me.champeau.gradle:jmh-gradle-plugin:0.3.0'
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
+		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.2'
     }
 }
 
@@ -254,6 +256,10 @@ project(":" + rootProject.name + "-ui") {
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
 		testCompile project(":" + rootProject.name + "-desktop")
+	}
+	
+	task packDefaultUiTheme << {
+		TexturePacker.process("$projectDir/default-mdx-theme", "$projectDir/src/main/resources", "default-mdx-theme")
 	}
 }
 

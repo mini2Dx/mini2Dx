@@ -86,27 +86,27 @@ public class NinePatch {
 		TextureRegion[] patches = new TextureRegion[9];
 		if (top > 0) {
 			if (left > 0)
-				patches[BOTTOM_LEFT] = invertedTextureRegion(region, 0, 0, left, top);
+				patches[BOTTOM_LEFT] = new TextureRegion(region, 0, 0, left, top);
 			if (middleWidth > 0)
-				patches[BOTTOM_CENTER] = invertedTextureRegion(region, left, 0, middleWidth, top);
+				patches[BOTTOM_CENTER] = new TextureRegion(region, left, 0, middleWidth, top);
 			if (right > 0)
-				patches[BOTTOM_RIGHT] = invertedTextureRegion(region, left + middleWidth, 0, right, top);
+				patches[BOTTOM_RIGHT] = new TextureRegion(region, left + middleWidth, 0, right, top);
 		}
 		if (middleHeight > 0) {
 			if (left > 0)
-				patches[MIDDLE_LEFT] = invertedTextureRegion(region, 0, top, left, middleHeight);
+				patches[MIDDLE_LEFT] = new TextureRegion(region, 0, top, left, middleHeight);
 			if (middleWidth > 0)
-				patches[MIDDLE_CENTER] = invertedTextureRegion(region, left, top, middleWidth, middleHeight);
+				patches[MIDDLE_CENTER] = new TextureRegion(region, left, top, middleWidth, middleHeight);
 			if (right > 0)
-				patches[MIDDLE_RIGHT] = invertedTextureRegion(region, left + middleWidth, top, right, middleHeight);
+				patches[MIDDLE_RIGHT] = new TextureRegion(region, left + middleWidth, top, right, middleHeight);
 		}
 		if (bottom > 0) {
 			if (left > 0)
-				patches[TOP_LEFT] = invertedTextureRegion(region, 0, top + middleHeight, left, bottom);
+				patches[TOP_LEFT] = new TextureRegion(region, 0, top + middleHeight, left, bottom);
 			if (middleWidth > 0)
-				patches[TOP_CENTER] = invertedTextureRegion(region, left, top + middleHeight, middleWidth, bottom);
+				patches[TOP_CENTER] = new TextureRegion(region, left, top + middleHeight, middleWidth, bottom);
 			if (right > 0)
-				patches[TOP_RIGHT] = invertedTextureRegion(region, left + middleWidth, top + middleHeight, right, bottom);
+				patches[TOP_RIGHT] = new TextureRegion(region, left + middleWidth, top + middleHeight, right, bottom);
 		}
 
 		// If split only vertical, move splits from right to center.
@@ -164,17 +164,6 @@ public class NinePatch {
 		System.arraycopy(ninePatch.vertices, 0, vertices, 0, ninePatch.vertices.length);
 		idx = ninePatch.idx;
 		this.color.set(color);
-	}
-
-	private TextureRegion invertedTextureRegion(TextureRegion region, float x, float y, float w, float h) {
-		int x1 = Math.round(region.getRegionX() + x);
-		int y1 = Math.round(region.getRegionY() - region.getRegionHeight() + y);
-		int w1 = Math.round(w);
-		int h1 = Math.round(h);
-		TextureRegion tr = new TextureRegion(region.getTexture(), x1, y1, w1, h1);
-		tr.flip(false, true);
-
-		return tr;
 	}
 
 	private void load(TextureRegion[] patches) {

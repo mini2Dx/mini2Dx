@@ -12,6 +12,7 @@
 package org.mini2Dx.ui.style;
 
 import org.mini2Dx.core.graphics.NinePatch;
+import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.core.util.ColorUtils;
 import org.mini2Dx.ui.element.Button;
@@ -49,40 +50,21 @@ public class ButtonStyleRule extends StyleRule {
 	private Color color;
 	
 	@Override
-	public void validate(UiTheme theme) {}
-	
-	@Override
-	public void loadDependencies(UiTheme theme, Array<AssetDescriptor> dependencies) {
-		if(normal != null) {
-			dependencies.add(new AssetDescriptor<Texture>(normal, Texture.class));
-		}
-		if(hover != null) {
-			dependencies.add(new AssetDescriptor<Texture>(hover, Texture.class));
-		}
-		if(action != null) {
-			dependencies.add(new AssetDescriptor<Texture>(action, Texture.class));
-		}
-		if(disabled != null) {
-			dependencies.add(new AssetDescriptor<Texture>(disabled, Texture.class));
-		}
-	}
-	
-	@Override
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
 		if(normal != null) {
-			normalNinePatch = new NinePatch(assetManager.get(normal, Texture.class), getPaddingLeft(),
+			normalNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(normal)), getPaddingLeft(),
 					getPaddingRight(), getPaddingTop(), getPaddingBottom());
 		}
 		if(hover != null) {
-			hoverNinePatch = new NinePatch(assetManager.get(hover, Texture.class), getPaddingLeft(),
+			hoverNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(hover)), getPaddingLeft(),
 					getPaddingRight(), getPaddingTop(), getPaddingBottom());
 		}
 		if(action != null) {
-			actionNinePatch = new NinePatch(assetManager.get(action, Texture.class), getPaddingLeft(),
+			actionNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(action)), getPaddingLeft(),
 					getPaddingRight(), getPaddingTop(), getPaddingBottom());
 		}
 		if(disabled != null) {
-			disabledNinePatch = new NinePatch(assetManager.get(disabled, Texture.class), getPaddingLeft(),
+			disabledNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(disabled)), getPaddingLeft(),
 					getPaddingRight(), getPaddingTop(), getPaddingBottom());
 		}
 		
