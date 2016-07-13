@@ -15,6 +15,8 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.util.Ref;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -30,6 +32,8 @@ public class RenderFrameBufferOperation implements RenderOperation {
 	private final Vector2 renderPosition = new Vector2();
 	
 	private FrameBuffer frameBuffer;
+	private TextureFilter minFilter = TextureFilter.Nearest;
+	private TextureFilter magFilter = TextureFilter.Nearest;
 	private int renderX, renderY;
 	
 	public RenderFrameBufferOperation(Ref<FrameBuffer> frameBufferRef) {
@@ -57,11 +61,51 @@ public class RenderFrameBufferOperation implements RenderOperation {
 		if(frameBuffer == null) {
 			return;
 		}
-		g.drawTexture(frameBuffer.getColorBufferTexture(), renderX, renderY);
+		Texture texture = frameBuffer.getColorBufferTexture();
+		texture.setFilter(minFilter, magFilter);
+		g.drawTexture(texture, renderX, renderY);
 	}
 
 	@Override
 	public void unapply(GameContainer gc, Graphics g) {
+	}
+
+	/**
+	 * Returns the min {@link TextureFilter} applied to the {@link FrameBuffer} texture
+	 * @return
+	 */
+	public TextureFilter getMinFilter() {
+		return minFilter;
+	}
+
+	/**
+	 * Sets the min {@link TextureFilter} applied to the {@link FrameBuffer} texture
+	 * @param minFilter
+	 */
+	public void setMinFilter(TextureFilter minFilter) {
+		if(minFilter == null) {
+			return;
+		}
+		this.minFilter = minFilter;
+	}
+
+	/**
+	 * Returns the mag {@link TextureFilter} applied to the {@link FrameBuffer} texture
+	 * @return
+	 */
+	public TextureFilter getMagFilter() {
+		return magFilter;
+	}
+
+	/**
+	 * Sets the mag {@link TextureFilter} applied to the {@link FrameBuffer} texture
+	 * @param magFilter
+	 */
+	public void setMagFilter(TextureFilter magFilter) {
+		if(magFilter == null) {
+			return;
+		}
+		this.magFilter = magFilter;
 	}
 
 }
