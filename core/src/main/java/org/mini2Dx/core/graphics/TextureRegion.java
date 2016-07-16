@@ -57,6 +57,7 @@ public class TextureRegion extends com.badlogic.gdx.graphics.g2d.TextureRegion {
 	 * @param height The height of the texture region. May be negative to flip the sprite when drawn. */
 	public TextureRegion (TextureRegion region, int x, int y, int width, int height) {
 		super(region, x, y, width, height);
+		flip(false, true);
 	}
 	
 	/**
@@ -65,6 +66,20 @@ public class TextureRegion extends com.badlogic.gdx.graphics.g2d.TextureRegion {
 	 */
 	public TextureRegion(AtlasRegion atlasRegion) {
 		super(atlasRegion);
+		flip(false, true);
+	}
+	
+	@Override
+	public boolean isFlipY() {
+		return !super.isFlipY();
+	}
+	
+	@Override
+	public int getRegionY() {
+		setFlipY(!isFlipY());
+		int result = super.getRegionY();
+		setFlipY(!isFlipY());
+		return result;
 	}
 
 	/**

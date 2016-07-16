@@ -295,6 +295,7 @@ project(":" + rootProject.name + "-uats-desktop") {
     dependencies {
         compile project(":" + rootProject.name + "-uats")
         compile project(":" + rootProject.name + "-desktop")
+		compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
     }
 }
 

@@ -229,10 +229,12 @@ public class NinePatch {
 		else if (texture != region.getTexture()) //
 			throw new IllegalArgumentException("All regions must be from the same texture.");
 
+		region.flip(false, true);
 		float u = region.getU();
 		float v = region.getV();
 		float u2 = region.getU2();
 		float v2 = region.getV2();
+		region.flip(false, true);
 
 		// Add half pixel offsets on stretchable dimensions to avoid color
 		// bleeding when GL_LINEAR

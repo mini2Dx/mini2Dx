@@ -30,6 +30,7 @@
 - Mdx.json can now read/write to/from FileHandle instances
 - Added @NonConcrete annotation for interface serialization in Mdx.xml and Mdx.json
 - Added @ConstructorArg for constructor based serialization in Mdx.xml and Mdx.json
+- Fixed inconsistencies in TextureRegion and NinePatch APIs
 - Fixed Mdx.xml not deserializing maps correctly when values are objects
 - Fixed Mdx.xml and Mdx.json not serializing/deserialzing super class fields
 - Fixed Mdx.xml and Mdx.json not deserialzing enum fields correctly

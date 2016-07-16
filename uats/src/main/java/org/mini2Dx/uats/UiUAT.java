@@ -136,7 +136,6 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		uiContainer.setActiveNavigation(tabView);
 		if(controllerInput != null) {
 			controllerInput.enable();
-			System.out.println("here2");
 		}
 	}
 	

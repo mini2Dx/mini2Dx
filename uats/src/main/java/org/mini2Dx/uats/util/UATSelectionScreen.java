@@ -31,6 +31,7 @@ import org.mini2Dx.uats.IsometricTiledMapUAT;
 import org.mini2Dx.uats.OrthogonalTiledMapNoCachingUAT;
 import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
 import org.mini2Dx.uats.ParticleEffectsUAT;
+import org.mini2Dx.uats.TextureRegionUAT;
 import org.mini2Dx.uats.UiUAT;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.animation.TypingTextAnimation;
@@ -196,6 +197,16 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 			@Override
 			public void onActionEnd(Actionable source) {
 				nextScreenId = ScreenIds.getScreenId(GraphicsUAT.class);
+			}
+		})));
+		uatsDialog.add(Row.withElements("row-textureregion", UiUtils.createButton(uiNavigation, "Texture Regions", new ActionListener() {
+			@Override
+			public void onActionBegin(Actionable source) {
+			}
+
+			@Override
+			public void onActionEnd(Actionable source) {
+				nextScreenId = ScreenIds.getScreenId(TextureRegionUAT.class);
 			}
 		})));
 		uatsDialog.add(Row.withElements("row-orthogonal-tiledmap",

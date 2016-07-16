@@ -24,6 +24,7 @@ import org.mini2Dx.uats.IsometricTiledMapUAT;
 import org.mini2Dx.uats.OrthogonalTiledMapNoCachingUAT;
 import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
 import org.mini2Dx.uats.ParticleEffectsUAT;
+import org.mini2Dx.uats.TextureRegionUAT;
 import org.mini2Dx.uats.UiUAT;
 import org.mini2Dx.ui.UiThemeLoader;
 import org.mini2Dx.ui.controller.ControllerUiInput;
@@ -58,6 +59,7 @@ public class UATApplication extends ScreenBasedGame {
 		addScreen(new ClippingUAT());
 		addScreen(new GeometryUAT());
 		addScreen(new GraphicsUAT(assetManager));
+		addScreen(new TextureRegionUAT());
 		addScreen(new OrthogonalTiledMapNoCachingUAT());
 		addScreen(new OrthogonalTiledMapWithCachingUAT());
 		addScreen(new IsometricTiledMapUAT());
