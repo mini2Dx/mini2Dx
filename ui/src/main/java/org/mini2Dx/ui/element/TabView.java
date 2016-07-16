@@ -365,6 +365,10 @@ public class TabView extends UiElement implements Navigatable {
 		if (renderNode == null) {
 			return;
 		}
+		for (int i = 0; i < tabs.size(); i++) {
+			tabs.get(i).detach(renderNode);
+		}
+		tabMenuRow.detach(renderNode);
 		parentRenderNode.removeChild(renderNode);
 		renderNode = null;
 	}

@@ -256,6 +256,9 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public void setDirty(boolean dirty) {
+		if(dirty && this.dirty == dirty) {
+			return;
+		}
 		this.dirty = dirty;
 		if (parent == null) {
 			return;
@@ -289,10 +292,16 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public float getPreferredInnerWidth() {
+		if(style == null) {
+			return preferredContentWidth;
+		}
 		return preferredContentWidth + style.getPaddingLeft() + style.getPaddingRight();
 	}
 
 	public float getPreferredOuterWidth() {
+		if(style == null) {
+			return preferredContentWidth;
+		}
 		return preferredContentWidth + style.getPaddingLeft() + style.getPaddingRight() + style.getMarginLeft()
 				+ style.getMarginRight();
 	}
@@ -302,10 +311,16 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public float getPreferredInnerHeight() {
+		if(style == null) {
+			return preferredContentWidth;
+		}
 		return preferredContentHeight + style.getPaddingTop() + style.getPaddingBottom();
 	}
 
 	public float getPreferredOuterHeight() {
+		if(style == null) {
+			return preferredContentWidth;
+		}
 		return preferredContentHeight + style.getPaddingTop() + style.getPaddingBottom() + style.getMarginTop()
 				+ style.getMarginBottom();
 	}

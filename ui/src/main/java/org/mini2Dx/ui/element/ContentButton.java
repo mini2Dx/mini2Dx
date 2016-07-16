@@ -88,6 +88,9 @@ public class ContentButton extends Button {
 		if(renderNode == null) {
 			return;
 		}
+		for (int i = 0; i < children.size(); i++) {
+			children.get(i).detach(renderNode);
+		}
 		parentRenderNode.removeChild(renderNode);
 		renderNode = null;
 	}

@@ -234,6 +234,20 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		Column xsHiddenColumn = Column.withElements("col-not-visible-xs", UiUtils.createLabel("Not visible on XS screen size"));
 		xsHiddenColumn.setLayout("xs-0c sm-12c");
 		tab2.add(Row.withElements("row-not-visible-xs", xsHiddenColumn));
+		
+		Button reAddElementsButton =  UiUtils.createButton(null, "Re-add tabview", new ActionListener() {
+			
+			@Override
+			public void onActionEnd(Actionable source) {
+				modal.remove(tabView);
+				modal.add(tabView);
+			}
+			
+			@Override
+			public void onActionBegin(Actionable source) {}
+		});
+		tab2.add(Row.withElements(reAddElementsButton));
+		
 		tabView.add(tab2);
 		
 		Tab tab3 = new Tab("tab3", "Tab 3");

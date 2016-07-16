@@ -160,6 +160,9 @@ public class Column extends UiElement {
 		if (renderNode == null) {
 			return;
 		}
+		for (int i = 0; i < children.size(); i++) {
+			children.get(i).detach(renderNode);
+		}
 		parentRenderNode.removeChild(renderNode);
 		renderNode = null;
 	}
