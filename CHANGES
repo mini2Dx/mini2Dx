@@ -25,6 +25,7 @@
 - Added WorldListener interface to listen for entity creation/deletion
 - Added TextureRegion setFlip, setFlipX and setFlipY
 - Added Graphics.setRotation
+- Added getPixelWidth() and getPixelHeight() to TiledMap
 - Positionable instances now have getId() method
 - Improved pixel rounding and reduced interpolation for CollisionBox, CollisionCircle and CollisionPoint
 - Mdx.json can now read/write to/from FileHandle instances

@@ -38,7 +38,7 @@ import com.badlogic.gdx.graphics.Color;
 public class TiledMap implements TiledParserListener {
 	private String orientationValue;
 	private Orientation orientation;
-	private int width, height, tileWidth, tileHeight;
+	private int width, height, tileWidth, tileHeight, pixelWidth, pixelHeight;
 	private Color backgroundColor;
 	protected List<Tileset> tilesets;
 	protected List<TileLayer> tileLayers;
@@ -394,6 +394,8 @@ public class TiledMap implements TiledParserListener {
 		this.height = height;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
+		this.pixelWidth = width * tileWidth;
+		this.pixelHeight = height * tileHeight;
 	}
 
 	@Override
@@ -563,6 +565,22 @@ public class TiledMap implements TiledParserListener {
 	 */
 	public int getTileHeight() {
 		return tileHeight;
+	}
+
+	/**
+	 * Returns the width of the map in pixels
+	 * @return
+	 */
+	public int getPixelWidth() {
+		return pixelWidth;
+	}
+
+	/**
+	 * Return the height of the map in pixels
+	 * @return
+	 */
+	public int getPixelHeight() {
+		return pixelHeight;
 	}
 
 	/**
