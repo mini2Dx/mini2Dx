@@ -675,6 +675,14 @@ public class TabView extends UiElement implements Navigatable {
 			tabs.get(i).setLayout(layout);
 		}
 	}
+	
+	public TabButton getPreviousTabButton() {
+		return previousTabButton;
+	}
+	
+	public TabButton getNextTabButton() {
+		return nextTabButton;
+	}
 
 	private class TabButtonActionListener implements ActionListener {
 		private final TabView tabView;
