@@ -191,6 +191,20 @@
           "marginRight": 0
         }
       }
+    },
+    "no-background": {
+      "rules": {
+        "XS": {
+          "paddingTop": 24,
+          "paddingBottom": 24,
+          "paddingLeft": 24,
+          "paddingRight": 24,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
     }
   },
   "fonts": {
