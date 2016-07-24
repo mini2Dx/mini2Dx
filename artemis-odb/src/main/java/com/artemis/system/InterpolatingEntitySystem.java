@@ -21,7 +21,7 @@ import com.artemis.utils.IntBag;
 /**
  * Implements {@link EntitySystem} to add mini2Dx's update/interpolate methods
  */
-public abstract class InterpolatingEntitySystem extends EntitySystem {
+public abstract class InterpolatingEntitySystem extends EntitySystem implements InterpolatingSystem {
 	private MdxWorld mdxWorld;
 	
 	private IntBag activeEntityBag;
@@ -80,6 +80,7 @@ public abstract class InterpolatingEntitySystem extends EntitySystem {
 		postUpdate();
 	}
 	
+	@Override
 	public void interpolateSystem() {
 		if(mdxWorld == null) {
 			return;

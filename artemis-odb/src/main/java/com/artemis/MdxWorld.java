@@ -18,15 +18,17 @@ import org.mini2Dx.core.graphics.Graphics;
 
 import com.artemis.listener.WorldListener;
 import com.artemis.system.InterpolatingEntitySystem;
+import com.artemis.system.InterpolatingSystem;
 import com.artemis.system.RenderingEntitySystem;
+import com.artemis.system.RenderingSystem;
 import com.artemis.utils.Bag;
 
 /**
  * Extends {@link World} to allow for interpolating and rendering of {@link System}s
  */
 public class MdxWorld extends World {
-	private final Bag<InterpolatingEntitySystem> interpolatingSystemsBag;
-	private final Bag<RenderingEntitySystem> renderingSystemsBag;
+	private final Bag<InterpolatingSystem> interpolatingSystemsBag;
+	private final Bag<RenderingSystem> renderingSystemsBag;
 	
 	private final MdxInvocationStrategy mdxInvocationStrategy;
 	
@@ -40,16 +42,16 @@ public class MdxWorld extends World {
 	 */
 	public MdxWorld(WorldConfiguration configuration) {
 		super(configuration);
-		interpolatingSystemsBag = new Bag<InterpolatingEntitySystem>();
-		renderingSystemsBag = new Bag<RenderingEntitySystem>();
+		interpolatingSystemsBag = new Bag<InterpolatingSystem>();
+		renderingSystemsBag = new Bag<RenderingSystem>();
 		mdxInvocationStrategy = new MdxInvocationStrategy();
 		
 		for(BaseSystem system : configuration.systems) {
-			if(system instanceof InterpolatingEntitySystem) {
-				interpolatingSystemsBag.add((InterpolatingEntitySystem) system);
+			if(system instanceof InterpolatingSystem) {
+				interpolatingSystemsBag.add((InterpolatingSystem) system);
 			}
-			if(system instanceof RenderingEntitySystem) {
-				renderingSystemsBag.add((RenderingEntitySystem)system);
+			if(system instanceof RenderingSystem) {
+				renderingSystemsBag.add((RenderingSystem)system);
 			}
 		}
 		

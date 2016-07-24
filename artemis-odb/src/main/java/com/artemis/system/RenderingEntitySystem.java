@@ -23,7 +23,7 @@ import com.artemis.utils.IntBag;
 /**
  * Implements {@link EntitySystem} to add mini2Dx's render method
  */
-public abstract class RenderingEntitySystem extends EntitySystem {
+public abstract class RenderingEntitySystem extends EntitySystem implements RenderingSystem {
 	private MdxWorld mdxWorld;
 	
 	private IntBag activeEntityBag;
@@ -62,6 +62,7 @@ public abstract class RenderingEntitySystem extends EntitySystem {
 		activeEntityIds = activeEntityBag.getData();
 	}
 	
+	@Override
 	public void renderSystem(Graphics g) {
 		if(mdxWorld == null) {
 			return;

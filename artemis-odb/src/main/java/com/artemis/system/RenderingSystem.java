@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -9,32 +9,17 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.artemis;
+package com.artemis.system;
 
 import org.mini2Dx.core.graphics.Graphics;
 
-import com.artemis.system.InterpolatingSystem;
-import com.artemis.system.RenderingSystem;
-import com.artemis.utils.Bag;
-
 /**
- * Extends {@link InvocationStrategy} to allow for interpolation and rendering
+ * Common interface for implementing systems that render
  */
-public class MdxInvocationStrategy extends InvocationStrategy {
-	
-	protected void interpolate(Bag<InterpolatingSystem> systemsBag) {
-		Object[] systems = systemsBag.getData();
-		for (int i = 0, s = systemsBag.size(); s > i; i++) {
-			InterpolatingSystem system = (InterpolatingSystem) systems[i];
-			system.interpolateSystem();
-		}
-	}
-	
-	protected void render(Bag<RenderingSystem> systemsBag, Graphics g) {
-		Object[] systems = systemsBag.getData();
-		for (int i = 0, s = systemsBag.size(); s > i; i++) {
-			RenderingSystem system = (RenderingSystem) systems[i];
-			system.renderSystem(g);
-		}
-	}
+public interface RenderingSystem {
+	/**
+	 * Renders the system
+	 * @param g The {@link Graphics} context
+	 */
+	public void renderSystem(Graphics g);
 }

@@ -26,6 +26,7 @@
 - Added TextureRegion setFlip, setFlipX and setFlipY
 - Added Graphics.setRotation
 - Added getPixelWidth() and getPixelHeight() to TiledMap
+- Added non-entity render and interpolate Artemis systems
 - Positionable instances now have getId() method
 - Improved pixel rounding and reduced interpolation for CollisionBox, CollisionCircle and CollisionPoint
 - Mdx.json can now read/write to/from FileHandle instances
