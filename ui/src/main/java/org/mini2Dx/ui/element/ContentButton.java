@@ -152,4 +152,18 @@ public class ContentButton extends Button {
 		}
 		renderNode.setDirty(true);
 	}
+	
+	@Override
+	public UiElement getElementById(String id) {
+		if (getId().equals(id)) {
+			return this;
+		}
+		for (int i = 0; i < children.size(); i++) {
+			UiElement result = children.get(i).getElementById(id);
+			if (result != null) {
+				return result;
+			}
+		}
+		return null;
+	}
 }
