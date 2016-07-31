@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
@@ -32,8 +33,10 @@ public class Column extends UiElement {
 	@Field(optional = true)
 	protected final List<UiElement> children = new ArrayList<UiElement>(1);
 
-	protected final Queue<UiElement> asyncQueue = new ConcurrentLinkedQueue<UiElement>();
-
+	protected final Queue<UiElement> asyncAddQueue = new ConcurrentLinkedQueue<UiElement>();
+	protected final Queue<UiElement> asyncRemoveQueue = new ConcurrentLinkedQueue<UiElement>();
+	protected final AtomicBoolean asyncRemoveAll = new AtomicBoolean(false);
+	
 	protected AbstractColumnRenderNode<?> renderNode;
 	
 	@Field(optional=true)
@@ -100,7 +103,7 @@ public class Column extends UiElement {
 	 *            The {@link UiElement} to be added
 	 */
 	public void addAsync(UiElement element) {
-		asyncQueue.offer(element);
+		asyncAddQueue.offer(element);
 	}
 
 	/**
@@ -115,6 +118,16 @@ public class Column extends UiElement {
 			element.detach(renderNode);
 		}
 		return children.remove(element);
+	}
+	
+	/**
+	 * Removes a {@link UiElement} safely from a non-OpenGL thread
+	 * 
+	 * @param element
+	 *            The {@link UiElement} to be remove
+	 */
+	public void removeAsync(UiElement element) {
+		asyncRemoveQueue.offer(element);
 	}
 
 	/**
@@ -141,6 +154,13 @@ public class Column extends UiElement {
 				element.detach(renderNode);
 			}
 		}
+	}
+	
+	/**
+	 * Removes all children safely from a non-OpenGL thread
+	 */
+	public void removeAllAsync() {
+		asyncRemoveAll.set(true);
 	}
 
 	@Override
@@ -208,8 +228,15 @@ public class Column extends UiElement {
 		while (!effects.isEmpty()) {
 			renderNode.applyEffect(effects.poll());
 		}
-		while (!asyncQueue.isEmpty()) {
-			add(asyncQueue.poll());
+		if(asyncRemoveAll.get()) {
+			removeAll();
+			asyncRemoveAll.set(false);
+		}
+		while (!asyncAddQueue.isEmpty()) {
+			add(asyncAddQueue.poll());
+		}
+		while (!asyncRemoveQueue.isEmpty()) {
+			remove(asyncRemoveQueue.poll());
 		}
 	}
 
