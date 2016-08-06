@@ -99,14 +99,21 @@ public class TiledMapTest {
 
 	@Test
 	public void testGetTileLayers() {
-		Assert.assertEquals(3, tiledMap.getTileLayers().size());
+		Assert.assertEquals(true, tiledMap.getTileLayer("Ground") != null);
+		Assert.assertEquals(0, tiledMap.getTileLayer("Ground").getIndex());
+		
+		Assert.assertEquals(true, tiledMap.getTileLayer("Collisions") != null);
+		Assert.assertEquals(1, tiledMap.getTileLayer("Collisions").getIndex());
+		
+		Assert.assertEquals(true, tiledMap.getTileLayer("Higher") != null);
+		Assert.assertEquals(3, tiledMap.getTileLayer("Higher").getIndex());
 	}
 
 	@Test
 	public void testGetObjectGroups() {
-		Assert.assertEquals(1, tiledMap.getObjectGroups().size());
+		Assert.assertEquals(1, tiledMap.getTotalObjectGroups());
 
-		TiledObjectGroup group = tiledMap.getObjectGroups().get(0);
+		TiledObjectGroup group = tiledMap.getObjectGroup("Objects");
 		Assert.assertEquals("Objects", group.getName());
 		Assert.assertEquals(1, group.getObjects().size());
 
@@ -119,4 +126,13 @@ public class TiledMapTest {
 		Assert.assertEquals(24f, obj.getHeight());
 	}
 
+	@Test
+	public void testParsedIndices() {
+		TiledObjectGroup group = tiledMap.getObjectGroup("Objects");
+		Assert.assertEquals(2, group.getIndex());
+		Assert.assertEquals(group.getIndex(), tiledMap.getLayerIndex(group.getName()));
+		
+		TileLayer tileLayer = tiledMap.getTileLayer("Higher");
+		Assert.assertEquals(3, tileLayer.getIndex());
+	}
 }

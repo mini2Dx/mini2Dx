@@ -19,68 +19,18 @@ import java.util.Map;
 /**
  * Represents a group of {@link TiledObject}s loaded from a {@link TiledMap}
  */
-public class TiledObjectGroup {
-	private String name;
+public class TiledObjectGroup extends Layer {
 	private int width, height;
 	private List<TiledObject> objects;
-	private Map<String, String> properties;
 	
 	/**
 	 * Constructor
 	 */
 	public TiledObjectGroup() {
+		super(LayerType.OBJECT);
 		objects = new ArrayList<TiledObject>();
 	}
-	
-	/**
-	 * Returns if the group contains the specified property
-	 * @param propertyName The property name to search for
-	 * @return True if the group contains the property
-	 */
-	public boolean containsProperty(String propertyName) {
-		if(properties == null)
-			return false;
-		return properties.containsKey(propertyName);
-	}
-	
-	/**
-	 * Returns the value of a specified property
-	 * @param propertyName The property name to search for
-	 * @return Null if there is no such property
-	 */
-	public String getProperty(String propertyName) {
-		if(properties == null)
-			return null;
-		return properties.get(propertyName);
-	}
-	
-	/**
-	 * Sets the value of a specified property
-	 * @param propertyName The property name to set the value for
-	 * @param value The value of the property to set
-	 */
-	public void setProperty(String propertyName, String value) {
-		if(properties == null)
-			properties = new HashMap<String, String>();
-		properties.put(propertyName, value);
-	}
-	
-	/**
-	 * Returns the name of this group
-	 * @return
-	 */
-	public String getName() {
-		return name;
-	}
-	
-	/**
-	 * Sets the name of this group
-	 * @param name
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	
+
 	/**
 	 * Returns the width of the group in tiles
 	 * @return

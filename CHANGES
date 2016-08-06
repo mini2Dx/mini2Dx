@@ -38,6 +38,7 @@
 - Fixed Mdx.xml and Mdx.json not deserialzing enum fields correctly
 - Fixed Animation flipping Sprites when rendering at a coordinate
 - Fixed TiledParser exception when TiledObjects had non-integer coordinates
+- TiledObjectGroup instances are now treated as layers to match Tiled specification
 - QuadTrees
   * Added QuadTree interface for all QuadTree implementations
   * Existing Quad class renamed to PointQuadTree

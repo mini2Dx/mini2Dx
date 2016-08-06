@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,48 +12,10 @@
 package org.mini2Dx.tiled;
 
 /**
- * Represents a tile layer with in a {@link TiledMap}
+ * Represents a {@link Layer} type as defined by Tiled
  */
-public class TileLayer extends Layer {
-	private int[][] tiles;
-
-	public TileLayer(int width, int height) {
-		super(LayerType.TILE);
-		tiles = new int[width][height];
-	}
-
-	/**
-	 * Returns the tile id at a given coordinate on the layer
-	 * 
-	 * @param x
-	 *            The x coordinate in tiles
-	 * @param y
-	 *            The y coordinate in tiles
-	 * @return 0 if there is no tile
-	 */
-	public int getTileId(int x, int y) {
-		return tiles[x][y];
-	}
-
-	/**
-	 * Sets the tile id at a given coordinate on the layer
-	 * 
-	 * @param x
-	 *            The x coordinate in tiles
-	 * @param y
-	 *            The y coordinate in tiles
-	 * @param id
-	 *            0 if there is no tile
-	 */
-	public void setTileId(int x, int y, int id) {
-		tiles[x][y] = id;
-	}
-
-	public int getWidth() {
-		return tiles.length;
-	}
-
-	public int getHeight() {
-		return tiles[0].length;
-	}
+public enum LayerType {
+	TILE,
+	OBJECT,
+	IMAGE
 }

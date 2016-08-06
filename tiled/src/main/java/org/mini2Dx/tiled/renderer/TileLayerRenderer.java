@@ -15,19 +15,19 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.tiled.TileLayer;
 
 /**
- * A common inteface for {@link TileLayer} rendering implementations
+ * A common interface for {@link TileLayer} rendering implementations
  */
 public interface TileLayerRenderer {
 	/**
-	 * 
-	 * @param g
-	 * @param layer
-	 * @param renderX
-	 * @param renderY
-	 * @param startTileX
-	 * @param startTileY
-	 * @param widthInTiles
-	 * @param heightInTiles
+	 * Renders a {@link TileLayer}
+	 * @param g The {@link Graphics} context
+	 * @param layer The {@link TileLayer} to render
+	 * @param renderX The screen x coordinate to render at
+	 * @param renderY The screen y coordinate to render at
+	 * @param startTileX The tile x coordinate to start at
+	 * @param startTileY The tile y coordinate to start at
+	 * @param widthInTiles The width to render in tiles
+	 * @param heightInTiles The height to render in tiles
 	 */
 	public void drawLayer(Graphics g, TileLayer layer, int renderX,
 			int renderY, int startTileX, int startTileY, int widthInTiles, int heightInTiles);

@@ -24,6 +24,7 @@ import org.mini2Dx.tiled.exception.UnsupportedOrientationException;
 import org.mini2Dx.tiled.renderer.IsometricTileLayerRenderer;
 import org.mini2Dx.tiled.renderer.OrthogonalTileLayerRenderer;
 import org.mini2Dx.tiled.renderer.TileLayerRenderer;
+import org.mini2Dx.tiled.renderer.TiledObjectGroupRenderer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -41,20 +42,21 @@ public class TiledMap implements TiledParserListener {
 	private int width, height, tileWidth, tileHeight, pixelWidth, pixelHeight;
 	private Color backgroundColor;
 	protected List<Tileset> tilesets;
-	protected List<TileLayer> tileLayers;
-	protected List<TiledObjectGroup> objectGroups;
+	protected List<Layer> layers;
+	protected Map<String, TiledObjectGroup> objectGroups;
 	private Map<String, String> properties;
 	private FileHandle fileHandle;
 
 	private TileLayerRenderer tileLayerRenderer;
+	private TiledObjectGroupRenderer tiledObjectGroupRenderer;
 
 	/**
 	 * Constructs an empty map
 	 */
 	public TiledMap() {
 		tilesets = new ArrayList<Tileset>();
-		tileLayers = new ArrayList<TileLayer>();
-		objectGroups = new ArrayList<TiledObjectGroup>();
+		layers = new ArrayList<Layer>();
+		objectGroups = new HashMap<String, TiledObjectGroup>();
 	}
 
 	/**
@@ -80,15 +82,15 @@ public class TiledMap implements TiledParserListener {
 	 * @throws TiledException
 	 *             Thrown if there were issues with the loaded map
 	 */
-	public TiledMap(FileHandle fileHandle, boolean loadTilesets,
-			boolean cacheLayers) throws TiledException {
+	public TiledMap(FileHandle fileHandle, boolean loadTilesets, boolean cacheLayers) throws TiledException {
 		this(new TiledParser(), fileHandle, loadTilesets, cacheLayers);
 	}
-	
+
 	/**
 	 * Constructs a map from a TMX file
 	 * 
-	 * @param parser An existing {@link TiledParser} instance
+	 * @param parser
+	 *            An existing {@link TiledParser} instance
 	 * @param fileHandle
 	 *            A {@link FileHandle} to a .tmx file
 	 * @param loadTilesets
@@ -97,11 +99,11 @@ public class TiledMap implements TiledParserListener {
 	 * @throws TiledException
 	 *             Thrown if there were issues with the loaded map
 	 */
-	public TiledMap(TiledParser parser, FileHandle fileHandle, boolean loadTilesets,
-			boolean cacheLayers) throws TiledException {
+	public TiledMap(TiledParser parser, FileHandle fileHandle, boolean loadTilesets, boolean cacheLayers)
+			throws TiledException {
 		this();
 		this.fileHandle = fileHandle;
-		
+
 		parser.addListener(this);
 		try {
 			parser.parse(fileHandle);
@@ -109,7 +111,7 @@ public class TiledMap implements TiledParserListener {
 			throw new TiledParsingException(e);
 		}
 		parser.removeListener(this);
-		
+
 		if (loadTilesets) {
 			loadTilesets();
 		}
@@ -170,8 +172,7 @@ public class TiledMap implements TiledParserListener {
 	 */
 	public void loadTileset(int tilesetIndex) {
 		if (tilesetIndex < 0 || tilesetIndex >= tilesets.size()) {
-			throw new RuntimeException("No such tileset with index "
-					+ tilesetIndex);
+			throw new RuntimeException("No such tileset with index " + tilesetIndex);
 		}
 		if (!tilesets.get(tilesetIndex).isTextureLoaded()) {
 			tilesets.get(tilesetIndex).loadTexture(fileHandle.parent());
@@ -237,11 +238,9 @@ public class TiledMap implements TiledParserListener {
 	 * @param heightInTiles
 	 *            The amount of tiles across the y axis to render
 	 */
-	public void draw(Graphics g, int x, int y, int startTileX, int startTileY,
-			int widthInTiles, int heightInTiles) {
-		for (int i = 0; i < tileLayers.size(); i++) {
-			draw(g, x, y, startTileX, startTileY, widthInTiles, heightInTiles,
-					i);
+	public void draw(Graphics g, int x, int y, int startTileX, int startTileY, int widthInTiles, int heightInTiles) {
+		for (int i = 0; i < layers.size(); i++) {
+			draw(g, x, y, startTileX, startTileY, widthInTiles, heightInTiles, i);
 		}
 	}
 
@@ -266,10 +265,21 @@ public class TiledMap implements TiledParserListener {
 	 * @param layer
 	 *            The layer index to render
 	 */
-	public void draw(Graphics g, int x, int y, int startTileX, int startTileY,
-			int widthInTiles, int heightInTiles, int layer) {
-		drawLayer(g, tileLayers.get(layer), x, y, startTileX, startTileY,
-				widthInTiles, heightInTiles);
+	public void draw(Graphics g, int x, int y, int startTileX, int startTileY, int widthInTiles, int heightInTiles,
+			int layer) {
+		Layer tiledLayer = layers.get(layer);
+		switch (tiledLayer.getLayerType()) {
+		case IMAGE:
+			break;
+		case OBJECT:
+			drawTiledObjectGroup(g, (TiledObjectGroup) tiledLayer, x, y, startTileX, startTileY, widthInTiles, heightInTiles);
+			break;
+		case TILE:
+			drawTileLayer(g, (TileLayer) tiledLayer, x, y, startTileX, startTileY, widthInTiles, heightInTiles);
+			break;
+		default:
+			break;
+		}
 	}
 
 	/**
@@ -292,8 +302,8 @@ public class TiledMap implements TiledParserListener {
 	 *            The amount of tiles that were rendered along the Y axis
 	 * @return True if the layer should be rendered
 	 */
-	protected boolean preLayerRendered(Graphics g, TileLayer layer,
-			int startTileX, int startTileY, int widthInTiles, int heightInTiles) {
+	protected boolean preLayerRendered(Graphics g, TileLayer layer, int startTileX, int startTileY, int widthInTiles,
+			int heightInTiles) {
 		return true;
 	}
 
@@ -313,29 +323,32 @@ public class TiledMap implements TiledParserListener {
 	 * @param heightInTiles
 	 *            The amount of tiles that were rendered along the Y axis
 	 */
-	protected void onLayerRendered(Graphics g, TileLayer layer, int startTileX,
-			int startTileY, int widthInTiles, int heightInTiles) {
+	protected void onLayerRendered(Graphics g, TileLayer layer, int startTileX, int startTileY, int widthInTiles,
+			int heightInTiles) {
 
 	}
 
-	private void drawLayer(Graphics g, TileLayer layer, int renderX,
-			int renderY, int startTileX, int startTileY, int widthInTiles,
-			int heightInTiles) {
+	private void drawTileLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX, int startTileY,
+			int widthInTiles, int heightInTiles) {
 		if (!isTilesetsLoaded()) {
-			Gdx.app.error(TiledMap.class.getSimpleName(),
-					"Attempting to render TiledMap without its tilesets loaded");
+			Gdx.app.error(TiledMap.class.getSimpleName(), "Attempting to render TiledMap without its tilesets loaded");
 			return;
 		}
 
-		if (!preLayerRendered(g, layer, startTileX, startTileY, widthInTiles,
-				heightInTiles))
+		if (!preLayerRendered(g, layer, startTileX, startTileY, widthInTiles, heightInTiles))
 			return;
 
-		tileLayerRenderer.drawLayer(g, layer, renderX, renderY, startTileX,
-				startTileY, widthInTiles, heightInTiles);
+		tileLayerRenderer.drawLayer(g, layer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles);
 
-		onLayerRendered(g, layer, startTileX, startTileY, widthInTiles,
-				heightInTiles);
+		onLayerRendered(g, layer, startTileX, startTileY, widthInTiles, heightInTiles);
+	}
+
+	private void drawTiledObjectGroup(Graphics g, TiledObjectGroup objectGroup, int renderX, int renderY, int startTileX,
+			int startTileY, int widthInTiles, int heightInTiles) {
+		if (tiledObjectGroupRenderer == null) {
+			return;
+		}
+		tiledObjectGroupRenderer.drawObjectGroup(g, objectGroup, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles);
 	}
 
 	/**
@@ -379,8 +392,8 @@ public class TiledMap implements TiledParserListener {
 	}
 
 	@Override
-	public void onBeginParsing(String orientation, Color backgroundColor,
-			int width, int height, int tileWidth, int tileHeight) {
+	public void onBeginParsing(String orientation, Color backgroundColor, int width, int height, int tileWidth,
+			int tileHeight) {
 		this.orientationValue = orientation;
 		try {
 			this.orientation = Orientation.valueOf(orientation.toUpperCase());
@@ -415,13 +428,15 @@ public class TiledMap implements TiledParserListener {
 
 	@Override
 	public void onTileLayerParsed(TileLayer parsedLayer) {
-		parsedLayer.setIndex(tileLayers.size());
-		tileLayers.add(parsedLayer);
+		parsedLayer.setIndex(layers.size());
+		layers.add(parsedLayer);
 	}
 
 	@Override
 	public void onObjectGroupParsed(TiledObjectGroup parsedObjectGroup) {
-		objectGroups.add(parsedObjectGroup);
+		parsedObjectGroup.setIndex(layers.size());
+		layers.add(parsedObjectGroup);
+		objectGroups.put(parsedObjectGroup.getName(), parsedObjectGroup);
 	}
 
 	/**
@@ -432,25 +447,30 @@ public class TiledMap implements TiledParserListener {
 	 * @return Null if there is no such {@link TileLayer}
 	 */
 	public TileLayer getTileLayer(String name) {
-		for (TileLayer layer : tileLayers) {
-			if (layer.getName().compareTo(name) == 0) {
-				return layer;
+		for (Layer layer : layers) {
+			if (layer.getName().compareTo(name) != 0) {
+				continue;
 			}
+			if (!layer.getLayerType().equals(LayerType.TILE)) {
+				continue;
+			}
+			return (TileLayer) layer;
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the {@link TileLayer} at the given index
 	 * 
-	 * @param index The index of the layer
+	 * @param index
+	 *            The index of the layer
 	 * @return Null if the index is out of bounds
 	 */
 	public TileLayer getTileLayer(int index) {
-		if(index < 0 || index >= tileLayers.size()) {
+		if (index < 0 || index >= layers.size()) {
 			return null;
 		}
-		return tileLayers.get(index);
+		return (TileLayer) layers.get(index);
 	}
 
 	/**
@@ -461,24 +481,22 @@ public class TiledMap implements TiledParserListener {
 	 * @return Null if there is no such {@link TiledObjectGroup}
 	 */
 	public TiledObjectGroup getObjectGroup(String name) {
-		for (TiledObjectGroup group : objectGroups) {
-			if (group.getName().compareTo(name) == 0) {
-				return group;
-			}
-		}
-		return null;
+		return objectGroups.get(name);
 	}
 
 	/**
-	 * Returns the index of the {@link TileLayer} with the given name
+	 * Returns the index of the {@link TileLayer} or {@link TiledObjectGroup}
+	 * with the given name
 	 * 
 	 * @param name
 	 *            The name to search for
-	 * @return -1 if there is no such {@link TileLayer}
+	 * @return -1 if there is no such {@link TileLayer} or
+	 *         {@link TiledObjectGroup}
 	 */
 	public int getLayerIndex(String name) {
-		for (int i = 0; i < tileLayers.size(); i++) {
-			if (tileLayers.get(i).getName().compareTo(name) == 0) {
+		for (int i = 0; i < layers.size(); i++) {
+			Layer layer = layers.get(i);
+			if (layer.getName().compareTo(name) == 0) {
 				return i;
 			}
 		}
@@ -500,17 +518,24 @@ public class TiledMap implements TiledParserListener {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the {@link Tile} at the given coordinate on a specific layer
 	 * 
-	 * @param x The x coordinate (in tiles)
-	 * @param y The y coordinate (in tiles)
-	 * @param layer The layer index
+	 * @param x
+	 *            The x coordinate (in tiles)
+	 * @param y
+	 *            The y coordinate (in tiles)
+	 * @param layer
+	 *            The layer index
 	 * @return Null if there is no {@link Tile}
 	 */
 	public Tile getTile(int x, int y, int layer) {
-		return getTile(tileLayers.get(layer).getTileId(x, y));
+		Layer tiledLayer = layers.get(layer);
+		if (!tiledLayer.getLayerType().equals(LayerType.TILE)) {
+			return null;
+		}
+		return getTile(((TileLayer) tiledLayer).getTileId(x, y));
 	}
 
 	/**
@@ -569,6 +594,7 @@ public class TiledMap implements TiledParserListener {
 
 	/**
 	 * Returns the width of the map in pixels
+	 * 
 	 * @return
 	 */
 	public int getPixelWidth() {
@@ -577,6 +603,7 @@ public class TiledMap implements TiledParserListener {
 
 	/**
 	 * Return the height of the map in pixels
+	 * 
 	 * @return
 	 */
 	public int getPixelHeight() {
@@ -593,21 +620,12 @@ public class TiledMap implements TiledParserListener {
 	}
 
 	/**
-	 * Returns the {@link TileLayer}s of this map
+	 * Returns the total amount of {@link TiledObjectGroup} instances
 	 * 
-	 * @return An empty list if none have been loaded
+	 * @return
 	 */
-	public List<TileLayer> getTileLayers() {
-		return tileLayers;
-	}
-
-	/**
-	 * Returns the {@link TiledObjectGroup}s of this map
-	 * 
-	 * @return An empty list if none have been loaded
-	 */
-	public List<TiledObjectGroup> getObjectGroups() {
-		return objectGroups;
+	public int getTotalObjectGroups() {
+		return objectGroups.size();
 	}
 
 	/**
@@ -622,9 +640,21 @@ public class TiledMap implements TiledParserListener {
 	/**
 	 * Sets the {@link TileLayerRenderer} implementation to use for rendering
 	 * 
-	 * @param tileLayerRenderer The {@link TileLayerRenderer} to use
+	 * @param tileLayerRenderer
+	 *            The {@link TileLayerRenderer} to use
 	 */
 	public void setTileLayerRenderer(TileLayerRenderer tileLayerRenderer) {
 		this.tileLayerRenderer = tileLayerRenderer;
+	}
+
+	/**
+	 * Sets the {@link TiledObjectGroupRenderer} implementation to use for
+	 * rendering
+	 * 
+	 * @param tiledObjectGroupRenderer
+	 *            The {@link TiledObjectGroupRenderer} to use
+	 */
+	public void setTiledObjectGroupRenderer(TiledObjectGroupRenderer tiledObjectGroupRenderer) {
+		this.tiledObjectGroupRenderer = tiledObjectGroupRenderer;
 	}
 }
