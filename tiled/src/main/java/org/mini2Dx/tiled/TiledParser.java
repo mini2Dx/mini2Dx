@@ -362,11 +362,11 @@ public class TiledParser implements TiledParserNotifier {
 
 	protected TiledObject loadObject(Element element) {
 		if (element.getName().equals("object")) {
-			float x = element.getIntAttribute("x", 0);
-			float y = element.getIntAttribute("y", 0);
+			float x = element.getFloatAttribute("x", 0);
+			float y = element.getFloatAttribute("y", 0);
 
-			float width = element.getIntAttribute("width", 0);
-			float height = element.getIntAttribute("height", 0);
+			float width = element.getFloatAttribute("width", 0);
+			float height = element.getFloatAttribute("height", 0);
 
 			TiledObject object = new TiledObject(x, y, width, height);
 
