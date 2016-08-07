@@ -618,6 +618,14 @@ public class TiledMap implements TiledParserListener {
 	public List<Tileset> getTilesets() {
 		return tilesets;
 	}
+	
+	/**
+	 * Returns the {@link Layer}s of this map
+	 * @return
+	 */
+	public List<Layer> getLayers() {
+		return layers;
+	}
 
 	/**
 	 * Returns the total amount of {@link TiledObjectGroup} instances
