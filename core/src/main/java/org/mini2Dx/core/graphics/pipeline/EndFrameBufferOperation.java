@@ -43,6 +43,7 @@ public class EndFrameBufferOperation implements RenderOperation {
 		if(frameBuffer == null) {
 			return;
 		}
+		g.flush();
 		frameBuffer.end();
 	}
 
