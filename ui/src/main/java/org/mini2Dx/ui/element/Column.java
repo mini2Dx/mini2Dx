@@ -307,4 +307,12 @@ public class Column extends UiElement {
 		}
 		renderNode.setDirty(true);
 	}
+	
+	/**
+	 * Returns the total number of child elements for this element
+	 * @return 0 is there are no children
+	 */
+	public int getTotalChildren() {
+		return children.size();
+	}
 }
