@@ -111,14 +111,14 @@ checkbox_normal
   index: -1
 checkicon_disabled
   rotate: false
-  xy: 464, 68
+  xy: 276, 30
   size: 21, 20
   orig: 21, 20
   offset: 0, 0
   index: -1
 checkicon_normal
   rotate: false
-  xy: 276, 30
+  xy: 299, 30
   size: 21, 20
   orig: 21, 20
   offset: 0, 0
@@ -128,6 +128,27 @@ frame
   xy: 2, 54
   size: 72, 72
   orig: 72, 72
+  offset: 0, 0
+  index: -1
+progress_bar_background
+  rotate: false
+  xy: 154, 52
+  size: 36, 36
+  orig: 36, 36
+  offset: 0, 0
+  index: -1
+textbox_disabled
+  rotate: false
+  xy: 154, 52
+  size: 36, 36
+  orig: 36, 36
+  offset: 0, 0
+  index: -1
+progress_bar_fill
+  rotate: false
+  xy: 464, 64
+  size: 24, 24
+  orig: 24, 24
   offset: 0, 0
   index: -1
 scrolltrack
@@ -195,19 +216,12 @@ select_right_normal
   index: -1
 tab_bg
   rotate: false
-  xy: 154, 52
-  size: 36, 36
-  orig: 36, 36
-  offset: 0, 0
-  index: -1
-tab_menu_bg
-  rotate: false
   xy: 192, 52
   size: 36, 36
   orig: 36, 36
   offset: 0, 0
   index: -1
-textbox_disabled
+tab_menu_bg
   rotate: false
   xy: 230, 52
   size: 36, 36

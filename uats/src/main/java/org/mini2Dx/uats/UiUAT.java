@@ -34,16 +34,15 @@ import org.mini2Dx.ui.element.AlignedModal;
 import org.mini2Dx.ui.element.Button;
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.element.Label;
+import org.mini2Dx.ui.element.ProgressBar;
 import org.mini2Dx.ui.element.Row;
 import org.mini2Dx.ui.element.ScrollBox;
 import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.element.Tab;
-import org.mini2Dx.ui.element.TabButton;
 import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.TextButton;
 import org.mini2Dx.ui.element.Visibility;
-import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.VerticalAlignment;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.navigation.VerticalUiNavigation;
@@ -234,6 +233,12 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		Tab tab2 = new Tab("tab2", "Tab 2");
 		Column xsHiddenColumn = Column.withElements("col-not-visible-xs", UiUtils.createLabel("Not visible on XS screen size"));
 		xsHiddenColumn.setLayout("xs-0c sm-12c");
+		
+		ProgressBar progressBar = new ProgressBar();
+		progressBar.setValue(0.4f);
+		progressBar.setVisibility(Visibility.VISIBLE);
+		tab2.add(Row.withElements(progressBar));
+		
 		tab2.add(Row.withElements("row-not-visible-xs", xsHiddenColumn));
 		
 		Button reAddElementsButton =  UiUtils.createButton(null, "Re-add tabview", new ActionListener() {

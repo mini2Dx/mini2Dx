@@ -22,6 +22,7 @@ import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.element.Container;
 import org.mini2Dx.ui.element.Image;
 import org.mini2Dx.ui.element.Label;
+import org.mini2Dx.ui.element.ProgressBar;
 import org.mini2Dx.ui.element.ScrollBox;
 import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.element.TabView;
@@ -33,6 +34,7 @@ import org.mini2Dx.ui.style.ruleset.ColumnStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.ContainerStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.DefaultStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.LabelStyleRuleset;
+import org.mini2Dx.ui.style.ruleset.ProgressBarStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.ScrollBoxStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.SelectStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.TabStyleRuleset;
@@ -42,7 +44,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 
@@ -72,6 +73,8 @@ public class UiTheme {
 	@Field
 	private Map<String, LabelStyleRuleset> labels;
 	@Field
+	private Map<String, ProgressBarStyleRuleset> progressBars;
+	@Field
 	private Map<String, SelectStyleRuleset> selects;
 	@Field
 	private Map<String, ScrollBoxStyleRuleset> scrollBoxes;
@@ -97,6 +100,9 @@ public class UiTheme {
 		}
 		if (!labels.containsKey(DEFAULT_STYLE_ID)) {
 			throw new MdxException("No style with id 'default' for labels");
+		}
+		if (!progressBars.containsKey(DEFAULT_STYLE_ID)) {
+			throw new MdxException("No style with id 'default' for progressBars");
 		}
 		if (!selects.containsKey(DEFAULT_STYLE_ID)) {
 			throw new MdxException("No style with id 'default' for selects");
@@ -125,6 +131,9 @@ public class UiTheme {
 		}
 		for (StyleRuleset<LabelStyleRule> labelRuleset : labels.values()) {
 			labelRuleset.validate(this);
+		}
+		for (StyleRuleset<ProgressBarStyleRule> progressBarRuleset : progressBars.values()) {
+			progressBarRuleset.validate(this);
 		}
 		for (StyleRuleset<ScrollBoxStyleRule> scrollBoxRuleset : scrollBoxes.values()) {
 			scrollBoxRuleset.validate(this);
@@ -168,6 +177,11 @@ public class UiTheme {
 			labelRuleset.loadDependencies(this, dependencies);
 			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Label Ruleset: " + id + "] Dependencies loaded");
 		}
+		for (String id : progressBars.keySet()) {
+			StyleRuleset<ProgressBarStyleRule> progressBarRuleset = progressBars.get(id);
+			progressBarRuleset.loadDependencies(this, dependencies);
+			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Progress Bar Ruleset: " + id + "] Dependencies loaded");
+		}
 		for (String id : scrollBoxes.keySet()) {
 			StyleRuleset<ScrollBoxStyleRule> scrollBoxRuleset = scrollBoxes.get(id);
 			scrollBoxRuleset.loadDependencies(this, dependencies);
@@ -209,6 +223,9 @@ public class UiTheme {
 		}
 		for (StyleRuleset<LabelStyleRule> labelRuleset : labels.values()) {
 			labelRuleset.prepareAssets(this, fileHandleResolver, assetManager);
+		}
+		for (StyleRuleset<ProgressBarStyleRule> progressBarRuleset : progressBars.values()) {
+			progressBarRuleset.prepareAssets(this, fileHandleResolver, assetManager);
 		}
 		for (StyleRuleset<ScrollBoxStyleRule> scrollBoxRuleset : scrollBoxes.values()) {
 			scrollBoxRuleset.prepareAssets(this, fileHandleResolver, assetManager);
@@ -258,6 +275,10 @@ public class UiTheme {
 
 	public StyleRule getStyleRule(Image image, ScreenSize screenSize) {
 		return getStyleRule(image, screenSize, images);
+	}
+	
+	public ProgressBarStyleRule getStyleRule(ProgressBar progressBar, ScreenSize screenSize) {
+		return getProgressBarStyleRule(progressBar.getStyleId(), screenSize);
 	}
 	
 	public ScrollBoxStyleRule getStyleRule(ScrollBox scrollBox, ScreenSize screenSize) {
@@ -322,6 +343,15 @@ public class UiTheme {
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = labels.get(DEFAULT_STYLE_ID);
+		}
+		return ruleset.getStyleRule(screenSize);
+	}
+	
+	public ProgressBarStyleRule getProgressBarStyleRule(String styleId, ScreenSize screenSize) {
+		StyleRuleset<ProgressBarStyleRule> ruleset = progressBars.get(styleId);
+		if(ruleset == null) {
+			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
+			ruleset = progressBars.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
 	}
@@ -395,6 +425,13 @@ public class UiTheme {
 			labels = new HashMap<String, LabelStyleRuleset>();
 		}
 		labels.put(rulesetId, ruleset);
+	}
+	
+	public void putProgressBarStyleRuleset(String rulesetId, ProgressBarStyleRuleset ruleset) {
+		if(progressBars == null) {
+			progressBars = new HashMap<String, ProgressBarStyleRuleset>();
+		}
+		progressBars.put(rulesetId, ruleset);
 	}
 	
 	public void putScrollBoxStyleRuleset(String rulesetId, ScrollBoxStyleRuleset ruleset) {
