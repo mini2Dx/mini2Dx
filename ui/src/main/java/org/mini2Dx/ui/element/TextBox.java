@@ -26,7 +26,6 @@ import org.mini2Dx.ui.render.TextBoxRenderNode;
  */
 public class TextBox extends UiElement implements Actionable {
 	private List<ActionListener> actionListeners;
-	private TextBoxRenderNode renderNode;
 	private String value = "";
 
 	@Field(optional=true)
@@ -35,6 +34,8 @@ public class TextBox extends UiElement implements Actionable {
 	private boolean enabled = true;
 	@Field(optional = true)
 	private boolean passwordField = false;
+	
+	protected TextBoxRenderNode renderNode;
 
 	/**
 	 * Constructor. Generates a unique ID for this {@link TextBox}

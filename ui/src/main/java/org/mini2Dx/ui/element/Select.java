@@ -32,11 +32,12 @@ public class Select<V> extends UiElement implements Actionable {
 
 	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
 	private boolean enabled = true;
-	private SelectRenderNode renderNode;
 	private int selectedIndex = 0;
 	private Color enabledTextColor = null;
 	private Color disabledTextColor = null;
 
+	protected SelectRenderNode renderNode;
+	
 	/**
 	 * Constructor. Generates a unique ID for this {@link Select}
 	 */

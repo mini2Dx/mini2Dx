@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
  * Implementation of {@link Button} that only contains an image
  */
 public class ImageButton extends Button {
-	private ImageButtonRenderNode renderNode;
+	protected ImageButtonRenderNode renderNode;
 	private TextureRegion textureRegion;
 	
 	@Field(optional=true)

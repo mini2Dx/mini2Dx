@@ -31,7 +31,7 @@ public class ProgressBar extends UiElement {
 	@Field(optional=true)
 	private String layout = LayoutRuleset.DEFAULT_LAYOUT;
 	
-	private ProgressBarRenderNode renderNode;
+	protected ProgressBarRenderNode renderNode;
 	
 	public ProgressBar() {
 		super();

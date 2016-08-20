@@ -21,7 +21,7 @@ import org.mini2Dx.ui.render.TextButtonRenderNode;
  * Implementation of {@link Button} that only contains text
  */
 public class TextButton extends Button {
-	private TextButtonRenderNode renderNode;
+	protected TextButtonRenderNode renderNode;
 	
 	@Field(optional=true)
 	private String text = "";

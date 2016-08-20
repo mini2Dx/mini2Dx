@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
  * Wraps a {@link Texture} or {@link TextureRegion} as a {@link UiElement}
  */
 public class Image extends UiElement {
-	private ImageRenderNode renderNode;
+	protected ImageRenderNode renderNode;
 	private TextureRegion textureRegion;
 
 	@Field

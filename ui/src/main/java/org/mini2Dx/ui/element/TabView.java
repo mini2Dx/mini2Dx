@@ -46,7 +46,7 @@ public class TabView extends UiElement implements Navigatable {
 	private final TabButton previousTabButton, nextTabButton;
 	private final List<TabButton> tabButtons = new ArrayList<TabButton>(1);
 	
-	private TabViewRenderNode renderNode;
+	protected TabViewRenderNode renderNode;
 	private int currentTabIndex = 0;
 	private int tabButtonViewIndex = 0;
 
@@ -55,7 +55,7 @@ public class TabView extends UiElement implements Navigatable {
 	@Field(optional=true)
 	private String tabButtonLayout = "xs-6c sm-4c md-2c xl-1c";
 	@Field(optional = true)
-	private final List<Tab> tabs = new ArrayList<Tab>(1);
+	protected final List<Tab> tabs = new ArrayList<Tab>(1);
 
 	private final TabViewUiNavigation navigation = new TabViewUiNavigation(this, tabs);
 	
