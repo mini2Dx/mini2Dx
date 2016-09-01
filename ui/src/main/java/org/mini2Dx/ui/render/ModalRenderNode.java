@@ -25,7 +25,7 @@ import org.mini2Dx.ui.navigation.KeyboardHotKeyOperation;
 import org.mini2Dx.ui.style.ContainerStyleRule;
 
 /**
- *
+ * Base class for {@link Modal} {@link RenderNode} implementations
  */
 public abstract class ModalRenderNode extends ContainerRenderNode implements NavigatableRenderNode {
 	private final Map<Integer, String> keyboardHotkeys = new HashMap<Integer, String>();

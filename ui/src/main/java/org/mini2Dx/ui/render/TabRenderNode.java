@@ -14,7 +14,7 @@ import org.mini2Dx.ui.navigation.ControllerHotKeyOperation;
 import org.mini2Dx.ui.navigation.KeyboardHotKeyOperation;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link Tab}
  */
 public class TabRenderNode extends RowRenderNode implements NavigatableRenderNode {
 	private Map<Integer, ActionableRenderNode> keyboardHotkeys = new HashMap<Integer, ActionableRenderNode>();

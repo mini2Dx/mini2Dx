@@ -18,7 +18,7 @@ import org.mini2Dx.ui.navigation.ControllerHotKeyOperation;
 import org.mini2Dx.ui.navigation.KeyboardHotKeyOperation;
 
 /**
- *
+ * Interface for {@link RenderNode}s that can be navigated
  */
 public interface NavigatableRenderNode {
 	public ActionableRenderNode hotkey(int keycode);

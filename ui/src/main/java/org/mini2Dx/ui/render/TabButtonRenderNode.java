@@ -6,7 +6,7 @@ package org.mini2Dx.ui.render;
 import org.mini2Dx.ui.element.TabButton;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link TabButton}
  */
 public class TabButtonRenderNode extends ContentButtonRenderNode {
 	

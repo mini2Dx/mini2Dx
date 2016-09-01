@@ -27,7 +27,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.Clipboard;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link TextBox}
  */
 public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>implements TextInputableRenderNode {
 	private static final float CURSOR_VISIBLE_DURATION = 0.5f;

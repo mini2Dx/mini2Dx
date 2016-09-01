@@ -19,7 +19,7 @@ import org.mini2Dx.ui.style.ContainerStyleRule;
 import com.badlogic.gdx.math.MathUtils;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link AlignedContainer}
  */
 public class AlignedContainerRenderNode extends ContainerRenderNode {
 

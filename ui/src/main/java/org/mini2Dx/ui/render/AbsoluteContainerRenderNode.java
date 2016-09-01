@@ -16,7 +16,7 @@ import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ContainerStyleRule;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link AbsoluteContainer}
  */
 public class AbsoluteContainerRenderNode extends ContainerRenderNode {
 	

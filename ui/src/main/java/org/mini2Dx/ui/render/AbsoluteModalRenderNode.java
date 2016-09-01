@@ -16,7 +16,7 @@ import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.layout.LayoutState;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link AbsoluteModal}
  */
 public class AbsoluteModalRenderNode extends ModalRenderNode {
 

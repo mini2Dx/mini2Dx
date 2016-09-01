@@ -20,7 +20,7 @@ import org.mini2Dx.ui.style.ProgressBarStyleRule;
 import com.badlogic.gdx.math.MathUtils;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link ProgressBar}
  */
 public class ProgressBarRenderNode extends RenderNode<ProgressBar, ProgressBarStyleRule>{
 	protected LayoutRuleset layoutRuleset;

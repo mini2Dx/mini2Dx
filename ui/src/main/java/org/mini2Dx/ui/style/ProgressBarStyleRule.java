@@ -15,12 +15,13 @@ import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.ui.element.ProgressBar;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 
 /**
- *
+ * Extends {@link StyleRule} for {@link ProgressBar} styling
  */
 public class ProgressBarStyleRule extends StyleRule {
 	@Field(optional = true)

@@ -18,7 +18,7 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.layout.LayoutState;
 
 /**
- *
+ * Represents a layer of {@link RenderNode}s on the z axis of a {@link ParentRenderNode}
  */
 public class RenderLayer implements Comparable<RenderLayer> {
 	protected final List<RenderNode<?, ?>> children = new ArrayList<RenderNode<?, ?>>(1);

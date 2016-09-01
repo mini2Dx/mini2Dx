@@ -11,10 +11,11 @@
  */
 package org.mini2Dx.ui.render;
 
+import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.layout.LayoutState;
 
 /**
- *
+ * {@link RenderLayer} implementation for {@link UiContainer}
  */
 public class UiContainerRenderLayer extends RenderLayer {
 

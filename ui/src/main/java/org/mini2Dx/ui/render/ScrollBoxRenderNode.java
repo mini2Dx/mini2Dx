@@ -29,7 +29,7 @@ import org.mini2Dx.ui.style.UiTheme;
 import com.badlogic.gdx.math.MathUtils;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link ScrollBox}
  */
 public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyleRule>implements ActionableRenderNode {
 	private final CollisionBox topScrollButton = new CollisionBox();

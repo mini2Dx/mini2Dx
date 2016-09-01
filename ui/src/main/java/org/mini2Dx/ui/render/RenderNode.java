@@ -27,7 +27,7 @@ import org.mini2Dx.ui.style.StyleRule;
 import com.badlogic.gdx.Gdx;
 
 /**
- *
+ * Base class for implementing rendering of {@link UiElement} implementations
  */
 public abstract class RenderNode<T extends UiElement, S extends StyleRule> implements HoverableRenderNode {
 	protected final List<UiEffect> effects = new ArrayList<UiEffect>(1);

@@ -18,7 +18,7 @@ import org.mini2Dx.ui.layout.LayoutState;
 import com.badlogic.gdx.math.MathUtils;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link AlignedModal}
  */
 public class AlignedModalRenderNode extends ModalRenderNode {
 

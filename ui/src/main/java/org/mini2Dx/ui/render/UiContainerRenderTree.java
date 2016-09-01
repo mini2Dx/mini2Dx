@@ -25,7 +25,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link UiContainer}
  */
 public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRule> {
 	private static final String LOGGING_TAG = UiContainerRenderTree.class.getSimpleName();

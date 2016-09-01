@@ -26,7 +26,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.utils.Array;
 
 /**
- *
+ * {@link StyleRuleset} implementation for {@link ProgressBarStyleRule}s
  */
 public class ProgressBarStyleRuleset extends StyleRuleset<ProgressBarStyleRule> {
 	@Field

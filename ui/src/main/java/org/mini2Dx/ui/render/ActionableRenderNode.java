@@ -12,7 +12,7 @@
 package org.mini2Dx.ui.render;
 
 /**
- *
+ * Interface for {@link RenderNode}s that have actions
  */
 public interface ActionableRenderNode extends HoverableRenderNode {
 	

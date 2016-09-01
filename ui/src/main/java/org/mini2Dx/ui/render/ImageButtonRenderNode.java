@@ -22,7 +22,7 @@ import org.mini2Dx.ui.style.ButtonStyleRule;
 import com.badlogic.gdx.Input.Buttons;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link ImageButton}
  */
 public class ImageButtonRenderNode extends RenderNode<ImageButton, ButtonStyleRule>implements ActionableRenderNode {
 	protected LayoutRuleset layoutRuleset;

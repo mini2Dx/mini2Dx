@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link TextButton}
  */
 public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule>implements ActionableRenderNode {
 	private static GlyphLayout glyphLayout = new GlyphLayout();

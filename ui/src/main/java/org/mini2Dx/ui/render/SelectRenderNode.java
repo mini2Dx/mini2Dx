@@ -28,7 +28,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link Select}
  */
 public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule>implements ActionableRenderNode {
 	private static final GlyphLayout glyphLayout = new GlyphLayout();

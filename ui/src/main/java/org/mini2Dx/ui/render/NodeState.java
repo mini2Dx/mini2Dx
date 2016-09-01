@@ -12,7 +12,7 @@
 package org.mini2Dx.ui.render;
 
 /**
- *
+ * Represents the state for a {@link RenderNode}
  */
 public enum NodeState {
 	NORMAL,

@@ -18,7 +18,7 @@ import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ColumnStyleRule;
 
 /**
- *
+ * Base {@link RenderNode} class for {@link Column} based render nodes
  */
 public abstract class AbstractColumnRenderNode<S extends ColumnStyleRule> extends ParentRenderNode<Column, S> {
 	protected LayoutRuleset layoutRuleset;

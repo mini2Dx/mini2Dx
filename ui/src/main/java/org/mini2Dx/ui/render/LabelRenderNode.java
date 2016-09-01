@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link Label}
  */
 public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 	private static final GlyphLayout glyphLayout = new GlyphLayout();

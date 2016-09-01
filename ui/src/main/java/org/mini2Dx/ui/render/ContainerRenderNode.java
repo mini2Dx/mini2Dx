@@ -18,8 +18,10 @@ import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ContainerStyleRule;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+
 /**
- *
+ * Base class for {@link Container} {@link RenderNode} implementations
  */
 public abstract class ContainerRenderNode extends AbstractColumnRenderNode<ContainerStyleRule> {
 	private final Map<String, RenderNode<?, ?>> elementIdLookupCache = new HashMap<String, RenderNode<?, ?>>();

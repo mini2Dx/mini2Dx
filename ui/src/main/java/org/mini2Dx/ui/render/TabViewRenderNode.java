@@ -25,7 +25,7 @@ import org.mini2Dx.ui.navigation.KeyboardHotKeyOperation;
 import org.mini2Dx.ui.style.TabStyleRule;
 
 /**
- *
+ * {@link RenderNode} implementation for {@link TabView}
  */
 public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule>implements NavigatableRenderNode {
 	private final Map<String, RenderNode<?, ?>> elementIdLookupCache = new HashMap<String, RenderNode<?, ?>>();

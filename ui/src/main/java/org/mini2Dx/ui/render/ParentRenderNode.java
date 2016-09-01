@@ -21,7 +21,7 @@ import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.StyleRule;
 
 /**
- *
+ * Base class for {@link RenderNode} implementations that contains child nodes 
  */
 public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule> extends RenderNode<T, S> {
 	protected final NavigableMap<Integer, RenderLayer> layers = new TreeMap<Integer, RenderLayer>();
