@@ -133,6 +133,14 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			xmlWriter.writeAttribute("class", clazz.getName());
 			return;
 		}
+		if(com.badlogic.gdx.utils.Array.class.isAssignableFrom(fieldDefinitionClass)) {
+			Class<?> valueClass = fieldDefinition.getElementType(0);
+			if(valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
+			}
+			xmlWriter.writeAttribute("class", clazz.getName());
+			return;
+		}
 		if(Map.class.isAssignableFrom(fieldDefinitionClass)) {
 			Class<?> valueClass = fieldDefinition.getElementType(1);
 			if(valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
@@ -189,6 +197,10 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			if (Collection.class.isAssignableFrom(clazz)) {
 				Collection collection = (Collection) object;
 				writeArray(fieldDefinition, collection.toArray(), xmlWriter);
+				return;
+			}
+			if (com.badlogic.gdx.utils.Array.class.isAssignableFrom(clazz)) {
+				writeGdxArray(fieldDefinition, (com.badlogic.gdx.utils.Array) object, xmlWriter);
 				return;
 			}
 			if (Map.class.isAssignableFrom(clazz)) {
@@ -312,6 +324,33 @@ public class DesktopXmlSerializer implements XmlSerializer {
 				writeObject(field, map.get(key), "value", xmlWriter);
 				xmlWriter.writeEndElement();
 			}
+			if (field != null) {
+				xmlWriter.writeEndElement();
+			}
+		} catch (IllegalArgumentException e) {
+			throw new SerializationException(e.getMessage(), e);
+		} catch (IllegalStateException e) {
+			throw new SerializationException(e.getMessage(), e);
+		} catch (XMLStreamException e) {
+			throw new SerializationException(e.getMessage(), e);
+		}
+	}
+	
+	private <T> void writeGdxArray(Field field, com.badlogic.gdx.utils.Array array, XMLStreamWriter xmlWriter) throws SerializationException {
+		try {
+			if (field != null) {
+				xmlWriter.writeStartElement(field.getName());
+				xmlWriter.writeAttribute("length", String.valueOf(array.size));
+			}
+			
+			for (int i = 0; i < array.size; i++) {
+				Object object = array.get(i);
+				if(object == null) {
+					continue;
+				}
+				writeObject(field, object, "value", xmlWriter);
+			}
+
 			if (field != null) {
 				xmlWriter.writeEndElement();
 			}
@@ -532,6 +571,9 @@ public class DesktopXmlSerializer implements XmlSerializer {
 						} else if (Collection.class.isAssignableFrom(fieldClass)) {
 							xmlReader.next();
 							setCollectionField(xmlReader, currentField, fieldClass, result);
+						} else if (com.badlogic.gdx.utils.Array.class.isAssignableFrom(fieldClass)) {
+							xmlReader.next();
+							setGdxArrayField(xmlReader, currentField, fieldClass, result);
 						} else if (ObjectMap.class.isAssignableFrom(fieldClass)) {
 							xmlReader.next();
 							setObjectMapField(xmlReader, currentField, fieldClass, result);
@@ -621,6 +663,47 @@ public class DesktopXmlSerializer implements XmlSerializer {
 
 			if(!field.isFinal()) {
 				field.set(object, collection);
+			}
+		} catch (ReflectionException e) {
+			throw new SerializationException(e.getMessage(), e);
+		} catch (XMLStreamException e) {
+			throw new SerializationException(e.getMessage(), e);
+		}
+	}
+	
+	private <T> void setGdxArrayField(XMLStreamReader xmlReader, Field field, Class<?> fieldClass, T object)
+			throws SerializationException {
+		try {
+			com.badlogic.gdx.utils.Array array = null;
+			if(field.isFinal()) {
+				array = (com.badlogic.gdx.utils.Array) field.get(object);
+			} else {
+				array = (com.badlogic.gdx.utils.Array) ClassReflection.newInstance(fieldClass);
+			}
+			
+			Class<?> valueClass = field.getElementType(0);
+
+			boolean finished = false;
+			while (!finished) {
+				switch (xmlReader.getEventType()) {
+				case XMLStreamConstants.START_ELEMENT:
+					array.add(deserializeObject(xmlReader, "value", valueClass));
+					break;
+				case XMLStreamConstants.END_ELEMENT:
+					if (!xmlReader.getLocalName().equals("value")) {
+						finished = true;
+					} else {
+						xmlReader.next();
+					}
+					break;
+				default:
+					xmlReader.next();
+					break;
+				}
+			}
+
+			if(!field.isFinal()) {
+				field.set(object, array);
 			}
 		} catch (ReflectionException e) {
 			throw new SerializationException(e.getMessage(), e);

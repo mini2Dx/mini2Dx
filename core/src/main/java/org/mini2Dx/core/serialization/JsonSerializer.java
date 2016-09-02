@@ -177,6 +177,20 @@ public class JsonSerializer {
 		json.writeArrayEnd();
 	}
 	
+	private <T> void writeGdxArray(Field field, com.badlogic.gdx.utils.Array array, Json json) throws SerializationException {
+		if (field != null) {
+			json.writeArrayStart(field.getName());
+		} else {
+			json.writeArrayStart();
+		}
+		
+		int arrayLength = array.size;
+		for (int i = 0; i < arrayLength; i++) {
+			writeObject(field, array.get(i), null, json);
+		}
+		json.writeArrayEnd();
+	}
+	
 	private <T> void writeObjectMap(Field field, ObjectMap map, Json json) throws SerializationException {
 		if (field != null) {
 			json.writeObjectStart(field.getName());
@@ -284,6 +298,10 @@ public class JsonSerializer {
 			}
 			if (ObjectMap.class.isAssignableFrom(clazz)) {
 				writeObjectMap(fieldDefinition, (ObjectMap) object, json);
+				return;
+			}
+			if (com.badlogic.gdx.utils.Array.class.isAssignableFrom(clazz)) {
+				writeGdxArray(fieldDefinition, (com.badlogic.gdx.utils.Array) object, json);
 				return;
 			}
 
@@ -524,6 +542,8 @@ public class JsonSerializer {
 					setCollectionField(targetObject, field, clazz, value);
 				} else if (ObjectMap.class.isAssignableFrom(clazz)) {
 					setObjectMapField(targetObject, field, clazz, value);
+				} else if (com.badlogic.gdx.utils.Array.class.isAssignableFrom(clazz)) {
+					setGdxArrayField(targetObject, field, clazz, value);
 				} else {
 					if(field.isFinal()) {
 						throw new SerializationException("Cannot use @Field on final " + clazz.getName() +" fields.");
@@ -543,7 +563,35 @@ public class JsonSerializer {
 			throw new SerializationException(e);
 		}
 	}
-
+	
+	private <T> void setGdxArrayField(T targetObject, Field field, Class<?> clazz, JsonValue value)
+		throws SerializationException {
+		try {
+			Class<?> valueClass = field.getElementType(0);
+			Class<?> implementationClass = determineImplementation(value, clazz);
+			
+			com.badlogic.gdx.utils.Array targetArray = null;
+			if(field.isFinal()) {
+				targetArray = (com.badlogic.gdx.utils.Array) field.get(targetObject);
+			} else {
+				targetArray = construct(value, implementationClass);
+			}
+			
+			for(int i = 0; i < value.size; i++) {
+				targetArray.add(deserialize(value.get(i), valueClass));
+			}
+			
+			if(!field.isFinal()) {
+				field.set(targetObject, targetArray);
+			}
+		} catch (SerializationException e) {
+			throw e;
+		} catch (Exception e) {
+			e.getMessage();
+			throw new SerializationException(e);
+		}
+	}
+	
 	private <T> void setArrayField(T targetObject, Field field, Class<?> clazz, JsonValue value)
 			throws SerializationException {
 		try {

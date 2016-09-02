@@ -24,6 +24,7 @@ import org.mini2Dx.core.serialization.dummy.TestInterfaceImpl;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
 import org.mini2Dx.core.util.Os;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 
@@ -97,6 +98,9 @@ public class JsonSerializerTest {
 		
 		parentObject.setGdxObjectMap(new ObjectMap<String, String>());
 		parentObject.getGdxObjectMap().put("testGdxKey", "testGdxValue");
+		
+		parentObject.setGdxArray(new Array<String>());
+		parentObject.getGdxArray().add("testGdxArrayValue");
 	}
 	
 	@Test
@@ -185,6 +189,11 @@ public class JsonSerializerTest {
 		while(entries.hasNext()) {
 			ObjectMap.Entry<String, String> entry = entries.next();
 			Assert.assertEquals(entry.value, result.getGdxObjectMap().get(entry.key));
+		}
+		
+		Assert.assertEquals(parentObject.getGdxArray().size, result.getGdxArray().size);
+		for(int i = 0; i < parentObject.getGdxArray().size; i++) {
+			Assert.assertEquals(parentObject.getGdxArray().get(i), result.getGdxArray().get(i));
 		}
 	}
 }

@@ -20,6 +20,7 @@ import java.util.Map;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.core.util.Os;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -76,6 +77,8 @@ public class TestParentObject extends TestSuperObject {
 	private TestAbstractObject abstractObject;
 	@Field
 	private ObjectMap<String, String> gdxObjectMap;
+	@Field
+	private Array<String> gdxArray;
     
     private int ignoredValue;
     
@@ -279,6 +282,14 @@ public class TestParentObject extends TestSuperObject {
 
 	public void setGdxObjectMap(ObjectMap<String, String> gdxObjectMap) {
 		this.gdxObjectMap = gdxObjectMap;
+	}
+
+	public Array<String> getGdxArray() {
+		return gdxArray;
+	}
+
+	public void setGdxArray(Array<String> gdxArray) {
+		this.gdxArray = gdxArray;
 	}
 
 	@Override

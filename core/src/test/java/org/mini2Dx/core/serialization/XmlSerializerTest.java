@@ -24,6 +24,7 @@ import org.mini2Dx.core.serialization.dummy.TestInterfaceImpl;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
 import org.mini2Dx.core.util.Os;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import junit.framework.Assert;
@@ -119,6 +120,11 @@ public abstract class XmlSerializerTest {
 			ObjectMap.Entry<String, String> entry = entries.next();
 			Assert.assertEquals(entry.value, result.getGdxObjectMap().get(entry.key));
 		}
+		
+		Assert.assertEquals(parentObject.getGdxArray().size, result.getGdxArray().size);
+		for(int i = 0; i < parentObject.getGdxArray().size; i++) {
+			Assert.assertEquals(parentObject.getGdxArray().get(i), result.getGdxArray().get(i));
+		}
 	}
 	
 	@Test
@@ -211,6 +217,9 @@ public abstract class XmlSerializerTest {
 		xml += "            <value>testGdxValue</value>\n";
 		xml += "        </entry>\n";
 		xml += "    </gdxObjectMap>\n";
+		xml += "    <gdxArray>\n";
+		xml += "        <value>testGdxArrayValue</value>\n";
+		xml += "    </gdxArray>\n";
 		xml += "</data>";
 		
 		TestParentObject result = xmlSerializer.fromXml(xml, TestParentObject.class);
@@ -263,6 +272,11 @@ public abstract class XmlSerializerTest {
 		while(entries.hasNext()) {
 			ObjectMap.Entry<String, String> entry = entries.next();
 			Assert.assertEquals(entry.value, result.getGdxObjectMap().get(entry.key));
+		}
+		
+		Assert.assertEquals(parentObject.getGdxArray().size, result.getGdxArray().size);
+		for(int i = 0; i < parentObject.getGdxArray().size; i++) {
+			Assert.assertEquals(parentObject.getGdxArray().get(i), result.getGdxArray().get(i));
 		}
 	}
 	
@@ -323,6 +337,9 @@ public abstract class XmlSerializerTest {
 		
 		parentObject.setGdxObjectMap(new ObjectMap<String, String>());
 		parentObject.getGdxObjectMap().put("testGdxKey", "testGdxValue");
+		
+		parentObject.setGdxArray(new Array<String>());
+		parentObject.getGdxArray().add("testGdxArrayValue");
 		return parentObject;
 	}
 }

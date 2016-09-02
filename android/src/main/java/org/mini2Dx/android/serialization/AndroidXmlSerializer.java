@@ -136,6 +136,14 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			xmlSerializer.attribute("", "class", clazz.getName());
 			return;
 		}
+		if(com.badlogic.gdx.utils.Array.class.isAssignableFrom(fieldDefinitionClass)) {
+			Class<?> valueClass = fieldDefinition.getElementType(0);
+			if(valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
+			}
+			xmlSerializer.attribute("", "class", clazz.getName());
+			return;
+		}
 		if (Map.class.isAssignableFrom(fieldDefinitionClass)) {
 			Class<?> valueClass = fieldDefinition.getElementType(1);
 			if (valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
@@ -196,6 +204,10 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			if (Collection.class.isAssignableFrom(clazz)) {
 				Collection collection = (Collection) object;
 				writeArray(fieldDefinition, collection.toArray(), xmlSerializer);
+				return;
+			}
+			if (com.badlogic.gdx.utils.Array.class.isAssignableFrom(clazz)) {
+				writeArray(fieldDefinition, ((com.badlogic.gdx.utils.Array) object).items, xmlSerializer);
 				return;
 			}
 			if (Map.class.isAssignableFrom(clazz)) {
@@ -538,6 +550,9 @@ public class AndroidXmlSerializer implements XmlSerializer {
 						} else if (Collection.class.isAssignableFrom(fieldClass)) {
 							xmlParser.next();
 							setCollectionField(xmlParser, currentField, fieldClass, result);
+						} else if (com.badlogic.gdx.utils.Array.class.isAssignableFrom(fieldClass)) {
+							xmlParser.next();
+							setGdxArrayField(xmlParser, currentField, fieldClass, result);
 						} else if (ObjectMap.class.isAssignableFrom(fieldClass)) {
 							xmlParser.next();
 							setObjectMapField(xmlParser, currentField, fieldClass, result);
@@ -599,6 +614,48 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			} else {
 				collection = (Collection) (fieldClass.isInterface() ? new ArrayList()
 						: ClassReflection.newInstance(fieldClass));
+			}
+			
+			Class<?> valueClass = field.getElementType(0);
+
+			boolean finished = false;
+			while (!finished) {
+				switch (xmlParser.getEventType()) {
+				case XmlPullParser.START_TAG:
+					collection.add(deserializeObject(xmlParser, "value", valueClass));
+					break;
+				case XmlPullParser.END_TAG:
+					if (!xmlParser.getName().equals("value")) {
+						finished = true;
+					} else {
+						xmlParser.next();
+					}
+					break;
+				default:
+					xmlParser.next();
+					break;
+				}
+			}
+			if(!field.isFinal()) {
+				field.set(object, collection);
+			}
+		} catch (XmlPullParserException e) {
+			throw new SerializationException(e.getMessage(), e);
+		} catch (IOException e) {
+			throw new SerializationException(e.getMessage(), e);
+		} catch (ReflectionException e) {
+			throw new SerializationException(e.getMessage(), e);
+		}
+	}
+	
+	private <T> void setGdxArrayField(XmlPullParser xmlParser, Field field, Class<?> fieldClass, T object)
+			throws SerializationException {
+		try {
+			com.badlogic.gdx.utils.Array collection = null;
+			if(field.isFinal()) {
+				collection = (com.badlogic.gdx.utils.Array) field.get(object);
+			} else {
+				collection = (com.badlogic.gdx.utils.Array) ClassReflection.newInstance(fieldClass);
 			}
 			
 			Class<?> valueClass = field.getElementType(0);
