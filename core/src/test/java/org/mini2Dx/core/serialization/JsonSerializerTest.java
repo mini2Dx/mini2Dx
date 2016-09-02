@@ -14,8 +14,6 @@ package org.mini2Dx.core.serialization;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.serialization.dummy.TestAbstractImplObject;
@@ -25,6 +23,11 @@ import org.mini2Dx.core.serialization.dummy.TestInterface;
 import org.mini2Dx.core.serialization.dummy.TestInterfaceImpl;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
 import org.mini2Dx.core.util.Os;
+
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Entries;
+
+import junit.framework.Assert;
 
 /**
  * User acceptance tests for {@link JsonSerializer}
@@ -91,6 +94,9 @@ public class JsonSerializerTest {
 		
 		parentObject.setAbstractObject(new TestAbstractImplObject());
 		parentObject.getAbstractObject().setValue(91);
+		
+		parentObject.setGdxObjectMap(new ObjectMap<String, String>());
+		parentObject.getGdxObjectMap().put("testGdxKey", "testGdxValue");
 	}
 	
 	@Test
@@ -173,5 +179,12 @@ public class JsonSerializerTest {
 			Assert.assertEquals(parentObject.getFinalStringArray()[i], result.getFinalStringArray()[i]);
 		}
 		Assert.assertEquals(parentObject.getAbstractObject().getValue(), result.getAbstractObject().getValue());
+	
+		Assert.assertEquals(parentObject.getGdxObjectMap().size, result.getGdxObjectMap().size);
+		ObjectMap.Entries<String, String> entries = parentObject.getGdxObjectMap().entries();
+		while(entries.hasNext()) {
+			ObjectMap.Entry<String, String> entry = entries.next();
+			Assert.assertEquals(entry.value, result.getGdxObjectMap().get(entry.key));
+		}
 	}
 }

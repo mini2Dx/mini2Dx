@@ -37,6 +37,7 @@ import org.mini2Dx.core.util.Ref;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.Annotation;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
@@ -144,6 +145,15 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			xmlSerializer.attribute("", "class", clazz.getName());
 			return;
 		}
+		if (ObjectMap.class.isAssignableFrom(fieldDefinitionClass)) {
+			Class<?> valueClass = fieldDefinition.getElementType(1);
+			if (valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
+				throw new SerializationException("Cannot serialize interface unless it has a @"
+						+ NonConcrete.class.getSimpleName() + " annotation");
+			}
+			xmlSerializer.attribute("", "class", clazz.getName());
+			return;
+		}
 		if (fieldDefinitionClass.isInterface()) {
 			if (fieldDefinitionClass.getAnnotation(NonConcrete.class) == null) {
 				throw new SerializationException("Cannot serialize interface unless it has a @"
@@ -190,6 +200,10 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			}
 			if (Map.class.isAssignableFrom(clazz)) {
 				writeMap(fieldDefinition, (Map) object, xmlSerializer);
+				return;
+			}
+			if (ObjectMap.class.isAssignableFrom(clazz)) {
+				writeObjectMap(fieldDefinition, (ObjectMap) object, xmlSerializer);
 				return;
 			}
 
@@ -280,6 +294,32 @@ public class AndroidXmlSerializer implements XmlSerializer {
 				xmlSerializer.startTag("", "entry");
 				writeObject(null, key, "key", xmlSerializer);
 				writeObject(field, map.get(key), "value", xmlSerializer);
+				xmlSerializer.endTag("", "entry");
+			}
+			if (field != null) {
+				xmlSerializer.endTag("", field.getName());
+			}
+		} catch (IllegalArgumentException e) {
+			throw new SerializationException(e.getMessage(), e);
+		} catch (IllegalStateException e) {
+			throw new SerializationException(e.getMessage(), e);
+		} catch (IOException e) {
+			throw new SerializationException(e.getMessage(), e);
+		}
+	}
+	
+	private <T> void writeObjectMap(Field field, ObjectMap map, org.xmlpull.v1.XmlSerializer xmlSerializer)
+			throws SerializationException {
+		try {
+			if (field != null) {
+				xmlSerializer.startTag("", field.getName());
+			}
+			ObjectMap.Entries entries = map.iterator();
+			while(entries.hasNext()) {
+				ObjectMap.Entry entry = entries.next();
+				xmlSerializer.startTag("", "entry");
+				writeObject(null, entry.key, "key", xmlSerializer);
+				writeObject(field, entry.value, "value", xmlSerializer);
 				xmlSerializer.endTag("", "entry");
 			}
 			if (field != null) {
@@ -498,6 +538,9 @@ public class AndroidXmlSerializer implements XmlSerializer {
 						} else if (Collection.class.isAssignableFrom(fieldClass)) {
 							xmlParser.next();
 							setCollectionField(xmlParser, currentField, fieldClass, result);
+						} else if (ObjectMap.class.isAssignableFrom(fieldClass)) {
+							xmlParser.next();
+							setObjectMapField(xmlParser, currentField, fieldClass, result);
 						} else {
 							if(currentField.isFinal()) {
 								throw new SerializationException("Cannot use @Field on final " + fieldClass.getName() + " fields.");
@@ -598,6 +641,80 @@ public class AndroidXmlSerializer implements XmlSerializer {
 				map = (Map) field.get(object);
 			} else {
 				map = (Map) (fieldClass.isInterface() ? new HashMap() : ClassReflection.newInstance(fieldClass));
+			}
+			
+			Class<?> keyClass = field.getElementType(0);
+			Class<?> valueClass = field.getElementType(1);
+
+			boolean finished = false;
+			Object key = null;
+			Object value = null;
+
+			while (!finished) {
+				switch (xmlParser.getEventType()) {
+				case XmlPullParser.START_TAG: {
+					String currentTag = xmlParser.getName();
+					switch (currentTag) {
+					case "entry":
+						xmlParser.nextTag();
+						break;
+					case "key":
+						key = deserializeObject(xmlParser, "key", keyClass);
+						break;
+					case "value":
+						value = deserializeObject(xmlParser, "value", valueClass);
+						break;
+					default:
+						finished = true;
+						break;
+					}
+					break;
+				}
+				case XmlPullParser.END_TAG: {
+					String currentTag = xmlParser.getName();
+					switch (currentTag) {
+					case "entry":
+						xmlParser.nextTag();
+						break;
+					case "key":
+						xmlParser.nextTag();
+						break;
+					case "value":
+						map.put(key, value);
+						xmlParser.nextTag();
+						break;
+					default:
+						finished = true;
+						break;
+					}
+					break;
+				}
+				default:
+					// Handle whitespace in pretty XML
+					xmlParser.next();
+					break;
+				}
+			}
+			if(!field.isFinal()) {
+				field.set(object, map);
+			}
+		} catch (XmlPullParserException e) {
+			throw new SerializationException(e.getMessage(), e);
+		} catch (IOException e) {
+			throw new SerializationException(e.getMessage(), e);
+		} catch (ReflectionException e) {
+			throw new SerializationException(e.getMessage(), e);
+		}
+	}
+	
+	private <T> void setObjectMapField(XmlPullParser xmlParser, Field field, Class<?> fieldClass, T object)
+			throws SerializationException {
+		try {
+			ObjectMap map = null;
+			if(field.isFinal()) {
+				map = (ObjectMap) field.get(object);
+			} else {
+				map = new ObjectMap();
 			}
 			
 			Class<?> keyClass = field.getElementType(0);

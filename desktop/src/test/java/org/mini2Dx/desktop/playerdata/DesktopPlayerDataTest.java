@@ -37,6 +37,7 @@ import org.mini2Dx.desktop.serialization.DesktopXmlSerializer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * Unit tests for {@link DesktopPlayerData}
@@ -174,5 +175,8 @@ public class DesktopPlayerDataTest {
         
         expectedParentObject.setAbstractObject(new TestAbstractImplObject());
         expectedParentObject.getAbstractObject().setValue(91);
+        
+        expectedParentObject.setGdxObjectMap(new ObjectMap<String, String>());
+        expectedParentObject.getGdxObjectMap().put("testGdxKey", "testGdxValue");
     }
 }

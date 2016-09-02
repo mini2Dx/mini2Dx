@@ -20,6 +20,8 @@ import java.util.Map;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.core.util.Os;
 
+import com.badlogic.gdx.utils.ObjectMap;
+
 /**
  * Parent object class for testing serialization
  */
@@ -72,6 +74,8 @@ public class TestParentObject extends TestSuperObject {
 	private final String [] finalStringArray = new String[5];
 	@Field
 	private TestAbstractObject abstractObject;
+	@Field
+	private ObjectMap<String, String> gdxObjectMap;
     
     private int ignoredValue;
     
@@ -267,6 +271,14 @@ public class TestParentObject extends TestSuperObject {
 
 	public void setAbstractObject(TestAbstractObject abstractObject) {
 		this.abstractObject = abstractObject;
+	}
+
+	public ObjectMap<String, String> getGdxObjectMap() {
+		return gdxObjectMap;
+	}
+
+	public void setGdxObjectMap(ObjectMap<String, String> gdxObjectMap) {
+		this.gdxObjectMap = gdxObjectMap;
 	}
 
 	@Override

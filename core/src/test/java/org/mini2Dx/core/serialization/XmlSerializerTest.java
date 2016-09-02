@@ -24,6 +24,8 @@ import org.mini2Dx.core.serialization.dummy.TestInterfaceImpl;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
 import org.mini2Dx.core.util.Os;
 
+import com.badlogic.gdx.utils.ObjectMap;
+
 import junit.framework.Assert;
 
 /**
@@ -110,6 +112,13 @@ public abstract class XmlSerializerTest {
 			Assert.assertEquals(parentObject.getFinalStringArray()[i], result.getFinalStringArray()[i]);
 		}
 		Assert.assertEquals(parentObject.getAbstractObject().getValue(), result.getAbstractObject().getValue());
+	
+		Assert.assertEquals(parentObject.getGdxObjectMap().size, result.getGdxObjectMap().size);
+		ObjectMap.Entries<String, String> entries = parentObject.getGdxObjectMap().entries();
+		while(entries.hasNext()) {
+			ObjectMap.Entry<String, String> entry = entries.next();
+			Assert.assertEquals(entry.value, result.getGdxObjectMap().get(entry.key));
+		}
 	}
 	
 	@Test
@@ -196,6 +205,12 @@ public abstract class XmlSerializerTest {
 		xml += "    <abstractObject class=\"org.mini2Dx.core.serialization.dummy.TestAbstractImplObject\">\n";
 		xml += "        <value>91</value>\n";
 		xml += "    </abstractObject>\n";
+		xml += "    <gdxObjectMap>\n";
+		xml += "        <entry>\n";
+		xml += "            <key>testGdxKey</key>\n";
+		xml += "            <value>testGdxValue</value>\n";
+		xml += "        </entry>\n";
+		xml += "    </gdxObjectMap>\n";
 		xml += "</data>";
 		
 		TestParentObject result = xmlSerializer.fromXml(xml, TestParentObject.class);
@@ -242,6 +257,13 @@ public abstract class XmlSerializerTest {
 			Assert.assertEquals(parentObject.getInterfaceObjectList().get(i), result.getInterfaceObjectList().get(i));
 		}
 		Assert.assertEquals(parentObject.getAbstractObject().getValue(), result.getAbstractObject().getValue());
+	
+		Assert.assertEquals(parentObject.getGdxObjectMap().size, result.getGdxObjectMap().size);
+		ObjectMap.Entries<String, String> entries = parentObject.getGdxObjectMap().entries();
+		while(entries.hasNext()) {
+			ObjectMap.Entry<String, String> entry = entries.next();
+			Assert.assertEquals(entry.value, result.getGdxObjectMap().get(entry.key));
+		}
 	}
 	
 	protected TestParentObject createTestParentObject() {
@@ -298,6 +320,9 @@ public abstract class XmlSerializerTest {
 		
 		parentObject.setAbstractObject(new TestAbstractImplObject());
 		parentObject.getAbstractObject().setValue(91);
+		
+		parentObject.setGdxObjectMap(new ObjectMap<String, String>());
+		parentObject.getGdxObjectMap().put("testGdxKey", "testGdxValue");
 		return parentObject;
 	}
 }

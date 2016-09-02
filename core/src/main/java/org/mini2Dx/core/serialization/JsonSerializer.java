@@ -31,6 +31,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.Annotation;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
@@ -175,6 +176,21 @@ public class JsonSerializer {
 		}
 		json.writeArrayEnd();
 	}
+	
+	private <T> void writeObjectMap(Field field, ObjectMap map, Json json) throws SerializationException {
+		if (field != null) {
+			json.writeObjectStart(field.getName());
+		} else {
+			json.writeObjectStart();
+		}
+		
+		ObjectMap.Entries entries = map.iterator();
+		while(entries.hasNext()) {
+			ObjectMap.Entry entry = entries.next();
+			writeObject(field, entry.value, entry.key.toString(), json);
+		}
+		json.writeObjectEnd();
+	}
 
 	private <T> void writeMap(Field field, Map map, Json json) throws SerializationException {
 		if (field != null) {
@@ -264,6 +280,10 @@ public class JsonSerializer {
 			}
 			if (Map.class.isAssignableFrom(clazz)) {
 				writeMap(fieldDefinition, (Map) object, json);
+				return;
+			}
+			if (ObjectMap.class.isAssignableFrom(clazz)) {
+				writeObjectMap(fieldDefinition, (ObjectMap) object, json);
 				return;
 			}
 
@@ -502,6 +522,8 @@ public class JsonSerializer {
 					setMapField(targetObject, field, clazz, value);
 				} else if (Collection.class.isAssignableFrom(clazz)) {
 					setCollectionField(targetObject, field, clazz, value);
+				} else if (ObjectMap.class.isAssignableFrom(clazz)) {
+					setObjectMapField(targetObject, field, clazz, value);
 				} else {
 					if(field.isFinal()) {
 						throw new SerializationException("Cannot use @Field on final " + clazz.getName() +" fields.");
@@ -670,6 +692,34 @@ public class JsonSerializer {
 				map = (Map) field.get(targetObject);
 			} else {
 				map = (Map) (clazz.isInterface() ? new HashMap() : ClassReflection.newInstance(clazz));
+			}
+			
+			Class<?> keyClass = field.getElementType(0);
+			Class<?> valueClass = field.getElementType(1);
+
+			for (int i = 0; i < value.size; i++) {
+				map.put(parseMapKey(value.get(i).name, keyClass), deserialize(value.get(i), valueClass));
+			}
+			
+			if(!field.isFinal()) {
+				field.set(targetObject, map);
+			}
+		} catch (SerializationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new SerializationException(e);
+		}
+	}
+	
+	private <T> void setObjectMapField(T targetObject, Field field, Class<?> clazz, JsonValue value)
+			throws SerializationException {
+		try {
+			ObjectMap map = null;
+			
+			if(field.isFinal()) {
+				map = (ObjectMap) field.get(targetObject);
+			} else {
+				map = new ObjectMap();
 			}
 			
 			Class<?> keyClass = field.getElementType(0);
