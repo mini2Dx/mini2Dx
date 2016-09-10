@@ -36,7 +36,7 @@ ext {
 	beanutilsVersion="1.8.3"
 	langVersion="3.1"
 	reflectionsVersion="0.9.10"
-	artemisVersion="2.0.0"
+	artemisVersion="1.4.0"
 	androidBeansVersion="1.0.0"
 	
 	junitVersion="4.8.1"
