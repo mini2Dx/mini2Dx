@@ -42,16 +42,17 @@ import com.badlogic.gdx.utils.Logger;
  */
 public class UATApplication extends ScreenBasedGame {
 	public static final boolean USE_KEYBOARD_NAVIGATION = false;
-	
+
 	private AssetManager assetManager;
 
 	@Override
 	public void initialise() {
-		assetManager = new AssetManager(
-				new FallbackFileHandleResolver(new ClasspathFileHandleResolver(), new InternalFileHandleResolver()));
+		FallbackFileHandleResolver fallbackFileHandleResolver = new FallbackFileHandleResolver(
+				new ClasspathFileHandleResolver(), new InternalFileHandleResolver());
+		assetManager = new AssetManager(fallbackFileHandleResolver);
 		assetManager.setLogger(new Logger("AssetManager", Application.LOG_ERROR));
-		
-		assetManager.setLoader(UiTheme.class, new UiThemeLoader(new InternalFileHandleResolver()));
+
+		assetManager.setLoader(UiTheme.class, new UiThemeLoader(fallbackFileHandleResolver));
 
 		addScreen(new LoadingScreen(assetManager));
 		addScreen(new UATSelectionScreen(assetManager));

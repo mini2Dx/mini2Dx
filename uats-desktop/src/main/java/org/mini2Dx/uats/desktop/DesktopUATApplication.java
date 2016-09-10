@@ -25,7 +25,6 @@ public class DesktopUATApplication {
         cfg.title = "mini2Dx - User Acceptance Tests";
         cfg.width = 800;
         cfg.height = 600;
-        cfg.stencil = 8;
         cfg.vSyncEnabled = true;
         new DesktopMini2DxGame(new UATApplication(), cfg);
     }

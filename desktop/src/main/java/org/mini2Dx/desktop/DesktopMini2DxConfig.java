@@ -29,7 +29,6 @@ public class DesktopMini2DxConfig extends LwjglApplicationConfiguration {
 	
 	public DesktopMini2DxConfig(String gameIdentifier) {
 		this.gameIdentifier = gameIdentifier;
-		this.stencil = 8;
 		this.foregroundFPS = 0;
 		this.backgroundFPS = 0;
 	}

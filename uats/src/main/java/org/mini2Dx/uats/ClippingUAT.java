@@ -76,6 +76,7 @@ public class ClippingUAT extends BasicGameScreen {
         //Should only draw part of text
         g.setClip(0, 256, 64, 64);
         g.drawString("Hello, world!", 0, 256);
+        g.removeClip();
     }
 
     @Override

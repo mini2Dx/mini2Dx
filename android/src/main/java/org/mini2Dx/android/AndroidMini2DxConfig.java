@@ -29,6 +29,5 @@ public class AndroidMini2DxConfig extends AndroidApplicationConfiguration {
 	
 	public AndroidMini2DxConfig(String gameIdentifier) {
 		this.gameIdentifier = gameIdentifier;
-		this.stencil = 8;
 	}
 }

@@ -42,7 +42,7 @@ public class ParticleEffectsUAT extends BasicGameScreen {
 	@Override
 	public void initialise(GameContainer gc) {		
 		prototype = new ParticleEffect();
-		prototype.load(Gdx.files.internal("explosion.p"), Gdx.files.internal("particles"));
+		prototype.load(Gdx.files.classpath("explosion.p"), Gdx.files.classpath("particles"));
 		prototype.setPosition(gc.getWidth() / 2f, gc.getHeight() / 2f);
 		prototype.start();
 		

@@ -544,25 +544,30 @@ public class LibGdxGraphics implements Graphics {
 	private void beginRendering() {
 		if (!rendering) {
 			applyTransformations();
-			spriteBatch.begin();
-			Gdx.gl.glClearStencil(0);
-			Gdx.gl.glClear(GL20.GL_STENCIL_BUFFER_BIT);
+			
+			Gdx.gl.glClearDepthf(1f);
+			Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
+			
 			if (clip != null) {
-				Gdx.gl.glEnable(GL20.GL_STENCIL_TEST);
-				Gdx.gl.glColorMask(false, false, false, false);
-				Gdx.gl.glDepthMask(false);
-				Gdx.gl.glStencilFunc(GL20.GL_ALWAYS, 1, 1);
-				Gdx.gl.glStencilOp(GL20.GL_REPLACE, GL20.GL_REPLACE, GL20.GL_REPLACE);
-
-				spriteBatch.draw(colorTextureCache.getFilledRectangleTexture(Color.WHITE), clip.getX(), clip.getY(), 0f,
-						0f, clip.getWidth(), clip.getHeight(), 1f, 1f, 0, 0, 0, 1, 1, false, false);
-				spriteBatch.end();
-
-				Gdx.gl.glColorMask(true, true, true, true);
+				Gdx.gl.glDepthFunc(GL20.GL_LESS);
+				Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+				
 				Gdx.gl.glDepthMask(true);
-				Gdx.gl.glStencilFunc(GL20.GL_EQUAL, 1, 1);
-				Gdx.gl.glStencilOp(GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_KEEP);
+				Gdx.gl.glColorMask(false, false, false, false);
+				
+				shapeRenderer.begin(ShapeType.Filled);
+				
+				shapeRenderer.setColor(0f, 1f, 0f, 0.5f);
+				shapeRenderer.rect(clip.getX(), clip.getY(), clip.getWidth(), clip.getHeight());
+				
+				shapeRenderer.end();
 
+				spriteBatch.begin();
+				
+				Gdx.gl.glColorMask(true, true, true, true);
+				Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+				Gdx.gl.glDepthFunc(GL20.GL_EQUAL);
+			} else {
 				spriteBatch.begin();
 			}
 
@@ -582,7 +587,9 @@ public class LibGdxGraphics implements Graphics {
 			}
 
 			if (clip != null) {
-				Gdx.gl.glDisable(GL20.GL_STENCIL_TEST);
+				Gdx.gl.glClearDepthf(1f);
+				Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
+				Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 			}
 		}
 		rendering = false;

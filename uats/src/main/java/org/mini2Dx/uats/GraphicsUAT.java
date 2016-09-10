@@ -65,7 +65,7 @@ public class GraphicsUAT extends BasicGameScreen {
         scaleY = 2f;
         rotation = 0;
         
-        texture = new Texture(Gdx.files.internal("tank.png"));
+        texture = new Texture(Gdx.files.classpath("tank.png"));
         textureRegion = new TextureRegion(texture);
         
         spriteWithTexture = new Sprite(texture);

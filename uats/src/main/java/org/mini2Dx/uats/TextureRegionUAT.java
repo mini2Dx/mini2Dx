@@ -46,7 +46,7 @@ public class TextureRegionUAT extends BasicGameScreen {
 
 	@Override
 	public void initialise(GameContainer gc) {
-		texture = new Texture(Gdx.files.internal(TEXTURE_PACK + ".png"));
+		texture = new Texture(Gdx.files.classpath(TEXTURE_PACK + ".png"));
 		fullSizeFromTexture = new TextureRegion(texture);
 		debug("fullSizeFromTexture", fullSizeFromTexture);
 
@@ -59,7 +59,7 @@ public class TextureRegionUAT extends BasicGameScreen {
 		regionFromTextureRegion = new TextureRegion(regionFromTexture, 2, 2, 30, 44);
 		debug("regionFromTextureRegion", regionFromTextureRegion);
 
-		textureAtlas = new TextureAtlas(Gdx.files.internal(TEXTURE_PACK + ".atlas"));
+		textureAtlas = new TextureAtlas(Gdx.files.classpath(TEXTURE_PACK + ".atlas"));
 
 		regionFromTextureAtlas = new TextureRegion(textureAtlas.findRegion("cardDiamondsJ"));
 		debug("regionFromTextureAtlas", regionFromTextureAtlas);
