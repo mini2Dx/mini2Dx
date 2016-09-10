@@ -37,6 +37,7 @@ import org.robovm.objc.annotation.Method;
 import org.robovm.rt.bro.annotation.Callback;
 import org.robovm.rt.bro.annotation.Pointer;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
@@ -46,6 +47,7 @@ import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -166,6 +168,7 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 
 	IOSApplicationConfiguration config;
 	EAGLContext context;
+	GLVersion glVersion;
 	GLKView view;
 	IOSUIViewController viewController;
 
@@ -314,6 +317,12 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 
 		if (!created) {
 			gl20.glViewport(0, 0, width, height);
+
+			String versionString = gl20.glGetString(GL20.GL_VERSION);
+			String vendorString = gl20.glGetString(GL20.GL_VENDOR);
+			String rendererString = gl20.glGetString(GL20.GL_RENDERER);
+			glVersion = new GLVersion(ApplicationType.iOS, versionString, vendorString, rendererString);
+
 			app.listener.create();
 			app.listener.resize(width, height);
 			created = true;
@@ -332,7 +341,7 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 			fps = frames;
 			frames = 0;
 		}
-		
+
 		float delta = deltaTime;
 		if (delta > maximumDelta) {
 			delta = maximumDelta;
@@ -346,7 +355,6 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 			accumulator -= targetTimestep;
 		}
 		app.listener.interpolate(accumulator / targetTimestep);
-		
 		frameId++;
 		app.listener.render();
 	}
@@ -414,6 +422,11 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 	@Override
 	public GraphicsType getType () {
 		return GraphicsType.iOSGL;
+	}
+
+	@Override
+	public GLVersion getGLVersion () {
+		return glVersion;
 	}
 
 	@Override
@@ -494,6 +507,14 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 
 	@Override
 	public void setTitle (String title) {
+	}
+
+	@Override
+	public void setUndecorated(boolean undecorated) {
+	}
+
+	@Override
+	public void setResizable(boolean resizable) {
 	}
 
 	@Override
