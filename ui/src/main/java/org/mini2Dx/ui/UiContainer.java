@@ -290,6 +290,15 @@ public class UiContainer extends UiElement implements InputProcessor {
 			// Release textbox control
 			activeTextInput = null;
 			activeAction = null;
+			
+			switch(Mdx.os) {
+			case ANDROID:
+			case IOS:
+				Gdx.input.setOnscreenKeyboardVisible(false);
+				break;
+			default:
+				break;
+			}
 		}
 
 		ActionableRenderNode result = renderTree.mouseDown(screenX, screenY, pointer, button);
@@ -388,6 +397,15 @@ public class UiContainer extends UiElement implements InputProcessor {
 		}
 		if (keycode == actionKey && activeAction != null) {
 			activeAction.endAction();
+			
+			switch(Mdx.os) {
+			case ANDROID:
+			case IOS:
+				Gdx.input.setOnscreenKeyboardVisible(false);
+				break;
+			default:
+				break;
+			}
 			return true;
 		}
 		if (handleModalKeyUp(keycode)) {
@@ -489,6 +507,14 @@ public class UiContainer extends UiElement implements InputProcessor {
 			if (activeTextInput.enter()) {
 				activeTextInput = null;
 				activeAction = null;
+				switch(Mdx.os) {
+				case ANDROID:
+				case IOS:
+					Gdx.input.setOnscreenKeyboardVisible(false);
+					break;
+				default:
+					break;
+				}
 			}
 			break;
 		case Keys.RIGHT:
@@ -504,6 +530,14 @@ public class UiContainer extends UiElement implements InputProcessor {
 	private void setActiveAction(ActionableRenderNode actionable) {
 		if (actionable instanceof TextInputableRenderNode) {
 			activeTextInput = (TextInputableRenderNode) actionable;
+			switch(Mdx.os) {
+			case ANDROID:
+			case IOS:
+				Gdx.input.setOnscreenKeyboardVisible(true);
+				break;
+			default:
+				break;
+			}
 		}
 		activeAction = actionable;
 	}
