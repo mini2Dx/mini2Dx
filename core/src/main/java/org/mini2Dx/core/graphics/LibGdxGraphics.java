@@ -163,6 +163,11 @@ public class LibGdxGraphics implements Graphics {
 		spriteBatch.draw(texture, renderX, renderY, 0, 0, texture.getWidth(), texture.getHeight(), 1f, 1f, 0, 0, 0,
 				texture.getWidth(), texture.getHeight(), false, false);
 	}
+	
+	@Override
+	public void drawCircle(float centerX, float centerY, float radius) {
+		drawCircle(centerX, centerY, MathUtils.round(radius));
+	}
 
 	@Override
 	public void fillCircle(float centerX, float centerY, int radius) {
@@ -174,6 +179,11 @@ public class LibGdxGraphics implements Graphics {
 		beginRendering();
 		spriteBatch.draw(texture, renderX, renderY, 0, 0, texture.getWidth(), texture.getHeight(), 1f, 1f, 0, 0, 0,
 				texture.getWidth(), texture.getHeight(), false, false);
+	}
+
+	@Override
+	public void fillCircle(float centerX, float centerY, float radius) {
+		fillCircle(centerX, centerY, MathUtils.round(radius));
 	}
 	
 	@Override

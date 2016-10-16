@@ -110,6 +110,19 @@ public interface Graphics {
 	 *            The radius of the circle
 	 */
 	public void drawCircle(float centerX, float centerY, int radius);
+	
+	/**
+	 * Draws a circle to the window in the current {@link Color} with the set
+	 * line height
+	 * 
+	 * @param centerX
+	 *            The x coordinate of the center of the circle
+	 * @param centerY
+	 *            The y coordinate of the center of the circle
+	 * @param radius
+	 *            The radius of the circle
+	 */
+	public void drawCircle(float centerX, float centerY, float radius);
 
 	/**
 	 * Fills a circle to the window in the current {@link Color}
@@ -122,6 +135,18 @@ public interface Graphics {
 	 *            The radius of the circle
 	 */
 	public void fillCircle(float centerX, float centerY, int radius);
+
+	/**
+	 * Fills a circle to the window in the current {@link Color}
+	 * 
+	 * @param centerX
+	 *            The x coordinate of the center of the circle
+	 * @param centerY
+	 *            The y coordinate of the center of the circle
+	 * @param radius
+	 *            The radius of the circle
+	 */
+	public void fillCircle(float centerX, float centerY, float radius);
 	
 	/**
 	 * Draws a triangle to the window in the current {@link Color}

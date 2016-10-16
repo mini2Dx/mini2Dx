@@ -90,9 +90,17 @@ public class HeadlessGraphics implements Graphics {
 	@Override
 	public void drawCircle(float centerX, float centerY, int radius) {
 	}
+	
+	@Override
+	public void drawCircle(float centerX, float centerY, float radius) {
+	}
 
 	@Override
 	public void fillCircle(float centerX, float centerY, int radius) {
+	}
+
+	@Override
+	public void fillCircle(float centerX, float centerY, float radius) {
 	}
 	
 	@Override
