@@ -166,6 +166,28 @@ public class RenderLayer implements Comparable<RenderLayer> {
 		}
 		return null;
 	}
+	
+	public RenderNode<?, ?> getFirstChild() {
+		if(children.isEmpty()) {
+			return null;
+		}
+		return children.get(0);
+	}
+	
+	public RenderNode<?, ?> getLastChild() {
+		if(children.isEmpty()) {
+			return null;
+		}
+		return children.get(children.size() - 1);
+	}
+	
+	public RenderNode<?, ?> getChild(int index) {
+		return children.get(index);
+	}
+	
+	public int getTotalChildren() {
+		return children.size();
+	}
 
 	@Override
 	public int compareTo(RenderLayer o) {
