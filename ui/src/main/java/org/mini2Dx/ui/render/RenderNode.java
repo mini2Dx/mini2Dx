@@ -448,6 +448,10 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		return zIndex;
 	}
 
+	public T getElement() {
+		return element;
+	}
+
 	public ParentRenderNode<?, ?> getParent() {
 		return parent;
 	}

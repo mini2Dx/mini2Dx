@@ -11,12 +11,51 @@
  */
 package org.mini2Dx.ui.listener;
 
+import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.InputSource;
+import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.element.UiElement;
+import org.mini2Dx.ui.layout.ScreenSize;
 
 /**
- * Common interface for listening to {@link InputSource} changes
+ * Adapter class that implements {@link UiContainerListener}. All methods are
+ * no-op and can be overridden individually.
  */
-public interface InputSourceListener {
+public class UiContainerListenerAdapter implements UiContainerListener {
 
-	public void onInputSourceChanged(InputSource oldInputSource, InputSource newInputSource);
+	@Override
+	public void onScreenSizeChanged(ScreenSize screenSize) {
+	}
+
+	@Override
+	public void preUpdate(UiContainer container, float delta) {
+	}
+
+	@Override
+	public void postUpdate(UiContainer container, float delta) {
+	}
+
+	@Override
+	public void preInterpolate(UiContainer container, float alpha) {
+	}
+
+	@Override
+	public void postInterpolate(UiContainer container, float alpha) {
+	}
+
+	@Override
+	public void preRender(UiContainer container, Graphics g) {
+	}
+
+	@Override
+	public void postRender(UiContainer container, Graphics g) {
+	}
+
+	@Override
+	public void inputSourceChanged(UiContainer container, InputSource oldInputSource, InputSource newInputSource) {
+	}
+
+	@Override
+	public void onElementAction(UiContainer container, UiElement element) {
+	}
 }

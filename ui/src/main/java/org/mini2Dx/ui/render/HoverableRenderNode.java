@@ -11,6 +11,8 @@
  */
 package org.mini2Dx.ui.render;
 
+import org.mini2Dx.ui.element.UiElement;
+
 /**
  * Interface for {@link RenderNode}s that can be hovered
  */
@@ -23,4 +25,6 @@ public interface HoverableRenderNode {
 	public void beginHover();
 	
 	public void endHover();
+	
+	public UiElement getElement();
 }

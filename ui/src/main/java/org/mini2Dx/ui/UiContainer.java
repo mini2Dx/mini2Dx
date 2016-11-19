@@ -26,9 +26,9 @@ import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
+import org.mini2Dx.ui.listener.UiContainerListener;
 import org.mini2Dx.ui.navigation.UiNavigation;
 import org.mini2Dx.ui.render.ActionableRenderNode;
-import org.mini2Dx.ui.render.NavigatableRenderNode;
 import org.mini2Dx.ui.render.NodeState;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.RenderNode;
@@ -54,6 +54,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 
 	private final List<Container> children = new ArrayList<Container>(1);
 	private final List<ControllerUiInput<?>> controllerInputs = new ArrayList<ControllerUiInput<?>>(1);
+	private final List<UiContainerListener> listeners = new ArrayList<UiContainerListener>(1);
 	private final UiContainerRenderTree renderTree;
 
 	private InputSource lastInputSource;
@@ -117,6 +118,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 			}
 			return;
 		}
+		notifyPreUpdate(delta);
 		for (int i = controllerInputs.size() - 1; i >= 0; i--) {
 			controllerInputs.get(i).update(delta);
 		}
@@ -125,6 +127,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 			initialThemeLayoutComplete = true;
 		}
 		renderTree.update(delta);
+		notifyPostUpdate(delta);
 	}
 
 	/**
@@ -137,7 +140,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 		if (!isThemeApplied()) {
 			return;
 		}
+		notifyPreInterpolate(alpha);
 		renderTree.interpolate(alpha);
+		notifyPostInterpolate(alpha);
 	}
 
 	/**
@@ -153,6 +158,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 		if (!initialThemeLayoutComplete) {
 			return;
 		}
+		notifyPreRender(g);
 		switch (visibility) {
 		case HIDDEN:
 			return;
@@ -171,6 +177,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 			}
 			break;
 		}
+		notifyPostRender(g);
 	}
 
 	/**
@@ -540,6 +547,7 @@ public class UiContainer extends UiElement implements InputProcessor {
 			}
 		}
 		activeAction = actionable;
+		notifyElementActivated(actionable);
 	}
 
 	/**
@@ -653,7 +661,9 @@ public class UiContainer extends UiElement implements InputProcessor {
 		if (this.lastInputSource.equals(lastInputSource)) {
 			return;
 		}
+		InputSource oldInputSource = this.lastInputSource;
 		this.lastInputSource = lastInputSource;
+		notifyInputSourceChange(oldInputSource, lastInputSource);
 	}
 
 	/**
@@ -714,7 +724,73 @@ public class UiContainer extends UiElement implements InputProcessor {
 	public void setKeyboardNavigationEnabled(boolean keyboardNavigationEnabled) {
 		this.keyboardNavigationEnabled = keyboardNavigationEnabled;
 	}
+	
+	/**
+	 * Adds a {@link UiContainerListener} to this {@link UiContainer}
+	 * @param listener The {@link UiContainerListener} to be notified of events
+	 */
+	public void addListener(UiContainerListener listener) {
+		listeners.add(listener);
+		addScreenSizeListener(listener);
+	}
+	
+	/**
+	 * Removes a {@link UiContainerListener} from this {@link UiContainer}
+	 * @param listener The {@link UiContainerListener} to stop receiving events
+	 */
+	public void removeListener(UiContainerListener listener) {
+		listeners.remove(listener);
+		removeScreenSizeListener(listener);
+	}
+	
+	private void notifyPreUpdate(float delta) {
+		for(int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).preUpdate(this, delta);
+		}
+	}
+	
+	private void notifyPostUpdate(float delta) {
+		for(int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).postUpdate(this, delta);
+		}
+	}
+	
+	private void notifyPreInterpolate(float alpha) {
+		for(int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).preInterpolate(this, alpha);
+		}
+	}
+	
+	private void notifyPostInterpolate(float alpha) {
+		for(int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).postInterpolate(this, alpha);
+		}
+	}
+	
+	private void notifyPreRender(Graphics g) {
+		for(int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).preRender(this, g);
+		}
+	}
+	
+	private void notifyPostRender(Graphics g) {
+		for(int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).postRender(this, g);
+		}
+	}
+	
+	private void notifyInputSourceChange(InputSource oldSource, InputSource newSource) {
+		for(int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).inputSourceChanged(this, oldSource, newSource);
+		}
+	}
 
+	private void notifyElementActivated(ActionableRenderNode actionable) {
+		for(int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).onElementAction(this, actionable.getElement());
+		}
+	}
+	
 	/**
 	 * Returns the default {@link Visibility} for newly created {@link UiElement} objects
 	 * @return A non-null {@link Visibility} value. {@link Visibility#HIDDEN} by default
