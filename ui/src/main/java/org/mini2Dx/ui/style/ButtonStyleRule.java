@@ -38,6 +38,8 @@ public class ButtonStyleRule extends StyleRule {
 	private String action;
 	@Field(optional=true)
 	private String disabled;
+	@Field(optional=true)
+	private int ninePatchTop, ninePatchBottom, ninePatchLeft, ninePatchRight;
 	@Field
 	private int fontSize;
 	@Field
@@ -52,20 +54,20 @@ public class ButtonStyleRule extends StyleRule {
 	@Override
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
 		if(normal != null) {
-			normalNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(normal)), getPaddingLeft(),
-					getPaddingRight(), getPaddingTop(), getPaddingBottom());
+			normalNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(normal)), getNinePatchLeft(),
+					getNinePatchRight(), getNinePatchTop(), getNinePatchBottom());
 		}
 		if(hover != null) {
-			hoverNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(hover)), getPaddingLeft(),
-					getPaddingRight(), getPaddingTop(), getPaddingBottom());
+			hoverNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(hover)), getNinePatchLeft(),
+					getNinePatchRight(), getNinePatchTop(), getNinePatchBottom());
 		}
 		if(action != null) {
-			actionNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(action)), getPaddingLeft(),
-					getPaddingRight(), getPaddingTop(), getPaddingBottom());
+			actionNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(action)), getNinePatchLeft(),
+					getNinePatchRight(), getNinePatchTop(), getNinePatchBottom());
 		}
 		if(disabled != null) {
-			disabledNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(disabled)), getPaddingLeft(),
-					getPaddingRight(), getPaddingTop(), getPaddingBottom());
+			disabledNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(disabled)), getNinePatchLeft(),
+					getNinePatchRight(), getNinePatchTop(), getNinePatchBottom());
 		}
 		
 		UiFont themeFont = theme.getFont(font);
@@ -161,5 +163,33 @@ public class ButtonStyleRule extends StyleRule {
 
 	public void setTextColor(String textColor) {
 		this.textColor = textColor;
+	}
+	
+	public int getNinePatchTop() {
+		if(ninePatchTop <= 0) {
+			return getPaddingTop();
+		}
+		return ninePatchTop;
+	}
+
+	public int getNinePatchBottom() {
+		if(ninePatchBottom <= 0) {
+			return getPaddingBottom();
+		}
+		return ninePatchBottom;
+	}
+
+	public int getNinePatchLeft() {
+		if(ninePatchLeft <= 0) {
+			return getPaddingLeft();
+		}
+		return ninePatchLeft;
+	}
+
+	public int getNinePatchRight() {
+		if(ninePatchRight <= 0) {
+			return getPaddingRight();
+		}
+		return ninePatchRight;
 	}
 }

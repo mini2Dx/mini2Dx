@@ -2,6 +2,7 @@
 - Graphics can now take circle radius as an int or float
 - Added methods to access RenderLayer children
 - Added UiContainerListener interface for listening to UiContainer events
+- Fixed ninepatch sizes not applying to Buttons correctly
 
 [1.3.0]
 - Updated to libGDX 1.9.4, roboVM 2.2.0, and artemis-odb 1.4.0

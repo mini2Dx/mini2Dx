@@ -26,10 +26,10 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
  * {@link RenderNode} implementation for {@link Label}
  */
 public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
-	private static final GlyphLayout glyphLayout = new GlyphLayout();
-	private static final NullTextAnimation NULL_TEXT_ANIMATION = new NullTextAnimation();
+	protected static final GlyphLayout glyphLayout = new GlyphLayout();
+	protected static final NullTextAnimation NULL_TEXT_ANIMATION = new NullTextAnimation();
 
-	private BitmapFont font = new BitmapFont(true);
+	protected BitmapFont font = new BitmapFont(true);
 
 	public LabelRenderNode(ParentRenderNode<?, ?> parent, Label element) {
 		super(parent, element);
