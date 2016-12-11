@@ -53,6 +53,11 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 
 	@Override
 	protected void renderElement(Graphics g) {
+		if (style.getBackgroundNinePatch() != null) {
+			g.drawNinePatch(style.getBackgroundNinePatch(), getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(),
+					getInnerRenderHeight());
+		}
+		
 		BitmapFont tmpFont = g.getFont();
 		Color tmpColor = g.getColor();
 

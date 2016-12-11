@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 /**
  * Extends {@link StyleRule} for {@link Label} styling
  */
-public class LabelStyleRule extends StyleRule {
+public class LabelStyleRule extends ColumnStyleRule {
 	@Field
 	private int fontSize;
 	@Field
@@ -37,6 +37,7 @@ public class LabelStyleRule extends StyleRule {
 	
 	@Override
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
+		super.prepareAssets(theme, fileHandleResolver, assetManager);
 		if(textColor != null) {
 			color = ColorUtils.rgbToColor(textColor);
 		}
