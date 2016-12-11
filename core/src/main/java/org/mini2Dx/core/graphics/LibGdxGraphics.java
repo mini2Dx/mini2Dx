@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
@@ -376,6 +377,12 @@ public class LibGdxGraphics implements Graphics {
 	public void drawNinePatch(NinePatchDrawable ninePatchDrawable, float x, float y, float width, float height) {
 		beginRendering();
 		ninePatchDrawable.draw(spriteBatch, x, y, width, height);
+	}
+	
+	@Override
+	public void drawBitmapFontCache(BitmapFontCache bitmapFontCache) {
+		beginRendering();
+		bitmapFontCache.draw(spriteBatch);
 	}
 
 	@Override

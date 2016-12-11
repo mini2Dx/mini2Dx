@@ -1,6 +1,7 @@
 [1.3.2-SNAPSHOT]
 - Backgrounds can now be applied to Labels
 - UiFont now caches BitmapFont instances
+- Added Graphics#drawBitmapFontCache
 
 [1.3.1]
 - Graphics can now take circle radius as an int or float

@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
@@ -189,6 +190,10 @@ public class HeadlessGraphics implements Graphics {
 
 	@Override
 	public void drawNinePatch(NinePatchDrawable ninePatchDrawable, float x, float y, float width, float height) {
+	}
+	
+	@Override
+	public void drawBitmapFontCache(BitmapFontCache bitmapFontCache) {
 	}
 
 	@Override

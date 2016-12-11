@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
@@ -418,6 +419,12 @@ public interface Graphics {
 	 *            The height to apply to the {@link NinePatchDrawable}
 	 */
 	public void drawNinePatch(NinePatchDrawable ninePatchDrawable, float x, float y, float width, float height);
+	
+	/**
+	 * Draws a {@link BitmapFontCache} to the screen
+	 * @param bitmapFontCache The {@link BitmapFontCache} to render
+	 */
+	public void drawBitmapFontCache(BitmapFontCache bitmapFontCache);
 
 	/**
 	 * Rotates the canvas by the provided degrees around the provided point
