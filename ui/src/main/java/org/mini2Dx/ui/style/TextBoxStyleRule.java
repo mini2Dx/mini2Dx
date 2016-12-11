@@ -69,7 +69,7 @@ public class TextBoxStyleRule extends StyleRule {
 			fontParameter.borderWidth = themeFont.getBorderWidth();
 			fontParameter.borderColor = themeFont.getFontBorderColor();
 		}
-		bitmapFont = themeFont.getFontGenerator().generateFont(fontParameter);
+		bitmapFont = themeFont.generateFont(fontParameter);
 	}
 	
 	public NinePatch getNormalNinePatch() {

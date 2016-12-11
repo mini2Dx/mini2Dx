@@ -50,7 +50,7 @@ public class LabelStyleRule extends ColumnStyleRule {
 			fontParameter.borderWidth = themeFont.getBorderWidth();
 			fontParameter.borderColor = themeFont.getFontBorderColor();
 		}
-		bitmapFont = themeFont.getFontGenerator().generateFont(fontParameter);
+		bitmapFont = themeFont.generateFont(fontParameter);
 	}
 
 	public Color getColor() {

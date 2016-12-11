@@ -11,17 +11,24 @@
  */
 package org.mini2Dx.ui.style;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.core.util.ColorUtils;
 
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 /**
  * A font for user interfaces
  */
 public class UiFont {
+	private final Map<String, BitmapFont> cache = new HashMap<String, BitmapFont>();
+	
 	@Field
 	private String path;
 	@Field(optional=true)
@@ -58,12 +65,46 @@ public class UiFont {
 	public void setBorderWidth(int borderWidth) {
 		this.borderWidth = borderWidth;
 	}
-
-	public FreeTypeFontGenerator getFontGenerator() {
-		return fontGenerator;
+	
+	public BitmapFont generateFont(FreeTypeFontParameter fontParameters) {
+		String key = getFontParameterKey(fontParameters);
+		
+		BitmapFont result = cache.get(key);
+		if(result == null) {
+			result = fontGenerator.generateFont(fontParameters);
+			cache.put(key, result);
+		}
+		return result;
 	}
 
 	public Color getFontBorderColor() {
 		return fontBorderColor;
+	}
+	
+	private String getFontParameterKey(FreeTypeFontParameter parameter) {
+		StringBuilder result = new StringBuilder();
+		result.append(parameter.characters);
+		result.append(parameter.borderGamma);
+		result.append(parameter.borderStraight);
+		result.append(parameter.borderWidth);
+		result.append(parameter.flip);
+		result.append(parameter.gamma);
+		result.append(parameter.genMipMaps);
+		result.append(parameter.incremental);
+		result.append(parameter.kerning);
+		result.append(parameter.mono);
+		result.append(parameter.renderCount);
+		result.append(parameter.shadowOffsetX);
+		result.append(parameter.shadowOffsetY);
+		result.append(parameter.size);
+		result.append(parameter.spaceX);
+		result.append(parameter.spaceY);
+		result.append(parameter.borderColor == null ? "null" : parameter.borderColor.toFloatBits());
+		result.append(parameter.color == null ? "null" : parameter.color.toFloatBits());
+		result.append(parameter.magFilter == null ? "null" : parameter.magFilter.getGLEnum());
+		result.append(parameter.minFilter == null ? "null" : parameter.minFilter.getGLEnum());
+		result.append(parameter.packer == null ? "null" : parameter.packer.hashCode());
+		result.append(parameter.shadowColor == null ? "null" : parameter.shadowColor.toFloatBits());
+		return result.toString();
 	}
 }

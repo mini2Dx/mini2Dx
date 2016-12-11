@@ -78,7 +78,7 @@ public class ButtonStyleRule extends StyleRule {
 			fontParameter.borderWidth = themeFont.getBorderWidth();
 			fontParameter.borderColor = themeFont.getFontBorderColor();
 		}
-		bitmapFont = themeFont.getFontGenerator().generateFont(fontParameter);
+		bitmapFont = themeFont.generateFont(fontParameter);
 		
 		if(textColor != null) {
 			color = ColorUtils.rgbToColor(textColor);
