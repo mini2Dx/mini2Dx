@@ -15,6 +15,8 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.serialization.annotation.NonConcrete;
 import org.mini2Dx.ui.listener.TextAnimationListener;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+
 /**
  * Common interface for text animation implementations
  */
@@ -23,28 +25,30 @@ public interface TextAnimation {
 
 	/**
 	 * Update the animation
+	 * @param cache The {@link BitmapFontCache} to use to render the text
 	 * @param text The target text to display
+	 * @param renderWidth The text render width
+	 * @param hAlign The horizontal alignment of the text
 	 * @param delta The time since the last frame (in seconds)
 	 */
-	public void update(String text, float delta);
+	public void update(BitmapFontCache cache, String text, float renderWidth, int hAlign, float delta);
 	
 	/**
 	 * Interpolate the animation
+	 * @param cache The {@link BitmapFontCache} to use to render the text
 	 * @param text The target text to display
 	 * @param alpha The interpolation alpha value
 	 */
-	public void interpolate(String text, float alpha);
+	public void interpolate(BitmapFontCache cache, String text, float alpha);
 	
 	/**
 	 * Renders the animation
-	 * @param text The target text to display
+	 * @param cache The {@link BitmapFontCache} to use to render the text
 	 * @param g The {@link Graphics} context
 	 * @param renderX The render X coordinate
 	 * @param renderY The render Y coordinate
-	 * @param renderWidth The text render width
-	 * @param hAlign The horizontal alignment of the text
 	 */
-	public void render(String text, Graphics g, float renderX, float renderY, float renderWidth, int hAlign);
+	public void render(BitmapFontCache cache, Graphics g, int renderX, int renderY);
 	
 	/**
 	 * Sets the {@link TextAnimation} to be skipped
@@ -56,6 +60,11 @@ public interface TextAnimation {
 	 * @return True if the animation has finished
 	 */
 	public boolean isFinished();
+	
+	/**
+	 * Resets the animation
+	 */
+	public void reset();
 	
 	/**
 	 * Adds a {@link TextAnimationListener} to this {@link TextAnimation}

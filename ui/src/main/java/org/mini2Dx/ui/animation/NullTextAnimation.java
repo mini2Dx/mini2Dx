@@ -13,24 +13,33 @@ package org.mini2Dx.ui.animation;
 
 import org.mini2Dx.core.graphics.Graphics;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+
 /**
  * A {@link TextAnimation} that just renders the text directly
  */
 public class NullTextAnimation extends BaseTextAnimation {
-
-	@Override
-	public void update(String text, float delta) {
-		setFinished(true);
-	}
 	
 	@Override
-	public void interpolate(String text, float alpha) {}
+	public void skip() {}
 
 	@Override
-	public void render(String text, Graphics g, float x, float y, float width, int hAlign) {
-		g.drawString(text, x, y, width, hAlign);
+	public void update(BitmapFontCache cache, String text, float renderWidth, int hAlign, float delta) {
+		if(!isFinished()) {
+			cache.addText(text, 0f, 0f, renderWidth, hAlign, true);
+		}
+		setFinished(true);
 	}
 
 	@Override
-	public void skip() {}
+	public void interpolate(BitmapFontCache cache, String text, float alpha) {}
+
+	@Override
+	public void render(BitmapFontCache cache, Graphics g, int renderX, int renderY) {
+		cache.setPosition(renderX, renderY);
+		g.drawBitmapFontCache(cache);
+	}
+
+	@Override
+	protected void resetState() {}
 }

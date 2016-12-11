@@ -13,7 +13,10 @@ package org.mini2Dx.ui.render;
 
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.NinePatch;
+import org.mini2Dx.ui.animation.NullTextAnimation;
+import org.mini2Dx.ui.animation.TextAnimation;
 import org.mini2Dx.ui.element.TextButton;
+import org.mini2Dx.ui.layout.HorizontalAlignment;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ButtonStyleRule;
@@ -21,24 +24,28 @@ import org.mini2Dx.ui.style.ButtonStyleRule;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 /**
  * {@link RenderNode} implementation for {@link TextButton}
  */
 public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule>implements ActionableRenderNode {
-	private static GlyphLayout glyphLayout = new GlyphLayout();
-	
+	private static final GlyphLayout GLYPH_LAYOUT = new GlyphLayout();
+	private static final BitmapFont DEFAULT_FONT = new BitmapFont(true);
+
 	protected LayoutRuleset layoutRuleset;
+	protected BitmapFontCache bitmapFontCache = DEFAULT_FONT.newFontCache();
+	protected NullTextAnimation nullAnimation = new NullTextAnimation();
 
 	public TextButtonRenderNode(ParentRenderNode<?, ?> parent, TextButton element) {
 		super(parent, element);
 		layoutRuleset = new LayoutRuleset(element.getLayout());
 	}
-	
+
 	@Override
 	public void layout(LayoutState layoutState) {
-		if(!layoutRuleset.equals(element.getLayout())) {
+		if (!layoutRuleset.equals(element.getLayout())) {
 			layoutRuleset = new LayoutRuleset(element.getLayout());
 		}
 		super.layout(layoutState);
@@ -74,13 +81,20 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 		}
 		endAction();
 	}
-	
+
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		if (getState() == NodeState.ACTION) {
 			return true;
 		}
 		return super.mouseMoved(screenX, screenY);
+	}
+
+	@Override
+	public void update(UiContainerRenderTree uiContainer, float delta) {
+		super.update(uiContainer, delta);
+		nullAnimation.update(bitmapFontCache, element.getText(), preferredContentWidth,
+				element.getTextAlignment().getAlignValue(), delta);
 	}
 
 	@Override
@@ -106,19 +120,7 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 					getInnerRenderHeight());
 		}
 
-		float textRenderX = getContentRenderX();
-		float textRenderY = getContentRenderY();
-		float textRenderWidth = getContentRenderWidth();
-
-		BitmapFont tmpFont = g.getFont();
-		Color tmpColor = g.getColor();
-
-		g.setFont(style.getBitmapFont());
-		g.setColor(style.getColor());
-		g.drawString(element.getText(), textRenderX, textRenderY, textRenderWidth,
-				element.getTextAlignment().getAlignValue());
-		g.setColor(tmpColor);
-		g.setFont(tmpFont);
+		nullAnimation.render(bitmapFontCache, g, getContentRenderX(), getContentRenderY());
 	}
 
 	@Override
@@ -139,12 +141,12 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
-		glyphLayout.setText(style.getBitmapFont(), element.getText(), Color.WHITE, preferredContentWidth,
+		GLYPH_LAYOUT.setText(bitmapFontCache.getFont(), element.getText(), Color.WHITE, preferredContentWidth,
 				element.getTextAlignment().getAlignValue(), true);
-		if(glyphLayout.height < style.getMinHeight()) {
+		if (GLYPH_LAYOUT.height < style.getMinHeight()) {
 			return style.getMinHeight();
 		}
-		return glyphLayout.height;
+		return GLYPH_LAYOUT.height;
 	}
 
 	@Override
@@ -159,7 +161,35 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 
 	@Override
 	protected ButtonStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
+		if (bitmapFontCache != null) {
+			bitmapFontCache.clear();
+			bitmapFontCache = null;
+			nullAnimation.reset();
+		}
+
+		ButtonStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
+		if (result.getBitmapFont() == null) {
+			bitmapFontCache = DEFAULT_FONT.newFontCache();
+		} else {
+			bitmapFontCache = result.getBitmapFont().newFontCache();
+		}
+		bitmapFontCache.setColor(result.getColor());
+		return result;
+	}
+
+	public void updateBitmapFontCache() {
+		if (style == null) {
+			return;
+		}
+		bitmapFontCache.clear();
+		nullAnimation.reset();
+		
+		GLYPH_LAYOUT.setText(bitmapFontCache.getFont(), element.getText(), Color.WHITE, preferredContentWidth,
+				element.getTextAlignment().getAlignValue(), true);
+		if (GLYPH_LAYOUT.height == getPreferredContentHeight()) {
+			return;
+		}
+		setDirty(true);
 	}
 
 	@Override

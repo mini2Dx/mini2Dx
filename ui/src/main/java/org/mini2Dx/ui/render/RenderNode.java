@@ -398,18 +398,30 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 	
 	public int getContentRenderX() {
+		if(style == null) {
+			return innerArea.getRenderX();
+		}
 		return innerArea.getRenderX() + style.getPaddingLeft();
 	}
 	
 	public int getContentRenderY() {
+		if(style == null) {
+			return innerArea.getRenderY();
+		}
 		return innerArea.getRenderY() + style.getPaddingTop();
 	}
 	
 	public int getContentRenderWidth() {
+		if(style == null) {
+			return innerArea.getRenderWidth();
+		}
 		return innerArea.getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight();
 	}
 	
 	public int getContentRenderHeight() {
+		if(style == null) {
+			return innerArea.getRenderHeight();
+		}
 		return innerArea.getRenderHeight() - style.getPaddingTop() - style.getPaddingBottom();
 	}
 

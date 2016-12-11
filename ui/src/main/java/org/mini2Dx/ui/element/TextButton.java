@@ -59,12 +59,15 @@ public class TextButton extends Button {
 		if(text == null) {
 			return;
 		}
+		if(text.equals(this.text)) {
+			return;
+		}
 		this.text = text;
 		
 		if(renderNode == null) {
 			return;
 		}
-		renderNode.setDirty(true);
+		renderNode.updateBitmapFontCache();
 	}
 
 	@Override

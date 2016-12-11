@@ -122,7 +122,15 @@ public class TextBox extends UiElement implements Actionable {
 		if (value == null) {
 			return;
 		}
+		if (value.equals(this.value)) {
+			return;
+		}
 		this.value = value;
+		
+		if (renderNode == null) {
+			return;
+		}
+		renderNode.updateBitmapFontCache();
 	}
 
 	/**

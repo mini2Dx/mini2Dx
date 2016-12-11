@@ -77,6 +77,9 @@ public class Label extends UiElement {
 		if(text == null) {
 			return;
 		}
+		if(text.equals(this.text)) {
+			return;
+		}
 		this.text = text;
 		
 		if(renderNode == null) {
@@ -165,7 +168,15 @@ public class Label extends UiElement {
 		if(horizontalAlignment == null) {
 			return;
 		}
+		if(horizontalAlignment.equals(this.horizontalAlignment)) {
+			return;
+		}
 		this.horizontalAlignment = horizontalAlignment;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
 	}
 	
 	/**
@@ -203,6 +214,11 @@ public class Label extends UiElement {
 	 */
 	public void setColor(Color color) {
 		this.color = color;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
 	}
 
 	/**
@@ -219,5 +235,10 @@ public class Label extends UiElement {
 	 */
 	public void setTextAnimation(TextAnimation textAnimation) {
 		this.textAnimation = textAnimation;
+		
+		if(renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
 	}
 }

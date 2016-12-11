@@ -20,16 +20,18 @@ import org.mini2Dx.ui.style.LabelStyleRule;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 /**
  * {@link RenderNode} implementation for {@link Label}
  */
 public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
-	protected static final GlyphLayout glyphLayout = new GlyphLayout();
-	protected static final NullTextAnimation NULL_TEXT_ANIMATION = new NullTextAnimation();
+	protected static final GlyphLayout GLYPH_LAYOUT = new GlyphLayout();
+	protected static final BitmapFont DEFAULT_FONT = new BitmapFont(true);
 
-	protected BitmapFont font = new BitmapFont(true);
+	protected final NullTextAnimation nullAnimation = new NullTextAnimation();
+	protected BitmapFontCache bitmapFontCache = DEFAULT_FONT.newFontCache();
 
 	public LabelRenderNode(ParentRenderNode<?, ?> parent, Label element) {
 		super(parent, element);
@@ -38,16 +40,22 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 	@Override
 	public void update(UiContainerRenderTree uiContainer, float delta) {
 		super.update(uiContainer, delta);
-		if (element.getTextAnimation() != null) {
-			element.getTextAnimation().update(element.getText(), delta);
+		if (element.getTextAnimation() == null) {
+			nullAnimation.update(bitmapFontCache, element.getText(), preferredContentWidth,
+					element.getHorizontalAlignment().getAlignValue(), delta);
+		} else {
+			element.getTextAnimation().update(bitmapFontCache, element.getText(), preferredContentWidth,
+					element.getHorizontalAlignment().getAlignValue(), delta);
 		}
 	}
 
 	@Override
 	public void interpolate(float alpha) {
 		super.interpolate(alpha);
-		if (element.getTextAnimation() != null) {
-			element.getTextAnimation().interpolate(element.getText(), alpha);
+		if (element.getTextAnimation() == null) {
+			nullAnimation.interpolate(bitmapFontCache, element.getText(), alpha);
+		} else {
+			element.getTextAnimation().interpolate(bitmapFontCache, element.getText(), alpha);
 		}
 	}
 
@@ -57,33 +65,12 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 			g.drawNinePatch(style.getBackgroundNinePatch(), getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(),
 					getInnerRenderHeight());
 		}
-		
-		BitmapFont tmpFont = g.getFont();
-		Color tmpColor = g.getColor();
 
-		if (style.getBitmapFont() == null) {
-			g.setFont(font);
-		} else {
-			g.setFont(style.getBitmapFont());
-		}
-
-		if(element.getColor() != null) {
-			g.setColor(element.getColor());
-		} else if(style.getColor() != null) {
-			g.setColor(style.getColor());
-		} else {
-			throw new MdxException("Could not determine color for Label " + element.getId() + ". Please use Label#setColor or set a Color on the label style rule");
-		}
-		
 		if (element.getTextAnimation() == null) {
-			NULL_TEXT_ANIMATION.render(element.getText(), g, getContentRenderX(), getContentRenderY(),
-					getContentRenderWidth(), element.getHorizontalAlignment().getAlignValue());
+			nullAnimation.render(bitmapFontCache, g, getContentRenderX(), getContentRenderY());
 		} else {
-			element.getTextAnimation().render(element.getText(), g, getContentRenderX(), getContentRenderY(),
-					getContentRenderWidth(), element.getHorizontalAlignment().getAlignValue());
+			element.getTextAnimation().render(bitmapFontCache, g, getContentRenderX(), getContentRenderY());
 		}
-		g.setColor(tmpColor);
-		g.setFont(tmpFont);
 	}
 
 	@Override
@@ -93,31 +80,23 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 		if (element.isResponsive()) {
 			return availableWidth;
 		} else {
-			if (style.getBitmapFont() == null) {
-				glyphLayout.setText(font, element.getText());
-			} else {
-				glyphLayout.setText(style.getBitmapFont(), element.getText());
-			}
-			if (glyphLayout.width > availableWidth) {
+			GLYPH_LAYOUT.setText(bitmapFontCache.getFont(), element.getText());
+
+			if (GLYPH_LAYOUT.width > availableWidth) {
 				return availableWidth;
 			}
-			return glyphLayout.width;
+			return GLYPH_LAYOUT.width;
 		}
 	}
 
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
-		if (style.getBitmapFont() == null) {
-			glyphLayout.setText(font, element.getText(), Color.WHITE, preferredContentWidth,
-					element.getHorizontalAlignment().getAlignValue(), true);
-		} else {
-			glyphLayout.setText(style.getBitmapFont(), element.getText(), Color.WHITE, preferredContentWidth,
-					element.getHorizontalAlignment().getAlignValue(), true);
-		}
-		if(glyphLayout.height < style.getMinHeight()) {
+		GLYPH_LAYOUT.setText(bitmapFontCache.getFont(), element.getText(), Color.WHITE, preferredContentWidth,
+				element.getHorizontalAlignment().getAlignValue(), true);
+		if (GLYPH_LAYOUT.height < style.getMinHeight()) {
 			return style.getMinHeight();
 		}
-		return glyphLayout.height;
+		return GLYPH_LAYOUT.height;
 	}
 
 	@Override
@@ -132,6 +111,31 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 
 	@Override
 	protected LabelStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
+		if (bitmapFontCache != null) {
+			bitmapFontCache.clear();
+			bitmapFontCache = null;
+			nullAnimation.reset();
+			
+			if (element.getTextAnimation() != null) {
+				element.getTextAnimation().reset();
+			}
+		}
+
+		LabelStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
+		if (result.getBitmapFont() == null) {
+			bitmapFontCache = DEFAULT_FONT.newFontCache();
+		} else {
+			bitmapFontCache = result.getBitmapFont().newFontCache();
+		}
+		
+		if (element.getColor() != null) {
+			bitmapFontCache.setColor(element.getColor());
+		} else if (result.getColor() != null) {
+			bitmapFontCache.setColor(result.getColor());
+		} else {
+			throw new MdxException("Could not determine color for Label " + element.getId()
+					+ ". Please use Label#setColor or set a Color on the label style rule");
+		}
+		return result;
 	}
 }

@@ -23,10 +23,20 @@ public abstract class BaseTextAnimation implements TextAnimation {
 	private List<TextAnimationListener> listeners;
 
 	private boolean finished;
+	
+	protected abstract void resetState();
 
 	@Override
 	public boolean isFinished() {
 		return finished;
+	}
+	
+	/**
+	 * Resets the finished state to false
+	 */
+	public void reset() {
+		resetState();
+		finished = false;
 	}
 
 	/**

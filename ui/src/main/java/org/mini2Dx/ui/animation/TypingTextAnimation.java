@@ -14,6 +14,8 @@ package org.mini2Dx.ui.animation;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+
 /**
  * A {@link TextAnimation} that reveals the text as if it were being typed
  */
@@ -41,9 +43,13 @@ public class TypingTextAnimation extends BaseTextAnimation {
 	}
 	
 	@Override
-	public void update(String text, float delta) {
+	public void update(BitmapFontCache cache, String text, float renderWidth, int hAlign, float delta) {
 		if(characterIndex >= text.length() - 1) {
-			setFinished(true);
+			if(!isFinished()) {
+				cache.clear();
+				cache.addText(text.substring(0, characterIndex), 0f, 0f, renderWidth, hAlign, true);
+				setFinished(true);
+			}
 			return;
 		}
 		
@@ -51,19 +57,19 @@ public class TypingTextAnimation extends BaseTextAnimation {
 		if(timer >= speed) {
 			timer -= speed;
 			characterIndex++;
+			
+			cache.clear();
+			cache.addText(text.substring(0, characterIndex), 0f, 0f, renderWidth, hAlign, true);
 		}
 	}
 	
 	@Override
-	public void interpolate(String text, float alpha) {}
+	public void interpolate(BitmapFontCache cache, String text, float alpha) {}
 
 	@Override
-	public void render(String text, Graphics g, float x, float y, float width, int hAlign) {
-		if(isFinished()) {
-			g.drawString(text, x, y, width, hAlign);
-		} else {
-			g.drawString(text.substring(0, characterIndex), x, y, width, hAlign);
-		}
+	public void render(BitmapFontCache cache, Graphics g, int renderX, int renderY) {
+		cache.setPosition(renderX, renderY);
+		g.drawBitmapFontCache(cache);
 	}
 
 	@Override
@@ -74,5 +80,10 @@ public class TypingTextAnimation extends BaseTextAnimation {
 	@ConstructorArg(clazz=Float.class, name="charactersPerSecond")
 	public float getCharactersPerSecond() {
 		return charactersPerSecond;
+	}
+
+	@Override
+	protected void resetState() {
+		timer = 0f;
 	}
 }
