@@ -241,7 +241,7 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 	
 	@Override
 	public void setRotationAround(Point center, float degrees) {
-		if(center.x == getOriginX() && center.y == getOriginX() && degrees == getRotation()) {
+		if(center.x == getX() && center.y == getY() && degrees == getRotation()) {
 			return;
 		}
 		super.setRotationAround(center, degrees);
@@ -250,7 +250,7 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 
 	@Override
 	public void setRotationAround(float centerX, float centerY, float degrees) {
-		if(centerX == getOriginX() && centerY == getOriginX() && degrees == getRotation()) {
+		if(centerX == getX() && centerY == getY() && degrees == getRotation()) {
 			return;
 		}
 		super.setRotationAround(centerX, centerY, degrees);

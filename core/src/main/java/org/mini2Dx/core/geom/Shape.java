@@ -135,18 +135,6 @@ public abstract class Shape {
 	 * @param degrees The rotation in degrees
 	 */
 	public abstract void rotateAround(float originX, float originY, float degrees);
-	
-	/**
-	 * Returns the rotational center/origin x coordinate
-	 * @return
-	 */
-	public abstract float getOriginX();
-	
-	/**
-	 * Returns the rotational center/origin y coordinate
-	 * @return
-	 */
-	public abstract float getOriginY();
 
 	/**
 	 * Draws this shape using a {@link Graphics} instance

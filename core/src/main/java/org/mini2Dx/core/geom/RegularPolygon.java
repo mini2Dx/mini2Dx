@@ -335,14 +335,4 @@ public class RegularPolygon extends Shape {
 	public float getMaxY() {
 		return polygon.getMaxY();
 	}
-	
-	@Override
-	public float getOriginX() {
-		return polygon.getOriginX();
-	}
-	
-	@Override
-	public float getOriginY() {
-		return polygon.getOriginY();
-	}
 }

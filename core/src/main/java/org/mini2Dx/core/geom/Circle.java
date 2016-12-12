@@ -404,16 +404,6 @@ public class Circle extends Shape {
 	public void rotateAround(float centerX, float centerY, float degrees) {}
 	
 	@Override
-	public float getOriginX() {
-		return 0f;
-	}
-	
-	@Override
-	public float getOriginY() {
-		return 0f;
-	}
-	
-	@Override
 	public boolean isCircle() {
 		return true;
 	}

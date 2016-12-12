@@ -274,7 +274,7 @@ public class CollisionPolygon extends Polygon implements CollisionShape {
 	
 	@Override
 	public void setRotationAround(float centerX, float centerY, float degrees) {
-		if(getRotation() == degrees && centerX == getOriginX() && centerY == getOriginY()) {
+		if(getRotation() == degrees && centerX == getX() && centerY == getY()) {
 			return;
 		}
 		super.setRotationAround(centerX, centerY, degrees);
