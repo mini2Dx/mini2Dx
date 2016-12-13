@@ -64,6 +64,10 @@ public class SelectStyleRule extends StyleRule {
 	
 	@Override
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
+		if (theme.isHeadless()) {
+			return; 
+		}
+		
 		super.prepareAssets(theme, fileHandleResolver, assetManager);
 		if(background != null) {
 			backgroundNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(background)), getNinePatchLeft(),

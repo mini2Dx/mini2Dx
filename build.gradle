@@ -241,6 +241,8 @@ project(":" + rootProject.name + "-artemis-odb") {
 project(":" + rootProject.name + "-ui") {
 	description = "mini2Dx UI library"
 	
+	apply plugin: "me.champeau.gradle.jmh"
+	
 	dependencies {
 		compile project(":" + rootProject.name + "-core")
 		
@@ -248,10 +250,21 @@ project(":" + rootProject.name + "-ui") {
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
 		testCompile project(":" + rootProject.name + "-desktop")
+		
+		jmh project(":" + rootProject.name + "-headless")
 	}
 	
 	task packDefaultUiTheme << {
 		TexturePacker.process("$projectDir/default-mdx-theme", "$projectDir/src/main/resources", "default-mdx-theme")
+	}
+	
+	jmh {
+		timeUnit = 'ns'
+		threads = Runtime.getRuntime().availableProcessors()
+		warmupIterations = 10
+		iterations = 10
+		fork = Runtime.getRuntime().availableProcessors()
+		jvmArgsPrepend = '-Xmx1024m'
 	}
 }
 

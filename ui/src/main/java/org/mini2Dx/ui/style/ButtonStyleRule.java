@@ -53,6 +53,10 @@ public class ButtonStyleRule extends StyleRule {
 	
 	@Override
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
+		if (theme.isHeadless()) {
+			return; 
+		}
+		
 		if(normal != null) {
 			normalNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(normal)), getNinePatchLeft(),
 					getNinePatchRight(), getNinePatchTop(), getNinePatchBottom());

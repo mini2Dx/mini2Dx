@@ -70,11 +70,15 @@ public class HeadlessMini2DxGame implements Application {
 		this.net = new HeadlessNet();
 		// the following elements are not applicable for headless applications
 		// they are only implemented as mock objects
-		this.graphics = new Mini2DxMockGraphics();
+		this.graphics = new Mini2DxMockGraphics(config);
 		this.audio = new MockAudio();
 		this.input = new MockInput();
 		initialiseLibGDX();
-		launchGame();
+		if(config.runGame) {
+			launchGame();
+		} else {
+			listener.create();
+		}
 	}
 
 	private void initialiseLibGDX() {

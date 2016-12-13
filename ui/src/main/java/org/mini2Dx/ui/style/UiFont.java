@@ -39,7 +39,11 @@ public class UiFont {
 	private Color fontBorderColor;
 	private FreeTypeFontGenerator fontGenerator;
 	
-	public void prepareAssets(FileHandleResolver fileHandleResolver) {
+	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver) {
+		if(theme.isHeadless()) {
+			return;
+		}
+		
 		fontGenerator = new FreeTypeFontGenerator(fileHandleResolver.resolve(path));
 		if(borderColor != null) {
 			fontBorderColor = ColorUtils.rgbToColor(borderColor);

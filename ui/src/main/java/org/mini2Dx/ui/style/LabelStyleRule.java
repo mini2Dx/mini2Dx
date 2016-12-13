@@ -37,6 +37,10 @@ public class LabelStyleRule extends ColumnStyleRule {
 	
 	@Override
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
+		if (theme.isHeadless()) {
+			return; 
+		}
+		
 		super.prepareAssets(theme, fileHandleResolver, assetManager);
 		if(textColor != null) {
 			color = ColorUtils.rgbToColor(textColor);

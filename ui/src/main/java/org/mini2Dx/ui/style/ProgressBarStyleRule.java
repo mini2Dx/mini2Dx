@@ -46,6 +46,9 @@ public class ProgressBarStyleRule extends StyleRule {
 
 	@Override
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
+		if (theme.isHeadless()) {
+			return; 
+		}
 		if (background != null) {
 			backgroundNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(background)),
 					getBackgroundNinePatchLeft(), getBackgroundNinePatchRight(), getBackgroundNinePatchTop(),

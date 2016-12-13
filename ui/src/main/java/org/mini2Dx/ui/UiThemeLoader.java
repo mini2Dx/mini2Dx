@@ -31,14 +31,25 @@ import com.badlogic.gdx.utils.Array;
 public class UiThemeLoader extends AsynchronousAssetLoader<UiTheme, UiThemeParameter> {
 	private volatile UiTheme theme;
 	private final FileHandleResolver fileHandleResolver;
+	private final boolean headless;
 	
 	/**
 	 * Constructor
 	 * @param resolver The {@link FileHandleResolver} to use
 	 */
 	public UiThemeLoader(FileHandleResolver resolver) {
+		this(resolver, false);
+	}
+	
+	/**
+	 * Constructor
+	 * @param resolver The {@link FileHandleResolver} to use
+	 * @param headless True if the game is using the headless runtime
+	 */
+	public UiThemeLoader(FileHandleResolver resolver, boolean headless) {
 		super(resolver);
 		this.fileHandleResolver = resolver;
+		this.headless = headless;
 	}
 
 	@Override
@@ -71,7 +82,7 @@ public class UiThemeLoader extends AsynchronousAssetLoader<UiTheme, UiThemeParam
 		} catch (SerializationException e) {
 			throw new MdxException(e.getMessage(), e);
 		}
-		theme.loadDependencies(dependencies);
+		theme.loadDependencies(dependencies, headless);
 		return dependencies;
 	}
 	

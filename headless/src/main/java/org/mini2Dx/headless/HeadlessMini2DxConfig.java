@@ -28,6 +28,21 @@ public class HeadlessMini2DxConfig extends HeadlessApplicationConfiguration {
 	 */
 	public float targetTimestep = 0.01f;
 	
+	/**
+	 * The mocked window width
+	 */
+	public int width = 640;
+	
+	/**
+	 * The mocked window height
+	 */
+	public int height = 480;
+	
+	/**
+	 * True if the game should execute
+	 */
+	public boolean runGame = true;
+	
 	public HeadlessMini2DxConfig(String gameIdentifier) {
 		this.gameIdentifier = gameIdentifier;
 	}

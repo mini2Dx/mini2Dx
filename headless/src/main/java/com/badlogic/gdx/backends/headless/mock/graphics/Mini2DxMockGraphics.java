@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.headless.mock.graphics;
 
+import org.mini2Dx.headless.HeadlessMini2DxConfig;
+
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
@@ -39,6 +41,13 @@ public class Mini2DxMockGraphics extends MockGraphics {
 	int frames = 0;
 	int fps;
 	long lastTime = System.nanoTime();
+	int width, height;
+	
+	public Mini2DxMockGraphics(HeadlessMini2DxConfig config) {
+		super();
+		this.width = config.width;
+		this.height = config.height;
+	}
 
 	@Override
 	public boolean isGL30Available() {
@@ -57,22 +66,22 @@ public class Mini2DxMockGraphics extends MockGraphics {
 
 	@Override
 	public int getWidth() {
-		return 0;
+		return width;
 	}
 
 	@Override
 	public int getHeight() {
-		return 0;
+		return height;
 	}
 	
 	@Override
 	public int getBackBufferWidth() {
-		return 0;
+		return width;
 	}
 
 	@Override
 	public int getBackBufferHeight() {
-		return 0;
+		return height;
 	}
 
 	@Override

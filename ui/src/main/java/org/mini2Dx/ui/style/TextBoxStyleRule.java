@@ -51,6 +51,10 @@ public class TextBoxStyleRule extends StyleRule {
 	
 	@Override
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
+		if (theme.isHeadless()) {
+			return; 
+		}
+		
 		normalNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(normal)), getPaddingLeft(),
 				getPaddingRight(), getPaddingTop(), getPaddingBottom());
 		hoverNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(hover)), getPaddingLeft(),

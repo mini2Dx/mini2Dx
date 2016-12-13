@@ -84,6 +84,7 @@ public class UiTheme {
 	private Map<String, TextBoxStyleRuleset> textboxes;
 	
 	private TextureAtlas textureAtlas;
+	private boolean headless;
 
 	public void validate() {
 		if (!buttons.containsKey(DEFAULT_STYLE_ID)) {
@@ -149,8 +150,12 @@ public class UiTheme {
 		}
 	}
 
-	public void loadDependencies(Array<AssetDescriptor> dependencies) {
-		dependencies.add(new AssetDescriptor<TextureAtlas>(atlas, TextureAtlas.class));
+	public void loadDependencies(Array<AssetDescriptor> dependencies, boolean headless) {
+		this.headless = headless;
+		if(!headless) {
+			dependencies.add(new AssetDescriptor<TextureAtlas>(atlas, TextureAtlas.class));
+		}
+		
 		Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Atlas: " + atlas + "]");
 		for (String id : buttons.keySet()) {
 			StyleRuleset<ButtonStyleRule> buttonRuleset = buttons.get(id);
@@ -205,9 +210,12 @@ public class UiTheme {
 	}
 
 	public void prepareAssets(FileHandleResolver fileHandleResolver, AssetManager assetManager) {
-		textureAtlas = assetManager.get(atlas, TextureAtlas.class);
+		if(!headless) {
+			textureAtlas = assetManager.get(atlas, TextureAtlas.class);
+		}
+		
 		for (UiFont font : fonts.values()) {
-			font.prepareAssets(fileHandleResolver);
+			font.prepareAssets(this, fileHandleResolver);
 		}
 		for (StyleRuleset<ButtonStyleRule> buttonRuleset : buttons.values()) {
 			buttonRuleset.prepareAssets(this, fileHandleResolver, assetManager);
@@ -481,5 +489,9 @@ public class UiTheme {
 
 	public TextureAtlas getTextureAtlas() {
 		return textureAtlas;
+	}
+
+	public boolean isHeadless() {
+		return headless;
 	}
 }
