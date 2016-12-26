@@ -16,8 +16,8 @@ import org.mini2Dx.core.di.DependencyInjection;
 import org.mini2Dx.core.playerdata.PlayerData;
 import org.mini2Dx.core.serialization.JsonSerializer;
 import org.mini2Dx.core.serialization.XmlSerializer;
-import org.mini2Dx.core.util.Os;
-import org.mini2Dx.core.util.OsDetector;
+import org.mini2Dx.natives.Os;
+import org.mini2Dx.natives.OsInformation;
 
 /**
  * Mini2Dx utility classes
@@ -39,9 +39,9 @@ public class Mdx {
 	public static DependencyInjection di;
 	
 	/**
-	 * Returns the current operating system
+	 * Returns the current operating system. See <a href="https://github.com/mini2Dx/natives-loader">natives-loader project</a> for more javadocs
 	 */
-	public static Os os = OsDetector.getOs();
+	public static Os os = OsInformation.getOs();
 	
 	/**
 	 * JSON serialization

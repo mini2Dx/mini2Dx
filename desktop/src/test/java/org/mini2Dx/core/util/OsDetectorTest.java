@@ -11,9 +11,10 @@
  */
 package org.mini2Dx.core.util;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
+import org.mini2Dx.natives.OsInformation;
+
+import junit.framework.Assert;
 
 /**
  * Unit tests for {@link OsDetector}
@@ -23,7 +24,7 @@ public class OsDetectorTest {
 
 	@Test
 	public void testDetectDesktop() {
-		switch(OsDetector.getOs()) {
+		switch(OsInformation.getOs()) {
 		case ANDROID:
 			Assert.fail("Detected Android OS for desktop-based JVM");
 			break;
@@ -33,7 +34,7 @@ public class OsDetectorTest {
 		case WINDOWS:
 		case MAC:
 		case UNIX:
-			System.out.println("Detected " + OsDetector.getOs());
+			System.out.println("Detected " + OsInformation.getOs());
 			break;
 		case UNKNOWN:
 			Assert.fail("Could not detect OS for desktop-based JVM");

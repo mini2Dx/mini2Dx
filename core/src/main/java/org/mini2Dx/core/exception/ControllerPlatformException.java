@@ -12,7 +12,7 @@
 package org.mini2Dx.core.exception;
 
 import org.mini2Dx.core.controller.ControllerType;
-import org.mini2Dx.core.util.Os;
+import org.mini2Dx.natives.Os;
 
 /**
  * Thrown when mini2Dx does not have mappings for a specific

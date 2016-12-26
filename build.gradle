@@ -30,6 +30,7 @@ if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
 }
 
 ext {
+	nativesLoaderVersion="1.0.0"
 	gdxVersion="1.9.4"
 	roboVMVersion="2.2.0"
 	androidVersion="4.4"
@@ -158,6 +159,7 @@ project(":" + rootProject.name + "-core") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         
+		compile "org.mini2Dx:natives-loader:$nativesLoaderVersion"
         compile "org.apache.commons:commons-lang3:$langVersion"
         
 		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"

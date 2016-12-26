@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.mini2Dx.core.serialization.annotation.Field;
-import org.mini2Dx.core.util.Os;
+import org.mini2Dx.natives.Os;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;

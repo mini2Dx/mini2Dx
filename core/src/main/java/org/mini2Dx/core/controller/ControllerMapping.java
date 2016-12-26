@@ -20,7 +20,7 @@ import org.mini2Dx.core.controller.xboxone.LinuxXboxOneController;
 import org.mini2Dx.core.controller.xboxone.MacXboxOneController;
 import org.mini2Dx.core.controller.xboxone.WindowsXboxOneController;
 import org.mini2Dx.core.exception.ControllerPlatformException;
-import org.mini2Dx.core.util.Os;
+import org.mini2Dx.natives.Os;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.mappings.Ouya;

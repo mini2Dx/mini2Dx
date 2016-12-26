@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,15 +28,16 @@ import org.mini2Dx.core.serialization.dummy.TestConstuctorArgObject;
 import org.mini2Dx.core.serialization.dummy.TestInterface;
 import org.mini2Dx.core.serialization.dummy.TestInterfaceImpl;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
-import org.mini2Dx.core.util.Os;
 import org.mini2Dx.desktop.di.DesktopDependencyInjection;
-import org.mini2Dx.desktop.playerdata.DesktopPlayerData;
 import org.mini2Dx.desktop.serialization.DesktopXmlSerializer;
+import org.mini2Dx.natives.Os;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+
+import junit.framework.Assert;
 
 /**
  * Unit tests for {@link DesktopPlayerData}

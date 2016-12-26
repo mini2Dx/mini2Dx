@@ -19,7 +19,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.playerdata.PlayerData;
 import org.mini2Dx.core.playerdata.PlayerDataException;
 import org.mini2Dx.core.serialization.SerializationException;
-import org.mini2Dx.core.util.OsDetector;
+import org.mini2Dx.natives.OsInformation;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -35,7 +35,7 @@ public class DesktopPlayerData implements PlayerData {
 	}
 
 	private String getSaveDirectoryForGame(String gameIdentifier) {
-		switch (OsDetector.getOs()) {
+		switch (OsInformation.getOs()) {
 		case WINDOWS:
 			return Paths
 					.get(Gdx.files.getExternalStoragePath(), "AppData",
