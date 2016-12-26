@@ -14,19 +14,19 @@ package org.mini2Dx.uats.android;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.mini2Dx.core.util.OsDetector;
+import org.mini2Dx.natives.OsInformation;
 
 /**
- * Unit tests for {@link OsDetector}
+ * Unit tests for {@link OsInformation}
  * @author Thomas Cashman
  */
 public class OsDetectorTest {
 
 	@Test
 	public void testDetectDesktop() {
-		switch(OsDetector.getOs()) {
+		switch(OsInformation.getOs()) {
 		case ANDROID:
-			System.out.println("Detected " + OsDetector.getOs());
+			System.out.println("Detected " + OsInformation.getOs());
 			break;
 		case IOS:
 			Assert.fail("Detected iOS for Android JVM");

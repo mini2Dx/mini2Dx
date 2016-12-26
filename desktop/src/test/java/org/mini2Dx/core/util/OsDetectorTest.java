@@ -17,7 +17,7 @@ import org.mini2Dx.natives.OsInformation;
 import junit.framework.Assert;
 
 /**
- * Unit tests for {@link OsDetector}
+ * Unit tests for {@link OsInformation}
  * @author Thomas Cashman
  */
 public class OsDetectorTest {
