@@ -174,7 +174,6 @@ public abstract class ParentUiElement extends UiElement {
 
 	@Override
 	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		System.out.println("WTF " + renderNode);
 		if (renderNode != null) {
 			return;
 		}

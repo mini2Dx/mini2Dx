@@ -43,6 +43,7 @@ import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.TextButton;
 import org.mini2Dx.ui.element.Visibility;
+import org.mini2Dx.ui.layout.FlexDirection;
 import org.mini2Dx.ui.layout.VerticalAlignment;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.navigation.VerticalUiNavigation;
@@ -347,7 +348,9 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		bottomRightFrame = new AbsoluteContainer("bottom-right-frame");
 		bottomRightFrame.setLayout("xs-12c sm-6c md-4c lg-3c");
 		bottomRightFrame.setVisibility(Visibility.VISIBLE);
-		bottomRightFrame.add(Row.withElements("row-os", UiUtils.createHeader("Detected OS: " + Mdx.os)));
+		Row bottomFrameRow = Row.withElements("row-os", UiUtils.createHeader("Detected OS: " + Mdx.os));
+		bottomFrameRow.setFlexDirection(FlexDirection.COLUMN_REVERSE);
+		bottomRightFrame.add(bottomFrameRow);
 		uiContainer.add(bottomRightFrame);
 	}
 }
