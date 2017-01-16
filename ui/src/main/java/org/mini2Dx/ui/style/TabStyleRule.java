@@ -18,7 +18,7 @@ import org.mini2Dx.ui.element.TabView;
 /**
  * Extends {@link StyleRule} for {@link TabView} styling
  */
-public class TabStyleRule extends ColumnStyleRule {
+public class TabStyleRule extends ParentStyleRule {
 	@Field
 	private String tabButtonStyle;
 	@Field(optional=true)

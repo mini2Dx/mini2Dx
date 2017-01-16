@@ -13,14 +13,15 @@ package org.mini2Dx.ui.dummy;
 
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.render.ParentRenderNode;
+import org.mini2Dx.ui.style.ParentStyleRule;
 import org.mini2Dx.ui.style.StyleRule;
 
 /**
  *
  */
-public class DummyParentRenderNode extends ParentRenderNode<DummyUiElement, StyleRule> {
+public class DummyParentRenderNode extends ParentRenderNode<DummyParentUiElement, ParentStyleRule> {
 
-	public DummyParentRenderNode(ParentRenderNode<?, ?> parent, DummyUiElement element) {
+	public DummyParentRenderNode(ParentRenderNode<?, ?> parent, DummyParentUiElement element) {
 		super(parent, element);
 		this.style = element.getStyleRule();
 		this.preferredContentWidth = element.getPreferredContentWidth();
@@ -28,7 +29,7 @@ public class DummyParentRenderNode extends ParentRenderNode<DummyUiElement, Styl
 	}
 
 	@Override
-	protected StyleRule determineStyleRule(LayoutState layoutState) {
+	protected ParentStyleRule determineStyleRule(LayoutState layoutState) {
 		return element.getStyleRule();
 	}
 

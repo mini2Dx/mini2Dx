@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.Array;
 /**
  * Extends {@link StyleRule} for {@link Button} styling
  */
-public class ButtonStyleRule extends StyleRule {
+public class ButtonStyleRule extends ParentStyleRule {
 	@Field(optional=true)
 	private String normal;
 	@Field(optional=true)
@@ -38,8 +38,6 @@ public class ButtonStyleRule extends StyleRule {
 	private String action;
 	@Field(optional=true)
 	private String disabled;
-	@Field(optional=true)
-	private int ninePatchTop, ninePatchBottom, ninePatchLeft, ninePatchRight;
 	@Field
 	private int fontSize;
 	@Field
@@ -167,33 +165,5 @@ public class ButtonStyleRule extends StyleRule {
 
 	public void setTextColor(String textColor) {
 		this.textColor = textColor;
-	}
-	
-	public int getNinePatchTop() {
-		if(ninePatchTop <= 0) {
-			return getPaddingTop();
-		}
-		return ninePatchTop;
-	}
-
-	public int getNinePatchBottom() {
-		if(ninePatchBottom <= 0) {
-			return getPaddingBottom();
-		}
-		return ninePatchBottom;
-	}
-
-	public int getNinePatchLeft() {
-		if(ninePatchLeft <= 0) {
-			return getPaddingLeft();
-		}
-		return ninePatchLeft;
-	}
-
-	public int getNinePatchRight() {
-		if(ninePatchRight <= 0) {
-			return getPaddingRight();
-		}
-		return ninePatchRight;
 	}
 }

@@ -18,6 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.ui.dummy.DummyParentRenderNode;
+import org.mini2Dx.ui.dummy.DummyParentUiElement;
 import org.mini2Dx.ui.dummy.DummyRenderNode;
 import org.mini2Dx.ui.dummy.DummyUiElement;
 import org.mini2Dx.ui.element.Visibility;
@@ -37,8 +38,8 @@ public class RenderNodeTest {
 	private Mockery mockery;
 	private LayoutState layoutState;
 	
+	private DummyParentUiElement parentElement = new DummyParentUiElement();
 	private DummyUiElement uiElement = new DummyUiElement();
-	private DummyUiElement parentElement = new DummyUiElement();
 	
 	private DummyParentRenderNode parentRenderNode = new DummyParentRenderNode(null, parentElement);
 	private DummyRenderNode renderNode = new DummyRenderNode(parentRenderNode, uiElement);

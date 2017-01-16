@@ -22,6 +22,7 @@ import org.mini2Dx.ui.controller.ControllerUiInput;
 import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.Container;
 import org.mini2Dx.ui.element.Navigatable;
+import org.mini2Dx.ui.element.ParentUiElement;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.layout.ScreenSize;
@@ -48,11 +49,10 @@ import com.badlogic.gdx.math.MathUtils;
  * {@link #interpolate(float)} and {@link #render(Graphics)} must be called by
  * your {@link GameContainer}
  */
-public class UiContainer extends UiElement implements InputProcessor {
+public class UiContainer extends ParentUiElement implements InputProcessor {
 	private static final String LOGGING_TAG = UiContainer.class.getSimpleName();
 	private static Visibility defaultVisibility = Visibility.HIDDEN;
 
-	private final List<Container> children = new ArrayList<Container>(1);
 	private final List<ControllerUiInput<?>> controllerInputs = new ArrayList<ControllerUiInput<?>>(1);
 	private final List<UiContainerListener> listeners = new ArrayList<UiContainerListener>(1);
 	private final UiContainerRenderTree renderTree;
@@ -101,7 +101,14 @@ public class UiContainer extends UiElement implements InputProcessor {
 		}
 
 		renderTree = new UiContainerRenderTree(this, assetManager);
+		super.renderNode = renderTree;
+		
 		setVisibility(Visibility.VISIBLE);
+	}
+	
+	@Override
+	protected ParentRenderNode<?, ?> createRenderNode(ParentRenderNode<?, ?> parent) {
+		return renderTree;
 	}
 
 	/**
@@ -180,28 +187,6 @@ public class UiContainer extends UiElement implements InputProcessor {
 		notifyPostRender(g);
 	}
 
-	/**
-	 * Adds a {@link Container} to this {@link UiContainer}
-	 * 
-	 * @param container
-	 *            The {@link Container} to add
-	 */
-	public void add(Container container) {
-		container.attach(renderTree);
-		children.add(container);
-	}
-
-	/**
-	 * Removes a {@link Container} from this {@link UiContainer}
-	 * 
-	 * @param container
-	 *            The {@link Container} to remove
-	 */
-	public void remove(Container container) {
-		children.remove(container);
-		container.detach(renderTree);
-	}
-
 	@Override
 	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
 	}
@@ -213,13 +198,6 @@ public class UiContainer extends UiElement implements InputProcessor {
 	@Override
 	public void setVisibility(Visibility visibility) {
 		this.visibility = visibility;
-	}
-
-	@Override
-	public void syncWithRenderNode() {
-		while (!effects.isEmpty()) {
-			renderTree.applyEffect(effects.poll());
-		}
 	}
 
 	/**

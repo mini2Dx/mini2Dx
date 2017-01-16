@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.Array;
 /**
  * Extends {@link StyleRule} for {@link ScrollBox} styling
  */
-public class ScrollBoxStyleRule extends ColumnStyleRule {
+public class ScrollBoxStyleRule extends ParentStyleRule {
 	@Field(optional=true)
 	private String topScrollButtonStyle;
 	@Field(optional=true)

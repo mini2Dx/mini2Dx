@@ -57,38 +57,7 @@ public class RenderLayer implements Comparable<RenderLayer> {
 	}
 	
 	public void layout(LayoutState layoutState) {
-		float startX = owner.getStyle().getPaddingLeft();
-		float startY = owner.getStyle().getPaddingTop();
-		
-		for (int i = 0; i < children.size(); i++) {
-			RenderNode<?, ?> node = children.get(i);
-			node.layout(layoutState);
-			if (!node.isIncludedInLayout()) {
-				continue;
-			}
-			
-			if(startX - owner.getStyle().getPaddingLeft() + node.getXOffset() + node.getPreferredOuterWidth() > owner.getPreferredContentWidth()) {
-				float maxHeight = 0f;
-				for (int j = i - 1; j >= 0; j--) {
-					RenderNode<?, ?> previousNode = children.get(j);
-					if (!previousNode.isIncludedInLayout()) {
-						continue;
-					}
-					if (previousNode.getRelativeY() == startY + previousNode.getYOffset()) {
-						float height = previousNode.getPreferredOuterHeight() + node.getYOffset();
-						if (height > maxHeight) {
-							maxHeight = height;
-						}
-					}
-				}
-				startY += maxHeight;
-				startX = owner.getStyle().getPaddingLeft();
-			}
-
-			node.setRelativeX(startX + node.getXOffset());
-			node.setRelativeY(startY + node.getYOffset());
-			startX += node.getPreferredOuterWidth() + node.getXOffset();
-		}
+		owner.getFlexDirection().layout(layoutState, owner, children);
 	}
 	
 	public boolean mouseScrolled(int screenX, int screenY, float amount) {

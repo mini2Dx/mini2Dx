@@ -15,6 +15,7 @@ import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
 import org.mini2Dx.ui.layout.VerticalAlignment;
+import org.mini2Dx.ui.render.AbsoluteContainerRenderNode;
 import org.mini2Dx.ui.render.AlignedContainerRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 
@@ -42,17 +43,10 @@ public class AlignedContainer extends Container {
 	public AlignedContainer(@ConstructorArg(clazz = String.class, name = "id") String id) {
 		super(id);
 	}
-
+	
 	@Override
-	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		if (renderNode != null) {
-			return;
-		}
-		renderNode = new AlignedContainerRenderNode(parentRenderNode, this);
-		for (int i = 0; i < children.size(); i++) {
-			children.get(i).attach(renderNode);
-		}
-		parentRenderNode.addChild(renderNode);
+	protected ParentRenderNode<?, ?> createRenderNode(ParentRenderNode<?, ?> parent) {
+		return new AlignedContainerRenderNode(parent, this);
 	}
 
 	/**

@@ -16,20 +16,25 @@ import java.util.NavigableSet;
 import java.util.TreeMap;
 
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.ui.element.UiElement;
+import org.mini2Dx.ui.element.ParentUiElement;
+import org.mini2Dx.ui.layout.FlexDirection;
+import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.LayoutState;
-import org.mini2Dx.ui.style.StyleRule;
+import org.mini2Dx.ui.style.ParentStyleRule;
 
 /**
  * Base class for {@link RenderNode} implementations that contains child nodes 
  */
-public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule> extends RenderNode<T, S> {
+public abstract class ParentRenderNode<T extends ParentUiElement, S extends ParentStyleRule> extends RenderNode<T, S> {
 	protected final NavigableMap<Integer, RenderLayer> layers = new TreeMap<Integer, RenderLayer>();
 
 	protected boolean childDirty = false;
+	protected FlexDirection flexDirection = FlexDirection.COLUMN;
+	protected LayoutRuleset layoutRuleset;
 
 	public ParentRenderNode(ParentRenderNode<?, ?> parent, T element) {
 		super(parent, element);
+		layoutRuleset = new LayoutRuleset(element.getLayout());
 	}
 
 	@Override
@@ -50,6 +55,10 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 
 	@Override
 	protected void renderElement(Graphics g) {
+		if (style.getBackgroundNinePatch() != null) {
+			g.drawNinePatch(style.getBackgroundNinePatch(), getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(),
+					getInnerRenderHeight());
+		}
 		for (RenderLayer layer : layers.values()) {
 			layer.render(g);
 		}
@@ -59,6 +68,9 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 	public void layout(LayoutState layoutState) {
 		if(!isDirty() && !layoutState.isScreenSizeChanged()) {
 			return;
+		}
+		if(!layoutRuleset.equals(element.getLayout())) {
+			layoutRuleset = new LayoutRuleset(element.getLayout());
 		}
 		
 		float parentWidth = layoutState.getParentWidth();
@@ -70,6 +82,7 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 			parent.addChild(this);
 		}
 		
+		flexDirection = element.getFlexDirection();
 		xOffset = determineXOffset(layoutState);
 		preferredContentWidth = determinePreferredContentWidth(layoutState);
 		layoutState.setParentWidth(getPreferredContentWidth());
@@ -86,6 +99,51 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 		setDirty(false);
 		childDirty = false;
 		initialLayoutOccurred = true;
+	}
+	
+	@Override
+	protected float determinePreferredContentHeight(LayoutState layoutState) {
+		if (preferredContentWidth <= 0f) {
+			return 0f;
+		}
+		float maxHeight = 0f;
+
+		for (RenderLayer layer : layers.values()) {
+			float height = layer.determinePreferredContentHeight(layoutState);
+			if (height > maxHeight) {
+				maxHeight = height;
+			}
+		}
+		if(maxHeight < style.getMinHeight()) {
+			return style.getMinHeight();
+		}
+		return maxHeight;
+	}
+
+	@Override
+	protected float determinePreferredContentWidth(LayoutState layoutState) {
+		if (layoutRuleset.isHiddenByInputSource(layoutState.getLastInputSource())) {
+			return 0f;
+		}
+		float layoutRuleResult = layoutRuleset.getPreferredWidth(layoutState);
+		if (layoutRuleResult <= 0f) {
+			hiddenByLayoutRule = true;
+			return 0f;
+		} else {
+			hiddenByLayoutRule = false;
+		}
+		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft()
+				- style.getMarginRight();
+	}
+
+	@Override
+	protected float determineXOffset(LayoutState layoutState) {
+		return layoutRuleset.getXOffset(layoutState);
+	}
+
+	@Override
+	protected float determineYOffset(LayoutState layoutState) {
+		return 0f;
 	}
 
 	@Override
@@ -216,5 +274,16 @@ public abstract class ParentRenderNode<T extends UiElement, S extends StyleRule>
 			}
 		}
 		return null;
+	}
+	
+	public LayoutRuleset getLayoutRuleset() {
+		return layoutRuleset;
+	}
+
+	public FlexDirection getFlexDirection() {
+		if(flexDirection == null) {
+			flexDirection = FlexDirection.COLUMN;
+		}
+		return flexDirection;
 	}
 }

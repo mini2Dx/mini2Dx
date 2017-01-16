@@ -85,7 +85,7 @@ public class Label extends UiElement {
 		if(renderNode == null) {
 			return;
 		}
-		renderNode.setDirty(true);
+		((LabelRenderNode) renderNode).updateBitmapFontCache();
 	}
 
 	@Override

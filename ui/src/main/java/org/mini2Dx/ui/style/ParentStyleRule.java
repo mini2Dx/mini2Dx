@@ -14,18 +14,15 @@ package org.mini2Dx.ui.style;
 import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.core.serialization.annotation.Field;
-import org.mini2Dx.ui.element.Column;
+import org.mini2Dx.ui.element.ParentUiElement;
 
-import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.Array;
 
 /**
- * Extends {@link StyleRule} for {@link Column} styling
+ * Extends {@link StyleRule} for {@link ParentUiElement} styling
  */
-public class ColumnStyleRule extends StyleRule {
+public class ParentStyleRule extends StyleRule {
 	@Field(optional=true)
 	private String background;
 	@Field(optional=true)

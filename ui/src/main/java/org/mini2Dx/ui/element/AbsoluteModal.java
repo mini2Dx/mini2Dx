@@ -15,6 +15,7 @@ import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.AbsoluteModalRenderNode;
+import org.mini2Dx.ui.render.AlignedContainerRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 
 /**
@@ -42,15 +43,8 @@ public class AbsoluteModal extends Modal {
 	}
 	
 	@Override
-	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode != null) {
-			return;
-		}
-		renderNode = new AbsoluteModalRenderNode(parentRenderNode, this);
-		for(int i = 0; i < children.size(); i++) {
-			children.get(i).attach(renderNode);
-		}
-		parentRenderNode.addChild(renderNode);
+	protected ParentRenderNode<?, ?> createRenderNode(ParentRenderNode<?, ?> parent) {
+		return new AbsoluteModalRenderNode(parent, this);
 	}
 	
 	/**

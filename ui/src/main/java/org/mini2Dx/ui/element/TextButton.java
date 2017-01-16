@@ -11,20 +11,21 @@
  */
 package org.mini2Dx.ui.element;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.core.serialization.annotation.PostDeserialize;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
-import org.mini2Dx.ui.render.ParentRenderNode;
-import org.mini2Dx.ui.render.TextButtonRenderNode;
 
 /**
- * Implementation of {@link Button} that only contains text
+ * Utility implementation of {@link Button} that contains a {@link Label}
  */
 public class TextButton extends Button {
-	protected TextButtonRenderNode renderNode;
+	private Label label;
 	
 	@Field(optional=true)
-	private String text = "";
+	private String text = null;
 	@Field(optional=true)
 	private HorizontalAlignment textAlignment = HorizontalAlignment.CENTER;
 	
@@ -44,11 +45,45 @@ public class TextButton extends Button {
 	}
 	
 	/**
+	 * Called after XML/JSON deserialization
+	 * Note: This method is for legacy support to 1.3.x
+	 */
+	@PostDeserialize
+	public void postDeserialize() {
+		checkInitialised();
+		if(text != null) {
+			label.setText(text);
+		}
+		if(textAlignment != null) {
+			label.setHorizontalAlignment(textAlignment);
+		}
+	}
+	
+	private void checkInitialised() {
+		if(label != null) {
+			return;
+		}
+		for(int i = 0; i < children.size(); i++) {
+			if(children.get(i) instanceof Label) {
+				label = (Label) children.get(i);
+				return;
+			}
+		}
+		
+		label = new Label(getId() + "-backingLabel");
+		label.setHorizontalAlignment(HorizontalAlignment.CENTER);
+		label.setResponsive(true);
+		label.setVisibility(Visibility.VISIBLE);
+		add(label);
+	}
+	
+	/**
 	 * Returns the text of this {@link TextButton}
 	 * @return An empty {@link String} by default
 	 */
 	public String getText() {
-		return text;
+		checkInitialised();
+		return label.getText();
 	}
 
 	/**
@@ -56,82 +91,9 @@ public class TextButton extends Button {
 	 * @param text A non-null {@link String}
 	 */
 	public void setText(String text) {
-		if(text == null) {
-			return;
-		}
-		if(text.equals(this.text)) {
-			return;
-		}
+		checkInitialised();
+		label.setText(text);
 		this.text = text;
-		
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.updateBitmapFontCache();
-	}
-
-	@Override
-	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode != null) {
-			return;
-		}
-		renderNode = new TextButtonRenderNode(parentRenderNode, this);
-		parentRenderNode.addChild(renderNode);
-	}
-
-	@Override
-	public void detach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode == null) {
-			return;
-		}
-		parentRenderNode.removeChild(renderNode);
-		renderNode = null;
-	}
-	
-	@Override
-	public void setVisibility(Visibility visibility) {
-		if(this.visibility == visibility) {
-			return;
-		}
-		this.visibility = visibility;
-		
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
-	}
-	
-	@Override
-	public void setStyleId(String styleId) {
-		if(styleId == null) {
-			return;
-		}
-		if(this.styleId.equals(styleId)) {
-			return;
-		}
-		this.styleId = styleId;
-		
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
-	}
-	
-	@Override
-	public void setZIndex(int zIndex) {
-		this.zIndex = zIndex;
-		
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
-	}
-	
-	@Override
-	public void syncWithRenderNode() {
-		while(!effects.isEmpty()) {
-			renderNode.applyEffect(effects.poll());
-		}
 	}
 
 	/**
@@ -139,29 +101,17 @@ public class TextButton extends Button {
 	 * @return {@link HorizontalAlignment#CENTER} by default
 	 */
 	public HorizontalAlignment getTextAlignment() {
-		return textAlignment;
+		checkInitialised();
+		return label.getHorizontalAlignment();
 	}
 
 	/**
 	 * Sets the {@link HorizontalAlignment} of the button's text
-	 * @param textAlignment The text alignment
+	 * @param horizontalAlignment The text alignment
 	 */
 	public void setTextAlignment(HorizontalAlignment textAlignment) {
-		if(textAlignment == null) {
-			return;
-		}
+		checkInitialised();
+		label.setHorizontalAlignment(textAlignment);
 		this.textAlignment = textAlignment;
-	}
-	
-	@Override
-	public void setLayout(String layout) {
-		if(layout == null) {
-			return;
-		}
-		this.layout = layout;
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
 	}
 }

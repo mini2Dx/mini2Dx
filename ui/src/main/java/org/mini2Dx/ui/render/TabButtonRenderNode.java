@@ -8,7 +8,7 @@ import org.mini2Dx.ui.element.TabButton;
 /**
  * {@link RenderNode} implementation for {@link TabButton}
  */
-public class TabButtonRenderNode extends ContentButtonRenderNode {
+public class TabButtonRenderNode extends ButtonRenderNode {
 	
 	public TabButtonRenderNode(ParentRenderNode<?, ?> parent, TabButton element) {
 		super(parent, element);

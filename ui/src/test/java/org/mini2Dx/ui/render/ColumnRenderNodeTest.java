@@ -25,7 +25,7 @@ import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.layout.ScreenSize;
-import org.mini2Dx.ui.style.ColumnStyleRule;
+import org.mini2Dx.ui.style.ParentStyleRule;
 import org.mini2Dx.ui.style.UiTheme;
 
 import junit.framework.Assert;
@@ -155,9 +155,9 @@ public class ColumnRenderNodeTest {
 				atLeast(1).of(theme).getId();
 				will(returnValue("mock"));
 				atLeast(1).of(theme).getStyleRule(with(any(Column.class)), with(ScreenSize.XS));
-				will(returnValue(new ColumnStyleRule()));
+				will(returnValue(new ParentStyleRule()));
 				atLeast(1).of(theme).getStyleRule(with(any(Row.class)), with(ScreenSize.XS));
-				will(returnValue(new ColumnStyleRule()));
+				will(returnValue(new ParentStyleRule()));
 				atLeast(1).of(uiContainer).getLastInputSource();
 				will(returnValue(InputSource.KEYBOARD_MOUSE));
 			}

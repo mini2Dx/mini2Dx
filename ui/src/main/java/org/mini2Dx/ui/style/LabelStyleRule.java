@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 /**
  * Extends {@link StyleRule} for {@link Label} styling
  */
-public class LabelStyleRule extends ColumnStyleRule {
+public class LabelStyleRule extends ParentStyleRule {
 	@Field
 	private int fontSize;
 	@Field

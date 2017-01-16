@@ -16,17 +16,16 @@ import java.util.List;
 
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
-import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.listener.ActionListener;
+import org.mini2Dx.ui.render.ButtonRenderNode;
+import org.mini2Dx.ui.render.ParentRenderNode;
 
 /**
- * Base class for button implementations
+ * A button implementation that stores child elements such as {@link Label}, {@link Image}, etc.
  */
-public abstract class Button extends UiElement implements Actionable {
+public class Button extends ParentUiElement implements Actionable {
 	private List<ActionListener> actionListeners;
 	
-	@Field(optional=true)
-	protected String layout = LayoutRuleset.DEFAULT_LAYOUT;
 	@Field(optional=true)
 	private boolean enabled = true;
 	
@@ -43,6 +42,11 @@ public abstract class Button extends UiElement implements Actionable {
 	 */
 	public Button(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
+	}
+	
+	@Override
+	protected ParentRenderNode<?, ?> createRenderNode(ParentRenderNode<?, ?> parent) {
+		return new ButtonRenderNode(parent, this);
 	}
 	
 	@Override
@@ -90,18 +94,4 @@ public abstract class Button extends UiElement implements Actionable {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-	
-	/**
-	 * Returns the current layout for this {@link Button}
-	 * @return {@link LayoutRuleset#DEFAULT_LAYOUT} by default
-	 */
-	public String getLayout() {
-		return layout;
-	}
-	
-	/**
-	 * Sets the current layout for this {@link Button}
-	 * @param layout
-	 */
-	public abstract void setLayout(String layout);
 }

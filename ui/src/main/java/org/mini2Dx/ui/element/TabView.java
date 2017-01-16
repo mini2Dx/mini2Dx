@@ -36,7 +36,7 @@ import com.badlogic.gdx.Input.Keys;
 /**
  * A {@link UiElement} of tabs that can be switched between by the player
  */
-public class TabView extends UiElement implements Navigatable {
+public class TabView extends ParentUiElement implements Navigatable {
 	private static final String DEFAULT_CHANGE_TAB_BTN_LAYOUT = "xs-3c sm-2c lg-1c";
 
 	private final Queue<ControllerHotKeyOperation> controllerHotKeyOperations = new LinkedList<ControllerHotKeyOperation>();
@@ -345,6 +345,11 @@ public class TabView extends UiElement implements Navigatable {
 		nextTabButton.setStyleId(renderNode.getNextTabButtonStyleId());
 		nextTabButton.setLabelStyle(renderNode.getTabButtonLabelStyleId());
 		nextTabButton.setIconStyle(renderNode.getTabButtonImageStyleId());
+	}
+	
+	@Override
+	protected ParentRenderNode<?, ?> createRenderNode(ParentRenderNode<?, ?> parent) {
+		return new TabViewRenderNode(parent, this);
 	}
 
 	@Override

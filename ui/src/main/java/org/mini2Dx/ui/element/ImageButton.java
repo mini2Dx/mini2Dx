@@ -14,26 +14,24 @@ package org.mini2Dx.ui.element;
 import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
-import org.mini2Dx.ui.render.ImageButtonRenderNode;
-import org.mini2Dx.ui.render.ParentRenderNode;
+import org.mini2Dx.core.serialization.annotation.PostDeserialize;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 /**
- * Implementation of {@link Button} that only contains an image
+ * Utility implementation of {@link Button} that contains an {@link Image}
  */
 public class ImageButton extends Button {
-	protected ImageButtonRenderNode renderNode;
-	private TextureRegion textureRegion;
-	
 	@Field(optional=true)
 	private String texturePath;
 	@Field(optional = true)
 	private String atlas;
 	@Field(optional=true)
-	private boolean responsive = false;
+	private String responsive = null;
+	
+	private Image image;
 	
 	/**
 	 * Constructor. Generates a unique ID for this {@link ImageButton}
@@ -48,6 +46,42 @@ public class ImageButton extends Button {
 	 */
 	public ImageButton(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
+		
+	}
+	
+	/**
+	 * Called after XML/JSON deserialization
+	 * Note: This method is for legacy support to 1.3.x
+	 */
+	@PostDeserialize
+	public void postDeserialize() {
+		checkInitialised();
+		if(texturePath != null) {
+			image.setTexturePath(texturePath);
+		}
+		if(atlas != null) {
+			image.setAtlas(atlas);
+		}
+		if(responsive != null) {
+			image.setResponsive(Boolean.parseBoolean(responsive));
+		}
+	}
+	
+	private void checkInitialised() {
+		if(image != null) {
+			return;
+		}
+		for(int i = 0; i < children.size(); i++) {
+			if(children.get(i) instanceof Image) {
+				image = (Image) children.get(i);
+				return;
+			}
+		}
+		
+		image = new Image(getId() + "-backingImage");
+		image.setResponsive(false);
+		image.setVisibility(Visibility.VISIBLE);
+		add(image);
 	}
 	
 	/**
@@ -58,17 +92,8 @@ public class ImageButton extends Button {
 	 * @return Null if no {@link TextureRegion} has been set
 	 */
 	public TextureRegion getTextureRegion(AssetManager assetManager) {
-		if (atlas != null) {
-			if (texturePath != null) {
-				TextureAtlas textureAtlas = assetManager.get(atlas, TextureAtlas.class);
-				textureRegion = new TextureRegion(textureAtlas.findRegion(texturePath));
-				texturePath = null;
-			}
-		} else if (texturePath != null) {
-			textureRegion = new TextureRegion(assetManager.get(texturePath, Texture.class));
-			texturePath = null;
-		}
-		return textureRegion;
+		checkInitialised();
+		return image.getTextureRegion(assetManager);
 	}
 
 	/**
@@ -78,12 +103,8 @@ public class ImageButton extends Button {
 	 *            The {@link TextureRegion} to use
 	 */
 	public void setTextureRegion(TextureRegion textureRegion) {
-		this.textureRegion = textureRegion;
-		
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
+		checkInitialised();
+		image.setTextureRegion(textureRegion);
 	}
 	
 	/**
@@ -104,12 +125,8 @@ public class ImageButton extends Button {
 	 *            The path to the texture
 	 */
 	public void setTexturePath(String texturePath) {
-		this.texturePath = texturePath;
-		
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
+		checkInitialised();
+		image.setTexturePath(texturePath);
 	}
 	
 	/**
@@ -117,6 +134,7 @@ public class ImageButton extends Button {
 	 * @return Null by default
 	 */
 	public String getAtlas() {
+		checkInitialised();
 		return atlas;
 	}
 
@@ -125,12 +143,8 @@ public class ImageButton extends Button {
 	 * @param atlas Null if the texture should not be looked up via an atlas
 	 */
 	public void setAtlas(String atlas) {
-		this.atlas = atlas;
-		
-		if (renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
+		checkInitialised();
+		image.setAtlas(atlas);
 	}
 
 	/**
@@ -138,7 +152,8 @@ public class ImageButton extends Button {
 	 * @return False by default
 	 */
 	public boolean isResponsive() {
-		return responsive;
+		checkInitialised();
+		return image.isResponsive();
 	}
 
 	/**
@@ -146,87 +161,7 @@ public class ImageButton extends Button {
 	 * @param responsive
 	 */
 	public void setResponsive(boolean responsive) {
-		this.responsive = responsive;
-		
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
-	}
-
-	@Override
-	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode != null) {
-			return;
-		}
-		renderNode = new ImageButtonRenderNode(parentRenderNode, this);
-		parentRenderNode.addChild(renderNode);
-	}
-
-	@Override
-	public void detach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode == null) {
-			return;
-		}
-		parentRenderNode.removeChild(renderNode);
-		renderNode = null;
-	}
-	
-	@Override
-	public void setVisibility(Visibility visibility) {
-		if(this.visibility == visibility) {
-			return;
-		}
-		this.visibility = visibility;
-		
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
-	}
-	
-	@Override
-	public void setStyleId(String styleId) {
-		if(styleId == null) {
-			return;
-		}
-		if(this.styleId.equals(styleId)) {
-			return;
-		}
-		this.styleId = styleId;
-		
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
-	}
-	
-	@Override
-	public void syncWithRenderNode() {
-		while(!effects.isEmpty()) {
-			renderNode.applyEffect(effects.poll());
-		}
-	}
-	
-	@Override
-	public void setZIndex(int zIndex) {
-		this.zIndex = zIndex;
-		
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
-	}
-	
-	@Override
-	public void setLayout(String layout) {
-		if(layout == null) {
-			return;
-		}
-		this.layout = layout;
-		if(renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
+		checkInitialised();
+		image.setResponsive(responsive);
 	}
 }

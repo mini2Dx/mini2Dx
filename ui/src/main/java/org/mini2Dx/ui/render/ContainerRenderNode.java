@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 /**
  * Base class for {@link Container} {@link RenderNode} implementations
  */
-public abstract class ContainerRenderNode extends AbstractColumnRenderNode<ContainerStyleRule> {
+public abstract class ContainerRenderNode extends ParentRenderNode<Column, ContainerStyleRule> {
 	private final Map<String, RenderNode<?, ?>> elementIdLookupCache = new HashMap<String, RenderNode<?, ?>>();
 	
 	public ContainerRenderNode(ParentRenderNode<?, ?> parent, Column column) {

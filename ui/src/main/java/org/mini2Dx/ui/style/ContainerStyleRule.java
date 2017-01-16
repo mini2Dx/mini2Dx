@@ -16,5 +16,5 @@ import org.mini2Dx.ui.element.Container;
 /**
  * Extends {@link StyleRule} for {@link Container} styling
  */
-public class ContainerStyleRule extends ColumnStyleRule {
+public class ContainerStyleRule extends ParentStyleRule {
 }

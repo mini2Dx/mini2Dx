@@ -13,12 +13,12 @@ package org.mini2Dx.ui.render;
 
 import org.mini2Dx.ui.element.Row;
 import org.mini2Dx.ui.layout.LayoutState;
-import org.mini2Dx.ui.style.ColumnStyleRule;
+import org.mini2Dx.ui.style.ParentStyleRule;
 
 /**
  * {@link RenderNode} implementation for {@link Row}
  */
-public class RowRenderNode extends AbstractColumnRenderNode<ColumnStyleRule> {
+public class RowRenderNode extends ParentRenderNode<Row, ParentStyleRule> {
 
 	public RowRenderNode(ParentRenderNode<?, ?> parent, Row row) {
 		super(parent, row);
@@ -31,7 +31,7 @@ public class RowRenderNode extends AbstractColumnRenderNode<ColumnStyleRule> {
 	}
 
 	@Override
-	protected ColumnStyleRule determineStyleRule(LayoutState layoutState) {
+	protected ParentStyleRule determineStyleRule(LayoutState layoutState) {
 		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 	}
 }

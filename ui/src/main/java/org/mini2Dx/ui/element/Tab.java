@@ -56,15 +56,8 @@ public class Tab extends Row implements Navigatable {
 	}
 	
 	@Override
-	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		if(renderNode != null) {
-			return;
-		}
-		renderNode = new TabRenderNode(parentRenderNode, this);
-		for(int i = 0; i < children.size(); i++) {
-			children.get(i).attach(renderNode);
-		}
-		parentRenderNode.addChild(renderNode);
+	protected ParentRenderNode<?, ?> createRenderNode(ParentRenderNode<?, ?> parent) {
+		return new TabRenderNode(parent, this);
 	}
 	
 	public String getTitle() {

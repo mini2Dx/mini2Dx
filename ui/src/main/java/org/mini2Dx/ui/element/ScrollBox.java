@@ -21,6 +21,7 @@ import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.animation.ScrollTo;
 import org.mini2Dx.ui.listener.ScrollListener;
 import org.mini2Dx.ui.render.ParentRenderNode;
+import org.mini2Dx.ui.render.RowRenderNode;
 import org.mini2Dx.ui.render.ScrollBoxRenderNode;
 
 /**
@@ -55,17 +56,10 @@ public class ScrollBox extends Column {
 	}
 
 	@Override
-	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		if (renderNode != null) {
-			return;
-		}
-		renderNode = new ScrollBoxRenderNode(parentRenderNode, this);
-		for (int i = 0; i < children.size(); i++) {
-			children.get(i).attach(renderNode);
-		}
-		parentRenderNode.addChild(renderNode);
+	protected ParentRenderNode<?, ?> createRenderNode(ParentRenderNode<?, ?> parent) {
+		return new ScrollBoxRenderNode(parent, this);
 	}
-
+	
 	@Override
 	public void syncWithRenderNode() {
 		super.syncWithRenderNode();

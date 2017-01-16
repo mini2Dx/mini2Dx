@@ -13,44 +13,24 @@ package org.mini2Dx.ui.render;
 
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.NinePatch;
-import org.mini2Dx.ui.animation.NullTextAnimation;
-import org.mini2Dx.ui.animation.TextAnimation;
-import org.mini2Dx.ui.element.TextButton;
-import org.mini2Dx.ui.layout.HorizontalAlignment;
+import org.mini2Dx.ui.element.Button;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ButtonStyleRule;
 
 import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 /**
- * {@link RenderNode} implementation for {@link TextButton}
+ * {@link RenderNode} implementation for {@link ContentButton}
  */
-public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule>implements ActionableRenderNode {
-	private static final GlyphLayout GLYPH_LAYOUT = new GlyphLayout();
-	private static final BitmapFont DEFAULT_FONT = new BitmapFont(true);
-
+public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> implements ActionableRenderNode {
 	protected LayoutRuleset layoutRuleset;
-	protected BitmapFontCache bitmapFontCache = DEFAULT_FONT.newFontCache();
-	protected NullTextAnimation nullAnimation = new NullTextAnimation();
-
-	public TextButtonRenderNode(ParentRenderNode<?, ?> parent, TextButton element) {
+	
+	public ButtonRenderNode(ParentRenderNode<?, ?> parent, Button element) {
 		super(parent, element);
 		layoutRuleset = new LayoutRuleset(element.getLayout());
 	}
-
-	@Override
-	public void layout(LayoutState layoutState) {
-		if (!layoutRuleset.equals(element.getLayout())) {
-			layoutRuleset = new LayoutRuleset(element.getLayout());
-		}
-		super.layout(layoutState);
-	}
-
+	
 	@Override
 	public ActionableRenderNode mouseDown(int screenX, int screenY, int pointer, int button) {
 		if (!isIncludedInRender()) {
@@ -81,7 +61,7 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 		}
 		endAction();
 	}
-
+	
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		if (getState() == NodeState.ACTION) {
@@ -89,14 +69,7 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 		}
 		return super.mouseMoved(screenX, screenY);
 	}
-
-	@Override
-	public void update(UiContainerRenderTree uiContainer, float delta) {
-		super.update(uiContainer, delta);
-		nullAnimation.update(bitmapFontCache, element.getText(), preferredContentWidth,
-				element.getTextAlignment().getAlignValue(), delta);
-	}
-
+	
 	@Override
 	protected void renderElement(Graphics g) {
 		NinePatch ninePatch = style.getNormalNinePatch();
@@ -115,38 +88,41 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 			ninePatch = style.getDisabledNinePatch();
 		}
 
-		if (ninePatch != null) {
-			g.drawNinePatch(ninePatch, getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(),
-					getInnerRenderHeight());
+		if(ninePatch != null) {
+			g.drawNinePatch(ninePatch, getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(), getInnerRenderHeight());
 		}
-
-		nullAnimation.render(bitmapFontCache, g, getContentRenderX(), getContentRenderY());
+		super.renderElement(g);
 	}
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if (layoutRuleset.isHiddenByInputSource(layoutState.getLastInputSource())) {
+		if(layoutRuleset.isHiddenByInputSource(layoutState.getLastInputSource())) {
 			return 0f;
 		}
 		float layoutRuleResult = layoutRuleset.getPreferredWidth(layoutState);
-		if (layoutRuleResult <= 0f) {
+		if(layoutRuleResult <= 0f) {
 			hiddenByLayoutRule = true;
 			return 0f;
 		} else {
 			hiddenByLayoutRule = false;
 		}
-		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft()
-				- style.getMarginRight();
+		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft() - style.getMarginRight();
 	}
 
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
-		GLYPH_LAYOUT.setText(bitmapFontCache.getFont(), element.getText(), Color.WHITE, preferredContentWidth,
-				element.getTextAlignment().getAlignValue(), true);
-		if (GLYPH_LAYOUT.height < style.getMinHeight()) {
+		float maxHeight = 0f;
+
+		for (RenderLayer layer : layers.values()) {
+			float height = layer.determinePreferredContentHeight(layoutState);
+			if (height > maxHeight) {
+				maxHeight = height;
+			}
+		}
+		if(maxHeight < style.getMinHeight()) {
 			return style.getMinHeight();
 		}
-		return GLYPH_LAYOUT.height;
+		return maxHeight;
 	}
 
 	@Override
@@ -158,38 +134,10 @@ public class TextButtonRenderNode extends RenderNode<TextButton, ButtonStyleRule
 	protected float determineYOffset(LayoutState layoutState) {
 		return 0f;
 	}
-
+	
 	@Override
 	protected ButtonStyleRule determineStyleRule(LayoutState layoutState) {
-		if (bitmapFontCache != null) {
-			bitmapFontCache.clear();
-			bitmapFontCache = null;
-			nullAnimation.reset();
-		}
-
-		ButtonStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
-		if (result.getBitmapFont() == null) {
-			bitmapFontCache = DEFAULT_FONT.newFontCache();
-		} else {
-			bitmapFontCache = result.getBitmapFont().newFontCache();
-		}
-		bitmapFontCache.setColor(result.getColor());
-		return result;
-	}
-
-	public void updateBitmapFontCache() {
-		if (style == null) {
-			return;
-		}
-		bitmapFontCache.clear();
-		nullAnimation.reset();
-		
-		GLYPH_LAYOUT.setText(bitmapFontCache.getFont(), element.getText(), Color.WHITE, preferredContentWidth,
-				element.getTextAlignment().getAlignValue(), true);
-		if (GLYPH_LAYOUT.height == getPreferredContentHeight()) {
-			return;
-		}
-		setDirty(true);
+		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 	}
 
 	@Override

@@ -121,7 +121,7 @@ public class UiTheme {
 		for (StyleRuleset<ButtonStyleRule> buttonRuleset : buttons.values()) {
 			buttonRuleset.validate(this);
 		}
-		for (StyleRuleset<ColumnStyleRule> columnRuleset : columns.values()) {
+		for (StyleRuleset<ParentStyleRule> columnRuleset : columns.values()) {
 			columnRuleset.validate(this);
 		}
 		for (StyleRuleset<ContainerStyleRule> containerRuleset : containers.values()) {
@@ -163,7 +163,7 @@ public class UiTheme {
 			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Button Ruleset: " + id + "] Dependencies loaded");
 		}
 		for (String id : columns.keySet()) {
-			StyleRuleset<ColumnStyleRule> columnRuleset = columns.get(id);
+			StyleRuleset<ParentStyleRule> columnRuleset = columns.get(id);
 			columnRuleset.loadDependencies(this, dependencies);
 			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Column Ruleset: " + id + "] Dependencies loaded");
 		}
@@ -220,7 +220,7 @@ public class UiTheme {
 		for (StyleRuleset<ButtonStyleRule> buttonRuleset : buttons.values()) {
 			buttonRuleset.prepareAssets(this, fileHandleResolver, assetManager);
 		}
-		for (StyleRuleset<ColumnStyleRule> columnRuleset : columns.values()) {
+		for (StyleRuleset<ParentStyleRule> columnRuleset : columns.values()) {
 			columnRuleset.prepareAssets(this, fileHandleResolver, assetManager);
 		}
 		for (StyleRuleset<ContainerStyleRule> containerRuleset : containers.values()) {
@@ -269,7 +269,7 @@ public class UiTheme {
 		return getButtonStyleRule(button.getStyleId(), screenSize);
 	}
 
-	public ColumnStyleRule getStyleRule(Column column, ScreenSize screenSize) {
+	public ParentStyleRule getStyleRule(Column column, ScreenSize screenSize) {
 		return getColumnStyleRule(column.getStyleId(), screenSize);
 	}
 
@@ -328,8 +328,8 @@ public class UiTheme {
 		return ruleset.getStyleRule(screenSize);
 	}
 	
-	public ColumnStyleRule getColumnStyleRule(String styleId, ScreenSize screenSize) {
-		StyleRuleset<ColumnStyleRule> ruleset = columns.get(styleId);
+	public ParentStyleRule getColumnStyleRule(String styleId, ScreenSize screenSize) {
+		StyleRuleset<ParentStyleRule> ruleset = columns.get(styleId);
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = columns.get(DEFAULT_STYLE_ID);

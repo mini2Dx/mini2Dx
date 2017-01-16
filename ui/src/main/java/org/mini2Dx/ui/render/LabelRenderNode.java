@@ -138,4 +138,19 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 		}
 		return result;
 	}
+	
+	public void updateBitmapFontCache() {
+		if (style == null) {
+			return;
+		}
+		bitmapFontCache.clear();
+		nullAnimation.reset();
+		
+		GLYPH_LAYOUT.setText(bitmapFontCache.getFont(), element.getText(), Color.WHITE, preferredContentWidth,
+				element.getHorizontalAlignment().getAlignValue(), true);
+		if (GLYPH_LAYOUT.height == getPreferredContentHeight()) {
+			return;
+		}
+		setDirty(true);
+	}
 }

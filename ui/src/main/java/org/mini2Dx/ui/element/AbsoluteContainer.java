@@ -16,6 +16,7 @@ import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.AbsoluteContainerRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
+import org.mini2Dx.ui.render.ScrollBoxRenderNode;
 
 /**
  * A {@link Container} that can be positioned manually
@@ -42,17 +43,10 @@ public class AbsoluteContainer extends Container {
 	public AbsoluteContainer(@ConstructorArg(clazz = String.class, name = "id") String id) {
 		super(id);
 	}
-
+	
 	@Override
-	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
-		if (renderNode != null) {
-			return;
-		}
-		renderNode = new AbsoluteContainerRenderNode(parentRenderNode, this);
-		for (int i = 0; i < children.size(); i++) {
-			children.get(i).attach(renderNode);
-		}
-		parentRenderNode.addChild(renderNode);
+	protected ParentRenderNode<?, ?> createRenderNode(ParentRenderNode<?, ?> parent) {
+		return new AbsoluteContainerRenderNode(parent, this);
 	}
 
 	/**

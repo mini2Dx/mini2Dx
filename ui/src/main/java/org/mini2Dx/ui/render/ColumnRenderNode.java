@@ -13,19 +13,19 @@ package org.mini2Dx.ui.render;
 
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.layout.LayoutState;
-import org.mini2Dx.ui.style.ColumnStyleRule;
+import org.mini2Dx.ui.style.ParentStyleRule;
 
 /**
  * {@link RenderNode} implementation for {@link Column}
  */
-public class ColumnRenderNode extends AbstractColumnRenderNode<ColumnStyleRule> {
+public class ColumnRenderNode extends ParentRenderNode<Column, ParentStyleRule> {
 
 	public ColumnRenderNode(ParentRenderNode<?, ?> parent, Column column) {
 		super(parent, column);
 	}
 
 	@Override
-	protected ColumnStyleRule determineStyleRule(LayoutState layoutState) {
+	protected ParentStyleRule determineStyleRule(LayoutState layoutState) {
 		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 	}
 }

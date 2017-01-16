@@ -31,7 +31,7 @@ import com.badlogic.gdx.math.MathUtils;
 /**
  * {@link RenderNode} implementation for {@link ScrollBox}
  */
-public class ScrollBoxRenderNode extends AbstractColumnRenderNode<ScrollBoxStyleRule>implements ActionableRenderNode {
+public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxStyleRule>implements ActionableRenderNode {
 	private final CollisionBox topScrollButton = new CollisionBox();
 	private final CollisionBox bottomScrollButton = new CollisionBox();
 	private final CollisionBox scrollThumb = new CollisionBox();

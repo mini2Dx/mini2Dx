@@ -19,7 +19,7 @@ import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
-import org.mini2Dx.ui.style.StyleRule;
+import org.mini2Dx.ui.style.ParentStyleRule;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -27,7 +27,7 @@ import com.badlogic.gdx.assets.AssetManager;
 /**
  * {@link RenderNode} implementation for {@link UiContainer}
  */
-public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRule> {
+public class UiContainerRenderTree extends ParentRenderNode<UiContainer, ParentStyleRule> {
 	private static final String LOGGING_TAG = UiContainerRenderTree.class.getSimpleName();
 	
 	private final AssetManager assetManager;
@@ -62,6 +62,7 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRu
 		}
 		style = determineStyleRule(layoutState);
 		zIndex = element.getZIndex();
+		flexDirection = element.getFlexDirection();
 		preferredContentWidth = determinePreferredContentWidth(layoutState);
 		preferredContentHeight = determinePreferredContentHeight(layoutState);
 		xOffset = determineXOffset(layoutState);
@@ -152,8 +153,8 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, StyleRu
 	}
 	
 	@Override
-	protected StyleRule determineStyleRule(LayoutState layoutState) {
-		return new StyleRule();
+	protected ParentStyleRule determineStyleRule(LayoutState layoutState) {
+		return new ParentStyleRule();
 	}
 	
 	@Override
