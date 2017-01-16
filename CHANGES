@@ -1,4 +1,4 @@
-[1.4.0-SNAPSHOT]
+[1.4.0]
 - Performance improvements to Polygon class
 - Added @PostDeserialize annotation to trigger methods after deserialising from xml/json
 - Added Graphics#drawBitmapFontCache
