@@ -12,8 +12,6 @@
 package org.mini2Dx.ui.element;
 
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
-import org.mini2Dx.core.serialization.annotation.Field;
-import org.mini2Dx.core.serialization.annotation.PostDeserialize;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
 
 /**
@@ -21,11 +19,6 @@ import org.mini2Dx.ui.layout.HorizontalAlignment;
  */
 public class TextButton extends Button {
 	private Label label;
-	
-	@Field(optional=true)
-	private String text = null;
-	@Field(optional=true)
-	private HorizontalAlignment textAlignment = HorizontalAlignment.CENTER;
 	
 	/**
 	 * Constructor. Generates a unique ID for this {@link TextButton}
@@ -40,21 +33,6 @@ public class TextButton extends Button {
 	 */
 	public TextButton(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
-	}
-	
-	/**
-	 * Called after XML/JSON deserialization
-	 * Note: This method is for legacy support to 1.3.x
-	 */
-	@PostDeserialize
-	public void postDeserialize() {
-		checkInitialised();
-		if(text != null) {
-			label.setText(text);
-		}
-		if(textAlignment != null) {
-			label.setHorizontalAlignment(textAlignment);
-		}
 	}
 	
 	private void checkInitialised() {
@@ -91,7 +69,6 @@ public class TextButton extends Button {
 	public void setText(String text) {
 		checkInitialised();
 		label.setText(text);
-		this.text = text;
 	}
 
 	/**
@@ -105,11 +82,10 @@ public class TextButton extends Button {
 
 	/**
 	 * Sets the {@link HorizontalAlignment} of the button's text
-	 * @param horizontalAlignment The text alignment
+	 * @param textAlignment The text alignment
 	 */
 	public void setTextAlignment(HorizontalAlignment textAlignment) {
 		checkInitialised();
 		label.setHorizontalAlignment(textAlignment);
-		this.textAlignment = textAlignment;
 	}
 }

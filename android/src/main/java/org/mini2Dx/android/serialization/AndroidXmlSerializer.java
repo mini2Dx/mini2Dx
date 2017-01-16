@@ -139,7 +139,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		if (fieldDefinitionClass.isArray()) {
 			Class<?> arrayComponentType = fieldDefinitionClass.getComponentType();
 			if (arrayComponentType.isInterface() && arrayComponentType.getAnnotation(NonConcrete.class) == null) {
-				throw new SerializationException("Cannot serialize interface unless it has a @"
+				throw new SerializationException(fieldName + ":: Cannot serialize interface unless it has a @"
 						+ NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlSerializer.attribute("", "class", clazz.getName());
@@ -148,7 +148,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		if (Collection.class.isAssignableFrom(fieldDefinitionClass)) {
 			Class<?> valueClass = fieldDefinition.getElementType(0);
 			if (valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
-				throw new SerializationException("Cannot serialize interface unless it has a @"
+				throw new SerializationException(fieldName + ":: Cannot serialize interface unless it has a @"
 						+ NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlSerializer.attribute("", "class", clazz.getName());
@@ -157,7 +157,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		if(com.badlogic.gdx.utils.Array.class.isAssignableFrom(fieldDefinitionClass)) {
 			Class<?> valueClass = fieldDefinition.getElementType(0);
 			if(valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
-				throw new SerializationException("Cannot serialize interface unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
+				throw new SerializationException(fieldName + ":: Cannot serialize interface unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlSerializer.attribute("", "class", clazz.getName());
 			return;
@@ -165,7 +165,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		if (Map.class.isAssignableFrom(fieldDefinitionClass)) {
 			Class<?> valueClass = fieldDefinition.getElementType(1);
 			if (valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
-				throw new SerializationException("Cannot serialize interface unless it has a @"
+				throw new SerializationException(fieldName + ":: Cannot serialize interface unless it has a @"
 						+ NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlSerializer.attribute("", "class", clazz.getName());
@@ -174,7 +174,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		if (ObjectMap.class.isAssignableFrom(fieldDefinitionClass)) {
 			Class<?> valueClass = fieldDefinition.getElementType(1);
 			if (valueClass.isInterface() && valueClass.getAnnotation(NonConcrete.class) == null) {
-				throw new SerializationException("Cannot serialize interface unless it has a @"
+				throw new SerializationException(fieldName + ":: Cannot serialize interface unless it has a @"
 						+ NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlSerializer.attribute("", "class", clazz.getName());
@@ -182,7 +182,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		}
 		if (fieldDefinitionClass.isInterface()) {
 			if (fieldDefinitionClass.getAnnotation(NonConcrete.class) == null) {
-				throw new SerializationException("Cannot serialize interface unless it has a @"
+				throw new SerializationException(fieldName + ":: Cannot serialize interface unless it has a @"
 						+ NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlSerializer.attribute("", "class", clazz.getName());
@@ -190,7 +190,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		}
 		if(Modifier.isAbstract(fieldDefinitionClass.getModifiers())) {
 			if(fieldDefinitionClass.getAnnotation(NonConcrete.class) == null) {
-				throw new SerializationException("Cannot serialize abstract class unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
+				throw new SerializationException(fieldName + ":: Cannot serialize abstract class unless it has a @" + NonConcrete.class.getSimpleName() + " annotation");
 			}
 			xmlSerializer.attribute("", "class", clazz.getName());
 			return;
@@ -211,7 +211,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 				writePrimitive(tagName, object, xmlSerializer);
 				return;
 			}
-			if (clazz.isEnum()) {
+			if (clazz.isEnum() || clazz.getSuperclass().isEnum()) {
 				writePrimitive(tagName, object.toString(), xmlSerializer);
 				return;
 			}

@@ -13,8 +13,6 @@ package org.mini2Dx.ui.element;
 
 import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
-import org.mini2Dx.core.serialization.annotation.Field;
-import org.mini2Dx.core.serialization.annotation.PostDeserialize;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,14 +20,7 @@ import com.badlogic.gdx.graphics.Texture;
 /**
  * Utility implementation of {@link Button} that contains an {@link Image}
  */
-public class ImageButton extends Button {
-	@Field(optional=true)
-	private String texturePath;
-	@Field(optional = true)
-	private String atlas;
-	@Field(optional=true)
-	private String responsive = null;
-	
+public class ImageButton extends Button {	
 	private Image image;
 	
 	/**
@@ -45,25 +36,6 @@ public class ImageButton extends Button {
 	 */
 	public ImageButton(@ConstructorArg(clazz=String.class, name = "id") String id) {
 		super(id);
-		
-	}
-	
-	/**
-	 * Called after XML/JSON deserialization
-	 * Note: This method is for legacy support to 1.3.x
-	 */
-	@PostDeserialize
-	public void postDeserialize() {
-		checkInitialised();
-		if(texturePath != null) {
-			image.setTexturePath(texturePath);
-		}
-		if(atlas != null) {
-			image.setAtlas(atlas);
-		}
-		if(responsive != null) {
-			image.setResponsive(Boolean.parseBoolean(responsive));
-		}
 	}
 	
 	private void checkInitialised() {
@@ -134,7 +106,7 @@ public class ImageButton extends Button {
 	 */
 	public String getAtlas() {
 		checkInitialised();
-		return atlas;
+		return image.getAtlas();
 	}
 
 	/**

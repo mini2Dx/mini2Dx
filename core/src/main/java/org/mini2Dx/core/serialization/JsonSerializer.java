@@ -302,7 +302,7 @@ public class JsonSerializer {
 				writePrimitive(fieldName, object, json);
 				return;
 			}
-			if (clazz.isEnum()) {
+			if (clazz.isEnum() || clazz.getSuperclass().isEnum()) {
 				writePrimitive(fieldName, object.toString(), json);
 				return;
 			}

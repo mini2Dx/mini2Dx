@@ -1,4 +1,5 @@
 /**
+
  * Copyright (c) 2015 See AUTHORS file
  * All rights reserved.
  *
@@ -21,7 +22,7 @@ import org.mini2Dx.ui.style.ButtonStyleRule;
 import com.badlogic.gdx.Input.Buttons;
 
 /**
- * {@link RenderNode} implementation for {@link ContentButton}
+ * {@link RenderNode} implementation for {@link Button}
  */
 public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> implements ActionableRenderNode {
 	protected LayoutRuleset layoutRuleset;

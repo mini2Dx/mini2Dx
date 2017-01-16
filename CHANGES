@@ -1,14 +1,15 @@
 [1.4.0-SNAPSHOT]
 - Performance improvements to Polygon class
 - Added @PostDeserialize annotation to trigger methods after deserialising from xml/json
-- Backgrounds can now be applied to Labels
-- UiFont now caches BitmapFont instances
-- UI framework now renders text using BitmapFontCache instances
 - Added Graphics#drawBitmapFontCache
+- Added backgrounds to Labels
+- Added BitmapFont caching to UiFont
+- Added FlexDirection for changing layout of children UI elements
+- UI framework now renders text using BitmapFontCache instances
 - UI elements that contain children now extend ParentUiElement class
-- Button is now a non-abstract class that acts as a parent element
-- TextButton and ImageButton are now utility classes
-- Parent UI elements can now change children layout order using FlexDirection enum
+-- Button is now a non-abstract class that acts as a parent element
+-- TextButton and ImageButton are now utility classes
+- Fixed serialisation of enums that contain abstract methods
 - Moved Os util classes to natives-loader project
 
 [1.3.1]
