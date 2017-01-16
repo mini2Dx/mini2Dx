@@ -18,7 +18,6 @@ import org.mini2Dx.core.serialization.annotation.PostDeserialize;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 /**
  * Utility implementation of {@link Button} that contains an {@link Image}

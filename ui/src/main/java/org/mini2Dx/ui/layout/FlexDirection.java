@@ -13,7 +13,6 @@ package org.mini2Dx.ui.layout;
 
 import java.util.List;
 
-import org.lwjgl.Sys;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.RenderNode;
 

@@ -11,8 +11,6 @@
  */
 package org.mini2Dx.ui.element;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.core.serialization.annotation.PostDeserialize;

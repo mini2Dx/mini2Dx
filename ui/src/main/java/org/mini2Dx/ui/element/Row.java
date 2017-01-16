@@ -14,7 +14,6 @@ package org.mini2Dx.ui.element;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.RowRenderNode;
-import org.mini2Dx.ui.render.TabRenderNode;
 
 /**
  * A row of {@link UiElement}s. Equivalent to 12 {@link Column}s

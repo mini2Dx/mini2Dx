@@ -22,11 +22,9 @@ import org.mini2Dx.ui.style.TextBoxStyleRule;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Clipboard;
 
 /**

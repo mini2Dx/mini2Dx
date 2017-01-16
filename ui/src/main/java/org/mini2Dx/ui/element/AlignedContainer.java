@@ -15,7 +15,6 @@ import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
 import org.mini2Dx.ui.layout.VerticalAlignment;
-import org.mini2Dx.ui.render.AbsoluteContainerRenderNode;
 import org.mini2Dx.ui.render.AlignedContainerRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 

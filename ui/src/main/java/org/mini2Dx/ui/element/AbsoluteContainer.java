@@ -16,7 +16,6 @@ import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.AbsoluteContainerRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
-import org.mini2Dx.ui.render.ScrollBoxRenderNode;
 
 /**
  * A {@link Container} that can be positioned manually
