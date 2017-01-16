@@ -1,4 +1,5 @@
 [1.4.0-SNAPSHOT]
+- Added @PostDeserialize annotation to trigger methods after deserialising from xml/json
 - Backgrounds can now be applied to Labels
 - UiFont now caches BitmapFont instances
 - Added Graphics#drawBitmapFontCache

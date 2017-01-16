@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.core.serialization.annotation.PostDeserialize;
 import org.mini2Dx.natives.Os;
 
 import com.badlogic.gdx.utils.Array;
@@ -81,11 +82,17 @@ public class TestParentObject extends TestSuperObject {
 	private Array<String> gdxArray;
     
     private int ignoredValue;
+    private boolean postDeserializeCalled = false;
     
     public TestParentObject() {}
     
     public TestParentObject(int intValue) {
     	this.intValue = intValue;
+    }
+    
+    @PostDeserialize
+    public void postDeserialize() {
+    	postDeserializeCalled = true;
     }
 
     public int getIntValue() {
@@ -290,6 +297,10 @@ public class TestParentObject extends TestSuperObject {
 
 	public void setGdxArray(Array<String> gdxArray) {
 		this.gdxArray = gdxArray;
+	}
+
+	public boolean isPostDeserializeCalled() {
+		return postDeserializeCalled;
 	}
 
 	@Override

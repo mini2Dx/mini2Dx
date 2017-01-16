@@ -38,6 +38,7 @@ import org.mini2Dx.core.serialization.SerializationException;
 import org.mini2Dx.core.serialization.XmlSerializer;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.NonConcrete;
+import org.mini2Dx.core.serialization.annotation.PostDeserialize;
 import org.mini2Dx.core.util.Ref;
 
 import com.badlogic.gdx.utils.ObjectMap;
@@ -77,6 +78,7 @@ public class IOSXmlSerializer implements XmlSerializer {
 				e.printStackTrace();
 			}
 		}
+		callPostDeserializeMethods(result, clazz);
 		return result;
 	}
 
@@ -106,6 +108,22 @@ public class IOSXmlSerializer implements XmlSerializer {
 				writer.close();
 			} catch (IOException e) {
 			}
+		}
+	}
+	
+	private <T> void callPostDeserializeMethods(T object, Class<T> clazz) throws SerializationException {
+		Class<?> currentClass = clazz;
+		while (currentClass != null && !currentClass.equals(Object.class)) {
+			for(Method method : ClassReflection.getDeclaredMethods(currentClass)) {
+				if(method.isAnnotationPresent(PostDeserialize.class)) {
+					try {
+						method.invoke(object);
+					} catch (ReflectionException e) {
+						throw new SerializationException(e);
+					}
+				}
+			}
+			currentClass = currentClass.getSuperclass();
 		}
 	}
 	

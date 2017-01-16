@@ -25,7 +25,9 @@ import java.util.Map;
 
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.NonConcrete;
+import org.mini2Dx.core.serialization.annotation.PostDeserialize;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
@@ -37,6 +39,7 @@ import com.badlogic.gdx.utils.reflect.ArrayReflection;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.Method;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 /**
  * Serializes objects to/from JSON based on
@@ -57,7 +60,9 @@ public class JsonSerializer {
 	 *             Thrown when the data is invalid
 	 */
 	public <T> T fromJson(FileHandle fileHandle, Class<T> clazz) throws SerializationException {
-		return deserialize(new JsonReader().parse(fileHandle), clazz);
+		T result = deserialize(new JsonReader().parse(fileHandle), clazz);
+		callPostDeserializeMethods(result, clazz);
+		return result;
 	}
 
 	/**
@@ -73,7 +78,9 @@ public class JsonSerializer {
 	 *             Thrown when the data is invalid
 	 */
 	public <T> T fromJson(String json, Class<T> clazz) throws SerializationException {
-		return deserialize(new JsonReader().parse(json), clazz);
+		T result = deserialize(new JsonReader().parse(json), clazz);
+		callPostDeserializeMethods(result, clazz);
+		return result;
 	}
 
 	/**
@@ -153,6 +160,22 @@ public class JsonSerializer {
 			return json.prettyPrint(result);
 		}
 		return result;
+	}
+	
+	private <T> void callPostDeserializeMethods(T object, Class<T> clazz) throws SerializationException {
+		Class<?> currentClass = clazz;
+		while (currentClass != null && !currentClass.equals(Object.class)) {
+			for(Method method : ClassReflection.getDeclaredMethods(currentClass)) {
+				if(method.isAnnotationPresent(PostDeserialize.class)) {
+					try {
+						method.invoke(object);
+					} catch (ReflectionException e) {
+						throw new SerializationException(e);
+					}
+				}
+			}
+			currentClass = currentClass.getSuperclass();
+		}
 	}
 
 	private <T> void writePrimitive(String fieldName, Object value, Json json) {
