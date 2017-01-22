@@ -115,15 +115,29 @@ public class TiledMapTest {
 
 		TiledObjectGroup group = tiledMap.getObjectGroup("Objects");
 		Assert.assertEquals("Objects", group.getName());
-		Assert.assertEquals(1, group.getObjects().size());
+		Assert.assertEquals(2, group.getObjects().size());
 
-		TiledObject obj = group.getObjects().get(0);
-		Assert.assertEquals(true, obj.containsProperty("testProperty"));
-		Assert.assertEquals("SUCCESS", obj.getProperty("testProperty"));
-		Assert.assertEquals(32f, obj.getX());
-		Assert.assertEquals(64f, obj.getY());
-		Assert.assertEquals(16f, obj.getWidth());
-		Assert.assertEquals(24f, obj.getHeight());
+		for(int i = 0; i < group.getObjects().size(); i++) {
+			TiledObject obj = group.getObjects().get(i);
+			switch(obj.getName()) {
+			case "test1":
+				Assert.assertEquals(true, obj.containsProperty("testProperty"));
+				Assert.assertEquals("SUCCESS", obj.getProperty("testProperty"));
+				Assert.assertEquals(32f, obj.getX());
+				Assert.assertEquals(64f, obj.getY());
+				Assert.assertEquals(16f, obj.getWidth());
+				Assert.assertEquals(24f, obj.getHeight());
+				break;
+			case "test2":
+				Assert.assertEquals(true, obj.containsProperty("testProperty"));
+				Assert.assertEquals("SUCCESS2", obj.getProperty("testProperty"));
+				Assert.assertEquals(260f, obj.getX());
+				Assert.assertEquals(192f, obj.getY());
+				Assert.assertEquals(24f, obj.getWidth());
+				Assert.assertEquals(16f, obj.getHeight());
+				break;
+			}
+		}
 	}
 
 	@Test

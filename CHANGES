@@ -1,4 +1,5 @@
 [1.4.1-SNAPSHOT]
+- Added TiledCollisionMapper method to get objects by type
 
 [1.4.0]
 - Performance improvements to Polygon class

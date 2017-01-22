@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="10" height="8" tilewidth="32" tileheight="32" backgroundcolor="#0000ff" nextobjectid="2">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="10" height="8" tilewidth="32" tileheight="32" backgroundcolor="#0000ff" nextobjectid="3">
  <properties>
   <property name="testMapProperty" value="SUCCESS"/>
  </properties>
- <tileset firstgid="1" name="tileset1" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="tileset1" tilewidth="32" tileheight="32" tilecount="256" columns="16">
   <properties>
    <property name="testTilesetProperty" value="SUCCESS"/>
   </properties>
@@ -33,7 +33,12 @@
   </data>
  </layer>
  <objectgroup name="Objects">
-  <object id="1" name="test" x="32" y="64" width="16" height="24">
+  <object id="1" name="test2" type="failure" x="260" y="192" width="24" height="16">
+   <properties>
+    <property name="testProperty" value="SUCCESS2"/>
+   </properties>
+  </object>
+  <object id="2" name="test1" type="expected" x="32" y="64" width="16" height="24">
    <properties>
     <property name="testProperty" value="SUCCESS"/>
    </properties>
