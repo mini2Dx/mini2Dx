@@ -13,7 +13,9 @@ package org.mini2Dx.tiled;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -482,6 +484,17 @@ public class TiledMap implements TiledParserListener {
 	 */
 	public TiledObjectGroup getObjectGroup(String name) {
 		return objectGroups.get(name);
+	}
+	
+	/**
+	 * Returns all the {@link TiledObjectGroup}s in this map
+	 * @return Null if there are no {@link TiledObjectGroup}s
+	 */
+	public Collection<TiledObjectGroup> getObjectGroups() {
+		if(objectGroups.isEmpty()) {
+			return null;
+		}
+		return objectGroups.values();
 	}
 
 	/**

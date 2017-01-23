@@ -1,4 +1,5 @@
 [1.4.2-SNAPSHOT]
+- Added TiledMap#getObjectGroups() method
 
 [1.4.1]
 - Added TiledCollisionMapper method to get objects by type
