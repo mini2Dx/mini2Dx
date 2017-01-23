@@ -1,5 +1,6 @@
 [1.4.1-SNAPSHOT]
 - Added TiledCollisionMapper method to get objects by type
+- Added DispersedIntervalEntitySystem
 
 [1.4.0]
 - Performance improvements to Polygon class
