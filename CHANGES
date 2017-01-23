@@ -1,3 +1,5 @@
+[1.4.2-SNAPSHOT]
+
 [1.4.1]
 - Added TiledCollisionMapper method to get objects by type
 - Added DispersedIntervalEntitySystem
