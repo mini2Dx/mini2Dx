@@ -22,12 +22,12 @@ import com.badlogic.gdx.utils.Queue;
  * entities to be updated over the duration of the next interval.
  */
 public abstract class DispersedIntervalEntitySystem extends EntitySystem {
-	private final float interval;
 	protected final Queue<Integer> processingQueue = new Queue<Integer>();
 
-	protected int entitiesPerUpdate;
+	private float interval;
 	private float timer;
 	private float updateDelta;
+	protected int entitiesPerUpdate;
 
 	/**
 	 * Constructor
@@ -72,5 +72,21 @@ public abstract class DispersedIntervalEntitySystem extends EntitySystem {
 				processingQueue.addLast(getEntityIds().get(i));
 			}
 		}
+	}
+
+	/**
+	 * Returns the interval of the system
+	 * @return
+	 */
+	public float getInterval() {
+		return interval;
+	}
+
+	/**
+	 * Sets the interval of the system
+	 * @param interval
+	 */
+	public void setInterval(float interval) {
+		this.interval = interval;
 	}
 }
