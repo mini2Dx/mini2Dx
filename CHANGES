@@ -1,3 +1,5 @@
+[1.4.3-SNAPSHOT]
+
 [1.4.2]
 - Added TiledMap#getObjectGroups() method
 - Added additional getProperties() methods to Tiled classes
