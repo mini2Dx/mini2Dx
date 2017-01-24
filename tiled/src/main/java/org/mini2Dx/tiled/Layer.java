@@ -106,11 +106,27 @@ public abstract class Layer {
 			properties = new HashMap<String, String>();
 		properties.put(propertyName, value);
 	}
+	
+	/**
+	 * Returns the properties {@link Map} of this {@link Layer}
+	 * @return Null if there are no properties
+	 */
+	public Map<String, String> getProperties() {
+		return properties;
+	}
 
+	/**
+	 * Returns if this {@link Layer} is visible
+	 * @return True if visible
+	 */
 	public boolean isVisible() {
 		return visible;
 	}
 
+	/**
+	 * Sets if this {@link Layer} is visible
+	 * @param visible True if visible
+	 */
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}

@@ -91,6 +91,14 @@ public class Tileset {
 			properties = new HashMap<String, String>();
 		properties.put(propertyName, value);
 	}
+	
+	/**
+	 * Returns the properties {@link Map} of this {@link Tileset}
+	 * @return Null if there are no properties
+	 */
+	public Map<String, String> getProperties() {
+		return properties;
+	}
 
 	/**
 	 * Draws a tile to the {@link Graphics} context

@@ -63,6 +63,14 @@ public class Tile {
 			properties = new HashMap<String, String>();
 		properties.put(propertyName, value);
 	}
+	
+	/**
+	 * Returns the properties {@link Map} of this {@link Tile}
+	 * @return Null if there are no properties
+	 */
+	public Map<String, String> getProperties() {
+		return properties;
+	}
 
 	public int getTileId() {
 		return tileId;
