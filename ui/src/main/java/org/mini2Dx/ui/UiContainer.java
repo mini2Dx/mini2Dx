@@ -56,7 +56,10 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 	private final List<ControllerUiInput<?>> controllerInputs = new ArrayList<ControllerUiInput<?>>(1);
 	private final List<UiContainerListener> listeners = new ArrayList<UiContainerListener>(1);
+	
 	private final Set<Integer> receivedKeyDowns = new HashSet<Integer>();
+	private final Set<String> receivedButtonDowns = new HashSet<String>();
+	
 	private final UiContainerRenderTree renderTree;
 
 	private InputSource lastInputSource;
@@ -411,6 +414,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		if (activeNavigation == null) {
 			return false;
 		}
+		receivedButtonDowns.add(button.getAbsoluteValue());
 		ActionableRenderNode hotkeyAction = activeNavigation.hotkey(button);
 		if (hotkeyAction != null) {
 			hotkeyAction.beginAction();
@@ -429,6 +433,10 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	}
 
 	public boolean buttonUp(ControllerUiInput<?> controllerUiInput, ControllerButton button) {
+		//Button down was sent before this UI Container accepted input
+		if(!receivedButtonDowns.remove(button.getAbsoluteValue())) {
+			return false;
+		}
 		if (activeNavigation == null) {
 			return false;
 		}
