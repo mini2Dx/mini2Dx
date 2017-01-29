@@ -12,7 +12,9 @@
 package org.mini2Dx.ui;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.controller.button.ControllerButton;
@@ -54,6 +56,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 	private final List<ControllerUiInput<?>> controllerInputs = new ArrayList<ControllerUiInput<?>>(1);
 	private final List<UiContainerListener> listeners = new ArrayList<UiContainerListener>(1);
+	private final Set<Integer> receivedKeyDowns = new HashSet<Integer>();
 	private final UiContainerRenderTree renderTree;
 
 	private InputSource lastInputSource;
@@ -358,6 +361,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		receivedKeyDowns.add(keycode);
 		if (activeTextInput != null && activeTextInput.isReceivingInput()) {
 			return true;
 		}
@@ -371,11 +375,16 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		if (handleModalKeyDown(keycode)) {
 			return true;
 		}
+		receivedKeyDowns.remove(keycode);
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
+		//Key down was sent before this UI Container accepted input
+		if(!receivedKeyDowns.remove(keycode)) {
+			return false;
+		}
 		if (handleTextInputKeyUp(keycode)) {
 			return true;
 		}

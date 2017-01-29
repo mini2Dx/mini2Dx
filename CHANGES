@@ -1,4 +1,5 @@
 [1.4.3-SNAPSHOT]
+- Fix UiContainer blocking keyUp events when it did not accept the original keyDown event
 
 [1.4.2]
 - Added TiledMap#getObjectGroups() method

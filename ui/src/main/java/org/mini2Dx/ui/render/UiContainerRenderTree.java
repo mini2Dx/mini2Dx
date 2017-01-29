@@ -41,7 +41,6 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, ParentS
 		this.assetManager = assetManager;
 		
 		onResize(uiContainer.getWidth(), uiContainer.getHeight());
-		Gdx.app.log(LOGGING_TAG, "Screen resize set to " + currentScreenSize + " - " + uiContainer.getWidth() + "x" + uiContainer.getHeight());
 	}
 	
 	public void update(float delta) {
