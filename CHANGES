@@ -1,4 +1,4 @@
-[1.4.3-SNAPSHOT]
+[1.4.3]
 - Fix UiContainer blocking keyUp/buttonUp events when it did not accept the original keyDown/buttonDown event
 
 [1.4.2]
