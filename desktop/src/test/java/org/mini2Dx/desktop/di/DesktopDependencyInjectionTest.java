@@ -18,6 +18,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.di.dummy.TestBean;
 import org.mini2Dx.core.di.dummy.TestInterfaceImpl;
 import org.mini2Dx.core.di.dummy.TestManualBean;
+import org.mini2Dx.core.di.dummy.TestPostInjectBean;
 
 /**
  * Integration test for {@link GameContext} and {@link DesktopComponentScanner}
@@ -70,5 +71,13 @@ public class DesktopDependencyInjectionTest {
 		
 		Assert.assertEquals(77, result1.getValue());
 		Assert.assertEquals(78, result2.getValue());
+	}
+	
+	@Test
+	public void testPostInject() throws Exception {
+		testDependencyInjection();
+		
+		TestPostInjectBean result = Mdx.di.getBean(TestPostInjectBean.class);
+		Assert.assertEquals(101, result.getValue());
 	}
 }

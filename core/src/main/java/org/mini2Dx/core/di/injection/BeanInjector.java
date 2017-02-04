@@ -12,15 +12,19 @@
 package org.mini2Dx.core.di.injection;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import org.mini2Dx.core.di.annotation.Autowired;
+import org.mini2Dx.core.di.annotation.PostInject;
 import org.mini2Dx.core.di.bean.Bean;
 import org.mini2Dx.core.di.bean.PrototypeBean;
 import org.mini2Dx.core.di.bean.SingletonBean;
 import org.mini2Dx.core.di.exception.NoSuchBeanException;
+import org.mini2Dx.core.di.exception.PostInjectException;
 
 /**
  * Injects beans into each other
@@ -41,6 +45,24 @@ public class BeanInjector {
 			IllegalAccessException {
 		injectSingletons();
 		injectPrototypes();
+		
+		for (String key : prototypes.keySet()) {
+			Object object = prototypes.get(key);
+			try {
+				invokePostInject(object);
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
+
+		for (String key : singletons.keySet()) {
+			Object object = singletons.get(key);
+			try {
+				invokePostInject(object);
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
 
 		if (exceptions.size() > 0) {
 			for (String key : exceptions.keySet()) {
@@ -56,6 +78,7 @@ public class BeanInjector {
 		for (String key : singletons.keySet()) {
 			Object object = singletons.get(key);
 			result.put(key, new SingletonBean(object));
+			
 		}
 
 		for (String key : prototypes.keySet()) {
@@ -67,6 +90,18 @@ public class BeanInjector {
 		}
 
 		return result;
+	}
+	
+	private void invokePostInject(Object object) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		for(Method method : object.getClass().getMethods()) {
+			if(!method.isAnnotationPresent(PostInject.class)) {
+				continue;
+			}
+			if(method.getParameterTypes().length > 0) {
+				throw new PostInjectException();
+			}
+			method.invoke(object);
+		}
 	}
 
 	private void injectPrototypes() throws NoSuchBeanException,
