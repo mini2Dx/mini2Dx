@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.di.dummy.TestBean;
 import org.mini2Dx.core.di.dummy.TestInterfaceImpl;
+import org.mini2Dx.core.di.dummy.TestManualBean;
 
 /**
  * Integration test for {@link GameContext} and {@link DesktopComponentScanner}
@@ -29,7 +30,7 @@ public class DesktopDependencyInjectionTest {
 	}
 
 	@Test
-	public void testGameContext() throws Exception {
+	public void testDependencyInjection() throws Exception {
 		Mdx.di.scan(new String[] { "org.mini2Dx.core.di.dummy" });
 
 		TestBean testBean1 = Mdx.di.getBean(TestBean.class);
@@ -44,5 +45,30 @@ public class DesktopDependencyInjectionTest {
 		TestInterfaceImpl testInterfaceImpl2 = Mdx.di.getBean(TestInterfaceImpl.class);
 
 		Assert.assertEquals(false, testInterfaceImpl1.getValue() == testInterfaceImpl2.getValue());
+	}
+	
+	@Test
+	public void testPresetSingleton() throws Exception {
+		Mdx.di.presetSingleton(TestManualBean.class);
+		testDependencyInjection();
+		TestManualBean result1 = Mdx.di.getBean(TestManualBean.class);
+		result1.setValue(77);
+		TestManualBean result2 = Mdx.di.getBean(TestManualBean.class);
+		result2.setValue(79);
+		Assert.assertEquals(79, result1.getValue());
+		Assert.assertEquals(79, result2.getValue());
+	}
+	
+	@Test
+	public void testPresetPrototype() throws Exception {
+		Mdx.di.presetPrototype(TestManualBean.class);
+		testDependencyInjection();
+		TestManualBean result1 = Mdx.di.getBean(TestManualBean.class);
+		result1.setValue(77);
+		TestManualBean result2 = Mdx.di.getBean(TestManualBean.class);
+		result2.setValue(78);
+		
+		Assert.assertEquals(77, result1.getValue());
+		Assert.assertEquals(78, result2.getValue());
 	}
 }

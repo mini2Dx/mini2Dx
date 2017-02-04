@@ -1,4 +1,5 @@
 [1.4.4-SNAPSHOT]
+- Added methods to preset singletons and prototypes for dependency injection
 
 [1.4.3]
 - Fix UiContainer blocking keyUp/buttonUp events when it did not accept the original keyDown/buttonDown event

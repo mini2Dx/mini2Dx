@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.mini2Dx.core.di.annotation.Autowired;
+import org.mini2Dx.core.di.annotation.Prototype;
+import org.mini2Dx.core.di.annotation.Singleton;
 import org.mini2Dx.core.di.bean.Bean;
 import org.mini2Dx.core.di.injection.BeanInjector;
 
@@ -24,21 +27,72 @@ import org.mini2Dx.core.di.injection.BeanInjector;
  */
 @SuppressWarnings(value = { "unchecked", "rawtypes" })
 public class DependencyInjection {
+	private final Map<String, Object> presetSingletons = new HashMap<String, Object>();
+	private final Map<String, Object> presetPrototypes = new HashMap<String, Object>();
+
 	private final BeanUtils beanUtils;
 	private final ComponentScanner componentScanner;
+
 	private Map<String, Bean> beans;
 	private ExecutorService prototypeService;
-	
+
 	public DependencyInjection(BeanUtils beanUtils, ComponentScanner componentScanner) {
 		this.beanUtils = beanUtils;
 		this.componentScanner = componentScanner;
 	}
 
+	/**
+	 * Manually set a singleton before calling {@link #scan(String...)}
+	 * 
+	 * @param ref
+	 *            The singleton object
+	 * @param clazz
+	 *            The {@link Class} of the singleton
+	 */
+	public <T> void presetSingleton(T ref, Class<T> clazz) {
+		presetSingletons.put(Bean.getClassKey(clazz), ref);
+	}
+
+	/**
+	 * Manually set a singleton before calling {@link #scan(String...)}
+	 * 
+	 * @param clazz
+	 *            The {@link Class} of the singleton
+	 * @throws Exception
+	 *             Thrown if the object could not be instantiated
+	 */
+	public <T> void presetSingleton(Class<T> clazz) throws Exception {
+		presetSingletons.put(Bean.getClassKey(clazz), clazz.newInstance());
+	}
+
+	/**
+	 * Manually set a prototype before calling {@link #scan(String...)}
+	 * 
+	 * @param clazz
+	 *            The {@link Class} of the prototype
+	 * @throws Exception
+	 *             Thrown if the object could not be instantiated
+	 */
+	public <T> void presetPrototype(Class<T> clazz) throws Exception {
+		presetPrototypes.put(Bean.getClassKey(clazz), clazz.newInstance());
+	}
+
+	/**
+	 * Scans a set of packages, creates all required {@link Singleton} and
+	 * {@link Prototype} instances and processes all {@link Autowired}
+	 * annotations
+	 * 
+	 * @param packageNames
+	 *            The names of packages to scan
+	 * @throws Exception
+	 *             Thrown if a class could not be instantiated or if autowired
+	 *             could not be completed
+	 */
 	public void scan(String... packageNames) throws Exception {
 		componentScanner.scan(packageNames);
 
-		Map<String, Object> singletons = new HashMap<String, Object>();
-		Map<String, Object> prototypes = new HashMap<String, Object>();
+		Map<String, Object> singletons = new HashMap<String, Object>(presetSingletons);
+		Map<String, Object> prototypes = new HashMap<String, Object>(presetPrototypes);
 
 		for (Class clazz : componentScanner.getSingletonClasses()) {
 			String key = Bean.getClassKey(clazz);
@@ -49,27 +103,27 @@ public class DependencyInjection {
 			String key = Bean.getClassKey(clazz);
 			prototypes.put(key, clazz.newInstance());
 		}
-		
+
 		BeanInjector injector = new BeanInjector(singletons, prototypes);
 		injector.inject();
-		
+
 		prototypeService = Executors.newFixedThreadPool(1);
 		beans = injector.getInjectionResult(prototypeService);
 	}
-	
+
 	public void shutdown() {
 		prototypeService.shutdown();
 	}
 
 	public <T> T getBean(Class<T> clazz) {
 		String classKey = Bean.getClassKey(clazz);
-		if(beans == null)
+		if (beans == null)
 			return null;
-		if(!beans.containsKey(classKey))
+		if (!beans.containsKey(classKey))
 			return null;
 		return (T) beans.get(classKey).getInstance();
 	}
-	
+
 	public BeanUtils beanUtils() {
 		return beanUtils;
 	}
