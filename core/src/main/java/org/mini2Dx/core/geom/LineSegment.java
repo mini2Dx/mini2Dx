@@ -172,6 +172,10 @@ public class LineSegment {
 			return pointA.getY();
 		return pointB.getY();
 	}
+	
+	public float getLength() {
+		return pointA.getDistanceTo(pointB);
+	}
 
 	@Override
 	public String toString() {

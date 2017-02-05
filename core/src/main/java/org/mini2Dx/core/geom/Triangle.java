@@ -224,6 +224,21 @@ public class Triangle extends Shape {
 	public float getMaxY() {
 		return polygon.getMaxY();
 	}
+	
+	@Override
+	public float getCenterX() {
+		return polygon.getCenterX();
+	}
+
+	@Override
+	public float getCenterY() {
+		return polygon.getCenterY();
+	}
+
+	@Override
+	public void setRadius(float radius) {
+		polygon.setRadius(radius);
+	}
 
 	@Override
 	public EdgeIterator edgeIterator() {
@@ -238,5 +253,10 @@ public class Triangle extends Shape {
 	@Override
 	public Polygon getPolygon() {
 		return polygon;
+	}
+
+	@Override
+	public void scale(float scale) {
+		polygon.scale(scale);
 	}
 }

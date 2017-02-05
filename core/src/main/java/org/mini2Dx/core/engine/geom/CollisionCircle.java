@@ -250,11 +250,19 @@ public class CollisionCircle extends Circle implements CollisionShape {
 		notifyPositionChangeListeners();
 	}
 	
+	@Override
 	public void setRadius(float radius) {
 		if(radius == getRadius()) {
 			return;
 		}
 		super.setRadius(radius);
+		interpolate = true;
+		notifySizeChangeListeners();
+	}
+	
+	@Override
+	public void scale(float scale) {
+		super.scale(scale);
 		interpolate = true;
 		notifySizeChangeListeners();
 	}

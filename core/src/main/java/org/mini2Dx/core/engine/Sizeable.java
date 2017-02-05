@@ -11,6 +11,8 @@
  */
 package org.mini2Dx.core.engine;
 
+import org.mini2Dx.core.geom.Polygon;
+
 /**
  * A common interface for objects that can be sized with an x and y dimension
  */
@@ -35,28 +37,47 @@ public interface Sizeable {
 	 * @return 0 by default
 	 */
 	public float getHeight();
+
+	/**
+	 * Sets the radius of this shape. For {@link Polygon} shapes, this will
+	 * stretch in/out the shape from its center. Note that {@link Polygon}s must
+	 * be equilateral.
+	 * 
+	 * @param radius
+	 *            The radius in pixels
+	 */
+	public void setRadius(float radius);
 	
+	/**
+	 * Scales the radius of this shape. For {@link Polygon} shapes, this will
+	 * stretch in/out the shape from its center. Note that {@link Polygon}s must
+	 * be equilateral.
+	 * 
+	 * @param scale The amount to scale by (e.g. 2.0 = double the size)
+	 */
+	public void scale(float scale);
+
 	/**
 	 * Returns min X coordinate of this object
 	 * 
 	 * @return The left-most x coordinate
 	 */
 	public float getMinX();
-	
+
 	/**
 	 * Returns min Y coordinate of this object
 	 * 
 	 * @return The up-most y coordinate
 	 */
 	public float getMinY();
-	
+
 	/**
 	 * Returns max X coordinate of this object
 	 * 
 	 * @return The right-most x coordinate
 	 */
 	public float getMaxX();
-	
+
 	/**
 	 * Returns max Y coordinate of this object
 	 * 

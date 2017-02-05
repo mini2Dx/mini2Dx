@@ -309,6 +309,20 @@ public class CollisionPolygon extends Polygon implements CollisionShape {
 	}
 	
 	@Override
+	public void setRadius(float radius) {
+		super.setRadius(radius);
+		interpolate = true;
+		notifySizeChangeListeners();
+	}
+	
+	@Override
+	public void scale(float scale) {
+		super.scale(scale);
+		interpolate = true;
+		notifySizeChangeListeners();
+	}
+	
+	@Override
 	public int getRenderX() {
 		return renderX;
 	}

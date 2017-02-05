@@ -413,6 +413,20 @@ public class Rectangle extends Shape implements
 	}
 	
 	@Override
+	public void setRadius(float radius) {
+		polygon.setRadius(radius);
+		width = polygon.getMaxX() - polygon.getX();
+		height = polygon.getMaxY() - polygon.getY();
+	}
+	
+	@Override
+	public void scale(float scale) {
+		polygon.scale(scale);
+		width = polygon.getMaxX() - polygon.getX();
+		height = polygon.getMaxY() - polygon.getY();
+	}
+	
+	@Override
 	public void translate(float translateX, float translateY) {
 		polygon.translate(translateX, translateY);
 	}

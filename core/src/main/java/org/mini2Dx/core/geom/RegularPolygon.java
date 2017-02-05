@@ -257,6 +257,7 @@ public class RegularPolygon extends Shape {
 	 * @param radius
 	 *            The distance between the center and its corners
 	 */
+	@Override
 	public void setRadius(float radius) {
 		if (this.radius == radius) {
 			return;
@@ -269,7 +270,16 @@ public class RegularPolygon extends Shape {
 			points[i] = new Point(points[0]);
 			points[i].rotateAround(center, rotationSymmetry * i);
 		}
-		polygon = new Polygon(points);
+		if(polygon == null) {
+			polygon = new Polygon(points);
+		} else {
+			polygon.setVertices(points);
+		}
+	}
+	
+	@Override
+	public void scale(float scale) {
+		setRadius(radius * scale);
 	}
 
 	/**
@@ -334,5 +344,15 @@ public class RegularPolygon extends Shape {
 	@Override
 	public float getMaxY() {
 		return polygon.getMaxY();
+	}
+
+	@Override
+	public float getCenterX() {
+		return polygon.getCenterX();
+	}
+
+	@Override
+	public float getCenterY() {
+		return polygon.getCenterY();
 	}
 }

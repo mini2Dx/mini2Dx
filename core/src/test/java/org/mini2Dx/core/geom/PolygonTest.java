@@ -610,6 +610,36 @@ public class PolygonTest {
 	}
 	
 	@Test
+	public void testSetRadius() {
+		Polygon polygon = new Polygon(new Point [] {
+				new Point(0f, 0f),
+				new Point(10f, 0f),
+				new Point(10f, 10f),
+				new Point(0f, 10f)
+		});
+		polygon.setRadius(10f);
+		Assert.assertEquals(-7.07f, polygon.getX(), 0.1f);
+		Assert.assertEquals(-7.07f, polygon.getY(), 0.1f);
+		Assert.assertEquals(17.07f, polygon.getMaxX(), 0.1f);
+		Assert.assertEquals(17.07f, polygon.getMaxY(), 0.1f);
+	}
+	
+	@Test
+	public void testScale() {
+		Polygon polygon = new Polygon(new Point [] {
+				new Point(0f, 0f),
+				new Point(10f, 0f),
+				new Point(10f, 10f),
+				new Point(0f, 10f)
+		});
+		polygon.scale(2f);
+		Assert.assertEquals(-10f, polygon.getX(), 0.1f);
+		Assert.assertEquals(-10f, polygon.getY(), 0.1f);
+		Assert.assertEquals(20f, polygon.getMaxX(), 0.1f);
+		Assert.assertEquals(20f, polygon.getMaxY(), 0.1f);
+	}
+	
+	@Test
 	public void testContainsPolygon() {
 		Polygon polygon = new Polygon(new Point [] {
 				new Point(100f, 100f),
@@ -720,5 +750,6 @@ public class PolygonTest {
 	private void clearDirtyBit(Polygon polygon) {
 		polygon.getMaxX();
 		polygon.getTriangles();
+		polygon.getCenterX();
 	}
 }

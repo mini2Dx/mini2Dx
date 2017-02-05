@@ -18,7 +18,9 @@ import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.util.EdgeIterator;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.EarClippingTriangulator;
+import com.badlogic.gdx.math.GeometryUtils;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ShortArray;
@@ -28,6 +30,8 @@ import com.badlogic.gdx.utils.ShortArray;
  * polygon implementation in LibGDX
  */
 public class Polygon extends Shape {
+	private static final String LOGGING_TAG = Polygon.class.getSimpleName();
+	
 	private final EarClippingTriangulator triangulator;
 	private final PolygonEdgeIterator edgeIterator = new PolygonEdgeIterator();
 	private final PolygonEdgeIterator internalEdgeIterator = new PolygonEdgeIterator();
@@ -35,14 +39,16 @@ public class Polygon extends Shape {
 	private final Vector2 tmp1 = new Vector2();
 	private final Vector2 tmp2 = new Vector2();
 
+	private final Vector2 centroid = new Vector2();
 	private float[] vertices;
 	private float rotation = 0f;
 	private int totalSidesCache = -1;
 	private float minX, minY, maxX, maxY;
 	private ShortArray triangles;
-	private boolean isRectangle;
+	private boolean isRectangle, isEquilateral;
 	private boolean minMaxDirty = true;
 	private boolean trianglesDirty = true;
+	private boolean centroidDirty = true;
 
 	/**
 	 * Constructor. Note that vertices must be in a clockwise order for
@@ -415,13 +421,19 @@ public class Polygon extends Shape {
 	public void removePoint(Vector2 point) {
 		removePoint(point.x, point.y);
 	}
+	
+	private void checkSidesCache() {
+		if(totalSidesCache >= 0) {
+			return;
+		}
+		totalSidesCache = vertices.length / 2;
+		isRectangle = totalSidesCache == 4;
+		isEquilateral = isEquilateral(MathUtils.FLOAT_ROUNDING_ERROR);
+	}
 
 	@Override
 	public int getNumberOfSides() {
-		if (totalSidesCache < 0) {
-			totalSidesCache = vertices.length / 2;
-			isRectangle = totalSidesCache == 4;
-		}
+		checkSidesCache();
 		return totalSidesCache;
 	}
 
@@ -535,6 +547,24 @@ public class Polygon extends Shape {
 	public float getY(int index) {
 		return vertices[(index * 2) + 1];
 	}
+	
+	@Override
+	public float getCenterX() {
+		if(centroidDirty) {
+			GeometryUtils.polygonCentroid(vertices, 0, vertices.length, centroid);
+			centroidDirty = false;
+		}
+		return centroid.x;
+	}
+
+	@Override
+	public float getCenterY() {
+		if(centroidDirty) {
+			GeometryUtils.polygonCentroid(vertices, 0, vertices.length, centroid);
+			centroidDirty = false;
+		}
+		return centroid.y;
+	}
 
 	/**
 	 * Returns min X coordinate of this {@link Polygon}
@@ -646,6 +676,32 @@ public class Polygon extends Shape {
 		}
 		setDirty();
 	}
+	
+	@Override
+	public void setRadius(float radius) {
+		tmp1.set(vertices[0], vertices[1]);
+		scale(radius / tmp1.dst(getCenterX(), getCenterY()));
+	}
+	
+	@Override
+	public void scale(float scale) {
+		if(!isEquilateral()) {
+			Gdx.app.error(LOGGING_TAG, "Cannot set radius on non-equilateral Polygon");
+			return;
+		}
+		
+		for(int i = 0; i < vertices.length; i += 2) {
+			tmp1.set(vertices[i], vertices[i + 1]);
+			tmp1.sub(getCenterX(), getCenterY());
+			tmp1.scl(scale);
+			tmp1.add(vertices[i], vertices[i + 1]);
+			vertices[i] = tmp1.x;
+			vertices[i + 1] = tmp1.y;
+		}
+		
+		setDirty();
+		centroidDirty = false;
+	}
 
 	public void set(Polygon polygon) {
 		this.vertices = polygon.vertices;
@@ -667,6 +723,37 @@ public class Polygon extends Shape {
 	public EdgeIterator edgeIterator() {
 		return edgeIterator;
 	}
+	
+	public boolean isEquilateral() {
+		checkSidesCache();
+		return isEquilateral;
+	}
+	
+	public boolean isEquilateral(float tolerance) {
+		if(isRectangle()) {
+			return MathUtils.isEqual(getMaxX() - getX(), getMaxY() - getY(), tolerance);
+		}
+		
+		PolygonEdgeIterator edgeIterator = this.new PolygonEdgeIterator();
+		edgeIterator.begin();
+		edgeIterator.next();
+		float length = edgeIterator.getEdgeLineSegment().getLength();
+		while(edgeIterator.hasNext()) {
+			edgeIterator.next();
+			float nextLength = edgeIterator.getEdgeLineSegment().getLength();
+			if(!MathUtils.isEqual(length, nextLength, tolerance)) {
+				edgeIterator.end();
+				return false;
+			}
+		}
+		edgeIterator.end();
+		return true;
+	}
+
+	public boolean isRectangle() {
+		checkSidesCache();
+		return isRectangle;
+	}
 
 	@Override
 	public boolean isCircle() {
@@ -679,12 +766,13 @@ public class Polygon extends Shape {
 	}
 
 	boolean isDirty() {
-		return minMaxDirty || trianglesDirty;
+		return minMaxDirty || trianglesDirty || centroidDirty;
 	}
 
 	private void setDirty() {
 		minMaxDirty = true;
 		trianglesDirty = true;
+		centroidDirty = true;
 	}
 
 	private void minMaxDirtyCheck() {

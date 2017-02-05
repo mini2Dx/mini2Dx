@@ -273,6 +273,16 @@ public class Circle extends Shape {
 		circle.y = y;
 		setDirty();
 	}
+
+	@Override
+	public float getCenterX() {
+		return circle.x;
+	}
+
+	@Override
+	public float getCenterY() {
+		return circle.y;
+	}
 	
 	@Override
 	public void set(float x, float y) {
@@ -307,6 +317,12 @@ public class Circle extends Shape {
 
 	public void setRadius(float radius) {
 		circle.radius = radius;
+		setDirty();
+	}
+	
+	@Override
+	public void scale(float scale) {
+		circle.setRadius(circle.radius * scale);
 		setDirty();
 	}
 
