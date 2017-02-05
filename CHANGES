@@ -1,4 +1,6 @@
-[1.4.4-SNAPSHOT]
+[1.4.5-SNAPSHOT]
+
+[1.4.4]
 - Added additional methods to geometry classes
 -- Shape#getCenterX + Shape#getCenterY
 -- Shape#scale
