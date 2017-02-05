@@ -1,6 +1,7 @@
 [1.4.4-SNAPSHOT]
 - Added methods to preset singletons and prototypes for dependency injection
 - Added @PostInject annotation to trigger methods after dependency injection
+- @Autowired dependencies now also inject into super classes
 
 [1.4.3]
 - Fix UiContainer blocking keyUp/buttonUp events when it did not accept the original keyDown/buttonDown event

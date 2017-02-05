@@ -15,7 +15,7 @@ import org.mini2Dx.core.di.annotation.PostInject;
 import org.mini2Dx.core.di.annotation.Singleton;
 
 /**
- *
+ * Test class for {@link PostInject} tests
  */
 @Singleton
 public class TestPostInjectBean {

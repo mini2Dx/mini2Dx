@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2017 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,33 +11,20 @@
  */
 package org.mini2Dx.core.di.dummy;
 
-import java.util.Random;
-
 import org.mini2Dx.core.di.annotation.Autowired;
-import org.mini2Dx.core.di.annotation.Singleton;
 
 /**
- * A dummy dependency for testing dependency injection
+ * Test class for parent dependency injection
  */
-@Singleton
-public class TestDependency extends TestInjectParent {
-	private int value;
+public class TestInjectParent {
 	@Autowired
-	private TestInterface interfaceField;
-	
-	public TestDependency() {
-		value = new Random().nextInt();
+	private TestPostInjectBean parentDependency;
+
+	public TestPostInjectBean getParentDependency() {
+		return parentDependency;
 	}
 
-	public int getValue() {
-		return value;
-	}
-
-	public TestInterface getInterfaceField() {
-		return interfaceField;
-	}
-
-	public void setInterfaceField(TestInterface interfaceField) {
-		this.interfaceField = interfaceField;
+	public void setParentDependency(TestPostInjectBean parentDependency) {
+		this.parentDependency = parentDependency;
 	}
 }

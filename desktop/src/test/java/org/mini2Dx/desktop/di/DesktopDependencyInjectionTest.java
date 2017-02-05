@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.di.dummy.TestBean;
+import org.mini2Dx.core.di.dummy.TestDependency;
 import org.mini2Dx.core.di.dummy.TestInterfaceImpl;
 import org.mini2Dx.core.di.dummy.TestManualBean;
 import org.mini2Dx.core.di.dummy.TestPostInjectBean;
@@ -79,5 +80,13 @@ public class DesktopDependencyInjectionTest {
 		
 		TestPostInjectBean result = Mdx.di.getBean(TestPostInjectBean.class);
 		Assert.assertEquals(101, result.getValue());
+	}
+	
+	@Test
+	public void testParentInjection() throws Exception {
+		testDependencyInjection();
+		
+		TestDependency testDependency = Mdx.di.getBean(TestDependency.class);
+		Assert.assertNotNull(testDependency.getParentDependency());
 	}
 }

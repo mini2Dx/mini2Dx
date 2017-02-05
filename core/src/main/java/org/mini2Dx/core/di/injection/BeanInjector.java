@@ -136,59 +136,63 @@ public class BeanInjector {
 	private void inject(Object object, String objectKey,
 			Map<String, Object> beans) throws NoSuchBeanException,
 			IllegalArgumentException, IllegalAccessException {
-		for (Field field : object.getClass().getDeclaredFields()) {
-			field.setAccessible(true);
-			Autowired autowireAnnotaiton = field.getAnnotation(Autowired.class);
-			
-			Object value = field.get(object);
-			
-			if (autowireAnnotaiton != null && value == null) {
-				Class<?> clazz = field.getType();
+		Class<?> currentClass = object.getClass();
+		while(!currentClass.equals(Object.class)) {
+			for (Field field : currentClass.getDeclaredFields()) {
+				field.setAccessible(true);
+				Autowired autowireAnnotaiton = field.getAnnotation(Autowired.class);
+				
+				Object value = field.get(object);
+				
+				if (autowireAnnotaiton != null && value == null) {
+					Class<?> clazz = field.getType();
 
-				/* Injecting a class */
-				String clazzKey = Bean.getClassKey(clazz);
-				if (beans.containsKey(clazzKey)) {
-					Object dependency = beans.get(clazzKey);
-					field.set(object, dependency);
-				} else if (clazz.isInterface()) {
-					boolean found = false;
-					/*
-					 * Injecting a dependency implementation for an interface
-					 */
-					for (String beanKey : beans.keySet()) {
-						if (beanKey.compareTo(objectKey) != 0) {
-							Object beanToInject = beans.get(beanKey);
+					/* Injecting a class */
+					String clazzKey = Bean.getClassKey(clazz);
+					if (beans.containsKey(clazzKey)) {
+						Object dependency = beans.get(clazzKey);
+						field.set(object, dependency);
+					} else if (clazz.isInterface()) {
+						boolean found = false;
+						/*
+						 * Injecting a dependency implementation for an interface
+						 */
+						for (String beanKey : beans.keySet()) {
+							if (beanKey.compareTo(objectKey) != 0) {
+								Object beanToInject = beans.get(beanKey);
 
-							for (Class<?> interfaceImpl : beanToInject
-									.getClass().getInterfaces()) {
-								if (interfaceImpl.equals(clazz)) {
-									field.set(object, beanToInject);
-									found = true;
+								for (Class<?> interfaceImpl : beanToInject
+										.getClass().getInterfaces()) {
+									if (interfaceImpl.equals(clazz)) {
+										field.set(object, beanToInject);
+										found = true;
+										break;
+									}
+								}
+
+								if (found) {
 									break;
 								}
 							}
-
-							if (found) {
-								break;
-							}
 						}
-					}
 
-					if (!found && autowireAnnotaiton.required()) {
-						exceptions.put(clazzKey, new NoSuchBeanException(object
-								.getClass().getSimpleName(), field.getName(),
-								clazz.getSimpleName()));
-					} else if (found) {
-						exceptions.remove(clazzKey);
+						if (!found && autowireAnnotaiton.required()) {
+							exceptions.put(clazzKey, new NoSuchBeanException(object
+									.getClass().getSimpleName(), field.getName(),
+									clazz.getSimpleName()));
+						} else if (found) {
+							exceptions.remove(clazzKey);
+						}
+					} else if (autowireAnnotaiton.required()) {
+						exceptions.put(
+								clazzKey,
+								new NoSuchBeanException(object.getClass()
+										.getSimpleName(), field.getName(), clazz
+										.getSimpleName()));
 					}
-				} else if (autowireAnnotaiton.required()) {
-					exceptions.put(
-							clazzKey,
-							new NoSuchBeanException(object.getClass()
-									.getSimpleName(), field.getName(), clazz
-									.getSimpleName()));
 				}
 			}
+			currentClass = currentClass.getSuperclass();
 		}
 	}
 }
