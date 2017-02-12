@@ -1,4 +1,6 @@
-[1.4.5-SNAPSHOT]
+[1.4.6-SNAPSHOT]
+
+[1.4.5]
 - Added Shape#add and Shape#subtract methods for modifying position
 - QuadTree implementations can now specify a minimum quad size
 - Added Positionable#moveTowards for easier movement logic
