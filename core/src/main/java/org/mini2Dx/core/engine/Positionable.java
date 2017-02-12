@@ -88,6 +88,15 @@ public interface Positionable extends Updatable {
 	public float getDistanceTo(Point point);
 	
 	/**
+	 * Returns this distance between this object's x,y coordinates and the
+	 * provided xy coordinates
+	 * @param x The x coordinate to measure distance to
+	 * @param y The y coordinate to measure distance to
+	 * @return 0 if the xy coordinates are the same
+	 */
+	public float getDistanceTo(float x, float y);
+	
+	/**
 	 * Moves this {@link Positionable} towards a coordinate
 	 * @param x The target x coordinate
 	 * @param y The target y coordinate

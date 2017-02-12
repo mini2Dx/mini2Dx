@@ -2,6 +2,7 @@
 - Added Shape#add and Shape#subtract methods for modifying position
 - QuadTree implementations can now specify a minimum quad size
 - Added Positionable#moveTowards for easier movement logic
+- Added Positionable#getDistanceTo(x,y)
 
 [1.4.4]
 - Added additional methods to geometry classes
