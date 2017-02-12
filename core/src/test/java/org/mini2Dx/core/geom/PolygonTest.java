@@ -23,6 +23,29 @@ import junit.framework.Assert;
  * Unit tests for {@link Polygon}
  */
 public class PolygonTest {
+	
+	@Test
+	public void testAdd() {
+		Polygon polygon = new Polygon(new Point [] { new Point(0f, 0f),
+				new Point(5f, 5f), new Point(2.5f, 10f) });
+		polygon.add(5f, 7f);
+		Assert.assertEquals(5f, polygon.getX(), 0.1f);
+		Assert.assertEquals(7f, polygon.getY(), 0.1f);
+		Assert.assertEquals(10f, polygon.getMaxX(), 0.1f);
+		Assert.assertEquals(17f, polygon.getMaxY(), 0.1f);
+	}
+	
+	@Test
+	public void testSubtract() {
+		Polygon polygon = new Polygon(new Point [] { new Point(0f, 0f),
+				new Point(5f, 5f), new Point(2.5f, 10f) });
+		polygon.subtract(5f, 7f);
+		Assert.assertEquals(-5f, polygon.getX(), 0.1f);
+		Assert.assertEquals(-7f, polygon.getY(), 0.1f);
+		Assert.assertEquals(0f, polygon.getMaxX(), 0.1f);
+		Assert.assertEquals(3f, polygon.getMaxY(), 0.1f);
+	}
+	
 	@Test
 	public void testAddPoint() {
 		Polygon polygon = new Polygon(new Point [] { new Point(0f, 0f),

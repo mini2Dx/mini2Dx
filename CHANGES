@@ -1,4 +1,5 @@
 [1.4.5-SNAPSHOT]
+- Added Shape#add and Shape#subtract methods for modifying position
 
 [1.4.4]
 - Added additional methods to geometry classes

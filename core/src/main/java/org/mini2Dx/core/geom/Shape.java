@@ -20,6 +20,8 @@ import com.badlogic.gdx.math.Vector2;
  * Base class for shapes
  */
 public abstract class Shape {
+	private final Vector2 tmpVector = new Vector2();
+	
 	/**
 	 * Returns an exact copy of this {@link Shape}
 	 * 
@@ -113,6 +115,42 @@ public abstract class Shape {
 	 * @return The distance
 	 */
 	public abstract float getDistanceTo(float x, float y);
+	
+	/**
+	 * Returns the distance from this {@link Shape} to a {@link Point}
+	 * 
+	 * @param point The {@link Point} to get the distance to
+	 * @return The distance
+	 */
+	public float getDistanceTo(Point point) {
+		return getDistanceTo(point.getX(), point.getY());
+	}
+	
+	/**
+	 * Adds components to the position of this {@link Shape}
+	 * @param x The x component
+	 * @param y The y component
+	 * @return This {@link Shape} for chaining
+	 */
+	public Shape add(float x, float y) {
+		tmpVector.set(getX(), getY());
+		tmpVector.add(x, y);
+		set(tmpVector.x, tmpVector.y);
+		return this;
+	}
+	
+	/**
+	 * Subtracts components from the position of this {@link Shape}
+	 * @param x The x component
+	 * @param y The y component
+	 * @return This {@link Shape} for chaining
+	 */
+	public Shape subtract(float x, float y) {
+		tmpVector.set(getX(), getY());
+		tmpVector.sub(x, y);
+		set(tmpVector.x, tmpVector.y);
+		return this;
+	}
 
 	/**
 	 * Returns the rotation of this {@link Shape}
