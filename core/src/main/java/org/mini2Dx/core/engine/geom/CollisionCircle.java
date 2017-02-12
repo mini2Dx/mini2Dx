@@ -26,6 +26,7 @@ import org.mini2Dx.core.geom.Shape;
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * An implementation of {@link Circle} that allows for interpolation. Game
@@ -38,6 +39,9 @@ public class CollisionCircle extends Circle implements CollisionShape {
 	private final int id;
 	private final ReadWriteLock positionChangeListenerLock;
 	private final ReadWriteLock sizeChangeListenerLock;
+	
+	private final Vector2 tmpSourceVector = new Vector2();
+	private final Vector2 tmpTargetVector = new Vector2();
 	
 	private List<PositionChangeListener> positionChangeListeners;
 	private List<SizeChangeListener> sizeChangeListeners;
@@ -220,6 +224,38 @@ public class CollisionCircle extends Circle implements CollisionShape {
 		if(!notifyPositionListeners) {
 			return;
 		}
+		notifyPositionChangeListeners();
+	}
+	
+	@Override
+	public void moveTowards(float x, float y, float speed) {
+		tmpSourceVector.set(getX(), getY());
+		tmpTargetVector.set(x, y);
+		Vector2 direction = tmpTargetVector.sub(tmpSourceVector).nor();
+		
+		float xComponent = speed * MathUtils.cosDeg(direction.angle());
+		float yComponent = speed * MathUtils.sinDeg(direction.angle());
+		tmpSourceVector.add(xComponent, yComponent);
+		
+		set(tmpSourceVector.x, tmpSourceVector.y);
+	}
+
+	@Override
+	public void moveTowards(Positionable positionable, float speed) {
+		moveTowards(positionable.getX(), positionable.getY(), speed);
+	}
+	
+	@Override
+	public void add(float x, float y) {
+		super.add(x, y);
+		interpolate = true;
+		notifyPositionChangeListeners();
+	}
+	
+	@Override
+	public void subtract(float x, float y) {
+		super.subtract(x, y);
+		interpolate = true;
 		notifyPositionChangeListeners();
 	}
 

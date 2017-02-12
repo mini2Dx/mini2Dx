@@ -41,6 +41,9 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 	private final ReentrantReadWriteLock positionChangeListenerLock;
 	private final ReentrantReadWriteLock sizeChangeListenerLock;
 	
+	private final Vector2 tmpSourceVector = new Vector2();
+	private final Vector2 tmpTargetVector = new Vector2();
+	
 	private List<PositionChangeListener> positionChangeListeners;
 	private List<SizeChangeListener> sizeChangeListeners;
 
@@ -330,6 +333,38 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 		renderRectangle.set(this);
 		storeRenderCoordinates();
 		notifySizeChangeListeners();
+	}
+	
+	@Override
+	public void moveTowards(float x, float y, float speed) {
+		tmpSourceVector.set(getX(), getY());
+		tmpTargetVector.set(x, y);
+		Vector2 direction = tmpTargetVector.sub(tmpSourceVector).nor();
+		
+		float xComponent = speed * MathUtils.cosDeg(direction.angle());
+		float yComponent = speed * MathUtils.sinDeg(direction.angle());
+		tmpSourceVector.add(xComponent, yComponent);
+		
+		set(tmpSourceVector.x, tmpSourceVector.y);
+	}
+
+	@Override
+	public void moveTowards(Positionable positionable, float speed) {
+		moveTowards(positionable.getX(), positionable.getY(), speed);
+	}
+	
+	@Override
+	public void add(float x, float y) {
+		super.add(x, y);
+		interpolate = true;
+		notifyPositionChangeListeners();
+	}
+	
+	@Override
+	public void subtract(float x, float y) {
+		super.subtract(x, y);
+		interpolate = true;
+		notifyPositionChangeListeners();
 	}
 
 	@Override

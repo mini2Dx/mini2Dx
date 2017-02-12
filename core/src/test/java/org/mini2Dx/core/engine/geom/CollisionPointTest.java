@@ -119,4 +119,14 @@ public class CollisionPointTest {
 		point2.rotateAround(point1, 90f);
 		Assert.assertEquals(10f, point2.getY());
 	}
+	
+	@Test
+	public void testMoveTowards() {
+		point1.set(0f, 0f);
+		point2.set(10f, 10f);
+		
+		point1.moveTowards(point2, 1f);
+		Assert.assertEquals(0.707f, point1.getX(), 0.01f);
+		Assert.assertEquals(0.701f, point1.getY(), 0.01f);
+	}
 }

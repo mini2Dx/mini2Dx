@@ -130,26 +130,22 @@ public abstract class Shape {
 	 * Adds components to the position of this {@link Shape}
 	 * @param x The x component
 	 * @param y The y component
-	 * @return This {@link Shape} for chaining
 	 */
-	public Shape add(float x, float y) {
+	public void add(float x, float y) {
 		tmpVector.set(getX(), getY());
 		tmpVector.add(x, y);
 		set(tmpVector.x, tmpVector.y);
-		return this;
 	}
 	
 	/**
 	 * Subtracts components from the position of this {@link Shape}
 	 * @param x The x component
 	 * @param y The y component
-	 * @return This {@link Shape} for chaining
 	 */
-	public Shape subtract(float x, float y) {
+	public void subtract(float x, float y) {
 		tmpVector.set(getX(), getY());
 		tmpVector.sub(x, y);
 		set(tmpVector.x, tmpVector.y);
-		return this;
 	}
 
 	/**

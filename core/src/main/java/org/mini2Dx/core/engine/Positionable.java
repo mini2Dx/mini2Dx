@@ -11,6 +11,10 @@
  */
 package org.mini2Dx.core.engine;
 
+import org.mini2Dx.core.geom.Point;
+
+import com.badlogic.gdx.math.Vector2;
+
 /**
  * A common interface for objects that can be positioned with an x and y
  * coordinate
@@ -72,6 +76,31 @@ public interface Positionable extends Updatable {
 	 * @return 0 if the xy coordinates are the same
 	 */
 	public float getDistanceTo(Positionable positionable);
+	
+	/**
+	 * Returns this distance between this object's x,y coordinates and the
+	 * provided {@link Point}'s xy coordinates
+	 * 
+	 * @param point
+	 *            The {@link Point} to retrieve the distance from
+	 * @return 0 if the xy coordinates are the same
+	 */
+	public float getDistanceTo(Point point);
+	
+	/**
+	 * Moves this {@link Positionable} towards a coordinate
+	 * @param x The target x coordinate
+	 * @param y The target y coordinate
+	 * @param speed The amount to move by
+	 */
+	public void moveTowards(float x, float y, float speed);
+	
+	/**
+	 * Moves this {@link Positionable} towards another {@link Positionable}
+	 * @param positionable The target {@link Positionable}
+	 * @param speed The amount to move by
+	 */
+	public void moveTowards(Positionable positionable, float speed);
 
 	/**
 	 * Adds a {@link PositionChangeListener} to be notified of coordinate
