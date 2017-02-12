@@ -45,44 +45,10 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 
 	protected final int elementLimitPerQuad;
 	protected final int mergeWatermark;
+	protected final float minimumQuadWidth, minimumQuadHeight;
 	protected final ReadWriteLock lock;
 
 	protected int totalElementsCache = -1;
-
-	/**
-	 * Constructs a {@link ConcurrentPointQuadTree} with a specified element
-	 * limit and watermark
-	 * 
-	 * @param elementLimitPerQuad
-	 *            The maximum number of elements in a quad before it is split
-	 *            into 4 child {@link ConcurrentPointQuadTree}s
-	 * @param mergeWatermark
-	 *            When a parent {@link ConcurrentPointQuadTree}'s total elements
-	 *            go lower than this mark, the child
-	 *            {@link ConcurrentPointQuadTree}s will be merged back together
-	 * @param x
-	 *            The x coordinate of the {@link ConcurrentPointQuadTree}
-	 * @param y
-	 *            The y coordiante of the {@link ConcurrentPointQuadTree}
-	 * @param width
-	 *            The width of the {@link ConcurrentPointQuadTree}
-	 * @param height
-	 *            The height of the {@link ConcurrentPointQuadTree}
-	 */
-	public ConcurrentPointQuadTree(int elementLimitPerQuad, int mergeWatermark, float x, float y, float width,
-			float height) {
-		super(x, y, width, height);
-
-		if (mergeWatermark >= elementLimitPerQuad) {
-			throw new QuadWatermarkException(elementLimitPerQuad, mergeWatermark);
-		}
-
-		this.elementLimitPerQuad = elementLimitPerQuad;
-		this.mergeWatermark = mergeWatermark;
-		this.lock = new ReentrantReadWriteLock(false);
-
-		elements = new ArrayList<T>();
-	}
 
 	/**
 	 * Constructs a {@link ConcurrentPointQuadTree} with a specified element
@@ -121,8 +87,78 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 	 *            The height of the {@link ConcurrentPointQuadTree}
 	 */
 	public ConcurrentPointQuadTree(ConcurrentPointQuadTree<T> parent, float x, float y, float width, float height) {
-		this(parent.getElementLimitPerQuad(), x, y, width, height);
+		this(parent.getMinimumQuadWidth(), parent.getMinimumQuadHeight(), parent.getElementLimitPerQuad(),
+				parent.getMergeWatermark(), x, y, width, height);
 		this.parent = parent;
+	}
+
+	/**
+	 * Constructs a {@link ConcurrentPointQuadTree} with a specified element
+	 * limit and watermark
+	 * 
+	 * @param elementLimitPerQuad
+	 *            The maximum number of elements in a quad before it is split
+	 *            into 4 child {@link ConcurrentPointQuadTree}s
+	 * @param mergeWatermark
+	 *            When a parent {@link ConcurrentPointQuadTree}'s total elements
+	 *            go lower than this mark, the child
+	 *            {@link ConcurrentPointQuadTree}s will be merged back together
+	 * @param x
+	 *            The x coordinate of the {@link ConcurrentPointQuadTree}
+	 * @param y
+	 *            The y coordiante of the {@link ConcurrentPointQuadTree}
+	 * @param width
+	 *            The width of the {@link ConcurrentPointQuadTree}
+	 * @param height
+	 *            The height of the {@link ConcurrentPointQuadTree}
+	 */
+	public ConcurrentPointQuadTree(int elementLimitPerQuad, int mergeWatermark, float x, float y, float width,
+			float height) {
+		this(PointQuadTree.DEFAULT_MINIMUM_QUAD_SIZE, PointQuadTree.DEFAULT_MINIMUM_QUAD_SIZE, elementLimitPerQuad,
+				mergeWatermark, x, y, width, height);
+	}
+
+	/**
+	 * Constructs a {@link ConcurrentPointQuadTree} with a specified minimum
+	 * quad size, element limit and watermark
+	 * 
+	 * @param minimumQuadWidth
+	 *            The minimum width of quads. Quads will not subdivide smaller
+	 *            than this width.
+	 * @param minimumQuadHeight
+	 *            The minimum height of quads. Quads will not subdivide smaller
+	 *            than this height.
+	 * @param elementLimitPerQuad
+	 *            The maximum number of elements in a quad before it is split
+	 *            into 4 child {@link ConcurrentPointQuadTree}s
+	 * @param mergeWatermark
+	 *            When a parent {@link ConcurrentPointQuadTree}'s total elements
+	 *            go lower than this mark, the child
+	 *            {@link ConcurrentPointQuadTree}s will be merged back together
+	 * @param x
+	 *            The x coordinate of the {@link ConcurrentPointQuadTree}
+	 * @param y
+	 *            The y coordiante of the {@link ConcurrentPointQuadTree}
+	 * @param width
+	 *            The width of the {@link ConcurrentPointQuadTree}
+	 * @param height
+	 *            The height of the {@link ConcurrentPointQuadTree}
+	 */
+	public ConcurrentPointQuadTree(float minimumQuadWidth, float minimumQuadHeight, int elementLimitPerQuad,
+			int mergeWatermark, float x, float y, float width, float height) {
+		super(x, y, width, height);
+
+		if (mergeWatermark >= elementLimitPerQuad) {
+			throw new QuadWatermarkException(elementLimitPerQuad, mergeWatermark);
+		}
+
+		this.elementLimitPerQuad = elementLimitPerQuad;
+		this.mergeWatermark = mergeWatermark;
+		this.minimumQuadWidth = minimumQuadWidth;
+		this.minimumQuadHeight = minimumQuadHeight;
+		this.lock = new ReentrantReadWriteLock(false);
+
+		elements = new ArrayList<T>();
 	}
 
 	public void debugRender(Graphics g) {
@@ -149,25 +185,25 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		g.setColor(tmp);
 		lock.readLock().unlock();
 	}
-	
+
 	public void addAll(List<T> elementsToAdd) {
 		if (elementsToAdd == null || elementsToAdd.isEmpty())
 			return;
 		clearTotalElementsCache();
-		
+
 		List<T> elementsWithinQuad = new ArrayList<T>();
-		for(T element : elementsToAdd) {
+		for (T element : elementsToAdd) {
 			if (this.contains(element.getX(), element.getY())) {
 				elementsWithinQuad.add(element);
 			}
 		}
-		
+
 		lock.writeLock().lock();
-		
-		if(topLeft != null) {
+
+		if (topLeft != null) {
 			lock.readLock().lock();
 			lock.writeLock().unlock();
-			for(T element : elementsWithinQuad) {
+			for (T element : elementsWithinQuad) {
 				if (topLeft.add(element)) {
 					continue;
 				}
@@ -184,15 +220,16 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 			lock.readLock().unlock();
 			return;
 		}
-		
+
 		this.elements.addAll(elementsWithinQuad);
-		for(T element : elementsWithinQuad) {
+		for (T element : elementsWithinQuad) {
 			element.addPostionChangeListener(this);
 		}
 		int totalElements = this.elements.size();
 		lock.writeLock().unlock();
-		
-		if (totalElements > elementLimitPerQuad && getWidth() >= 2f && getHeight() >= 2f) {
+
+		if (totalElements > elementLimitPerQuad && (getWidth() * 0.5f) >= minimumQuadWidth
+				&& (getHeight() * 0.5f) >= minimumQuadHeight) {
 			subdivide();
 		}
 	}
@@ -210,20 +247,21 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 
 	protected boolean addElement(T element) {
 		lock.writeLock().lock();
-		
-		//Another write may occur concurrently before this one
-		if(topLeft != null) {
+
+		// Another write may occur concurrently before this one
+		if (topLeft != null) {
 			lock.readLock().lock();
 			lock.writeLock().unlock();
 			return addElementToChild(element);
 		}
-		
+
 		elements.add(element);
 		element.addPostionChangeListener(this);
 		int totalElements = elements.size();
 		lock.writeLock().unlock();
-		
-		if (totalElements > elementLimitPerQuad && getWidth() >= 2f && getHeight() >= 2f) {
+
+		if (totalElements > elementLimitPerQuad && (getWidth() * 0.5f) >= minimumQuadWidth
+				&& (getHeight() * 0.5f) >= minimumQuadHeight) {
 			subdivide();
 		}
 		return true;
@@ -259,9 +297,9 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		lock.readLock().unlock();
 
 		lock.writeLock().lock();
-		
-		//Another write may occur concurrently before this one
-		if(topLeft != null) {
+
+		// Another write may occur concurrently before this one
+		if (topLeft != null) {
 			lock.writeLock().unlock();
 			return;
 		}
@@ -272,7 +310,8 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		topLeft = new ConcurrentPointQuadTree<T>(this, getX(), getY(), halfWidth, halfHeight);
 		topRight = new ConcurrentPointQuadTree<T>(this, getX() + halfWidth, getY(), halfWidth, halfHeight);
 		bottomLeft = new ConcurrentPointQuadTree<T>(this, getX(), getY() + halfHeight, halfWidth, halfHeight);
-		bottomRight = new ConcurrentPointQuadTree<T>(this, getX() + halfWidth, getY() + halfHeight, halfWidth, halfHeight);
+		bottomRight = new ConcurrentPointQuadTree<T>(this, getX() + halfWidth, getY() + halfHeight, halfWidth,
+				halfHeight);
 
 		for (int i = elements.size() - 1; i >= 0; i--) {
 			T element = elements.remove(i);
@@ -288,20 +327,20 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		if (mergeWatermark <= 0) {
 			return false;
 		}
-		
+
 		lock.readLock().lock();
 		int topLeftTotal = topLeft.getTotalElements();
 		if (topLeftTotal >= mergeWatermark) {
 			lock.readLock().unlock();
 			return false;
 		}
-		
+
 		int topRightTotal = topRight.getTotalElements();
 		if (topRightTotal >= mergeWatermark) {
 			lock.readLock().unlock();
 			return false;
 		}
-		
+
 		int bottomLeftTotal = bottomLeft.getTotalElements();
 		if (bottomLeftTotal >= mergeWatermark) {
 			lock.readLock().unlock();
@@ -319,15 +358,15 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 	}
 
 	protected void merge() {
-		if(topLeft == null) {
+		if (topLeft == null) {
 			return;
 		}
 		lock.readLock().unlock();
-		
+
 		lock.writeLock().lock();
-		
-		//Another write may occur concurrently before this one
-		if(topLeft == null) {
+
+		// Another write may occur concurrently before this one
+		if (topLeft == null) {
 			lock.readLock().lock();
 			lock.writeLock().unlock();
 			return;
@@ -337,7 +376,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		topRight.getElements(elements);
 		bottomLeft.getElements(elements);
 		bottomRight.getElements(elements);
-		
+
 		for (T element : elements) {
 			topLeft.elements.remove(element);
 			element.removePositionChangeListener(topLeft);
@@ -358,23 +397,23 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		lock.writeLock().unlock();
 		lock.readLock().lock();
 	}
-	
+
 	public void removeAll(List<T> elementsToRemove) {
-		if(elementsToRemove == null || elementsToRemove.isEmpty()) {
+		if (elementsToRemove == null || elementsToRemove.isEmpty()) {
 			return;
 		}
 		clearTotalElementsCache();
-		
+
 		List<T> elementsWithinQuad = new ArrayList<T>();
-		for(T element : elementsToRemove) {
-			if(this.contains(element.getX(), element.getY())) {
+		for (T element : elementsToRemove) {
+			if (this.contains(element.getX(), element.getY())) {
 				elementsWithinQuad.add(element);
 			}
 		}
-		
+
 		lock.writeLock().lock();
-		if(topLeft != null) {
-			for(int i = elementsWithinQuad.size() - 1; i >= 0; i--) {
+		if (topLeft != null) {
+			for (int i = elementsWithinQuad.size() - 1; i >= 0; i--) {
 				T element = elementsWithinQuad.get(i);
 				if (topLeft.remove(element)) {
 					elementsWithinQuad.remove(i);
@@ -394,14 +433,14 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 				}
 			}
 		}
-		
+
 		elements.removeAll(elementsWithinQuad);
 		lock.writeLock().unlock();
-		
-		for(T element : elementsWithinQuad) {
+
+		for (T element : elementsWithinQuad) {
 			element.removePositionChangeListener(this);
 		}
-		
+
 		if (parent == null) {
 			return;
 		}
@@ -450,14 +489,14 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 
 	protected boolean removeElement(T element) {
 		lock.writeLock().lock();
-		
-		//Another write may occur concurrently before this one
-		if(topLeft != null) {
+
+		// Another write may occur concurrently before this one
+		if (topLeft != null) {
 			lock.readLock().lock();
 			lock.writeLock().unlock();
 			return removeElementFromChild(element);
 		}
-		
+
 		boolean result = elements.remove(element);
 		lock.writeLock().unlock();
 		element.removePositionChangeListener(this);
@@ -477,7 +516,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		getElementsWithinArea(result, area);
 		return result;
 	}
-	
+
 	@Override
 	public void getElementsWithinArea(Collection<T> result, Shape area) {
 		lock.readLock().lock();
@@ -655,5 +694,15 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 
 	public int getMergeWatermark() {
 		return mergeWatermark;
+	}
+
+	@Override
+	public float getMinimumQuadWidth() {
+		return minimumQuadWidth;
+	}
+
+	@Override
+	public float getMinimumQuadHeight() {
+		return minimumQuadHeight;
 	}
 }

@@ -97,6 +97,37 @@ public class RegionQuadTree<T extends CollisionShape> extends PointQuadTree<T> {
 		super(parent, x, y, width, height);
 	}
 
+	/**
+	 * Constructs a {@link RegionQuadTree} with a specified minimum quad size,
+	 * element limit and watermark
+	 * 
+	 * @param minimumQuadWidth
+	 *            The minimum width of quads. Quads will not subdivide smaller
+	 *            than this width.
+	 * @param minimumQuadHeight
+	 *            The minimum height of quads. Quads will not subdivide smaller
+	 *            than this height.
+	 * @param elementLimitPerQuad
+	 *            The maximum number of elements in a quad before it is split
+	 *            into 4 child {@link RegionQuadTree}s
+	 * @param mergeWatermark
+	 *            When a parent {@link RegionQuadTree}'s total elements go lower
+	 *            than this mark, the child {@link PointQuadTree}s will be
+	 *            merged back together
+	 * @param x
+	 *            The x coordinate of the {@link RegionQuadTree}
+	 * @param y
+	 *            The y coordiante of the {@link RegionQuadTree}
+	 * @param width
+	 *            The width of the {@link RegionQuadTree}
+	 * @param height
+	 *            The height of the {@link RegionQuadTree}
+	 */
+	public RegionQuadTree(float minimumQuadWidth, float minimumQuadHeight, int elementLimitPerQuad, int mergeWatermark,
+			float x, float y, float width, float height) {
+		super(minimumQuadWidth, minimumQuadHeight, elementLimitPerQuad, mergeWatermark, x, y, width, height);
+	}
+
 	@Override
 	public void debugRender(Graphics g) {
 		Color tmp = g.getColor();
@@ -119,27 +150,27 @@ public class RegionQuadTree<T extends CollisionShape> extends PointQuadTree<T> {
 		}
 		g.setColor(tmp);
 	}
-	
+
 	@Override
 	public void addAll(List<T> elementsToAdd) {
-		if(elementsToAdd == null || elementsToAdd.isEmpty()) {
+		if (elementsToAdd == null || elementsToAdd.isEmpty()) {
 			return;
 		}
 		clearTotalElementsCache();
-		
+
 		List<T> elementsWithinQuad = new ArrayList<T>();
-		for(T element : elementsToAdd) {
+		for (T element : elementsToAdd) {
 			if (this.contains(element.getShape()) || this.intersects(element.getShape())) {
 				elementsWithinQuad.add(element);
 			}
 		}
-		
+
 		for (T element : elementsWithinQuad) {
-			if(topLeft == null) {
+			if (topLeft == null) {
 				addElement(element);
 				continue;
 			}
-			if(addElementToChild(element)) {
+			if (addElementToChild(element)) {
 				continue;
 			}
 			addElement(element);
@@ -221,15 +252,15 @@ public class RegionQuadTree<T extends CollisionShape> extends PointQuadTree<T> {
 		}
 		return removeElementFromChild(element);
 	}
-	
+
 	@Override
 	public void clear() {
-		if(topLeft != null) {
+		if (topLeft != null) {
 			topLeft.clear();
 			topRight.clear();
 			bottomLeft.clear();
 			bottomRight.clear();
-			
+
 			topLeft = null;
 			topRight = null;
 			bottomLeft = null;
@@ -237,7 +268,7 @@ public class RegionQuadTree<T extends CollisionShape> extends PointQuadTree<T> {
 		}
 		elements.clear();
 	}
-	
+
 	@Override
 	public List<T> getElementsWithinArea(Shape area) {
 		List<T> result = new ArrayList<T>();

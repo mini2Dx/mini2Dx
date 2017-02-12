@@ -24,6 +24,7 @@ import org.mini2Dx.core.geom.Shape;
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  * Implements a point quadtree
@@ -32,6 +33,7 @@ import com.badlogic.gdx.graphics.Color;
  *      Wikipedia: Point Quad Tree</a>
  */
 public class PointQuadTree<T extends Positionable> extends Rectangle implements QuadTree<T> {
+	public static final float DEFAULT_MINIMUM_QUAD_SIZE = 8f;
 	public static Color QUAD_COLOR = new Color(1f, 0f, 0f, 0.5f);
 	public static Color ELEMENT_COLOR = new Color(0f, 0f, 1f, 0.5f);
 
@@ -42,6 +44,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	protected List<T> elements;
 	protected final int elementLimitPerQuad;
 	protected final int mergeWatermark;
+	protected final float minimumQuadWidth, minimumQuadHeight;
 
 	protected int totalElementsCache = -1;
 
@@ -66,15 +69,8 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	 *            The height of the {@link PointQuadTree}
 	 */
 	public PointQuadTree(int elementLimitPerQuad, int mergeWatermark, float x, float y, float width, float height) {
-		super(x, y, width, height);
-
-		if (mergeWatermark >= elementLimitPerQuad) {
-			throw new QuadWatermarkException(elementLimitPerQuad, mergeWatermark);
-		}
-
-		this.elementLimitPerQuad = elementLimitPerQuad;
-		this.mergeWatermark = mergeWatermark;
-		elements = new ArrayList<T>(elementLimitPerQuad);
+		this(DEFAULT_MINIMUM_QUAD_SIZE, DEFAULT_MINIMUM_QUAD_SIZE, elementLimitPerQuad, mergeWatermark, x, y, width,
+				height);
 	}
 
 	/**
@@ -114,8 +110,50 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	 *            The height of the {@link PointQuadTree}
 	 */
 	public PointQuadTree(PointQuadTree<T> parent, float x, float y, float width, float height) {
-		this(parent.getElementLimitPerQuad(), parent.getMergeWatermark(), x, y, width, height);
+		this(parent.getMinimumQuadWidth(), parent.getMinimumQuadHeight(), parent.getElementLimitPerQuad(),
+				parent.getMergeWatermark(), x, y, width, height);
 		this.parent = parent;
+	}
+
+	/**
+	 * Constructs a {@link PointQuadTree} with a specified minimum quad size,
+	 * element limit and watermark
+	 * 
+	 * @param minimumQuadWidth
+	 *            The minimum width of quads. Quads will not subdivide smaller
+	 *            than this width.
+	 * @param minimumQuadHeight
+	 *            The minimum height of quads. Quads will not subdivide smaller
+	 *            than this height.
+	 * @param elementLimitPerQuad
+	 *            The maximum number of elements in a quad before it is split
+	 *            into 4 child {@link PointQuadTree}s
+	 * @param mergeWatermark
+	 *            When a parent {@link PointQuadTree}'s total elements go lower
+	 *            than this mark, the child {@link PointQuadTree}s will be
+	 *            merged back together
+	 * @param x
+	 *            The x coordinate of the {@link PointQuadTree}
+	 * @param y
+	 *            The y coordiante of the {@link PointQuadTree}
+	 * @param width
+	 *            The width of the {@link PointQuadTree}
+	 * @param height
+	 *            The height of the {@link PointQuadTree}
+	 */
+	public PointQuadTree(float minimumQuadWidth, float minimumQuadHeight, int elementLimitPerQuad, int mergeWatermark,
+			float x, float y, float width, float height) {
+		super(x, y, width, height);
+
+		if (mergeWatermark >= elementLimitPerQuad) {
+			throw new QuadWatermarkException(elementLimitPerQuad, mergeWatermark);
+		}
+
+		this.elementLimitPerQuad = elementLimitPerQuad;
+		this.mergeWatermark = mergeWatermark;
+		this.minimumQuadWidth = minimumQuadWidth;
+		this.minimumQuadHeight = minimumQuadHeight;
+		elements = new ArrayList<T>(elementLimitPerQuad);
 	}
 
 	public void debugRender(Graphics g) {
@@ -140,32 +178,33 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		}
 		g.setColor(tmp);
 	}
-	
+
 	public void addAll(List<T> elementsToAdd) {
-		if(elementsToAdd == null || elementsToAdd.isEmpty()) {
+		if (elementsToAdd == null || elementsToAdd.isEmpty()) {
 			return;
 		}
-		
+
 		List<T> elementsWithinQuad = new ArrayList<T>();
-		for(T element : elementsToAdd) {
-			if(this.contains(element.getX(), element.getY())) {
+		for (T element : elementsToAdd) {
+			if (this.contains(element.getX(), element.getY())) {
 				elementsWithinQuad.add(element);
 			}
 		}
-		
+
 		clearTotalElementsCache();
-		
+
 		if (topLeft != null) {
-			for(T element : elementsWithinQuad) {
+			for (T element : elementsWithinQuad) {
 				addElementToChild(element);
 			}
 			return;
 		}
-		for(T element : elementsWithinQuad) {
+		for (T element : elementsWithinQuad) {
 			elements.add(element);
 			element.addPostionChangeListener(this);
 		}
-		if (elements.size() > elementLimitPerQuad && getWidth() >= 2f && getHeight() >= 2f) {
+		if (elements.size() > elementLimitPerQuad && (getWidth() * 0.5f) >= minimumQuadWidth
+				&& (getHeight() * 0.5f) >= minimumQuadHeight) {
 			subdivide();
 		}
 	}
@@ -189,7 +228,8 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		elements.add(element);
 		element.addPostionChangeListener(this);
 
-		if (elements.size() > elementLimitPerQuad && getWidth() >= 2f && getHeight() >= 2f) {
+		if (elements.size() > elementLimitPerQuad && (getWidth() * 0.5f) >= minimumQuadWidth
+				&& (getHeight() * 0.5f) >= minimumQuadHeight) {
 			subdivide();
 		}
 		return true;
@@ -212,8 +252,8 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			return;
 		}
 
-		float halfWidth = getWidth() / 2f;
-		float halfHeight = getHeight() / 2f;
+		float halfWidth = getWidth() * 0.5f;
+		float halfHeight = getHeight() * 0.5f;
 
 		topLeft = new PointQuadTree<T>(this, getX(), getY(), halfWidth, halfHeight);
 		topRight = new PointQuadTree<T>(this, getX() + halfWidth, getY(), halfWidth, halfHeight);
@@ -286,34 +326,34 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		bottomLeft = null;
 		bottomRight = null;
 	}
-	
+
 	public void removeAll(List<T> elementsToRemove) {
-		if(elementsToRemove == null || elementsToRemove.isEmpty()) {
+		if (elementsToRemove == null || elementsToRemove.isEmpty()) {
 			return;
 		}
-		
+
 		List<T> elementsWithinQuad = new ArrayList<T>();
-		for(T element : elementsToRemove) {
-			if(this.contains(element.getX(), element.getY())) {
+		for (T element : elementsToRemove) {
+			if (this.contains(element.getX(), element.getY())) {
 				elementsWithinQuad.add(element);
 			}
 		}
-		
+
 		clearTotalElementsCache();
-		
-		if(topLeft != null) {
-			for(T element : elementsWithinQuad) {
+
+		if (topLeft != null) {
+			for (T element : elementsWithinQuad) {
 				removeElementFromChild(element);
 			}
 		}
-		if(elements == null) {
+		if (elements == null) {
 			return;
 		}
 		elements.removeAll(elementsWithinQuad);
-		for(T element : elementsWithinQuad) {
+		for (T element : elementsWithinQuad) {
 			element.removePositionChangeListener(this);
 		}
-		
+
 		if (parent == null) {
 			return;
 		}
@@ -336,14 +376,14 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		}
 		return removeElement(element);
 	}
-	
+
 	public void clear() {
-		if(topLeft != null) {
+		if (topLeft != null) {
 			topLeft.clear();
 			topRight.clear();
 			bottomLeft.clear();
 			bottomRight.clear();
-			
+
 			topLeft = null;
 			topRight = null;
 			bottomLeft = null;
@@ -377,7 +417,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		}
 		return result;
 	}
-	
+
 	@Override
 	public List<T> getElementsWithinArea(Shape area) {
 		List<T> result = new ArrayList<T>();
@@ -553,5 +593,15 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 
 	public boolean hasChildQuads() {
 		return topLeft != null;
+	}
+
+	@Override
+	public float getMinimumQuadWidth() {
+		return minimumQuadWidth;
+	}
+
+	@Override
+	public float getMinimumQuadHeight() {
+		return minimumQuadHeight;
 	}
 }

@@ -57,4 +57,8 @@ public interface QuadTree<T extends Positionable> extends PositionChangeListener
 	public int getTotalElements();
 	
 	public QuadTree<T> getParent();
+	
+	public float getMinimumQuadWidth();
+	
+	public float getMinimumQuadHeight();
 }

@@ -97,6 +97,37 @@ public class ConcurrentRegionQuadTree<T extends CollisionShape> extends Concurre
 	public ConcurrentRegionQuadTree(ConcurrentRegionQuadTree<T> parent, float x, float y, float width, float height) {
 		super(parent, x, y, width, height);
 	}
+	
+	/**
+	 * Constructs a {@link ConcurrentRegionQuadTree} with a specified minimum
+	 * quad size, element limit and watermark
+	 * 
+	 * @param minimumQuadWidth
+	 *            The minimum width of quads. Quads will not subdivide smaller
+	 *            than this width.
+	 * @param minimumQuadHeight
+	 *            The minimum height of quads. Quads will not subdivide smaller
+	 *            than this height.
+	 * @param elementLimitPerQuad
+	 *            The maximum number of elements in a quad before it is split
+	 *            into 4 child {@link ConcurrentRegionQuadTree}s
+	 * @param mergeWatermark
+	 *            When a parent {@link ConcurrentRegionQuadTree}'s total elements
+	 *            go lower than this mark, the child
+	 *            {@link ConcurrentRegionQuadTree}s will be merged back together
+	 * @param x
+	 *            The x coordinate of the {@link ConcurrentRegionQuadTree}
+	 * @param y
+	 *            The y coordiante of the {@link ConcurrentRegionQuadTree}
+	 * @param width
+	 *            The width of the {@link ConcurrentRegionQuadTree}
+	 * @param height
+	 *            The height of the {@link ConcurrentRegionQuadTree}
+	 */
+	public ConcurrentRegionQuadTree(float minimumQuadWidth, float minimumQuadHeight, int elementLimitPerQuad,
+			int mergeWatermark, float x, float y, float width, float height) {
+		super(minimumQuadWidth, minimumQuadHeight, elementLimitPerQuad, mergeWatermark, x, y, width, height);
+	}
 
 	@Override
 	public void debugRender(Graphics g) {
