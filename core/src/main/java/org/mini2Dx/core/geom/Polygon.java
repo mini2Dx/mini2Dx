@@ -452,15 +452,47 @@ public class Polygon extends Shape {
 	}
 
 	public void setVertices(float[] vertices) {
-		this.vertices = vertices;
+		boolean changed = false;
+		if(this.vertices.length == vertices.length * 2) {
+			for(int i = 0; i < vertices.length; i++) {
+				changed |= !MathUtils.isEqual(this.vertices[i], vertices[i]);
+			}
+		} else {
+			changed = true;
+		}
+		
 		rotation = 0f;
+		
+		if(!changed) {
+			return;
+		}
+		this.vertices = vertices;
 
 		clearTotalSidesCache();
 		setDirty();
 	}
 
 	public void setVertices(Vector2[] vertices) {
-		setVertices(toVertices(vertices));
+		if(this.vertices.length != vertices.length * 2) {
+			setVertices(toVertices(vertices));
+			return;
+		}
+		
+		boolean changed = false;
+		for(int i = 0; i < vertices.length; i++) {
+			int index = i * 2;
+			changed |= !MathUtils.isEqual(this.vertices[index], vertices[i].x);
+			changed |= !MathUtils.isEqual(this.vertices[index + 1], vertices[i].y);
+			this.vertices[index] = vertices[i].x;
+			this.vertices[index + 1] = vertices[i].y;
+		}
+		rotation = 0f;
+		
+		if(!changed) {
+			return;
+		}
+		clearTotalSidesCache();
+		setDirty();
 	}
 
 	@Override
