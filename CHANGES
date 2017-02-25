@@ -1,4 +1,4 @@
-[1.4.6-SNAPSHOT]
+[1.4.6]
 - Reduce float array allocations in Polygon#setVertices
 - Added ScreenBasedGame#getScreenManager and ScreenManager#getGameScreens
 
