@@ -1,4 +1,6 @@
 [1.4.6-SNAPSHOT]
+- Reduce float array allocations in Polygon#setVertices
+- Added ScreenBasedGame#getScreenManager and ScreenManager#getGameScreens
 
 [1.4.5]
 - Added Shape#add and Shape#subtract methods for modifying position

@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.core.screen;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,16 +25,9 @@ import org.mini2Dx.core.screen.transition.NullTransition;
  */
 public class BasicScreenManager<T extends GameScreen> implements
 		ScreenManager<T> {
-	private Map<Integer, T> gameScreens;
+	private final Map<Integer, T> gameScreens = new ConcurrentHashMap<Integer, T>();
 	protected T currentScreen, nextScreen;
 	protected Transition transitionIn, transitionOut;
-
-	/**
-	 * Constructor
-	 */
-	public BasicScreenManager() {
-		gameScreens = new ConcurrentHashMap<Integer, T>();
-	}
 
 	@Override
 	public void update(GameContainer gc, float delta) {
@@ -152,5 +146,10 @@ public class BasicScreenManager<T extends GameScreen> implements
 			return;
 		}
 		currentScreen.onResume();
+	}
+
+	@Override
+	public Iterator<T> getGameScreens() {
+		return gameScreens.values().iterator();
 	}
 }

@@ -11,6 +11,8 @@
  */
 package org.mini2Dx.core.screen;
 
+import java.util.Iterator;
+
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.GameResizeListener;
 import org.mini2Dx.core.graphics.Graphics;
@@ -94,4 +96,10 @@ public interface ScreenManager<T extends GameScreen> extends GameResizeListener 
 	 * @return False if there are no {@link Transition}s active
 	 */
 	public boolean isTransitioning();
+	
+	/**
+	 * Returns an {@link Iterator} over all the game screens
+	 * @return
+	 */
+	public Iterator<T> getGameScreens();
 }

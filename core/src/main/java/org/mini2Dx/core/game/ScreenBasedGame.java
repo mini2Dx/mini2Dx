@@ -90,4 +90,12 @@ public abstract class ScreenBasedGame extends GameContainer {
 		super.postinit();
 		screenManager.enterGameScreen(getInitialScreenId(), null, null);
 	}
+
+	/**
+	 * Returns the {@link ScreenManager} used by this game
+	 * @return
+	 */
+	public ScreenManager<GameScreen> getScreenManager() {
+		return screenManager;
+	}
 }
