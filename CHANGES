@@ -1,3 +1,8 @@
+[1.4.7-SNAPSHOT]
+- Graphics can now draw TiledDrawable instances
+- Added RepeatedNinePatch which repeats instead of stretches
+- UI element backgrounds can now set backgroundMode to "repeat" or "stretch"
+
 [1.4.6]
 - Reduce float array allocations in Polygon#setVertices
 - Added ScreenBasedGame#getScreenManager and ScreenManager#getGameScreens

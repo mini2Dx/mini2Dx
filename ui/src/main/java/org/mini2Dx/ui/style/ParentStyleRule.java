@@ -12,6 +12,7 @@
 package org.mini2Dx.ui.style;
 
 import org.mini2Dx.core.graphics.NinePatch;
+import org.mini2Dx.core.graphics.RepeatedNinePatch;
 import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.element.ParentUiElement;
@@ -23,8 +24,13 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
  * Extends {@link StyleRule} for {@link ParentUiElement} styling
  */
 public class ParentStyleRule extends StyleRule {
+	private static final String BG_STRETCH_MODE =  "stretch";
+	private static final String BG_REPEAT_MODE =  "repeat";
+	
 	@Field(optional=true)
 	private String background;
+	@Field(optional=true)
+	private String backgroundMode;
 	@Field(optional=true)
 	private int ninePatchTop, ninePatchBottom, ninePatchLeft, ninePatchRight;
 	
@@ -37,8 +43,13 @@ public class ParentStyleRule extends StyleRule {
 		}
 		
 		if(background != null) {
-			backgroundNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(background)), getNinePatchLeft(),
-					getNinePatchRight(), getNinePatchTop(), getNinePatchBottom());
+			if(getBackgroundMode().equalsIgnoreCase(BG_REPEAT_MODE)) {
+				backgroundNinePatch = new RepeatedNinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(background)), getNinePatchLeft(),
+						getNinePatchRight(), getNinePatchTop(), getNinePatchBottom());
+			} else {
+				backgroundNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(background)), getNinePatchLeft(),
+						getNinePatchRight(), getNinePatchTop(), getNinePatchBottom());
+			}
 		}
 	}
 
@@ -52,6 +63,24 @@ public class ParentStyleRule extends StyleRule {
 
 	public void setBackground(String background) {
 		this.background = background;
+	}
+
+	public String getBackgroundMode() {
+		if(backgroundMode == null) {
+			return BG_STRETCH_MODE;
+		}
+		return backgroundMode;
+	}
+
+	public void setBackgroundMode(String backgroundMode) {
+		if(backgroundMode == null) {
+			return;
+		}
+		if(backgroundMode.equalsIgnoreCase(BG_REPEAT_MODE)) {
+			this.backgroundMode = BG_REPEAT_MODE;
+		} else {
+			this.backgroundMode = BG_STRETCH_MODE;
+		}
 	}
 
 	public int getNinePatchTop() {
