@@ -33,6 +33,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Align;
 
 /**
@@ -377,6 +378,12 @@ public class LibGdxGraphics implements Graphics {
 	public void drawNinePatch(NinePatchDrawable ninePatchDrawable, float x, float y, float width, float height) {
 		beginRendering();
 		ninePatchDrawable.draw(spriteBatch, x, y, width, height);
+	}
+	
+	@Override
+	public void drawTiledDrawable(TiledDrawable tiledDrawable, float x, float y, float width, float height) {
+		beginRendering();
+		tiledDrawable.draw(spriteBatch, x, y, width, height);
 	}
 	
 	@Override

@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 
 /**
  * LibGDX headless implementation of {@link Graphics}
@@ -190,6 +191,10 @@ public class HeadlessGraphics implements Graphics {
 
 	@Override
 	public void drawNinePatch(NinePatchDrawable ninePatchDrawable, float x, float y, float width, float height) {
+	}
+	
+	@Override
+	public void drawTiledDrawable(TiledDrawable tiledDrawable, float x, float y, float width, float height) {
 	}
 	
 	@Override

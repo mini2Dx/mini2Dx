@@ -14,25 +14,16 @@ package org.mini2Dx.core.graphics;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.geom.Shape;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.EarClippingTriangulator;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Align;
 
 /**
@@ -111,7 +102,7 @@ public interface Graphics {
 	 *            The radius of the circle
 	 */
 	public void drawCircle(float centerX, float centerY, int radius);
-	
+
 	/**
 	 * Draws a circle to the window in the current {@link Color} with the set
 	 * line height
@@ -148,41 +139,61 @@ public interface Graphics {
 	 *            The radius of the circle
 	 */
 	public void fillCircle(float centerX, float centerY, float radius);
-	
+
 	/**
 	 * Draws a triangle to the window in the current {@link Color}
-	 * @param x1 The x coordinate of the first point
-	 * @param y1 The y coordinate of the first point
-	 * @param x2 The x coordinate of the second point
-	 * @param y2 The y coordinate of the second point
-	 * @param x3 The x coordinate of the third point
-	 * @param y3 The y coordinate of the third point
+	 * 
+	 * @param x1
+	 *            The x coordinate of the first point
+	 * @param y1
+	 *            The y coordinate of the first point
+	 * @param x2
+	 *            The x coordinate of the second point
+	 * @param y2
+	 *            The y coordinate of the second point
+	 * @param x3
+	 *            The x coordinate of the third point
+	 * @param y3
+	 *            The y coordinate of the third point
 	 */
 	public void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3);
-	
+
 	/**
 	 * Draws a triangle to the window in the current {@link Color}
-	 * @param x1 The x coordinate of the first point
-	 * @param y1 The y coordinate of the first point
-	 * @param x2 The x coordinate of the second point
-	 * @param y2 The y coordinate of the second point
-	 * @param x3 The x coordinate of the third point
-	 * @param y3 The y coordinate of the third point
+	 * 
+	 * @param x1
+	 *            The x coordinate of the first point
+	 * @param y1
+	 *            The y coordinate of the first point
+	 * @param x2
+	 *            The x coordinate of the second point
+	 * @param y2
+	 *            The y coordinate of the second point
+	 * @param x3
+	 *            The x coordinate of the third point
+	 * @param y3
+	 *            The y coordinate of the third point
 	 */
 	public void fillTriangle(float x1, float y1, float x2, float y2, float x3, float y3);
-	
+
 	/**
 	 * Draws a polygon to the window in the current {@link Color}
-	 * @param vertices The vertices of the polygon in format x1,y1,x2,y2,x3,y3,etc.
+	 * 
+	 * @param vertices
+	 *            The vertices of the polygon in format x1,y1,x2,y2,x3,y3,etc.
 	 */
 	public void drawPolygon(float[] vertices);
-	
+
 	/**
 	 * Fills a polygon to the window in the current {@link Color}
-	 * @param vertices The vertices of the polygon in format x1,y1,x2,y2,x3,y3,etc.
-	 * @param triangles The indices in the vertices parameter that make up the triangles of the polygon
+	 * 
+	 * @param vertices
+	 *            The vertices of the polygon in format x1,y1,x2,y2,x3,y3,etc.
+	 * @param triangles
+	 *            The indices in the vertices parameter that make up the
+	 *            triangles of the polygon
 	 */
-	public void fillPolygon(float [] vertices, short [] triangles);
+	public void fillPolygon(float[] vertices, short[] triangles);
 
 	/**
 	 * Draws a string to the window
@@ -387,7 +398,7 @@ public interface Graphics {
 	 *            The effect to be drawn
 	 */
 	public void drawParticleEffect(ParticleEffect effect);
-	
+
 	/**
 	 * Draws a {@link NinePatch} to screen
 	 * 
@@ -412,17 +423,35 @@ public interface Graphics {
 	 * @param x
 	 *            The x coordinate to draw at
 	 * @param y
-	 *            The y coordiante to draw at
+	 *            The y coordinate to draw at
 	 * @param width
 	 *            The width to apply to the {@link NinePatchDrawable}
 	 * @param height
 	 *            The height to apply to the {@link NinePatchDrawable}
 	 */
 	public void drawNinePatch(NinePatchDrawable ninePatchDrawable, float x, float y, float width, float height);
-	
+
+	/**
+	 * Draws a {@link TiledDrawable} to screen
+	 * 
+	 * @param tiledDrawable
+	 *            The {@link TiledDrawable} to be drawn
+	 * @param x
+	 *            The x coordinate to draw at
+	 * @param y
+	 *            The y coordinate to draw at
+	 * @param width
+	 *            The width to render
+	 * @param height
+	 *            The height to render
+	 */
+	public void drawTiledDrawable(TiledDrawable tiledDrawable, float x, float y, float width, float height);
+
 	/**
 	 * Draws a {@link BitmapFontCache} to the screen
-	 * @param bitmapFontCache The {@link BitmapFontCache} to render
+	 * 
+	 * @param bitmapFontCache
+	 *            The {@link BitmapFontCache} to render
 	 */
 	public void drawBitmapFontCache(BitmapFontCache bitmapFontCache);
 
@@ -437,12 +466,16 @@ public interface Graphics {
 	 *            The y coordinate to rotate around
 	 */
 	public void rotate(float degrees, float x, float y);
-	
+
 	/**
 	 * Sets the canvas rotation around a provided point
-	 * @param degrees The degree value in a clockwise direction
-	 * @param x The x coordinate to rotate around
-	 * @param y The y coordinate to rotate around
+	 * 
+	 * @param degrees
+	 *            The degree value in a clockwise direction
+	 * @param x
+	 *            The x coordinate to rotate around
+	 * @param y
+	 *            The y coordinate to rotate around
 	 */
 	public void setRotation(float degrees, float x, float y);
 
@@ -455,9 +488,10 @@ public interface Graphics {
 	 *            Scaling along the Y axis
 	 */
 	public void scale(float scaleX, float scaleY);
-	
+
 	/**
 	 * Sets the canvas scale
+	 * 
 	 * @param scaleX
 	 *            Scaling along the X axis
 	 * @param scaleY
@@ -479,9 +513,10 @@ public interface Graphics {
 	 *            The y axis translation
 	 */
 	public void translate(float translateX, float translateY);
-	
+
 	/**
-	 * Sets the translation coordinates 
+	 * Sets the translation coordinates
+	 * 
 	 * @param translateX
 	 *            The x axis translation
 	 * @param translateY
@@ -667,24 +702,28 @@ public interface Graphics {
 
 	/**
 	 * Returns the width of the window width
+	 * 
 	 * @return
 	 */
 	public int getWindowWidth();
 
 	/**
 	 * Returns the height of the window height
+	 * 
 	 * @return
 	 */
 	public int getWindowHeight();
-	
+
 	/**
 	 * Returns the width of the viewport width
+	 * 
 	 * @return
 	 */
 	public float getViewportWidth();
 
 	/**
 	 * Returns the height of the viewport height
+	 * 
 	 * @return
 	 */
 	public float getViewportHeight();
