@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
- * Modified version of {@link com.badlogic.gdx.graphics.g2d.NinePatch}
+ * Modified version of {@link com.badlogic.gdx.graphics.g2d.NinePatch} for mini2Dx
  */
 public class NinePatch {
 	public static final int TOP_LEFT = 0;
@@ -36,13 +36,14 @@ public class NinePatch {
 	static private final Color tmpDrawColor = new Color();
 
 	private Texture texture;
+	protected TextureRegion [] patches;
 	private int bottomLeft = -1, bottomCenter = -1, bottomRight = -1;
 	private int middleLeft = -1, middleCenter = -1, middleRight = -1;
 	private int topLeft = -1, topCenter = -1, topRight = -1;
 	private float leftWidth, rightWidth, middleWidth, middleHeight, topHeight, bottomHeight;
 	private float[] vertices = new float[9 * 4 * 5];
 	private int idx;
-	private final Color color = new Color(Color.WHITE);
+	protected final Color color = new Color(Color.WHITE);
 	private float paddingLeft = -1, paddingRight = -1, paddingTop = -1, paddingBottom = -1;
 
 	/**
@@ -83,7 +84,7 @@ public class NinePatch {
 		final int middleWidth = region.getRegionWidth() - left - right;
 		final int middleHeight = region.getRegionHeight() - top - bottom;
 
-		TextureRegion[] patches = new TextureRegion[9];
+		patches = new TextureRegion[9];
 		if (top > 0) {
 			if (left > 0)
 				patches[BOTTOM_LEFT] = new TextureRegion(region, 0, 0, left, top);
@@ -160,6 +161,7 @@ public class NinePatch {
 		paddingBottom = ninePatch.paddingBottom;
 		paddingRight = ninePatch.paddingRight;
 
+		patches = ninePatch.patches;
 		vertices = new float[ninePatch.vertices.length];
 		System.arraycopy(ninePatch.vertices, 0, vertices, 0, ninePatch.vertices.length);
 		idx = ninePatch.idx;
