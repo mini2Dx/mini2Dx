@@ -1,4 +1,4 @@
-[1.4.7-SNAPSHOT]
+[1.4.7]
 - Graphics can now draw TiledDrawable instances
 - Added RepeatedNinePatch which repeats instead of stretches
 - UI element backgrounds can now set backgroundMode to "repeat" or "stretch"
