@@ -314,6 +314,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			return false;
 		}
 		activeAction.mouseUp(screenX, screenY, pointer, button);
+		activeAction = null;
 		return true;
 	}
 
