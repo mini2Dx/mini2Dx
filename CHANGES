@@ -1,5 +1,6 @@
 [1.4.8-SNAPSHOT]
 - Fix UiContainer not clearing active action element
+- Fix Rectangle returning 0,0 as its center
 
 [1.4.7]
 - Graphics can now draw TiledDrawable instances

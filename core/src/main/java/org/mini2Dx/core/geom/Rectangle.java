@@ -442,7 +442,7 @@ public class Rectangle extends Shape implements
 	 * @return
 	 */
 	public float getCenterX() {
-		return 0f;
+		return polygon.getCenterX();
 	}
 
 	/**
@@ -451,7 +451,7 @@ public class Rectangle extends Shape implements
 	 * @return
 	 */
 	public float getCenterY() {
-		return 0f;
+		return polygon.getCenterY();
 	}
 
 	/**

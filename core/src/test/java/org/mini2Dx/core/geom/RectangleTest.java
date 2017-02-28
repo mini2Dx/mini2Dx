@@ -45,6 +45,8 @@ public class RectangleTest {
 		Assert.assertEquals(50f, rectangle1.getHeight());
 		Assert.assertEquals(150f, rectangle1.getMaxX());
 		Assert.assertEquals(150f, rectangle1.getMaxY());
+		Assert.assertEquals(125f, rectangle1.getCenterX(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(125f, rectangle1.getCenterY(), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 	
 	@Test
