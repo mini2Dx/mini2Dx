@@ -78,7 +78,6 @@ public class AndroidXmlSerializer implements XmlSerializer {
 				e.printStackTrace();
 			}
 		}
-		callPostDeserializeMethods(result, clazz);
 		return result;
 	}
 
@@ -111,7 +110,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		}
 	}
 	
-	private <T> void callPostDeserializeMethods(T object, Class<T> clazz) throws SerializationException {
+	private <T> void callPostDeserializeMethods(T object, Class<?> clazz) throws SerializationException {
 		Class<?> currentClass = clazz;
 		while (currentClass != null && !currentClass.equals(Object.class)) {
 			for(Method method : ClassReflection.getDeclaredMethods(currentClass)) {
@@ -599,6 +598,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 					parserEventType = xmlParser.next();
 				}
 			}
+			callPostDeserializeMethods(result, clazz);
 			return result;
 		} catch (SerializationException e) {
 			throw e;

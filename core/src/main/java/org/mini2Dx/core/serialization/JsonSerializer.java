@@ -60,9 +60,7 @@ public class JsonSerializer {
 	 *             Thrown when the data is invalid
 	 */
 	public <T> T fromJson(FileHandle fileHandle, Class<T> clazz) throws SerializationException {
-		T result = deserialize(new JsonReader().parse(fileHandle), clazz);
-		callPostDeserializeMethods(result, clazz);
-		return result;
+		return deserialize(new JsonReader().parse(fileHandle), clazz);
 	}
 
 	/**
@@ -78,9 +76,7 @@ public class JsonSerializer {
 	 *             Thrown when the data is invalid
 	 */
 	public <T> T fromJson(String json, Class<T> clazz) throws SerializationException {
-		T result = deserialize(new JsonReader().parse(json), clazz);
-		callPostDeserializeMethods(result, clazz);
-		return result;
+		return deserialize(new JsonReader().parse(json), clazz);
 	}
 
 	/**
@@ -162,7 +158,7 @@ public class JsonSerializer {
 		return result;
 	}
 	
-	private <T> void callPostDeserializeMethods(T object, Class<T> clazz) throws SerializationException {
+	private <T> void callPostDeserializeMethods(T object, Class<?> clazz) throws SerializationException {
 		Class<?> currentClass = clazz;
 		while (currentClass != null && !currentClass.equals(Object.class)) {
 			for(Method method : ClassReflection.getDeclaredMethods(currentClass)) {
@@ -498,6 +494,7 @@ public class JsonSerializer {
 					}
 					currentClass = currentClass.getSuperclass();
 				}
+				callPostDeserializeMethods(result, clazz);
 				return result;
 			}
 			if (objectRoot.isArray()) {

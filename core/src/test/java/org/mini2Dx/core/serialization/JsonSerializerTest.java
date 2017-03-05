@@ -126,6 +126,7 @@ public class JsonSerializerTest {
 		
 		TestParentObject result = serializer.fromJson(json, TestParentObject.class);
 		Assert.assertTrue(result.isPostDeserializeCalled());
+		Assert.assertTrue(result.getChildObject().isPostDeserializeCalled());
 		
 		Assert.assertEquals(parentObject.getSuperField(), result.getSuperField());
 		Assert.assertEquals(parentObject.getEnumValue(), result.getEnumValue());

@@ -52,6 +52,7 @@ public abstract class XmlSerializerTest {
 		
 		TestParentObject result = xmlSerializer.fromXml(xml, TestParentObject.class);
 		Assert.assertTrue(result.isPostDeserializeCalled());
+		Assert.assertTrue(result.getChildObject().isPostDeserializeCalled());
 		
 		Assert.assertEquals(parentObject.getSuperField(), result.getSuperField());
 		Assert.assertEquals(parentObject.getEnumValue(), result.getEnumValue());

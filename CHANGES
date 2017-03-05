@@ -1,4 +1,5 @@
 [1.4.9-SNAPSHOT]
+- Fix @PostDeserialize not being invoked for nested objects
 
 [1.4.8]
 - Fix UiContainer not clearing active action element

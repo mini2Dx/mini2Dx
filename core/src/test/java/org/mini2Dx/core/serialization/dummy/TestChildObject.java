@@ -12,6 +12,7 @@
 package org.mini2Dx.core.serialization.dummy;
 
 import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.core.serialization.annotation.PostDeserialize;
 
 /**
  * Child object class for testing serialization
@@ -20,10 +21,17 @@ public class TestChildObject {
     @Field
     private int intValue;
     
+    private boolean postDeserializeCalled = false;
+    
     public TestChildObject() {}
     
     public TestChildObject(int value) {
     	this.intValue = value;
+    }
+    
+    @PostDeserialize
+    public void postDeserialize() {
+    	postDeserializeCalled = true;
     }
 
     public int getIntValue() {
@@ -34,7 +42,15 @@ public class TestChildObject {
         this.intValue = intValue;
     }
 
-    @Override
+    public boolean isPostDeserializeCalled() {
+		return postDeserializeCalled;
+	}
+
+	public void setPostDeserializeCalled(boolean postDeserializeCalled) {
+		this.postDeserializeCalled = postDeserializeCalled;
+	}
+
+	@Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
