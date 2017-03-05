@@ -526,6 +526,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 			Class<?> clazz = determineImplementation(xmlParser, objClass);
 			T result = construct(xmlParser, isEndElement, clazz);
 			if (isEndElement.get()) {
+				callPostDeserializeMethods(result, clazz);
 				return result;
 			}
 

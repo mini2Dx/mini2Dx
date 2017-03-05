@@ -545,6 +545,7 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			Class<?> clazz = determineImplementation(xmlReader, objClass);
 			T result = construct(xmlReader, xmlTag, isEndElement, clazz);
 			if(isEndElement.get()) {
+				callPostDeserializeMethods(result, clazz);
 				return result;
 			}
 			
