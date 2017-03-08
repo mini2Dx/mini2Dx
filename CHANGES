@@ -1,4 +1,5 @@
-[1.4.10-SNAPSHOT]
+[1.5.0-SNAPSHOT]
+- Updated to libGDX 1.9.6, roboVM 2.3.0 and artemis-odb 2.1.0
 
 [1.4.9]
 - Fix @PostDeserialize not being invoked for nested objects

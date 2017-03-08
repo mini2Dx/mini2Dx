@@ -21,6 +21,7 @@ import org.mini2Dx.headless.HeadlessGameWrapper;
 import org.mini2Dx.headless.HeadlessMini2DxConfig;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -59,10 +60,12 @@ public class HeadlessMini2DxGame implements Application {
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
+	protected ApplicationLogger applicationLogger;
 	protected String preferencesdir;
 
 	public HeadlessMini2DxGame(GameContainer game, HeadlessMini2DxConfig config) {
-
+		setApplicationLogger(new HeadlessApplicationLogger());
+		
 		this.config = config;
 		listener = new HeadlessGameWrapper(game, config.gameIdentifier);
 
@@ -315,6 +318,16 @@ public class HeadlessMini2DxGame implements Application {
 	@Override
 	public int getLogLevel() {
 		return logLevel;
+	}
+	
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override

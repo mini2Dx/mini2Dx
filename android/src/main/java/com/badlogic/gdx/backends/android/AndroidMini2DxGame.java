@@ -22,6 +22,7 @@ import org.mini2Dx.android.AndroidMini2DxConfig;
 import org.mini2Dx.core.game.ApplicationListener;
 import org.mini2Dx.core.game.GameContainer;
 
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -77,6 +78,7 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 			LifecycleListener.class);
 	private final Array<AndroidEventListener> androidEventListeners = new Array<AndroidEventListener>();
 	protected int logLevel = LOG_INFO;
+	protected ApplicationLogger applicationLogger;
 	protected boolean useImmersiveMode = false;
 	protected boolean hideStatusBar = false;
 	private int wasFocusChanged = -1;
@@ -159,6 +161,7 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 		if (this.getVersion() < MINIMUM_SDK) {
 			throw new GdxRuntimeException("mini2Dx requires Android API Level " + MINIMUM_SDK + " or later.");
 		}
+		setApplicationLogger(new AndroidApplicationLogger());
 		graphics = new AndroidMini2DxGraphics(this, config,
 				config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
@@ -482,6 +485,16 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 	@Override
 	public int getLogLevel() {
 		return logLevel;
+	}
+	
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override

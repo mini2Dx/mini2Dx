@@ -25,6 +25,7 @@ import org.mini2Dx.desktop.DesktopGameWrapper;
 import org.mini2Dx.desktop.DesktopMini2DxConfig;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -57,6 +58,7 @@ public class DesktopMini2DxGame implements Application {
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
+	protected ApplicationLogger applicationLogger;
 	protected String preferencesdir;
 
 	public DesktopMini2DxGame(GameContainer game, DesktopMini2DxConfig config) {
@@ -69,7 +71,8 @@ public class DesktopMini2DxGame implements Application {
 
 	public DesktopMini2DxGame(GameContainer game, DesktopMini2DxConfig config, LwjglGraphics graphics) {
 		LwjglNativesLoader.load();
-
+		setApplicationLogger(new LwjglApplicationLogger());
+		
 		this.config = config;
 		listener = new DesktopGameWrapper(game, config.gameIdentifier);
 
@@ -433,6 +436,16 @@ public class DesktopMini2DxGame implements Application {
 	@Override
 	public int getLogLevel() {
 		return logLevel;
+	}
+	
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override

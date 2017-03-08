@@ -40,6 +40,7 @@ import org.robovm.apple.uikit.UIWindow;
 import org.robovm.rt.bro.Bro;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -105,6 +106,7 @@ public class IOSMini2DxGame implements Application {
 	IOSMini2DxInput input;
 	IOSMini2DxNet net;
 	int logLevel = Application.LOG_DEBUG;
+	ApplicationLogger applicationLogger;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
 	float displayScaleFactor;
@@ -121,6 +123,7 @@ public class IOSMini2DxGame implements Application {
 	}
 
 	final boolean didFinishLaunching (UIApplication uiApp, UIApplicationLaunchOptions options) {
+		setApplicationLogger(new IOSApplicationLogger());
 		Gdx.app = this;
 		this.uiApp = uiApp;
 
@@ -251,9 +254,15 @@ public class IOSMini2DxGame implements Application {
 		Gdx.app.debug("IOSApplication", "resumed");
 		// workaround for ObjectAL crash problem
 		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-		OALAudioSession.sharedInstance().forceEndInterruption();
+		OALAudioSession audioSession = OALAudioSession.sharedInstance();
+		if (audioSession != null) {
+			audioSession.forceEndInterruption();
+		}
 		if (config.allowIpod) {
-			OALSimpleAudio.sharedInstance().setUseHardwareIfAvailable(false);
+			OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
+			if (audio != null) {
+				audio.setUseHardwareIfAvailable(false);
+			}
 		}
 		graphics.makeCurrent();
 		graphics.resume();
@@ -262,7 +271,10 @@ public class IOSMini2DxGame implements Application {
 	final void willEnterForeground (UIApplication uiApp) {
 		// workaround for ObjectAL crash problem
 		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-		OALAudioSession.sharedInstance().forceEndInterruption();
+		OALAudioSession audioSession = OALAudioSession.sharedInstance();
+		if (audioSession != null) {
+			audioSession.forceEndInterruption();
+		}
 	}
 
 	final void willResignActive (UIApplication uiApp) {
@@ -368,6 +380,16 @@ public class IOSMini2DxGame implements Application {
 	@Override
 	public int getLogLevel () {
 		return logLevel;
+	}
+	
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override
