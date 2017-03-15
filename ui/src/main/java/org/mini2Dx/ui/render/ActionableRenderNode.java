@@ -11,14 +11,18 @@
  */
 package org.mini2Dx.ui.render;
 
+import org.mini2Dx.ui.element.Actionable;
+import org.mini2Dx.ui.event.EventTrigger;
+import org.mini2Dx.ui.event.params.EventTriggerParams;
+
 /**
  * Interface for {@link RenderNode}s that have actions
  */
 public interface ActionableRenderNode extends HoverableRenderNode {
 	
-	public void beginAction();
+	public void beginAction(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams);
 	
-	public void endAction();
+	public void endAction(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams);
 	
 	public void mouseUp(int screenX, int screenY, int pointer, int button);
 	

@@ -19,6 +19,10 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.ui.animation.ScrollTo;
 import org.mini2Dx.ui.element.ScrollBox;
+import org.mini2Dx.ui.event.EventTrigger;
+import org.mini2Dx.ui.event.params.EventTriggerParams;
+import org.mini2Dx.ui.event.params.EventTriggerParamsPool;
+import org.mini2Dx.ui.event.params.MouseEventTriggerParams;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ButtonStyleRule;
 import org.mini2Dx.ui.style.ScrollBoxStyleRule;
@@ -328,7 +332,11 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 
 	@Override
 	public void mouseUp(int screenX, int screenY, int pointer, int button) {
-		endAction();
+		MouseEventTriggerParams params = EventTriggerParamsPool.allocateMouseParams();
+		params.setMouseX(screenX);
+		params.setMouseY(screenY);
+		endAction(EventTrigger.getTriggerForMouseClick(button), params);
+		EventTriggerParamsPool.release(params);
 	}
 
 	@Override
@@ -373,11 +381,11 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 	}
 
 	@Override
-	public void beginAction() {
+	public void beginAction(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams) {
 	}
 
 	@Override
-	public void endAction() {
+	public void endAction(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams) {
 		scrollThumbState = NodeState.NORMAL;
 		topScrollButtonState = NodeState.NORMAL;
 		bottomScrollButtonState = NodeState.NORMAL;

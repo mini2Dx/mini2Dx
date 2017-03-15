@@ -29,7 +29,6 @@ import org.mini2Dx.uats.util.UiUtils;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.controller.ControllerUiInput;
 import org.mini2Dx.ui.element.AbsoluteContainer;
-import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.AlignedModal;
 import org.mini2Dx.ui.element.Button;
 import org.mini2Dx.ui.element.Column;
@@ -43,6 +42,7 @@ import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.TextButton;
 import org.mini2Dx.ui.element.Visibility;
+import org.mini2Dx.ui.event.ActionEvent;
 import org.mini2Dx.ui.layout.FlexDirection;
 import org.mini2Dx.ui.layout.VerticalAlignment;
 import org.mini2Dx.ui.listener.ActionListener;
@@ -160,13 +160,13 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		Row backRow = Row.withElements("behind-header", UiUtils.createButton(null, "", new ActionListener() {
 			
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				// TODO Auto-generated method stub
 				
 			}
 			
 			@Override
-			public void onActionBegin(Actionable source) {
+			public void onActionBegin(ActionEvent event) {
 				// TODO Auto-generated method stub
 				
 			}
@@ -181,23 +181,23 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		textBox = UiUtils.createTextBox(tab1Navigation, "textbox", new ActionListener() {
 			
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				textBoxResult.setText(textBox.getValue());
 			}
 			
 			@Override
-			public void onActionBegin(Actionable source) {
+			public void onActionBegin(ActionEvent event) {
 			}
 		});
 		select = UiUtils.createSelect(tab1Navigation, "select", new ActionListener() {
 			
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				System.out.println("Selected value: " + select.getSelectedOption().getValue());
 			}
 			
 			@Override
-			public void onActionBegin(Actionable source) {
+			public void onActionBegin(ActionEvent event) {
 			}
 		});
 		textBoxResult = UiUtils.createLabel("");
@@ -205,10 +205,10 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		TextButton returnButton = UiUtils.createButton(tab1Navigation, "Return to UAT Selection Screen", new ActionListener() {
 			
 			@Override
-			public void onActionBegin(Actionable source) {}
+			public void onActionBegin(ActionEvent event) {}
 			
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				nextScreenId = UATSelectionScreen.SCREEN_ID;
 			}
 		});
@@ -245,13 +245,13 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		Button reAddElementsButton =  UiUtils.createButton(null, "Re-add tabview", new ActionListener() {
 			
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				modal.remove(tabView);
 				modal.add(tabView);
 			}
 			
 			@Override
-			public void onActionBegin(Actionable source) {}
+			public void onActionBegin(ActionEvent event) {}
 		});
 		tab2.add(Row.withElements(reAddElementsButton));
 		
@@ -261,10 +261,10 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		Button hiddenButton = UiUtils.createButton(null, "Hidden", new ActionListener() {
 			
 			@Override
-			public void onActionEnd(Actionable source) {}
+			public void onActionEnd(ActionEvent event) {}
 			
 			@Override
-			public void onActionBegin(Actionable source) {}
+			public void onActionBegin(ActionEvent event) {}
 		});
 		hiddenButton.setVisibility(Visibility.HIDDEN);
 		tab3.add(Row.withElements(hiddenButton));
@@ -290,48 +290,48 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		Button scrollToTopButton = UiUtils.createButton(null, "Scroll to top (immediate)", new ActionListener() {
 			
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				scrollBox.scrollToTop(true);
 			}
 			
 			@Override
-			public void onActionBegin(Actionable source) {}
+			public void onActionBegin(ActionEvent event) {}
 		});
 		tab3.add(Row.withElements(scrollToTopButton));
 		
 		Button scrollToBottomButton = UiUtils.createButton(null, "Scroll to bottom (immediate)", new ActionListener() {
 			
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				scrollBox.scrollToBottom(true);
 			}
 			
 			@Override
-			public void onActionBegin(Actionable source) {}
+			public void onActionBegin(ActionEvent event) {}
 		});
 		tab3.add(Row.withElements(scrollToBottomButton));
 		
 		scrollToTopButton = UiUtils.createButton(null, "Scroll to top (smooth)", new ActionListener() {
 			
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				scrollBox.scrollToTop(false);
 			}
 			
 			@Override
-			public void onActionBegin(Actionable source) {}
+			public void onActionBegin(ActionEvent event) {}
 		});
 		tab3.add(Row.withElements(scrollToTopButton));
 		
 		scrollToBottomButton = UiUtils.createButton(null, "Scroll to bottom (smooth)", new ActionListener() {
 			
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				scrollBox.scrollToBottom(false);
 			}
 			
 			@Override
-			public void onActionBegin(Actionable source) {}
+			public void onActionBegin(ActionEvent event) {}
 		});
 		tab3.add(Row.withElements(scrollToBottomButton));
 		

@@ -16,6 +16,10 @@ import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.element.SelectOption;
+import org.mini2Dx.ui.event.EventTrigger;
+import org.mini2Dx.ui.event.params.EventTriggerParams;
+import org.mini2Dx.ui.event.params.EventTriggerParamsPool;
+import org.mini2Dx.ui.event.params.MouseEventTriggerParams;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ButtonStyleRule;
@@ -217,7 +221,12 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule>impl
 			element.nextOption();
 			rightButtonState = NodeState.NORMAL;
 		}
-		endAction();
+		
+		MouseEventTriggerParams params = EventTriggerParamsPool.allocateMouseParams();
+		params.setMouseX(screenX);
+		params.setMouseY(screenY);
+		endAction(EventTrigger.getTriggerForMouseClick(button), params);
+		EventTriggerParamsPool.release(params);
 	}
 
 	@Override
@@ -255,13 +264,13 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule>impl
 	}
 
 	@Override
-	public void beginAction() {
-		element.notifyActionListenersOfBeginEvent();
+	public void beginAction(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams) {
+		element.notifyActionListenersOfBeginEvent(eventTrigger, eventTriggerParams);
 	}
 
 	@Override
-	public void endAction() {
-		element.notifyActionListenersOfEndEvent();
+	public void endAction(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams) {
+		element.notifyActionListenersOfEndEvent(eventTrigger, eventTriggerParams);
 	}
 
 	@Override

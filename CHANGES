@@ -1,6 +1,7 @@
 [1.5.0-SNAPSHOT]
 - Updated to libGDX 1.9.6, roboVM 2.3.0 and artemis-odb 2.1.0
 - Added UiContainerOperation and ClearShaderProgramOperation for render pipelines
+- ActionListeners now receive event details via ActionEvent instance
 
 [1.4.9]
 - Fix @PostDeserialize not being invoked for nested objects

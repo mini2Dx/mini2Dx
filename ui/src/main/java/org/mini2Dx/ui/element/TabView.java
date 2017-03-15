@@ -20,6 +20,7 @@ import org.mini2Dx.core.controller.button.ControllerButton;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.ui.event.ActionEvent;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.navigation.ControllerHotKeyOperation;
@@ -118,21 +119,21 @@ public class TabView extends ParentUiElement implements Navigatable {
 		}
 		this.previousTabButton.addActionListener(new ActionListener() {
 			@Override
-			public void onActionBegin(Actionable source) {
+			public void onActionBegin(ActionEvent event) {
 			}
 
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				previousTab();
 			}
 		});
 		this.nextTabButton.addActionListener(new ActionListener() {
 			@Override
-			public void onActionBegin(Actionable source) {
+			public void onActionBegin(ActionEvent event) {
 			}
 
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				nextTab();
 			}
 		});
@@ -713,11 +714,11 @@ public class TabView extends ParentUiElement implements Navigatable {
 		}
 
 		@Override
-		public void onActionBegin(Actionable source) {
+		public void onActionBegin(ActionEvent event) {
 		}
 
 		@Override
-		public void onActionEnd(Actionable source) {
+		public void onActionEnd(ActionEvent event) {
 			tabView.setCurrentTabIndex(index);
 		}
 	}

@@ -15,6 +15,10 @@ package org.mini2Dx.ui.render;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.ui.element.Button;
+import org.mini2Dx.ui.event.EventTrigger;
+import org.mini2Dx.ui.event.params.EventTriggerParams;
+import org.mini2Dx.ui.event.params.EventTriggerParamsPool;
+import org.mini2Dx.ui.event.params.MouseEventTriggerParams;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.style.ButtonStyleRule;
@@ -60,7 +64,12 @@ public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> 
 		} else {
 			setState(NodeState.NORMAL);
 		}
-		endAction();
+		
+		MouseEventTriggerParams params = EventTriggerParamsPool.allocateMouseParams();
+		params.setMouseX(screenX);
+		params.setMouseY(screenY);
+		endAction(EventTrigger.getTriggerForMouseClick(button), params);
+		EventTriggerParamsPool.release(params);
 	}
 	
 	@Override
@@ -142,13 +151,13 @@ public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> 
 	}
 
 	@Override
-	public void beginAction() {
-		element.notifyActionListenersOfBeginEvent();
+	public void beginAction(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams) {
+		element.notifyActionListenersOfBeginEvent(eventTrigger, eventTriggerParams);
 	}
 
 	@Override
-	public void endAction() {
-		element.notifyActionListenersOfEndEvent();
+	public void endAction(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams) {
+		element.notifyActionListenersOfEndEvent(eventTrigger, eventTriggerParams);
 	}
 
 	public LayoutRuleset getLayoutRuleset() {

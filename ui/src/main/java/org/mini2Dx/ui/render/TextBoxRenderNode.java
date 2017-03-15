@@ -15,6 +15,11 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.NinePatch;
 import org.mini2Dx.ui.element.TextBox;
+import org.mini2Dx.ui.event.EventTrigger;
+import org.mini2Dx.ui.event.params.EventTriggerParams;
+import org.mini2Dx.ui.event.params.EventTriggerParamsPool;
+import org.mini2Dx.ui.event.params.KeyboardEventTriggerParams;
+import org.mini2Dx.ui.event.params.MouseEventTriggerParams;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.LayoutState;
@@ -22,6 +27,7 @@ import org.mini2Dx.ui.style.TextBoxStyleRule;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -189,7 +195,11 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 		switch (getState()) {
 		case ACTION:
 			if (!outerArea.contains(screenX, screenY)) {
-				endAction();
+				MouseEventTriggerParams params = EventTriggerParamsPool.allocateMouseParams();
+				params.setMouseX(screenX);
+				params.setMouseY(screenY);
+				endAction(EventTrigger.getTriggerForMouseClick(button), params);
+				EventTriggerParamsPool.release(params);
 				return null;
 			}
 			return this;
@@ -211,12 +221,21 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 			if (outerArea.contains(screenX, screenY)) {
 				setCursorIndex(screenX, screenY);
 			} else {
-				endAction();
+				MouseEventTriggerParams params = EventTriggerParamsPool.allocateMouseParams();
+				params.setMouseX(screenX);
+				params.setMouseY(screenY);
+				endAction(EventTrigger.getTriggerForMouseClick(button), params);
+				EventTriggerParamsPool.release(params);
 			}
 			break;
 		default:
 			if (outerArea.contains(screenX, screenY)) {
-				beginAction();
+				MouseEventTriggerParams params = EventTriggerParamsPool.allocateMouseParams();
+				params.setMouseX(screenX);
+				params.setMouseY(screenY);
+				beginAction(EventTrigger.getTriggerForMouseClick(button), params);
+				EventTriggerParamsPool.release(params);
+				
 				switch (Mdx.os) {
 				case ANDROID:
 				case IOS:
@@ -233,15 +252,15 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 	}
 
 	@Override
-	public void beginAction() {
+	public void beginAction(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams) {
 		super.setState(NodeState.ACTION);
-		element.notifyActionListenersOfBeginEvent();
+		element.notifyActionListenersOfBeginEvent(eventTrigger, eventTriggerParams);
 	}
 
 	@Override
-	public void endAction() {
+	public void endAction(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams) {
 		super.setState(NodeState.NORMAL);
-		element.notifyActionListenersOfEndEvent();
+		element.notifyActionListenersOfEndEvent(eventTrigger, eventTriggerParams);
 	}
 
 	@Override
@@ -287,7 +306,10 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 
 	@Override
 	public boolean enter() {
-		endAction();
+		KeyboardEventTriggerParams params = EventTriggerParamsPool.allocateKeyboardParams();
+		params.setKey(Keys.ENTER);
+		endAction(EventTrigger.KEYBOARD, params);
+		EventTriggerParamsPool.release(params);
 		setState(NodeState.HOVER);
 		return true;
 	}

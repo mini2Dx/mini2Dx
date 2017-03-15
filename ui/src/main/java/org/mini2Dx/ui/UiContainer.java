@@ -26,6 +26,11 @@ import org.mini2Dx.ui.element.Navigatable;
 import org.mini2Dx.ui.element.ParentUiElement;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.element.Visibility;
+import org.mini2Dx.ui.event.EventTrigger;
+import org.mini2Dx.ui.event.params.ControllerEventTriggerParams;
+import org.mini2Dx.ui.event.params.EventTriggerParamsPool;
+import org.mini2Dx.ui.event.params.KeyboardEventTriggerParams;
+import org.mini2Dx.ui.event.params.MouseEventTriggerParams;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
 import org.mini2Dx.ui.listener.UiContainerListener;
@@ -293,7 +298,12 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 		ActionableRenderNode result = renderTree.mouseDown(screenX, screenY, pointer, button);
 		if (result != null) {
-			result.beginAction();
+			MouseEventTriggerParams params = EventTriggerParamsPool.allocateMouseParams();
+			params.setMouseX(screenX);
+			params.setMouseY(screenY);
+			result.beginAction(EventTrigger.getTriggerForMouseClick(button), params);
+			EventTriggerParamsPool.release(params);
+			
 			setActiveAction(result);
 			return true;
 		}
@@ -370,7 +380,11 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			return true;
 		}
 		if (keycode == actionKey && activeAction != null) {
-			activeAction.beginAction();
+			KeyboardEventTriggerParams params = EventTriggerParamsPool.allocateKeyboardParams();
+			params.setKey(keycode);
+			activeAction.beginAction(EventTrigger.KEYBOARD, params);
+			EventTriggerParamsPool.release(params);
+			
 			if (activeTextInput != null) {
 				textInputIgnoredFirstEnter = false;
 			}
@@ -393,7 +407,10 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			return true;
 		}
 		if (keycode == actionKey && activeAction != null) {
-			activeAction.endAction();
+			KeyboardEventTriggerParams params = EventTriggerParamsPool.allocateKeyboardParams();
+			params.setKey(keycode);
+			activeAction.endAction(EventTrigger.KEYBOARD, params);
+			EventTriggerParamsPool.release(params);
 			
 			switch(Mdx.os) {
 			case ANDROID:
@@ -418,15 +435,24 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		receivedButtonDowns.add(button.getAbsoluteValue());
 		ActionableRenderNode hotkeyAction = activeNavigation.hotkey(button);
 		if (hotkeyAction != null) {
-			hotkeyAction.beginAction();
+			ControllerEventTriggerParams params = EventTriggerParamsPool.allocateControllerParams();
+			params.setControllerButton(button);
+			hotkeyAction.beginAction(EventTrigger.CONTROLLER, params);
+			EventTriggerParamsPool.release(params);
 		} else if (activeAction != null) {
 			if (button.equals(controllerUiInput.getActionButton())) {
 				if (activeTextInput != null) {
 					if(!textInputIgnoredFirstEnter) {
-						activeAction.beginAction();
+						ControllerEventTriggerParams params = EventTriggerParamsPool.allocateControllerParams();
+						params.setControllerButton(button);
+						activeAction.beginAction(EventTrigger.CONTROLLER, params);
+						EventTriggerParamsPool.release(params);
 					}
 				} else {
-					activeAction.beginAction();
+					ControllerEventTriggerParams params = EventTriggerParamsPool.allocateControllerParams();
+					params.setControllerButton(button);
+					activeAction.beginAction(EventTrigger.CONTROLLER, params);
+					EventTriggerParamsPool.release(params);
 				}
 			}
 		}
@@ -443,14 +469,20 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		}
 		ActionableRenderNode hotkeyAction = activeNavigation.hotkey(button);
 		if (hotkeyAction != null) {
-			hotkeyAction.endAction();
+			ControllerEventTriggerParams params = EventTriggerParamsPool.allocateControllerParams();
+			params.setControllerButton(button);
+			hotkeyAction.endAction(EventTrigger.CONTROLLER, params);
+			EventTriggerParamsPool.release(params);
 		} else if (activeAction != null) {
 			if(activeTextInput != null && !textInputIgnoredFirstEnter) {
 				textInputIgnoredFirstEnter = true;
 				return true;
 			}
 			if (button.equals(controllerUiInput.getActionButton())) {
-				activeAction.endAction();
+				ControllerEventTriggerParams params = EventTriggerParamsPool.allocateControllerParams();
+				params.setControllerButton(button);
+				activeAction.endAction(EventTrigger.CONTROLLER, params);
+				EventTriggerParamsPool.release(params);
 				textInputIgnoredFirstEnter = false;
 			}
 		}
@@ -474,7 +506,10 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 				}
 			}
 		} else {
-			hotkeyAction.beginAction();
+			KeyboardEventTriggerParams params = EventTriggerParamsPool.allocateKeyboardParams();
+			params.setKey(keycode);
+			hotkeyAction.beginAction(EventTrigger.KEYBOARD, params);
+			EventTriggerParamsPool.release(params);
 		}
 		return true;
 	}
@@ -485,7 +520,10 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		}
 		ActionableRenderNode hotkeyAction = activeNavigation.hotkey(keycode);
 		if (hotkeyAction != null) {
-			hotkeyAction.endAction();
+			KeyboardEventTriggerParams params = EventTriggerParamsPool.allocateKeyboardParams();
+			params.setKey(keycode);
+			hotkeyAction.endAction(EventTrigger.KEYBOARD, params);
+			EventTriggerParamsPool.release(params);
 		}
 		return true;
 	}

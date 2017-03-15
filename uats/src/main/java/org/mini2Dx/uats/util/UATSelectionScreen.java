@@ -37,12 +37,11 @@ import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.animation.TypingTextAnimation;
 import org.mini2Dx.ui.controller.ControllerUiInput;
 import org.mini2Dx.ui.effect.SlideIn;
-import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.AlignedModal;
 import org.mini2Dx.ui.element.Row;
 import org.mini2Dx.ui.element.Visibility;
+import org.mini2Dx.ui.event.ActionEvent;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
-import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.layout.VerticalAlignment;
 import org.mini2Dx.ui.listener.ActionListener;
@@ -161,115 +160,115 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 		uatsDialog.add(Row.withElements("row-header", UiUtils.createHeader("User Acceptance Tests", new TypingTextAnimation())));
 		uatsDialog.add(Row.withElements("row-blending", UiUtils.createButton(uiNavigation, "Blending", false, new ActionListener() {
 			@Override
-			public void onActionBegin(Actionable source) {
+			public void onActionBegin(ActionEvent event) {
 			}
 
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				nextScreenId = ScreenIds.getScreenId(BlendingUAT.class);
 			}
 		})));
 		uatsDialog.add(Row.withElements("row-clip", UiUtils.createButton(uiNavigation, "Graphics.clip()", false, new ActionListener() {
 					@Override
-					public void onActionBegin(Actionable source) {
+					public void onActionBegin(ActionEvent event) {
 					}
 
 					@Override
-					public void onActionEnd(Actionable source) {
+					public void onActionEnd(ActionEvent event) {
 						nextScreenId = ScreenIds.getScreenId(ClippingUAT.class);
 					}
 				})));
 		uatsDialog.add(Row.withElements("row-geometry", UiUtils.createButton(uiNavigation, "Geometry", new ActionListener() {
 			@Override
-			public void onActionBegin(Actionable source) {
+			public void onActionBegin(ActionEvent event) {
 			}
 
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				nextScreenId = ScreenIds.getScreenId(GeometryUAT.class);
 			}
 		})));
 		uatsDialog.add(Row.withElements("row-graphics", UiUtils.createButton(uiNavigation, "Graphics", new ActionListener() {
 			@Override
-			public void onActionBegin(Actionable source) {
+			public void onActionBegin(ActionEvent event) {
 			}
 
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				nextScreenId = ScreenIds.getScreenId(GraphicsUAT.class);
 			}
 		})));
 		uatsDialog.add(Row.withElements("row-textureregion", UiUtils.createButton(uiNavigation, "Texture Regions", new ActionListener() {
 			@Override
-			public void onActionBegin(Actionable source) {
+			public void onActionBegin(ActionEvent event) {
 			}
 
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				nextScreenId = ScreenIds.getScreenId(TextureRegionUAT.class);
 			}
 		})));
 		uatsDialog.add(Row.withElements("row-orthogonal-tiledmap",
 				UiUtils.createButton(uiNavigation, "Orthogonal TiledMap (No Caching)", new ActionListener() {
 					@Override
-					public void onActionBegin(Actionable source) {
+					public void onActionBegin(ActionEvent event) {
 					}
 
 					@Override
-					public void onActionEnd(Actionable source) {
+					public void onActionEnd(ActionEvent event) {
 						nextScreenId = ScreenIds.getScreenId(OrthogonalTiledMapNoCachingUAT.class);
 					}
 				})));
 		uatsDialog.add(Row.withElements("row-orthogonal-tiledmap-caching",
 				UiUtils.createButton(uiNavigation, "Orthogonal TiledMap (With Caching)", new ActionListener() {
 					@Override
-					public void onActionBegin(Actionable source) {
+					public void onActionBegin(ActionEvent event) {
 					}
 
 					@Override
-					public void onActionEnd(Actionable source) {
+					public void onActionEnd(ActionEvent event) {
 						nextScreenId = ScreenIds.getScreenId(OrthogonalTiledMapWithCachingUAT.class);
 					}
 				})));
 		uatsDialog.add(Row.withElements("row-isometric-tiledmap",
 				UiUtils.createButton(uiNavigation, "Isometric TiledMap (No Caching)", new ActionListener() {
 					@Override
-					public void onActionBegin(Actionable source) {
+					public void onActionBegin(ActionEvent event) {
 					}
 
 					@Override
-					public void onActionEnd(Actionable source) {
+					public void onActionEnd(ActionEvent event) {
 						nextScreenId = ScreenIds.getScreenId(IsometricTiledMapUAT.class);
 					}
 				})));
 		uatsDialog.add(
 				Row.withElements("row-particle-effects", UiUtils.createButton(uiNavigation, "Particle Effects", new ActionListener() {
 					@Override
-					public void onActionBegin(Actionable source) {
+					public void onActionBegin(ActionEvent event) {
 					}
 
 					@Override
-					public void onActionEnd(Actionable source) {
+					public void onActionEnd(ActionEvent event) {
 						nextScreenId = ScreenIds.getScreenId(ParticleEffectsUAT.class);
 					}
 				})));
 		uatsDialog.add(Row.withElements("row-controllers", UiUtils.createButton(uiNavigation, "Controllers", new ActionListener() {
 			@Override
-			public void onActionBegin(Actionable source) {
+			public void onActionBegin(ActionEvent event) {
 			}
 
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				nextScreenId = ScreenIds.getScreenId(ControllerUAT.class);
 			}
 		})));
 		uatsDialog.add(Row.withElements("row-ui", UiUtils.createButton(uiNavigation, "UI", new ActionListener() {
 			@Override
-			public void onActionBegin(Actionable source) {
+			public void onActionBegin(ActionEvent event) {
 			}
 
 			@Override
-			public void onActionEnd(Actionable source) {
+			public void onActionEnd(ActionEvent event) {
 				nextScreenId = ScreenIds.getScreenId(UiUAT.class);
 			}
 		})));
@@ -277,11 +276,11 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 		uatsDialog.add(
 				Row.withElements("row-controller-mapping", UiUtils.createButton(uiNavigation, "Controller Mapping", new ActionListener() {
 					@Override
-					public void onActionBegin(Actionable source) {
+					public void onActionBegin(ActionEvent event) {
 					}
 
 					@Override
-					public void onActionEnd(Actionable source) {
+					public void onActionEnd(ActionEvent event) {
 						nextScreenId = ScreenIds.getScreenId(ControllerMapping.class);
 					}
 				})));

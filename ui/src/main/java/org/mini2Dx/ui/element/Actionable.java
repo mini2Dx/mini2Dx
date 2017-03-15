@@ -11,6 +11,8 @@
  */
 package org.mini2Dx.ui.element;
 
+import org.mini2Dx.ui.event.EventTrigger;
+import org.mini2Dx.ui.event.params.EventTriggerParams;
 import org.mini2Dx.ui.listener.ActionListener;
 
 /**
@@ -18,9 +20,9 @@ import org.mini2Dx.ui.listener.ActionListener;
  */
 public interface Actionable extends Hoverable {
 	
-	public void notifyActionListenersOfBeginEvent();
+	public void notifyActionListenersOfBeginEvent(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams);
 	
-	public void notifyActionListenersOfEndEvent();
+	public void notifyActionListenersOfEndEvent(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams);
 	
 	public boolean isEnabled();
 	

@@ -16,6 +16,10 @@ import java.util.List;
 
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.ui.event.ActionEvent;
+import org.mini2Dx.ui.event.ActionEventPool;
+import org.mini2Dx.ui.event.EventTrigger;
+import org.mini2Dx.ui.event.params.EventTriggerParams;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.render.ButtonRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
@@ -50,23 +54,29 @@ public class Button extends ParentUiElement implements Actionable {
 	}
 	
 	@Override
-	public void notifyActionListenersOfBeginEvent() {
+	public void notifyActionListenersOfBeginEvent(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams) {
 		if(actionListeners == null) {
 			return;
 		}
+		ActionEvent event = ActionEventPool.allocate();
+		event.set(this, eventTrigger, eventTriggerParams);
 		for(int i = actionListeners.size() - 1; i >= 0; i--) {
-			actionListeners.get(i).onActionBegin(this);
+			actionListeners.get(i).onActionBegin(event);
 		}
+		ActionEventPool.release(event);
 	}
 	
 	@Override
-	public void notifyActionListenersOfEndEvent() {
+	public void notifyActionListenersOfEndEvent(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams) {
 		if(actionListeners == null) {
 			return;
 		}
+		ActionEvent event = ActionEventPool.allocate();
+		event.set(this, eventTrigger, eventTriggerParams);
 		for(int i = actionListeners.size() - 1; i >= 0; i--) {
-			actionListeners.get(i).onActionEnd(this);
+			actionListeners.get(i).onActionEnd(event);
 		}
+		ActionEventPool.release(event);
 	}
 	
 	@Override
