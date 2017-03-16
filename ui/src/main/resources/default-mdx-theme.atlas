@@ -102,23 +102,30 @@ button_tab_normal
   orig: 36, 36
   offset: 0, 0
   index: -1
-checkbox_normal
+checkbox_disabled
   rotate: false
   xy: 116, 52
   size: 36, 36
   orig: 36, 36
   offset: 0, 0
   index: -1
+checkbox_normal
+  rotate: false
+  xy: 154, 52
+  size: 36, 36
+  orig: 36, 36
+  offset: 0, 0
+  index: -1
 checkicon_disabled
   rotate: false
-  xy: 276, 30
+  xy: 316, 30
   size: 21, 20
   orig: 21, 20
   offset: 0, 0
   index: -1
 checkicon_normal
   rotate: false
-  xy: 299, 30
+  xy: 339, 30
   size: 21, 20
   orig: 21, 20
   offset: 0, 0
@@ -132,21 +139,21 @@ frame
   index: -1
 progress_bar_background
   rotate: false
-  xy: 154, 52
+  xy: 192, 52
   size: 36, 36
   orig: 36, 36
   offset: 0, 0
   index: -1
 textbox_disabled
   rotate: false
-  xy: 154, 52
+  xy: 192, 52
   size: 36, 36
   orig: 36, 36
   offset: 0, 0
   index: -1
 progress_bar_fill
   rotate: false
-  xy: 464, 64
+  xy: 462, 64
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
@@ -174,7 +181,7 @@ select_left_disabled
   index: -1
 select_left_hover
   rotate: false
-  xy: 344, 57
+  xy: 382, 57
   size: 38, 31
   orig: 38, 31
   offset: 0, 0
@@ -188,7 +195,7 @@ select_left_normal
   index: -1
 select_right_action
   rotate: false
-  xy: 384, 57
+  xy: 422, 57
   size: 38, 31
   orig: 38, 31
   offset: 0, 0
@@ -202,42 +209,42 @@ select_right_disabled
   index: -1
 select_right_hover
   rotate: false
-  xy: 424, 57
+  xy: 236, 19
   size: 38, 31
   orig: 38, 31
   offset: 0, 0
   index: -1
 select_right_normal
   rotate: false
-  xy: 236, 19
+  xy: 276, 19
   size: 38, 31
   orig: 38, 31
   offset: 0, 0
   index: -1
 tab_bg
   rotate: false
-  xy: 192, 52
+  xy: 230, 52
   size: 36, 36
   orig: 36, 36
   offset: 0, 0
   index: -1
 tab_menu_bg
   rotate: false
-  xy: 230, 52
+  xy: 268, 52
   size: 36, 36
   orig: 36, 36
   offset: 0, 0
   index: -1
 textbox_hover
   rotate: false
-  xy: 268, 52
+  xy: 306, 52
   size: 36, 36
   orig: 36, 36
   offset: 0, 0
   index: -1
 textbox_normal
   rotate: false
-  xy: 306, 52
+  xy: 344, 52
   size: 36, 36
   orig: 36, 36
   offset: 0, 0

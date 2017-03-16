@@ -18,6 +18,7 @@ import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.element.Button;
+import org.mini2Dx.ui.element.Checkbox;
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.element.Container;
 import org.mini2Dx.ui.element.Image;
@@ -30,6 +31,7 @@ import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.style.ruleset.ButtonStyleRuleset;
+import org.mini2Dx.ui.style.ruleset.CheckboxStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.ColumnStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.ContainerStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.DefaultStyleRuleset;
@@ -63,6 +65,8 @@ public class UiTheme {
 	@Field
 	private Map<String, ButtonStyleRuleset> buttons;
 	@Field
+	private Map<String, CheckboxStyleRuleset> checkboxes;
+	@Field
 	private Map<String, ColumnStyleRuleset> columns;
 	@Field
 	private Map<String, ContainerStyleRuleset> containers;
@@ -89,6 +93,9 @@ public class UiTheme {
 	public void validate() {
 		if (!buttons.containsKey(DEFAULT_STYLE_ID)) {
 			throw new MdxException("No style with id 'default' for buttons");
+		}
+		if (!checkboxes.containsKey(DEFAULT_STYLE_ID)) {
+			throw new MdxException("No style with id 'default' for checkboxes");
 		}
 		if (!columns.containsKey(DEFAULT_STYLE_ID)) {
 			throw new MdxException("No style with id 'default' for columns");
@@ -120,6 +127,9 @@ public class UiTheme {
 
 		for (StyleRuleset<ButtonStyleRule> buttonRuleset : buttons.values()) {
 			buttonRuleset.validate(this);
+		}
+		for (StyleRuleset<CheckboxStyleRule> checkboxRuleset : checkboxes.values()) {
+			checkboxRuleset.validate(this);
 		}
 		for (StyleRuleset<ParentStyleRule> columnRuleset : columns.values()) {
 			columnRuleset.validate(this);
@@ -161,6 +171,11 @@ public class UiTheme {
 			StyleRuleset<ButtonStyleRule> buttonRuleset = buttons.get(id);
 			buttonRuleset.loadDependencies(this, dependencies);
 			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Button Ruleset: " + id + "] Dependencies loaded");
+		}
+		for (String id : checkboxes.keySet()) {
+			StyleRuleset<CheckboxStyleRule> columnRuleset = checkboxes.get(id);
+			columnRuleset.loadDependencies(this, dependencies);
+			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Checkbox Ruleset: " + id + "] Dependencies loaded");
 		}
 		for (String id : columns.keySet()) {
 			StyleRuleset<ParentStyleRule> columnRuleset = columns.get(id);
@@ -220,6 +235,9 @@ public class UiTheme {
 		for (StyleRuleset<ButtonStyleRule> buttonRuleset : buttons.values()) {
 			buttonRuleset.prepareAssets(this, fileHandleResolver, assetManager);
 		}
+		for (StyleRuleset<CheckboxStyleRule> checkboxRuleset : checkboxes.values()) {
+			checkboxRuleset.prepareAssets(this, fileHandleResolver, assetManager);
+		}
 		for (StyleRuleset<ParentStyleRule> columnRuleset : columns.values()) {
 			columnRuleset.prepareAssets(this, fileHandleResolver, assetManager);
 		}
@@ -253,6 +271,10 @@ public class UiTheme {
 		return buttons.containsKey(id);
 	}
 	
+	public boolean containsCheckboxStyleRuleset(String id) {
+		return checkboxes.containsKey(id);
+	}
+	
 	public boolean containsColumnStyleRuleset(String id) {
 		return columns.containsKey(id);
 	}
@@ -267,6 +289,10 @@ public class UiTheme {
 
 	public ButtonStyleRule getStyleRule(Button button, ScreenSize screenSize) {
 		return getButtonStyleRule(button.getStyleId(), screenSize);
+	}
+	
+	public CheckboxStyleRule getStyleRule(Checkbox checkbox, ScreenSize screenSize) {
+		return getCheckboxStyleRule(checkbox.getStyleId(), screenSize);
 	}
 
 	public ParentStyleRule getStyleRule(Column column, ScreenSize screenSize) {
@@ -324,6 +350,15 @@ public class UiTheme {
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = buttons.get(DEFAULT_STYLE_ID);
+		}
+		return ruleset.getStyleRule(screenSize);
+	}
+	
+	public CheckboxStyleRule getCheckboxStyleRule(String styleId, ScreenSize screenSize) {
+		StyleRuleset<CheckboxStyleRule> ruleset = checkboxes.get(styleId);
+		if (ruleset == null) {
+			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
+			ruleset = checkboxes.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
 	}

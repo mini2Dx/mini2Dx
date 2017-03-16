@@ -25,6 +25,7 @@ import org.mini2Dx.ui.animation.TextAnimation;
 import org.mini2Dx.ui.controller.ControllerUiInput;
 import org.mini2Dx.ui.controller.Xbox360UiInput;
 import org.mini2Dx.ui.controller.XboxOneUiInput;
+import org.mini2Dx.ui.element.Checkbox;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.element.TextBox;
@@ -160,5 +161,16 @@ public class UiUtils {
 			navigation.add(select);
 		}
 		return select;
+	}
+	
+	public static Checkbox createCheckbox(UiNavigation navigation, String id, ActionListener listener) {
+		Checkbox checkbox = new Checkbox(id);
+		checkbox.addActionListener(listener);
+		checkbox.setVisibility(Visibility.VISIBLE);
+		
+		if(navigation != null) {
+			navigation.add(checkbox);
+		}
+		return checkbox;
 	}
 }

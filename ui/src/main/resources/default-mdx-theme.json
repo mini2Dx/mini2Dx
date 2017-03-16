@@ -129,6 +129,26 @@
       }
     }
   },
+  "checkboxes": {
+    "default": {
+      "rules": {
+        "XS": {
+          "disabledBox": "checkbox_disabled",
+          "disabledCheck": "checkicon_disabled",
+          "enabledBox": "checkbox_normal",
+          "enabledCheck": "checkicon_normal",
+          "paddingTop": 4,
+          "paddingBottom": 4,
+          "paddingLeft": 4,
+          "paddingRight": 4,
+          "ninePatchTop": 12,
+          "ninePatchBottom": 12,
+          "ninePatchLeft": 12,
+          "ninePatchRight": 12
+        }
+      }
+    }
+  },
   "columns": {
     "default": {
       "rules": {

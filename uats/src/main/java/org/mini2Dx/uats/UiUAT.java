@@ -31,6 +31,7 @@ import org.mini2Dx.ui.controller.ControllerUiInput;
 import org.mini2Dx.ui.element.AbsoluteContainer;
 import org.mini2Dx.ui.element.AlignedModal;
 import org.mini2Dx.ui.element.Button;
+import org.mini2Dx.ui.element.Checkbox;
 import org.mini2Dx.ui.element.Column;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.ProgressBar;
@@ -69,7 +70,8 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 	private TabView tabView;
 	private Select<String> select;
 	private TextBox textBox;
-	private Label textBoxResult;
+	private Checkbox checkbox;
+	private Label textBoxResult, checkboxResult;
 	
 	private int nextScreenId = -1;
 
@@ -201,6 +203,21 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 			}
 		});
 		textBoxResult = UiUtils.createLabel("");
+		checkboxResult = UiUtils.createLabel("Unchecked");
+		checkbox = UiUtils.createCheckbox(tab1Navigation, "checkbox", new ActionListener() {
+			
+			@Override
+			public void onActionEnd(ActionEvent event) {
+				if(checkbox.isChecked()) {
+					checkboxResult.setText("Checked");
+				} else {
+					checkboxResult.setText("Unchecked");
+				}
+			}
+			
+			@Override
+			public void onActionBegin(ActionEvent event) {}
+		});
 		
 		TextButton returnButton = UiUtils.createButton(tab1Navigation, "Return to UAT Selection Screen", new ActionListener() {
 			
@@ -227,6 +244,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		Tab tab1 = new Tab("tab1", "Tab 1");
 		tab1.add(Row.withElements("row-textbox", textBox, textBoxResult));
 		tab1.add(Row.withElements("row-select", select));
+		tab1.add(Row.withElements("row-checkbox", checkbox, checkboxResult));
 		tab1.add(Row.withElements("row-return-button", returnButton));
 		tab1.setNavigation(tab1Navigation);
 		tabView.add(tab1);
