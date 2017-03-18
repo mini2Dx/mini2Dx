@@ -183,7 +183,7 @@ public class Slider extends UiElement implements Actionable {
 	}
 
 	/**
-	 * Sets the {@link Slide} value.
+	 * Sets the {@link Slider} value.
 	 * 
 	 * @param value
 	 *            A value between 0.0 and 1.0
