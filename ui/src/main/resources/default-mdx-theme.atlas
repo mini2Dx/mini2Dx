@@ -118,14 +118,14 @@ checkbox_normal
   index: -1
 checkicon_disabled
   rotate: false
-  xy: 316, 30
+  xy: 402, 35
   size: 21, 20
   orig: 21, 20
   offset: 0, 0
   index: -1
 checkicon_normal
   rotate: false
-  xy: 339, 30
+  xy: 425, 35
   size: 21, 20
   orig: 21, 20
   offset: 0, 0
@@ -153,28 +153,28 @@ textbox_disabled
   index: -1
 progress_bar_fill
   rotate: false
-  xy: 462, 64
+  xy: 376, 26
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 radiobutton
   rotate: false
-  xy: 362, 32
+  xy: 492, 70
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
 radiobutton_active
   rotate: false
-  xy: 382, 37
+  xy: 492, 50
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
 radiobutton_disabled_active
   rotate: false
-  xy: 402, 37
+  xy: 376, 6
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
@@ -240,6 +240,34 @@ select_right_normal
   xy: 276, 19
   size: 38, 31
   orig: 38, 31
+  offset: 0, 0
+  index: -1
+slider_active
+  rotate: false
+  xy: 462, 52
+  size: 28, 36
+  orig: 28, 36
+  offset: 0, 0
+  index: -1
+slider_background
+  rotate: false
+  xy: 494, 122
+  size: 8, 4
+  orig: 8, 4
+  offset: 0, 0
+  index: -1
+slider_disabled
+  rotate: false
+  xy: 316, 14
+  size: 28, 36
+  orig: 28, 36
+  offset: 0, 0
+  index: -1
+slider_normal
+  rotate: false
+  xy: 346, 14
+  size: 28, 36
+  orig: 28, 36
   offset: 0, 0
   index: -1
 tab_bg

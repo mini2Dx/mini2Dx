@@ -388,6 +388,26 @@
       }
     }
   },
+  "sliders": {
+    "default": {
+      "rules": {
+        "XS": {
+          "normal": "slider_normal",
+          "active": "slider_active",
+          "hover": "slider_active",
+          "disabled": "slider_disabled",
+          "sliderBar": "slider_background",
+          "sliderBarMaxHeight": 4,
+          "sliderBarNinePatchTop": 0,
+          "sliderBarNinePatchLeft": 2,
+          "sliderBarNinePatchRight": 2,
+          "sliderBarNinePatchBottom": 0,
+          "marginLeft": 14,
+          "marginRight": 14
+        }
+      }
+    }
+  },
   "textboxes": {
     "default": {
       "rules": {

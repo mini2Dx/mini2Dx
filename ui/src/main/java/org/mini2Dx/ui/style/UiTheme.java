@@ -27,6 +27,7 @@ import org.mini2Dx.ui.element.ProgressBar;
 import org.mini2Dx.ui.element.RadioButton;
 import org.mini2Dx.ui.element.ScrollBox;
 import org.mini2Dx.ui.element.Select;
+import org.mini2Dx.ui.element.Slider;
 import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.UiElement;
@@ -41,6 +42,7 @@ import org.mini2Dx.ui.style.ruleset.ProgressBarStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.RadioButtonStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.ScrollBoxStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.SelectStyleRuleset;
+import org.mini2Dx.ui.style.ruleset.SliderStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.TabStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.TextBoxStyleRuleset;
 
@@ -87,6 +89,8 @@ public class UiTheme {
 	@Field
 	private Map<String, ScrollBoxStyleRuleset> scrollBoxes;
 	@Field
+	private Map<String, SliderStyleRuleset> sliders;
+	@Field
 	private Map<String, TabStyleRuleset> tabs;
 	@Field
 	private Map<String, TextBoxStyleRuleset> textboxes;
@@ -121,6 +125,9 @@ public class UiTheme {
 		}
 		if (!scrollBoxes.containsKey(DEFAULT_STYLE_ID)) {
 			throw new MdxException("No style with id 'default' for scrollBoxes");
+		}
+		if (!sliders.containsKey(DEFAULT_STYLE_ID)) {
+			throw new MdxException("No style with id 'default' for sliders");
 		}
 		if (!tabs.containsKey(DEFAULT_STYLE_ID)) {
 			throw new MdxException("No style with id 'default' for tabs");
@@ -158,6 +165,9 @@ public class UiTheme {
 		}
 		for (StyleRuleset<SelectStyleRule> selectRuleset : selects.values()) {
 			selectRuleset.validate(this);
+		}
+		for (StyleRuleset<SliderStyleRule> sliderRuleset : sliders.values()) {
+			sliderRuleset.validate(this);
 		}
 		for (StyleRuleset<TabStyleRule> tabRuleset : tabs.values()) {
 			tabRuleset.validate(this);
@@ -224,6 +234,11 @@ public class UiTheme {
 			selectRuleset.loadDependencies(this, dependencies);
 			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Select Ruleset: " + id + "] Dependencies loaded");
 		}
+		for (String id : sliders.keySet()) {
+			StyleRuleset<SliderStyleRule> sliderRuleset = sliders.get(id);
+			sliderRuleset.loadDependencies(this, dependencies);
+			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Slider Ruleset: " + id + "] Dependencies loaded");
+		}
 		for (String id : tabs.keySet()) {
 			StyleRuleset<TabStyleRule> tabRuleset = tabs.get(id);
 			tabRuleset.loadDependencies(this, dependencies);
@@ -273,6 +288,9 @@ public class UiTheme {
 		}
 		for (StyleRuleset<SelectStyleRule> selectRuleset : selects.values()) {
 			selectRuleset.prepareAssets(this, fileHandleResolver, assetManager);
+		}
+		for (StyleRuleset<SliderStyleRule> sliderRuleset : sliders.values()) {
+			sliderRuleset.prepareAssets(this, fileHandleResolver, assetManager);
 		}
 		for (StyleRuleset<TabStyleRule> tabRuleset : tabs.values()) {
 			tabRuleset.prepareAssets(this, fileHandleResolver, assetManager);
@@ -340,6 +358,10 @@ public class UiTheme {
 
 	public SelectStyleRule getStyleRule(Select<?> select, ScreenSize screenSize) {
 		return getSelectStyleRule(select.getStyleId(), screenSize);
+	}
+	
+	public SliderStyleRule getStyleRule(Slider slider, ScreenSize screenSize) {
+		return getSliderStyleRule(slider.getStyleId(), screenSize);
 	}
 	
 	public TabStyleRule getStyleRule(TabView tabView, ScreenSize screenSize) {
@@ -441,6 +463,15 @@ public class UiTheme {
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = selects.get(DEFAULT_STYLE_ID);
+		}
+		return ruleset.getStyleRule(screenSize);
+	}
+	
+	public SliderStyleRule getSliderStyleRule(String styleId, ScreenSize screenSize) {
+		StyleRuleset<SliderStyleRule> ruleset = sliders.get(styleId);
+		if (ruleset == null) {
+			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
+			ruleset = sliders.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
 	}

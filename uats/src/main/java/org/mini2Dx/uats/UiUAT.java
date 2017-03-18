@@ -39,6 +39,7 @@ import org.mini2Dx.ui.element.RadioButton;
 import org.mini2Dx.ui.element.Row;
 import org.mini2Dx.ui.element.ScrollBox;
 import org.mini2Dx.ui.element.Select;
+import org.mini2Dx.ui.element.Slider;
 import org.mini2Dx.ui.element.Tab;
 import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.TextBox;
@@ -73,7 +74,8 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 	private TextBox textBox;
 	private Checkbox checkbox;
 	private RadioButton radioButton;
-	private Label textBoxResult, checkboxResult, radioButtonResult;
+	private Slider slider;
+	private Label textBoxResult, checkboxResult, radioButtonResult, sliderResult;
 	
 	private int nextScreenId = -1;
 
@@ -248,6 +250,20 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		radioButton.addOption("Column Layout");
 		radioButton.addOption("Column-Reverse Layout");
 		
+		slider = new Slider();
+		slider.setVisibility(Visibility.VISIBLE);
+		slider.addActionListener(new ActionListener() {
+			
+			@Override
+			public void onActionEnd(ActionEvent event) {
+				sliderResult.setText(String.valueOf(slider.getValue()));
+			}
+			
+			@Override
+			public void onActionBegin(ActionEvent event) {}
+		});
+		sliderResult = UiUtils.createLabel("0.0");
+		
 		TextButton returnButton = UiUtils.createButton(tab1Navigation, "Return to UAT Selection Screen", new ActionListener() {
 			
 			@Override
@@ -275,6 +291,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		tab1.add(Row.withElements("row-select", select));
 		tab1.add(Row.withElements("row-checkbox", checkbox, checkboxResult));
 		tab1.add(Row.withElements("row-radioButton", radioButton, radioButtonResult));
+		tab1.add(Row.withElements("row-slider", slider, sliderResult));
 		tab1.add(Row.withElements("row-return-button", returnButton));
 		tab1.setNavigation(tab1Navigation);
 		tabView.add(tab1);
