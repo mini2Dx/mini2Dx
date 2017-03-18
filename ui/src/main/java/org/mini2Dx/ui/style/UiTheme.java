@@ -24,6 +24,7 @@ import org.mini2Dx.ui.element.Container;
 import org.mini2Dx.ui.element.Image;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.ProgressBar;
+import org.mini2Dx.ui.element.RadioButton;
 import org.mini2Dx.ui.element.ScrollBox;
 import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.element.TabView;
@@ -37,6 +38,7 @@ import org.mini2Dx.ui.style.ruleset.ContainerStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.DefaultStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.LabelStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.ProgressBarStyleRuleset;
+import org.mini2Dx.ui.style.ruleset.RadioButtonStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.ScrollBoxStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.SelectStyleRuleset;
 import org.mini2Dx.ui.style.ruleset.TabStyleRuleset;
@@ -78,6 +80,8 @@ public class UiTheme {
 	private Map<String, LabelStyleRuleset> labels;
 	@Field
 	private Map<String, ProgressBarStyleRuleset> progressBars;
+	@Field
+	private Map<String, RadioButtonStyleRuleset> radioButtons;
 	@Field
 	private Map<String, SelectStyleRuleset> selects;
 	@Field
@@ -146,6 +150,9 @@ public class UiTheme {
 		for (StyleRuleset<ProgressBarStyleRule> progressBarRuleset : progressBars.values()) {
 			progressBarRuleset.validate(this);
 		}
+		for (StyleRuleset<RadioButtonStyleRule> radioButtonRuleset : radioButtons.values()) {
+			radioButtonRuleset.validate(this);
+		}
 		for (StyleRuleset<ScrollBoxStyleRule> scrollBoxRuleset : scrollBoxes.values()) {
 			scrollBoxRuleset.validate(this);
 		}
@@ -202,6 +209,11 @@ public class UiTheme {
 			progressBarRuleset.loadDependencies(this, dependencies);
 			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", Progress Bar Ruleset: " + id + "] Dependencies loaded");
 		}
+		for (String id : radioButtons.keySet()) {
+			StyleRuleset<RadioButtonStyleRule> scrollBoxRuleset = radioButtons.get(id);
+			scrollBoxRuleset.loadDependencies(this, dependencies);
+			Gdx.app.log(LOGGING_TAG, "[Theme: " + this.id + ", RadioButton Ruleset: " + id + "] Dependencies loaded");
+		}
 		for (String id : scrollBoxes.keySet()) {
 			StyleRuleset<ScrollBoxStyleRule> scrollBoxRuleset = scrollBoxes.get(id);
 			scrollBoxRuleset.loadDependencies(this, dependencies);
@@ -252,6 +264,9 @@ public class UiTheme {
 		}
 		for (StyleRuleset<ProgressBarStyleRule> progressBarRuleset : progressBars.values()) {
 			progressBarRuleset.prepareAssets(this, fileHandleResolver, assetManager);
+		}
+		for (StyleRuleset<RadioButtonStyleRule> radioButtonRuleset : radioButtons.values()) {
+			radioButtonRuleset.prepareAssets(this, fileHandleResolver, assetManager);
 		}
 		for (StyleRuleset<ScrollBoxStyleRule> scrollBoxRuleset : scrollBoxes.values()) {
 			scrollBoxRuleset.prepareAssets(this, fileHandleResolver, assetManager);
@@ -313,6 +328,10 @@ public class UiTheme {
 	
 	public ProgressBarStyleRule getStyleRule(ProgressBar progressBar, ScreenSize screenSize) {
 		return getProgressBarStyleRule(progressBar.getStyleId(), screenSize);
+	}
+	
+	public RadioButtonStyleRule getStyleRule(RadioButton radioButton, ScreenSize screenSize) {
+		return getRadioButtonStyleRule(radioButton.getStyleId(), screenSize);
 	}
 	
 	public ScrollBoxStyleRule getStyleRule(ScrollBox scrollBox, ScreenSize screenSize) {
@@ -395,6 +414,15 @@ public class UiTheme {
 		if(ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = progressBars.get(DEFAULT_STYLE_ID);
+		}
+		return ruleset.getStyleRule(screenSize);
+	}
+	
+	public RadioButtonStyleRule getRadioButtonStyleRule(String styleId, ScreenSize screenSize) {
+		StyleRuleset<RadioButtonStyleRule> ruleset = radioButtons.get(styleId);
+		if (ruleset == null) {
+			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
+			ruleset = radioButtons.get(DEFAULT_STYLE_ID);
 		}
 		return ruleset.getStyleRule(screenSize);
 	}

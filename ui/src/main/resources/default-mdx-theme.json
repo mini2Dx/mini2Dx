@@ -301,6 +301,46 @@
       }
     }
   },
+  "progressBars": {
+    "default": {
+      "rules": {
+        "XS": {
+          "minHeight": 16,
+          "background": "progress_bar_background",
+          "fill": "progress_bar_fill",
+          "paddingTop": 2,
+          "paddingBottom": 2,
+          "paddingLeft": 2,
+          "paddingRight": 2,
+          "backgroundNinePatchTop": 12,
+          "backgroundNinePatchBottom": 12,
+          "backgroundNinePatchLeft": 12,
+          "backgroundNinePatchRight": 12,
+          "fillNinePatchTop": 8,
+          "fillNinePatchBottom": 8,
+          "fillNinePatchLeft": 8,
+          "fillNinePatchRight": 8
+        }
+      }
+    }
+  },
+  "radioButtons": {
+  	"default": {
+      "rules": {
+        "XS": {
+          "fontSize": 12,
+          "font": "default",
+          "textColor": "1,1,1",
+          "optionsSpacing": 2,
+          "labelIndent": 4,
+		  "active": "radiobutton_active",
+		  "inactive": "radiobutton",
+		  "disabledActive": "radiobutton_disabled_active",
+		  "disabledInactive": "radiobutton"
+      	}
+      }
+    }
+  },
   "scrollBoxes": {
     "default": {
       "rules": {
@@ -322,29 +362,6 @@
           "scrollThumbNinePatchBottom": 12,
           "scrollThumbNinePatchLeft": 12,
           "scrollThumbNinePatchRight": 12
-        }
-      }
-    }
-  },
-  "progressBars": {
-    "default": {
-      "rules": {
-        "XS": {
-          "minHeight": 16,
-          "background": "progress_bar_background",
-          "fill": "progress_bar_fill",
-          "paddingTop": 2,
-          "paddingBottom": 2,
-          "paddingLeft": 2,
-          "paddingRight": 2,
-          "backgroundNinePatchTop": 12,
-          "backgroundNinePatchBottom": 12,
-          "backgroundNinePatchLeft": 12,
-          "backgroundNinePatchRight": 12,
-          "fillNinePatchTop": 8,
-          "fillNinePatchBottom": 8,
-          "fillNinePatchLeft": 8,
-          "fillNinePatchRight": 8
         }
       }
     }

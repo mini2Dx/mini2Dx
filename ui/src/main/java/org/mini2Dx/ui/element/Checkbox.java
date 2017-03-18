@@ -194,10 +194,12 @@ public class Checkbox extends UiElement implements Actionable {
 		renderNode.setDirty(true);
 	}
 
+	@Override
 	public boolean isEnabled() {
 		return enabled;
 	}
 
+	@Override
 	public void setEnabled(boolean enabled) {
 		if(this.enabled = enabled) {
 			return;

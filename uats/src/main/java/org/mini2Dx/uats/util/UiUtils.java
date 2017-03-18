@@ -27,6 +27,7 @@ import org.mini2Dx.ui.controller.Xbox360UiInput;
 import org.mini2Dx.ui.controller.XboxOneUiInput;
 import org.mini2Dx.ui.element.Checkbox;
 import org.mini2Dx.ui.element.Label;
+import org.mini2Dx.ui.element.RadioButton;
 import org.mini2Dx.ui.element.Select;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.TextButton;
@@ -172,5 +173,16 @@ public class UiUtils {
 			navigation.add(checkbox);
 		}
 		return checkbox;
+	}
+	
+	public static RadioButton createRadioButton(UiNavigation navigation, String id, ActionListener listener) {
+		RadioButton radioButton = new RadioButton(id);
+		radioButton.addActionListener(listener);
+		radioButton.setVisibility(Visibility.VISIBLE);
+		
+		if(navigation != null) {
+			navigation.add(radioButton);
+		}
+		return radioButton;
 	}
 }

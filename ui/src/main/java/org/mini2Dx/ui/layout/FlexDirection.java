@@ -100,6 +100,29 @@ public enum FlexDirection {
 				startX -= node.getPreferredOuterWidth() + node.getXOffset();
 			}
 		}
+	},
+	/**
+	 * Elements are ordered top-to-bottom
+	 */
+	ROW {
+		@Override
+		public void layout(LayoutState layoutState, ParentRenderNode<?, ?> parentNode,
+				List<RenderNode<?, ?>> children) {
+			float startX = parentNode.getStyle().getPaddingLeft();
+			float startY = parentNode.getStyle().getPaddingTop();
+			
+			for (int i = 0; i < children.size(); i++) {
+				RenderNode<?, ?> node = children.get(i);
+				node.layout(layoutState);
+				if (!node.isIncludedInLayout()) {
+					continue;
+				}
+
+				node.setRelativeX(startX + node.getXOffset());
+				node.setRelativeY(startY + node.getYOffset());
+				startY += node.getPreferredOuterHeight() + node.getYOffset();
+			}
+		}
 	};
 	
 	/**

@@ -158,6 +158,27 @@ progress_bar_fill
   orig: 24, 24
   offset: 0, 0
   index: -1
+radiobutton
+  rotate: false
+  xy: 362, 32
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+radiobutton_active
+  rotate: false
+  xy: 382, 37
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+radiobutton_disabled_active
+  rotate: false
+  xy: 402, 37
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
 scrolltrack
   rotate: false
   xy: 2, 2

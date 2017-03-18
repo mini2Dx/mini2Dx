@@ -16,8 +16,7 @@ import java.util.Map;
 
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.ScreenSize;
-import org.mini2Dx.ui.style.ButtonStyleRule;
-import org.mini2Dx.ui.style.CheckboxStyleRule;
+import org.mini2Dx.ui.style.RadioButtonStyleRule;
 import org.mini2Dx.ui.style.StyleRuleset;
 import org.mini2Dx.ui.style.UiTheme;
 
@@ -29,20 +28,20 @@ import com.badlogic.gdx.utils.Array;
 /**
  *
  */
-public class CheckboxStyleRuleset extends StyleRuleset<CheckboxStyleRule> {
+public class RadioButtonStyleRuleset extends StyleRuleset<RadioButtonStyleRule> {
 	@Field
-	private Map<ScreenSize, CheckboxStyleRule> rules;
+	private Map<ScreenSize, RadioButtonStyleRule> rules;
 	
 	@Override
-	public void putStyleRule(ScreenSize screenSize, CheckboxStyleRule rule) {
+	public void putStyleRule(ScreenSize screenSize, RadioButtonStyleRule rule) {
 		if(rules == null) {
-			rules = new HashMap<ScreenSize, CheckboxStyleRule>();
+			rules = new HashMap<ScreenSize, RadioButtonStyleRule>();
 		}
 		rules.put(screenSize, rule);
 	}
 
 	@Override
-	public CheckboxStyleRule getStyleRule(ScreenSize screenSize) {
+	public RadioButtonStyleRule getStyleRule(ScreenSize screenSize) {
 		return getStyleRule(screenSize, rules);
 	}
 
