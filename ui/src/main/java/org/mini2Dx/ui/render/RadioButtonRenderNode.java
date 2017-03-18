@@ -107,6 +107,10 @@ public class RadioButtonRenderNode extends RenderNode<RadioButton, RadioButtonSt
 		if (element.getTotalOptions() != buttonRenderPositions.size()) {
 			return;
 		}
+		if (style.getBackgroundNinePatch() != null) {
+			g.drawNinePatch(style.getBackgroundNinePatch(), getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(),
+					getInnerRenderHeight());
+		}
 
 		bitmapFontCache.setPosition(getContentRenderX(), getContentRenderY());
 
