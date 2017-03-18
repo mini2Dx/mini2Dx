@@ -159,15 +159,7 @@ public class RadioButton extends UiElement implements Actionable {
 
 	@Override
 	public void setEnabled(boolean enabled) {
-		if(this.enabled = enabled) {
-			return;
-		}
 		this.enabled = enabled;
-		
-		if (renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
 	}
 
 	@Override
