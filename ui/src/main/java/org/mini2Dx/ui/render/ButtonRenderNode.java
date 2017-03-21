@@ -41,7 +41,9 @@ public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> 
 		if (!isIncludedInRender()) {
 			return null;
 		}
-		if (button != Buttons.LEFT) {
+		if (button != Buttons.LEFT &&
+				button != Buttons.RIGHT &&
+				button != Buttons.MIDDLE) {
 			return null;
 		}
 		if (!element.isEnabled()) {
