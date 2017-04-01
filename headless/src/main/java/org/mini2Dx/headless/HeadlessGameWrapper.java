@@ -41,4 +41,8 @@ public class HeadlessGameWrapper extends GameWrapper {
 		return new HeadlessGraphics();
 	}
 	
+	@Override
+	public boolean isGameWindowReady() {
+		return true;
+	}
 }

@@ -16,6 +16,7 @@ import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.game.GameWrapper;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
@@ -30,6 +31,7 @@ import junit.framework.Assert;
 public class LibGdxGraphicsTest {
 	private Mockery mockery;
 	
+	private GameWrapper gameWrapper;
 	private SpriteBatch spriteBatch;
 	private PolygonSpriteBatch polygonSpriteBatch;
 	private ShapeRenderer shapeRenderer;
@@ -41,6 +43,7 @@ public class LibGdxGraphicsTest {
 	public void setup() {
 		mockery = new Mockery();
 		mockery.setImposteriser(ClassImposteriser.INSTANCE);
+		gameWrapper = mockery.mock(GameWrapper.class);
 		spriteBatch = mockery.mock(SpriteBatch.class);
 		polygonSpriteBatch = mockery.mock(PolygonSpriteBatch.class);
 		shapeRenderer = mockery.mock(ShapeRenderer.class);
@@ -58,7 +61,7 @@ public class LibGdxGraphicsTest {
 			}
 		});
 		
-		graphics = new LibGdxGraphics(spriteBatch, polygonSpriteBatch, shapeRenderer);
+		graphics = new LibGdxGraphics(gameWrapper, spriteBatch, polygonSpriteBatch, shapeRenderer);
 	}
 
 	@Test

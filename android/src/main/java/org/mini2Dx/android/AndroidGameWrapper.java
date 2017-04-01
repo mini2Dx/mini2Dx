@@ -37,4 +37,9 @@ public class AndroidGameWrapper extends GameWrapper {
 		Mdx.di = new AndroidDependencyInjection(applicationContext);
 		Mdx.playerData = new AndroidPlayerData();
 	}
+	
+	@Override
+	public boolean isGameWindowReady() {
+		return true;
+	}
 }

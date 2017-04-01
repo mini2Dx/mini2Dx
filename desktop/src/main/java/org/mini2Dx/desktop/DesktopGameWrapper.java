@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.desktop;
 
+import org.lwjgl.opengl.Display;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.GameWrapper;
@@ -32,6 +33,11 @@ public class DesktopGameWrapper extends GameWrapper {
 		Mdx.xml = new DesktopXmlSerializer();
 		Mdx.di = new DesktopDependencyInjection();
 		Mdx.playerData = new DesktopPlayerData(gameIdentifier);
+	}
+
+	@Override
+	public boolean isGameWindowReady() {
+		return Display.isActive();
 	}
 
 }

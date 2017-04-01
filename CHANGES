@@ -1,6 +1,7 @@
 [1.5.0-SNAPSHOT]
 - Updated to libGDX 1.9.6, roboVM 2.3.0 and artemis-odb 2.1.0
 - (#68) Added Checkbox, Slider and RadioButton UI elements
+- Added Graphics#isWindowReady()
 - Added UiContainerOperation and ClearShaderProgramOperation for render pipelines
 - Added ScrollBox#setMinHeight to override the style's minimum height
 - ActionListeners now receive event details via ActionEvent instance

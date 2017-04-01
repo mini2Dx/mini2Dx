@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.core.graphics;
 
+import org.mini2Dx.core.game.GameWrapper;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.geom.Shape;
 
@@ -40,6 +41,7 @@ import com.badlogic.gdx.utils.Align;
  * LibGDX implementation of {@link Graphics}
  */
 public class LibGdxGraphics implements Graphics {
+	private final GameWrapper gameWrapper;
 	private final SpriteBatch spriteBatch;
 	private final ShapeTextureCache colorTextureCache;
 	private final ShapeRenderer shapeRenderer;
@@ -65,7 +67,9 @@ public class LibGdxGraphics implements Graphics {
 	//3 edge polygon by default, expanded as needed during rendering
 	private float [] polygonRenderData = new float[15];
 
-	public LibGdxGraphics(SpriteBatch spriteBatch, PolygonSpriteBatch polygonSpriteBatch, ShapeRenderer shapeRenderer) {
+	public LibGdxGraphics(GameWrapper gameWrapper, SpriteBatch spriteBatch, PolygonSpriteBatch polygonSpriteBatch, ShapeRenderer shapeRenderer) {
+		super();
+		this.gameWrapper = gameWrapper;
 		this.spriteBatch = spriteBatch;
 		this.shapeRenderer = shapeRenderer;
 		this.polygonSpriteBatch = polygonSpriteBatch;
@@ -756,6 +760,11 @@ public class LibGdxGraphics implements Graphics {
 	@Override
 	public Matrix4 getProjectionMatrix() {
 		return camera.combined.cpy();
+	}
+	
+	@Override
+	public boolean isWindowReady() {
+		return gameWrapper.isGameWindowReady();
 	}
 
 	@Override

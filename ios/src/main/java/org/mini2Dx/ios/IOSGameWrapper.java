@@ -34,4 +34,9 @@ public class IOSGameWrapper extends GameWrapper {
 		Mdx.playerData = new IOSPlayerData();
 	}
 
+	@Override
+	public boolean isGameWindowReady() {
+		return true;
+	}
+
 }

@@ -407,6 +407,11 @@ public class HeadlessGraphics implements Graphics {
 	public Matrix4 getProjectionMatrix() {
 		return camera.combined.cpy();
 	}
+	
+	@Override
+	public boolean isWindowReady() {
+		return true;
+	}
 
 	@Override
 	public int getWindowWidth() {

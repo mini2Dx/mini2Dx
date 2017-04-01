@@ -42,7 +42,7 @@ public abstract class GameWrapper implements ApplicationListener {
 		PolygonSpriteBatch polygonSpriteBatch = new PolygonSpriteBatch();
 		ShapeRenderer shapeRenderer = new ShapeRenderer();
 		
-		return new LibGdxGraphics(spriteBatch, polygonSpriteBatch, shapeRenderer);
+		return new LibGdxGraphics(this, spriteBatch, polygonSpriteBatch, shapeRenderer);
 	}
 	
 	@Override
@@ -106,4 +106,10 @@ public abstract class GameWrapper implements ApplicationListener {
 		}
 		gameContainer.dispose();
 	}
+	
+	/**
+	 * Returns if the game window is initialised natively
+	 * @return False at startup, true once the window/game is visible to the user
+	 */
+	public abstract boolean isGameWindowReady();
 }

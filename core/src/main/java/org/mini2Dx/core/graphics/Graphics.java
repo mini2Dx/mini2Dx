@@ -699,6 +699,12 @@ public interface Graphics {
 	public float getRotationY();
 
 	public Matrix4 getProjectionMatrix();
+	
+	/**
+	 * Returns if the game window is initialised natively
+	 * @return False at startup, true once the window/game is visible to the user
+	 */
+	public boolean isWindowReady();
 
 	/**
 	 * Returns the width of the window width
