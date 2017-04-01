@@ -354,8 +354,14 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 
 		if (result > ((ScrollBox) element).getMaxHeight()) {
 			result = ((ScrollBox) element).getMaxHeight();
-		} else if (result < style.getMinHeight()) {
-			result = style.getMinHeight();
+		} else {
+			if (((ScrollBox) element).getMinHeight() > Float.MIN_VALUE) {
+				if (result < ((ScrollBox) element).getMinHeight()) {
+					result = ((ScrollBox) element).getMinHeight();
+				}
+			} else if (result < style.getMinHeight()) {
+				result = style.getMinHeight();
+			}
 		}
 
 		float scrollThumbHeightPercentage = result / contentHeight;

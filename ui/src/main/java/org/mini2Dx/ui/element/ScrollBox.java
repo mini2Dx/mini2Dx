@@ -23,6 +23,8 @@ import org.mini2Dx.ui.listener.ScrollListener;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.ScrollBoxRenderNode;
 
+import com.badlogic.gdx.math.MathUtils;
+
 /**
  * A scrollable view for {@link UiElement}s
  */
@@ -31,6 +33,8 @@ public class ScrollBox extends Column {
 
 	@Field(optional = true)
 	private float scrollFactor = DEFAULT_SCROLL_FACTOR;
+	@Field(optional = true)
+	private float minHeight = Float.MIN_VALUE;
 	@Field(optional = true)
 	private float maxHeight = Float.MAX_VALUE;
 
@@ -58,7 +62,7 @@ public class ScrollBox extends Column {
 	protected ParentRenderNode<?, ?> createRenderNode(ParentRenderNode<?, ?> parent) {
 		return new ScrollBoxRenderNode(parent, this);
 	}
-	
+
 	@Override
 	public void syncWithRenderNode() {
 		super.syncWithRenderNode();
@@ -117,6 +121,36 @@ public class ScrollBox extends Column {
 	}
 
 	/**
+	 * Returns the minimum height for this {@link ScrollBox}. When set to
+	 * {@link Float#MIN_VALUE} the value will be taken from the style.
+	 * 
+	 * @return {@link Float#MIN_VALUE} by default
+	 */
+	public float getMinHeight() {
+		return minHeight;
+	}
+
+	/**
+	 * Sets the minimum height for this {@link ScrollBox}. Setting this value
+	 * overrides the style's minHeight value.
+	 * 
+	 * @param minHeight
+	 *            The minimum height to set
+	 */
+	public void setMinHeight(float minHeight) {
+		if(MathUtils.isEqual(this.minHeight, minHeight, MathUtils.FLOAT_ROUNDING_ERROR)) {
+			return;
+		}
+		
+		this.minHeight = minHeight;
+
+		if (renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+
+	/**
 	 * Returns the maximum height for this {@link ScrollBox}
 	 * 
 	 * @return {@link Float#MAX_VALUE} by default
@@ -132,6 +166,10 @@ public class ScrollBox extends Column {
 	 *            The maximum height to set
 	 */
 	public void setMaxHeight(float maxHeight) {
+		if(MathUtils.isEqual(this.maxHeight, maxHeight, MathUtils.FLOAT_ROUNDING_ERROR)) {
+			return;
+		}
+		
 		this.maxHeight = maxHeight;
 		if (renderNode == null) {
 			return;
