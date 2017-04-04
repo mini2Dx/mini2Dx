@@ -12,7 +12,9 @@
 package org.mini2Dx.ui.element;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
@@ -146,9 +148,17 @@ public class Checkbox extends UiElement implements Actionable {
 	}
 
 	@Override
+	public void defer(Runnable runnable) {
+		deferredQueue.offer(runnable);
+	}
+	
+	@Override
 	public void syncWithRenderNode() {
 		while (!effects.isEmpty()) {
 			renderNode.applyEffect(effects.poll());
+		}
+		while (!deferredQueue.isEmpty()) {
+			deferredQueue.poll().run();
 		}
 	}
 

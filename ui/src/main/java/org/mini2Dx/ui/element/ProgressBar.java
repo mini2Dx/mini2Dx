@@ -11,6 +11,9 @@
  */
 package org.mini2Dx.ui.element;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
@@ -44,7 +47,19 @@ public class ProgressBar extends UiElement {
 	}
 
 	@Override
-	public void syncWithRenderNode() {}
+	public void defer(Runnable runnable) {
+		deferredQueue.offer(runnable);
+	}
+	
+	@Override
+	public void syncWithRenderNode() {
+		while (!effects.isEmpty()) {
+			renderNode.applyEffect(effects.poll());
+		}
+		while (!deferredQueue.isEmpty()) {
+			deferredQueue.poll().run();
+		}
+	}
 
 	@Override
 	public void attach(ParentRenderNode<?, ?> parentRenderNode) {

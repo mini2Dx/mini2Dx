@@ -4,6 +4,7 @@
 - Added Graphics#isWindowReady()
 - Added UiContainerOperation and ClearShaderProgramOperation for render pipelines
 - Added ScrollBox#setMinHeight to override the style's minimum height
+- Added UiElement#defer to defer method calls until the next frame
 - ActionListeners now receive event details via ActionEvent instance
 - Fixed Button instances not triggering right-click events
 - Fixed ScrollBox#setMaxHeight triggering unnecessary layouts

@@ -35,6 +35,7 @@ import org.mini2Dx.ui.util.IdAllocator;
 public abstract class UiElement implements Hoverable {
 	private final String id;
 	protected final Queue<UiEffect> effects = new LinkedList<UiEffect>();
+	protected final Queue<Runnable> deferredQueue = new LinkedList<Runnable>();
 
 	@Field(optional = true)
 	protected Visibility visibility = UiContainer.getDefaultVisibility();
@@ -99,6 +100,12 @@ public abstract class UiElement implements Hoverable {
 	public void applyEffect(UiEffect effect) {
 		effects.offer(effect);
 	}
+	
+	/**
+	 * Defers the execution of a {@link Runnable} instance until the next frame update
+	 * @param runnable The {@link Runnable} to execute
+	 */
+	public abstract void defer(Runnable runnable);
 
 	@Override
 	@ConstructorArg(clazz = String.class, name = "id")

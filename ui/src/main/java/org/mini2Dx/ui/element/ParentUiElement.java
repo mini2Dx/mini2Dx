@@ -12,6 +12,7 @@
 package org.mini2Dx.ui.element;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -231,6 +232,11 @@ public abstract class ParentUiElement extends UiElement {
 		}
 		renderNode.setDirty(true);
 	}
+	
+	@Override
+	public void defer(Runnable runnable) {
+		deferredQueue.offer(runnable);
+	}
 
 	@Override
 	public void syncWithRenderNode() {
@@ -246,6 +252,9 @@ public abstract class ParentUiElement extends UiElement {
 		}
 		while (!asyncRemoveQueue.isEmpty()) {
 			remove(asyncRemoveQueue.poll());
+		}
+		while (!deferredQueue.isEmpty()) {
+			deferredQueue.poll().run();
 		}
 	}
 

@@ -155,4 +155,7 @@ public class DummyUiElement extends UiElement {
 		renderNode.setDirty(true);
 	}
 
+	@Override
+	public void defer(Runnable runnable) {
+	}
 }

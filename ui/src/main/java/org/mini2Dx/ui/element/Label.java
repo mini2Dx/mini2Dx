@@ -11,6 +11,9 @@
  */
 package org.mini2Dx.ui.element;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.animation.TextAnimation;
@@ -120,9 +123,17 @@ public class Label extends UiElement {
 	}
 	
 	@Override
+	public void defer(Runnable runnable) {
+		deferredQueue.offer(runnable);
+	}
+	
+	@Override
 	public void syncWithRenderNode() {
-		while(!effects.isEmpty()) {
+		while (!effects.isEmpty()) {
 			renderNode.applyEffect(effects.poll());
+		}
+		while (!deferredQueue.isEmpty()) {
+			deferredQueue.poll().run();
 		}
 	}
 	
