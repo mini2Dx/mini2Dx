@@ -81,6 +81,7 @@ public class LibGdxGraphics implements Graphics {
 		if (defaultTint != null) {
 			font = new BitmapFont(true);
 		}
+		tint = defaultTint;
 
 		lineHeight = 1;
 		color = Color.WHITE;
