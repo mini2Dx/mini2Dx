@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.headless;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.ApplicationListener;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.headless.HeadlessGameWrapper;
@@ -126,6 +127,7 @@ public class HeadlessMini2DxGame implements Application {
 		while (running) {
 
 			graphics.updateTime();
+			Mdx.performanceTracker.markFrame();
 			graphics.incrementFrameId();
 
 			executeRunnables();
@@ -143,7 +145,9 @@ public class HeadlessMini2DxGame implements Application {
 			accumulator += delta;
 
 			while (accumulator >= targetTimestep) {
+				Mdx.performanceTracker.markUpdateBegin();
 				listener.update(targetTimestep);
+				Mdx.performanceTracker.markUpdateEnd();
 				accumulator -= targetTimestep;
 			}
 			listener.interpolate(accumulator / targetTimestep);

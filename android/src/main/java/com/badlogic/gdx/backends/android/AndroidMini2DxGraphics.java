@@ -16,6 +16,7 @@
 package com.badlogic.gdx.backends.android;
 
 import org.mini2Dx.android.AndroidMini2DxConfig;
+import org.mini2Dx.core.Mdx;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.LifecycleListener;
@@ -51,6 +52,7 @@ public class AndroidMini2DxGraphics extends AndroidGraphics {
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
+		Mdx.performanceTracker.markFrame();
 
 		// After pause deltaTime can have somewhat huge value that destabilizes
 		// the mean, so let's cut it off
@@ -120,8 +122,10 @@ public class AndroidMini2DxGraphics extends AndroidGraphics {
 			accumulator += delta;
 
 			while (accumulator >= targetTimestep) {
+				Mdx.performanceTracker.markUpdateBegin();
 				app.getInput().processEvents();
 				game.getApplicationListener().update(targetTimestep);
+				Mdx.performanceTracker.markUpdateEnd();
 				accumulator -= targetTimestep;
 			}
 			game.getApplicationListener().interpolate(accumulator / targetTimestep);

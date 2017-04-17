@@ -56,6 +56,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  * A user acceptance test for the mini2Dx responsive UI framework
@@ -125,6 +127,10 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 
 	@Override
 	public void render(GameContainer gc, Graphics g) {
+		g.setBackgroundColor(Color.WHITE);
+		g.setColor(Color.BLACK);
+		Mdx.performanceTracker.draw(g, MathUtils.round(gc.getWidth() / 2f), 0);
+		
 		uiContainer.render(g);
 	}
 	

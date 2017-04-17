@@ -28,10 +28,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * this.
  */
 public abstract class GameContainer {
-	public static final float MAXIMUM_DELTA = (1f / 60f);
+	public static final int TARGET_FPS = 60;
+	public static final float MAXIMUM_DELTA = (1f / TARGET_FPS);
 	
-	private float accumulator = 0f;
-	private float targetDelta = 0.01f;
 	protected int width, height;
 	protected Graphics graphics;
 	protected SpriteBatch spriteBatch;

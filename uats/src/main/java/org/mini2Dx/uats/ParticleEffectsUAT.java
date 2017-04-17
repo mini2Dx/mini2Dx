@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.uats;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.ParticleEffect;
@@ -87,9 +88,13 @@ public class ParticleEffectsUAT extends BasicGameScreen {
 	@Override
 	public void render(GameContainer gc, Graphics g) {
 		g.setBackgroundColor(Color.BLACK);
+		
 		for(PooledParticleEffect effect : effects) {
 			g.drawParticleEffect(effect);
 		}
+		
+		g.setColor(Color.WHITE);
+		Mdx.performanceTracker.draw(g, MathUtils.round(gc.getWidth() / 2f), 0);
 	}
 
 	@Override

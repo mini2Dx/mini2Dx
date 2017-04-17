@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.uats;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Rectangle;
@@ -27,6 +28,7 @@ import org.mini2Dx.uats.util.UATSelectionScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  * A {@link GameScreen} that allows visual user acceptance testing of
@@ -72,6 +74,9 @@ public class GeometryUAT extends BasicGameScreen {
         g.setBackgroundColor(Color.WHITE);
         g.setColor(Color.RED);
         rect.draw(g);
+        
+		g.setColor(Color.BLACK);
+		Mdx.performanceTracker.draw(g, MathUtils.round(gc.getWidth() / 2f), 0);
     }
     
     public void detectKeyPress(ScreenManager<? extends GameScreen> screenManager) {

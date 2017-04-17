@@ -19,6 +19,7 @@ import java.awt.Canvas;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.ApplicationListener;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.desktop.DesktopGameWrapper;
@@ -230,6 +231,7 @@ public class DesktopMini2DxGame implements Application {
 			int frameRate = isGameActive ? graphics.config.foregroundFPS : graphics.config.backgroundFPS;
 			if (shouldRender) {
 				graphics.updateTime();
+				Mdx.performanceTracker.markFrame();
 				graphics.frameId++;
 
 				float delta = graphics.getDeltaTime();
@@ -240,9 +242,11 @@ public class DesktopMini2DxGame implements Application {
 				accumulator += delta;
 
 				while (accumulator >= targetTimestep) {
+					Mdx.performanceTracker.markUpdateBegin();
 					input.update();
 					input.processEvents();
 					listener.update(targetTimestep);
+					Mdx.performanceTracker.markUpdateEnd();
 					accumulator -= targetTimestep;
 				}
 				listener.interpolate(accumulator / targetTimestep);

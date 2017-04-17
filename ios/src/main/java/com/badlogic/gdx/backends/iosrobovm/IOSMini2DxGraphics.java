@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.iosrobovm;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.ios.IOSMini2DxConfig;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSObject;
@@ -341,6 +342,7 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 			fps = frames;
 			frames = 0;
 		}
+		Mdx.performanceTracker.markFrame();
 
 		float delta = deltaTime;
 		if (delta > maximumDelta) {
@@ -350,8 +352,10 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 		accumulator += delta;
 
 		while (accumulator >= targetTimestep) {
+			Mdx.performanceTracker.markUpdateBegin();
 			input.processEvents();
 			app.listener.update(targetTimestep);
+			Mdx.performanceTracker.markUpdateEnd();
 			accumulator -= targetTimestep;
 		}
 		app.listener.interpolate(accumulator / targetTimestep);
