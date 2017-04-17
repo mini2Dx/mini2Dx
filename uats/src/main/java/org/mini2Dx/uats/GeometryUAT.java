@@ -22,6 +22,7 @@ import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
+import org.mini2Dx.core.util.ColorUtils;
 import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
@@ -35,6 +36,8 @@ import com.badlogic.gdx.math.MathUtils;
  * Geometry classes and their rendering
  */
 public class GeometryUAT extends BasicGameScreen {
+	private static final Color BLACK = ColorUtils.rgbToColor("1,1,1");
+	
 	private int playerX, playerY, originX, originY;
 	private float scaleX, scaleY;
 	private int rotation;
@@ -75,8 +78,8 @@ public class GeometryUAT extends BasicGameScreen {
         g.setColor(Color.RED);
         rect.draw(g);
         
-		g.setColor(Color.BLACK);
-		Mdx.performanceTracker.draw(g, MathUtils.round(gc.getWidth() / 2f), 0);
+		g.setColor(BLACK);
+		Mdx.performanceTracker.drawInBottomRight(g);
     }
     
     public void detectKeyPress(ScreenManager<? extends GameScreen> screenManager) {

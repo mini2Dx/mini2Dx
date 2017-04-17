@@ -18,12 +18,13 @@ import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Align;
 
 /**
  * Tracks the following performance metrics during gameplay:<br>
  * <ul>
  * <li>Updates per second</li>
- * <li>Average, min + max update durations</li>
+ * <li>Average update durations</li>
  * <li>Frames per second</li>
  * <li>Current memory usage</li>
  * </ul>
@@ -32,23 +33,23 @@ public class PerformanceTracker {
 	private static final GlyphLayout GLYPH_LAYOUT = new GlyphLayout();
 
 	private final String[] messages = new String[4];
+	private final RollingAverage averageUpdateDuration = new RollingAverage(GameContainer.TARGET_FPS);
 
 	private long updateSecondStart;
 	private int updates;
 	private int updatesPerSecond;
 
 	private long updateStart;
-	private RollingAverage averageUpdateDuration = new RollingAverage(GameContainer.TARGET_FPS);
-	private long minUpdateDuration = Long.MAX_VALUE;
-	private long maxUpdateDuration = 0L;
 
 	private long frameSecondStart;
 	private int frames;
 	private int framesPerSecond;
 
 	public PerformanceTracker() {
+		super();
 		updateSecondStart = System.nanoTime();
 		frameSecondStart = System.nanoTime();
+		updateMessages();
 	}
 
 	/**
@@ -75,8 +76,6 @@ public class PerformanceTracker {
 		long updateDuration = time - updateStart;
 
 		averageUpdateDuration.mark(updateDuration);
-		minUpdateDuration = Math.min(updateDuration, minUpdateDuration);
-		maxUpdateDuration = Math.max(updateDuration, maxUpdateDuration);
 	}
 
 	/**
@@ -109,6 +108,15 @@ public class PerformanceTracker {
 	 */
 	public int getFramesPerSecond() {
 		return framesPerSecond;
+	}
+
+	/**
+	 * Returns the average duration of update()
+	 * 
+	 * @return The average duration in nanoseconds
+	 */
+	public double getAverageUpdateDuration() {
+		return averageUpdateDuration.getAverage();
 	}
 
 	/**
@@ -148,20 +156,92 @@ public class PerformanceTracker {
 	 * @param y
 	 *            The y coordinate to render at
 	 */
-	public void draw(Graphics g, int x, int y) {
-		messages[0] = "Update duration:: Min: " + getNanoSecondsInMillis(minUpdateDuration) + "ns, Max: "
-				+ getNanoSecondsInMillis(maxUpdateDuration) + "ms, Avg: "
-				+ ((int) averageUpdateDuration.getAverage()) + "ns";
-		messages[1] = "Updates / second:: " + updatesPerSecond;
-		messages[2] = "Frames / second:: " + framesPerSecond;
-		messages[3] = "Memory usage:: " + getHumanReadableByteValue(getUsedMemory()) + "/"
-				+ getHumanReadableByteValue(getTotalMemory());
+	public void draw(Graphics g, float x, float y) {
+		draw(g, x, y, -1, 0);
+	}
 
+	/**
+	 * Draws the current values to screen
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context
+	 * @param x
+	 *            The x coordinate to render at
+	 * @param y
+	 *            The y coordinate to render at
+	 * @param targetWidth
+	 *            The target width to render at, or, -1 to use auto-width
+	 * @param horizontalAlign
+	 *            The text alignment. Note: Use {@link Align} to retrieve the
+	 *            appropriate value. If target width is set to -1 this option is
+	 *            ignored and the text is left aligned
+	 */
+	public void draw(Graphics g, float x, float y, float targetWidth, int horizontalAlign) {
+		updateMessages();
 		float lineHeight = getLineHeight(g);
 
 		for (int i = 0; i < messages.length; i++) {
-			g.drawString(messages[i], x, y + (lineHeight * i) + (1f * i));
+			if (targetWidth < 0f) {
+				g.drawString(messages[i], x, y + (lineHeight * i) + (1f * i));
+			} else {
+				g.drawString(messages[i], x, y + (lineHeight * i) + (1f * i), targetWidth, horizontalAlign);
+			}
 		}
+	}
+
+	/**
+	 * Draws the current values to the top left of the screen
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context
+	 */
+	public void drawInTopLeft(Graphics g) {
+		draw(g, 0, 0);
+	}
+
+	/**
+	 * Draws the current values to the top right of the screen
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context
+	 */
+	public void drawInTopRight(Graphics g) {
+		float textWidth = getLineWidth(g);
+		draw(g, g.getViewportWidth() - textWidth - 1f, 0f, textWidth, Align.right);
+	}
+
+	/**
+	 * Draws the current values to the bottom left of the screen
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context
+	 */
+	public void drawInBottomLeft(Graphics g) {
+		float textHeight = (getLineHeight(g) * messages.length) + messages.length;
+		draw(g, 0f, g.getViewportHeight() - textHeight - 1f, -1f, Align.left);
+	}
+
+	/**
+	 * Draws the current values to the bottom right of the screen
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context
+	 */
+	public void drawInBottomRight(Graphics g) {
+		float textWidth = getLineWidth(g);
+		float textHeight = (getLineHeight(g) * messages.length) + messages.length;
+		draw(g, g.getViewportWidth() - textWidth - 1f, g.getViewportHeight() - textHeight - 1f, textWidth, Align.right);
+	}
+
+	private float getLineWidth(Graphics g) {
+		float lineWidth = 0f;
+		for (int i = 0; i < messages.length; i++) {
+			GLYPH_LAYOUT.setText(g.getFont(), messages[i]);
+			if (GLYPH_LAYOUT.width > lineWidth) {
+				lineWidth = GLYPH_LAYOUT.width;
+			}
+		}
+		return lineWidth;
 	}
 
 	private float getLineHeight(Graphics g) {
@@ -184,7 +264,12 @@ public class PerformanceTracker {
 		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 	}
 
-	private long getNanoSecondsInMillis(long duration) {
-		return TimeUnit.NANOSECONDS.toMillis(duration);
+	private void updateMessages() {
+		messages[0] = "Avg update duration:: " + String.format("%.3f", (averageUpdateDuration.getAverage() / 1000000))
+				+ "ms";
+		messages[1] = "Updates / second:: " + updatesPerSecond;
+		messages[2] = "Frames / second:: " + framesPerSecond;
+		messages[3] = "Memory usage:: " + getHumanReadableByteValue(getUsedMemory()) + "/"
+				+ getHumanReadableByteValue(getTotalMemory());
 	}
 }

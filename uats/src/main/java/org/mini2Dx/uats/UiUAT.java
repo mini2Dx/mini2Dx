@@ -129,7 +129,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 	public void render(GameContainer gc, Graphics g) {
 		g.setBackgroundColor(Color.WHITE);
 		g.setColor(Color.BLACK);
-		Mdx.performanceTracker.draw(g, MathUtils.round(gc.getWidth() / 2f), 0);
+		Mdx.performanceTracker.drawInTopRight(g);
 		
 		uiContainer.render(g);
 	}

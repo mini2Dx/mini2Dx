@@ -22,6 +22,7 @@ import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
+import org.mini2Dx.core.util.ColorUtils;
 import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
@@ -34,6 +35,8 @@ import com.badlogic.gdx.utils.Array;
  * A {@link GameScreen} that allows visual user acceptance testing of {@link ParticleEffect}s
  */
 public class ParticleEffectsUAT extends BasicGameScreen {
+	private static final Color WHITE = ColorUtils.rgbToColor("254,254,254");
+	
 	private ParticleEffect prototype;
 	private ParticleEffectPool pool;
 	private Array<PooledParticleEffect> effects;
@@ -93,8 +96,8 @@ public class ParticleEffectsUAT extends BasicGameScreen {
 			g.drawParticleEffect(effect);
 		}
 		
-		g.setColor(Color.WHITE);
-		Mdx.performanceTracker.draw(g, MathUtils.round(gc.getWidth() / 2f), 0);
+		g.setColor(WHITE);
+		Mdx.performanceTracker.drawInBottomLeft(g);
 	}
 
 	@Override

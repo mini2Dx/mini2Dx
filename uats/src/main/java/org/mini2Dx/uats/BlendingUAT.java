@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.uats;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
@@ -19,6 +20,7 @@ import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
+import org.mini2Dx.core.util.ColorUtils;
 import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
@@ -33,6 +35,8 @@ import com.badlogic.gdx.math.MathUtils;
  * {@link Graphics} alpha blending functionality
  */
 public class BlendingUAT extends BasicGameScreen {
+	private static final Color WHITE = ColorUtils.rgbToColor("254,254,254");
+	
 	private Sprite sprite;
 
     @Override
@@ -65,6 +69,9 @@ public class BlendingUAT extends BasicGameScreen {
         /* Render the scene */
         g.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
         g.drawSprite(sprite);
+        
+        g.setColor(WHITE);
+        Mdx.performanceTracker.drawInTopRight(g);
     }
 
     @Override
