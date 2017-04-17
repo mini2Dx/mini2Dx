@@ -21,6 +21,7 @@ import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.uats.util.ScreenIds;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
@@ -32,6 +33,8 @@ import com.badlogic.gdx.math.Vector3;
  * Utility for mapping controller input values
  */
 public class ControllerMapping extends BasicGameScreen implements ControllerListener {
+	private static final String LOGGING_TAG = ControllerMapping.class.getSimpleName();
+	
 	private String controllerName = "";
 	private Map<Integer, String> buttonMessages = new HashMap<Integer, String>();
 	private Map<Integer, String> axisMessages = new HashMap<Integer, String>();
@@ -43,6 +46,9 @@ public class ControllerMapping extends BasicGameScreen implements ControllerList
 	@Override
 	public void initialise(GameContainer gc) {
 		Controllers.addListener(this);
+		for(Controller controller : Controllers.getControllers()) {
+			Gdx.app.log(LOGGING_TAG, "Detected: " + controller.getName());
+		}
 	}
 
 	@Override
