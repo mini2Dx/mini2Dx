@@ -22,6 +22,7 @@ import org.mini2Dx.core.controller.xboxone.WindowsXboxOneController;
 import org.mini2Dx.core.exception.ControllerPlatformException;
 import org.mini2Dx.natives.Os;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.mappings.Ouya;
 
@@ -29,6 +30,7 @@ import com.badlogic.gdx.controllers.mappings.Ouya;
  * Provides mappings to common {@link Controller}s based on the current {@link Os}
  */
 public class ControllerMapping {
+	private static final String LOGGING_TAG = ControllerMapping.class.getSimpleName();
 	
 	public static Xbox360Controller xbox360(Controller controller) throws ControllerPlatformException {
 		return xbox360(controller, null, null);
@@ -95,15 +97,25 @@ public class ControllerMapping {
 	}
 
 	public static ControllerType getControllerType(Controller controller) {
+		String controllerName = controller.getName();
+		String lowercaseControllerName = controllerName.toLowerCase();
+		
 		if(controller.getName().equals(Ouya.ID)) {
 			return ControllerType.OUYA;
 		}
-		if(controller.getName().toLowerCase().contains(XboxOneController.ID)) {
+		if(lowercaseControllerName.contains(XboxOneController.ID)) {
 			return ControllerType.XBOX_ONE;
 		}
-		if(controller.getName().toLowerCase().contains(Xbox360Controller.ID)) {
+		if(lowercaseControllerName.contains(Xbox360Controller.ID)) {
 			return ControllerType.XBOX_360;
 		}
+		if(lowercaseControllerName.contains(PS3Controller.ID_FULL)) {
+			return ControllerType.PS3;
+		} else if(lowercaseControllerName.contains(PS3Controller.ID_PREFIX) &&
+				lowercaseControllerName.contains(PS3Controller.ID_SUFFIX)) {
+			return ControllerType.PS3;
+		}
+		Gdx.app.log(LOGGING_TAG, "Could not find controller mappings for " + controller.getName());
 		return ControllerType.UNKNOWN;
 	}
 }

@@ -11,9 +11,144 @@
  */
 package org.mini2Dx.core.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.mini2Dx.core.controller.button.PS3Button;
+import org.mini2Dx.core.controller.deadzone.DeadZone;
+import org.mini2Dx.core.controller.deadzone.NoopDeadZone;
+import org.mini2Dx.core.controller.ps3.PS3ControllerListener;
+
+import com.badlogic.gdx.controllers.Controller;
+
 /**
  *
  */
-public class PS3Controller {
+public abstract class PS3Controller implements MdxController<PS3ControllerListener> {
+	public static final String ID_FULL = "PLAYSTATION(R)3".toLowerCase();
+	public static final String ID_PREFIX = "playstation";
+	public static final String ID_SUFFIX = "3";
+	
+	private final Controller controller;
+	private final List<PS3ControllerListener> listeners = new ArrayList<PS3ControllerListener>();
+	
+    private DeadZone leftStickDeadZone, rightStickDeadZone;
+    
+	public PS3Controller(Controller controller) {
+		this(controller, new NoopDeadZone(), new NoopDeadZone());
+	}
+	
+	public PS3Controller(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) {
+		this.controller = controller;
+		this.leftStickDeadZone = leftStickDeadZone;
+		this.rightStickDeadZone = rightStickDeadZone;
+		controller.addListener(this);
+	}
+	
+	protected boolean notifyDisconnected() {
+		for(PS3ControllerListener listener : listeners) {
+			listener.disconnected(this);
+		}
+		return false;
+	}
+	
+	protected boolean notifyButtonDown(PS3Button button) {
+		for(PS3ControllerListener listener : listeners) {
+			if(listener.buttonDown(this, button)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	protected boolean notifyButtonUp(PS3Button button) {
+		for(PS3ControllerListener listener : listeners) {
+			if(listener.buttonUp(this, button)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	protected boolean notifyLeftStickXMoved(float value) {
+		leftStickDeadZone.updateX(value);
+		for(PS3ControllerListener listener : listeners) {
+			if(listener.leftStickXMoved(this, leftStickDeadZone.getX())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	protected boolean notifyLeftStickYMoved(float value) {
+		leftStickDeadZone.updateY(value);
+		for(PS3ControllerListener listener : listeners) {
+			if(listener.leftStickYMoved(this, leftStickDeadZone.getY())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	protected boolean notifyRightStickXMoved(float value) {
+		rightStickDeadZone.updateX(value);
+		for(PS3ControllerListener listener : listeners) {
+			if(listener.rightStickXMoved(this, rightStickDeadZone.getX())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	protected boolean notifyRightStickYMoved(float value) {
+		rightStickDeadZone.updateY(value);
+		for(PS3ControllerListener listener : listeners) {
+			if(listener.rightStickYMoved(this, rightStickDeadZone.getY())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
+	@Override
+    public void addListener(PS3ControllerListener listener) {
+    	listeners.add(listener);
+    }
+    
+    @Override
+    public void removeListener(PS3ControllerListener listener) {
+    	listeners.remove(listener);
+    }
+    
+    @Override
+	public void clearListeners() {
+		listeners.clear();
+	}
+    
+	@Override
+	public ControllerType getControllerType() {
+		return ControllerType.PS3;
+	}
+	
+	public DeadZone getLeftStickDeadZone() {
+		return leftStickDeadZone;
+	}
+
+	public void setLeftStickDeadZone(DeadZone leftStickDeadZone) {
+		if(leftStickDeadZone == null) {
+			leftStickDeadZone = new NoopDeadZone();
+		}
+		this.leftStickDeadZone = leftStickDeadZone;
+	}
+
+	public DeadZone getRightStickDeadZone() {
+		return rightStickDeadZone;
+	}
+
+	public void setRightStickDeadZone(DeadZone rightStickDeadZone) {
+		if(rightStickDeadZone == null) {
+			rightStickDeadZone = new NoopDeadZone();
+		}
+		this.rightStickDeadZone = rightStickDeadZone;
+	}
 }
