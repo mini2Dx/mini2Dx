@@ -25,7 +25,7 @@ public class IOSMini2DxConfig extends IOSApplicationConfiguration {
 	/**
 	 * The target timestep
 	 */
-	public float targetTimestep = 0.01f;
+	public float targetTimestep = (1f / targetFPS);
 	
 	public IOSMini2DxConfig(String gameIdentifier) {
 		this.gameIdentifier = gameIdentifier;

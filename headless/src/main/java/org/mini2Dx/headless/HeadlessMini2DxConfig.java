@@ -26,7 +26,7 @@ public class HeadlessMini2DxConfig extends HeadlessApplicationConfiguration {
 	/**
 	 * The target timestep
 	 */
-	public float targetTimestep = 0.01f;
+	public float targetTimestep = (1f / targetFPS);
 	
 	/**
 	 * The mocked window width

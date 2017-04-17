@@ -25,7 +25,7 @@ public class DesktopMini2DxConfig extends LwjglApplicationConfiguration {
 	/**
 	 * The target timestep
 	 */
-	public float targetTimestep = 0.01f;
+	public float targetTimestep = (1f / targetFPS);
 	
 	public DesktopMini2DxConfig(String gameIdentifier) {
 		this.gameIdentifier = gameIdentifier;

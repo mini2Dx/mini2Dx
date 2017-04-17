@@ -25,7 +25,7 @@ public class AndroidMini2DxConfig extends AndroidApplicationConfiguration {
 	/**
 	 * The target timestep
 	 */
-	public float targetTimestep = 0.01f;
+	public float targetTimestep = (1f / targetFPS);
 	
 	public AndroidMini2DxConfig(String gameIdentifier) {
 		this.gameIdentifier = gameIdentifier;
