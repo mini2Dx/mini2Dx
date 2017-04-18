@@ -22,7 +22,7 @@ import org.mini2Dx.core.controller.ps3.PS3ControllerListener;
 import com.badlogic.gdx.controllers.Controller;
 
 /**
- *
+ * Base class for PS3 controller mapping implementations
  */
 public abstract class PS3Controller implements MdxController<PS3ControllerListener> {
 	public static final String ID_FULL = "PLAYSTATION(R)3".toLowerCase();

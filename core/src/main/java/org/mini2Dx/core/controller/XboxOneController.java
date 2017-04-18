@@ -22,7 +22,7 @@ import org.mini2Dx.core.controller.xboxone.XboxOneControllerListener;
 import com.badlogic.gdx.controllers.Controller;
 
 /**
- * Base class for Xbox One controller implementations
+ * Base class for Xbox One controller mapping implementations
  */
 public abstract class XboxOneController implements MdxController<XboxOneControllerListener> {
 	public static final String ID = "xbox one";

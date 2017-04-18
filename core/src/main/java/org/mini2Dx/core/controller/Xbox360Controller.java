@@ -22,7 +22,7 @@ import org.mini2Dx.core.controller.xbox360.Xbox360ControllerListener;
 import com.badlogic.gdx.controllers.Controller;
 
 /**
- * Base class for Xbox 360 controller implementations
+ * Base class for Xbox 360 controller mapping implementations
  */
 public abstract class Xbox360Controller implements MdxController<Xbox360ControllerListener> {
 	public static final String ID = "360";
