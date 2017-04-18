@@ -13,6 +13,7 @@ package org.mini2Dx.core.controller;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.controller.deadzone.DeadZone;
+import org.mini2Dx.core.controller.ps4.MacPS4Controller;
 import org.mini2Dx.core.controller.ps4.WindowsPS4Controller;
 import org.mini2Dx.core.controller.xbox360.LinuxXbox360Controller;
 import org.mini2Dx.core.controller.xbox360.MacXbox360Controller;
@@ -48,7 +49,11 @@ public class ControllerMapping {
 				return new WindowsPS4Controller(controller, leftStickDeadZone, rightStickDeadZone);
 			}
 		case MAC:
-			return null;
+			if(leftStickDeadZone == null || rightStickDeadZone == null) {
+				return new MacPS4Controller(controller);
+			} else {
+				return new MacPS4Controller(controller, leftStickDeadZone, rightStickDeadZone);
+			}
 		case UNIX:
 			return null;
 		case ANDROID:
@@ -144,8 +149,27 @@ public class ControllerMapping {
 				&& lowercaseControllerName.contains(PS3Controller.ID_SUFFIX)) {
 			return ControllerType.PS3;
 		}
-		if (Mdx.os == Os.WINDOWS && lowercaseControllerName.equals(WindowsPS4Controller.ID)) {
-			return ControllerType.PS4;
+		
+		switch(Mdx.os) {
+		case WINDOWS:
+			if(lowercaseControllerName.equals(PS4Controller.WINDOWS_ID)) {
+				return ControllerType.PS4;
+			} else if(lowercaseControllerName.equals(PS4Controller.MAC_ID)) {
+				return ControllerType.PS4;
+			}
+			break;
+		case MAC:
+			if(lowercaseControllerName.equals(PS4Controller.MAC_ID)) {
+				return ControllerType.PS4;
+			}
+			break;
+		case UNIX:
+			break;
+		case UNKNOWN:
+		case ANDROID:
+		case IOS:
+		default:
+			break;
 		}
 		Gdx.app.log(LOGGING_TAG, "Could not find controller mappings for " + controller.getName());
 		return ControllerType.UNKNOWN;

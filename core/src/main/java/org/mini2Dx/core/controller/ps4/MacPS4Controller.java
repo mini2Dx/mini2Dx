@@ -21,9 +21,9 @@ import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector3;
 
 /**
- * Windows bindings for PS4 controller
+ * Mac OS X bindings for PS4 controller
  */
-public class WindowsPS4Controller extends PS4Controller {
+public class MacPS4Controller extends PS4Controller {
 	public static final int BUTTON_TRIANGLE = 3;
 	public static final int BUTTON_SQUARE = 0;
 	public static final int BUTTON_CIRCLE = 2;
@@ -41,24 +41,24 @@ public class WindowsPS4Controller extends PS4Controller {
 	public static final int BUTTON_TOUCHPAD= 13;
 	public static final int BUTTON_PS = 12;
 	
-	public static final int AXIS_LEFT_STICK_Y = 2;
-	public static final int AXIS_LEFT_STICK_X = 3;
+	public static final int AXIS_LEFT_STICK_Y = 1;
+	public static final int AXIS_LEFT_STICK_X = 0;
 	
-	public static final int AXIS_RIGHT_STICK_Y = 0;
-	public static final int AXIS_RIGHT_STICK_X = 1;
+	public static final int AXIS_RIGHT_STICK_Y = 3;
+	public static final int AXIS_RIGHT_STICK_X = 2;
 	
-	public static final int AXIS_L2 = 5;
-	public static final int AXIS_R2 = 4;
+	public static final int AXIS_L2 = 4;
+	public static final int AXIS_R2 = 5;
 	
 	public static final int POV_DIRECTIONS = 0;
 	
 	private boolean up, down, left, right;
 	
-	public WindowsPS4Controller(Controller controller) {
+	public MacPS4Controller(Controller controller) {
 		this(controller, new NoopDeadZone(), new NoopDeadZone());
 	}
 
-	public WindowsPS4Controller(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) {
+	public MacPS4Controller(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) {
 		super(controller, leftStickDeadZone, rightStickDeadZone);
 	}
 

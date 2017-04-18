@@ -25,6 +25,8 @@ import com.badlogic.gdx.controllers.Controller;
  * Base class for PS4 controller mapping implementations
  */
 public abstract class PS4Controller implements MdxController<PS4ControllerListener> {
+	public static final String WINDOWS_ID = "Wireless Controller".toLowerCase();
+	public static final String MAC_ID = "Sony Interactive Entertainment Wireless Controller".toLowerCase();
 	
 	private final Controller controller;
 	private final List<PS4ControllerListener> listeners = new ArrayList<PS4ControllerListener>();
