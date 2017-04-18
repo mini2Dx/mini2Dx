@@ -13,6 +13,7 @@ package org.mini2Dx.core.controller;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.controller.deadzone.DeadZone;
+import org.mini2Dx.core.controller.ps4.WindowsPS4Controller;
 import org.mini2Dx.core.controller.xbox360.LinuxXbox360Controller;
 import org.mini2Dx.core.controller.xbox360.MacXbox360Controller;
 import org.mini2Dx.core.controller.xbox360.WindowsXbox360Controller;
@@ -27,31 +28,58 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.mappings.Ouya;
 
 /**
- * Provides mappings to common {@link Controller}s based on the current {@link Os}
+ * Provides mappings to common {@link Controller}s based on the current
+ * {@link Os}
  */
 public class ControllerMapping {
 	private static final String LOGGING_TAG = ControllerMapping.class.getSimpleName();
-	
+
+	public static PS4Controller ps4(Controller controller) throws ControllerPlatformException {
+		return ps4(controller, null, null);
+	}
+
+	public static PS4Controller ps4(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone)
+			throws ControllerPlatformException {
+		switch (Mdx.os) {
+		case WINDOWS:
+			if(leftStickDeadZone == null || rightStickDeadZone == null) {
+				return new WindowsPS4Controller(controller);
+			} else {
+				return new WindowsPS4Controller(controller, leftStickDeadZone, rightStickDeadZone);
+			}
+		case MAC:
+			return null;
+		case UNIX:
+			return null;
+		case ANDROID:
+		case IOS:
+		case UNKNOWN:
+		default:
+			throw new ControllerPlatformException(ControllerType.XBOX_360, Mdx.os);
+		}
+	}
+
 	public static Xbox360Controller xbox360(Controller controller) throws ControllerPlatformException {
 		return xbox360(controller, null, null);
 	}
-	
-	public static Xbox360Controller xbox360(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) throws ControllerPlatformException {
-		switch(Mdx.os) {
+
+	public static Xbox360Controller xbox360(Controller controller, DeadZone leftStickDeadZone,
+			DeadZone rightStickDeadZone) throws ControllerPlatformException {
+		switch (Mdx.os) {
 		case WINDOWS:
-			if(leftStickDeadZone == null || rightStickDeadZone == null) {
+			if (leftStickDeadZone == null || rightStickDeadZone == null) {
 				return new WindowsXbox360Controller(controller);
 			} else {
 				return new WindowsXbox360Controller(controller, leftStickDeadZone, rightStickDeadZone);
 			}
 		case MAC:
-			if(leftStickDeadZone == null || rightStickDeadZone == null) {
+			if (leftStickDeadZone == null || rightStickDeadZone == null) {
 				return new MacXbox360Controller(controller);
 			} else {
 				return new MacXbox360Controller(controller, leftStickDeadZone, rightStickDeadZone);
 			}
 		case UNIX:
-			if(leftStickDeadZone == null || rightStickDeadZone == null) {
+			if (leftStickDeadZone == null || rightStickDeadZone == null) {
 				return new LinuxXbox360Controller(controller);
 			} else {
 				return new LinuxXbox360Controller(controller, leftStickDeadZone, rightStickDeadZone);
@@ -63,27 +91,28 @@ public class ControllerMapping {
 			throw new ControllerPlatformException(ControllerType.XBOX_360, Mdx.os);
 		}
 	}
-	
+
 	public static XboxOneController xboxOne(Controller controller) throws ControllerPlatformException {
 		return xboxOne(controller, null, null);
 	}
-	
-	public static XboxOneController xboxOne(Controller controller, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) throws ControllerPlatformException {
-		switch(Mdx.os) {
+
+	public static XboxOneController xboxOne(Controller controller, DeadZone leftStickDeadZone,
+			DeadZone rightStickDeadZone) throws ControllerPlatformException {
+		switch (Mdx.os) {
 		case WINDOWS:
-			if(leftStickDeadZone == null || rightStickDeadZone == null) {
+			if (leftStickDeadZone == null || rightStickDeadZone == null) {
 				return new WindowsXboxOneController(controller);
 			} else {
 				return new WindowsXboxOneController(controller, leftStickDeadZone, rightStickDeadZone);
 			}
 		case MAC:
-			if(leftStickDeadZone == null || rightStickDeadZone == null) {
+			if (leftStickDeadZone == null || rightStickDeadZone == null) {
 				return new MacXboxOneController(controller);
 			} else {
 				return new MacXboxOneController(controller, leftStickDeadZone, rightStickDeadZone);
 			}
 		case UNIX:
-			if(leftStickDeadZone == null || rightStickDeadZone == null) {
+			if (leftStickDeadZone == null || rightStickDeadZone == null) {
 				return new LinuxXboxOneController(controller);
 			} else {
 				return new LinuxXboxOneController(controller, leftStickDeadZone, rightStickDeadZone);
@@ -99,21 +128,24 @@ public class ControllerMapping {
 	public static ControllerType getControllerType(Controller controller) {
 		String controllerName = controller.getName();
 		String lowercaseControllerName = controllerName.toLowerCase();
-		
-		if(controller.getName().equals(Ouya.ID)) {
+
+		if (controller.getName().equals(Ouya.ID)) {
 			return ControllerType.OUYA;
 		}
-		if(lowercaseControllerName.contains(XboxOneController.ID)) {
+		if (lowercaseControllerName.contains(XboxOneController.ID)) {
 			return ControllerType.XBOX_ONE;
 		}
-		if(lowercaseControllerName.contains(Xbox360Controller.ID)) {
+		if (lowercaseControllerName.contains(Xbox360Controller.ID)) {
 			return ControllerType.XBOX_360;
 		}
-		if(lowercaseControllerName.contains(PS3Controller.ID_FULL)) {
+		if (lowercaseControllerName.contains(PS3Controller.ID_FULL)) {
 			return ControllerType.PS3;
-		} else if(lowercaseControllerName.contains(PS3Controller.ID_PREFIX) &&
-				lowercaseControllerName.contains(PS3Controller.ID_SUFFIX)) {
+		} else if (lowercaseControllerName.contains(PS3Controller.ID_PREFIX)
+				&& lowercaseControllerName.contains(PS3Controller.ID_SUFFIX)) {
 			return ControllerType.PS3;
+		}
+		if (Mdx.os == Os.WINDOWS && lowercaseControllerName.equals(WindowsPS4Controller.ID)) {
+			return ControllerType.PS4;
 		}
 		Gdx.app.log(LOGGING_TAG, "Could not find controller mappings for " + controller.getName());
 		return ControllerType.UNKNOWN;

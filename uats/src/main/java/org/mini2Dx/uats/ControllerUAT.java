@@ -20,6 +20,7 @@ import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.uats.controller.ControllerDebugger;
+import org.mini2Dx.uats.controller.PS4ControllerDebugger;
 import org.mini2Dx.uats.controller.Xbox360ControllerDebugger;
 import org.mini2Dx.uats.controller.XboxOneControllerDebugger;
 import org.mini2Dx.uats.util.ScreenIds;
@@ -51,6 +52,15 @@ public class ControllerUAT extends BasicGameScreen {
 				try {
 					Mdx.controllers.xboxOne(controller).addListener(xboxOneDebugger);
 					this.controllerDebugger = xboxOneDebugger;
+				} catch (ControllerPlatformException e) {
+					e.printStackTrace();
+				}
+				return;
+			case PS4:
+				PS4ControllerDebugger ps4Debugger = new PS4ControllerDebugger();
+				try {
+					Mdx.controllers.ps4(controller).addListener(ps4Debugger);
+					this.controllerDebugger = ps4Debugger;
 				} catch (ControllerPlatformException e) {
 					e.printStackTrace();
 				}
