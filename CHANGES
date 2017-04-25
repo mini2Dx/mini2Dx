@@ -14,6 +14,7 @@ To change it back set config.targetTimestep to 0.1f
 - Fixed Button instances not triggering right-click events
 - Fixed ScrollBox#setMaxHeight triggering unnecessary layouts
 - Fixed Graphics tint value not being set on startup
+- Fixed UiContainerRenderTree always set to dirty
 
 [1.4.9]
 - Fix @PostDeserialize not being invoked for nested objects
