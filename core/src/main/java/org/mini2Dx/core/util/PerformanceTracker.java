@@ -11,13 +11,10 @@
  */
 package org.mini2Dx.core.util;
 
-import java.util.concurrent.TimeUnit;
-
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Align;
 
 /**
@@ -31,9 +28,15 @@ import com.badlogic.gdx.utils.Align;
  */
 public class PerformanceTracker {
 	private static final GlyphLayout GLYPH_LAYOUT = new GlyphLayout();
+	private static final String DURATION_PREFIX = "Avg update duration:: ";
+	private static final String UPDATE_PREFIX = "Updates / second:: ";
+	private static final String FRAMES_PREFIX = "Frames / second:: ";
+	private static final String MEMORY_PREFIX = "Memory usage:: ";
+	private static final String MS = "ms";
 
-	private final String[] messages = new String[4];
 	private final RollingAverage averageUpdateDuration = new RollingAverage(GameContainer.TARGET_FPS);
+	private final String[] messages = new String[4];
+	private long lastMessagesUpdate = 0L;
 
 	private long updateSecondStart;
 	private int updates;
@@ -265,11 +268,17 @@ public class PerformanceTracker {
 	}
 
 	private void updateMessages() {
-		messages[0] = "Avg update duration:: " + String.format("%.3f", (averageUpdateDuration.getAverage() / 1000000))
-				+ "ms";
-		messages[1] = "Updates / second:: " + updatesPerSecond;
-		messages[2] = "Frames / second:: " + framesPerSecond;
-		messages[3] = "Memory usage:: " + getHumanReadableByteValue(getUsedMemory()) + "/"
+		long currentTime = System.currentTimeMillis();
+		if(currentTime - lastMessagesUpdate < 1000L) {
+			return;
+		}
+		
+		lastMessagesUpdate = currentTime;
+		messages[0] = DURATION_PREFIX + String.format("%.3f", (averageUpdateDuration.getAverage() / 1000000))
+				+ MS;
+		messages[1] = UPDATE_PREFIX + updatesPerSecond;
+		messages[2] = FRAMES_PREFIX + framesPerSecond;
+		messages[3] = MEMORY_PREFIX + getHumanReadableByteValue(getUsedMemory()) + "/"
 				+ getHumanReadableByteValue(getTotalMemory());
 	}
 }
