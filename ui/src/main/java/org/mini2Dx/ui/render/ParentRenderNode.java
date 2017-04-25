@@ -95,7 +95,7 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 
 		yOffset = determineYOffset(layoutState);
 		preferredContentHeight = determinePreferredContentHeight(layoutState);
-		super.setDirty(false);
+		setImmediateDirty(false);
 		setDirty(false);
 		childDirty = false;
 		initialLayoutOccurred = true;
@@ -230,6 +230,10 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 				layer.setDirty(dirty);
 			}
 		}
+	}
+	
+	protected void setImmediateDirty(boolean dirty) {
+		super.setDirty(dirty);
 	}
 
 	boolean isChildDirty() {

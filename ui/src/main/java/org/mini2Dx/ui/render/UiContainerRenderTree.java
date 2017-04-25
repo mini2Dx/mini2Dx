@@ -72,6 +72,7 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, ParentS
 			layer.layout(layoutState);
 		}
 		
+		setImmediateDirty(false);
 		setDirty(false);
 		childDirty = false;
 		screenSizeChanged = false;
