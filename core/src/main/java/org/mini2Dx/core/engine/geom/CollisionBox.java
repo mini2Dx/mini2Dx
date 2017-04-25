@@ -44,11 +44,12 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 	private final Vector2 tmpSourceVector = new Vector2();
 	private final Vector2 tmpTargetVector = new Vector2();
 	
+	private final Rectangle previousRectangle;
+	private final Rectangle renderRectangle;
+	
 	private List<PositionChangeListener> positionChangeListeners;
 	private List<SizeChangeListener> sizeChangeListeners;
 
-	private Rectangle previousRectangle;
-	private Rectangle renderRectangle;
 	private int renderX, renderY, renderWidth, renderHeight;
 	private boolean interpolate = false;
 
