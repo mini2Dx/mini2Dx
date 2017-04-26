@@ -657,6 +657,22 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		this.height = height;
 		renderTree.onResize(width, height);
 	}
+	
+	/**
+	 * Returns the configured {@link Graphics} scaling during rendering
+	 * @return 1f by default
+	 */
+	public float getScaleX() {
+		return scaleX;
+	}
+	
+	/**
+	 * Returns the configured {@link Graphics} scaling during rendering
+	 * @return 1f by default
+	 */
+	public float getScaleY() {
+		return scaleY;
+	}
 
 	/**
 	 * Sets the {@link Graphics} scaling during rendering. Mouse/touch
