@@ -15,6 +15,7 @@ To change it back set config.targetTimestep to 0.1f
 - Fixed ScrollBox#setMaxHeight triggering unnecessary layouts
 - Fixed Graphics tint value not being set on startup
 - Fixed UiContainerRenderTree always set to dirty
+- Fixed RepeatableNinePatch not repeating correctly when using TextureRegion
 
 [1.4.9]
 - Fix @PostDeserialize not being invoked for nested objects
