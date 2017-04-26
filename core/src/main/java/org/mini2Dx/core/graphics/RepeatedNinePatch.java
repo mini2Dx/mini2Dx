@@ -88,14 +88,29 @@ public class RepeatedNinePatch extends NinePatch {
 			final float centerWidth = patches[TOP_CENTER].getRegionWidth();
 			final float totalMiddleHeight = height - patches[TOP_LEFT].getRegionHeight() - patches[BOTTOM_LEFT].getRegionHeight();
 			
+			patches[TOP_LEFT].flip(false, true);
 			batch.draw(patches[TOP_LEFT], x, y, leftWidth, patches[TOP_LEFT].getRegionHeight());
+			patches[TOP_LEFT].flip(false, true);
+			
+			patches[TOP_CENTER].flip(false, true);
 			batch.draw(patches[TOP_CENTER], x + leftWidth, y, centerWidth, patches[TOP_CENTER].getRegionHeight());
+			patches[TOP_CENTER].flip(false, true);
 			
+			patches[MIDDLE_LEFT].flip(false, true);
 			middleLeft.draw(batch, x, y + patches[TOP_LEFT].getRegionHeight(), leftWidth, totalMiddleHeight);
-			middleCenter.draw(batch, x + leftWidth, y + patches[TOP_LEFT].getRegionHeight(), centerWidth, totalMiddleHeight);
+			patches[MIDDLE_LEFT].flip(false, true);
 			
+			patches[MIDDLE_CENTER].flip(false, true);
+			middleCenter.draw(batch, x + leftWidth, y + patches[TOP_LEFT].getRegionHeight(), centerWidth, totalMiddleHeight);
+			patches[MIDDLE_CENTER].flip(false, true);
+			
+			patches[BOTTOM_LEFT].flip(false, true);
 			batch.draw(patches[BOTTOM_LEFT], x, y + patches[TOP_LEFT].getRegionHeight() + totalMiddleHeight, leftWidth, patches[BOTTOM_LEFT].getRegionHeight());
+			patches[BOTTOM_LEFT].flip(false, true);
+			
+			patches[BOTTOM_CENTER].flip(false, true);
 			batch.draw(patches[BOTTOM_CENTER], x + leftWidth, y + patches[TOP_LEFT].getRegionHeight() + totalMiddleHeight, centerWidth, patches[BOTTOM_CENTER].getRegionHeight());
+			patches[BOTTOM_CENTER].flip(false, true);
 		} else if(patches[BOTTOM_LEFT] == null) {
 			//Split only horizontal
 			final float halfHeight = height * 0.5f;
@@ -103,31 +118,71 @@ public class RepeatedNinePatch extends NinePatch {
 			final float middleHeight = patches[MIDDLE_LEFT].getRegionHeight();
 			final float totalCenterWidth = width - patches[TOP_LEFT].getRegionWidth() - patches[TOP_RIGHT].getRegionWidth();
 			
+			patches[TOP_LEFT].flip(false, true);
 			batch.draw(patches[TOP_LEFT], x, y, patches[TOP_LEFT].getRegionWidth(), topHeight);
+			patches[TOP_LEFT].flip(false, true);
+			
+			patches[MIDDLE_LEFT].flip(false, true);
 			batch.draw(patches[MIDDLE_LEFT], x, y + topHeight, patches[MIDDLE_LEFT].getRegionWidth(), middleHeight);
+			patches[MIDDLE_LEFT].flip(false, true);
 			
+			patches[TOP_CENTER].flip(false, true);
 			topCenter.draw(batch, x + patches[TOP_LEFT].getRegionWidth(), y, totalCenterWidth, topHeight);
-			middleCenter.draw(batch, x + patches[MIDDLE_LEFT].getRegionWidth(), y + topHeight, totalCenterWidth, middleHeight);
+			patches[TOP_CENTER].flip(false, true);
 			
+			patches[MIDDLE_CENTER].flip(false, true);
+			middleCenter.draw(batch, x + patches[MIDDLE_LEFT].getRegionWidth(), y + topHeight, totalCenterWidth, middleHeight);
+			patches[MIDDLE_CENTER].flip(false, true);
+			
+			patches[TOP_RIGHT].flip(false, true);
 			batch.draw(patches[TOP_RIGHT], x + patches[TOP_LEFT].getRegionWidth() + totalCenterWidth, y, patches[TOP_RIGHT].getRegionWidth(), topHeight);
+			patches[TOP_RIGHT].flip(false, true);
+			
+			patches[MIDDLE_RIGHT].flip(false, true);
 			batch.draw(patches[MIDDLE_RIGHT], x + patches[MIDDLE_LEFT].getRegionWidth() + totalCenterWidth, y, patches[MIDDLE_RIGHT].getRegionWidth(), topHeight);
+			patches[MIDDLE_RIGHT].flip(false, true);
 		} else {
 			//No split
 			final float totalCenterWidth = width - patches[TOP_LEFT].getRegionWidth() - patches[TOP_RIGHT].getRegionWidth();
 			final float totalMiddleHeight = height - patches[TOP_LEFT].getRegionHeight() - patches[BOTTOM_LEFT].getRegionHeight();
 			
 			//Render center images
+			patches[MIDDLE_CENTER].flip(false, true);
 			middleCenter.draw(batch, x + patches[TOP_LEFT].getRegionWidth(), y + patches[TOP_LEFT].getRegionHeight(), totalCenterWidth, totalMiddleHeight);
+			patches[MIDDLE_CENTER].flip(false, true);
+			
+			patches[TOP_CENTER].flip(false, true);
 			topCenter.draw(batch, x + patches[TOP_LEFT].getRegionWidth(), y, totalCenterWidth, patches[TOP_CENTER].getRegionHeight());
+			patches[TOP_CENTER].flip(false, true);
+			
+			patches[BOTTOM_CENTER].flip(false, true);
 			bottomCenter.draw(batch, x + patches[TOP_LEFT].getRegionWidth(), y + patches[TOP_LEFT].getRegionHeight() + totalMiddleHeight, totalCenterWidth, patches[BOTTOM_CENTER].getRegionHeight());
+			patches[BOTTOM_CENTER].flip(false, true);
+			
+			patches[MIDDLE_LEFT].flip(false, true);
 			middleLeft.draw(batch, x, y + patches[TOP_LEFT].getRegionHeight(), patches[MIDDLE_LEFT].getRegionWidth(), totalMiddleHeight);
+			patches[MIDDLE_LEFT].flip(false, true);
+			
+			patches[MIDDLE_RIGHT].flip(false, true);
 			middleRight.draw(batch, x + patches[MIDDLE_LEFT].getRegionWidth() + totalCenterWidth, y + patches[TOP_LEFT].getRegionHeight(), patches[MIDDLE_LEFT].getRegionWidth(), totalMiddleHeight);
+			patches[MIDDLE_RIGHT].flip(false, true);
 			
 			//Render corners
+			patches[TOP_LEFT].flip(false, true);
 			batch.draw(patches[TOP_LEFT], x, y);
+			patches[TOP_LEFT].flip(false, true);
+			
+			patches[TOP_RIGHT].flip(false, true);
 			batch.draw(patches[TOP_RIGHT], x + patches[TOP_LEFT].getRegionWidth() + totalCenterWidth, y);
+			patches[TOP_RIGHT].flip(false, true);
+			
+			patches[BOTTOM_LEFT].flip(false, true);
 			batch.draw(patches[BOTTOM_LEFT], x, y + patches[TOP_LEFT].getRegionHeight() + totalMiddleHeight);
+			patches[BOTTOM_LEFT].flip(false, true);
+			
+			patches[BOTTOM_RIGHT].flip(false, true);
 			batch.draw(patches[BOTTOM_RIGHT], x + patches[TOP_LEFT].getRegionWidth() + totalCenterWidth, y + patches[TOP_LEFT].getRegionHeight() + totalMiddleHeight);
+			patches[BOTTOM_RIGHT].flip(false, true);
 		}
 	}
 }
