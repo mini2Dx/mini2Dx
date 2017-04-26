@@ -146,9 +146,23 @@ public class LibGdxGraphics implements Graphics {
 
 		int roundWidth = MathUtils.round(width);
 		int roundHeight = MathUtils.round(height);
+		
+		beginRendering();
+		endRendering();
 
-		spriteBatch.draw(colorTextureCache.getRectangleTexture(color, roundWidth, roundHeight, getLineHeight()), x, y,
-				0, 0, roundWidth, roundHeight, 1f, 1f, 0, 0, 0, roundWidth, roundHeight, false, false);
+		/* TODO: Move all shape rendering over to using ShapeRenderer */
+		renderingShapes = true;
+		shapeRenderer.begin(ShapeType.Filled);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+	    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.setColor(color);
+		shapeRenderer.rectLine(x, y, x + roundWidth, y, lineHeight);
+		shapeRenderer.rectLine(x, y, x , y + roundHeight, lineHeight);
+		shapeRenderer.rectLine(x + roundWidth, y, x + roundWidth, y + roundHeight, lineHeight);
+		shapeRenderer.rectLine(x, y + roundHeight, x + roundWidth, y + roundHeight, lineHeight);
+		shapeRenderer.end();
+
+		beginRendering();
 	}
 
 	@Override
