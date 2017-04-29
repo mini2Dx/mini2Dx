@@ -60,6 +60,7 @@ public class UiTheme {
 	private static final String LOGGING_TAG = UiTheme.class.getSimpleName();
 	
 	public static final String DEFAULT_THEME_FILENAME = "default-mdx-theme.json";
+	public static final String DEFAULT_THEME_ATLAS = "default-mdx-theme.atlas";
 	public static final String DEFAULT_STYLE_ID = "default";
 
 	@Field
