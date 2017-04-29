@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2017 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,44 +11,27 @@
  */
 package org.mini2Dx.ui.render;
 
-import org.mini2Dx.ui.element.AlignedModal;
-import org.mini2Dx.ui.element.Column;
+import org.mini2Dx.ui.editor.EditorInGameView;
 import org.mini2Dx.ui.layout.LayoutState;
-
-import com.badlogic.gdx.math.MathUtils;
+import org.mini2Dx.ui.style.UiTheme;
 
 /**
- * {@link RenderNode} implementation for {@link AlignedModal}
+ *
  */
-public class AlignedModalRenderNode extends ModalRenderNode {
+public class InGameViewRenderNode extends ScrollBoxRenderNode {
 
-	public AlignedModalRenderNode(ParentRenderNode<?, ?> parent, Column column) {
+	public InGameViewRenderNode(ParentRenderNode<?, ?> parent, EditorInGameView column) {
 		super(parent, column);
 	}
-	
-	@Override
-	protected float determineXOffset(LayoutState layoutState) {
-		float outerWidth = determinePreferredContentWidth(layoutState) + style.getPaddingLeft() + style.getPaddingRight() + style.getMarginLeft() + style.getMarginRight();
-		switch(((AlignedModal) element).getHorizontalAlignment()) {
-		case RIGHT:
-			return layoutState.getUiContainerRenderTree().getOuterWidth() - outerWidth;
-		case CENTER:
-			return MathUtils.round((layoutState.getUiContainerRenderTree().getOuterWidth() / 2f) - (outerWidth / 2f));
-		default:
-			return 0f;
-		}
-	}
 
 	@Override
-	protected float determineYOffset(LayoutState layoutState) {
-		float outerHeight = determinePreferredContentHeight(layoutState) + style.getPaddingTop() + style.getPaddingBottom() + style.getMarginTop() + style.getMarginBottom();
-		switch(((AlignedModal) element).getVerticalAlignment()) {
-		case BOTTOM:
-			return layoutState.getUiContainerRenderTree().getOuterHeight() - outerHeight;
-		case MIDDLE:
-			return MathUtils.round((layoutState.getUiContainerRenderTree().getOuterHeight() / 2f) - (outerHeight / 2f));
-		default:
-			return 0f;
-		}
+	public void layout(LayoutState layoutState) {
+		UiTheme previousTheme = layoutState.getTheme();
+
+		EditorInGameView inGameView = (EditorInGameView) element;
+		LayoutState inGameState = new LayoutState(layoutState.getUiContainerRenderTree(), layoutState.getAssetManager(),
+				inGameView.getInGameUiTheme(), inGameView.getScreenSize(), layoutState.getTotalColumns(),
+				layoutState.getParentWidth(), layoutState.isScreenSizeChanged());
+		super.layout(inGameState);
 	}
 }

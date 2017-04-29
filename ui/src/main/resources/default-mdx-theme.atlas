@@ -53,6 +53,13 @@ button_default_normal
   orig: 36, 36
   offset: 0, 0
   index: -1
+button_list_item_disabled
+  rotate: false
+  xy: 494, 120
+  size: 6, 6
+  orig: 6, 6
+  offset: 0, 0
+  index: -1
 button_success_action
   rotate: false
   xy: 304, 90
@@ -251,7 +258,7 @@ slider_active
   index: -1
 slider_background
   rotate: false
-  xy: 494, 122
+  xy: 502, 122
   size: 8, 4
   orig: 8, 4
   offset: 0, 0

@@ -94,9 +94,13 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 *            The {@link AssetManager} for the game
 	 */
 	public UiContainer(GameContainer gc, AssetManager assetManager) {
+		this(gc.getWidth(), gc.getHeight(), assetManager);
+	}
+	
+	public UiContainer(int width, int height, AssetManager assetManager) {
 		super(IdAllocator.getNextId("ui-container-root"));
-		this.width = gc.getWidth();
-		this.height = gc.getHeight();
+		this.width = width;
+		this.height = height;
 
 		switch (Mdx.os) {
 		case ANDROID:

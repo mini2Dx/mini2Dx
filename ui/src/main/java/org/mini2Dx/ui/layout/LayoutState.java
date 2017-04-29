@@ -24,7 +24,7 @@ import com.badlogic.gdx.assets.AssetManager;
  * Represents the current flow state during layout
  */
 public class LayoutState {
-	private final UiContainerRenderTree uiContainer;
+	private final UiContainerRenderTree uiContainerRenderTree;
 	private final AssetManager assetManager;
 	private final UiTheme theme;
 	private final ScreenSize screenSize;
@@ -33,9 +33,9 @@ public class LayoutState {
 	
 	private float parentWidth;
 
-	public LayoutState(UiContainerRenderTree uiContainer, AssetManager assetManager,  UiTheme theme,
+	public LayoutState(UiContainerRenderTree uiContainerRenderTree, AssetManager assetManager,  UiTheme theme,
 			ScreenSize screenSize, int totalColumns, float parentWidth, boolean screenSizeChanged) {
-		this.uiContainer = uiContainer;
+		this.uiContainerRenderTree = uiContainerRenderTree;
 		this.assetManager = assetManager;
 		this.theme = theme;
 		this.screenSize = screenSize;
@@ -108,16 +108,16 @@ public class LayoutState {
 	 * Returns the {@link UiContainerRenderTree}
 	 * @return
 	 */
-	public UiContainerRenderTree getUiContainer() {
-		return uiContainer;
+	public UiContainerRenderTree getUiContainerRenderTree() {
+		return uiContainerRenderTree;
 	}
 	
 	public InputSource getLastInputSource() {
-		return uiContainer.getLastInputSource();
+		return uiContainerRenderTree.getLastInputSource();
 	}
 	
 	public ControllerType getLastControllerType() {
-		return uiContainer.getLastControllerType();
+		return uiContainerRenderTree.getLastControllerType();
 	}
 
 	/**

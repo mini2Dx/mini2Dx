@@ -342,6 +342,10 @@ public class Select<V> extends UiElement implements Actionable {
 	public LayoutRuleset getLayout() {
 		return layout;
 	}
+	
+	public void setLayout(String layoutRuleset) {
+		setLayout(new LayoutRuleset(layoutRuleset));
+	}
 
 	public void setLayout(LayoutRuleset layoutRuleset) {
 		if (layoutRuleset == null) {

@@ -32,9 +32,9 @@ public class AlignedContainerRenderNode extends ContainerRenderNode {
 		float outerWidth = determinePreferredContentWidth(layoutState) + style.getPaddingLeft() + style.getPaddingRight() + style.getMarginLeft() + style.getMarginRight();
 		switch(((AlignedContainer) element).getHorizontalAlignment()) {
 		case RIGHT:
-			return layoutState.getUiContainer().getOuterWidth() - outerWidth;
+			return layoutState.getUiContainerRenderTree().getOuterWidth() - outerWidth;
 		case CENTER:
-			return MathUtils.round((layoutState.getUiContainer().getOuterWidth() / 2f) - (outerWidth / 2f));
+			return MathUtils.round((layoutState.getUiContainerRenderTree().getOuterWidth() / 2f) - (outerWidth / 2f));
 		default:
 			return 0f;
 		}
@@ -45,9 +45,9 @@ public class AlignedContainerRenderNode extends ContainerRenderNode {
 		float outerHeight = determinePreferredContentHeight(layoutState) + style.getPaddingTop() + style.getPaddingBottom() + style.getMarginTop() + style.getMarginBottom();
 		switch(((AlignedContainer) element).getVerticalAlignment()) {
 		case BOTTOM:
-			return layoutState.getUiContainer().getOuterHeight() - outerHeight;
+			return layoutState.getUiContainerRenderTree().getOuterHeight() - outerHeight;
 		case MIDDLE:
-			return MathUtils.round((layoutState.getUiContainer().getOuterHeight() / 2f) - (outerHeight / 2f));
+			return MathUtils.round((layoutState.getUiContainerRenderTree().getOuterHeight() / 2f) - (outerHeight / 2f));
 		default:
 			return 0f;
 		}

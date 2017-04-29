@@ -65,6 +65,25 @@
         }
       }
     },
+    "list-item-button": {
+      "rules": {
+        "XS": {
+          "action": "button_list_item_disabled",
+          "disabled": "button_list_item_disabled",
+          "fontSize": 12,
+          "font": "default",
+          "textColor": "254,254,254",
+          "paddingTop": 2,
+          "paddingBottom": 2,
+          "paddingLeft": 2,
+          "paddingRight": 2,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    },
     "select-left": {
       "rules": {
         "XS": {
@@ -164,6 +183,21 @@
         }
       }
     },
+    "frame": {
+      "rules": {
+        "XS": {
+          "background": "frame",
+          "paddingTop": 4,
+          "paddingBottom": 4,
+          "paddingLeft": 4,
+          "paddingRight": 4,
+          "ninePatchTop": 24,
+          "ninePatchBottom": 24,
+          "ninePatchLeft": 24,
+          "ninePatchRight": 24
+        }
+      }
+    },
     "tab-menu": {
       "rules": {
         "XS": {
@@ -225,6 +259,20 @@
           "marginRight": 0
         }
       }
+    },
+    "no-background-no-padding": {
+      "rules": {
+        "XS": {
+          "paddingTop": 0,
+          "paddingBottom": 0,
+          "paddingLeft": 0,
+          "paddingRight": 0,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
     }
   },
   "fonts": {
@@ -255,12 +303,8 @@
           "fontSize": 12,
           "font": "default",
           "textColor": "1,1,1",
-          "paddingTop": 4,
-          "paddingBottom": 4,
-          "paddingLeft": 0,
-          "paddingRight": 0,
-          "marginTop": 0,
-          "marginBottom": 0,
+          "marginTop": 4,
+          "marginBottom": 4,
           "marginLeft": 0,
           "marginRight": 0
         }
@@ -272,10 +316,6 @@
           "fontSize": 18,
           "font": "default",
           "textColor": "1,1,1",
-          "paddingTop": 4,
-          "paddingBottom": 4,
-          "paddingLeft": 0,
-          "paddingRight": 0,
           "marginTop": 4,
           "marginBottom": 4,
           "marginLeft": 0,

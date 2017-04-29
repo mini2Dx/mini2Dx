@@ -277,7 +277,19 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule>impl
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
 		leftButton.setWidth(style.getButtonWidth());
 		rightButton.setWidth(style.getButtonWidth());
-		return layoutState.getParentWidth();
+		
+		if (element.getLayout().isHiddenByInputSource(layoutState)) {
+			return 0f;
+		}
+		float layoutRuleResult = element.getLayout().getPreferredWidth(layoutState);
+		if (layoutRuleResult <= 0f) {
+			hiddenByLayoutRule = true;
+			return 0f;
+		} else {
+			hiddenByLayoutRule = false;
+		}
+		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft()
+				- style.getMarginRight();
 	}
 
 	@Override
