@@ -9,7 +9,7 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.ui.editor;
+package org.mini2Dx.ui.editor.modals;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,6 +35,7 @@ public class EditorOpenFileDialog extends AlignedModal implements ActionListener
 	private final TextButton openButton, cancelButton;
 	
 	private TextButton selectedFilenameButton = null;
+	private EditorOpenFileListener listener = null;
 
 	/**
 	 * Constructor
@@ -63,11 +64,13 @@ public class EditorOpenFileDialog extends AlignedModal implements ActionListener
 		openButton.setVisibility(Visibility.VISIBLE);
 		openButton.setText("Open");
 		openButton.setEnabled(false);
+		openButton.addActionListener(this);
 		
 		cancelButton = new TextButton(getId() + "-cancelButton");
 		cancelButton.setLayout("xs-6c");
 		cancelButton.setVisibility(Visibility.VISIBLE);
 		cancelButton.setText("Cancel");
+		cancelButton.addActionListener(this);
 		
 		Row actionButtonsRow = Row.withElements(openButton, cancelButton);
 		add(actionButtonsRow);
@@ -99,6 +102,14 @@ public class EditorOpenFileDialog extends AlignedModal implements ActionListener
 			openButton.setEnabled(true);
 			return;	
 		}
+		
+		if(event.getSource().getId().equals(openButton.getId())) {
+			setVisibility(Visibility.HIDDEN);
+			listener.onOpenFile(this);
+		} else if(event.getSource().getId().equals(cancelButton.getId())) {
+			setVisibility(Visibility.HIDDEN);
+			listener.onCancelOpenFile();
+		}
 	}
 
 	public TextButton getOpenButton() {
@@ -109,7 +120,7 @@ public class EditorOpenFileDialog extends AlignedModal implements ActionListener
 		return cancelButton;
 	}
 	
-	public void resetUi() {
+	private void resetUi() {
 		scrollBox.removeAll();
 		fileButtons.clear();
 		
@@ -131,5 +142,11 @@ public class EditorOpenFileDialog extends AlignedModal implements ActionListener
 		}
 		
 		openButton.setEnabled(false);
+	}
+	
+	public void show(EditorOpenFileListener listener) {
+		this.listener = listener;
+		setVisibility(Visibility.VISIBLE);
+		resetUi();
 	}
 }

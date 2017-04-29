@@ -588,4 +588,60 @@ public class UiTheme {
 	public boolean isHeadless() {
 		return headless;
 	}
+
+	public Map<String, ButtonStyleRuleset> getButtonRulesets() {
+		return buttons;
+	}
+
+	public Map<String, CheckboxStyleRuleset> getCheckboxRulesets() {
+		return checkboxes;
+	}
+
+	public Map<String, ColumnStyleRuleset> getColumnRulesets() {
+		return columns;
+	}
+
+	public Map<String, ContainerStyleRuleset> getContainerRulesets() {
+		return containers;
+	}
+
+	public Map<String, UiFont> getFonts() {
+		return fonts;
+	}
+
+	public Map<String, DefaultStyleRuleset> getImageRulesets() {
+		return images;
+	}
+
+	public Map<String, LabelStyleRuleset> getLabelRulesets() {
+		return labels;
+	}
+
+	public Map<String, ProgressBarStyleRuleset> getProgressBarRulesets() {
+		return progressBars;
+	}
+
+	public Map<String, RadioButtonStyleRuleset> getRadioButtonRulesets() {
+		return radioButtons;
+	}
+
+	public Map<String, SelectStyleRuleset> getSelectRulesets() {
+		return selects;
+	}
+
+	public Map<String, ScrollBoxStyleRuleset> getScrollBoxRulesets() {
+		return scrollBoxes;
+	}
+
+	public Map<String, SliderStyleRuleset> getSliderRulesets() {
+		return sliders;
+	}
+
+	public Map<String, TabStyleRuleset> getTabRulesets() {
+		return tabs;
+	}
+
+	public Map<String, TextBoxStyleRuleset> getTextBoxRulesets() {
+		return textboxes;
+	}
 }
