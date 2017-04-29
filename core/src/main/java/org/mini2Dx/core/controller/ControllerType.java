@@ -17,10 +17,38 @@ import com.badlogic.gdx.controllers.Controller;
  * {@link Controller} types supported by mini2Dx
  */
 public enum ControllerType {
-	UNKNOWN,
-	OUYA,
-	PS3,
-	PS4,
-	XBOX_360,
-	XBOX_ONE
+	UNKNOWN("unknown"),
+	OUYA("ouya"),
+	PS3("ps3"),
+	PS4("ps4"),
+	XBOX_360("xbox360"),
+	XBOX_ONE("xboxone");
+	
+	private final String friendlyString;
+	
+	private ControllerType(String friendlyString) {
+		this.friendlyString = friendlyString;
+	}
+	
+	public String toFriendlyString() {
+		return friendlyString;
+	}
+	
+	public static ControllerType fromFriendlyString(String value) {
+		switch(value.toLowerCase()) {
+		case "unknown":
+			return ControllerType.UNKNOWN;
+		case "ouya":
+			return ControllerType.OUYA;
+		case "ps3":
+			return ControllerType.PS3;
+		case "ps4":
+			return ControllerType.PS4;
+		case "xbox360":
+			return ControllerType.XBOX_360;
+		case "xboxone":
+			return ControllerType.XBOX_ONE;
+		}
+		return ControllerType.UNKNOWN;
+	}
 }

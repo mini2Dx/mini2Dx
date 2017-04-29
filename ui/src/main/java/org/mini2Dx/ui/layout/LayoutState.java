@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.core.controller.ControllerType;
 import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.element.UiElement;
@@ -113,6 +114,10 @@ public class LayoutState {
 	
 	public InputSource getLastInputSource() {
 		return uiContainer.getLastInputSource();
+	}
+	
+	public ControllerType getLastControllerType() {
+		return uiContainer.getLastControllerType();
 	}
 
 	/**

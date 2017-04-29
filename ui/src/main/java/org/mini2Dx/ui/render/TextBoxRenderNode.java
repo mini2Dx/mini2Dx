@@ -113,7 +113,7 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if(layoutRuleset.isHiddenByInputSource(layoutState.getLastInputSource())) {
+		if(layoutRuleset.isHiddenByInputSource(layoutState)) {
 			return 0f;
 		}
 		float layoutRuleResult = layoutRuleset.getPreferredWidth(layoutState);

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.controller.ControllerType;
 import org.mini2Dx.core.controller.button.ControllerButton;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
@@ -68,6 +69,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	private final UiContainerRenderTree renderTree;
 
 	private InputSource lastInputSource;
+	private ControllerType lastControllerType = ControllerType.UNKNOWN;
 	private int width, height;
 	private int lastMouseX, lastMouseY;
 	private float scaleX = 1f;
@@ -714,6 +716,33 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		this.lastInputSource = lastInputSource;
 		notifyInputSourceChange(oldInputSource, lastInputSource);
 	}
+	
+	/**
+	 * Returns the last {@link ControllerType} used on the {@link UiContainer}
+	 * 
+	 * @return
+	 */
+	public ControllerType getLastControllerType() {
+		return lastControllerType;
+	}
+	
+	/**
+	 * Sets the last {@link ControllerType} used on the {@link UiContainer}
+	 * 
+	 * @param lastControllerType
+	 *            The {@link ControllerType} last used
+	 */
+	public void setLastControllerType(ControllerType lastControllerType) {
+		if(lastControllerType == null) {
+			return;
+		}
+		if (this.lastControllerType.equals(lastControllerType)) {
+			return;
+		}
+		ControllerType oldControllerType = this.lastControllerType;
+		this.lastControllerType = lastControllerType;
+		notifyControllerTypeChange(oldControllerType, lastControllerType);
+	}
 
 	/**
 	 * Adds a {@link ControllerUiInput} instance to this {@link UiContainer}
@@ -831,6 +860,12 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	private void notifyInputSourceChange(InputSource oldSource, InputSource newSource) {
 		for(int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).inputSourceChanged(this, oldSource, newSource);
+		}
+	}
+	
+	private void notifyControllerTypeChange(ControllerType oldControllerType, ControllerType newControllerType) {
+		for(int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).controllerTypeChanged(this, oldControllerType, newControllerType);
 		}
 	}
 

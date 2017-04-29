@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.mini2Dx.core.controller.ControllerType;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.element.UiElement;
@@ -35,6 +36,7 @@ public class LayoutRuleset {
 
 	protected final Map<ScreenSize, SizeRule> sizeRules = new HashMap<ScreenSize, SizeRule>();
 	protected final Set<InputSource> hiddenByInput = new HashSet<InputSource>();
+	protected final Set<ControllerType> hiddenByControllerType = new HashSet<ControllerType>();
 	protected final Map<ScreenSize, OffsetRule> offsetRules = new HashMap<ScreenSize, OffsetRule>();
 
 	private final String rules;
@@ -62,7 +64,7 @@ public class LayoutRuleset {
 				storeWidthRule(ruleDetails);
 				break;
 			case 3:
-				// e.g. xs-offset-12
+				// e.g. xs-offset-12, hidden-controller-ps4
 				storeOffsetRule(ruleDetails);
 				break;
 			}
@@ -73,7 +75,7 @@ public class LayoutRuleset {
 	private void storeWidthRule(String[] ruleDetails) {
 		switch (ruleDetails[0].toLowerCase()) {
 		case "hidden": {
-			switch (InputSource.fromString(ruleDetails[1])) {
+			switch (InputSource.fromFriendlyString(ruleDetails[1])) {
 			case CONTROLLER:
 				hiddenByInput.add(InputSource.CONTROLLER);
 				break;
@@ -102,15 +104,35 @@ public class LayoutRuleset {
 	}
 
 	private void storeOffsetRule(String[] ruleDetails) {
-		ScreenSize screenSize = ScreenSize.fromString(ruleDetails[0]);
-		if (ruleDetails[2].endsWith(PIXEL_SUFFIX)) {
-			offsetRules.put(screenSize,
-					new AbsoluteOffsetRule(Integer.parseInt(ruleDetails[2].replace(PIXEL_SUFFIX, EMPTY_STRING))));
-		} else if (ruleDetails[2].endsWith(COLUMN_SUFFIX)) {
-			offsetRules.put(screenSize,
-					new ResponsiveOffsetRule(Integer.parseInt(ruleDetails[2].replace(COLUMN_SUFFIX, EMPTY_STRING))));
-		} else {
-			throw new MdxException("Invalid offset - must end with c (columns) or px (pixels");
+		switch (ruleDetails[0].toLowerCase()) {
+		case "hidden": {
+			switch (InputSource.fromFriendlyString(ruleDetails[1])) {
+			case CONTROLLER:
+				ControllerType controllerType = ControllerType.fromFriendlyString(ruleDetails[2]);
+				switch(controllerType) {
+				case UNKNOWN:
+					break;
+				default:
+					hiddenByControllerType.add(controllerType);
+					break;
+				}
+				break;
+			default:
+				throw new MdxException("Invalid rule " + ruleDetails[0] + "-" + ruleDetails[1] + "-" + ruleDetails[2]);
+			}
+		}
+		default: {
+			ScreenSize screenSize = ScreenSize.fromString(ruleDetails[0]);
+			if (ruleDetails[2].endsWith(PIXEL_SUFFIX)) {
+				offsetRules.put(screenSize,
+						new AbsoluteOffsetRule(Integer.parseInt(ruleDetails[2].replace(PIXEL_SUFFIX, EMPTY_STRING))));
+			} else if (ruleDetails[2].endsWith(COLUMN_SUFFIX)) {
+				offsetRules.put(screenSize,
+						new ResponsiveOffsetRule(Integer.parseInt(ruleDetails[2].replace(COLUMN_SUFFIX, EMPTY_STRING))));
+			} else {
+				throw new MdxException("Invalid offset - must end with c (columns) or px (pixels");
+			}
+		}
 		}
 	}
 
@@ -136,8 +158,24 @@ public class LayoutRuleset {
 		}
 	}
 
-	public boolean isHiddenByInputSource(InputSource lastInputSource) {
-		hiddenByInputSource = hiddenByInput.contains(lastInputSource);
+	public boolean isHiddenByInputSource(LayoutState layoutState) {
+		switch(layoutState.getLastInputSource()) {
+		case CONTROLLER:
+			if(hiddenByControllerType.isEmpty()) {
+				hiddenByInputSource = hiddenByInput.contains(layoutState.getLastInputSource());
+			} else {
+				hiddenByInputSource = hiddenByControllerType.contains(layoutState.getLastControllerType());
+			}
+			break;
+		case KEYBOARD_MOUSE:
+			hiddenByInputSource = hiddenByInput.contains(layoutState.getLastInputSource());
+			break;
+		case TOUCHSCREEN:
+			hiddenByInputSource = hiddenByInput.contains(layoutState.getLastInputSource());
+			break;
+		default:
+			break;
+		}
 		return hiddenByInputSource;
 	}
 

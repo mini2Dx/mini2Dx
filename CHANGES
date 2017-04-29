@@ -9,6 +9,7 @@ To change it back set config.targetTimestep to 0.1f
 - Added ScrollBox#setMinHeight to override the style's minimum height
 - Added UiElement#defer to defer method calls until the next frame
 - Added PerformanceTracker for debugging performance issues
+- UI elements can now be hidden based on controller type (hidden-controller-xbox360, etc.)
 - Changed default target timestep to 60FPS
 - ActionListeners now receive event details via ActionEvent instance
 - Graphics#drawRect now uses LibGDX ShapeRenderer
@@ -17,6 +18,7 @@ To change it back set config.targetTimestep to 0.1f
 - Fixed Graphics tint value not being set on startup
 - Fixed UiContainerRenderTree always set to dirty
 - Fixed RepeatableNinePatch not repeating correctly when using TextureRegion
+- Fixed UI button up/down controller events triggering when controller is disabled
 
 [1.4.9]
 - Fix @PostDeserialize not being invoked for nested objects

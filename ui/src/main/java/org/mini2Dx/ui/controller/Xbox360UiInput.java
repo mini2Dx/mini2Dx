@@ -13,6 +13,7 @@ package org.mini2Dx.ui.controller;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mini2Dx.core.controller.ControllerType;
 import org.mini2Dx.core.controller.Xbox360Controller;
 import org.mini2Dx.core.controller.button.Xbox360Button;
 import org.mini2Dx.core.controller.xbox360.Xbox360ControllerAdapter;
@@ -44,6 +45,7 @@ public class Xbox360UiInput extends Xbox360ControllerAdapter implements Controll
 	private boolean left, right, up, down;
 
 	public Xbox360UiInput(UiContainer uiContainer) {
+		super();
 		this.id = ID_PREFIX + ID_GENERATOR.incrementAndGet();
 		
 		this.uiContainer = uiContainer;
@@ -123,6 +125,7 @@ public class Xbox360UiInput extends Xbox360ControllerAdapter implements Controll
 		}
 		if(enabled) {
 			uiContainer.setLastInputSource(InputSource.CONTROLLER);
+			uiContainer.setLastControllerType(ControllerType.XBOX_360);
 			return true;
 		}
 		return false;
@@ -142,6 +145,7 @@ public class Xbox360UiInput extends Xbox360ControllerAdapter implements Controll
 		}
 		if(enabled) {
 			uiContainer.setLastInputSource(InputSource.CONTROLLER);
+			uiContainer.setLastControllerType(ControllerType.XBOX_360);
 			return true;
 		}
 		return false;
@@ -149,24 +153,24 @@ public class Xbox360UiInput extends Xbox360ControllerAdapter implements Controll
 	
 	@Override
 	public boolean buttonDown(Xbox360Controller controller, Xbox360Button button) {
-		uiContainer.buttonDown(this, button);
-		
-		if(enabled) {
-			uiContainer.setLastInputSource(InputSource.CONTROLLER);
-			return true;
+		if(!enabled) {
+			return false;
 		}
-		return false;
+		uiContainer.buttonDown(this, button);
+		uiContainer.setLastInputSource(InputSource.CONTROLLER);
+		uiContainer.setLastControllerType(ControllerType.XBOX_360);
+		return true;
 	}
 	
 	@Override
 	public boolean buttonUp(Xbox360Controller controller, Xbox360Button button) {
-		uiContainer.buttonUp(this, button);
-		
-		if(enabled) {
-			uiContainer.setLastInputSource(InputSource.CONTROLLER);
-			return true;
+		if(!enabled) {
+			return false;
 		}
-		return false;
+		uiContainer.buttonUp(this, button);
+		uiContainer.setLastInputSource(InputSource.CONTROLLER);
+		uiContainer.setLastControllerType(ControllerType.XBOX_360);
+		return true;
 	}
 
 	@Override

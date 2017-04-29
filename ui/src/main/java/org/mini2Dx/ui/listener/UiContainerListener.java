@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ui.listener;
 
+import org.mini2Dx.core.controller.ControllerType;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.UiContainer;
@@ -69,6 +70,14 @@ public interface UiContainerListener extends ScreenSizeListener {
 	 * @param newInputSource The new {@link InputSource}
 	 */
 	public void inputSourceChanged(UiContainer container, InputSource oldInputSource, InputSource newInputSource);
+	
+	/**
+	 * Called when the {@link ControllerType} changes
+	 * @param container The {@link UiContainer} that the {@link ControllerType} changed on
+	 * @param oldControllerType The previous {@link ControllerType}
+	 * @param newControllerType The new {@link ControllerType}
+	 */
+	public void controllerTypeChanged(UiContainer container, ControllerType oldControllerType, ControllerType newControllerType);
 	
 	/**
 	 * Called when a {@link UiElement} becomes active from user input (e.g. click events, etc.)

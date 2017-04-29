@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ui.listener;
 
+import org.mini2Dx.core.controller.ControllerType;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.UiContainer;
@@ -53,6 +54,11 @@ public class UiContainerListenerAdapter implements UiContainerListener {
 
 	@Override
 	public void inputSourceChanged(UiContainer container, InputSource oldInputSource, InputSource newInputSource) {
+	}
+	
+	@Override
+	public void controllerTypeChanged(UiContainer container, ControllerType oldControllerType,
+			ControllerType newControllerType) {
 	}
 
 	@Override

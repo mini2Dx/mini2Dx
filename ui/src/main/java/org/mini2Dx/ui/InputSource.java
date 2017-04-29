@@ -15,11 +15,21 @@ package org.mini2Dx.ui;
  * Represents a game's input source
  */
 public enum InputSource {
-	KEYBOARD_MOUSE,
-	TOUCHSCREEN,
-	CONTROLLER;
+	KEYBOARD_MOUSE("keyboardmouse"),
+	TOUCHSCREEN("touchscreen"),
+	CONTROLLER("controller");
 	
-	public static InputSource fromString(String value) {
+	private final String friendlyString;
+	
+	private InputSource(String friendlyString) {
+		this.friendlyString = friendlyString;
+	}
+	
+	public String toFriendlyString() {
+		return friendlyString;
+	}
+	
+	public static InputSource fromFriendlyString(String value) {
 		switch(value.toLowerCase()) {
 		case "touchscreen":
 			return InputSource.TOUCHSCREEN;
