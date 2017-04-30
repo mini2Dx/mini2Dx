@@ -9,6 +9,7 @@ To change it back set config.targetTimestep to 0.1f
 - Added ScrollBox#setMinHeight to override the style's minimum height
 - Added UiElement#defer to defer method calls until the next frame
 - Added PerformanceTracker for debugging performance issues
+- Added methods to TiledCollisionMapper to map non-collision areas
 - UI elements can now be hidden based on controller type (hidden-controller-xbox360, etc.)
 - Changed default target timestep to 60FPS
 - ActionListeners now receive event details via ActionEvent instance

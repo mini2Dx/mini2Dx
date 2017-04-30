@@ -100,7 +100,7 @@ public class TiledCollisionMapperTest {
 		Assert.assertEquals(16f, collisions.get(0).getWidth());
 		Assert.assertEquals(24f, collisions.get(0).getHeight());
 	}
-	
+
 	@Test
 	public void testMapCollisionsByObjectGroupAndType() {
 		QuadTree<CollisionBox> quadTree = new PointQuadTree<CollisionBox>(8, 0f, 0f,
@@ -171,6 +171,26 @@ public class TiledCollisionMapperTest {
 				new byte[] { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 }, new byte[] { 0, 0, 0, 0, 0, 1, 1, 0, 0, 0 },
 				new byte[] { 0, 1, 1, 0, 0, 0, 0, 0, 0, 0 }, new byte[] { 0, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
 				new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+
+		for (int x = 0; x < tiledMap.getWidth(); x++) {
+			for (int y = 0; y < tiledMap.getHeight(); y++) {
+				if (expected[y][x] != result[x][y]) {
+					Assert.fail(x + "," + y + " expected: " + expected[x][y] + ", actual: " + result[x][y]);
+				}
+			}
+		}
+	}
+
+	@Test
+	public void testMapEmptySpacesByLayerIndexToByteArray() {
+		int collisionLayerIndex = tiledMap.getLayerIndex("Collisions");
+		byte[][] result = TiledCollisionMapper.mapEmptySpacesByLayer(tiledMap, collisionLayerIndex);
+
+		byte[][] expected = new byte[][] { new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+				new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+				new byte[] { 1, 1, 1, 1, 1, 1, 0, 1, 1, 1 }, new byte[] { 1, 1, 1, 1, 1, 0, 0, 1, 1, 1 },
+				new byte[] { 1, 0, 0, 1, 1, 1, 1, 1, 1, 1 }, new byte[] { 1, 0, 0, 1, 1, 1, 1, 1, 1, 1 },
+				new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } };
 
 		for (int x = 0; x < tiledMap.getWidth(); x++) {
 			for (int y = 0; y < tiledMap.getHeight(); y++) {

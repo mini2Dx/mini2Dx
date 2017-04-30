@@ -20,6 +20,7 @@ import org.mini2Dx.tiled.TileLayer;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.TiledObject;
 import org.mini2Dx.tiled.TiledObjectGroup;
+import org.mini2Dx.tiled.collisions.merger.TileIdCollisionMerger;
 
 /**
  * Utility class for converting {@link TiledMap} data into collision data.
@@ -30,14 +31,14 @@ public class TiledCollisionMapper<T extends Positionable> {
 
 	/**
 	 * Creates a {@link TiledCollisionMapper} with a
-	 * {@link DefaultTiledCollisionMerger} instance for merge operations
+	 * {@link TileIdCollisionMerger} instance for merge operations
 	 * 
 	 * @param collisionFactory
 	 *            An implementation of {@link TiledCollisionFactory} for
 	 *            creating collision instances
 	 */
 	public TiledCollisionMapper(TiledCollisionFactory<T> collisionFactory) {
-		this(collisionFactory, new DefaultTiledCollisionMerger());
+		this(collisionFactory, new TileIdCollisionMerger());
 	}
 
 	/**
@@ -101,6 +102,50 @@ public class TiledCollisionMapper<T extends Positionable> {
 	}
 
 	/**
+	 * Creates a 2D byte array representing the empty spaces (non-collisions) in
+	 * a {@link TiledMap} layer
+	 * 
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract empty spaces from
+	 * @param layerName
+	 *            The name of the layer to extract empty spaces from. Each tile
+	 *            drawn in the layer is treated as a collision.
+	 * @return A 2D byte array with the same width and height as the layer.
+	 *         [x][y] will be set to 1 if there is no collision.
+	 */
+	public static byte[][] mapEmptySpacesByLayer(TiledMap tiledMap, String layerName) {
+		return mapEmptySpacesByLayer(tiledMap, tiledMap.getLayerIndex(layerName));
+	}
+
+	/**
+	 * Creates a 2D byte array representing the empty spaces (non-collisions) in
+	 * a {@link TiledMap} layer
+	 * 
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract empty spaces from
+	 * @param layerIndex
+	 *            The index of the layer to extract empty spaces from. Each tile
+	 *            drawn in the layer is treated as a collision.
+	 * @return A 2D byte array with the same width and height as the layer.
+	 *         [x][y] will be set to 1 if there is no collision.
+	 */
+	public static byte[][] mapEmptySpacesByLayer(TiledMap tiledMap, int layerIndex) {
+		return mapEmptySpacesByLayer(tiledMap, tiledMap.getTileLayer(layerIndex));
+	}
+
+	private static byte[][] mapEmptySpacesByLayer(TiledMap tiledMap, TileLayer layer) {
+		byte[][] result = new byte[layer.getWidth()][layer.getHeight()];
+		for (int x = 0; x < layer.getWidth(); x++) {
+			for (int y = 0; y < layer.getHeight(); y++) {
+				if (layer.getTileId(x, y) == 0) {
+					result[x][y] = 1;
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
 	 * Extracts collisions in a {@link TiledMap} layer and adds them to a
 	 * {@link QuadTree} instance
 	 * 
@@ -120,6 +165,34 @@ public class TiledCollisionMapper<T extends Positionable> {
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = 0; y < layer.getHeight(); y++) {
 				if (layer.getTileId(x, y) > 0) {
+					quadTree.add(collisionFactory.createCollision(tiledMap.getTile(layer.getTileId(x, y)),
+							x * tiledMap.getTileWidth(), y * tiledMap.getTileHeight(), tiledMap.getTileWidth(),
+							tiledMap.getTileHeight()));
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Extracts empty spaces in a {@link TiledMap} layer and adds them to a
+	 * {@link QuadTree} instance
+	 * 
+	 * @param quadTree
+	 *            The {@link QuadTree} instance to add empty spaces to
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract empty spaces from
+	 * @param layerIndex
+	 *            The index of the layer to extract empty spaces from. Each tile
+	 *            drawn in the layer is treated as a collision.
+	 */
+	public void mapEmptySpacesByLayer(QuadTree<T> quadTree, TiledMap tiledMap, int layerIndex) {
+		if (layerIndex < 0) {
+			return;
+		}
+		TileLayer layer = tiledMap.getTileLayer(layerIndex);
+		for (int x = 0; x < layer.getWidth(); x++) {
+			for (int y = 0; y < layer.getHeight(); y++) {
+				if (layer.getTileId(x, y) == 0) {
 					quadTree.add(collisionFactory.createCollision(tiledMap.getTile(layer.getTileId(x, y)),
 							x * tiledMap.getTileWidth(), y * tiledMap.getTileHeight(), tiledMap.getTileWidth(),
 							tiledMap.getTileHeight()));
@@ -148,6 +221,34 @@ public class TiledCollisionMapper<T extends Positionable> {
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = 0; y < layer.getHeight(); y++) {
 				if (layer.getTileId(x, y) > 0) {
+					results.add(collisionFactory.createCollision(tiledMap.getTile(layer.getTileId(x, y)),
+							x * tiledMap.getTileWidth(), y * tiledMap.getTileHeight(), tiledMap.getTileWidth(),
+							tiledMap.getTileHeight()));
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Extracts empty spaces in a {@link TiledMap} layer and adds them to a
+	 * {@link List} instance
+	 * 
+	 * @param results
+	 *            The {@link List} instance to add empty spaces to
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract empty spaces from
+	 * @param layerIndex
+	 *            The index of the layer to extract empty spaces from. Each tile
+	 *            drawn in the layer is treated as a collision.
+	 */
+	public void mapEmptySpacesByLayer(List<T> results, TiledMap tiledMap, int layerIndex) {
+		if (layerIndex < 0) {
+			return;
+		}
+		TileLayer layer = tiledMap.getTileLayer(layerIndex);
+		for (int x = 0; x < layer.getWidth(); x++) {
+			for (int y = 0; y < layer.getHeight(); y++) {
+				if (layer.getTileId(x, y) == 0) {
 					results.add(collisionFactory.createCollision(tiledMap.getTile(layer.getTileId(x, y)),
 							x * tiledMap.getTileWidth(), y * tiledMap.getTileHeight(), tiledMap.getTileWidth(),
 							tiledMap.getTileHeight()));
@@ -186,6 +287,38 @@ public class TiledCollisionMapper<T extends Positionable> {
 	 */
 	public void mapCollisionsByLayer(List<T> results, TiledMap tiledMap, String layerName) {
 		mapCollisionsByLayer(results, tiledMap, tiledMap.getLayerIndex(layerName));
+	}
+	
+	/**
+	 * Extracts empty spaces in a {@link TiledMap} layer and adds them to a
+	 * {@link QuadTree} instance
+	 * 
+	 * @param quadTree
+	 *            The {@link QuadTree} instance to add empty spaces to
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract empty spaces from
+	 * @param layerName
+	 *            The name of the layer to extract empty spaces from. Each tile
+	 *            drawn in the layer is treated as a collision.
+	 */
+	public void mapEmptySpacesByLayer(QuadTree<T> quadTree, TiledMap tiledMap, String layerName) {
+		mapEmptySpacesByLayer(quadTree, tiledMap, tiledMap.getLayerIndex(layerName));
+	}
+	
+	/**
+	 * Extracts empty spaces in a {@link TiledMap} layer and adds them to a
+	 * {@link List} instance
+	 * 
+	 * @param results
+	 *            The {@link List} instance to add empty spaces to
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract empty spaces from
+	 * @param layerName
+	 *            The name of the layer to extract empty spaces from. Each tile
+	 *            drawn in the layer is treated as a collision.
+	 */
+	public void mapEmptySpacesByLayer(List<T> results, TiledMap tiledMap, String layerName) {
+		mapEmptySpacesByLayer(results, tiledMap, tiledMap.getLayerIndex(layerName));
 	}
 
 	/**
@@ -348,6 +481,56 @@ public class TiledCollisionMapper<T extends Positionable> {
 			}
 		}
 	}
+	
+	/**
+	 * Extracts and merges empty spaces in a {@link TiledMap} layer and adds them
+	 * to a {@link QuadTree} instance. Tiles are determined as mergeable by the
+	 * {@link TiledCollisionMerger} instance associated with this
+	 * {@link TiledCollisionMapper}.
+	 * 
+	 * @param quadTree
+	 *            The {@link QuadTree} instance to add empty spaces to
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract empty spaces from
+	 * @param layerName
+	 *            The name of the layer to extract empty spaces from. Each tile
+	 *            drawn in the layer is treated as a collision.
+	 */
+	public void mapAndMergeEmptySpacesByLayer(QuadTree<T> quadTree, TiledMap tiledMap, String layerName) {
+		mapAndMergeEmptySpacesByLayer(quadTree, tiledMap, tiledMap.getLayerIndex(layerName));
+	}
+	
+	/**
+	 * Extracts and merges empty spaces in a {@link TiledMap} layer and adds them
+	 * to a {@link QuadTree} instance. Tiles are determined as mergeable by the
+	 * {@link TiledCollisionMerger} instance associated with this
+	 * {@link TiledCollisionMapper}.
+	 * 
+	 * @param quadTree
+	 *            The {@link QuadTree} instance to add empty spaces to
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract empty spaces from
+	 * @param layerIndex
+	 *            The index of the layer to extract empty spaces from. Each tile
+	 *            drawn in the layer is treated as a collision.
+	 */
+	public void mapAndMergeEmptySpacesByLayer(QuadTree<T> quadTree, TiledMap tiledMap, int layerIndex) {
+		if (layerIndex < 0) {
+			return;
+		}
+
+		TileLayer layer = tiledMap.getTileLayer(layerIndex);
+		byte[][] emptySpaces = mapEmptySpacesByLayer(tiledMap, layer);
+
+		for (int x = 0; x < layer.getWidth(); x++) {
+			for (int y = 0; y < layer.getHeight(); y++) {
+				if (emptySpaces[x][y] == 0) {
+					continue;
+				}
+				quadTree.add(mergeCollisions(x, y, emptySpaces, layer, tiledMap));
+			}
+		}
+	}
 
 	/**
 	 * Extracts and merges collisions in a {@link TiledMap} layer and adds them
@@ -395,6 +578,56 @@ public class TiledCollisionMapper<T extends Positionable> {
 					continue;
 				}
 				results.add(mergeCollisions(x, y, collisions, layer, tiledMap));
+			}
+		}
+	}
+	
+	/**
+	 * Extracts and merges empty spaces in a {@link TiledMap} layer and adds them
+	 * to a {@link List} instance. Tiles are determined as mergeable by the
+	 * {@link TiledCollisionMerger} instance associated with this
+	 * {@link TiledCollisionMapper}.
+	 * 
+	 * @param results
+	 *            The {@link List} instance to add empty spaces to
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract empty spaces from
+	 * @param layerName
+	 *            The name of the layer to extract empty spaces from. Each tile
+	 *            drawn in the layer is treated as a collision.
+	 */
+	public void mapAndMergeEmptySpacesByLayer(List<T> results, TiledMap tiledMap, String layerName) {
+		mapAndMergeEmptySpacesByLayer(results, tiledMap, tiledMap.getLayerIndex(layerName));
+	}
+	
+	/**
+	 * Extracts and merges empty spaces in a {@link TiledMap} layer and adds them
+	 * to a {@link List} instance. Tiles are determined as mergeable by the
+	 * {@link TiledCollisionMerger} instance associated with this
+	 * {@link TiledCollisionMapper}.
+	 * 
+	 * @param results
+	 *            The {@link List} instance to add empty spaces to
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract empty spaces from
+	 * @param layerIndex
+	 *            The index of the layer to extract empty spaces from. Each tile
+	 *            drawn in the layer is treated as a collision.
+	 */
+	public void mapAndMergeEmptySpacesByLayer(List<T> results, TiledMap tiledMap, int layerIndex) {
+		if (layerIndex < 0) {
+			return;
+		}
+
+		TileLayer layer = tiledMap.getTileLayer(layerIndex);
+		byte[][] emptySpaces = mapEmptySpacesByLayer(tiledMap, layer);
+
+		for (int x = 0; x < layer.getWidth(); x++) {
+			for (int y = 0; y < layer.getHeight(); y++) {
+				if (emptySpaces[x][y] == 0) {
+					continue;
+				}
+				results.add(mergeCollisions(x, y, emptySpaces, layer, tiledMap));
 			}
 		}
 	}
