@@ -29,7 +29,7 @@
                     {% assign latest_release = site.data.releases[0] %}
                     <li><a href="javadoc/{{ latest_release.version }}/"> {{ latest_release.version }} (latest)</a></li>
 
-                    {% for release in site.data.releases limit:half_total_releases %}
+                    {% for release in site.data.releases limit:half_total_releases offset: 1 %}
                     <li><a href="javadoc/{{ release.version }}/"> {{ release.version }}</a></li>
                     {% endfor %}
                 </ul>
