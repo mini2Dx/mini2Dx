@@ -16,8 +16,8 @@
 title: mini2Dx
 description: > # this means to ignore newlines until "baseurl:"
   mini2Dx is an open-source beginner-friendly, master-ready framework for rapidly prototyping and building 2D games in Java.
-baseurl: "/mini2Dx" # the subpath of your site, e.g. /blog
-url: "https://mini2dx.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://mini2dx.org" # the base hostname & protocol for your site, e.g. http://example.com
 windows_download_url: 
 mac_download_url:
 linux_download_url:
