@@ -12,10 +12,10 @@
                             <li>by {{ post.author }}</li>
                             <li><i class="fa fa-calendar"></i> {{ post.date }}</li>
                         </ul>
-                        <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
+                        <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
                         {{ post.excerpt }}
                         <p>
-                            <a href="{{ post.url }}">Read more</a>
+                            <a href="{{ post.url | relative_url }}">Read more</a>
                         </p>
                     </div>
                 </div>
