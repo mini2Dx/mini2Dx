@@ -1,5 +1,79 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://mini2dx.org/feed.xml" rel="self" type="application/atom+xml" /><link href="http://mini2dx.org/" rel="alternate" type="text/html" /><updated>2017-04-30T16:31:23+02:00</updated><id>http://mini2dx.org/</id><title type="html">mini2Dx</title><subtitle>mini2Dx is an open-source beginner-friendly, master-ready framework for rapidly prototyping and building 2D games in Java.
-</subtitle><entry><title type="html">mini2Dx 1.4.3 released</title><link href="http://mini2dx.org/2017/01/29/mini2Dx-1-4-3-released.html" rel="alternate" type="text/html" title="mini2Dx 1.4.3 released" /><published>2017-01-29T10:00:00+01:00</published><updated>2017-01-29T10:00:00+01:00</updated><id>http://mini2dx.org/2017/01/29/mini2Dx-1-4-3-released</id><content type="html" xml:base="http://mini2dx.org/2017/01/29/mini2Dx-1-4-3-released.html">&lt;p&gt;Hey there mini2Dx community,&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://mini2dx.org/feed.xml" rel="self" type="application/atom+xml" /><link href="http://mini2dx.org/" rel="alternate" type="text/html" /><updated>2017-04-30T17:08:13+02:00</updated><id>http://mini2dx.org/</id><title type="html">mini2Dx</title><subtitle>mini2Dx is an open-source beginner-friendly, master-ready framework for rapidly prototyping and building 2D games in Java.
+</subtitle><entry><title type="html">mini2Dx 1.4.9 released</title><link href="http://mini2dx.org/2017/03/05/mini2Dx-1-4-9-released.html" rel="alternate" type="text/html" title="mini2Dx 1.4.9 released" /><published>2017-03-05T10:00:00+01:00</published><updated>2017-03-05T10:00:00+01:00</updated><id>http://mini2dx.org/2017/03/05/mini2Dx-1-4-9-released</id><content type="html" xml:base="http://mini2dx.org/2017/03/05/mini2Dx-1-4-9-released.html">&lt;p&gt;Hey there mini2Dx community,&lt;/p&gt;
+
+&lt;p&gt;I’ve published mini2Dx 1.4.9 to Maven Central. This is a small update which contains a minor fix:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Fix @PostDeserialize not being invoked for nested objects&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To update your existing projects, see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;Updating mini2Dx&lt;/a&gt; wiki page.
+&lt;!--more--&gt;&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">Hey there mini2Dx community, I’ve published mini2Dx 1.4.9 to Maven Central. This is a small update which contains a minor fix: Fix @PostDeserialize not being invoked for nested objects To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry><entry><title type="html">mini2Dx 1.4.8 released</title><link href="http://mini2dx.org/2017/02/28/mini2Dx-1-4-8-released.html" rel="alternate" type="text/html" title="mini2Dx 1.4.8 released" /><published>2017-02-28T10:00:00+01:00</published><updated>2017-02-28T10:00:00+01:00</updated><id>http://mini2dx.org/2017/02/28/mini2Dx-1-4-8-released</id><content type="html" xml:base="http://mini2dx.org/2017/02/28/mini2Dx-1-4-8-released.html">&lt;p&gt;Hey there mini2Dx community,&lt;/p&gt;
+
+&lt;p&gt;I’ve published mini2Dx 1.4.8 to Maven Central. This is a small update which contains some important fixes:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Fix UiContainer not clearing active action element&lt;/li&gt;
+  &lt;li&gt;Fix Rectangle returning 0,0 as its center&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To update your existing projects, see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;Updating mini2Dx&lt;/a&gt; wiki page.
+&lt;!--more--&gt;&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">Hey there mini2Dx community, I’ve published mini2Dx 1.4.8 to Maven Central. This is a small update which contains some important fixes: Fix UiContainer not clearing active action element Fix Rectangle returning 0,0 as its center To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry><entry><title type="html">mini2Dx 1.4.7 released</title><link href="http://mini2dx.org/2017/02/26/mini2Dx-1-4-7-released.html" rel="alternate" type="text/html" title="mini2Dx 1.4.7 released" /><published>2017-02-26T10:00:00+01:00</published><updated>2017-02-26T10:00:00+01:00</updated><id>http://mini2dx.org/2017/02/26/mini2Dx-1-4-7-released</id><content type="html" xml:base="http://mini2dx.org/2017/02/26/mini2Dx-1-4-7-released.html">&lt;p&gt;Hey there mini2Dx community,&lt;/p&gt;
+
+&lt;p&gt;I’ve published mini2Dx 1.4.7 to Maven Central. This is a small update which adds some minor API improvements:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Graphics can now draw TiledDrawable instances&lt;/li&gt;
+  &lt;li&gt;Added RepeatedNinePatch which repeats instead of stretches&lt;/li&gt;
+  &lt;li&gt;UI element backgrounds can now set backgroundMode to “repeat” or “stretch”&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To update your existing projects, see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;Updating mini2Dx&lt;/a&gt; wiki page.
+&lt;!--more--&gt;&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">Hey there mini2Dx community, I’ve published mini2Dx 1.4.7 to Maven Central. This is a small update which adds some minor API improvements: Graphics can now draw TiledDrawable instances Added RepeatedNinePatch which repeats instead of stretches UI element backgrounds can now set backgroundMode to “repeat” or “stretch” To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry><entry><title type="html">mini2Dx 1.4.6 released</title><link href="http://mini2dx.org/2017/02/25/mini2Dx-1-4-6-released.html" rel="alternate" type="text/html" title="mini2Dx 1.4.6 released" /><published>2017-02-25T10:00:00+01:00</published><updated>2017-02-25T10:00:00+01:00</updated><id>http://mini2dx.org/2017/02/25/mini2Dx-1-4-6-released</id><content type="html" xml:base="http://mini2dx.org/2017/02/25/mini2Dx-1-4-6-released.html">&lt;p&gt;Hey there mini2Dx community,&lt;/p&gt;
+
+&lt;p&gt;I’ve published mini2Dx 1.4.6 to Maven Central. This is a small update which reduces memory allocations and adds some utility methods:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Reduce float array allocations in Polygon#setVertices&lt;/li&gt;
+  &lt;li&gt;Added ScreenBasedGame#getScreenManager and ScreenManager#getGameScreens&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To update your existing projects, see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;Updating mini2Dx&lt;/a&gt; wiki page.
+&lt;!--more--&gt;&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">Hey there mini2Dx community, I’ve published mini2Dx 1.4.6 to Maven Central. This is a small update which reduces memory allocations and adds some utility methods: Reduce float array allocations in Polygon#setVertices Added ScreenBasedGame#getScreenManager and ScreenManager#getGameScreens To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry><entry><title type="html">mini2Dx 1.4.5 released</title><link href="http://mini2dx.org/2017/02/12/mini2Dx-1-4-5-released.html" rel="alternate" type="text/html" title="mini2Dx 1.4.5 released" /><published>2017-02-12T10:00:00+01:00</published><updated>2017-02-12T10:00:00+01:00</updated><id>http://mini2dx.org/2017/02/12/mini2Dx-1-4-5-released</id><content type="html" xml:base="http://mini2dx.org/2017/02/12/mini2Dx-1-4-5-released.html">&lt;p&gt;Hey there mini2Dx community,&lt;/p&gt;
+
+&lt;p&gt;I’ve published mini2Dx 1.4.5 to Maven Central. This is a small update which adds some utility methods:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Added Shape#add and Shape#subtract methods for modifying position&lt;/li&gt;
+  &lt;li&gt;QuadTree implementations can now specify a minimum quad size&lt;/li&gt;
+  &lt;li&gt;Added Positionable#moveTowards for easier movement logic&lt;/li&gt;
+  &lt;li&gt;Added Positionable#getDistanceTo(x,y)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To update your existing projects, see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;Updating mini2Dx&lt;/a&gt; wiki page.
+&lt;!--more--&gt;&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">Hey there mini2Dx community, I’ve published mini2Dx 1.4.5 to Maven Central. This is a small update which adds some utility methods: Added Shape#add and Shape#subtract methods for modifying position QuadTree implementations can now specify a minimum quad size Added Positionable#moveTowards for easier movement logic Added Positionable#getDistanceTo(x,y) To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry><entry><title type="html">mini2Dx 1.4.4 released</title><link href="http://mini2dx.org/2017/02/05/mini2Dx-1-4-4-released.html" rel="alternate" type="text/html" title="mini2Dx 1.4.4 released" /><published>2017-02-05T10:00:00+01:00</published><updated>2017-02-05T10:00:00+01:00</updated><id>http://mini2dx.org/2017/02/05/mini2Dx-1-4-4-released</id><content type="html" xml:base="http://mini2dx.org/2017/02/05/mini2Dx-1-4-4-released.html">&lt;p&gt;Hey there mini2Dx community,&lt;/p&gt;
+
+&lt;p&gt;I’ve published mini2Dx 1.4.4 to Maven Central. This is a small update which adds new methods:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Added additional methods to geometry classes&lt;/li&gt;
+  &lt;li&gt;Shape#getCenterX + Shape#getCenterY&lt;/li&gt;
+  &lt;li&gt;Shape#scale&lt;/li&gt;
+  &lt;li&gt;Shape#setRadius&lt;/li&gt;
+  &lt;li&gt;Polygon#isEquilateral&lt;/li&gt;
+  &lt;li&gt;LineSegment#getLength&lt;/li&gt;
+  &lt;li&gt;Added methods to preset singletons and prototypes for dependency injection&lt;/li&gt;
+  &lt;li&gt;Added @PostInject annotation to trigger methods after dependency injection&lt;/li&gt;
+  &lt;li&gt;@Autowired dependencies now also inject into super classes&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To update your existing projects, see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;Updating mini2Dx&lt;/a&gt; wiki page.
+&lt;!--more--&gt;&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">Hey there mini2Dx community, I’ve published mini2Dx 1.4.4 to Maven Central. This is a small update which adds new methods: Added additional methods to geometry classes Shape#getCenterX + Shape#getCenterY Shape#scale Shape#setRadius Polygon#isEquilateral LineSegment#getLength Added methods to preset singletons and prototypes for dependency injection Added @PostInject annotation to trigger methods after dependency injection @Autowired dependencies now also inject into super classes To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry><entry><title type="html">Website moved to Github</title><link href="http://mini2dx.org/2017/01/29/website-moved-to-github.html" rel="alternate" type="text/html" title="Website moved to Github" /><published>2017-01-29T10:00:00+01:00</published><updated>2017-01-29T10:00:00+01:00</updated><id>http://mini2dx.org/2017/01/29/website-moved-to-github</id><content type="html" xml:base="http://mini2dx.org/2017/01/29/website-moved-to-github.html">&lt;p&gt;The website has now been moved to the &lt;em&gt;docs&lt;/em&gt; folder in the Github repository.&lt;/p&gt;
+
+&lt;p&gt;The old maven repo has now been shutdown, all previously releases have been uploaded to Maven Central. If you receive a warning about the URL not resolving during your build, just remove the mini2Dx URLs from the &lt;em&gt;repo&lt;/em&gt; section of your build.gradle.&lt;/p&gt;
+
+&lt;p&gt;Also, note that anyone using parcl will need to upgrade to 1.1.0.
+&lt;!--more--&gt;&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">The website has now been moved to the docs folder in the Github repository. The old maven repo has now been shutdown, all previously releases have been uploaded to Maven Central. If you receive a warning about the URL not resolving during your build, just remove the mini2Dx URLs from the repo section of your build.gradle. Also, note that anyone using parcl will need to upgrade to 1.1.0.</summary></entry><entry><title type="html">mini2Dx 1.4.3 released</title><link href="http://mini2dx.org/2017/01/29/mini2Dx-1-4-3-released.html" rel="alternate" type="text/html" title="mini2Dx 1.4.3 released" /><published>2017-01-29T10:00:00+01:00</published><updated>2017-01-29T10:00:00+01:00</updated><id>http://mini2dx.org/2017/01/29/mini2Dx-1-4-3-released</id><content type="html" xml:base="http://mini2dx.org/2017/01/29/mini2Dx-1-4-3-released.html">&lt;p&gt;Hey there mini2Dx community,&lt;/p&gt;
 
 &lt;p&gt;I’ve published mini2Dx 1.4.3 to Maven Central. This is a small update which prevents the UiContainer from blocking keyUp/buttonUp events if it never received the original keyDown/buttonDown down event.&lt;/p&gt;
 
@@ -14,235 +88,4 @@
 &lt;p&gt;I’ve published mini2Dx 1.4.1 to Maven Central. This is a tiny update containing only 2 small additions to the API.&lt;/p&gt;
 
 &lt;p&gt;For a full changelog see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/blob/master/CHANGES&quot;&gt;CHANGES file&lt;/a&gt; in the Github repository. To update your existing projects, see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;Updating mini2Dx&lt;/a&gt; wiki page.
-&lt;!--more--&gt;&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">Hey there mini2Dx community, I’ve published mini2Dx 1.4.1 to Maven Central. This is a tiny update containing only 2 small additions to the API. For a full changelog see the CHANGES file in the Github repository. To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry><entry><title type="html">Adaptive UI for Video Games</title><link href="http://mini2dx.org/2017/01/18/adapative-ui-for-video-games.html" rel="alternate" type="text/html" title="Adaptive UI for Video Games" /><published>2017-01-18T10:00:00+01:00</published><updated>2017-01-18T10:00:00+01:00</updated><id>http://mini2dx.org/2017/01/18/adapative-ui-for-video-games</id><content type="html" xml:base="http://mini2dx.org/2017/01/18/adapative-ui-for-video-games.html">&lt;p&gt;In recent years, websites have begun to shift their designs towards the concept of “responsive web design” to accommodate for the growing mobile market. This approach allows a single website to adapt its layout and visuals to suit the screen size that it is viewed on. The popularity of this approach has seen frameworks such as Twitter Bootstrap and Foundation become the unofficial defaults for implementing web design.
-&lt;!--more--&gt;
-To avoid confusion between input response times (also known as “responsiveness”) in video games, from here on I’ll be using the word “adaptive” to refer to this UI pattern.&lt;/p&gt;
-
-&lt;p&gt;mini2Dx 1.3.0 introduced support for adaptive user interface layout but also added an adaptive input system allowing UI navigation and input to also adapt to the device that the video game is running on. The result is that developers can implement their UI once and use it on every platform with little to no platform-specific code.&lt;/p&gt;
-
-&lt;p&gt;The following blog post explains how the framework achieves this but since mini2Dx is open-source it is also possible to dive into source code at its repository and see how it works.&lt;/p&gt;
-
-&lt;p&gt;The first goal during 1.3.0 development was to achieve adaptive rendering of the UI. Luckily, web browsers already solved this via layout engines so a similar engine was implemented in mini2Dx. To build the engine, first we need to define UI elements.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;UI Elements&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Every UI element rendered to screen consists of two parts; the visual style and the content of the element (which can be child elements). However, these two components are defined separately. In web programming, these are your CSS and HTML files.&lt;/p&gt;
-
-&lt;p&gt;First, we define the style rules. Every element - when rendered - follows the standard web box model consisting of background (defaulting to no background), margin (defaulting to 0), padding (defaulting to 0), border (defaulting to 0) and content (defaulting to no content). The relation of these properties can be seen in the following diagram. Backgrounds are rendered inside the border.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/boxmodel.png&quot; alt=&quot;alt text&quot; title=&quot;Box Model&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Next we’ll define the content model. In mini2Dx, all UI elements extend a common class named UiElement. There are 5 base elements - Labels, Images, TextBoxes, Progress Bars and Select Boxes - which extend UiElement directly and have no child elements. Every other element is a child-holding element that extends a ParentUiElement class.&lt;/p&gt;
-
-&lt;p&gt;The result is a class hierarchy that looks like the following diagram.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/ClassHierarchy.png&quot; alt=&quot;alt text&quot; title=&quot;Class Hierarchy&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;To improve maintainability and to separate render logic from content structure, the framework separates the content tree from the render tree. Once again, this is similar to how browsers separate the Document Object Model (DOM) from the render tree.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Layout &amp;amp; Render&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Every UiElement is connected to a RenderNode. A RenderNode has a width, height and a position relative to its parent. To prevent unnecessary updating of the render tree and to also optimise layout updating during content changes, the render tree makes use of a dirty bit system. That is, when an element changes content, it marks its RenderNode as dirty. This in turn marks its parent, its grandparent, and all other ancestors as dirty. The benefit of this mechanism is that other leaves of the render tree will not have a layout operation unless sizing changes have an effect on other elements. Consider the following element tree, where all elements are currently clean.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/DirtyBitClean.png&quot; alt=&quot;alt text&quot; title=&quot;Dirty Bit - Clean&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Then element E is set to dirty due to a content change.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/DirtyBitE.png&quot; alt=&quot;alt text&quot; title=&quot;Dirty Bit - E Dirty&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;This in turn sets its ancestors as dirty.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/DirtyBitDirty.png&quot; alt=&quot;alt text&quot; title=&quot;Dirty Bit - Tree Dirty&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;As you can see, the elements C, D and F will not be set to dirty, reducing the number of layout operations required.&lt;/p&gt;
-
-&lt;p&gt;Let’s start with a clean state again and set A as dirty due to a styling change.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/DirtyBitA.png&quot; alt=&quot;alt text&quot; title=&quot;Dirty Bit - A Dirty&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Since the size of A affects its child elements, all child elements become dirty which results in the following tree state.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/DirtyBitAll.png&quot; alt=&quot;alt text&quot; title=&quot;Dirty Bit - Tree Dirty&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now that we can propagate changes efficiently to the render tree, we can begin working on the layout operation. Take the following pseudo-code as our starting point.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;n&quot;&gt;UiElement&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;RenderNode&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;renderNode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;ParentUiElement&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;UiElement&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;RenderNode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;UiElement&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;element&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dirty&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;relativeX&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;relativeY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;One part we haven’t discussed yet is how to handle adaptiveness. To achieve this, mini2Dx follows Bootstrap’s design and assumes all ParentUiElements will have a column size with a maximum value of 12. That is, every parent element is split into 12 columns which its children can occupy, and this is applied recursively. To achieve adaptiveness of the UI, mini2Dx allows multiple parentWidth values to be applied to the element and a different one is used depending on the device. It also assumes a size of 0 means that the element is hidden.&lt;/p&gt;
-
-&lt;p&gt;For simplicity of explaining the layout operation, we’ll only add a single field for this to the ParentUiElement.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;n&quot;&gt;ParentUiElement&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;UiElement&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;columnSize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We also need to keep track of width as we layout the tree, so we’ll add a LayoutState class for this.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;n&quot;&gt;LayoutState&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parentWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we’re ready to implement the layout logic in the RenderNode. This is a recursive function, so I’m going to add the logic as pseudo-code below.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;RenderNode&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;nx&quot;&gt;UiElement&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;element&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;kr&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;dirty&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;kr&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;relativeX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;relativeY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;kr&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	
-	&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;LayoutState&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;dirty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;determineStyleRules&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;determinePreferredContentWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-		
-		&lt;span class=&quot;kr&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;parentWidth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getParentWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setParentWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getPreferredContentWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
-		
-		&lt;span class=&quot;kr&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;startX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;UiElement&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;child&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;children&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;nx&quot;&gt;child&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-			&lt;span class=&quot;nx&quot;&gt;child&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setRelativePositionToParent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;startX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-			&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;child&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-		
-		&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setParentWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parentWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;determinePreferredContentHeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;dirty&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	
-	&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;determinePreferredContentWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;LayoutState&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;element&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;UiParentElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getParentWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;columnSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getContentWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;determinePreferredContentHeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;kr&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;maxHeight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;UiElement&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;child&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;children&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;child&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;relativeY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;child&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;maxHeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-				&lt;span class=&quot;nx&quot;&gt;maxHeight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;child&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;relativeY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;child&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-			&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;maxHeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	
-	&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setRelativePositionToParent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;parentWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;c1&quot;&gt;//Compute position relative to other elements at same level in tree - wrapping if necessary&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;relativeX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;parentWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;relativeY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;parentWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Starting from the root element, we pass the LayoutState into the tree with its parentWidth value set to the width of the screen. From there we proceed recursively through the tree calculating the size and position of each child element. When the layout operation is complete the render tree is ready for rendering. This is easily implemented since we have the relative positions of each element to their parent element. In mini2Dx, the game window acts as the root parent element.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ParentUiElement&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;nx&quot;&gt;renderX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;relativeX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;nx&quot;&gt;renderY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;relativeY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;element&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;UiParentElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;UiElement&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;child&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;children&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;nx&quot;&gt;child&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;c1&quot;&gt;//Render content at renderX, renderY&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;	
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;This logic can then be extended to add background rendering, padding, margins, etc. from the style rules.&lt;/p&gt;
-
-&lt;p&gt;Now that we’ve designed a layout engine that supports Adaptive UI, our next goal is to handle adaptive UI navigation and input handling.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Adaptive Input&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;mini2Dx’s adaptive input mechanism assumes 3 possible input methods; Keyboard/Mouse, Touchscreen and Gamepad. For keyboard and gamepads, it also supports mapping elements as hotkeys.&lt;/p&gt;
-
-&lt;p&gt;First each input element (Button, TextBox, etc.) must store their action state:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Normal - default state&lt;/li&gt;
-  &lt;li&gt;Highlighted - mouse is hovering or is the currently highlighted item via gamepad navigation&lt;/li&gt;
-  &lt;li&gt;Active - clicked / touched / gamepad action button&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;From here we can implement a Navigation interface with multiple implementations. The following pseudo-code is similar to the mini2Dx interface:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;n&quot;&gt;Navigation&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setHotKey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;keycode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;UiElement&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;element&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-
-	&lt;span class=&quot;c1&quot;&gt;//Sets navigation - where 0 is the first element&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setNavigation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;UiElement&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;element&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-
-	&lt;span class=&quot;c1&quot;&gt;//If returns null, call navigate&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;RenderNode&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hotkey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;keycode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-
-	&lt;span class=&quot;n&quot;&gt;RenderNode&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;navigate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;keycode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;For gamepads, you can map the axis and buttons to keyboard buttons, or, implement explicit functions for these. However, the important part (depending on your implementation) is to return the currently highlighted render node when keys are pressed, so that you can trigger the Active state when subsequent keys are pressed.&lt;/p&gt;
-
-&lt;p&gt;From here your Navigation interface can be implemented and also be adaptive based on the UI layout as horizontal elements can wrap to new rows. For example, grid-based navigation works adaptively as follows:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/gridlayout.png&quot; alt=&quot;alt text&quot; title=&quot;Grid Layout&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Conclusion&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;While nothing here is groundbreaking, I feel the combination of these ideas into a single UI framework can significantly reduce cross-platform development time for developers and free them to focus more on other aspects of their game.&lt;/p&gt;
-
-&lt;p&gt;If you’d like to learn more about mini2Dx’s implementation, the documentation can be found on the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki&quot;&gt;mini2Dx wiki&lt;/a&gt;. If you have any questions I can be reached at &lt;a href=&quot;https://twitter.com/tom_cashman&quot;&gt;@tom_cashman&lt;/a&gt;.&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">In recent years, websites have begun to shift their designs towards the concept of “responsive web design” to accommodate for the growing mobile market. This approach allows a single website to adapt its layout and visuals to suit the screen size that it is viewed on. The popularity of this approach has seen frameworks such as Twitter Bootstrap and Foundation become the unofficial defaults for implementing web design.</summary></entry><entry><title type="html">mini2Dx 1.4.0 released</title><link href="http://mini2dx.org/2017/01/16/mini2Dx-1-4-0-released.html" rel="alternate" type="text/html" title="mini2Dx 1.4.0 released" /><published>2017-01-16T10:00:00+01:00</published><updated>2017-01-16T10:00:00+01:00</updated><id>http://mini2dx.org/2017/01/16/mini2Dx-1-4-0-released</id><content type="html" xml:base="http://mini2dx.org/2017/01/16/mini2Dx-1-4-0-released.html">&lt;p&gt;Hey there mini2Dx community,&lt;/p&gt;
-
-&lt;p&gt;I’ve published mini2Dx 1.4.0 to Maven Central. This release mainly focuses on performance improvements to the geometry classes and some API improvements to the UI framework. Note that this release of the UI framework has some breaking changes, the documentation in the wiki has been updated to match this version.
-&lt;!--more--&gt;&lt;/p&gt;
-
-&lt;p&gt;For a full changelog see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/blob/master/CHANGES&quot;&gt;CHANGES file&lt;/a&gt; in the Github repository. To update your existing projects, see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;Updating mini2Dx&lt;/a&gt; wiki page.&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">Hey there mini2Dx community, I’ve published mini2Dx 1.4.0 to Maven Central. This release mainly focuses on performance improvements to the geometry classes and some API improvements to the UI framework. Note that this release of the UI framework has some breaking changes, the documentation in the wiki has been updated to match this version.</summary></entry><entry><title type="html">mini2Dx 1.3.1 released</title><link href="http://mini2dx.org/2016/11/26/mini2Dx-1-3-1-released.html" rel="alternate" type="text/html" title="mini2Dx 1.3.1 released" /><published>2016-11-26T10:00:00+01:00</published><updated>2016-11-26T10:00:00+01:00</updated><id>http://mini2dx.org/2016/11/26/mini2Dx-1-3-1-released</id><content type="html" xml:base="http://mini2dx.org/2016/11/26/mini2Dx-1-3-1-released.html">&lt;p&gt;Hey there mini2Dx community,&lt;/p&gt;
-
-&lt;p&gt;I’ve published mini2Dx 1.3.1 to Maven Central. This is a small bug fix release, for a full changelog see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/blob/master/CHANGES&quot;&gt;CHANGES file&lt;/a&gt; in the Github repository. To update your existing projects, see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;Updating mini2Dx&lt;/a&gt; wiki page.&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">Hey there mini2Dx community, I’ve published mini2Dx 1.3.1 to Maven Central. This is a small bug fix release, for a full changelog see the CHANGES file in the Github repository. To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry><entry><title type="html">gradle-butler-plugin 1.1.0 released</title><link href="http://mini2dx.org/2016/11/13/gradle-butler-plugin-1-1-0.html" rel="alternate" type="text/html" title="gradle-butler-plugin 1.1.0 released" /><published>2016-11-13T10:00:00+01:00</published><updated>2016-11-13T10:00:00+01:00</updated><id>http://mini2dx.org/2016/11/13/gradle-butler-plugin-1-1-0</id><content type="html" xml:base="http://mini2dx.org/2016/11/13/gradle-butler-plugin-1-1-0.html">&lt;p&gt;I’ve pushed a new release of the gradle-butler-plugin. This adds two of the most requested features; configuration allows you to specify a custom release channel and support for OS-independent (e.g. HTML5) game releases :) See the full list of changes below:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Channels can now be specified for each OS&lt;/li&gt;
-  &lt;li&gt;Added ‘AnyOs’ option for builds that can be built and run on any OS, e.g. HTML5 games&lt;/li&gt;
-  &lt;li&gt;Fixed butler binary not being set as executable on some OSs&lt;/li&gt;
-  &lt;li&gt;Update to gradle-download-task 3.1.2
- &lt;!--more--&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">I’ve pushed a new release of the gradle-butler-plugin. This adds two of the most requested features; configuration allows you to specify a custom release channel and support for OS-independent (e.g. HTML5) game releases :) See the full list of changes below: Channels can now be specified for each OS Added ‘AnyOs’ option for builds that can be built and run on any OS, e.g. HTML5 games Fixed butler binary not being set as executable on some OSs Update to gradle-download-task 3.1.2</summary></entry><entry><title type="html">mini2Dx 1.3.0 released</title><link href="http://mini2dx.org/2016/11/06/mini2Dx-1-3-0-released.html" rel="alternate" type="text/html" title="mini2Dx 1.3.0 released" /><published>2016-11-06T10:00:00+01:00</published><updated>2016-11-06T10:00:00+01:00</updated><id>http://mini2dx.org/2016/11/06/mini2Dx-1-3-0-released</id><content type="html" xml:base="http://mini2dx.org/2016/11/06/mini2Dx-1-3-0-released.html">&lt;p&gt;You may have noticed that the tag was created a while ago in the repository but now is the official announcement :) mini2Dx 1.3.0 is now available in Maven Central and comes with a tonne of new features. You can generate a new project using the &lt;a href=&quot;https://mini2dx.org/downloads.html&quot;&gt;mini2Dx Project Generator&lt;/a&gt; or &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;update your existing project&lt;/a&gt;. All changes in this release are &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/blob/master/CHANGES&quot;&gt;listed in the repository&lt;/a&gt; but here are some of the highlights.
-&lt;!--more--&gt;
-&lt;strong&gt;Responsive UI framework&lt;/strong&gt;
-You may be familiar with the idea of “Responsive Websites” that change their layout based on what device they’re viewed on (i.e. desktop or mobile). mini2Dx has taken this idea further by implementing a UI framework that not only changes the visual layout of the UI based on the device but also automatically adapts UI navigation based on the device and input method. This allows you to implement a single UI that is truly cross-platform. Check out &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/UI-Introduction&quot;&gt;the wiki pages&lt;/a&gt; for more information.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Improved compatibility with Slick2D API&lt;/strong&gt;
-Several methods and features that are available in Slick2D were missing from the framework. These have now been added in 1.3.0 which should allow people to migrate to mini2Dx a lot easier. There is still one method missing in the Graphics class that allows for drawing of textures to a specified shape that I will add in the next major release (see &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/issues/59&quot;&gt;issue #59&lt;/a&gt;).&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Improved controller support&lt;/strong&gt;
-The API now supports controller-specific input handling allowing you to change input based on the gamepad used. Currently only Xbox 360 and Xbox One mappings are provided but PS3 and PS4 mappings will be added soon. The controller API also hooks into the UI framework to allow UI navigation via controllers. The API also supports several deadzone handling implementations. Check out &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Input-Handling&quot;&gt;the wiki page&lt;/a&gt; for more information.&lt;/p&gt;
-
-&lt;p&gt;This release took 1 year to implement because I’m still doing gamedev in my spare time. The majority of this time was spent implementing the API for the UI framework. I’m hoping to make time between releases a lot shorter going forward now that this is finished. As always, if you want to help contribute to the framework you can fork the repository on Github and send pull requests. If there are any issues or features you would like to see then please create an issue in the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/issues&quot;&gt;Issue Tracker&lt;/a&gt;.&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">You may have noticed that the tag was created a while ago in the repository but now is the official announcement :) mini2Dx 1.3.0 is now available in Maven Central and comes with a tonne of new features. You can generate a new project using the mini2Dx Project Generator or update your existing project. All changes in this release are listed in the repository but here are some of the highlights.</summary></entry><entry><title type="html">mini2Dx 1.3.0 Release Candidate</title><link href="http://mini2dx.org/2016/09/16/mini2Dx-1-3-0-release-candidate.html" rel="alternate" type="text/html" title="mini2Dx 1.3.0 Release Candidate" /><published>2016-09-16T11:00:00+02:00</published><updated>2016-09-16T11:00:00+02:00</updated><id>http://mini2dx.org/2016/09/16/mini2Dx-1-3-0-release-candidate</id><content type="html" xml:base="http://mini2dx.org/2016/09/16/mini2Dx-1-3-0-release-candidate.html">&lt;p&gt;Hey there mini2Dx community,&lt;/p&gt;
-
-&lt;p&gt;I’ve released mini2Dx 1.3.0-rc2 along with a new version of the &lt;a href=&quot;https://mini2dx.org/downloads.html&quot;&gt;mini2Dx Project Generator&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;1.3.0 is the biggest release on mini2Dx yet! It’s been in development for a year now and adds a tonne of new features, bug fixes and performance improvements.&lt;!--more--&gt; For more information checkout the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/blob/master/CHANGES&quot;&gt;CHANGES&lt;/a&gt; file on the Github repository. The wiki and javadocs have also been updated for the latest release.&lt;/p&gt;
-
-&lt;p&gt;If no issues are found, I’ll tag the final 1.3.0 next week :)&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">Hey there mini2Dx community, I’ve released mini2Dx 1.3.0-rc2 along with a new version of the mini2Dx Project Generator. 1.3.0 is the biggest release on mini2Dx yet! It’s been in development for a year now and adds a tonne of new features, bug fixes and performance improvements.</summary></entry><entry><title type="html">mini2Dx over HTTPS</title><link href="http://mini2dx.org/2015/12/03/mini2Dx-over-https.html" rel="alternate" type="text/html" title="mini2Dx over HTTPS" /><published>2015-12-03T10:00:00+01:00</published><updated>2015-12-03T10:00:00+01:00</updated><id>http://mini2dx.org/2015/12/03/mini2Dx-over-https</id><content type="html" xml:base="http://mini2dx.org/2015/12/03/mini2Dx-over-https.html">&lt;p&gt;Hey there mini2Dx community,&lt;/p&gt;
-
-&lt;p&gt;Here’s some quick status updates…&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;HTTPS Update&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Thanks to Let’s Encrypt, we now provide access to mini2Dx, downloads and maven repositories over HTTPS. We’ve configured all non-HTTPS links to redirect to HTTPS but it is recommend you update your Gradle files to use HTTPS directly.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;1.3.0 Status Update&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Our next major release, 1.3.0, is coming along nicely. We’ve received dozens of bug fixes and features through pull requests. All that is remaining is feature completion of our UI framework. In the meantime, if you’d like to work off the latest beta the tags available in the maven repositories.&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">Hey there mini2Dx community, Here’s some quick status updates… HTTPS Update Thanks to Let’s Encrypt, we now provide access to mini2Dx, downloads and maven repositories over HTTPS. We’ve configured all non-HTTPS links to redirect to HTTPS but it is recommend you update your Gradle files to use HTTPS directly. 1.3.0 Status Update Our next major release, 1.3.0, is coming along nicely. We’ve received dozens of bug fixes and features through pull requests. All that is remaining is feature completion of our UI framework. In the meantime, if you’d like to work off the latest beta the tags available in the maven repositories.</summary></entry></feed>
+&lt;!--more--&gt;&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">Hey there mini2Dx community, I’ve published mini2Dx 1.4.1 to Maven Central. This is a tiny update containing only 2 small additions to the API. For a full changelog see the CHANGES file in the Github repository. To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry></feed>

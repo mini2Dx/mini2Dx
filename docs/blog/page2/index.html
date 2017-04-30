@@ -106,40 +106,29 @@
                     <div class="col-md-8 col-md-offset-2 margin20">
                         <ul class="list-inline post-detail">
                             <li>by Thomas Cashman</li>
-                            <li><i class="fa fa-calendar"></i> 2016-11-26 10:00:00 +0100</li>
+                            <li><i class="fa fa-calendar"></i> 2017-02-05 10:00:00 +0100</li>
                         </ul>
-                        <h2><a href="/2016/11/26/mini2Dx-1-3-1-released.html">mini2Dx 1.3.1 released</a></h2>
+                        <h2><a href="/2017/02/05/mini2Dx-1-4-4-released.html">mini2Dx 1.4.4 released</a></h2>
                         <p>Hey there mini2Dx community,</p>
 
-<p>I’ve published mini2Dx 1.3.1 to Maven Central. This is a small bug fix release, for a full changelog see the <a href="https://github.com/mini2Dx/mini2Dx/blob/master/CHANGES">CHANGES file</a> in the Github repository. To update your existing projects, see the <a href="https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx">Updating mini2Dx</a> wiki page.</p>
-
-                        <p>
-                            <a href="/2016/11/26/mini2Dx-1-3-1-released.html">Read more</a>
-                        </p>
-                    </div>
-                </div>
-            </div><!--blog post-->
-            
-            <div class="blog-post">
-                <div class="row">
-                    <div class="col-md-8 col-md-offset-2 margin20">
-                        <ul class="list-inline post-detail">
-                            <li>by Thomas Cashman</li>
-                            <li><i class="fa fa-calendar"></i> 2016-11-13 10:00:00 +0100</li>
-                        </ul>
-                        <h2><a href="/2016/11/13/gradle-butler-plugin-1-1-0.html">gradle-butler-plugin 1.1.0 released</a></h2>
-                        <p>I’ve pushed a new release of the gradle-butler-plugin. This adds two of the most requested features; configuration allows you to specify a custom release channel and support for OS-independent (e.g. HTML5) game releases :) See the full list of changes below:</p>
+<p>I’ve published mini2Dx 1.4.4 to Maven Central. This is a small update which adds new methods:</p>
 
 <ul>
-  <li>Channels can now be specified for each OS</li>
-  <li>Added ‘AnyOs’ option for builds that can be built and run on any OS, e.g. HTML5 games</li>
-  <li>Fixed butler binary not being set as executable on some OSs</li>
-  <li>Update to gradle-download-task 3.1.2</li>
+  <li>Added additional methods to geometry classes</li>
+  <li>Shape#getCenterX + Shape#getCenterY</li>
+  <li>Shape#scale</li>
+  <li>Shape#setRadius</li>
+  <li>Polygon#isEquilateral</li>
+  <li>LineSegment#getLength</li>
+  <li>Added methods to preset singletons and prototypes for dependency injection</li>
+  <li>Added @PostInject annotation to trigger methods after dependency injection</li>
+  <li>@Autowired dependencies now also inject into super classes</li>
 </ul>
 
+<p>To update your existing projects, see the <a href="https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx">Updating mini2Dx</a> wiki page.</p>
 
                         <p>
-                            <a href="/2016/11/13/gradle-butler-plugin-1-1-0.html">Read more</a>
+                            <a href="/2017/02/05/mini2Dx-1-4-4-released.html">Read more</a>
                         </p>
                     </div>
                 </div>
@@ -150,14 +139,17 @@
                     <div class="col-md-8 col-md-offset-2 margin20">
                         <ul class="list-inline post-detail">
                             <li>by Thomas Cashman</li>
-                            <li><i class="fa fa-calendar"></i> 2016-11-06 10:00:00 +0100</li>
+                            <li><i class="fa fa-calendar"></i> 2017-01-29 10:00:00 +0100</li>
                         </ul>
-                        <h2><a href="/2016/11/06/mini2Dx-1-3-0-released.html">mini2Dx 1.3.0 released</a></h2>
-                        <p>You may have noticed that the tag was created a while ago in the repository but now is the official announcement :) mini2Dx 1.3.0 is now available in Maven Central and comes with a tonne of new features. You can generate a new project using the <a href="https://mini2dx.org/downloads.html">mini2Dx Project Generator</a> or <a href="https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx">update your existing project</a>. All changes in this release are <a href="https://github.com/mini2Dx/mini2Dx/blob/master/CHANGES">listed in the repository</a> but here are some of the highlights.</p>
+                        <h2><a href="/2017/01/29/website-moved-to-github.html">Website moved to Github</a></h2>
+                        <p>The website has now been moved to the <em>docs</em> folder in the Github repository.</p>
 
+<p>The old maven repo has now been shutdown, all previously releases have been uploaded to Maven Central. If you receive a warning about the URL not resolving during your build, just remove the mini2Dx URLs from the <em>repo</em> section of your build.gradle.</p>
+
+<p>Also, note that anyone using parcl will need to upgrade to 1.1.0.</p>
 
                         <p>
-                            <a href="/2016/11/06/mini2Dx-1-3-0-released.html">Read more</a>
+                            <a href="/2017/01/29/website-moved-to-github.html">Read more</a>
                         </p>
                     </div>
                 </div>
@@ -168,18 +160,17 @@
                     <div class="col-md-8 col-md-offset-2 margin20">
                         <ul class="list-inline post-detail">
                             <li>by Thomas Cashman</li>
-                            <li><i class="fa fa-calendar"></i> 2016-09-16 11:00:00 +0200</li>
+                            <li><i class="fa fa-calendar"></i> 2017-01-29 10:00:00 +0100</li>
                         </ul>
-                        <h2><a href="/2016/09/16/mini2Dx-1-3-0-release-candidate.html">mini2Dx 1.3.0 Release Candidate</a></h2>
+                        <h2><a href="/2017/01/29/mini2Dx-1-4-3-released.html">mini2Dx 1.4.3 released</a></h2>
                         <p>Hey there mini2Dx community,</p>
 
-<p>I’ve released mini2Dx 1.3.0-rc2 along with a new version of the <a href="https://mini2dx.org/downloads.html">mini2Dx Project Generator</a>.</p>
+<p>I’ve published mini2Dx 1.4.3 to Maven Central. This is a small update which prevents the UiContainer from blocking keyUp/buttonUp events if it never received the original keyDown/buttonDown down event.</p>
 
-<p>1.3.0 is the biggest release on mini2Dx yet! It’s been in development for a year now and adds a tonne of new features, bug fixes and performance improvements.</p>
-
+<p>To update your existing projects, see the <a href="https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx">Updating mini2Dx</a> wiki page.</p>
 
                         <p>
-                            <a href="/2016/09/16/mini2Dx-1-3-0-release-candidate.html">Read more</a>
+                            <a href="/2017/01/29/mini2Dx-1-4-3-released.html">Read more</a>
                         </p>
                     </div>
                 </div>
@@ -190,23 +181,38 @@
                     <div class="col-md-8 col-md-offset-2 margin20">
                         <ul class="list-inline post-detail">
                             <li>by Thomas Cashman</li>
-                            <li><i class="fa fa-calendar"></i> 2015-12-03 10:00:00 +0100</li>
+                            <li><i class="fa fa-calendar"></i> 2017-01-24 10:00:00 +0100</li>
                         </ul>
-                        <h2><a href="/2015/12/03/mini2Dx-over-https.html">mini2Dx over HTTPS</a></h2>
+                        <h2><a href="/2017/01/24/mini2Dx-1-4-2-released.html">mini2Dx 1.4.2 released</a></h2>
                         <p>Hey there mini2Dx community,</p>
 
-<p>Here’s some quick status updates…</p>
+<p>I’ve published mini2Dx 1.4.2 to Maven Central. This is a small update which adds some additional methods to the Tiled classes.</p>
 
-<p><strong>HTTPS Update</strong></p>
-
-<p>Thanks to Let’s Encrypt, we now provide access to mini2Dx, downloads and maven repositories over HTTPS. We’ve configured all non-HTTPS links to redirect to HTTPS but it is recommend you update your Gradle files to use HTTPS directly.</p>
-
-<p><strong>1.3.0 Status Update</strong></p>
-
-<p>Our next major release, 1.3.0, is coming along nicely. We’ve received dozens of bug fixes and features through pull requests. All that is remaining is feature completion of our UI framework. In the meantime, if you’d like to work off the latest beta the tags available in the maven repositories.</p>
+<p>For a full changelog see the <a href="https://github.com/mini2Dx/mini2Dx/blob/master/CHANGES">CHANGES file</a> in the Github repository. To update your existing projects, see the <a href="https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx">Updating mini2Dx</a> wiki page.</p>
 
                         <p>
-                            <a href="/2015/12/03/mini2Dx-over-https.html">Read more</a>
+                            <a href="/2017/01/24/mini2Dx-1-4-2-released.html">Read more</a>
+                        </p>
+                    </div>
+                </div>
+            </div><!--blog post-->
+            
+            <div class="blog-post">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2 margin20">
+                        <ul class="list-inline post-detail">
+                            <li>by Thomas Cashman</li>
+                            <li><i class="fa fa-calendar"></i> 2017-01-23 10:00:00 +0100</li>
+                        </ul>
+                        <h2><a href="/2017/01/23/mini2Dx-1-4-1-released.html">mini2Dx 1.4.1 released</a></h2>
+                        <p>Hey there mini2Dx community,</p>
+
+<p>I’ve published mini2Dx 1.4.1 to Maven Central. This is a tiny update containing only 2 small additions to the API.</p>
+
+<p>For a full changelog see the <a href="https://github.com/mini2Dx/mini2Dx/blob/master/CHANGES">CHANGES file</a> in the Github repository. To update your existing projects, see the <a href="https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx">Updating mini2Dx</a> wiki page.</p>
+
+                        <p>
+                            <a href="/2017/01/23/mini2Dx-1-4-1-released.html">Read more</a>
                         </p>
                     </div>
                 </div>
@@ -223,7 +229,7 @@
                         
                         <a href="/blog/" class="previous">Previous</a>
                         
-                        <span class="page_number ">Page: 2 of 4</span>
+                        <span class="page_number ">Page: 2 of 5</span>
                         
                         <a href="/blog/page3/" class="next">Next</a>
                         
@@ -297,7 +303,7 @@
                 <div class="row">
                     <div class="col-md-12 text-center">
                         <div class="footer-btm">
-                            <span>This page is &copy;2017 Thomas Cashman and was generated at 2017-04-30 16:31:23 +0200. All other trademarks, logos and copyrights are the property of their respective owners. | <a href="/sitemap.xml">sitemap</a></span>
+                            <span>This page is &copy;2017 Thomas Cashman and was generated at 2017-04-30 17:08:13 +0200. All other trademarks, logos and copyrights are the property of their respective owners. | <a href="/sitemap.xml">sitemap</a></span>
                         </div>
                     </div>
                 </div>
