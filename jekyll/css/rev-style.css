@@ -1,0 +1,198 @@
+
+/* 
+    Created on : 29 Jan, 2015, 7:06:48 AM
+    Author     : Design_mylife
+    Purpose    : Revolution slider css
+    Version    : V2.3
+*/
+
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,300,300italic,400italic,600,700,900);
+
+.fullwidthbanner{
+    width:100%;
+    position: relative;
+}
+.rev-text-center{
+    text-align: center;
+    font-size: 24px;
+    color:#fff !important;
+    font-family: 'Source Sans Pro', sans-serif !important;
+    font-weight: 300;
+   line-height: 30px;
+}
+.rev-title-v1{
+  font-family: 'Source Sans Pro', sans-serif !important;
+   font-weight: 700 ;
+   text-transform: uppercase;
+}
+.rev-buttons a{
+    color:#fff ;
+    margin: 5px;
+}
+.rev-buttons .btn-theme-bg:hover{
+    color:#fff;
+}
+.rev-buttons .border-white:hover{
+    color:#333;
+}
+.tp-caption.modern_big_redbg{
+      font-family: 'Source Sans Pro', sans-serif !important; 
+      font-weight: 300;
+}
+.slider-text-title{
+    font-size: 50px;
+    color:#fff;
+}
+.uppercase-title{
+    font-weight: 700;
+    font-size: 45px;
+    color:#fff;
+    text-transform: uppercase;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+.lowercase-caption{
+    font-weight: 400;
+    font-size: 20px;
+    color:#fff;
+    line-height: 26px;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+/************box slider*******/
+.tp-banner-container{
+    position: relative;
+    max-width:1170px;
+    margin: 20px auto;
+}
+
+/************ken burns***************/
+
+.Ken-burns-heading{
+    font-size: 60px;
+    color:#fff;
+    font-weight:700;
+    text-transform: uppercase;
+      font-family: 'Source Sans Pro', sans-serif!important; 
+}
+.ken-burns-cap{
+    color:#fff;
+    font-weight: 400;
+    font-size: 18px;
+    font-family: 'Source Sans Pro', sans-serif ;
+}
+
+
+/***index page slider****/
+.caption.title-2 {
+color: #fff;
+font-size: 48px;
+line-height: 56px;
+font-weight: 900;
+text-transform: uppercase;
+ font-family: 'Source Sans Pro', sans-serif;
+}
+.caption.text{
+    font-size: 16px;
+    font-weight: 300;
+    color:#fff;
+     font-family: 'Source Sans Pro', sans-serif;
+}
+.caption.title {
+color: #fff;
+font-size: 72px;
+line-height: 85px;
+font-weight: 700;
+text-transform: uppercase;
+font-family: 'Source Sans Pro', sans-serif;
+}
+.caption.subtitle {
+padding-left: 25px;
+border-left: 3px solid #bbb;
+color: #fff;
+font-size: 24px;
+line-height: 33px;
+text-transform: uppercase;
+font-family: 'Source Sans Pro', sans-serif;
+}
+.revo-slider-emphasis-text {
+font-size: 64px;
+font-weight: 700;
+letter-spacing: -1px;
+  font-family: 'Source Sans Pro', sans-serif;
+
+}
+
+.revo-slider-caps-text {
+font-size: 16px;
+font-weight: 400;
+letter-spacing: 3px;
+font-family: 'Source Sans Pro', sans-serif;
+}
+
+/***shop slide****/
+.shop-slide-heading{
+    color:#fff;
+    font-size: 45px;
+      font-family: 'Source Sans Pro', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+}
+.shop-slide-text{
+    color:#fff;
+}
+.shop-discount{
+    color:#fff;
+    width:80px;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    background-color: #3498db;
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+.modern_big_bluebg{
+ font-family: 'Source Sans Pro', sans-serif !important;  
+ text-transform: uppercase;
+}
+
+
+.text-center-top{
+       color:#fff;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 60px;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+.text-center-btm{
+    color:#fff;
+    font-size: 20px;
+    font-weight: 300;
+    line-height:34px !important;
+    font-family: 'Source Sans Pro', sans-serif;
+
+}
+.left-tile-text{
+      color:#fff;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 50px;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+
+/****vertical slider****/
+.vertical-title{
+    color:#fff;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 60px;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+.vertical-caption{
+    color:#fff;
+    font-size: 20px;
+    font-weight: 300;
+     font-family: 'Source Sans Pro', sans-serif;
+}
