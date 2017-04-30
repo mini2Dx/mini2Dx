@@ -8,9 +8,8 @@ A high-level game development API for LibGDX inspired by Slick
 
 *   [Website](https://mini2Dx.org/)
 *   [Wiki](https://github.com/mini2Dx/mini2Dx/wiki)
-*   [Javadoc](https://mini2dx.org/javadoc/latest/)
-*   [Downloads](https://mini2dx.org/downloads/)
-*   [Forum](https://mini2dx.org/forum/)
+*   [Javadoc](https://mini2dx.org/documentation.html)
+*   [Downloads](https://mini2dx.org/downloads.html)
 
 Goals
 ---------------------
@@ -27,4 +26,4 @@ However, some classes are based on LibGDX's code and are licensed under the Apac
 Contributing
 ---------------------
 
-See the [Contributing Page](http://mini2dx.org/contribute/)
+See the [Contributing Page](https://github.com/mini2Dx/mini2Dx/blob/master/CONTRIBUTING.md)
