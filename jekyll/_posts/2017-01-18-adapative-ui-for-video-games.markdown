@@ -204,4 +204,4 @@ __Conclusion__
 
 While nothing here is groundbreaking, I feel the combination of these ideas into a single UI framework can significantly reduce cross-platform development time for developers and free them to focus more on other aspects of their game.
 
-If you’d like to learn more about mini2Dx’s implementation, the documentation can be found on the [https://github.com/mini2Dx/mini2Dx/wiki](mini2Dx wiki). If you have any questions I can be reached at [https://twitter.com/tom_cashman](@tom_cashman).
+If you’d like to learn more about mini2Dx’s implementation, the documentation can be found on the [mini2Dx wiki](https://github.com/mini2Dx/mini2Dx/wiki). If you have any questions I can be reached at [@tom_cashman](https://twitter.com/tom_cashman).

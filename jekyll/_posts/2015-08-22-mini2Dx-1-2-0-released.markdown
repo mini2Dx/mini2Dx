@@ -19,9 +19,9 @@ If you are updating to 1.2.0 from a previous version, first view the wiki page o
 
 Next, you will need to change your main desktop, Android and iOS classes. For examples on how the new launchers work, see the following examples from the UATs projects.
 
- * [https://github.com/mini2Dx/mini2Dx/blob/master/uats-desktop/src/main/java/org/mini2Dx/uats/desktop/DesktopUATApplication.java](Desktop)
- * [https://github.com/mini2Dx/mini2Dx/blob/master/uats-android/src/org/mini2Dx/uats/android/AndroidUATApplication.java](Android)
- * [https://github.com/mini2Dx/mini2Dx/tree/master/uats-ios](iOS)
+ * [Desktop](https://github.com/mini2Dx/mini2Dx/blob/master/uats-desktop/src/main/java/org/mini2Dx/uats/desktop/DesktopUATApplication.java)
+ * [Android](https://github.com/mini2Dx/mini2Dx/blob/master/uats-android/src/org/mini2Dx/uats/android/AndroidUATApplication.java)
+ * [iOS](https://github.com/mini2Dx/mini2Dx/tree/master/uats-ios)
 
 __mini2Dx Project Generator 1.1.0__
 To facilitate the new changes, the mini2Dx project generator has been updated with new templates and features to detect deprecated releases.
