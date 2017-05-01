@@ -56,14 +56,7 @@ public class CollisionCircle extends Circle implements CollisionShape {
 	}
 	
 	public CollisionCircle(int id, float radius) {
-		super(radius);
-		this.id = id;
-		
-		positionChangeListenerLock = new ReentrantReadWriteLock();
-		sizeChangeListenerLock = new ReentrantReadWriteLock();
-		previousCircle = new Circle(radius);
-		renderCircle = new Circle(radius);
-		storeRenderCoordinates();
+		this(id, 0f, 0f, radius);
 	}
 	
 	public CollisionCircle(float centerX, float centerY, float radius) {
