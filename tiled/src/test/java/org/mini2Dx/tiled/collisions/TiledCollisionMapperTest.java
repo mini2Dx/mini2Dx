@@ -23,6 +23,7 @@ import org.mini2Dx.core.collisions.RegionQuadTree;
 import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.tiled.TiledMap;
+import org.mini2Dx.tiled.collisions.merger.AllCollisionMerger;
 import org.mini2Dx.tiled.exception.TiledException;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -199,6 +200,19 @@ public class TiledCollisionMapperTest {
 				}
 			}
 		}
+	}
+	
+	@Test
+	public void testMapAndMergeEmptySpacesByLayer() {
+		int collisionLayerIndex = tiledMap.getLayerIndex("Collisions");
+		RegionQuadTree<CollisionBox> quadTree = new RegionQuadTree<CollisionBox>(8, 0f, 0f,
+				tiledMap.getWidth() * tiledMap.getTileWidth(), tiledMap.getHeight() * tiledMap.getTileHeight());
+
+		collisionBoxMapper = new TiledCollisionMapper<>(new TiledCollisionBoxFactory(), new AllCollisionMerger());
+		collisionBoxMapper.mapAndMergeEmptySpacesByLayer(quadTree, tiledMap, collisionLayerIndex);
+
+		List<CollisionBox> collisions = quadTree.getElementsWithinArea(quadTree);
+		Assert.assertEquals(7, collisions.size());
 	}
 
 	private void assertCollisionAt(int tileX, int tileY, QuadTree<?> quadTree, TiledMap tiledMap) {

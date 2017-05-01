@@ -632,7 +632,7 @@ public class TiledCollisionMapper<T extends Positionable> {
 		}
 	}
 
-	private T mergeCollisions(int startX, int startY, byte[][] collisions, TileLayer layer, TiledMap tiledMap) {
+	private T mergeCollisions(final int startX, final int startY, byte[][] collisions, TileLayer layer, TiledMap tiledMap) {
 		Tile startTile = tiledMap.getTile(layer.getTileId(startX, startY));
 		Tile nextTile = null;
 
