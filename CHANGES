@@ -10,6 +10,10 @@ To change it back set config.targetTimestep to 0.1f
 - Added UiElement#defer to defer method calls until the next frame
 - Added PerformanceTracker for debugging performance issues
 - Added methods to TiledCollisionMapper to map non-collision areas
+- Added lightweight classes for static collisions:
+-- StaticCollisionBox
+-- StaticCollisionCircle
+-- StaticCollisionPolygon
 - UI elements can now be hidden based on controller type (hidden-controller-xbox360, etc.)
 - Changed default target timestep to 60FPS
 - ActionListeners now receive event details via ActionEvent instance
