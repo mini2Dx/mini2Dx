@@ -631,6 +631,14 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		this.activeAction = null;
 		this.activeNavigation = null;
 	}
+	
+	/**
+	 * Returns the currently active {@link Navigatable}
+	 * @return null if there is nothing active
+	 */
+	public Navigatable getActiveNavigation() {
+		return activeNavigation;
+	}
 
 	/**
 	 * Returns the width of the {@link UiContainer}

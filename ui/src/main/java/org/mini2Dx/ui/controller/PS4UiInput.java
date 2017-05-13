@@ -126,7 +126,7 @@ public class PS4UiInput extends PS4ControllerAdapter implements ControllerUiInpu
 		if(enabled) {
 			uiContainer.setLastInputSource(InputSource.CONTROLLER);
 			uiContainer.setLastControllerType(ControllerType.PS4);
-			return true;
+			return uiContainer.getActiveNavigation() != null;
 		}
 		return false;
 	}
@@ -146,7 +146,7 @@ public class PS4UiInput extends PS4ControllerAdapter implements ControllerUiInpu
 		if(enabled) {
 			uiContainer.setLastInputSource(InputSource.CONTROLLER);
 			uiContainer.setLastControllerType(ControllerType.PS4);
-			return true;
+			return uiContainer.getActiveNavigation() != null;
 		}
 		return false;
 	}
@@ -156,10 +156,10 @@ public class PS4UiInput extends PS4ControllerAdapter implements ControllerUiInpu
 		if(!enabled) {
 			return false;
 		}
-		uiContainer.buttonDown(this, button);
+		boolean result = uiContainer.buttonDown(this, button);
 		uiContainer.setLastInputSource(InputSource.CONTROLLER);
 		uiContainer.setLastControllerType(ControllerType.PS4);
-		return true;
+		return result;
 	}
 	
 	@Override
@@ -167,10 +167,10 @@ public class PS4UiInput extends PS4ControllerAdapter implements ControllerUiInpu
 		if(!enabled) {
 			return false;
 		}
-		uiContainer.buttonUp(this, button);
+		boolean result = uiContainer.buttonUp(this, button);
 		uiContainer.setLastInputSource(InputSource.CONTROLLER);
 		uiContainer.setLastControllerType(ControllerType.PS4);
-		return true;
+		return result;
 	}
 	
 	@Override
