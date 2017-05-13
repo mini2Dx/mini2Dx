@@ -17,6 +17,7 @@ import java.util.List;
 import org.mini2Dx.core.controller.button.Xbox360Button;
 import org.mini2Dx.core.controller.deadzone.DeadZone;
 import org.mini2Dx.core.controller.deadzone.NoopDeadZone;
+import org.mini2Dx.core.controller.ps3.PS3ControllerListener;
 import org.mini2Dx.core.controller.xbox360.Xbox360ControllerListener;
 
 import com.badlogic.gdx.controllers.Controller;
@@ -127,8 +128,18 @@ public abstract class Xbox360Controller implements MdxController<Xbox360Controll
 	}
 	
 	@Override
+    public void addListener(int index, Xbox360ControllerListener listener) {
+    	listeners.add(index, listener);
+    }
+	
+	@Override
     public void addListener(Xbox360ControllerListener listener) {
     	listeners.add(listener);
+    }
+	
+	@Override
+    public void removeListener(int index) {
+    	listeners.remove(index);
     }
     
     @Override
@@ -139,6 +150,16 @@ public abstract class Xbox360Controller implements MdxController<Xbox360Controll
 	@Override
 	public void clearListeners() {
 		listeners.clear();
+	}
+	
+    @Override
+    public Xbox360ControllerListener getListener(int index) {
+    	return listeners.get(index);
+    }
+	
+    @Override
+	public int getTotalListeners() {
+		return listeners.size();
 	}
     
     public ControllerType getControllerType() {

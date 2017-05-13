@@ -14,27 +14,114 @@ package org.mini2Dx.core.controller.xbox360;
 import org.mini2Dx.core.controller.MdxControllerListener;
 import org.mini2Dx.core.controller.Xbox360Controller;
 import org.mini2Dx.core.controller.button.Xbox360Button;
+import org.mini2Dx.core.controller.deadzone.DeadZone;
 
 /**
  * Input listener interface for {@link Xbox360Controller}s
  */
 public interface Xbox360ControllerListener extends MdxControllerListener {
-	
+
+	/**
+	 * Called when a controller disconnects
+	 * 
+	 * @param controller
+	 *            The controller that this event came from
+	 */
 	public void disconnected(Xbox360Controller controller);
-	
+
+	/**
+	 * Called when a button is pressed down
+	 * 
+	 * @param controller
+	 *            The controller that this event came from
+	 * @param button
+	 *            The button that was pressed
+	 * @return True if this event should not propagate to other listeners
+	 */
 	public boolean buttonDown(Xbox360Controller controller, Xbox360Button button);
-	
+
+	/**
+	 * Called when a button is released
+	 * 
+	 * @param controller
+	 *            The controller that this event came from
+	 * @param button
+	 *            The button that was released
+	 * @return True if this event should not propagate to other listeners
+	 */
 	public boolean buttonUp(Xbox360Controller controller, Xbox360Button button);
-	
+
+	/**
+	 * Called when the left trigger is moved
+	 * 
+	 * @param controller
+	 *            The controller that this event came from
+	 * @param value
+	 *            ~0f when released, ~1f when pressed
+	 * @return True if this event should not propagate to other listeners
+	 */
 	public boolean leftTriggerMoved(Xbox360Controller controller, float value);
-	
+
+	/**
+	 * Called when the right trigger is moved
+	 * 
+	 * @param controller
+	 *            The controller that this event came from
+	 * @param value
+	 *            ~0f when released, ~1f when pressed
+	 * @return True if this event should not propagate to other listeners
+	 */
 	public boolean rightTriggerMoved(Xbox360Controller controller, float value);
-	
+
+	/**
+	 * Called when left stick moves along its X axis
+	 * 
+	 * @param controller
+	 *            The controller that this event came from
+	 * @param value
+	 *            ~-1f at left, ~0f at center, ~1f at right (values may never be
+	 *            accurate due to dead zones, apply a {@link DeadZone} to the
+	 *            controller instance to correct this)
+	 * @return True if this event should not propagate to other listeners
+	 */
 	public boolean leftStickXMoved(Xbox360Controller controller, float value);
-	
+
+	/**
+	 * Called when left stick moves along its Y axis
+	 * 
+	 * @param controller
+	 *            The controller that this event came from
+	 * @param value
+	 *            ~-1f at top, ~0f at center, ~1f at bottom (values may never be
+	 *            accurate due to dead zones, apply a {@link DeadZone} to the
+	 *            controller instance to correct this)
+	 * @return True if this event should not propagate to other listeners
+	 */
 	public boolean leftStickYMoved(Xbox360Controller controller, float value);
-	
+
+	/**
+	 * Called when right stick moves along its X axis
+	 * 
+	 * @param controller
+	 *            The controller that this event came from
+	 * @param value
+	 *            ~-1f at left, ~0f at center, ~1f at right (values may never be
+	 *            accurate due to dead zones, apply a {@link DeadZone} to the
+	 *            controller instance to correct this)
+	 * @return True if this event should not propagate to other listeners
+	 */
 	public boolean rightStickXMoved(Xbox360Controller controller, float value);
-	
+
+	/**
+	 * Called when left stick moves along its Y axis
+	 * 
+	 * @param controller
+	 *            The controller that this event came from
+	 * @param value
+	 *            ~-1f at top, ~0f at center, ~1f at bottom (values may never be
+	 *            accurate due to dead zones, apply a {@link DeadZone} to the
+	 *            controller instance to correct this)
+	 * @return True if this event should not propagate to other listeners
+	 */
 	public boolean rightStickYMoved(Xbox360Controller controller, float value);
 }

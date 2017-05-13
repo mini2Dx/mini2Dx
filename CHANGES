@@ -5,6 +5,7 @@ To change it back set config.targetTimestep to 0.1f
 - Updated to libGDX 1.9.6, roboVM 2.3.0 and artemis-odb 2.1.0
 - (#68) Added Checkbox, Slider and RadioButton UI elements
 - Added Graphics#isWindowReady()
+- Added additional add/remove methods to MdxController interface
 - Added UiContainerOperation and ClearShaderProgramOperation for render pipelines
 - Added ScrollBox#setMinHeight to override the style's minimum height
 - Added UiElement#defer to defer method calls until the next frame
@@ -17,6 +18,7 @@ To change it back set config.targetTimestep to 0.1f
 - UI elements can now be hidden based on controller type (hidden-controller-xbox360, etc.)
 - Changed default target timestep to 60FPS
 - ActionListeners now receive event details via ActionEvent instance
+- Improved controller javadocs
 - Graphics#drawRect now uses LibGDX ShapeRenderer
 - Fixed Button instances not triggering right-click events
 - Fixed ScrollBox#setMaxHeight triggering unnecessary layouts

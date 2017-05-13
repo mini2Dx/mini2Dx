@@ -133,14 +133,34 @@ public abstract class PS4Controller implements MdxController<PS4ControllerListen
 	}
 	
 	@Override
+    public void addListener(int index, PS4ControllerListener listener) {
+		listeners.add(index, listener);
+	}
+	
+	@Override
     public void addListener(PS4ControllerListener listener) {
     	listeners.add(listener);
     }
+	
+	@Override
+    public void removeListener(int index) {
+		listeners.remove(index);
+	}
     
     @Override
     public void removeListener(PS4ControllerListener listener) {
     	listeners.remove(listener);
     }
+    
+    @Override
+    public PS4ControllerListener getListener(int index) {
+    	return listeners.get(index);
+    }
+	
+    @Override
+	public int getTotalListeners() {
+		return listeners.size();
+	}
     
     @Override
 	public void clearListeners() {

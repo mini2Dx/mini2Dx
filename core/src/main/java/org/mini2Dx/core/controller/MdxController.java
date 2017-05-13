@@ -18,11 +18,52 @@ import com.badlogic.gdx.controllers.ControllerListener;
  */
 public interface MdxController<T extends MdxControllerListener> extends ControllerListener {
 
+	/**
+	 * Returns the {@link ControllerType} for this controller
+	 * @return {@link ControllerType#UNKNOWN} if the controller is unknown
+	 */
 	public ControllerType getControllerType();
 	
+	/**
+	 * Inserts a listener at the specified index to the controller
+	 * @param index The index to insert the listener at
+	 * @param listener The listener to insert
+	 */
+	public void addListener(int index, T listener);
+	
+	/**
+	 * Adds a listener to the controller
+	 * @param listener The listener to add
+	 */
 	public void addListener(T listener);
 	
+	/**
+	 * Removes a listener at the specified index from this controller
+	 * @param index The index to remove
+	 */
+	public void removeListener(int index);
+	
+	/**
+	 * Removes a listener from this controller
+	 * @param listener The listener to remove
+	 */
 	public void removeListener(T listener);
 	
+	/**
+	 * Gets the listener at the specified index for this controller
+	 * @param index The index to return
+	 * @return The listener
+	 */
+	public T getListener(int index);
+	
+	/**
+	 * Returns the total number of listeners for this controller
+	 * @return 0 if there are no listeners
+	 */
+	public int getTotalListeners();
+	
+	/**
+	 * Removes all listeners from this controller
+	 */
 	public void clearListeners();
 }

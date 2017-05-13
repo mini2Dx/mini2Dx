@@ -18,6 +18,7 @@ import org.mini2Dx.core.controller.button.PS3Button;
 import org.mini2Dx.core.controller.deadzone.DeadZone;
 import org.mini2Dx.core.controller.deadzone.NoopDeadZone;
 import org.mini2Dx.core.controller.ps3.PS3ControllerListener;
+import org.mini2Dx.core.controller.ps4.PS4ControllerListener;
 
 import com.badlogic.gdx.controllers.Controller;
 
@@ -109,10 +110,20 @@ public abstract class PS3Controller implements MdxController<PS3ControllerListen
 		}
 		return false;
 	}
+	
+	@Override
+    public void addListener(int index, PS3ControllerListener listener) {
+    	listeners.add(index, listener);
+    }
 
 	@Override
     public void addListener(PS3ControllerListener listener) {
     	listeners.add(listener);
+    }
+	
+	@Override
+    public void removeListener(int index) {
+    	listeners.remove(index);
     }
     
     @Override
@@ -123,6 +134,16 @@ public abstract class PS3Controller implements MdxController<PS3ControllerListen
     @Override
 	public void clearListeners() {
 		listeners.clear();
+	}
+    
+    @Override
+    public PS3ControllerListener getListener(int index) {
+    	return listeners.get(index);
+    }
+	
+    @Override
+	public int getTotalListeners() {
+		return listeners.size();
 	}
     
 	@Override
