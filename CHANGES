@@ -20,7 +20,7 @@ To change it back set config.targetTimestep to 0.1f
 - ActionListeners now receive event details via ActionEvent instance
 - Improved controller javadocs
 - Graphics#drawRect now uses LibGDX ShapeRenderer
-- Fixed UI controller input blocking other controller listeners
+- Fixed UI controller input blocking other controller listeners when no input is consumed by UiContainer
 - Fixed Button instances not triggering right-click events
 - Fixed ScrollBox#setMaxHeight triggering unnecessary layouts
 - Fixed Graphics tint value not being set on startup
