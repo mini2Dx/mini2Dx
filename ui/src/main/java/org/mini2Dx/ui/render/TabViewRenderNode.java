@@ -85,7 +85,11 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule>im
 				controllerHotkeys.put(hotKeyOperation.getControllerButton().getAbsoluteValue(),
 						hotKeyOperation.getActionable().getId());
 			} else {
-				controllerHotkeys.remove(hotKeyOperation.getControllerButton().getAbsoluteValue());
+				if(hotKeyOperation.getControllerButton() == null) {
+					controllerHotkeys.clear();
+				} else {
+					controllerHotkeys.remove(hotKeyOperation.getControllerButton().getAbsoluteValue());
+				}
 			}
 		}
 		while (!keyboardHotKeyOperations.isEmpty()) {
@@ -93,7 +97,11 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule>im
 			if (hotKeyOperation.isMapOperation()) {
 				keyboardHotkeys.put(hotKeyOperation.getKeycode(), hotKeyOperation.getActionable().getId());
 			} else {
-				keyboardHotkeys.remove(hotKeyOperation.getKeycode());
+				if(hotKeyOperation.getKeycode() == Integer.MAX_VALUE) {
+					keyboardHotkeys.clear();
+				} else {
+					keyboardHotkeys.remove(hotKeyOperation.getKeycode());
+				}
 			}
 		}
 	}

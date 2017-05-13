@@ -631,25 +631,43 @@ public class TabView extends ParentUiElement implements Navigatable {
 	@Override
 	public void setHotkey(ControllerButton button, Actionable actionable) {
 		throw new MdxException(TabView.class.getSimpleName()
-				+ " only allows setPreviousTabHotkey and setNextTabHotkey methods. Set hotkeys within individual Tab instances.");
+				+ " only allows setPreviousTabHotkey and setNextTabHotkey methods. Set hotkeys using Tab instances.");
 	}
 
 	@Override
 	public void setHotkey(int keycode, Actionable actionable) {
 		throw new MdxException(TabView.class.getSimpleName()
-				+ " only allows setPreviousTabHotkey and setNextTabHotkey methods. Set hotkeys within individual Tab instances.");
+				+ " only allows setPreviousTabHotkey and setNextTabHotkey methods. Set hotkeys using Tab instances.");
 	}
 
 	@Override
 	public void unsetHotkey(ControllerButton button) {
 		throw new MdxException(TabView.class.getSimpleName()
-				+ " only allows unsetPreviousTabHotkey and unsetNextTabHotkey methods. Unset hotkeys within individual Tab instances.");
+				+ " only allows unsetPreviousTabHotkey and unsetNextTabHotkey methods. Unset hotkeys using Tab instances.");
 	}
 
 	@Override
 	public void unsetHotkey(int keycode) {
 		throw new MdxException(TabView.class.getSimpleName()
-				+ " only allows unsetPreviousTabHotkey and unsetNextTabHotkey methods. Unset hotkeys within individual Tab instances.");
+				+ " only allows unsetPreviousTabHotkey and unsetNextTabHotkey methods. Unset hotkeys using Tab instances.");
+	}
+	
+	@Override
+	public void clearControllerHotkeys() {
+		throw new MdxException(TabView.class.getSimpleName()
+				+ " only allows unsetPreviousTabHotkey and unsetNextTabHotkey methods. Clear hotkeys using Tab instances.");
+	}
+
+	@Override
+	public void clearKeyboardHotkeys() {
+		throw new MdxException(TabView.class.getSimpleName()
+				+ " only allows unsetPreviousTabHotkey and unsetNextTabHotkey methods. Clear hotkeys using Tab instances.");
+	}
+	
+	@Override
+	public void clearHotkeys() {
+		throw new MdxException(TabView.class.getSimpleName()
+				+ " only allows unsetPreviousTabHotkey and unsetNextTabHotkey methods. Clear hotkeys using Tab instances.");
 	}
 
 	public String getLayout() {

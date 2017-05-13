@@ -90,6 +90,22 @@ public abstract class Modal extends Container implements Navigatable {
 	public void unsetHotkey(int keycode) {
 		keyboardHotKeyOperations.offer(new KeyboardHotKeyOperation(keycode, null, false));
 	}
+	
+	@Override
+	public void clearControllerHotkeys() {
+		controllerHotKeyOperations.offer(new ControllerHotKeyOperation(null, null, false));
+	}
+
+	@Override
+	public void clearKeyboardHotkeys() {
+		keyboardHotKeyOperations.offer(new KeyboardHotKeyOperation(Integer.MAX_VALUE, null, false));
+	}
+	
+	@Override
+	public void clearHotkeys() {
+		clearControllerHotkeys();
+		clearKeyboardHotkeys();
+	}
 
 	@Override
 	public UiNavigation getNavigation() {

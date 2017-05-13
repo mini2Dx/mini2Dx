@@ -43,7 +43,11 @@ public class TabRenderNode extends RowRenderNode implements NavigatableRenderNod
 				controllerHotkeys.put(hotKeyOperation.getControllerButton().getAbsoluteValue(),
 						(ActionableRenderNode) getElementById(hotKeyOperation.getActionable().getId()));
 			} else {
-				controllerHotkeys.remove(hotKeyOperation.getControllerButton().getAbsoluteValue());
+				if(hotKeyOperation.getControllerButton() == null) {
+					controllerHotkeys.clear();
+				} else {
+					controllerHotkeys.remove(hotKeyOperation.getControllerButton().getAbsoluteValue());
+				}
 			}
 		}
 		while (!keyboardHotKeyOperations.isEmpty()) {
@@ -51,7 +55,11 @@ public class TabRenderNode extends RowRenderNode implements NavigatableRenderNod
 			if(hotKeyOperation.isMapOperation()) {
 				keyboardHotkeys.put(hotKeyOperation.getKeycode(), (ActionableRenderNode) getElementById(hotKeyOperation.getActionable().getId()));
 			} else {
-				keyboardHotkeys.remove(hotKeyOperation.getKeycode());
+				if(hotKeyOperation.getKeycode() == Integer.MAX_VALUE) {
+					keyboardHotkeys.clear();
+				} else {
+					keyboardHotkeys.remove(hotKeyOperation.getKeycode());
+				}
 			}
 		}
 	}

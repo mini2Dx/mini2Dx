@@ -7,6 +7,7 @@ To change it back set config.targetTimestep to 0.1f
 - Added Graphics#isWindowReady()
 - Added additional add/remove methods to MdxController interface
 - Added direction input threshold setting to UI controller input implementations
+- Added methods to clear UI hotkeys
 - Added UiContainerOperation and ClearShaderProgramOperation for render pipelines
 - Added ScrollBox#setMinHeight to override the style's minimum height
 - Added UiElement#defer to defer method calls until the next frame

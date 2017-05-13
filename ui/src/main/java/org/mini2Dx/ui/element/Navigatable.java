@@ -73,6 +73,21 @@ public interface Navigatable {
 	 * @param keycode The {@link Keys} keycode that is the hotkey
 	 */
 	public void unsetHotkey(int keycode);
+	
+	/**
+	 * Unmaps all hotkeys
+	 */
+	public void clearHotkeys();
+	
+	/**
+	 * Unmaps all controller hotkeys
+	 */
+	public void clearControllerHotkeys();
+	
+	/**
+	 * Unmaps all keyboard hotkeys
+	 */
+	public void clearKeyboardHotkeys();
 
 	/**
 	 * Returns the {@link UiNavigation} currently being navigated
