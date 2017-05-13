@@ -33,15 +33,16 @@ public class XboxOneUiInput extends XboxOneControllerAdapter implements Controll
 	private final UiContainer uiContainer;
 	
 	/* User configurable fields */
-	private float buttonRepeatTimer = 0.25f;
+	private float stickRepeatTimer = 0.25f;
+	private float stickThreshold = 0.25f;
 	private boolean enabled = true;
 	private XboxOneButton actionButton = XboxOneButton.A;
 	
 	/* Internal fields */
-	private float leftTimer = buttonRepeatTimer;
-	private float rightTimer = buttonRepeatTimer;
-	private float upTimer = buttonRepeatTimer;
-	private float downTimer = buttonRepeatTimer;
+	private float leftTimer = stickRepeatTimer;
+	private float rightTimer = stickRepeatTimer;
+	private float upTimer = stickRepeatTimer;
+	private float downTimer = stickRepeatTimer;
 	private boolean left, right, up, down;
 	
 	public XboxOneUiInput(UiContainer uiContainer) {
@@ -59,64 +60,64 @@ public class XboxOneUiInput extends XboxOneControllerAdapter implements Controll
 		}
 		
 		if(left) {
-			if(leftTimer == buttonRepeatTimer) {
+			if(leftTimer == stickRepeatTimer) {
 				uiContainer.keyDown(Keys.LEFT);
 				uiContainer.keyUp(Keys.LEFT);
 			}
 			leftTimer -= delta;
 			if(leftTimer <= 0f) {
-				leftTimer = buttonRepeatTimer;
+				leftTimer = stickRepeatTimer;
 			}
 		} else {
-			leftTimer = buttonRepeatTimer;
+			leftTimer = stickRepeatTimer;
 		}
 		
 		if(right) {
-			if(rightTimer == buttonRepeatTimer) {
+			if(rightTimer == stickRepeatTimer) {
 				uiContainer.keyDown(Keys.RIGHT);
 				uiContainer.keyUp(Keys.RIGHT);
 			}
 			rightTimer -= delta;
 			if(rightTimer <= 0f) {
-				rightTimer = buttonRepeatTimer;
+				rightTimer = stickRepeatTimer;
 			}
 		} else {
-			rightTimer = buttonRepeatTimer;
+			rightTimer = stickRepeatTimer;
 		}
 		
 		if(up) {
-			if(upTimer == buttonRepeatTimer) {
+			if(upTimer == stickRepeatTimer) {
 				uiContainer.keyDown(Keys.UP);
 				uiContainer.keyUp(Keys.UP);
 			}
 			upTimer -= delta;
 			if(upTimer <= 0f) {
-				upTimer = buttonRepeatTimer;
+				upTimer = stickRepeatTimer;
 			}
 		} else {
-			upTimer = buttonRepeatTimer;
+			upTimer = stickRepeatTimer;
 		}
 		
 		if(down) {
-			if(downTimer == buttonRepeatTimer) {
+			if(downTimer == stickRepeatTimer) {
 				uiContainer.keyDown(Keys.DOWN);
 				uiContainer.keyUp(Keys.DOWN);
 			}
 			downTimer -= delta;
 			if(downTimer <= 0f) {
-				downTimer = buttonRepeatTimer;
+				downTimer = stickRepeatTimer;
 			}
 		} else {
-			downTimer = buttonRepeatTimer;
+			downTimer = stickRepeatTimer;
 		}
 	}
 
 	@Override
 	public boolean leftStickXMoved(XboxOneController controller, float value) {
-		if(value < 0f) {
+		if(value < -stickThreshold) {
 			left = true;
 			right = false;
-		} else if(value > 0f) {
+		} else if(value > stickThreshold) {
 			right = true;
 			left = false;
 		} else {
@@ -133,10 +134,10 @@ public class XboxOneUiInput extends XboxOneControllerAdapter implements Controll
 	
 	@Override
 	public boolean leftStickYMoved(XboxOneController controller, float value) {
-		if(value < 0f) {
+		if(value < -stickThreshold) {
 			up = true;
 			down = false;
-		} else if(value > 0f) {
+		} else if(value > stickThreshold) {
 			down = true;
 			up = false;
 		} else {
@@ -188,8 +189,20 @@ public class XboxOneUiInput extends XboxOneControllerAdapter implements Controll
 		enabled = false;
 	}
 
-	public void setButtonRepeatTimer(float buttonRepeatTimer) {
-		this.buttonRepeatTimer = buttonRepeatTimer;
+	/**
+	 * Sets the amount of time in seconds before the left stick is considered repeating a navigation direction
+	 * @param stickRepeatTimer Default value is 0.25 seconds
+	 */
+	public void setStickRepeatTimer(float stickRepeatTimer) {
+		this.stickRepeatTimer = Math.abs(stickRepeatTimer);
+	}
+
+	/**
+	 * Sets the threshold for stick values before the input is considered as a navigation direction press
+	 * @param stickThreshold Default value is 0.25
+	 */
+	public void setStickThreshold(float stickThreshold) {
+		this.stickThreshold = Math.abs(stickThreshold);
 	}
 
 	@Override
