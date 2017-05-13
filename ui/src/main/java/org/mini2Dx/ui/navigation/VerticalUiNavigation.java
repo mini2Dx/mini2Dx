@@ -49,7 +49,7 @@ public class VerticalUiNavigation implements UiNavigation {
 
 	@Override
 	public Actionable navigate(int keycode) {
-		if (navigation.size() == 0) {
+		if (navigation.isEmpty()) {
 			return null;
 		}
 		switch (keycode) {
@@ -66,6 +66,9 @@ public class VerticalUiNavigation implements UiNavigation {
 	@Override
 	public Actionable resetCursor() {
 		cursor = 0;
+		if(navigation.isEmpty()) {
+			return null;
+		}
 		return navigation.get(cursor);
 	}
 

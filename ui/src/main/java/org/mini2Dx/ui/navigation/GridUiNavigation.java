@@ -91,7 +91,7 @@ public class GridUiNavigation implements UiNavigation {
 
 	@Override
 	public Actionable navigate(int keycode) {
-		if (navigation.size() == 0) {
+		if (navigation.isEmpty()) {
 			return null;
 		}
 		switch (keycode) {
@@ -127,6 +127,9 @@ public class GridUiNavigation implements UiNavigation {
 	public Actionable resetCursor() {
 		cursorX = 0;
 		cursorY = 0;
+		if(navigation.isEmpty()) {
+			return null;
+		}
 		return navigation.get((cursorY * columns) + cursorX);
 	}
 
