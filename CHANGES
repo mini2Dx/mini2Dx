@@ -30,6 +30,7 @@ To change it back set config.targetTimestep to 0.1f
 - Fixed RepeatableNinePatch not repeating correctly when using TextureRegion
 - Fixed UI button up/down controller events triggering when controller is disabled
 - Fixed NPE when resetting navigation with no navigation elements configured
+- Fixed GridUiNavigation misordering elements when using set#(x,y)
 
 [1.4.9]
 - Fix @PostDeserialize not being invoked for nested objects

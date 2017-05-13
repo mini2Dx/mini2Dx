@@ -42,6 +42,10 @@ public class GridUiNavigation implements UiNavigation {
 		screenSizeColumns.put(ScreenSize.XS, xsColumns);
 		columns = xsColumns;
 	}
+	
+	private int getIndex(int x, int y) {
+		return (y * columns) + x;
+	}
 
 	@Override
 	public void layout(ScreenSize screenSize) {
@@ -72,11 +76,14 @@ public class GridUiNavigation implements UiNavigation {
 	
 	@Override
 	public void set(int index, Actionable actionable) {
-		if (navigation.size() > index) {
-			navigation.set(index, actionable);
-		} else {
-			navigation.add(index, actionable);
+		while(navigation.size() <= index) {
+			navigation.add(null);
 		}
+		navigation.set(index, actionable);
+	}
+	
+	public Actionable get(int x, int y) {
+		return navigation.get(getIndex(x, y));
 	}
 
 	/**
@@ -86,7 +93,7 @@ public class GridUiNavigation implements UiNavigation {
 	 * @param actionable The new {@link Actionable}
 	 */
 	public void set(int x, int y, Actionable actionable) {
-		set((y * columns) + x, actionable);
+		set(getIndex(x, y), actionable);
 	}
 
 	@Override
@@ -95,11 +102,13 @@ public class GridUiNavigation implements UiNavigation {
 			return null;
 		}
 		switch (keycode) {
+		case Keys.W:
 		case Keys.UP:
 			if (cursorY > 0) {
 				cursorY--;
 			}
 			break;
+		case Keys.S:
 		case Keys.DOWN:
 			if (cursorY < getTotalRows() - 1) {
 				cursorY++;
@@ -107,11 +116,13 @@ public class GridUiNavigation implements UiNavigation {
 				cursorY = getTotalRows() - 1;
 			}
 			break;
+		case Keys.A:
 		case Keys.LEFT:
 			if (cursorX > 0) {
 				cursorX--;
 			}
 			break;
+		case Keys.D:
 		case Keys.RIGHT:
 			if (cursorX < columns - 1) {
 				cursorX++;
