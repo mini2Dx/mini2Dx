@@ -43,6 +43,16 @@ public class GridUiNavigation implements UiNavigation {
 		columns = xsColumns;
 	}
 	
+	private boolean isCursorResetRequired() {
+		if(cursorX >= columns) {
+			return true;
+		}
+		if(cursorY >= getTotalRows()) {
+			return true;
+		}
+		return false;
+	}
+	
 	private int getIndex(int x, int y) {
 		return (y * columns) + x;
 	}
@@ -60,6 +70,10 @@ public class GridUiNavigation implements UiNavigation {
 			}
 			columns = screenSizeColumns.get(nextSize);
 			break;
+		}
+		
+		if(!isCursorResetRequired()) {
+			return;
 		}
 		resetCursor();
 	}
@@ -131,7 +145,15 @@ public class GridUiNavigation implements UiNavigation {
 			}
 			break;
 		}
-		return navigation.get((cursorY * columns) + cursorX);
+		return navigation.get(getIndex(cursorX, cursorY));
+	}
+	
+	@Override
+	public Actionable getCursor() {
+		if(navigation.isEmpty()) {
+			return null;
+		}
+		return navigation.get(getIndex(cursorX, cursorY));
 	}
 
 	@Override
@@ -141,7 +163,7 @@ public class GridUiNavigation implements UiNavigation {
 		if(navigation.isEmpty()) {
 			return null;
 		}
-		return navigation.get((cursorY * columns) + cursorX);
+		return navigation.get(getIndex(cursorX, cursorY));
 	}
 
 	/**

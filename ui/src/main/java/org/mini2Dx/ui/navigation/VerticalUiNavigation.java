@@ -71,6 +71,14 @@ public class VerticalUiNavigation implements UiNavigation {
 		}
 		return navigation.get(cursor);
 	}
+	
+	@Override
+	public Actionable getCursor() {
+		if(navigation.isEmpty()) {
+			return null;
+		}
+		return navigation.get(cursor);
+	}
 
 	@Override
 	public void layout(ScreenSize screenSize) {

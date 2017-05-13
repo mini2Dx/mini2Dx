@@ -26,6 +26,15 @@ public class TabViewUiNavigation implements UiNavigation {
 	@Override
 	public void layout(ScreenSize screenSize) {
 	}
+	
+	@Override
+	public Actionable getCursor() {
+		UiNavigation navigation = tabs.get(tabView.getCurrentTabIndex()).getNavigation();
+		if(navigation == null) {
+			return null;
+		}
+		return navigation.getCursor();
+	}
 
 	@Override
 	public Actionable resetCursor() {
@@ -59,5 +68,4 @@ public class TabViewUiNavigation implements UiNavigation {
 		}
 		return navigation.navigate(keycode);
 	}
-
 }

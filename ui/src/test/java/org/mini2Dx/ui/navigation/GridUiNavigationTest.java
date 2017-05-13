@@ -16,6 +16,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.ui.element.Actionable;
+import org.mini2Dx.ui.layout.ScreenSize;
 
 import com.badlogic.gdx.Input.Keys;
 
@@ -78,6 +79,20 @@ public class GridUiNavigationTest {
 			lastActionable = navigation.navigate(Keys.UP);
 		}
 		Assert.assertEquals(elements[0][0], lastActionable);
+	}
+	
+	@Test
+	public void testCursorReset() {
+		addElementsToGrid();
+		
+		Actionable lastActionable = null;
+		for(int x = 0; x <= COLUMNS; x++) {
+			lastActionable = navigation.navigate(Keys.RIGHT);
+		}
+		Assert.assertEquals(elements[2][0], lastActionable);
+		
+		navigation.layout(ScreenSize.XS);
+		Assert.assertEquals(elements[2][0], navigation.getCursor());
 	}
 	
 	private void addElementsToGrid() {

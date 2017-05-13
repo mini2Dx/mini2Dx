@@ -31,6 +31,12 @@ public interface UiNavigation {
 	 * @return The first {@link Actionable}
 	 */
 	public Actionable resetCursor();
+	
+	/**
+	 * Returns the {@link Actionable} highlighted by the cursor
+	 * @return Null if there is no {@link Actionable}
+	 */
+	public Actionable getCursor();
 
 	/**
 	 * Adds a {@link Actionable} to end of the navigation

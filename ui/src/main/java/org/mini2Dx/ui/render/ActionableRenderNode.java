@@ -26,5 +26,7 @@ public interface ActionableRenderNode extends HoverableRenderNode {
 	
 	public void mouseUp(int screenX, int screenY, int pointer, int button);
 	
+	public NodeState getState();
+	
 	public void setState(NodeState state);
 }

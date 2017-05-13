@@ -62,10 +62,10 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 	private final List<ControllerUiInput<?>> controllerInputs = new ArrayList<ControllerUiInput<?>>(1);
 	private final List<UiContainerListener> listeners = new ArrayList<UiContainerListener>(1);
-	
+
 	private final Set<Integer> receivedKeyDowns = new HashSet<Integer>();
 	private final Set<String> receivedButtonDowns = new HashSet<String>();
-	
+
 	private final UiContainerRenderTree renderTree;
 
 	private InputSource lastInputSource;
@@ -96,7 +96,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	public UiContainer(GameContainer gc, AssetManager assetManager) {
 		this(gc.getWidth(), gc.getHeight(), assetManager);
 	}
-	
+
 	public UiContainer(int width, int height, AssetManager assetManager) {
 		super(IdAllocator.getNextId("ui-container-root"));
 		this.width = width;
@@ -118,10 +118,10 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 		renderTree = new UiContainerRenderTree(this, assetManager);
 		super.renderNode = renderTree;
-		
+
 		setVisibility(Visibility.VISIBLE);
 	}
-	
+
 	@Override
 	protected ParentRenderNode<?, ?> createRenderNode(ParentRenderNode<?, ?> parent) {
 		return renderTree;
@@ -279,7 +279,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if(keyNavigationInUse()) {
+		if (keyNavigationInUse()) {
 			return false;
 		}
 		screenX = MathUtils.round(screenX / scaleX);
@@ -291,8 +291,8 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			// Release textbox control
 			activeTextInput = null;
 			activeAction = null;
-			
-			switch(Mdx.os) {
+
+			switch (Mdx.os) {
 			case ANDROID:
 			case IOS:
 				Gdx.input.setOnscreenKeyboardVisible(false);
@@ -309,7 +309,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			params.setMouseY(screenY);
 			result.beginAction(EventTrigger.getTriggerForMouseClick(button), params);
 			EventTriggerParamsPool.release(params);
-			
+
 			setActiveAction(result);
 			return true;
 		}
@@ -318,14 +318,14 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		if(keyNavigationInUse()) {
+		if (keyNavigationInUse()) {
 			return false;
 		}
 		screenX = MathUtils.round(screenX / scaleX);
 		screenY = MathUtils.round(screenY / scaleY);
 		lastMouseX = screenX;
 		lastMouseY = screenY;
-		
+
 		if (activeAction == null) {
 			return false;
 		}
@@ -336,33 +336,33 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if(keyNavigationInUse()) {
+		if (keyNavigationInUse()) {
 			return false;
 		}
 		screenX = MathUtils.round(screenX / scaleX);
 		screenY = MathUtils.round(screenY / scaleY);
 		lastMouseX = screenX;
 		lastMouseY = screenY;
-		
+
 		return renderTree.mouseMoved(screenX, screenY);
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		if(keyNavigationInUse()) {
+		if (keyNavigationInUse()) {
 			return false;
 		}
 		screenX = MathUtils.round(screenX / scaleX);
 		screenY = MathUtils.round(screenY / scaleY);
 		lastMouseX = screenX;
 		lastMouseY = screenY;
-		
+
 		return renderTree.mouseMoved(screenX, screenY);
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		if(keyNavigationInUse()) {
+		if (keyNavigationInUse()) {
 			return false;
 		}
 		return renderTree.mouseScrolled(lastMouseX, lastMouseY, amount);
@@ -390,7 +390,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			params.setKey(keycode);
 			activeAction.beginAction(EventTrigger.KEYBOARD, params);
 			EventTriggerParamsPool.release(params);
-			
+
 			if (activeTextInput != null) {
 				textInputIgnoredFirstEnter = false;
 			}
@@ -405,8 +405,8 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {
-		//Key down was sent before this UI Container accepted input
-		if(!receivedKeyDowns.remove(keycode)) {
+		// Key down was sent before this UI Container accepted input
+		if (!receivedKeyDowns.remove(keycode)) {
 			return false;
 		}
 		if (handleTextInputKeyUp(keycode)) {
@@ -417,8 +417,8 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			params.setKey(keycode);
 			activeAction.endAction(EventTrigger.KEYBOARD, params);
 			EventTriggerParamsPool.release(params);
-			
-			switch(Mdx.os) {
+
+			switch (Mdx.os) {
 			case ANDROID:
 			case IOS:
 				Gdx.input.setOnscreenKeyboardVisible(false);
@@ -448,7 +448,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		} else if (activeAction != null) {
 			if (button.equals(controllerUiInput.getActionButton())) {
 				if (activeTextInput != null) {
-					if(!textInputIgnoredFirstEnter) {
+					if (!textInputIgnoredFirstEnter) {
 						ControllerEventTriggerParams params = EventTriggerParamsPool.allocateControllerParams();
 						params.setControllerButton(button);
 						activeAction.beginAction(EventTrigger.CONTROLLER, params);
@@ -466,8 +466,8 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	}
 
 	public boolean buttonUp(ControllerUiInput<?> controllerUiInput, ControllerButton button) {
-		//Button down was sent before this UI Container accepted input
-		if(!receivedButtonDowns.remove(button.getAbsoluteValue())) {
+		// Button down was sent before this UI Container accepted input
+		if (!receivedButtonDowns.remove(button.getAbsoluteValue())) {
 			return false;
 		}
 		if (activeNavigation == null) {
@@ -480,7 +480,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			hotkeyAction.endAction(EventTrigger.CONTROLLER, params);
 			EventTriggerParamsPool.release(params);
 		} else if (activeAction != null) {
-			if(activeTextInput != null && !textInputIgnoredFirstEnter) {
+			if (activeTextInput != null && !textInputIgnoredFirstEnter) {
 				textInputIgnoredFirstEnter = true;
 				return true;
 			}
@@ -553,7 +553,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			if (activeTextInput.enter()) {
 				activeTextInput = null;
 				activeAction = null;
-				switch(Mdx.os) {
+				switch (Mdx.os) {
 				case ANDROID:
 				case IOS:
 					Gdx.input.setOnscreenKeyboardVisible(false);
@@ -576,7 +576,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	private void setActiveAction(ActionableRenderNode actionable) {
 		if (actionable instanceof TextInputableRenderNode) {
 			activeTextInput = (TextInputableRenderNode) actionable;
-			switch(Mdx.os) {
+			switch (Mdx.os) {
 			case ANDROID:
 			case IOS:
 				Gdx.input.setOnscreenKeyboardVisible(true);
@@ -596,44 +596,74 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 *            The current {@link Navigatable} being navigated
 	 */
 	public void setActiveNavigation(Navigatable activeNavigation) {
-		this.activeNavigation = activeNavigation;
-		
-		if(renderTree == null) {
+		if (this.activeNavigation != null && activeNavigation != null
+				&& this.activeNavigation.getId().equals(activeNavigation.getId())) {
 			return;
 		}
-		if(!keyNavigationInUse()) {
+		unsetExistingNavigationHover();
+		this.activeNavigation = activeNavigation;
+
+		if (renderTree == null) {
+			return;
+		}
+		if (!keyNavigationInUse()) {
 			return;
 		}
 		if (activeAction != null) {
 			activeAction.setState(NodeState.NORMAL);
 		}
 		UiNavigation navigation = activeNavigation.getNavigation();
-		if(navigation == null) {
+		if (navigation == null) {
 			return;
 		}
 		Actionable firstActionable = navigation.resetCursor();
-		if(firstActionable == null) {
+		if (firstActionable == null) {
 			return;
 		}
 		RenderNode<?, ?> renderNode = renderTree.getElementById(firstActionable.getId());
-		if(renderNode == null) {
+		if (renderNode == null) {
 			return;
 		}
 		setActiveAction(((ActionableRenderNode) renderNode));
 		((ActionableRenderNode) renderNode).setState(NodeState.HOVER);
 	}
 
+	private void unsetExistingNavigationHover() {
+		if (activeNavigation == null) {
+			return;
+		}
+		if (renderTree == null) {
+			return;
+		}
+		UiNavigation navigation = activeNavigation.getNavigation();
+		if (navigation == null) {
+			return;
+		}
+		Actionable actionable = navigation.getCursor();
+		if (actionable == null) {
+			return;
+		}
+		ActionableRenderNode actionableRenderNode = (ActionableRenderNode) renderNode
+				.getElementById(actionable.getId());
+		if(actionableRenderNode.getState() != NodeState.HOVER) {
+			return;
+		}
+		actionableRenderNode.setState(NodeState.NORMAL);
+	}
+
 	/**
 	 * Clears the current {@link Navigatable} being navigated
 	 */
 	public void clearActiveNavigation() {
+		unsetExistingNavigationHover();
 		this.activeTextInput = null;
 		this.activeAction = null;
 		this.activeNavigation = null;
 	}
-	
+
 	/**
 	 * Returns the currently active {@link Navigatable}
+	 * 
 	 * @return null if there is nothing active
 	 */
 	public Navigatable getActiveNavigation() {
@@ -671,17 +701,19 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		this.height = height;
 		renderTree.onResize(width, height);
 	}
-	
+
 	/**
 	 * Returns the configured {@link Graphics} scaling during rendering
+	 * 
 	 * @return 1f by default
 	 */
 	public float getScaleX() {
 		return scaleX;
 	}
-	
+
 	/**
 	 * Returns the configured {@link Graphics} scaling during rendering
+	 * 
 	 * @return 1f by default
 	 */
 	public float getScaleY() {
@@ -728,7 +760,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		this.lastInputSource = lastInputSource;
 		notifyInputSourceChange(oldInputSource, lastInputSource);
 	}
-	
+
 	/**
 	 * Returns the last {@link ControllerType} used on the {@link UiContainer}
 	 * 
@@ -737,7 +769,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	public ControllerType getLastControllerType() {
 		return lastControllerType;
 	}
-	
+
 	/**
 	 * Sets the last {@link ControllerType} used on the {@link UiContainer}
 	 * 
@@ -745,7 +777,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 *            The {@link ControllerType} last used
 	 */
 	public void setLastControllerType(ControllerType lastControllerType) {
-		if(lastControllerType == null) {
+		if (lastControllerType == null) {
 			return;
 		}
 		if (this.lastControllerType.equals(lastControllerType)) {
@@ -809,98 +841,110 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 * Sets if desktop-based games uses keyboard navigation instead of mouse
 	 * navigation. Note: This does not effect hotkeys
 	 * 
-	 * @param keyboardNavigationEnabled True if the desktop-based game should only navigate by keyboard
+	 * @param keyboardNavigationEnabled
+	 *            True if the desktop-based game should only navigate by
+	 *            keyboard
 	 */
 	public void setKeyboardNavigationEnabled(boolean keyboardNavigationEnabled) {
 		this.keyboardNavigationEnabled = keyboardNavigationEnabled;
 	}
-	
+
 	/**
 	 * Adds a {@link UiContainerListener} to this {@link UiContainer}
-	 * @param listener The {@link UiContainerListener} to be notified of events
+	 * 
+	 * @param listener
+	 *            The {@link UiContainerListener} to be notified of events
 	 */
 	public void addListener(UiContainerListener listener) {
 		listeners.add(listener);
 		addScreenSizeListener(listener);
 	}
-	
+
 	/**
 	 * Removes a {@link UiContainerListener} from this {@link UiContainer}
-	 * @param listener The {@link UiContainerListener} to stop receiving events
+	 * 
+	 * @param listener
+	 *            The {@link UiContainerListener} to stop receiving events
 	 */
 	public void removeListener(UiContainerListener listener) {
 		listeners.remove(listener);
 		removeScreenSizeListener(listener);
 	}
-	
+
 	private void notifyPreUpdate(float delta) {
-		for(int i = listeners.size() - 1; i >= 0; i--) {
+		for (int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).preUpdate(this, delta);
 		}
 	}
-	
+
 	private void notifyPostUpdate(float delta) {
-		for(int i = listeners.size() - 1; i >= 0; i--) {
+		for (int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).postUpdate(this, delta);
 		}
 	}
-	
+
 	private void notifyPreInterpolate(float alpha) {
-		for(int i = listeners.size() - 1; i >= 0; i--) {
+		for (int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).preInterpolate(this, alpha);
 		}
 	}
-	
+
 	private void notifyPostInterpolate(float alpha) {
-		for(int i = listeners.size() - 1; i >= 0; i--) {
+		for (int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).postInterpolate(this, alpha);
 		}
 	}
-	
+
 	private void notifyPreRender(Graphics g) {
-		for(int i = listeners.size() - 1; i >= 0; i--) {
+		for (int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).preRender(this, g);
 		}
 	}
-	
+
 	private void notifyPostRender(Graphics g) {
-		for(int i = listeners.size() - 1; i >= 0; i--) {
+		for (int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).postRender(this, g);
 		}
 	}
-	
+
 	private void notifyInputSourceChange(InputSource oldSource, InputSource newSource) {
-		for(int i = listeners.size() - 1; i >= 0; i--) {
+		for (int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).inputSourceChanged(this, oldSource, newSource);
 		}
 	}
-	
+
 	private void notifyControllerTypeChange(ControllerType oldControllerType, ControllerType newControllerType) {
-		for(int i = listeners.size() - 1; i >= 0; i--) {
+		for (int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).controllerTypeChanged(this, oldControllerType, newControllerType);
 		}
 	}
 
 	private void notifyElementActivated(ActionableRenderNode actionable) {
-		for(int i = listeners.size() - 1; i >= 0; i--) {
+		for (int i = listeners.size() - 1; i >= 0; i--) {
 			listeners.get(i).onElementAction(this, actionable.getElement());
 		}
 	}
-	
+
 	/**
-	 * Returns the default {@link Visibility} for newly created {@link UiElement} objects
-	 * @return A non-null {@link Visibility} value. {@link Visibility#HIDDEN} by default
+	 * Returns the default {@link Visibility} for newly created
+	 * {@link UiElement} objects
+	 * 
+	 * @return A non-null {@link Visibility} value. {@link Visibility#HIDDEN} by
+	 *         default
 	 */
 	public static Visibility getDefaultVisibility() {
 		return defaultVisibility;
 	}
 
 	/**
-	 * Sets the default {@link Visibility} for newly created {@link UiElement} objects
-	 * @param defaultVisibility The {@link Visibility} to set as default
+	 * Sets the default {@link Visibility} for newly created {@link UiElement}
+	 * objects
+	 * 
+	 * @param defaultVisibility
+	 *            The {@link Visibility} to set as default
 	 */
 	public static void setDefaultVisibility(Visibility defaultVisibility) {
-		if(defaultVisibility == null) {
+		if (defaultVisibility == null) {
 			return;
 		}
 		UiContainer.defaultVisibility = defaultVisibility;

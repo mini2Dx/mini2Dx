@@ -20,12 +20,14 @@ import org.mini2Dx.core.controller.xbox360.Xbox360ControllerAdapter;
 import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.UiContainer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 
 /**
  * {@link Xbox360Controller} implementation of {@link ControllerUiInput}
  */
 public class Xbox360UiInput extends Xbox360ControllerAdapter implements ControllerUiInput<Xbox360Button> {
+	private static final String LOGGING_TAG = Xbox360UiInput.class.getSimpleName();
 	private static final String ID_PREFIX = Xbox360UiInput.class.getSimpleName() + "-";
 	private static final AtomicInteger ID_GENERATOR = new AtomicInteger();
 	
@@ -37,6 +39,7 @@ public class Xbox360UiInput extends Xbox360ControllerAdapter implements Controll
 	private float stickThreshold = 0.25f;
 	private boolean enabled = true;
 	private Xbox360Button actionButton = Xbox360Button.A;
+	private boolean debug = false;
 	
 	/* Internal fields */
 	private float leftTimer = stickRepeatTimer;
@@ -53,6 +56,18 @@ public class Xbox360UiInput extends Xbox360ControllerAdapter implements Controll
 		this.uiContainer.addControllerInput(this);
 	}
 	
+	private void debugLog(String message) {
+		if(!debug) {
+			return;
+		}
+		Gdx.app.log(LOGGING_TAG, message);
+		
+		if(uiContainer.getActiveNavigation() == null) {
+			return;
+		}
+		Gdx.app.log(LOGGING_TAG, message + " " + uiContainer.getActiveNavigation().getNavigation().getCursor());
+	}
+	
 	@Override
 	public void update(float delta) {
 		if(!enabled) {
@@ -63,6 +78,7 @@ public class Xbox360UiInput extends Xbox360ControllerAdapter implements Controll
 			if(leftTimer == stickRepeatTimer) {
 				uiContainer.keyDown(Keys.LEFT);
 				uiContainer.keyUp(Keys.LEFT);
+				debugLog("Navigate left");
 			}
 			leftTimer -= delta;
 			if(leftTimer <= 0f) {
@@ -76,6 +92,7 @@ public class Xbox360UiInput extends Xbox360ControllerAdapter implements Controll
 			if(rightTimer == stickRepeatTimer) {
 				uiContainer.keyDown(Keys.RIGHT);
 				uiContainer.keyUp(Keys.RIGHT);
+				debugLog("Navigate right");
 			}
 			rightTimer -= delta;
 			if(rightTimer <= 0f) {
@@ -89,6 +106,7 @@ public class Xbox360UiInput extends Xbox360ControllerAdapter implements Controll
 			if(upTimer == stickRepeatTimer) {
 				uiContainer.keyDown(Keys.UP);
 				uiContainer.keyUp(Keys.UP);
+				debugLog("Navigate up");
 			}
 			upTimer -= delta;
 			if(upTimer <= 0f) {
@@ -102,6 +120,7 @@ public class Xbox360UiInput extends Xbox360ControllerAdapter implements Controll
 			if(downTimer == stickRepeatTimer) {
 				uiContainer.keyDown(Keys.DOWN);
 				uiContainer.keyUp(Keys.DOWN);
+				debugLog("Navigate down");
 			}
 			downTimer -= delta;
 			if(downTimer <= 0f) {
@@ -160,6 +179,7 @@ public class Xbox360UiInput extends Xbox360ControllerAdapter implements Controll
 		boolean result = uiContainer.buttonDown(this, button);
 		uiContainer.setLastInputSource(InputSource.CONTROLLER);
 		uiContainer.setLastControllerType(ControllerType.XBOX_360);
+		debugLog(button.name() + " " + result);
 		return result;
 	}
 	
@@ -171,6 +191,7 @@ public class Xbox360UiInput extends Xbox360ControllerAdapter implements Controll
 		boolean result = uiContainer.buttonUp(this, button);
 		uiContainer.setLastInputSource(InputSource.CONTROLLER);
 		uiContainer.setLastControllerType(ControllerType.XBOX_360);
+		debugLog(button.name() + " " + result);
 		return result;
 	}
 
@@ -203,6 +224,10 @@ public class Xbox360UiInput extends Xbox360ControllerAdapter implements Controll
 	 */
 	public void setStickThreshold(float stickThreshold) {
 		this.stickThreshold = Math.abs(stickThreshold);
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 
 	@Override
