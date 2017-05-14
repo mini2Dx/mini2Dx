@@ -17,8 +17,8 @@ import org.mini2Dx.ui.navigation.KeyboardHotKeyOperation;
  * {@link RenderNode} implementation for {@link Tab}
  */
 public class TabRenderNode extends RowRenderNode implements NavigatableRenderNode {
-	private Map<Integer, ActionableRenderNode> keyboardHotkeys = new HashMap<Integer, ActionableRenderNode>();
-	private Map<String, ActionableRenderNode> controllerHotkeys = new HashMap<String, ActionableRenderNode>();
+	private Map<Integer, String> keyboardHotkeys = new HashMap<Integer, String>();
+	private Map<String, String> controllerHotkeys = new HashMap<String, String>();
 
 	public TabRenderNode(ParentRenderNode<?, ?> parent, Tab tab) {
 		super(parent, tab);
@@ -26,12 +26,28 @@ public class TabRenderNode extends RowRenderNode implements NavigatableRenderNod
 
 	@Override
 	public ActionableRenderNode hotkey(int keycode) {
-		return keyboardHotkeys.get(keycode);
+		String id = keyboardHotkeys.get(keycode);
+		if (id == null) {
+			return null;
+		}
+		RenderNode<?, ?> renderNode = searchTreeForElementById(id);
+		if (renderNode == null) {
+			return null;
+		}
+		return (ActionableRenderNode) renderNode;
 	}
 
 	@Override
 	public ActionableRenderNode hotkey(ControllerButton controllerButton) {
-		return controllerHotkeys.get(controllerButton.getAbsoluteValue());
+		String id = controllerHotkeys.get(controllerButton.getAbsoluteValue());
+		if (id == null) {
+			return null;
+		}
+		RenderNode<?, ?> renderNode = searchTreeForElementById(id);
+		if (renderNode == null) {
+			return null;
+		}
+		return (ActionableRenderNode) renderNode;
 	}
 
 	@Override
@@ -41,9 +57,9 @@ public class TabRenderNode extends RowRenderNode implements NavigatableRenderNod
 			ControllerHotKeyOperation hotKeyOperation = controllerHotKeyOperations.poll();
 			if (hotKeyOperation.isMapOperation()) {
 				controllerHotkeys.put(hotKeyOperation.getControllerButton().getAbsoluteValue(),
-						(ActionableRenderNode) getElementById(hotKeyOperation.getActionable().getId()));
+						hotKeyOperation.getActionable().getId());
 			} else {
-				if(hotKeyOperation.getControllerButton() == null) {
+				if (hotKeyOperation.getControllerButton() == null) {
 					controllerHotkeys.clear();
 				} else {
 					controllerHotkeys.remove(hotKeyOperation.getControllerButton().getAbsoluteValue());
@@ -52,10 +68,10 @@ public class TabRenderNode extends RowRenderNode implements NavigatableRenderNod
 		}
 		while (!keyboardHotKeyOperations.isEmpty()) {
 			KeyboardHotKeyOperation hotKeyOperation = keyboardHotKeyOperations.poll();
-			if(hotKeyOperation.isMapOperation()) {
-				keyboardHotkeys.put(hotKeyOperation.getKeycode(), (ActionableRenderNode) getElementById(hotKeyOperation.getActionable().getId()));
+			if (hotKeyOperation.isMapOperation()) {
+				keyboardHotkeys.put(hotKeyOperation.getKeycode(), hotKeyOperation.getActionable().getId());
 			} else {
-				if(hotKeyOperation.getKeycode() == Integer.MAX_VALUE) {
+				if (hotKeyOperation.getKeycode() == Integer.MAX_VALUE) {
 					keyboardHotkeys.clear();
 				} else {
 					keyboardHotkeys.remove(hotKeyOperation.getKeycode());
@@ -67,10 +83,10 @@ public class TabRenderNode extends RowRenderNode implements NavigatableRenderNod
 	@Override
 	public ActionableRenderNode navigate(int keycode) {
 		Actionable actionable = ((Tab) element).getNavigation().navigate(keycode);
-		if(actionable == null) {
+		if (actionable == null) {
 			return null;
 		}
-		return (ActionableRenderNode) getElementById(actionable.getId());
+		return (ActionableRenderNode) searchTreeForElementById(actionable.getId());
 	}
 
 }

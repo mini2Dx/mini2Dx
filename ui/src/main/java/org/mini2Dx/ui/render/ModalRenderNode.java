@@ -47,7 +47,7 @@ public abstract class ModalRenderNode extends ContainerRenderNode implements Nav
 		if (id == null) {
 			return null;
 		}
-		RenderNode<?, ?> renderNode = getElementById(id);
+		RenderNode<?, ?> renderNode = searchTreeForElementById(id);
 		if (renderNode == null) {
 			return null;
 		}
@@ -60,7 +60,7 @@ public abstract class ModalRenderNode extends ContainerRenderNode implements Nav
 		if (id == null) {
 			return null;
 		}
-		RenderNode<?, ?> renderNode = getElementById(id);
+		RenderNode<?, ?> renderNode = searchTreeForElementById(id);
 		if (renderNode == null) {
 			return null;
 		}
@@ -103,7 +103,7 @@ public abstract class ModalRenderNode extends ContainerRenderNode implements Nav
 		if (actionable == null) {
 			return null;
 		}
-		return (ActionableRenderNode) getElementById(actionable.getId());
+		return (ActionableRenderNode) searchTreeForElementById(actionable.getId());
 	}
 
 	@Override

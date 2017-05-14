@@ -74,6 +74,7 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 		}
 		
 		float parentWidth = layoutState.getParentWidth();
+		rootNode = layoutState.getUiContainerRenderTree();
 		style = determineStyleRule(layoutState);
 		
 		if(this.zIndex != element.getZIndex()) {
@@ -278,6 +279,13 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 			}
 		}
 		return null;
+	}
+	
+	public RenderNode<?, ?> searchTreeForElementById(String id) {
+		if(rootNode == null) {
+			return getElementById(id);
+		}
+		return rootNode.getElementById(id);
 	}
 	
 	public LayoutRuleset getLayoutRuleset() {

@@ -12,7 +12,9 @@
 package org.mini2Dx.ui.render;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.mini2Dx.core.controller.ControllerType;
 import org.mini2Dx.ui.InputSource;
@@ -30,9 +32,10 @@ import com.badlogic.gdx.assets.AssetManager;
  */
 public class UiContainerRenderTree extends ParentRenderNode<UiContainer, ParentStyleRule> {
 	private static final String LOGGING_TAG = UiContainerRenderTree.class.getSimpleName();
-	
+
 	private final AssetManager assetManager;
-	
+	private final Map<String, RenderNode<?, ?>> elementIdLookupCache = new HashMap<String, RenderNode<?, ?>>();
+
 	private List<ScreenSizeListener> screenSizeListeners;
 	private ScreenSize currentScreenSize = ScreenSize.XS;
 	private boolean screenSizeChanged = false;
@@ -40,26 +43,30 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, ParentS
 	public UiContainerRenderTree(UiContainer uiContainer, AssetManager assetManager) {
 		super(null, uiContainer);
 		this.assetManager = assetManager;
-		
+
 		onResize(uiContainer.getWidth(), uiContainer.getHeight());
 	}
-	
+
 	public void update(float delta) {
 		super.update(this, delta);
 	}
-	
+
 	public void layout() {
-		layout(new LayoutState(this, assetManager, element.getTheme(), currentScreenSize, 12, ((UiContainer) element).getWidth(), screenSizeChanged));
+		layout(new LayoutState(this, assetManager, element.getTheme(), currentScreenSize, 12,
+				((UiContainer) element).getWidth(), screenSizeChanged));
 	}
-	
+
 	@Override
 	public void layout(LayoutState layoutState) {
-		if(!isDirty() && !layoutState.isScreenSizeChanged()) {
+		if (!isDirty() && !layoutState.isScreenSizeChanged()) {
 			return;
 		}
-		if(element.isDebugEnabled()) {
+		if (element.isDebugEnabled()) {
 			Gdx.app.log(LOGGING_TAG, "Layout triggered");
 		}
+		rootNode = this;
+		elementIdLookupCache.clear();
+		
 		style = determineStyleRule(layoutState);
 		zIndex = element.getZIndex();
 		flexDirection = element.getFlexDirection();
@@ -68,81 +75,81 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, ParentS
 		xOffset = determineXOffset(layoutState);
 		yOffset = determineYOffset(layoutState);
 		outerArea.forceTo(xOffset, yOffset, preferredContentWidth, preferredContentHeight);
-		
-		for(RenderLayer layer : layers.values()) {
+
+		for (RenderLayer layer : layers.values()) {
 			layer.layout(layoutState);
 		}
-		
+
 		setImmediateDirty(false);
 		setDirty(false);
 		childDirty = false;
 		screenSizeChanged = false;
 		initialLayoutOccurred = true;
 	}
-	
+
 	@Override
 	public void addChild(RenderNode<?, ?> child) {
 		int zIndex = child.getZIndex();
-		if(!layers.containsKey(zIndex)) {
+		if (!layers.containsKey(zIndex)) {
 			layers.put(zIndex, new UiContainerRenderLayer(this, zIndex));
 		}
 		layers.get(zIndex).add(child);
 		setDirty(true);
 	}
-	
+
 	public void onResize(int width, int height) {
 		ScreenSize screenSize = ScreenSize.XS;
-		if(width >= ScreenSize.SM.getMinSize()) {
+		if (width >= ScreenSize.SM.getMinSize()) {
 			screenSize = ScreenSize.SM;
 		}
-		if(width >= ScreenSize.MD.getMinSize()) {
+		if (width >= ScreenSize.MD.getMinSize()) {
 			screenSize = ScreenSize.MD;
 		}
-		if(width >= ScreenSize.LG.getMinSize()) {
+		if (width >= ScreenSize.LG.getMinSize()) {
 			screenSize = ScreenSize.LG;
 		}
-		if(width >= ScreenSize.XL.getMinSize()) {
+		if (width >= ScreenSize.XL.getMinSize()) {
 			screenSize = ScreenSize.XL;
 		}
 		screenSizeChanged = true;
 		this.currentScreenSize = screenSize;
-		
-		if(element.isDebugEnabled()) {
+
+		if (element.isDebugEnabled()) {
 			Gdx.app.log(LOGGING_TAG, "Screen resize to " + currentScreenSize + " - " + width + "x" + height);
 		}
-		
-		if(screenSizeListeners == null) {
+
+		if (screenSizeListeners == null) {
 			return;
 		}
-		for(int i = screenSizeListeners.size() - 1; i >= 0; i--) {
+		for (int i = screenSizeListeners.size() - 1; i >= 0; i--) {
 			screenSizeListeners.get(i).onScreenSizeChanged(currentScreenSize);
 		}
 	}
-	
+
 	public void addScreenSizeListener(ScreenSizeListener listener) {
-		if(screenSizeListeners == null) {
+		if (screenSizeListeners == null) {
 			screenSizeListeners = new ArrayList<ScreenSizeListener>(1);
 		}
 		screenSizeListeners.add(listener);
 	}
-	
+
 	public void removeScreenSizeListener(ScreenSizeListener listener) {
-		if(screenSizeListeners == null) {
+		if (screenSizeListeners == null) {
 			return;
 		}
 		screenSizeListeners.remove(listener);
 	}
-	
+
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
 		return ((UiContainer) element).getWidth();
 	}
-	
+
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
 		return ((UiContainer) element).getHeight();
 	}
-	
+
 	@Override
 	protected float determineXOffset(LayoutState layoutState) {
 		return 0f;
@@ -152,21 +159,39 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, ParentS
 	protected float determineYOffset(LayoutState layoutState) {
 		return 0f;
 	}
-	
+
 	@Override
 	protected ParentStyleRule determineStyleRule(LayoutState layoutState) {
 		return new ParentStyleRule();
 	}
-	
+
+	@Override
+	public RenderNode<?, ?> getElementById(String id) {
+		if (element.getId().equals(id)) {
+			return this;
+		}
+		if (elementIdLookupCache.containsKey(id)) {
+			return elementIdLookupCache.get(id);
+		}
+		for (RenderLayer layer : layers.values()) {
+			RenderNode<?, ?> result = layer.getElementById(id);
+			if (result != null) {
+				elementIdLookupCache.put(id, result);
+				return result;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public boolean isDirty() {
 		return screenSizeChanged || super.isDirty();
 	}
-	
+
 	public InputSource getLastInputSource() {
 		return ((UiContainer) element).getLastInputSource();
 	}
-	
+
 	public ControllerType getLastControllerType() {
 		return ((UiContainer) element).getLastControllerType();
 	}

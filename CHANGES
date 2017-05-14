@@ -32,6 +32,7 @@ To change it back set config.targetTimestep to 0.1f
 - Fixed NPE when resetting navigation with no navigation elements configured
 - Fixed GridUiNavigation misordering elements when using set#(x,y)
 - Fixed GridUiNavigation triggering unnecessary cursor resets
+- Fixed hotkeys not triggering if the element was outside of the navigation element node
 
 [1.4.9]
 - Fix @PostDeserialize not being invoked for nested objects

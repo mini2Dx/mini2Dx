@@ -37,6 +37,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	protected final ParentRenderNode<?, ?> parent;
 	protected final T element;
 
+	protected UiContainerRenderTree rootNode;
 	protected S style;
 	protected float preferredContentWidth, preferredContentHeight;
 	protected float xOffset, yOffset;
@@ -195,6 +196,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		if (!isDirty() && !layoutState.isScreenSizeChanged()) {
 			return;
 		}
+		rootNode = layoutState.getUiContainerRenderTree();
 		style = determineStyleRule(layoutState);
 
 		if (this.zIndex != element.getZIndex()) {
