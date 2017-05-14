@@ -25,6 +25,13 @@ public class TabViewUiNavigation implements UiNavigation {
 
 	@Override
 	public void layout(ScreenSize screenSize) {
+		for(int i = 0; i < tabs.size(); i++) {
+			UiNavigation navigation = tabs.get(i).getNavigation();
+			if(navigation == null) {
+				continue;
+			}
+			navigation.layout(screenSize);
+		}
 	}
 	
 	@Override
