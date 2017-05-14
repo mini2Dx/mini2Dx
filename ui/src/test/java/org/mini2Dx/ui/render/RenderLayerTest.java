@@ -32,6 +32,7 @@ import junit.framework.Assert;
 public class RenderLayerTest {
 	private Mockery mockery;
 	private LayoutState layoutState;
+	private UiContainerRenderTree renderTree;
 	
 	private DummyParentUiElement parentElement = new DummyParentUiElement();
 	private DummyUiElement uiElement1 = new DummyUiElement();
@@ -53,6 +54,8 @@ public class RenderLayerTest {
 		mockery.setImposteriser(ClassImposteriser.INSTANCE);
 		
 		layoutState = mockery.mock(LayoutState.class);
+		renderTree = mockery.mock(UiContainerRenderTree.class);
+		
 		renderLayer.add(renderNode1);
 		renderLayer.add(renderNode2);
 	}
@@ -339,6 +342,8 @@ public class RenderLayerTest {
 	private void configureParentWithWidth(final float parentWidth) {
 		mockery.checking(new Expectations() {
 			{
+				atLeast(1).of(layoutState).getUiContainerRenderTree();
+				will(returnValue(renderTree));
 				one(layoutState).getParentWidth();
 				will(returnValue(parentWidth));
 				atLeast(1).of(layoutState).setParentWidth(with(any(Float.class)));

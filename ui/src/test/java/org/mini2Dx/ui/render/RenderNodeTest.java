@@ -37,6 +37,7 @@ public class RenderNodeTest {
 	
 	private Mockery mockery;
 	private LayoutState layoutState;
+	private UiContainerRenderTree renderTree;
 	
 	private DummyParentUiElement parentElement = new DummyParentUiElement();
 	private DummyUiElement uiElement = new DummyUiElement();
@@ -59,6 +60,7 @@ public class RenderNodeTest {
 		mockery.setImposteriser(ClassImposteriser.INSTANCE);
 		
 		layoutState = mockery.mock(LayoutState.class);
+		renderTree = mockery.mock(UiContainerRenderTree.class);
 	}
 	
 	@After
@@ -190,6 +192,13 @@ public class RenderNodeTest {
 
 	@Test
 	public void testPreferredSize() {
+		mockery.checking(new Expectations() {
+			{
+				atLeast(1).of(layoutState).getUiContainerRenderTree();
+				will(returnValue(renderTree));
+			}
+		});
+		
 		final float preferredWidth = 150f;
 		final float preferredHeight = 200f;
 		
@@ -208,6 +217,13 @@ public class RenderNodeTest {
 	
 	@Test
 	public void testPreferredSizeWithPadding() {
+		mockery.checking(new Expectations() {
+			{
+				atLeast(1).of(layoutState).getUiContainerRenderTree();
+				will(returnValue(renderTree));
+			}
+		});
+		
 		final int padding = 20;
 		final float preferredWidth = 150f;
 		final float preferredHeight = 200f;
@@ -228,6 +244,13 @@ public class RenderNodeTest {
 	
 	@Test
 	public void testPreferredSizeWithMargin() {
+		mockery.checking(new Expectations() {
+			{
+				atLeast(1).of(layoutState).getUiContainerRenderTree();
+				will(returnValue(renderTree));
+			}
+		});
+		
 		final int padding = 20;
 		final int margin = 35;
 		final float preferredWidth = 150f;
@@ -250,6 +273,13 @@ public class RenderNodeTest {
 	
 	@Test
 	public void testPreferredSizeWithNegativeMargin() {
+		mockery.checking(new Expectations() {
+			{
+				atLeast(1).of(layoutState).getUiContainerRenderTree();
+				will(returnValue(renderTree));
+			}
+		});
+		
 		final int padding = 20;
 		final int margin = -35;
 		final float preferredWidth = 150f;
@@ -273,6 +303,8 @@ public class RenderNodeTest {
 	private void configureParentWidth() {
 		mockery.checking(new Expectations() {
 			{
+				atLeast(1).of(layoutState).getUiContainerRenderTree();
+				will(returnValue(renderTree));
 				atLeast(1).of(layoutState).getParentWidth();
 				will(returnValue(0f + PARENT_WIDTH));
 				atLeast(1).of(layoutState).setParentWidth(with(any(Float.class)));

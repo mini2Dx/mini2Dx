@@ -6,6 +6,11 @@ package org.mini2Dx.ui.layout;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.ui.dummy.DummyParentRenderNode;
 import org.mini2Dx.ui.dummy.DummyParentUiElement;
@@ -13,6 +18,7 @@ import org.mini2Dx.ui.dummy.DummyRenderNode;
 import org.mini2Dx.ui.dummy.DummyUiElement;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.render.RenderNode;
+import org.mini2Dx.ui.render.UiContainerRenderTree;
 
 import junit.framework.Assert;
 
@@ -22,13 +28,36 @@ import junit.framework.Assert;
 public class FlexDirectionTest {
 	private static final int TOTAL_CHILDREN = 4;
 	
+	private Mockery mockery;
 	private LayoutState layoutState;
+	private UiContainerRenderTree renderTree;
 	
 	private final DummyParentUiElement parentElement = new DummyParentUiElement();
 	private final List<DummyUiElement> children = new ArrayList<DummyUiElement>(1);
 	private final List<RenderNode<?, ?>> childrenRenderNodes = new ArrayList<RenderNode<?, ?>>(1);
 	
 	private DummyParentRenderNode parentRenderNode;
+	
+	@Before
+	public void setUp() {
+		mockery = new Mockery();
+		mockery.setImposteriser(ClassImposteriser.INSTANCE);
+		
+		layoutState = mockery.mock(LayoutState.class);
+		renderTree = mockery.mock(UiContainerRenderTree.class);
+		
+		mockery.checking(new Expectations() {
+			{
+				atLeast(1).of(layoutState).getUiContainerRenderTree();
+				will(returnValue(renderTree));
+			}
+		});
+	}
+	
+	@After
+	public void teardown() {
+		mockery.assertIsSatisfied();
+	}
 	
 	@Test
 	public void testColumn() {

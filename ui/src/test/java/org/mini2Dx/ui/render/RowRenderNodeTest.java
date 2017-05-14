@@ -34,6 +34,7 @@ public class RowRenderNodeTest {
 	private Mockery mockery;
 	private UiTheme theme;
 	private LayoutState layoutState;
+	private UiContainerRenderTree renderTree;
 	
 	private Row row = new Row();
 	private RowRenderNode rowRenderNode = new RowRenderNode(null, row);
@@ -50,6 +51,7 @@ public class RowRenderNodeTest {
 		mockery.setImposteriser(ClassImposteriser.INSTANCE);
 		
 		layoutState = mockery.mock(LayoutState.class);
+		renderTree = mockery.mock(UiContainerRenderTree.class);
 		theme = mockery.mock(UiTheme.class);
 		
 		row.setVisibility(Visibility.VISIBLE);
@@ -314,6 +316,8 @@ public class RowRenderNodeTest {
 	private void configureParentWithWidth(final float parentWidth) {
 		mockery.checking(new Expectations() {
 			{
+				atLeast(1).of(layoutState).getUiContainerRenderTree();
+				will(returnValue(renderTree));
 				atLeast(1).of(layoutState).getTheme();
 				will(returnValue(theme));
 				atLeast(1).of(layoutState).getScreenSize();
