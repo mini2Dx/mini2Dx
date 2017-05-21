@@ -237,7 +237,7 @@ public class ConcurrentPointQuadTreeTest implements Runnable {
 			createNextCollision();
 		}
 
-		int totalThreads = Runtime.getRuntime().availableProcessors() * 2;
+		int totalThreads = Runtime.getRuntime().availableProcessors();
 		if (totalThreads % 2 == 1) {
 			totalThreads++;
 		}
