@@ -370,8 +370,8 @@ public class ConcurrentRegionQuadTreeTest implements Runnable {
 					rootQuad.remove(threadCollisions.poll());
 				}
 
-				if (readerThread) {
-					Thread.sleep(1L);
+				if (readerThread && rootQuad.getTotalMergeOperations() == 0) {
+					Thread.sleep(10L);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
