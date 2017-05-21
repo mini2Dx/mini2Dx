@@ -17,14 +17,12 @@ import java.util.List;
 
 import org.mini2Dx.core.engine.Positionable;
 import org.mini2Dx.core.geom.LineSegment;
-import org.mini2Dx.core.geom.Parallelogram;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.geom.Shape;
 import org.mini2Dx.core.graphics.Graphics;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.MathUtils;
 
 /**
  * Implements a point quadtree
@@ -412,7 +410,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		if (parent == null) {
 			return result;
 		}
-		if (parent.isMergable()) {
+		if (result && parent.isMergable()) {
 			parent.merge();
 		}
 		return result;

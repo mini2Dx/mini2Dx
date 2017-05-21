@@ -19,7 +19,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.mini2Dx.core.engine.Positionable;
 import org.mini2Dx.core.geom.LineSegment;
-import org.mini2Dx.core.geom.Parallelogram;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.geom.Shape;
@@ -49,6 +48,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 	protected final ReadWriteLock lock;
 
 	protected int totalElementsCache = -1;
+	protected int totalMerges = 0;
 
 	/**
 	 * Constructs a {@link ConcurrentPointQuadTree} with a specified element
@@ -388,6 +388,12 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 			element.removePositionChangeListener(bottomRight);
 			element.addPostionChangeListener(this);
 		}
+		
+		totalMerges += topLeft.getTotalMergeOperations();
+		totalMerges += topRight.getTotalMergeOperations();
+		totalMerges += bottomLeft.getTotalMergeOperations();
+		totalMerges += bottomRight.getTotalMergeOperations();
+		totalMerges++;
 
 		topLeft = null;
 		topRight = null;
@@ -504,7 +510,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		if (parent == null) {
 			return result;
 		}
-		if (parent.isMergable()) {
+		if (result && parent.isMergable()) {
 			parent.merge();
 		}
 		return result;
@@ -686,6 +692,13 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 
 	public QuadTree<T> getParent() {
 		return parent;
+	}
+	
+	public int getTotalMergeOperations() {
+		lock.readLock().lock();
+		int result = totalMerges;
+		lock.readLock().unlock();
+		return result;
 	}
 
 	public int getElementLimitPerQuad() {

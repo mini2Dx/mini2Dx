@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.mini2Dx.core.engine.geom.CollisionShape;
 import org.mini2Dx.core.geom.LineSegment;
-import org.mini2Dx.core.geom.Parallelogram;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Shape;
 import org.mini2Dx.core.graphics.Graphics;

@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.mini2Dx.core.engine.geom.CollisionShape;
 import org.mini2Dx.core.geom.LineSegment;
-import org.mini2Dx.core.geom.Parallelogram;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Shape;
 import org.mini2Dx.core.graphics.Graphics;
@@ -402,7 +401,7 @@ public class ConcurrentRegionQuadTree<T extends CollisionShape> extends Concurre
 		if (parent == null) {
 			return result;
 		}
-		if (parent.isMergable()) {
+		if (result && parent.isMergable()) {
 			parent.merge();
 		}
 		return result;
