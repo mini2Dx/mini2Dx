@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,12 +29,13 @@ import org.mini2Dx.core.geom.Rectangle;
 import com.badlogic.gdx.math.MathUtils;
 
 import junit.framework.Assert;
+import net.jodah.concurrentunit.Waiter;
 
 /**
  * Unit tests for {@link ConcurrentPointQuadTree}
  */
 public class ConcurrentPointQuadTreeTest implements Runnable {
-	private static final long CONCURRENCY_TEST_DURATION = 5000L;
+	private static final long CONCURRENCY_TEST_TIMEOUT = 10000L;
 	private static final int CONCURRENCY_TEST_WATERMARK = 4;
 	private static final float TREE_WIDTH = 128f;
 	private static final float TREE_HEIGHT = 128f;
@@ -42,13 +43,13 @@ public class ConcurrentPointQuadTreeTest implements Runnable {
 	private ConcurrentPointQuadTree<CollisionPoint> rootQuad;
 	private CollisionPoint point1, point2, point3, point4;
 
-	private AtomicLong timer = new AtomicLong(0L);
+	private final Waiter waiter = new Waiter();
 	private AtomicInteger totalThreads = new AtomicInteger();
 	private AtomicBoolean concurrencyExceptionOccurred = new AtomicBoolean(false);
 	private AtomicInteger coordinateCursor = new AtomicInteger(0);
 	private AtomicInteger collisionsFound = new AtomicInteger(0);
 	private Queue<CollisionPoint> threadCollisions = new ConcurrentLinkedQueue<CollisionPoint>();
-
+	
 	@Before
 	public void setup() {
 		rootQuad = new ConcurrentPointQuadTree<CollisionPoint>(2, 0, 0, TREE_WIDTH, TREE_HEIGHT);
@@ -229,11 +230,11 @@ public class ConcurrentPointQuadTreeTest implements Runnable {
 	}
 
 	@Test
-	public void testMergingConcurrency() {
+	public void testMergingConcurrency() throws TimeoutException {
 		rootQuad = new ConcurrentPointQuadTree<CollisionPoint>(CONCURRENCY_TEST_WATERMARK * 2,
 				CONCURRENCY_TEST_WATERMARK, 0, 0, TREE_WIDTH, TREE_HEIGHT);
 
-		for (int i = 0; i < MathUtils.round(TREE_WIDTH * TREE_HEIGHT); i++) {
+		for (int i = 0; i < MathUtils.round(TREE_WIDTH); i++) {
 			createNextCollision();
 		}
 
@@ -245,14 +246,7 @@ public class ConcurrentPointQuadTreeTest implements Runnable {
 			new Thread(this).start();
 		}
 
-		while (timer.get() < CONCURRENCY_TEST_DURATION) {
-			long startTime = System.currentTimeMillis();
-			try {
-				Thread.sleep(100L);
-			} catch (Exception e) {
-			}
-			timer.addAndGet(System.currentTimeMillis() - startTime);
-		}
+		waiter.await(CONCURRENCY_TEST_TIMEOUT);
 
 		System.out.println(rootQuad.getTotalMergeOperations() + " total merge operations, "
 				+ collisionsFound.getAndIncrement() + " collisions found concurrently");
@@ -266,10 +260,13 @@ public class ConcurrentPointQuadTreeTest implements Runnable {
 		boolean readerThread = totalThreads.incrementAndGet() % 2 == 0;
 		List<CollisionPoint> collisions = new ArrayList<CollisionPoint>();
 
-		while (timer.get() < CONCURRENCY_TEST_DURATION) {
+		while (rootQuad.getTotalMergeOperations() < 10 || collisionsFound.get() == 0) {
 			try {
 				if (threadCollisions.isEmpty()) {
-					createNextCollision();
+					int totalCollisions = MathUtils.random(1, MathUtils.round(TREE_WIDTH));
+					for(int i = 0; i < totalCollisions; i++) {
+						createNextCollision();
+					}
 				} else if (readerThread) {
 					rootQuad.getElementsWithinArea(collisions,
 							new Rectangle(MathUtils.random(TREE_WIDTH / 2f), MathUtils.random(TREE_HEIGHT / 2f),
@@ -279,15 +276,12 @@ public class ConcurrentPointQuadTreeTest implements Runnable {
 				} else {
 					rootQuad.remove(threadCollisions.poll());
 				}
-				
-				if (readerThread) {
-					Thread.sleep(rootQuad.getTotalMergeOperations() == 0 ? 10L : 2L);
-				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				concurrencyExceptionOccurred.set(true);
 			}
 		}
+		waiter.resume();
 	}
 
 	private void createNextCollision() {

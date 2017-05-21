@@ -697,6 +697,12 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 	public int getTotalMergeOperations() {
 		lock.readLock().lock();
 		int result = totalMerges;
+		if(topLeft != null) {
+			result += topLeft.getTotalMergeOperations();
+			result += topRight.getTotalMergeOperations();
+			result += bottomLeft.getTotalMergeOperations();
+			result += bottomRight.getTotalMergeOperations();
+		}
 		lock.readLock().unlock();
 		return result;
 	}

@@ -42,6 +42,7 @@ ext {
 	
 	junitVersion="4.8.1"
 	jmockVersion="2.5.1"
+	concurrentUnitVersion="0.4.2"
 }
 
 subprojects {
@@ -168,6 +169,7 @@ project(":" + rootProject.name + "-core") {
         testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+		testCompile "net.jodah:concurrentunit:$concurrentUnitVersion"
     }
 	
 	jmh {
