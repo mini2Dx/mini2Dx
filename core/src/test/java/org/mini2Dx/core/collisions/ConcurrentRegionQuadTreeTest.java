@@ -46,6 +46,7 @@ public class ConcurrentRegionQuadTreeTest implements Runnable {
 	private CollisionBox box1, box2, box3, box4;
 
 	private AtomicLong timer = new AtomicLong(0L);
+	private AtomicInteger totalThreads = new AtomicInteger();
 	private AtomicBoolean concurrencyExceptionOccurred = new AtomicBoolean(false);
 	private AtomicInteger coordinateCursor = new AtomicInteger(0);
 	private AtomicInteger collisionsFound = new AtomicInteger(0);
@@ -353,7 +354,7 @@ public class ConcurrentRegionQuadTreeTest implements Runnable {
 
 	@Override
 	public void run() {
-		boolean readerThread = Thread.currentThread().getId() % 2L == 0L;
+		boolean readerThread = totalThreads.incrementAndGet() % 2 == 0;
 		List<CollisionBox> collisions = new ArrayList<CollisionBox>();
 
 		while (timer.get() < CONCURRENCY_TEST_DURATION) {
@@ -370,8 +371,8 @@ public class ConcurrentRegionQuadTreeTest implements Runnable {
 					rootQuad.remove(threadCollisions.poll());
 				}
 
-				if (readerThread && rootQuad.getTotalMergeOperations() == 0) {
-					Thread.sleep(10L);
+				if (readerThread) {
+					Thread.sleep(rootQuad.getTotalMergeOperations() == 0 ? 10L : 2L);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
