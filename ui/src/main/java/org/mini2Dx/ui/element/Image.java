@@ -161,7 +161,7 @@ public class Image extends UiElement {
 					Gdx.app.error(LOGGING_TAG, "Could not find " + texturePath + " in texture atlas " + atlas);
 					return null;
 				}
-				textureRegion = new TextureRegion();
+				textureRegion = new TextureRegion(atlasRegion);
 				texturePath = null;
 			}
 		} else if (texturePath != null) {
