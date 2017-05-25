@@ -20,14 +20,18 @@ import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.render.ImageRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 /**
  * Wraps a {@link Texture} or {@link TextureRegion} as a {@link UiElement}
  */
 public class Image extends UiElement {
+	private static final String LOGGING_TAG = Image.class.getSimpleName();
+	
 	protected ImageRenderNode renderNode;
 	private TextureRegion textureRegion;
 
@@ -148,7 +152,16 @@ public class Image extends UiElement {
 		if (atlas != null) {
 			if (texturePath != null) {
 				TextureAtlas textureAtlas = assetManager.get(atlas, TextureAtlas.class);
-				textureRegion = new TextureRegion(textureAtlas.findRegion(texturePath));
+				if(textureAtlas == null) {
+					Gdx.app.error(LOGGING_TAG, "Could not find texture atlas " + atlas);
+					return null;
+				}
+				AtlasRegion atlasRegion = textureAtlas.findRegion(texturePath);
+				if(atlasRegion == null) {
+					Gdx.app.error(LOGGING_TAG, "Could not find " + texturePath + " in texture atlas " + atlas);
+					return null;
+				}
+				textureRegion = new TextureRegion();
 				texturePath = null;
 			}
 		} else if (texturePath != null) {
