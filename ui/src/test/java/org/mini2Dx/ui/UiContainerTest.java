@@ -11,16 +11,24 @@
  */
 package org.mini2Dx.ui;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.controller.ControllerType;
 import org.mini2Dx.core.controller.button.XboxOneButton;
 import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.AlignedModal;
-import org.mini2Dx.ui.element.Modal;
+import org.mini2Dx.ui.element.UiElement;
+import org.mini2Dx.ui.layout.ScreenSize;
+import org.mini2Dx.ui.listener.UiContainerListener;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
@@ -30,8 +38,9 @@ import junit.framework.Assert;
 /**
  * Unit tests for {@link UiContainer}
  */
-public class UiContainerTest {
+public class UiContainerTest implements UiContainerListener {
 	private final Mockery mockery = new Mockery();
+	private final Set<String> listenerEvents = new HashSet<String>();
 	
 	private GameContainer gameContainer;
 	private AssetManager assetManager;
@@ -57,11 +66,30 @@ public class UiContainerTest {
 		});
 		
 		uiContainer = new UiContainer(gameContainer, assetManager);
+		uiContainer.addListener(this);
 	}
 	
 	@After
 	public void teardown() {
 		mockery.assertIsSatisfied();
+	}
+	
+	@Test
+	public void testDeferredInputSourceChangeNotification() {
+		uiContainer.setLastInputSource(InputSource.TOUCHSCREEN);
+	
+		Assert.assertEquals(true, listenerEvents.isEmpty());
+		uiContainer.update(1f);
+		Assert.assertEquals(true, listenerEvents.contains("inputSourceChanged"));
+	}
+	
+	@Test
+	public void testDeferredControllerTypeChangeNotification() {
+		uiContainer.setLastControllerType(ControllerType.PS4);
+	
+		Assert.assertEquals(true, listenerEvents.isEmpty());
+		uiContainer.update(1f);
+		Assert.assertEquals(true, listenerEvents.contains("controllerTypeChanged"));
 	}
 	
 	@Test
@@ -144,5 +172,56 @@ public class UiContainerTest {
 		uiContainer.buttonDown(null, XboxOneButton.A);
 		Assert.assertEquals(true, uiContainer.buttonUp(null, XboxOneButton.A));
 		Assert.assertEquals(false, uiContainer.buttonUp(null, XboxOneButton.A));
+	}
+
+	@Override
+	public void onScreenSizeChanged(ScreenSize screenSize) {
+		listenerEvents.add("onScreenSizeChanged");
+	}
+
+	@Override
+	public void preUpdate(UiContainer container, float delta) {
+		listenerEvents.add("preUpdate");
+	}
+
+	@Override
+	public void postUpdate(UiContainer container, float delta) {
+		listenerEvents.add("postUpdate");
+	}
+
+	@Override
+	public void preInterpolate(UiContainer container, float alpha) {
+		listenerEvents.add("preInterpolate");
+	}
+
+	@Override
+	public void postInterpolate(UiContainer container, float alpha) {
+		listenerEvents.add("postInterpolate");
+	}
+
+	@Override
+	public void preRender(UiContainer container, Graphics g) {
+		listenerEvents.add("preRender");
+	}
+
+	@Override
+	public void postRender(UiContainer container, Graphics g) {
+		listenerEvents.add("postRender");
+	}
+
+	@Override
+	public void inputSourceChanged(UiContainer container, InputSource oldInputSource, InputSource newInputSource) {
+		listenerEvents.add("inputSourceChanged");
+	}
+
+	@Override
+	public void controllerTypeChanged(UiContainer container, ControllerType oldControllerType,
+			ControllerType newControllerType) {
+		listenerEvents.add("controllerTypeChanged");
+	}
+
+	@Override
+	public void onElementAction(UiContainer container, UiElement element) {
+		listenerEvents.add("onElementAction");
 	}
 }

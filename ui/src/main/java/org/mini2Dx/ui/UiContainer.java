@@ -68,8 +68,8 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 	private final UiContainerRenderTree renderTree;
 
-	private InputSource lastInputSource;
-	private ControllerType lastControllerType = ControllerType.UNKNOWN;
+	private InputSource lastInputSource, nextInputSource;
+	private ControllerType lastControllerType = ControllerType.UNKNOWN, nextControllerType = ControllerType.UNKNOWN;
 	private int width, height;
 	private int lastMouseX, lastMouseY;
 	private float scaleX = 1f;
@@ -134,9 +134,13 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 *            The time since the last frame (in seconds)
 	 */
 	public void update(float delta) {
+		updateLastInputSource();
+		updateLastControllerType();
 		if (!isThemeApplied()) {
 			if (!themeWarningIssued) {
-				Gdx.app.error(LOGGING_TAG, "No theme applied to UI - cannot update or render UI.");
+				if(Gdx.app != null) {
+					Gdx.app.error(LOGGING_TAG, "No theme applied to UI - cannot update or render UI.");
+				}
 				themeWarningIssued = true;
 			}
 			return;
@@ -742,6 +746,18 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	public InputSource getLastInputSource() {
 		return lastInputSource;
 	}
+	
+	private void updateLastInputSource() {
+		if (nextInputSource == null) {
+			return;
+		}
+		if (this.lastInputSource.equals(nextInputSource)) {
+			return;
+		}
+		InputSource oldInputSource = this.lastInputSource;
+		this.lastInputSource = nextInputSource;
+		notifyInputSourceChange(oldInputSource, lastInputSource);
+	}
 
 	/**
 	 * Sets the last {@link InputSource} used on the {@link UiContainer}
@@ -750,15 +766,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 *            The {@link InputSource} last used
 	 */
 	public void setLastInputSource(InputSource lastInputSource) {
-		if (lastInputSource == null) {
-			return;
-		}
-		if (this.lastInputSource.equals(lastInputSource)) {
-			return;
-		}
-		InputSource oldInputSource = this.lastInputSource;
-		this.lastInputSource = lastInputSource;
-		notifyInputSourceChange(oldInputSource, lastInputSource);
+		this.nextInputSource = lastInputSource;
 	}
 
 	/**
@@ -769,6 +777,18 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	public ControllerType getLastControllerType() {
 		return lastControllerType;
 	}
+	
+	private void updateLastControllerType() {
+		if (nextControllerType == null) {
+			return;
+		}
+		if (this.lastControllerType.equals(nextControllerType)) {
+			return;
+		}
+		ControllerType oldControllerType = this.lastControllerType;
+		this.lastControllerType = nextControllerType;
+		notifyControllerTypeChange(oldControllerType, lastControllerType);
+	}
 
 	/**
 	 * Sets the last {@link ControllerType} used on the {@link UiContainer}
@@ -777,15 +797,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 *            The {@link ControllerType} last used
 	 */
 	public void setLastControllerType(ControllerType lastControllerType) {
-		if (lastControllerType == null) {
-			return;
-		}
-		if (this.lastControllerType.equals(lastControllerType)) {
-			return;
-		}
-		ControllerType oldControllerType = this.lastControllerType;
-		this.lastControllerType = lastControllerType;
-		notifyControllerTypeChange(oldControllerType, lastControllerType);
+		this.nextControllerType = lastControllerType;
 	}
 
 	/**
