@@ -33,8 +33,8 @@ public class TabStyleRuleset extends StyleRuleset<TabStyleRule> {
 	}
 
 	@Override
-	public TabStyleRule getStyleRule(ScreenSize screenSize) {
-		return getStyleRule(screenSize, rules);
+	public TabStyleRule getStyleRule(ScreenSize screenSize, float screenSizeScale) {
+		return getStyleRule(screenSize, screenSizeScale, rules);
 	}
 
 	@Override

@@ -36,11 +36,11 @@ import com.badlogic.gdx.utils.Clipboard;
 /**
  * {@link RenderNode} implementation for {@link TextBox}
  */
-public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>implements TextInputableRenderNode {
+public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule> implements TextInputableRenderNode {
 	private static final float CURSOR_VISIBLE_DURATION = 0.5f;
 	private static final GlyphLayout GLYPH_LAYOUT = new GlyphLayout();
 	private static final BitmapFont DEFAULT_FONT = new BitmapFont(true);
-	
+
 	private final Clipboard clipboard = Gdx.app.getClipboard();
 
 	private int cursor;
@@ -48,7 +48,7 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 	private boolean cursorVisible;
 	private float renderCursorX;
 	private float renderCursorHeight;
-	
+
 	protected LayoutRuleset layoutRuleset;
 	protected BitmapFontCache bitmapFontCache = DEFAULT_FONT.newFontCache();
 
@@ -56,10 +56,10 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 		super(parent, element);
 		layoutRuleset = new LayoutRuleset(element.getLayout());
 	}
-	
+
 	@Override
 	public void layout(LayoutState layoutState) {
-		if(!layoutRuleset.equals(element.getLayout())) {
+		if (!layoutRuleset.equals(element.getLayout())) {
 			layoutRuleset = new LayoutRuleset(element.getLayout());
 		}
 		super.layout(layoutState);
@@ -113,23 +113,24 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if(layoutRuleset.isHiddenByInputSource(layoutState)) {
+		if (layoutRuleset.isHiddenByInputSource(layoutState)) {
 			return 0f;
 		}
 		float layoutRuleResult = layoutRuleset.getPreferredWidth(layoutState);
-		if(layoutRuleResult <= 0f) {
+		if (layoutRuleResult <= 0f) {
 			hiddenByLayoutRule = true;
 			return 0f;
 		} else {
 			hiddenByLayoutRule = false;
 		}
-		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft() - style.getMarginRight();
+		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft()
+				- style.getMarginRight();
 	}
 
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
 		float result = style.getFontSize();
-		if(result < style.getMinHeight()) {
+		if (result < style.getMinHeight()) {
 			return style.getMinHeight();
 		}
 		return result;
@@ -147,13 +148,14 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 
 	@Override
 	protected TextBoxStyleRule determineStyleRule(LayoutState layoutState) {
-		if(bitmapFontCache != null) {
+		if (bitmapFontCache != null) {
 			bitmapFontCache.clear();
 			bitmapFontCache = null;
 		}
-		TextBoxStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
-		
-		if(result == null) {
+		TextBoxStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
+				layoutState.getScreenSizeScale());
+
+		if (result == null) {
 			bitmapFontCache = DEFAULT_FONT.newFontCache();
 		} else {
 			bitmapFontCache = result.getBitmapFont().newFontCache();
@@ -235,7 +237,7 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 				params.setMouseY(screenY);
 				beginAction(EventTrigger.getTriggerForMouseClick(button), params);
 				EventTriggerParamsPool.release(params);
-				
+
 				switch (Mdx.os) {
 				case ANDROID:
 				case IOS:
@@ -422,7 +424,7 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 			if (style == null) {
 				return;
 			}
-			if(cursor > element.getValue().length()) {
+			if (cursor > element.getValue().length()) {
 				GLYPH_LAYOUT.setText(bitmapFontCache.getFont(), element.getValue());
 			} else {
 				GLYPH_LAYOUT.setText(bitmapFontCache.getFont(), element.getValue().substring(0, cursor));
@@ -431,15 +433,15 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 			break;
 		}
 	}
-	
+
 	public void updateBitmapFontCache() {
-		if(style == null) {
+		if (style == null) {
 			return;
 		}
-		
+
 		bitmapFontCache.clear();
 		bitmapFontCache.setColor(style.getColor());
-		bitmapFontCache.addText(element.getValue(), 0f, 0f, preferredContentWidth, 
+		bitmapFontCache.addText(element.getValue(), 0f, 0f, preferredContentWidth,
 				HorizontalAlignment.LEFT.getAlignValue(), true);
 	}
 
@@ -447,10 +449,10 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule>impl
 		this.renderCursorX = renderX;
 		this.renderCursorHeight = renderHeight;
 	}
-	
+
 	@Override
 	public void setState(NodeState state) {
-		if(getState() == NodeState.ACTION) {
+		if (getState() == NodeState.ACTION) {
 			return;
 		}
 		super.setState(state);

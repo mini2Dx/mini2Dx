@@ -19,7 +19,7 @@ import org.mini2Dx.ui.style.ContainerStyleRule;
  * {@link RenderNode} implementation for {@link AbsoluteContainer}
  */
 public class AbsoluteContainerRenderNode extends ContainerRenderNode {
-	
+
 	public AbsoluteContainerRenderNode(ParentRenderNode<?, ?> parent, AbsoluteContainer container) {
 		super(parent, container);
 	}
@@ -36,6 +36,7 @@ public class AbsoluteContainerRenderNode extends ContainerRenderNode {
 
 	@Override
 	protected ContainerStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(((AbsoluteContainer) element), layoutState.getScreenSize());
+		return layoutState.getTheme().getStyleRule(((AbsoluteContainer) element), layoutState.getScreenSize(),
+				layoutState.getScreenSizeScale());
 	}
 }

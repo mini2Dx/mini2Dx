@@ -41,8 +41,8 @@ public class SelectStyleRuleset extends StyleRuleset<SelectStyleRule> {
 	}
 
 	@Override
-	public SelectStyleRule getStyleRule(ScreenSize screenSize) {
-		return getStyleRule(screenSize, rules);
+	public SelectStyleRule getStyleRule(ScreenSize screenSize, float screenSizeScale) {
+		return getStyleRule(screenSize, screenSizeScale, rules);
 	}
 
 	@Override

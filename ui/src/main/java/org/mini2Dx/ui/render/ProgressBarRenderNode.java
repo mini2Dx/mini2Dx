@@ -22,28 +22,28 @@ import com.badlogic.gdx.math.MathUtils;
 /**
  * {@link RenderNode} implementation for {@link ProgressBar}
  */
-public class ProgressBarRenderNode extends RenderNode<ProgressBar, ProgressBarStyleRule>{
+public class ProgressBarRenderNode extends RenderNode<ProgressBar, ProgressBarStyleRule> {
 	protected LayoutRuleset layoutRuleset;
 	private float multiplier;
 	private float fillWidth;
-	
+
 	public ProgressBarRenderNode(ParentRenderNode<?, ?> parent, ProgressBar element) {
 		super(parent, element);
 		layoutRuleset = new LayoutRuleset(element.getLayout());
 		multiplier = element.getValue() / element.getMax();
 	}
-	
+
 	@Override
 	public void layout(LayoutState layoutState) {
-		if(!layoutRuleset.equals(element.getLayout())) {
+		if (!layoutRuleset.equals(element.getLayout())) {
 			layoutRuleset = new LayoutRuleset(element.getLayout());
 		}
 		super.layout(layoutState);
 	}
-	
+
 	@Override
 	protected void renderElement(Graphics g) {
-		if(style.getBackground() != null) {
+		if (style.getBackground() != null) {
 			g.drawNinePatch(style.getBackgroundNinePatch(), getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(),
 					getInnerRenderHeight());
 		}
@@ -53,7 +53,8 @@ public class ProgressBarRenderNode extends RenderNode<ProgressBar, ProgressBarSt
 
 	@Override
 	protected ProgressBarStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
+		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
+				layoutState.getScreenSizeScale());
 	}
 
 	@Override

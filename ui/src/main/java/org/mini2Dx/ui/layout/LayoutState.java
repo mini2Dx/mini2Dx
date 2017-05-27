@@ -75,6 +75,14 @@ public class LayoutState {
 	public ScreenSize getScreenSize() {
 		return screenSize;
 	}
+	
+	/**
+	 * Returns the scale to apply to {@link ScreenSize}
+	 * @return 1f by default
+	 */
+	public float getScreenSizeScale() {
+		return uiContainerRenderTree.getScreenSizeScale();
+	}
 
 	/**
 	 * Returns the total columns the UI is split into

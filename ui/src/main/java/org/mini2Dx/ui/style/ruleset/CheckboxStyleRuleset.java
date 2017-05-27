@@ -42,8 +42,8 @@ public class CheckboxStyleRuleset extends StyleRuleset<CheckboxStyleRule> {
 	}
 
 	@Override
-	public CheckboxStyleRule getStyleRule(ScreenSize screenSize) {
-		return getStyleRule(screenSize, rules);
+	public CheckboxStyleRule getStyleRule(ScreenSize screenSize, float screenSizeScale) {
+		return getStyleRule(screenSize, screenSizeScale, rules);
 	}
 
 	@Override

@@ -62,7 +62,7 @@ public class GridUiNavigation implements UiNavigation {
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
 		while (screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
-			if (nextSize.getMinSize() > screenSize.getMinSize()) {
+			if (nextSize.getMinSize(1f) > screenSize.getMinSize(1f)) {
 				continue;
 			}
 			if (!screenSizeColumns.containsKey(nextSize)) {

@@ -84,6 +84,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 	private boolean keyboardNavigationEnabled = false;
 	private boolean textInputIgnoredFirstEnter = false;
+	private ScreenSizeScaleMode screenSizeScaleMode = ScreenSizeScaleMode.NO_SCALING;
 
 	/**
 	 * Constructor
@@ -138,7 +139,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		updateLastControllerType();
 		if (!isThemeApplied()) {
 			if (!themeWarningIssued) {
-				if(Gdx.app != null) {
+				if (Gdx.app != null) {
 					Gdx.app.error(LOGGING_TAG, "No theme applied to UI - cannot update or render UI.");
 				}
 				themeWarningIssued = true;
@@ -649,7 +650,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		}
 		ActionableRenderNode actionableRenderNode = (ActionableRenderNode) renderNode
 				.getElementById(actionable.getId());
-		if(actionableRenderNode.getState() != NodeState.HOVER) {
+		if (actionableRenderNode.getState() != NodeState.HOVER) {
 			return;
 		}
 		actionableRenderNode.setState(NodeState.NORMAL);
@@ -734,8 +735,12 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 *            Scaling along the Y axis
 	 */
 	public void setScale(float scaleX, float scaleY) {
+		if(scaleX == this.scaleX && scaleY == this.scaleY) {
+			return;
+		}
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
+		renderTree.onResize(width, height);
 	}
 
 	/**
@@ -746,7 +751,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	public InputSource getLastInputSource() {
 		return lastInputSource;
 	}
-	
+
 	private void updateLastInputSource() {
 		if (nextInputSource == null) {
 			return;
@@ -777,7 +782,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	public ControllerType getLastControllerType() {
 		return lastControllerType;
 	}
-	
+
 	private void updateLastControllerType() {
 		if (nextControllerType == null) {
 			return;
@@ -859,6 +864,29 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 */
 	public void setKeyboardNavigationEnabled(boolean keyboardNavigationEnabled) {
 		this.keyboardNavigationEnabled = keyboardNavigationEnabled;
+	}
+
+	/**
+	 * Returns the scaling mode used for {@link ScreenSize} values
+	 * @return {@link ScreenSizeScaleMode#NO_SCALING} by default
+	 */
+	public ScreenSizeScaleMode getScreenSizeScaleMode() {
+		return screenSizeScaleMode;
+	}
+
+	/**
+	 * Sets the scaling mode used for {@link ScreenSize} values
+	 * @param screenSizeScaleMode The {@link ScreenSizeScaleMode} to set
+	 */
+	public void setScreenSizeScaleMode(ScreenSizeScaleMode screenSizeScaleMode) {
+		if(screenSizeScaleMode == null) {
+			return;
+		}
+		if(this.screenSizeScaleMode == screenSizeScaleMode) {
+			return;
+		}
+		this.screenSizeScaleMode = screenSizeScaleMode;
+		renderTree.onResize(width, height);
 	}
 
 	/**

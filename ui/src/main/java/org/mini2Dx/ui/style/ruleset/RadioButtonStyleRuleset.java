@@ -41,8 +41,8 @@ public class RadioButtonStyleRuleset extends StyleRuleset<RadioButtonStyleRule> 
 	}
 
 	@Override
-	public RadioButtonStyleRule getStyleRule(ScreenSize screenSize) {
-		return getStyleRule(screenSize, rules);
+	public RadioButtonStyleRule getStyleRule(ScreenSize screenSize, float screenSizeScale) {
+		return getStyleRule(screenSize, screenSizeScale, rules);
 	}
 
 	@Override

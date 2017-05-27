@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.badlogic.gdx.math.MathUtils;
+
 /**
  * Represents different screen size categories
  */
@@ -69,8 +71,8 @@ public enum ScreenSize {
 	 * Returns the minimum screen size in pixels
 	 * @return
 	 */
-	public int getMinSize() {
-		return minSize;
+	public int getMinSize(float scale) {
+		return MathUtils.round(minSize * scale);
 	}
 	
 	/**

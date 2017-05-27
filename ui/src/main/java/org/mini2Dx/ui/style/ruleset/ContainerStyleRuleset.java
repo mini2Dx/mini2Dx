@@ -41,8 +41,8 @@ public class ContainerStyleRuleset extends StyleRuleset<ContainerStyleRule> {
 	}
 
 	@Override
-	public ContainerStyleRule getStyleRule(ScreenSize screenSize) {
-		return getStyleRule(screenSize, rules);
+	public ContainerStyleRule getStyleRule(ScreenSize screenSize, float screenSizeScale) {
+		return getStyleRule(screenSize, screenSizeScale, rules);
 	}
 
 	@Override

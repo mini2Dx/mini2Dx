@@ -33,8 +33,8 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 			return;
 		}
 		textureRegion.setFlip(element.isFlipX(), element.isFlipY());
-		g.drawTextureRegion(textureRegion, getContentRenderX(), getContentRenderY(),
-				getContentRenderWidth(), getContentRenderHeight());
+		g.drawTextureRegion(textureRegion, getContentRenderX(), getContentRenderY(), getContentRenderWidth(),
+				getContentRenderHeight());
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 		} else {
 			result = textureRegion.getRegionHeight();
 		}
-		if(result < style.getMinHeight()) {
+		if (result < style.getMinHeight()) {
 			return style.getMinHeight();
 		}
 		return result;
@@ -85,6 +85,7 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 
 	@Override
 	protected StyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
+		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
+				layoutState.getScreenSizeScale());
 	}
 }

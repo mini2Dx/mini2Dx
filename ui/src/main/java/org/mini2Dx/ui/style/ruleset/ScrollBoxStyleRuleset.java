@@ -33,8 +33,8 @@ public class ScrollBoxStyleRuleset extends StyleRuleset<ScrollBoxStyleRule> {
 	}
 
 	@Override
-	public ScrollBoxStyleRule getStyleRule(ScreenSize screenSize) {
-		return getStyleRule(screenSize, rules);
+	public ScrollBoxStyleRule getStyleRule(ScreenSize screenSize, float screenSizeScale) {
+		return getStyleRule(screenSize, screenSizeScale, rules);
 	}
 
 	@Override

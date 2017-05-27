@@ -39,6 +39,7 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, ParentS
 	private List<ScreenSizeListener> screenSizeListeners;
 	private ScreenSize currentScreenSize = ScreenSize.XS;
 	private boolean screenSizeChanged = false;
+	private float screenSizeScale = 1f;
 
 	public UiContainerRenderTree(UiContainer uiContainer, AssetManager assetManager) {
 		super(null, uiContainer);
@@ -98,17 +99,30 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, ParentS
 	}
 
 	public void onResize(int width, int height) {
+		screenSizeScale = 1f;
+		switch(element.getScreenSizeScaleMode()) {
+		case LINEAR:
+			screenSizeScale = element.getScaleX();
+			break;
+		case INVERSE:
+			screenSizeScale = 1f / element.getScaleX();
+			break;
+		case NO_SCALING:
+		default:
+			break;
+		}
+		
 		ScreenSize screenSize = ScreenSize.XS;
-		if (width >= ScreenSize.SM.getMinSize()) {
+		if (width >= ScreenSize.SM.getMinSize(screenSizeScale)) {
 			screenSize = ScreenSize.SM;
 		}
-		if (width >= ScreenSize.MD.getMinSize()) {
+		if (width >= ScreenSize.MD.getMinSize(screenSizeScale)) {
 			screenSize = ScreenSize.MD;
 		}
-		if (width >= ScreenSize.LG.getMinSize()) {
+		if (width >= ScreenSize.LG.getMinSize(screenSizeScale)) {
 			screenSize = ScreenSize.LG;
 		}
-		if (width >= ScreenSize.XL.getMinSize()) {
+		if (width >= ScreenSize.XL.getMinSize(screenSizeScale)) {
 			screenSize = ScreenSize.XL;
 		}
 		screenSizeChanged = true;
@@ -194,5 +208,9 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, ParentS
 
 	public ControllerType getLastControllerType() {
 		return ((UiContainer) element).getLastControllerType();
+	}
+
+	public float getScreenSizeScale() {
+		return screenSizeScale;
 	}
 }

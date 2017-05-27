@@ -41,8 +41,8 @@ public class ButtonStyleRuleset extends StyleRuleset<ButtonStyleRule> {
 	}
 
 	@Override
-	public ButtonStyleRule getStyleRule(ScreenSize screenSize) {
-		return getStyleRule(screenSize, rules);
+	public ButtonStyleRule getStyleRule(ScreenSize screenSize, float screenSizeScale) {
+		return getStyleRule(screenSize, screenSizeScale, rules);
 	}
 
 	@Override

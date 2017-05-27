@@ -30,20 +30,18 @@ import com.badlogic.gdx.Input.Buttons;
  */
 public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> implements ActionableRenderNode {
 	protected LayoutRuleset layoutRuleset;
-	
+
 	public ButtonRenderNode(ParentRenderNode<?, ?> parent, Button element) {
 		super(parent, element);
 		layoutRuleset = new LayoutRuleset(element.getLayout());
 	}
-	
+
 	@Override
 	public ActionableRenderNode mouseDown(int screenX, int screenY, int pointer, int button) {
 		if (!isIncludedInRender()) {
 			return null;
 		}
-		if (button != Buttons.LEFT &&
-				button != Buttons.RIGHT &&
-				button != Buttons.MIDDLE) {
+		if (button != Buttons.LEFT && button != Buttons.RIGHT && button != Buttons.MIDDLE) {
 			return null;
 		}
 		if (!element.isEnabled()) {
@@ -66,14 +64,14 @@ public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> 
 		} else {
 			setState(NodeState.NORMAL);
 		}
-		
+
 		MouseEventTriggerParams params = EventTriggerParamsPool.allocateMouseParams();
 		params.setMouseX(screenX);
 		params.setMouseY(screenY);
 		endAction(EventTrigger.getTriggerForMouseClick(button), params);
 		EventTriggerParamsPool.release(params);
 	}
-	
+
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		if (getState() == NodeState.ACTION) {
@@ -81,7 +79,7 @@ public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> 
 		}
 		return super.mouseMoved(screenX, screenY);
 	}
-	
+
 	@Override
 	protected void renderElement(Graphics g) {
 		NinePatch ninePatch = style.getNormalNinePatch();
@@ -100,25 +98,27 @@ public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> 
 			ninePatch = style.getDisabledNinePatch();
 		}
 
-		if(ninePatch != null) {
-			g.drawNinePatch(ninePatch, getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(), getInnerRenderHeight());
+		if (ninePatch != null) {
+			g.drawNinePatch(ninePatch, getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(),
+					getInnerRenderHeight());
 		}
 		super.renderElement(g);
 	}
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if(layoutRuleset.isHiddenByInputSource(layoutState)) {
+		if (layoutRuleset.isHiddenByInputSource(layoutState)) {
 			return 0f;
 		}
 		float layoutRuleResult = layoutRuleset.getPreferredWidth(layoutState);
-		if(layoutRuleResult <= 0f) {
+		if (layoutRuleResult <= 0f) {
 			hiddenByLayoutRule = true;
 			return 0f;
 		} else {
 			hiddenByLayoutRule = false;
 		}
-		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft() - style.getMarginRight();
+		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft()
+				- style.getMarginRight();
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> 
 				maxHeight = height;
 			}
 		}
-		if(maxHeight < style.getMinHeight()) {
+		if (maxHeight < style.getMinHeight()) {
 			return style.getMinHeight();
 		}
 		return maxHeight;
@@ -146,10 +146,11 @@ public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> 
 	protected float determineYOffset(LayoutState layoutState) {
 		return 0f;
 	}
-	
+
 	@Override
 	protected ButtonStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
+		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
+				layoutState.getScreenSizeScale());
 	}
 
 	@Override

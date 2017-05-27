@@ -27,7 +27,7 @@ import com.badlogic.gdx.utils.Array;
  */
 public abstract class StyleRuleset<T extends StyleRule> {
 	
-	public abstract T getStyleRule(ScreenSize screenSize);
+	public abstract T getStyleRule(ScreenSize screenSize, float screenSizeScale);
 	
 	public abstract void putStyleRule(ScreenSize screenSize, T rule);
 	
@@ -37,11 +37,11 @@ public abstract class StyleRuleset<T extends StyleRule> {
 	
 	public abstract void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager);
 	
-	protected T getStyleRule(ScreenSize screenSize, Map<ScreenSize, T> rules) {
+	protected T getStyleRule(ScreenSize screenSize, float screenSizeScale, Map<ScreenSize, T> rules) {
 		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
 		while(screenSizes.hasNext()) {
 			ScreenSize nextSize = screenSizes.next();
-			if(nextSize.getMinSize() > screenSize.getMinSize()) {
+			if(nextSize.getMinSize(screenSizeScale) > screenSize.getMinSize(screenSizeScale)) {
 				continue;
 			}
 			if(!rules.containsKey(nextSize)) {

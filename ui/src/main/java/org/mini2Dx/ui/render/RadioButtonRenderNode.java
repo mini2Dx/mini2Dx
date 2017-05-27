@@ -57,8 +57,8 @@ public class RadioButtonRenderNode extends RenderNode<RadioButton, RadioButtonSt
 	public boolean mouseMoved(int screenX, int screenY) {
 		boolean result = super.mouseMoved(screenX, screenY);
 		hoveredIndex = -1;
-		for(int i = 0; i < buttonRenderPositions.size(); i++) {
-			if(buttonRenderPositions.get(i).contains(screenX - getContentRenderX(), screenY - getContentRenderY())) {
+		for (int i = 0; i < buttonRenderPositions.size(); i++) {
+			if (buttonRenderPositions.get(i).contains(screenX - getContentRenderX(), screenY - getContentRenderY())) {
 				hoveredIndex = i;
 				break;
 			}
@@ -332,7 +332,8 @@ public class RadioButtonRenderNode extends RenderNode<RadioButton, RadioButtonSt
 
 	@Override
 	protected RadioButtonStyleRule determineStyleRule(LayoutState layoutState) {
-		RadioButtonStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
+		RadioButtonStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
+				layoutState.getScreenSizeScale());
 
 		if (bitmapFontCache != null) {
 			bitmapFontCache.clear();

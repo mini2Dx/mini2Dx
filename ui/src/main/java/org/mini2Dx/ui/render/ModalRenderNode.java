@@ -76,7 +76,7 @@ public abstract class ModalRenderNode extends ContainerRenderNode implements Nav
 				controllerHotkeys.put(hotKeyOperation.getControllerButton().getAbsoluteValue(),
 						hotKeyOperation.getActionable().getId());
 			} else {
-				if(hotKeyOperation.getControllerButton() == null) {
+				if (hotKeyOperation.getControllerButton() == null) {
 					controllerHotkeys.clear();
 				} else {
 					controllerHotkeys.remove(hotKeyOperation.getControllerButton().getAbsoluteValue());
@@ -88,7 +88,7 @@ public abstract class ModalRenderNode extends ContainerRenderNode implements Nav
 			if (hotKeyOperation.isMapOperation()) {
 				keyboardHotkeys.put(hotKeyOperation.getKeycode(), hotKeyOperation.getActionable().getId());
 			} else {
-				if(hotKeyOperation.getKeycode() == Integer.MAX_VALUE) {
+				if (hotKeyOperation.getKeycode() == Integer.MAX_VALUE) {
 					keyboardHotkeys.clear();
 				} else {
 					keyboardHotkeys.remove(hotKeyOperation.getKeycode());
@@ -108,7 +108,8 @@ public abstract class ModalRenderNode extends ContainerRenderNode implements Nav
 
 	@Override
 	protected ContainerStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(((Modal) element), layoutState.getScreenSize());
+		return layoutState.getTheme().getStyleRule(((Modal) element), layoutState.getScreenSize(),
+				layoutState.getScreenSizeScale());
 	}
 
 }

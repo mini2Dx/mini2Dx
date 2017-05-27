@@ -32,6 +32,7 @@ public class RowRenderNode extends ParentRenderNode<Row, ParentStyleRule> {
 
 	@Override
 	protected ParentStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
+		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
+				layoutState.getScreenSizeScale());
 	}
 }

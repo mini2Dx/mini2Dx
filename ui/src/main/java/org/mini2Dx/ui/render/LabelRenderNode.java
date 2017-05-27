@@ -115,19 +115,20 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 			bitmapFontCache.clear();
 			bitmapFontCache = null;
 			nullAnimation.reset();
-			
+
 			if (element.getTextAnimation() != null) {
 				element.getTextAnimation().reset();
 			}
 		}
 
-		LabelStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
+		LabelStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
+				layoutState.getScreenSizeScale());
 		if (result.getBitmapFont() == null) {
 			bitmapFontCache = DEFAULT_FONT.newFontCache();
 		} else {
 			bitmapFontCache = result.getBitmapFont().newFontCache();
 		}
-		
+
 		if (element.getColor() != null) {
 			bitmapFontCache.setColor(element.getColor());
 		} else if (result.getColor() != null) {
@@ -138,14 +139,14 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 		}
 		return result;
 	}
-	
+
 	public void updateBitmapFontCache() {
 		if (style == null) {
 			return;
 		}
 		bitmapFontCache.clear();
 		nullAnimation.reset();
-		
+
 		GLYPH_LAYOUT.setText(bitmapFontCache.getFont(), element.getText(), Color.WHITE, preferredContentWidth,
 				element.getHorizontalAlignment().getAlignValue(), true);
 		if (GLYPH_LAYOUT.height == getPreferredContentHeight()) {

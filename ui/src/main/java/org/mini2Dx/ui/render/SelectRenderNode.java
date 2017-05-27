@@ -34,7 +34,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 /**
  * {@link RenderNode} implementation for {@link Select}
  */
-public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule>implements ActionableRenderNode {
+public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> implements ActionableRenderNode {
 	private static final GlyphLayout glyphLayout = new GlyphLayout();
 
 	private final CollisionBox leftButton = new CollisionBox();
@@ -119,7 +119,7 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule>impl
 						leftButton.getRenderY(), leftButton.getRenderWidth(), leftButton.getRenderHeight());
 				break;
 			}
-			
+
 			switch (rightButtonState) {
 			case ACTION:
 				g.drawNinePatch(rightButtonStyleRule.getActionNinePatch(), rightButton.getRenderX(),
@@ -165,23 +165,23 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule>impl
 		g.setColor(tmpColor);
 		g.setFont(tmpFont);
 	}
-	
+
 	@Override
 	public void setState(NodeState state) {
-		switch(state) {
+		switch (state) {
 		case HOVER:
-			if(leftButtonState != NodeState.ACTION) {
+			if (leftButtonState != NodeState.ACTION) {
 				leftButtonState = NodeState.HOVER;
 			}
-			if(rightButtonState != NodeState.ACTION) {
+			if (rightButtonState != NodeState.ACTION) {
 				rightButtonState = NodeState.HOVER;
 			}
 			break;
 		case NORMAL:
-			if(leftButtonState != NodeState.ACTION) {
+			if (leftButtonState != NodeState.ACTION) {
 				leftButtonState = NodeState.NORMAL;
 			}
-			if(rightButtonState != NodeState.ACTION) {
+			if (rightButtonState != NodeState.ACTION) {
 				rightButtonState = NodeState.NORMAL;
 			}
 			break;
@@ -221,7 +221,7 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule>impl
 			element.nextOption();
 			rightButtonState = NodeState.NORMAL;
 		}
-		
+
 		MouseEventTriggerParams params = EventTriggerParamsPool.allocateMouseParams();
 		params.setMouseX(screenX);
 		params.setMouseY(screenY);
@@ -277,7 +277,7 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule>impl
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
 		leftButton.setWidth(style.getButtonWidth());
 		rightButton.setWidth(style.getButtonWidth());
-		
+
 		if (element.getLayout().isHiddenByInputSource(layoutState)) {
 			return 0f;
 		}
@@ -308,9 +308,9 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule>impl
 					HorizontalAlignment.CENTER.getAlignValue(), true);
 		}
 		labelHeight = glyphLayout.height;
-		
+
 		float result = glyphLayout.height;
-		if(style.getMinHeight() > 0 && result < style.getMinHeight()) {
+		if (style.getMinHeight() > 0 && result < style.getMinHeight()) {
 			result = style.getMinHeight();
 		}
 		leftButton.setHeight(result);
@@ -330,34 +330,35 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule>impl
 
 	@Override
 	protected SelectStyleRule determineStyleRule(LayoutState layoutState) {
-		SelectStyleRule selectStyleRule = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
+		SelectStyleRule selectStyleRule = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
+				layoutState.getScreenSizeScale());
 		if (selectStyleRule.getLeftButtonStyle() != null) {
 			leftButtonStyleRule = layoutState.getTheme().getButtonStyleRule(selectStyleRule.getLeftButtonStyle(),
-					layoutState.getScreenSize());
+					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
 		} else {
 			leftButtonStyleRule = layoutState.getTheme().getButtonStyleRule(UiTheme.DEFAULT_STYLE_ID,
-					layoutState.getScreenSize());
+					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
 		}
 		if (selectStyleRule.getRightButtonStyle() != null) {
 			rightButtonStyleRule = layoutState.getTheme().getButtonStyleRule(selectStyleRule.getRightButtonStyle(),
-					layoutState.getScreenSize());
+					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
 		} else {
 			rightButtonStyleRule = layoutState.getTheme().getButtonStyleRule(UiTheme.DEFAULT_STYLE_ID,
-					layoutState.getScreenSize());
+					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
 		}
 		if (selectStyleRule.getEnabledLabelStyle() != null) {
 			enabledStyleRule = layoutState.getTheme().getLabelStyleRule(selectStyleRule.getEnabledLabelStyle(),
-					layoutState.getScreenSize());
+					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
 		} else {
 			enabledStyleRule = layoutState.getTheme().getLabelStyleRule(UiTheme.DEFAULT_STYLE_ID,
-					layoutState.getScreenSize());
+					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
 		}
 		if (selectStyleRule.getDisabledLabelStyle() != null) {
 			disabledStyleRule = layoutState.getTheme().getLabelStyleRule(selectStyleRule.getDisabledLabelStyle(),
-					layoutState.getScreenSize());
+					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
 		} else {
 			disabledStyleRule = layoutState.getTheme().getLabelStyleRule(UiTheme.DEFAULT_STYLE_ID,
-					layoutState.getScreenSize());
+					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
 		}
 		return selectStyleRule;
 	}

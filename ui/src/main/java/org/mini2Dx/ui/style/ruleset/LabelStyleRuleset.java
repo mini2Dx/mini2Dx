@@ -41,8 +41,8 @@ public class LabelStyleRuleset extends StyleRuleset<LabelStyleRule> {
 	}
 
 	@Override
-	public LabelStyleRule getStyleRule(ScreenSize screenSize) {
-		return getStyleRule(screenSize, rules);
+	public LabelStyleRule getStyleRule(ScreenSize screenSize, float screenSizeScale) {
+		return getStyleRule(screenSize, screenSizeScale, rules);
 	}
 
 	@Override

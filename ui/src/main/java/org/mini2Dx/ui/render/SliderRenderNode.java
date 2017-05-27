@@ -50,18 +50,18 @@ public class SliderRenderNode extends RenderNode<Slider, SliderStyleRule> implem
 		if (valueDeltaPerFrame != 0f) {
 			element.setValue(element.getValue() + valueDeltaPerFrame);
 		}
-		
-		if(dragging) {
+
+		if (dragging) {
 			float relativeX = Math.max(0, Gdx.input.getX() - getContentRenderX());
 			element.setValue(relativeX / getContentRenderWidth());
 			determineSliderPosiitonByElementValue(getContentRenderWidth());
 			System.out.println(getState());
 		}
 	}
-	
+
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		if(dragging) {
+		if (dragging) {
 			return true;
 		}
 		return super.mouseMoved(screenX, screenY);
@@ -80,7 +80,7 @@ public class SliderRenderNode extends RenderNode<Slider, SliderStyleRule> implem
 		}
 		if (outerArea.contains(screenX, screenY)) {
 			setState(NodeState.ACTION);
-			
+
 			if (sliderPosition.contains(screenX - getContentRenderX(), screenY - getContentRenderY())) {
 				dragging = true;
 			} else {
@@ -262,7 +262,8 @@ public class SliderRenderNode extends RenderNode<Slider, SliderStyleRule> implem
 
 	@Override
 	protected SliderStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
+		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
+				layoutState.getScreenSizeScale());
 	}
 
 	@Override

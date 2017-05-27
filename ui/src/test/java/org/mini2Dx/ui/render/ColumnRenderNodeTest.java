@@ -35,7 +35,7 @@ import junit.framework.Assert;
  */
 public class ColumnRenderNodeTest {
 	private Mockery mockery;
-	private UiContainerRenderTree uiContainer;
+	private UiContainerRenderTree renderTree;
 	private UiTheme theme;
 	
 	private LayoutState layoutState;
@@ -60,7 +60,7 @@ public class ColumnRenderNodeTest {
 		mockery.setImposteriser(ClassImposteriser.INSTANCE);
 		
 		theme = mockery.mock(UiTheme.class);
-		uiContainer = mockery.mock(UiContainerRenderTree.class);
+		renderTree = mockery.mock(UiContainerRenderTree.class);
 		column.setLayout("xs-3c");
 		
 		column.setVisibility(Visibility.VISIBLE);
@@ -149,16 +149,18 @@ public class ColumnRenderNodeTest {
 	}
 	
 	private void configureParentWithWidth(final float parentWidth) {
-		layoutState = new LayoutState(uiContainer, null, theme, ScreenSize.XS, 12, parentWidth, true);
+		layoutState = new LayoutState(renderTree, null, theme, ScreenSize.XS, 12, parentWidth, true);
 		mockery.checking(new Expectations() {
 			{
 				atLeast(1).of(theme).getId();
 				will(returnValue("mock"));
-				atLeast(1).of(theme).getStyleRule(with(any(Column.class)), with(ScreenSize.XS));
+				atLeast(1).of(renderTree).getScreenSizeScale();
+				will(returnValue(1f));
+				atLeast(1).of(theme).getStyleRule(with(any(Column.class)), with(ScreenSize.XS), with(any(Float.class)));
 				will(returnValue(new ParentStyleRule()));
-				atLeast(1).of(theme).getStyleRule(with(any(Row.class)), with(ScreenSize.XS));
+				atLeast(1).of(theme).getStyleRule(with(any(Row.class)), with(ScreenSize.XS), with(any(Float.class)));
 				will(returnValue(new ParentStyleRule()));
-				atLeast(1).of(uiContainer).getLastInputSource();
+				atLeast(1).of(renderTree).getLastInputSource();
 				will(returnValue(InputSource.KEYBOARD_MOUSE));
 			}
 		});

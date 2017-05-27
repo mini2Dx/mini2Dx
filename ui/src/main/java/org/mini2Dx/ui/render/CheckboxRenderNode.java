@@ -32,7 +32,7 @@ public class CheckboxRenderNode extends RenderNode<Checkbox, CheckboxStyleRule> 
 	public CheckboxRenderNode(ParentRenderNode<?, ?> parent, Checkbox element) {
 		super(parent, element);
 	}
-	
+
 	@Override
 	public ActionableRenderNode mouseDown(int screenX, int screenY, int pointer, int button) {
 		if (!isIncludedInRender()) {
@@ -50,7 +50,7 @@ public class CheckboxRenderNode extends RenderNode<Checkbox, CheckboxStyleRule> 
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void mouseUp(int screenX, int screenY, int pointer, int button) {
 		if (getState() != NodeState.ACTION) {
@@ -61,7 +61,7 @@ public class CheckboxRenderNode extends RenderNode<Checkbox, CheckboxStyleRule> 
 		} else {
 			setState(NodeState.NORMAL);
 		}
-		
+
 		MouseEventTriggerParams params = EventTriggerParamsPool.allocateMouseParams();
 		params.setMouseX(screenX);
 		params.setMouseY(screenY);
@@ -75,16 +75,16 @@ public class CheckboxRenderNode extends RenderNode<Checkbox, CheckboxStyleRule> 
 			g.drawNinePatch(style.getBackgroundNinePatch(), getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(),
 					getInnerRenderHeight());
 		}
-		
+
 		NinePatch boxNinePatch = null;
 		TextureRegion checkTextureRegion = null;
-		
+
 		if (element.isEnabled()) {
 			boxNinePatch = style.getEnabledNinePatch();
-			
-			switch(getState()) {
+
+			switch (getState()) {
 			case HOVER:
-				if(element.isChecked()) {
+				if (element.isChecked()) {
 					checkTextureRegion = style.getEnabledCheckTextureRegion();
 				} else {
 					checkTextureRegion = style.getEnabledUncheckTextureRegion();
@@ -93,7 +93,7 @@ public class CheckboxRenderNode extends RenderNode<Checkbox, CheckboxStyleRule> 
 			case ACTION:
 			case NORMAL:
 			default:
-				if(element.isChecked()) {
+				if (element.isChecked()) {
 					checkTextureRegion = style.getEnabledCheckTextureRegion();
 				} else {
 					checkTextureRegion = style.getEnabledUncheckTextureRegion();
@@ -102,27 +102,29 @@ public class CheckboxRenderNode extends RenderNode<Checkbox, CheckboxStyleRule> 
 			}
 		} else {
 			boxNinePatch = style.getDisabledNinePatch();
-			
-			if(element.isChecked()) {
+
+			if (element.isChecked()) {
 				checkTextureRegion = style.getDisabledCheckTextureRegion();
 			} else {
 				checkTextureRegion = style.getDisabledUncheckTextureRegion();
 			}
 		}
-		
+
 		g.drawNinePatch(boxNinePatch, getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(),
 				getInnerRenderHeight());
-		if(checkTextureRegion == null) {
+		if (checkTextureRegion == null) {
 			return;
 		}
-		
-		if(element.isResponsive()) {
-			g.drawTextureRegion(checkTextureRegion, getContentRenderX() + (getContentRenderWidth() / 2) - (checkTextureRegion.getRegionWidth() / 2), getContentRenderY());
+
+		if (element.isResponsive()) {
+			g.drawTextureRegion(checkTextureRegion,
+					getContentRenderX() + (getContentRenderWidth() / 2) - (checkTextureRegion.getRegionWidth() / 2),
+					getContentRenderY());
 		} else {
 			g.drawTextureRegion(checkTextureRegion, getContentRenderX(), getContentRenderY());
 		}
 	}
-	
+
 	@Override
 	public void beginAction(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams) {
 		element.notifyActionListenersOfBeginEvent(eventTrigger, eventTriggerParams);
@@ -138,8 +140,8 @@ public class CheckboxRenderNode extends RenderNode<Checkbox, CheckboxStyleRule> 
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
 		float availableWidth = layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight()
 				- style.getMarginLeft() - style.getMarginRight();
-		
-		if(element.isResponsive()) {
+
+		if (element.isResponsive()) {
 			return availableWidth;
 		} else {
 			return style.getEnabledCheckTextureRegion().getRegionWidth();
@@ -150,10 +152,11 @@ public class CheckboxRenderNode extends RenderNode<Checkbox, CheckboxStyleRule> 
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
 		return style.getEnabledCheckTextureRegion().getRegionHeight();
 	}
-	
+
 	@Override
 	protected CheckboxStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
+		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
+				layoutState.getScreenSizeScale());
 	}
 
 	@Override

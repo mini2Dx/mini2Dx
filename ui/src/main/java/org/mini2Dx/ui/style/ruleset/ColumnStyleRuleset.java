@@ -33,8 +33,8 @@ public class ColumnStyleRuleset extends StyleRuleset<ParentStyleRule> {
 	}
 
 	@Override
-	public ParentStyleRule getStyleRule(ScreenSize screenSize) {
-		return getStyleRule(screenSize, rules);
+	public ParentStyleRule getStyleRule(ScreenSize screenSize, float screenSizeScale) {
+		return getStyleRule(screenSize, screenSizeScale, rules);
 	}
 
 	@Override

@@ -26,11 +26,12 @@ public class AlignedContainerRenderNode extends ContainerRenderNode {
 	public AlignedContainerRenderNode(ParentRenderNode<?, ?> parent, Column column) {
 		super(parent, column);
 	}
-	
+
 	@Override
 	protected float determineXOffset(LayoutState layoutState) {
-		float outerWidth = determinePreferredContentWidth(layoutState) + style.getPaddingLeft() + style.getPaddingRight() + style.getMarginLeft() + style.getMarginRight();
-		switch(((AlignedContainer) element).getHorizontalAlignment()) {
+		float outerWidth = determinePreferredContentWidth(layoutState) + style.getPaddingLeft()
+				+ style.getPaddingRight() + style.getMarginLeft() + style.getMarginRight();
+		switch (((AlignedContainer) element).getHorizontalAlignment()) {
 		case RIGHT:
 			return layoutState.getUiContainerRenderTree().getOuterWidth() - outerWidth;
 		case CENTER:
@@ -42,8 +43,9 @@ public class AlignedContainerRenderNode extends ContainerRenderNode {
 
 	@Override
 	protected float determineYOffset(LayoutState layoutState) {
-		float outerHeight = determinePreferredContentHeight(layoutState) + style.getPaddingTop() + style.getPaddingBottom() + style.getMarginTop() + style.getMarginBottom();
-		switch(((AlignedContainer) element).getVerticalAlignment()) {
+		float outerHeight = determinePreferredContentHeight(layoutState) + style.getPaddingTop()
+				+ style.getPaddingBottom() + style.getMarginTop() + style.getMarginBottom();
+		switch (((AlignedContainer) element).getVerticalAlignment()) {
 		case BOTTOM:
 			return layoutState.getUiContainerRenderTree().getOuterHeight() - outerHeight;
 		case MIDDLE:
@@ -55,7 +57,8 @@ public class AlignedContainerRenderNode extends ContainerRenderNode {
 
 	@Override
 	protected ContainerStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(((AlignedContainer) element), layoutState.getScreenSize());
+		return layoutState.getTheme().getStyleRule(((AlignedContainer) element), layoutState.getScreenSize(),
+				layoutState.getScreenSizeScale());
 	}
 
 }

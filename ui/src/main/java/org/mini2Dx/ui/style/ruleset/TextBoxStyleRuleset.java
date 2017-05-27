@@ -41,8 +41,8 @@ public class TextBoxStyleRuleset extends StyleRuleset<TextBoxStyleRule> {
 	}
 
 	@Override
-	public TextBoxStyleRule getStyleRule(ScreenSize screenSize) {
-		return getStyleRule(screenSize, rules);
+	public TextBoxStyleRule getStyleRule(ScreenSize screenSize, float screenSizeScale) {
+		return getStyleRule(screenSize, screenSizeScale, rules);
 	}
 
 	@Override
