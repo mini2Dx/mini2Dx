@@ -117,7 +117,7 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule>im
 
 	@Override
 	protected TabStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(), layoutState.getScreenSizeScale());
+		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 	}
 
 	@Override

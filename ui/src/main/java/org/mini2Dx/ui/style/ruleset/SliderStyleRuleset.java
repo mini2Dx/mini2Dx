@@ -42,8 +42,8 @@ public class SliderStyleRuleset extends StyleRuleset<SliderStyleRule> {
 	}
 
 	@Override
-	public SliderStyleRule getStyleRule(ScreenSize screenSize, float screenSizeScale) {
-		return getStyleRule(screenSize, screenSizeScale, rules);
+	public SliderStyleRule getStyleRule(ScreenSize screenSize) {
+		return getStyleRule(screenSize, rules);
 	}
 
 	@Override

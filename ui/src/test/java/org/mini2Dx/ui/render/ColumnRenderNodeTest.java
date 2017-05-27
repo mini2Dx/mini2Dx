@@ -156,9 +156,9 @@ public class ColumnRenderNodeTest {
 				will(returnValue("mock"));
 				atLeast(1).of(renderTree).getScreenSizeScale();
 				will(returnValue(1f));
-				atLeast(1).of(theme).getStyleRule(with(any(Column.class)), with(ScreenSize.XS), with(any(Float.class)));
+				atLeast(1).of(theme).getStyleRule(with(any(Column.class)), with(ScreenSize.XS));
 				will(returnValue(new ParentStyleRule()));
-				atLeast(1).of(theme).getStyleRule(with(any(Row.class)), with(ScreenSize.XS), with(any(Float.class)));
+				atLeast(1).of(theme).getStyleRule(with(any(Row.class)), with(ScreenSize.XS));
 				will(returnValue(new ParentStyleRule()));
 				atLeast(1).of(renderTree).getLastInputSource();
 				will(returnValue(InputSource.KEYBOARD_MOUSE));

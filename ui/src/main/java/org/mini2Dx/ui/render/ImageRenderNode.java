@@ -85,7 +85,6 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 
 	@Override
 	protected StyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
-				layoutState.getScreenSizeScale());
+		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 	}
 }

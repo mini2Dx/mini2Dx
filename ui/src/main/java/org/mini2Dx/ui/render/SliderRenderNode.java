@@ -262,8 +262,7 @@ public class SliderRenderNode extends RenderNode<Slider, SliderStyleRule> implem
 
 	@Override
 	protected SliderStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
-				layoutState.getScreenSizeScale());
+		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 	}
 
 	@Override

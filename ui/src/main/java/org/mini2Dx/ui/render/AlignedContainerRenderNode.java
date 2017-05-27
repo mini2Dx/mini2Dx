@@ -57,8 +57,7 @@ public class AlignedContainerRenderNode extends ContainerRenderNode {
 
 	@Override
 	protected ContainerStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(((AlignedContainer) element), layoutState.getScreenSize(),
-				layoutState.getScreenSizeScale());
+		return layoutState.getTheme().getStyleRule(((AlignedContainer) element), layoutState.getScreenSize());
 	}
 
 }

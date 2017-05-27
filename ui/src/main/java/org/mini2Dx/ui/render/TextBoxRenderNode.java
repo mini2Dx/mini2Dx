@@ -152,8 +152,7 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule> imp
 			bitmapFontCache.clear();
 			bitmapFontCache = null;
 		}
-		TextBoxStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
-				layoutState.getScreenSizeScale());
+		TextBoxStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 
 		if (result == null) {
 			bitmapFontCache = DEFAULT_FONT.newFontCache();

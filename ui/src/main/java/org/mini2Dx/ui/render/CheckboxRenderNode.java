@@ -155,8 +155,7 @@ public class CheckboxRenderNode extends RenderNode<Checkbox, CheckboxStyleRule> 
 
 	@Override
 	protected CheckboxStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
-				layoutState.getScreenSizeScale());
+		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 	}
 
 	@Override

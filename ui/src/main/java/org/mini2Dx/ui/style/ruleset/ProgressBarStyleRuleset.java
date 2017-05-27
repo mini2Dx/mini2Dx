@@ -41,8 +41,8 @@ public class ProgressBarStyleRuleset extends StyleRuleset<ProgressBarStyleRule> 
 	}
 
 	@Override
-	public ProgressBarStyleRule getStyleRule(ScreenSize screenSize, float screenSizeScale) {
-		return getStyleRule(screenSize, screenSizeScale, rules);
+	public ProgressBarStyleRule getStyleRule(ScreenSize screenSize) {
+		return getStyleRule(screenSize, rules);
 	}
 
 	@Override

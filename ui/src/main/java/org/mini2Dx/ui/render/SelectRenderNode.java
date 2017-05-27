@@ -330,35 +330,34 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 
 	@Override
 	protected SelectStyleRule determineStyleRule(LayoutState layoutState) {
-		SelectStyleRule selectStyleRule = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
-				layoutState.getScreenSizeScale());
+		SelectStyleRule selectStyleRule = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 		if (selectStyleRule.getLeftButtonStyle() != null) {
 			leftButtonStyleRule = layoutState.getTheme().getButtonStyleRule(selectStyleRule.getLeftButtonStyle(),
-					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
+					layoutState.getScreenSize());
 		} else {
 			leftButtonStyleRule = layoutState.getTheme().getButtonStyleRule(UiTheme.DEFAULT_STYLE_ID,
-					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
+					layoutState.getScreenSize());
 		}
 		if (selectStyleRule.getRightButtonStyle() != null) {
 			rightButtonStyleRule = layoutState.getTheme().getButtonStyleRule(selectStyleRule.getRightButtonStyle(),
-					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
+					layoutState.getScreenSize());
 		} else {
 			rightButtonStyleRule = layoutState.getTheme().getButtonStyleRule(UiTheme.DEFAULT_STYLE_ID,
-					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
+					layoutState.getScreenSize());
 		}
 		if (selectStyleRule.getEnabledLabelStyle() != null) {
 			enabledStyleRule = layoutState.getTheme().getLabelStyleRule(selectStyleRule.getEnabledLabelStyle(),
-					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
+					layoutState.getScreenSize());
 		} else {
 			enabledStyleRule = layoutState.getTheme().getLabelStyleRule(UiTheme.DEFAULT_STYLE_ID,
-					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
+					layoutState.getScreenSize());
 		}
 		if (selectStyleRule.getDisabledLabelStyle() != null) {
 			disabledStyleRule = layoutState.getTheme().getLabelStyleRule(selectStyleRule.getDisabledLabelStyle(),
-					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
+					layoutState.getScreenSize());
 		} else {
 			disabledStyleRule = layoutState.getTheme().getLabelStyleRule(UiTheme.DEFAULT_STYLE_ID,
-					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
+					layoutState.getScreenSize());
 		}
 		return selectStyleRule;
 	}

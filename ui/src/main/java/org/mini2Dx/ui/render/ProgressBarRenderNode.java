@@ -53,8 +53,7 @@ public class ProgressBarRenderNode extends RenderNode<ProgressBar, ProgressBarSt
 
 	@Override
 	protected ProgressBarStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
-				layoutState.getScreenSizeScale());
+		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 	}
 
 	@Override

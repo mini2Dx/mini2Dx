@@ -108,8 +108,7 @@ public abstract class ModalRenderNode extends ContainerRenderNode implements Nav
 
 	@Override
 	protected ContainerStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(((Modal) element), layoutState.getScreenSize(),
-				layoutState.getScreenSizeScale());
+		return layoutState.getTheme().getStyleRule(((Modal) element), layoutState.getScreenSize());
 	}
 
 }

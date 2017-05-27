@@ -321,178 +321,178 @@ public class UiTheme {
 		return labels.containsKey(id);
 	}
 
-	public ButtonStyleRule getStyleRule(Button button, ScreenSize screenSize, float screenSizeScale) {
-		return getButtonStyleRule(button.getStyleId(), screenSize, screenSizeScale);
+	public ButtonStyleRule getStyleRule(Button button, ScreenSize screenSize) {
+		return getButtonStyleRule(button.getStyleId(), screenSize);
 	}
 	
-	public CheckboxStyleRule getStyleRule(Checkbox checkbox, ScreenSize screenSize, float screenSizeScale) {
-		return getCheckboxStyleRule(checkbox.getStyleId(), screenSize, screenSizeScale);
+	public CheckboxStyleRule getStyleRule(Checkbox checkbox, ScreenSize screenSize) {
+		return getCheckboxStyleRule(checkbox.getStyleId(), screenSize);
 	}
 
-	public ParentStyleRule getStyleRule(Column column, ScreenSize screenSize, float screenSizeScale) {
-		return getColumnStyleRule(column.getStyleId(), screenSize, screenSizeScale);
+	public ParentStyleRule getStyleRule(Column column, ScreenSize screenSize) {
+		return getColumnStyleRule(column.getStyleId(), screenSize);
 	}
 
-	public ContainerStyleRule getStyleRule(Container container, ScreenSize screenSize, float screenSizeScale) {
-		return getContainerStyleRule(container.getStyleId(), screenSize, screenSizeScale);
+	public ContainerStyleRule getStyleRule(Container container, ScreenSize screenSize) {
+		return getContainerStyleRule(container.getStyleId(), screenSize);
 	}
 
-	public LabelStyleRule getStyleRule(Label label, ScreenSize screenSize, float screenSizeScale) {
-		return getLabelStyleRule(label.getStyleId(), screenSize, screenSizeScale);
+	public LabelStyleRule getStyleRule(Label label, ScreenSize screenSize) {
+		return getLabelStyleRule(label.getStyleId(), screenSize);
 	}
 
-	public StyleRule getStyleRule(Image image, ScreenSize screenSize, float screenSizeScale) {
-		return getStyleRule(image, screenSize, screenSizeScale, images);
+	public StyleRule getStyleRule(Image image, ScreenSize screenSize) {
+		return getStyleRule(image, screenSize, images);
 	}
 	
-	public ProgressBarStyleRule getStyleRule(ProgressBar progressBar, ScreenSize screenSize, float screenSizeScale) {
-		return getProgressBarStyleRule(progressBar.getStyleId(), screenSize, screenSizeScale);
+	public ProgressBarStyleRule getStyleRule(ProgressBar progressBar, ScreenSize screenSize) {
+		return getProgressBarStyleRule(progressBar.getStyleId(), screenSize);
 	}
 	
-	public RadioButtonStyleRule getStyleRule(RadioButton radioButton, ScreenSize screenSize, float screenSizeScale) {
-		return getRadioButtonStyleRule(radioButton.getStyleId(), screenSize, screenSizeScale);
+	public RadioButtonStyleRule getStyleRule(RadioButton radioButton, ScreenSize screenSize) {
+		return getRadioButtonStyleRule(radioButton.getStyleId(), screenSize);
 	}
 	
-	public ScrollBoxStyleRule getStyleRule(ScrollBox scrollBox, ScreenSize screenSize, float screenSizeScale) {
-		return getScrollBoxStyleRule(scrollBox.getStyleId(), screenSize, screenSizeScale);
+	public ScrollBoxStyleRule getStyleRule(ScrollBox scrollBox, ScreenSize screenSize) {
+		return getScrollBoxStyleRule(scrollBox.getStyleId(), screenSize);
 	}
 
-	public SelectStyleRule getStyleRule(Select<?> select, ScreenSize screenSize, float screenSizeScale) {
-		return getSelectStyleRule(select.getStyleId(), screenSize, screenSizeScale);
+	public SelectStyleRule getStyleRule(Select<?> select, ScreenSize screenSize) {
+		return getSelectStyleRule(select.getStyleId(), screenSize);
 	}
 	
-	public SliderStyleRule getStyleRule(Slider slider, ScreenSize screenSize, float screenSizeScale) {
-		return getSliderStyleRule(slider.getStyleId(), screenSize, screenSizeScale);
+	public SliderStyleRule getStyleRule(Slider slider, ScreenSize screenSize) {
+		return getSliderStyleRule(slider.getStyleId(), screenSize);
 	}
 	
-	public TabStyleRule getStyleRule(TabView tabView, ScreenSize screenSize, float screenSizeScale) {
-		return getTabStyleRule(tabView.getStyleId(), screenSize, screenSizeScale);
+	public TabStyleRule getStyleRule(TabView tabView, ScreenSize screenSize) {
+		return getTabStyleRule(tabView.getStyleId(), screenSize);
 	}
 
-	public TextBoxStyleRule getStyleRule(TextBox textbox, ScreenSize screenSize, float screenSizeScale) {
-		return getTextBoxStyleRule(textbox.getStyleId(), screenSize, screenSizeScale);
+	public TextBoxStyleRule getStyleRule(TextBox textbox, ScreenSize screenSize) {
+		return getTextBoxStyleRule(textbox.getStyleId(), screenSize);
 	}
 
-	private StyleRule getStyleRule(UiElement element, ScreenSize screenSize, float screenSizeScale,
+	private StyleRule getStyleRule(UiElement element, ScreenSize screenSize,
 			Map<String, DefaultStyleRuleset> rules) {
 		StyleRuleset<?> ruleset = rules.get(element.getStyleId());
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + element.getStyleId());
 			ruleset = rules.get(DEFAULT_STYLE_ID);
 		}
-		return ruleset.getStyleRule(screenSize, screenSizeScale);
+		return ruleset.getStyleRule(screenSize);
 	}
 	
 	public UiFont getFont(String id) {
 		return fonts.get(id);
 	}
 	
-	public ButtonStyleRule getButtonStyleRule(String styleId, ScreenSize screenSize, float screenSizeScale) {
+	public ButtonStyleRule getButtonStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<ButtonStyleRule> ruleset = buttons.get(styleId);
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = buttons.get(DEFAULT_STYLE_ID);
 		}
-		return ruleset.getStyleRule(screenSize, screenSizeScale);
+		return ruleset.getStyleRule(screenSize);
 	}
 	
-	public CheckboxStyleRule getCheckboxStyleRule(String styleId, ScreenSize screenSize, float screenSizeScale) {
+	public CheckboxStyleRule getCheckboxStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<CheckboxStyleRule> ruleset = checkboxes.get(styleId);
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = checkboxes.get(DEFAULT_STYLE_ID);
 		}
-		return ruleset.getStyleRule(screenSize, screenSizeScale);
+		return ruleset.getStyleRule(screenSize);
 	}
 	
-	public ParentStyleRule getColumnStyleRule(String styleId, ScreenSize screenSize, float screenSizeScale) {
+	public ParentStyleRule getColumnStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<ParentStyleRule> ruleset = columns.get(styleId);
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = columns.get(DEFAULT_STYLE_ID);
 		}
-		return ruleset.getStyleRule(screenSize, screenSizeScale);
+		return ruleset.getStyleRule(screenSize);
 	}
 	
-	public ContainerStyleRule getContainerStyleRule(String styleId, ScreenSize screenSize, float screenSizeScale) {
+	public ContainerStyleRule getContainerStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<ContainerStyleRule> ruleset = containers.get(styleId);
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = containers.get(DEFAULT_STYLE_ID);
 		}
-		return ruleset.getStyleRule(screenSize, screenSizeScale);
+		return ruleset.getStyleRule(screenSize);
 	}
 	
-	public LabelStyleRule getLabelStyleRule(String styleId, ScreenSize screenSize, float screenSizeScale) {
+	public LabelStyleRule getLabelStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<LabelStyleRule> ruleset = labels.get(styleId);
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = labels.get(DEFAULT_STYLE_ID);
 		}
-		return ruleset.getStyleRule(screenSize, screenSizeScale);
+		return ruleset.getStyleRule(screenSize);
 	}
 	
-	public ProgressBarStyleRule getProgressBarStyleRule(String styleId, ScreenSize screenSize, float screenSizeScale) {
+	public ProgressBarStyleRule getProgressBarStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<ProgressBarStyleRule> ruleset = progressBars.get(styleId);
 		if(ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = progressBars.get(DEFAULT_STYLE_ID);
 		}
-		return ruleset.getStyleRule(screenSize, screenSizeScale);
+		return ruleset.getStyleRule(screenSize);
 	}
 	
-	public RadioButtonStyleRule getRadioButtonStyleRule(String styleId, ScreenSize screenSize, float screenSizeScale) {
+	public RadioButtonStyleRule getRadioButtonStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<RadioButtonStyleRule> ruleset = radioButtons.get(styleId);
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = radioButtons.get(DEFAULT_STYLE_ID);
 		}
-		return ruleset.getStyleRule(screenSize, screenSizeScale);
+		return ruleset.getStyleRule(screenSize);
 	}
 	
-	public ScrollBoxStyleRule getScrollBoxStyleRule(String styleId, ScreenSize screenSize, float screenSizeScale) {
+	public ScrollBoxStyleRule getScrollBoxStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<ScrollBoxStyleRule> ruleset = scrollBoxes.get(styleId);
 		if(ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = scrollBoxes.get(DEFAULT_STYLE_ID);
 		}
-		return ruleset.getStyleRule(screenSize, screenSizeScale);
+		return ruleset.getStyleRule(screenSize);
 	}
 	
-	public SelectStyleRule getSelectStyleRule(String styleId, ScreenSize screenSize, float screenSizeScale) {
+	public SelectStyleRule getSelectStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<SelectStyleRule> ruleset = selects.get(styleId);
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = selects.get(DEFAULT_STYLE_ID);
 		}
-		return ruleset.getStyleRule(screenSize, screenSizeScale);
+		return ruleset.getStyleRule(screenSize);
 	}
 	
-	public SliderStyleRule getSliderStyleRule(String styleId, ScreenSize screenSize, float screenSizeScale) {
+	public SliderStyleRule getSliderStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<SliderStyleRule> ruleset = sliders.get(styleId);
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = sliders.get(DEFAULT_STYLE_ID);
 		}
-		return ruleset.getStyleRule(screenSize, screenSizeScale);
+		return ruleset.getStyleRule(screenSize);
 	}
 	
-	public TabStyleRule getTabStyleRule(String styleId, ScreenSize screenSize, float screenSizeScale) {
+	public TabStyleRule getTabStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<TabStyleRule> ruleset = tabs.get(styleId);
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = tabs.get(DEFAULT_STYLE_ID);
 		}
-		return ruleset.getStyleRule(screenSize, screenSizeScale);
+		return ruleset.getStyleRule(screenSize);
 	}
 	
-	public TextBoxStyleRule getTextBoxStyleRule(String styleId, ScreenSize screenSize, float screenSizeScale) {
+	public TextBoxStyleRule getTextBoxStyleRule(String styleId, ScreenSize screenSize) {
 		StyleRuleset<TextBoxStyleRule> ruleset = textboxes.get(styleId);
 		if (ruleset == null) {
 			Gdx.app.error(LOGGING_TAG, "No style found with ID " + styleId);
 			ruleset = textboxes.get(DEFAULT_STYLE_ID);
 		}
-		return ruleset.getStyleRule(screenSize, screenSizeScale);
+		return ruleset.getStyleRule(screenSize);
 	}
 	
 	public void putButtonStyleRuleset(String rulesetId, ButtonStyleRuleset ruleset) {

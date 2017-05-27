@@ -76,6 +76,15 @@ public enum ScreenSize {
 	}
 	
 	/**
+	 * Returns if this {@link ScreenSize} is larger than another {@link ScreenSize} instance
+	 * @param otherSize The {@link ScreenSize} to check against
+	 * @return True if the minimum screen size is larger
+	 */
+	public boolean isGreaterThan(ScreenSize otherSize) {
+		return minSize > otherSize.minSize;
+	}
+	
+	/**
 	 * Returns an {@link Iterator} of smallest to largest {@link ScreenSize}s
 	 * @return
 	 */

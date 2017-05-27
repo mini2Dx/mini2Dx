@@ -400,20 +400,20 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 	@Override
 	protected ScrollBoxStyleRule determineStyleRule(LayoutState layoutState) {
 		ScrollBoxStyleRule result = layoutState.getTheme().getStyleRule(((ScrollBox) element),
-				layoutState.getScreenSize(), layoutState.getScreenSizeScale());
+				layoutState.getScreenSize());
 		if (result.getTopScrollButtonStyle() != null) {
 			topScrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(result.getTopScrollButtonStyle(),
-					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
+					layoutState.getScreenSize());
 		} else {
 			topScrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(UiTheme.DEFAULT_STYLE_ID,
-					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
+					layoutState.getScreenSize());
 		}
 		if (result.getBottomScrollButtonStyle() != null) {
 			bottomScrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(result.getBottomScrollButtonStyle(),
-					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
+					layoutState.getScreenSize());
 		} else {
 			bottomScrollButtonStyleRule = layoutState.getTheme().getButtonStyleRule(UiTheme.DEFAULT_STYLE_ID,
-					layoutState.getScreenSize(), layoutState.getScreenSizeScale());
+					layoutState.getScreenSize());
 		}
 		return result;
 	}

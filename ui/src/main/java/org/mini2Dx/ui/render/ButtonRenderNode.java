@@ -149,8 +149,7 @@ public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> 
 
 	@Override
 	protected ButtonStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
-				layoutState.getScreenSizeScale());
+		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 	}
 
 	@Override

@@ -332,8 +332,7 @@ public class RadioButtonRenderNode extends RenderNode<RadioButton, RadioButtonSt
 
 	@Override
 	protected RadioButtonStyleRule determineStyleRule(LayoutState layoutState) {
-		RadioButtonStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
-				layoutState.getScreenSizeScale());
+		RadioButtonStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 
 		if (bitmapFontCache != null) {
 			bitmapFontCache.clear();

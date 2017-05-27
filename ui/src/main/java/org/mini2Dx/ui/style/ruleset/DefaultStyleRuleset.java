@@ -41,8 +41,8 @@ public class DefaultStyleRuleset extends StyleRuleset<StyleRule> {
 	}
 
 	@Override
-	public StyleRule getStyleRule(ScreenSize screenSize, float screenSizeScale) {
-		return getStyleRule(screenSize, screenSizeScale, rules);
+	public StyleRule getStyleRule(ScreenSize screenSize) {
+		return getStyleRule(screenSize, rules);
 	}
 
 	@Override

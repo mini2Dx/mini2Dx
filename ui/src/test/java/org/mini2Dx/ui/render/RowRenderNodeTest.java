@@ -326,7 +326,7 @@ public class RowRenderNodeTest {
 				will(returnValue(1f));
 				atLeast(1).of(renderTree).getScreenSizeScale();
 				will(returnValue(1f));
-				atLeast(1).of(theme).getStyleRule(with(row), with(ScreenSize.XS), with(any(Float.class)));
+				atLeast(1).of(theme).getStyleRule(with(row), with(ScreenSize.XS));
 				will(returnValue(new ParentStyleRule()));
 				atLeast(1).of(layoutState).getParentWidth();
 				will(returnValue(parentWidth));

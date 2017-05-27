@@ -121,8 +121,7 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 			}
 		}
 
-		LabelStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize(),
-				layoutState.getScreenSizeScale());
+		LabelStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 		if (result.getBitmapFont() == null) {
 			bitmapFontCache = DEFAULT_FONT.newFontCache();
 		} else {

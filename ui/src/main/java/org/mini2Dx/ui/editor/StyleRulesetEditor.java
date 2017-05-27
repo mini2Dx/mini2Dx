@@ -141,7 +141,7 @@ public class StyleRulesetEditor<T extends StyleRule, E extends UiElement> extend
 						TextBox textbox = new TextBox();
 						textbox.setLayout("xs-8c");
 						textbox.setVisibility(Visibility.VISIBLE);
-						Object value = field.get(originalRuleset.getStyleRule(getScreenSize(), getScreenSizeScale()));
+						Object value = field.get(originalRuleset.getStyleRule(getScreenSize()));
 						if(value == null) {
 							textbox.setValue("");
 						} else {
@@ -152,12 +152,12 @@ public class StyleRulesetEditor<T extends StyleRule, E extends UiElement> extend
 						TextBox textbox = new TextBox();
 						textbox.setLayout("xs-8c");
 						textbox.setVisibility(Visibility.VISIBLE);
-						textbox.setValue(String.valueOf(field.get(originalRuleset.getStyleRule(getScreenSize(), getScreenSizeScale()))));
+						textbox.setValue(String.valueOf(field.get(originalRuleset.getStyleRule(getScreenSize()))));
 						valueElement = textbox;
 					} else if (field.getType().equals(Boolean.class) || field.getType().equals(Boolean.TYPE)) {
 						Checkbox checkbox = new Checkbox();
 						checkbox.setVisibility(Visibility.VISIBLE);
-						if (field.getBoolean(originalRuleset.getStyleRule(getScreenSize(), getScreenSizeScale()))) {
+						if (field.getBoolean(originalRuleset.getStyleRule(getScreenSize()))) {
 							checkbox.setChecked(true);
 						} else {
 							checkbox.setChecked(false);

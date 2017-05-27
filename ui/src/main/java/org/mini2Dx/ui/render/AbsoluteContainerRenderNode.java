@@ -36,7 +36,6 @@ public class AbsoluteContainerRenderNode extends ContainerRenderNode {
 
 	@Override
 	protected ContainerStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(((AbsoluteContainer) element), layoutState.getScreenSize(),
-				layoutState.getScreenSizeScale());
+		return layoutState.getTheme().getStyleRule(((AbsoluteContainer) element), layoutState.getScreenSize());
 	}
 }
