@@ -650,6 +650,9 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		}
 		ActionableRenderNode actionableRenderNode = (ActionableRenderNode) renderNode
 				.getElementById(actionable.getId());
+		if (actionableRenderNode == null) {
+			return;
+		}
 		if (actionableRenderNode.getState() != NodeState.HOVER) {
 			return;
 		}
