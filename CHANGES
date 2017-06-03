@@ -1,4 +1,4 @@
-[1.5.0-SNAPSHOT]
+[1.5.0]
 WARNING: This release changes the default target timestep from 100FPS to 60FPS. 
 To change it back set config.targetTimestep to 0.1f
 
@@ -23,7 +23,7 @@ To change it back set config.targetTimestep to 0.1f
 - ScreenSize values can now be scaled as NO_SCALING, LINEAR or INVERSE (NO_SCALING is default)
 - ActionListeners now receive event details via ActionEvent instance
 - Improved controller javadocs
-- Graphics#drawRect now uses LibGDX ShapeRenderer
+- LibGdxGraphics now uses LibGDX ShapeRenderer for shape rendering
 - UiContainerListeners now only receive inputSourceChanged and controllerTypeChanged events once per frame
 - Fixed UI controller input blocking other controller listeners when no input is consumed by UiContainer
 - Fixed Button instances not triggering right-click events

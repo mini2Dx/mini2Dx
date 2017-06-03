@@ -142,15 +142,12 @@ public class LibGdxGraphics implements Graphics {
 
 	@Override
 	public void drawRect(float x, float y, float width, float height) {
-		beginRendering();
-
 		int roundWidth = MathUtils.round(width);
 		int roundHeight = MathUtils.round(height);
 		
 		beginRendering();
 		endRendering();
 
-		/* TODO: Move all shape rendering over to using ShapeRenderer */
 		renderingShapes = true;
 		shapeRenderer.begin(ShapeType.Filled);
 		Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -168,7 +165,7 @@ public class LibGdxGraphics implements Graphics {
 	@Override
 	public void fillRect(float x, float y, float width, float height) {
 		beginRendering();
-
+		
 		spriteBatch.draw(colorTextureCache.getFilledRectangleTexture(color), x, y, 0, 0, width, height, 1f, 1f, 0, 0, 0,
 				1, 1, false, false);
 	}
@@ -176,13 +173,15 @@ public class LibGdxGraphics implements Graphics {
 	@Override
 	public void drawCircle(float centerX, float centerY, int radius) {
 		beginRendering();
-
-		float renderX = (centerX - radius);
-		float renderY = (centerY - radius);
-
-		Texture texture = colorTextureCache.getCircleTexture(color, radius, getLineHeight());
-		spriteBatch.draw(texture, renderX, renderY, 0, 0, texture.getWidth(), texture.getHeight(), 1f, 1f, 0, 0, 0,
-				texture.getWidth(), texture.getHeight(), false, false);
+		endRendering();
+		
+		renderingShapes = true;
+		shapeRenderer.begin(ShapeType.Line);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+	    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.setColor(color);
+		shapeRenderer.circle(centerX, centerY, radius);
+		shapeRenderer.end();
 	}
 	
 	@Override
@@ -192,14 +191,18 @@ public class LibGdxGraphics implements Graphics {
 
 	@Override
 	public void fillCircle(float centerX, float centerY, int radius) {
-		Texture texture = colorTextureCache.getFilledCircleTexture(color, radius);
-
-		float renderX = (centerX - radius);
-		float renderY = (centerY - radius);
-
 		beginRendering();
-		spriteBatch.draw(texture, renderX, renderY, 0, 0, texture.getWidth(), texture.getHeight(), 1f, 1f, 0, 0, 0,
-				texture.getWidth(), texture.getHeight(), false, false);
+		endRendering();
+		
+		renderingShapes = true;
+		shapeRenderer.begin(ShapeType.Filled);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+	    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.setColor(color);
+		shapeRenderer.circle(centerX, centerY, radius);
+		shapeRenderer.end();
+		
+		beginRendering();
 	}
 
 	@Override

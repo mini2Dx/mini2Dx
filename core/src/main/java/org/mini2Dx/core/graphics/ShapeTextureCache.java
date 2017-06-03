@@ -23,18 +23,12 @@ import com.badlogic.gdx.graphics.Texture;
  */
 public class ShapeTextureCache {
 	private Map<Integer, Texture> filledRectangleTextures;
-	private Map<String, Texture> rectangleTextures;
-	private Map<String, Texture> circleTextures;
-	private Map<String, Texture> filledCircleTextures;
 
 	/**
 	 * Constructor
 	 */
 	public ShapeTextureCache() {
-		rectangleTextures = new HashMap<String, Texture>();
 		filledRectangleTextures = new HashMap<Integer, Texture>();
-		circleTextures = new HashMap<String, Texture>();
-		filledCircleTextures = new HashMap<String, Texture>();
 	}
 
 	/**
@@ -56,59 +50,5 @@ public class ShapeTextureCache {
 			pixmap.dispose();
 		}
 		return filledRectangleTextures.get(bits);
-	}
-
-	/**
-	 * Returns a circle texture for the provided {@link Color}
-	 * 
-	 * @param color
-	 *            The {@link Color} to fetch a texture of
-	 * @param radius
-	 *            The radius of the circle
-	 * @param lineHeight
-	 *            The line height of the circle
-	 * @return A new {@link Texture} if this is first time it has been
-	 *         requested, otherwise it will return a cached instance of the
-	 *         {@link Texture} for the given {@link Color}
-	 */
-	public Texture getCircleTexture(Color color, int radius, int lineHeight) {
-		int bits = color.toIntBits();
-		String key = "" + bits + "," + radius + "," + lineHeight;
-		if (!circleTextures.containsKey(key)) {
-			Pixmap pixmap = new Pixmap((radius * 2) + 1, (radius * 2) + 1,
-					Pixmap.Format.RGBA8888);
-			pixmap.setColor(color);
-			for (int i = 0; i < lineHeight; i++) {
-				pixmap.drawCircle(radius, radius, radius - i);
-			}
-			circleTextures.put(key, new Texture(pixmap));
-			pixmap.dispose();
-		}
-		return circleTextures.get(key);
-	}
-
-	/**
-	 * Returns a filled circular texture for the provided {@link Color}
-	 * 
-	 * @param color
-	 *            The {@link Color} to fetch a texture of
-	 * @param radius
-	 *            The radius of the circle
-	 * @return A new {@link Texture} if this is first time it has been
-	 *         requested, otherwise it will return a cached instance of the
-	 *         {@link Texture} for the given {@link Color}
-	 */
-	public Texture getFilledCircleTexture(Color color, int radius) {
-		int bits = color.toIntBits();
-		String key = "" + bits + "," + radius;
-		if (!filledCircleTextures.containsKey(key)) {
-			Pixmap pixmap = new Pixmap((radius * 2) + 1, (radius * 2) + 1,
-					Pixmap.Format.RGBA8888);
-			pixmap.setColor(color);
-			pixmap.fillCircle(radius, radius, radius);
-			filledCircleTextures.put(key, new Texture(pixmap));
-			pixmap.dispose();
-		}
-		return filledCircleTextures.get(key);
 	}
 }
