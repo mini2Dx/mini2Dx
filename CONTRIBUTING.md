@@ -22,3 +22,13 @@ Then you can build and publish a release with the following command:
 ```bash
 ./gradlew -Prelease clean build uploadArchives closeAndPromoteRepository
 ```
+
+## Building the website
+
+First install RVM + Bundler, then run the following:
+
+```
+cd jeykll
+bundle install
+jekyll build
+```
