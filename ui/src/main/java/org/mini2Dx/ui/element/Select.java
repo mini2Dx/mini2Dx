@@ -12,11 +12,10 @@
 package org.mini2Dx.ui.element;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.event.ActionEvent;
 import org.mini2Dx.ui.event.ActionEventPool;
 import org.mini2Dx.ui.event.EventTrigger;
@@ -41,6 +40,11 @@ public class Select<V> extends UiElement implements Actionable {
 	private int selectedIndex = 0;
 	private Color enabledTextColor = null;
 	private Color disabledTextColor = null;
+	
+	@Field(optional=true)
+	private String leftButtonText;
+	@Field(optional=true)
+	private String rightButtonText;
 
 	protected SelectRenderNode renderNode;
 	
@@ -372,5 +376,21 @@ public class Select<V> extends UiElement implements Actionable {
 
 	public void setDisabledTextColor(Color disabledTextColor) {
 		this.disabledTextColor = disabledTextColor;
+	}
+
+	public String getLeftButtonText() {
+		return leftButtonText;
+	}
+
+	public void setLeftButtonText(String leftButtonText) {
+		this.leftButtonText = leftButtonText;
+	}
+
+	public String getRightButtonText() {
+		return rightButtonText;
+	}
+
+	public void setRightButtonText(String rightButtonText) {
+		this.rightButtonText = rightButtonText;
 	}
 }

@@ -30,6 +30,8 @@ import org.mini2Dx.ui.style.UiTheme;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Align;
 
 /**
  * {@link RenderNode} implementation for {@link Select}
@@ -160,6 +162,25 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 					leftButton.getRenderY(), leftButton.getRenderWidth(), leftButton.getRenderHeight());
 			g.drawNinePatch(rightButtonStyleRule.getDisabledNinePatch(), rightButton.getRenderX(),
 					rightButton.getRenderY(), rightButton.getRenderWidth(), rightButton.getRenderHeight());
+		}
+		
+		if(element.getLeftButtonText() != null) {
+			g.setColor(leftButtonStyleRule.getColor());
+			g.setFont(leftButtonStyleRule.getBitmapFont());
+			glyphLayout.setText(leftButtonStyleRule.getBitmapFont(), element.getLeftButtonText());
+			
+			int textRenderX = MathUtils.round(leftButton.getRenderX() + (leftButton.getRenderWidth() / 2) - (glyphLayout.width / 2f));
+			int textRenderY = MathUtils.round(leftButton.getRenderY() + (leftButton.getRenderHeight() / 2) - (glyphLayout.height / 2f));
+			g.drawString(element.getLeftButtonText(), textRenderX, textRenderY, glyphLayout.width, Align.center);
+		}
+		if(element.getRightButtonText() != null) {
+			g.setColor(rightButtonStyleRule.getColor());
+			g.setFont(rightButtonStyleRule.getBitmapFont());
+			glyphLayout.setText(rightButtonStyleRule.getBitmapFont(), element.getRightButtonText());
+			
+			int textRenderX = MathUtils.round(rightButton.getRenderX() + (rightButton.getRenderWidth() / 2) - (glyphLayout.width / 2f));
+			int textRenderY = MathUtils.round(rightButton.getRenderY() + (rightButton.getRenderHeight() / 2) - (glyphLayout.height / 2f));
+			g.drawString(element.getRightButtonText(), textRenderX, textRenderY, glyphLayout.width, Align.center);
 		}
 
 		g.setColor(tmpColor);
