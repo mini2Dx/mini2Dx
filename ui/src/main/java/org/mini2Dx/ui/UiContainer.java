@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.controller.ControllerType;
@@ -58,6 +59,7 @@ import com.badlogic.gdx.math.MathUtils;
  */
 public class UiContainer extends ParentUiElement implements InputProcessor {
 	private static final String LOGGING_TAG = UiContainer.class.getSimpleName();
+	private static final List<UiContainer> uiContainerInstances = new ArrayList<UiContainer>();
 	private static Visibility defaultVisibility = Visibility.HIDDEN;
 
 	private final List<ControllerUiInput<?>> controllerInputs = new ArrayList<ControllerUiInput<?>>(1);
@@ -66,6 +68,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	private final Set<Integer> receivedKeyDowns = new HashSet<Integer>();
 	private final Set<String> receivedButtonDowns = new HashSet<String>();
 
+	private final AtomicBoolean forceRenderTreeLayout = new AtomicBoolean(false);
 	private final UiContainerRenderTree renderTree;
 
 	private InputSource lastInputSource, nextInputSource;
@@ -121,6 +124,22 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		super.renderNode = renderTree;
 
 		setVisibility(Visibility.VISIBLE);
+		uiContainerInstances.add(this);
+	}
+	
+	public static void relayoutAllUiContainers() {
+		Gdx.app.log(LOGGING_TAG, "Triggering re-layout for all UiContainer instances");
+		for(int i = uiContainerInstances.size() - 1; i >= 0; i--) {
+			uiContainerInstances.get(i).forceRenderTreeLayout();
+		}
+	}
+	
+	private void forceRenderTreeLayout() {
+		forceRenderTreeLayout.set(true);
+	}
+	
+	public void dispose() {
+		uiContainerInstances.remove(this);
 	}
 
 	@Override
@@ -146,6 +165,11 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			}
 			return;
 		}
+		if(forceRenderTreeLayout.get()) {
+			renderTree.onResize(width, height);
+			forceRenderTreeLayout.set(false);
+		}
+		
 		notifyPreUpdate(delta);
 		for (int i = controllerInputs.size() - 1; i >= 0; i--) {
 			controllerInputs.get(i).update(delta);

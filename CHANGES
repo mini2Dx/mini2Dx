@@ -1,4 +1,5 @@
 [1.5.1-SNAPSHOT]
+- Added JRebel support to UiContainer
 
 [1.5.0]
 WARNING: This release changes the default target timestep from 100FPS to 60FPS. 
