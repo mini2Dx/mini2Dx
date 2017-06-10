@@ -61,6 +61,11 @@ public class TabViewUiNavigation implements UiNavigation {
 	public void remove(Actionable actionable) {
 		throw new MdxException("UiNavigation#remove() not supported by " + TabViewUiNavigation.class.getSimpleName());
 	}
+	
+	@Override
+	public void removeAll() {
+		throw new MdxException("UiNavigation#removeAll() not supported by " + TabViewUiNavigation.class.getSimpleName());
+	}
 
 	@Override
 	public void set(int index, Actionable actionable) {

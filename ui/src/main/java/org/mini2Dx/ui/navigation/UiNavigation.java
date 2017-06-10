@@ -52,6 +52,11 @@ public interface UiNavigation {
 	 * @param actionable The {@link Actionable} to remove
 	 */
 	public void remove(Actionable actionable);
+	
+	/**
+	 * Removes all {@link Actionable} instances from the navigation
+	 */
+	public void removeAll();
 
 	/**
 	 * Replace an {@link Actionable} at a specific index

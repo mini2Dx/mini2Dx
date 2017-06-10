@@ -89,6 +89,12 @@ public class GridUiNavigation implements UiNavigation {
 	}
 	
 	@Override
+	public void removeAll() {
+		navigation.clear();
+		resetCursor();
+	}
+	
+	@Override
 	public void set(int index, Actionable actionable) {
 		while(navigation.size() <= index) {
 			navigation.add(null);

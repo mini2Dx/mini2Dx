@@ -37,6 +37,12 @@ public class VerticalUiNavigation implements UiNavigation {
 	public void remove(Actionable actionable) {
 		navigation.remove(actionable);
 	}
+	
+	@Override
+	public void removeAll() {
+		navigation.clear();
+		resetCursor();
+	}
 
 	@Override
 	public void set(int index, Actionable actionable) {
