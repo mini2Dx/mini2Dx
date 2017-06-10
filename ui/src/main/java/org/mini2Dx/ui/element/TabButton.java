@@ -111,4 +111,12 @@ public class TabButton extends Button {
 		}
 		super.setLayout(layout);
 	}
+
+	public Label getLabel() {
+		return label;
+	}
+
+	public Image getIcon() {
+		return icon;
+	}
 }
