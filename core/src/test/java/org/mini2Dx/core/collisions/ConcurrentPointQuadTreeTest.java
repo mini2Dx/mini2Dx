@@ -135,7 +135,7 @@ public class ConcurrentPointQuadTreeTest implements Runnable {
 	}
 
 	@Test
-	public void testMerge() {
+	public void testMergeRemoveSingleElements() {
 		rootQuad = new ConcurrentPointQuadTree<CollisionPoint>(4, 3, 0, 0, 128, 128);
 		rootQuad.add(point1);
 		Assert.assertEquals(1, rootQuad.getTotalQuads());
@@ -152,6 +152,34 @@ public class ConcurrentPointQuadTreeTest implements Runnable {
 			rootQuad.remove(point4);
 			rootQuad.remove(point3);
 			rootQuad.remove(point2);
+			Assert.assertEquals(1, rootQuad.getTotalQuads());
+			Assert.assertEquals(2, rootQuad.getTotalElements());
+			Assert.assertEquals(true, rootQuad.getElements().contains(point1));
+			rootQuad.remove(point5);
+		}
+	}
+	
+	@Test
+	public void testMergeRemoveAllElements() {
+		rootQuad = new ConcurrentPointQuadTree<CollisionPoint>(4, 3, 0, 0, 128, 128);
+		rootQuad.add(point1);
+		Assert.assertEquals(1, rootQuad.getTotalQuads());
+
+		CollisionPoint point5 = new CollisionPoint(32, 32);
+		
+		List<CollisionPoint> points = new ArrayList<CollisionPoint>();
+		points.add(point2);
+		points.add(point3);
+		points.add(point4);
+
+		for (int i = 0; i < 5; i++) {
+			rootQuad.add(point2);
+			rootQuad.add(point3);
+			rootQuad.add(point4);
+			rootQuad.add(point5);
+			Assert.assertEquals(4, rootQuad.getTotalQuads());
+			Assert.assertEquals(5, rootQuad.getTotalElements());
+			rootQuad.removeAll(points);
 			Assert.assertEquals(1, rootQuad.getTotalQuads());
 			Assert.assertEquals(2, rootQuad.getTotalElements());
 			Assert.assertEquals(true, rootQuad.getElements().contains(point1));

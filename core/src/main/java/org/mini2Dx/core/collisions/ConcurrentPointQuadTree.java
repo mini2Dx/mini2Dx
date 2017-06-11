@@ -417,7 +417,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 			}
 		}
 
-		lock.writeLock().lock();
+		lock.readLock().lock();
 		if (topLeft != null) {
 			for (int i = elementsWithinQuad.size() - 1; i >= 0; i--) {
 				T element = elementsWithinQuad.get(i);
@@ -439,7 +439,9 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 				}
 			}
 		}
+		lock.readLock().unlock();
 
+		lock.writeLock().lock();
 		elements.removeAll(elementsWithinQuad);
 		lock.writeLock().unlock();
 

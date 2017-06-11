@@ -163,7 +163,7 @@ public class ConcurrentRegionQuadTreeTest implements Runnable {
 	}
 
 	@Test
-	public void testMerge() {
+	public void testMergeRemoveSingleElements() {
 		rootQuad = new ConcurrentRegionQuadTree<CollisionBox>(4, 3, 0, 0, 128, 128);
 		rootQuad.add(box1);
 		Assert.assertEquals(1, rootQuad.getTotalQuads());
@@ -175,6 +175,28 @@ public class ConcurrentRegionQuadTreeTest implements Runnable {
 		rootQuad.remove(box4);
 		rootQuad.remove(box3);
 		rootQuad.remove(box2);
+		Assert.assertEquals(1, rootQuad.getTotalQuads());
+		Assert.assertEquals(2, rootQuad.getTotalElements());
+		Assert.assertEquals(true, rootQuad.getElements().contains(box1));
+	}
+	
+	@Test
+	public void testMergeRemoveAllElements() {
+		rootQuad = new ConcurrentRegionQuadTree<CollisionBox>(4, 3, 0, 0, 128, 128);
+		rootQuad.add(box1);
+		Assert.assertEquals(1, rootQuad.getTotalQuads());
+		rootQuad.add(box2);
+		rootQuad.add(box3);
+		rootQuad.add(box4);
+		rootQuad.add(new CollisionBox(24, 24, 2, 2));
+		Assert.assertEquals(4, rootQuad.getTotalQuads());
+		
+		List<CollisionBox> boxes = new ArrayList<CollisionBox>();
+		boxes.add(box4);
+		boxes.add(box3);
+		boxes.add(box2);
+		
+		rootQuad.removeAll(boxes);
 		Assert.assertEquals(1, rootQuad.getTotalQuads());
 		Assert.assertEquals(2, rootQuad.getTotalElements());
 		Assert.assertEquals(true, rootQuad.getElements().contains(box1));

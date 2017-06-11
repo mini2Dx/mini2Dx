@@ -329,7 +329,7 @@ public class ConcurrentRegionQuadTree<T extends CollisionShape> extends Concurre
 			}
 		}
 		
-		lock.writeLock().lock();
+		lock.readLock().lock();
 		if(topLeft != null) {
 			for(int i = elementsWithinQuad.size() - 1; i >= 0; i--) {
 				T element = elementsWithinQuad.get(i);
@@ -351,7 +351,9 @@ public class ConcurrentRegionQuadTree<T extends CollisionShape> extends Concurre
 				}
 			}
 		}
+		lock.readLock().unlock();
 		
+		lock.writeLock().lock();
 		elements.removeAll(elementsWithinQuad);
 		lock.writeLock().unlock();
 		

@@ -1,3 +1,6 @@
+[1.5.2-SNAPSHOT]
+- Fixed locking exception in removeAll(List) for concurrent QuadTree implementations
+
 [1.5.1]
 - Added JRebel support to UiContainer
 - Added label + icon getters for TabButton
