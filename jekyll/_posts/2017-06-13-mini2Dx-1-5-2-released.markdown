@@ -2,7 +2,7 @@
 layout: post
 author: Thomas Cashman
 title:  "mini2Dx 1.5.2 released"
-date:   2017-06-13 20:42:00 +0000
+date:   2017-06-13 18:42:00 +0000
 ---
 
 mini2Dx 1.5.2 has now been released to Maven Central. This release fixes a locking issue when calling removeAll(List) on concurrent quad tree implementations.
