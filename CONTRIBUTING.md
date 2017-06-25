@@ -20,7 +20,7 @@ Once you've registered, set up your PGP key per the guide [here](http://nemerosa
 
 Then you can build and publish a release with the following command:
 ```bash
-./gradlew -Prelease clean build uploadArchives closeAndPromoteRepository
+./gradlew -Prelease clean build uploadArchives closeAndReleaseRepository
 ```
 
 ## Building the website
