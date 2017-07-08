@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Common interface to graphics rendering functionality
@@ -45,6 +46,13 @@ public interface Graphics {
 	 * Called by mini2Dx after rendering
 	 */
 	public void postRender();
+	
+	/**
+	 * Creates a LibGDX {@link Stage} using this context
+	 * @param viewport The {@link Viewport} to be applied
+	 * @return An instance of {@link Stage}
+	 */
+	public Stage createStage(Viewport viewport);
 
 	/**
 	 * Renders a line segment to the window in the current {@link Color} with

@@ -16,10 +16,12 @@ import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.geom.Shape;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
@@ -36,6 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * LibGDX implementation of {@link Graphics}
@@ -60,7 +63,7 @@ public class LibGdxGraphics implements Graphics {
 
 	private int defaultBlendSrcFunc = GL20.GL_SRC_ALPHA, defaultBlendDstFunc = GL20.GL_ONE_MINUS_SRC_ALPHA;
 	private int lineHeight;
-	private boolean rendering, renderingShapes;
+	private boolean rendering, renderingShapes, renderingStage;
 	private Rectangle clip;
 	
 	private float [] triangleVertices = new float[6];
@@ -109,6 +112,7 @@ public class LibGdxGraphics implements Graphics {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
 
 		rendering = false;
+		renderingStage = false;
 
 		if (defaultShader == null) {
 			defaultShader = SpriteBatch.createDefaultShader();
@@ -123,6 +127,11 @@ public class LibGdxGraphics implements Graphics {
 		clearBlendFunction();
 	}
 
+	@Override
+	public Stage createStage(Viewport viewport) {
+		return new Stage(viewport, spriteBatch);
+	}
+	
 	@Override
 	public void drawLineSegment(float x1, float y1, float x2, float y2) {
 		beginRendering();
@@ -381,7 +390,29 @@ public class LibGdxGraphics implements Graphics {
 	@Override
 	public void drawStage(Stage stage) {
 		endRendering();
-		stage.draw();
+		
+		Camera stageCamera = stage.getViewport().getCamera();
+		stageCamera.up.set(0, -1, 0);
+		stageCamera.direction.set(0, 0, 1);
+		stageCamera.update();
+
+		if (!stage.getRoot().isVisible()) {
+			return;
+		}
+
+		renderingStage = true;
+		beginRendering();
+		
+		spriteBatch.setProjectionMatrix(stageCamera.combined);
+		polygonSpriteBatch.setProjectionMatrix(stageCamera.combined);
+		shapeRenderer.setProjectionMatrix(stageCamera.combined);
+		
+		spriteBatch.begin();
+		stage.getRoot().draw(spriteBatch, 1);
+		spriteBatch.end();
+		
+		endRendering();
+		renderingStage = false;
 	}
 
 	@Override
@@ -589,34 +620,35 @@ public class LibGdxGraphics implements Graphics {
 	 */
 	private void beginRendering() {
 		if (!rendering) {
-			applyTransformations();
-			
-			Gdx.gl.glClearDepthf(1f);
-			Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
-			
-			if (clip != null) {
-				Gdx.gl.glDepthFunc(GL20.GL_LESS);
-				Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+			if(!renderingStage) {
+				applyTransformations();
 				
-				Gdx.gl.glDepthMask(true);
-				Gdx.gl.glColorMask(false, false, false, false);
+				Gdx.gl.glClearDepthf(1f);
+				Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
 				
-				shapeRenderer.begin(ShapeType.Filled);
-				
-				shapeRenderer.setColor(0f, 1f, 0f, 0.5f);
-				shapeRenderer.rect(clip.getX(), clip.getY(), clip.getWidth(), clip.getHeight());
-				
-				shapeRenderer.end();
+				if (clip != null) {
+					Gdx.gl.glDepthFunc(GL20.GL_LESS);
+					Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+					
+					Gdx.gl.glDepthMask(true);
+					Gdx.gl.glColorMask(false, false, false, false);
+					
+					shapeRenderer.begin(ShapeType.Filled);
+					
+					shapeRenderer.setColor(0f, 1f, 0f, 0.5f);
+					shapeRenderer.rect(clip.getX(), clip.getY(), clip.getWidth(), clip.getHeight());
+					
+					shapeRenderer.end();
 
-				spriteBatch.begin();
-				
-				Gdx.gl.glColorMask(true, true, true, true);
-				Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-				Gdx.gl.glDepthFunc(GL20.GL_EQUAL);
-			} else {
-				spriteBatch.begin();
+					spriteBatch.begin();
+					
+					Gdx.gl.glColorMask(true, true, true, true);
+					Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+					Gdx.gl.glDepthFunc(GL20.GL_EQUAL);
+				} else {
+					spriteBatch.begin();
+				}
 			}
-
 			rendering = true;
 		}
 	}
@@ -626,16 +658,18 @@ public class LibGdxGraphics implements Graphics {
 	 */
 	private void endRendering() {
 		if (rendering) {
-			undoTransformations();
-			spriteBatch.end();
-			if (renderingShapes) {
-				shapeRenderer.end();
-			}
+			if(!renderingStage) {
+				undoTransformations();
+				spriteBatch.end();
+				if (renderingShapes) {
+					shapeRenderer.end();
+				}
 
-			if (clip != null) {
-				Gdx.gl.glClearDepthf(1f);
-				Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
-				Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+				if (clip != null) {
+					Gdx.gl.glClearDepthf(1f);
+					Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
+					Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+				}
 			}
 		}
 		rendering = false;
@@ -670,7 +704,6 @@ public class LibGdxGraphics implements Graphics {
 	 * Cleans up all translations, scaling and rotation
 	 */
 	private void undoTransformations() {
-
 		if (rotation != 0f) {
 			camera.rotateAround(new Vector3(rotationX, rotationY, 0), new Vector3(0, 0, 1), rotation);
 		}

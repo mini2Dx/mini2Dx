@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * LibGDX headless implementation of {@link Graphics}
@@ -75,6 +76,11 @@ public class HeadlessGraphics implements Graphics {
 		resetTransformations();
 		clearShaderProgram();
 		clearBlendFunction();
+	}
+	
+	@Override
+	public Stage createStage(Viewport viewport) {
+		return null;
 	}
 
 	@Override

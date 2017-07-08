@@ -33,9 +33,6 @@ public abstract class GameContainer {
 	
 	protected int width, height;
 	protected Graphics graphics;
-	protected SpriteBatch spriteBatch;
-	protected PolygonSpriteBatch polygonSpriteBatch;
-	protected ShapeRenderer shapeRenderer;
 	private boolean isInitialised = false;
 	private List<GameResizeListener> gameResizeListeners;
 	
@@ -86,7 +83,7 @@ public abstract class GameContainer {
 	 * @return An instance of {@link Stage}
 	 */
 	public Stage createStage(Viewport viewport) {
-		return new Stage(viewport, spriteBatch);
+		return graphics.createStage(viewport);
 	}
 	
 	/**
