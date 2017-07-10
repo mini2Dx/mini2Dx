@@ -1,4 +1,5 @@
-[1.5.3-SNAPSHOT]
+[1.5.3]
+- (#70) Fixed libgdx stage2D integration for UiContainer
 
 [1.5.2]
 - Fixed locking exception in removeAll(List) for concurrent QuadTree implementations
