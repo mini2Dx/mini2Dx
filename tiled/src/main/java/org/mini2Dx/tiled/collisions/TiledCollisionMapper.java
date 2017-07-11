@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.mini2Dx.core.collisions.QuadTree;
 import org.mini2Dx.core.engine.Positionable;
+import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.TileLayer;
 import org.mini2Dx.tiled.TiledMap;
@@ -172,7 +173,7 @@ public class TiledCollisionMapper<T extends Positionable> {
 			}
 		}
 	}
-	
+
 	/**
 	 * Extracts empty spaces in a {@link TiledMap} layer and adds them to a
 	 * {@link QuadTree} instance
@@ -228,7 +229,7 @@ public class TiledCollisionMapper<T extends Positionable> {
 			}
 		}
 	}
-	
+
 	/**
 	 * Extracts empty spaces in a {@link TiledMap} layer and adds them to a
 	 * {@link List} instance
@@ -288,7 +289,7 @@ public class TiledCollisionMapper<T extends Positionable> {
 	public void mapCollisionsByLayer(List<T> results, TiledMap tiledMap, String layerName) {
 		mapCollisionsByLayer(results, tiledMap, tiledMap.getLayerIndex(layerName));
 	}
-	
+
 	/**
 	 * Extracts empty spaces in a {@link TiledMap} layer and adds them to a
 	 * {@link QuadTree} instance
@@ -304,7 +305,7 @@ public class TiledCollisionMapper<T extends Positionable> {
 	public void mapEmptySpacesByLayer(QuadTree<T> quadTree, TiledMap tiledMap, String layerName) {
 		mapEmptySpacesByLayer(quadTree, tiledMap, tiledMap.getLayerIndex(layerName));
 	}
-	
+
 	/**
 	 * Extracts empty spaces in a {@link TiledMap} layer and adds them to a
 	 * {@link List} instance
@@ -465,8 +466,37 @@ public class TiledCollisionMapper<T extends Positionable> {
 	 *            drawn in the layer is treated as a collision.
 	 */
 	public void mapAndMergeCollisionsByLayer(QuadTree<T> quadTree, TiledMap tiledMap, int layerIndex) {
+		mapAndMergeCollisionsByLayer(quadTree, tiledMap, layerIndex, Integer.MAX_VALUE, Integer.MAX_VALUE);
+	}
+
+	/**
+	 * Extracts and merges collisions in a {@link TiledMap} layer and adds them
+	 * to a {@link QuadTree} instance. Tiles are determined as mergeable by the
+	 * {@link TiledCollisionMerger} instance associated with this
+	 * {@link TiledCollisionMapper}.
+	 * 
+	 * @param quadTree
+	 *            The {@link QuadTree} instance to add collisions to
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract collisions from
+	 * @param layerIndex
+	 *            The index of the layer to extract collisions from. Each tile
+	 *            drawn in the layer is treated as a collision.
+	 * @param maxColumns
+	 *            The maximum number of columns to merge
+	 * @param maxRows
+	 *            The maximum number of rows to merge
+	 */
+	public void mapAndMergeCollisionsByLayer(QuadTree<T> quadTree, TiledMap tiledMap, final int layerIndex,
+			final int maxColumns, final int maxRows) {
 		if (layerIndex < 0) {
 			return;
+		}
+		if (maxColumns < 0) {
+			throw new MdxException("maxColumns cannot be less than 1");
+		}
+		if (maxRows < 0) {
+			throw new MdxException("maxRows cannot be less than 1");
 		}
 
 		TileLayer layer = tiledMap.getTileLayer(layerIndex);
@@ -477,15 +507,15 @@ public class TiledCollisionMapper<T extends Positionable> {
 				if (collisions[x][y] == 0) {
 					continue;
 				}
-				quadTree.add(mergeCollisions(x, y, collisions, layer, tiledMap));
+				quadTree.add(mergeCollisions(x, y, maxColumns, maxRows, collisions, layer, tiledMap));
 			}
 		}
 	}
-	
+
 	/**
-	 * Extracts and merges empty spaces in a {@link TiledMap} layer and adds them
-	 * to a {@link QuadTree} instance. Tiles are determined as mergeable by the
-	 * {@link TiledCollisionMerger} instance associated with this
+	 * Extracts and merges empty spaces in a {@link TiledMap} layer and adds
+	 * them to a {@link QuadTree} instance. Tiles are determined as mergeable by
+	 * the {@link TiledCollisionMerger} instance associated with this
 	 * {@link TiledCollisionMapper}.
 	 * 
 	 * @param quadTree
@@ -499,11 +529,11 @@ public class TiledCollisionMapper<T extends Positionable> {
 	public void mapAndMergeEmptySpacesByLayer(QuadTree<T> quadTree, TiledMap tiledMap, String layerName) {
 		mapAndMergeEmptySpacesByLayer(quadTree, tiledMap, tiledMap.getLayerIndex(layerName));
 	}
-	
+
 	/**
-	 * Extracts and merges empty spaces in a {@link TiledMap} layer and adds them
-	 * to a {@link QuadTree} instance. Tiles are determined as mergeable by the
-	 * {@link TiledCollisionMerger} instance associated with this
+	 * Extracts and merges empty spaces in a {@link TiledMap} layer and adds
+	 * them to a {@link QuadTree} instance. Tiles are determined as mergeable by
+	 * the {@link TiledCollisionMerger} instance associated with this
 	 * {@link TiledCollisionMapper}.
 	 * 
 	 * @param quadTree
@@ -515,8 +545,37 @@ public class TiledCollisionMapper<T extends Positionable> {
 	 *            drawn in the layer is treated as a collision.
 	 */
 	public void mapAndMergeEmptySpacesByLayer(QuadTree<T> quadTree, TiledMap tiledMap, int layerIndex) {
+		mapAndMergeEmptySpacesByLayer(quadTree, tiledMap, layerIndex, Integer.MAX_VALUE, Integer.MAX_VALUE);
+	}
+
+	/**
+	 * Extracts and merges empty spaces in a {@link TiledMap} layer and adds
+	 * them to a {@link QuadTree} instance. Tiles are determined as mergeable by
+	 * the {@link TiledCollisionMerger} instance associated with this
+	 * {@link TiledCollisionMapper}.
+	 * 
+	 * @param quadTree
+	 *            The {@link QuadTree} instance to add empty spaces to
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract empty spaces from
+	 * @param layerIndex
+	 *            The index of the layer to extract empty spaces from. Each tile
+	 *            drawn in the layer is treated as a collision.
+	 * @param maxColumns
+	 *            The maximum number of columns to merge
+	 * @param maxRows
+	 *            The maximum number of rows to merge
+	 */
+	public void mapAndMergeEmptySpacesByLayer(QuadTree<T> quadTree, TiledMap tiledMap, final int layerIndex,
+			final int maxColumns, final int maxRows) {
 		if (layerIndex < 0) {
 			return;
+		}
+		if (maxColumns < 0) {
+			throw new MdxException("maxColumns cannot be less than 1");
+		}
+		if (maxRows < 0) {
+			throw new MdxException("maxRows cannot be less than 1");
 		}
 
 		TileLayer layer = tiledMap.getTileLayer(layerIndex);
@@ -527,7 +586,7 @@ public class TiledCollisionMapper<T extends Positionable> {
 				if (emptySpaces[x][y] == 0) {
 					continue;
 				}
-				quadTree.add(mergeCollisions(x, y, emptySpaces, layer, tiledMap));
+				quadTree.add(mergeCollisions(x, y, maxColumns, maxRows, emptySpaces, layer, tiledMap));
 			}
 		}
 	}
@@ -565,8 +624,37 @@ public class TiledCollisionMapper<T extends Positionable> {
 	 *            drawn in the layer is treated as a collision.
 	 */
 	public void mapAndMergeCollisionsByLayer(List<T> results, TiledMap tiledMap, int layerIndex) {
+		mapAndMergeCollisionsByLayer(results, tiledMap, layerIndex, Integer.MAX_VALUE, Integer.MAX_VALUE);
+	}
+
+	/**
+	 * Extracts and merges collisions in a {@link TiledMap} layer and adds them
+	 * to a {@link List} instance. Tiles are determined as mergeable by the
+	 * {@link TiledCollisionMerger} instance associated with this
+	 * {@link TiledCollisionMapper}.
+	 * 
+	 * @param results
+	 *            The {@link List} instance to add collisions to
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract collisions from
+	 * @param layerIndex
+	 *            The index of the layer to extract collisions from. Each tile
+	 *            drawn in the layer is treated as a collision.
+	 * @param maxColumns
+	 *            The maximum number of columns to merge
+	 * @param maxRows
+	 *            The maximum number of rows to merge
+	 */
+	public void mapAndMergeCollisionsByLayer(List<T> results, TiledMap tiledMap, final int layerIndex,
+			final int maxColumns, final int maxRows) {
 		if (layerIndex < 0) {
 			return;
+		}
+		if (maxColumns < 0) {
+			throw new MdxException("maxColumns cannot be less than 1");
+		}
+		if (maxRows < 0) {
+			throw new MdxException("maxRows cannot be less than 1");
 		}
 
 		TileLayer layer = tiledMap.getTileLayer(layerIndex);
@@ -577,14 +665,14 @@ public class TiledCollisionMapper<T extends Positionable> {
 				if (collisions[x][y] == 0) {
 					continue;
 				}
-				results.add(mergeCollisions(x, y, collisions, layer, tiledMap));
+				results.add(mergeCollisions(x, y, maxColumns, maxRows, collisions, layer, tiledMap));
 			}
 		}
 	}
-	
+
 	/**
-	 * Extracts and merges empty spaces in a {@link TiledMap} layer and adds them
-	 * to a {@link List} instance. Tiles are determined as mergeable by the
+	 * Extracts and merges empty spaces in a {@link TiledMap} layer and adds
+	 * them to a {@link List} instance. Tiles are determined as mergeable by the
 	 * {@link TiledCollisionMerger} instance associated with this
 	 * {@link TiledCollisionMapper}.
 	 * 
@@ -599,10 +687,10 @@ public class TiledCollisionMapper<T extends Positionable> {
 	public void mapAndMergeEmptySpacesByLayer(List<T> results, TiledMap tiledMap, String layerName) {
 		mapAndMergeEmptySpacesByLayer(results, tiledMap, tiledMap.getLayerIndex(layerName));
 	}
-	
+
 	/**
-	 * Extracts and merges empty spaces in a {@link TiledMap} layer and adds them
-	 * to a {@link List} instance. Tiles are determined as mergeable by the
+	 * Extracts and merges empty spaces in a {@link TiledMap} layer and adds
+	 * them to a {@link List} instance. Tiles are determined as mergeable by the
 	 * {@link TiledCollisionMerger} instance associated with this
 	 * {@link TiledCollisionMapper}.
 	 * 
@@ -615,8 +703,37 @@ public class TiledCollisionMapper<T extends Positionable> {
 	 *            drawn in the layer is treated as a collision.
 	 */
 	public void mapAndMergeEmptySpacesByLayer(List<T> results, TiledMap tiledMap, int layerIndex) {
+		mapAndMergeEmptySpacesByLayer(results, tiledMap, layerIndex, Integer.MAX_VALUE, Integer.MAX_VALUE);
+	}
+
+	/**
+	 * Extracts and merges empty spaces in a {@link TiledMap} layer and adds
+	 * them to a {@link List} instance. Tiles are determined as mergeable by the
+	 * {@link TiledCollisionMerger} instance associated with this
+	 * {@link TiledCollisionMapper}.
+	 * 
+	 * @param results
+	 *            The {@link List} instance to add empty spaces to
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract empty spaces from
+	 * @param layerIndex
+	 *            The index of the layer to extract empty spaces from. Each tile
+	 *            drawn in the layer is treated as a collision.
+	 * @param maxColumns
+	 *            The maximum number of columns to merge
+	 * @param maxRows
+	 *            The maximum number of rows to merge
+	 */
+	public void mapAndMergeEmptySpacesByLayer(List<T> results, TiledMap tiledMap, final int layerIndex,
+			final int maxColumns, final int maxRows) {
 		if (layerIndex < 0) {
 			return;
+		}
+		if (maxColumns < 0) {
+			throw new MdxException("maxColumns cannot be less than 1");
+		}
+		if (maxRows < 0) {
+			throw new MdxException("maxRows cannot be less than 1");
 		}
 
 		TileLayer layer = tiledMap.getTileLayer(layerIndex);
@@ -627,12 +744,13 @@ public class TiledCollisionMapper<T extends Positionable> {
 				if (emptySpaces[x][y] == 0) {
 					continue;
 				}
-				results.add(mergeCollisions(x, y, emptySpaces, layer, tiledMap));
+				results.add(mergeCollisions(x, y, maxColumns, maxRows, emptySpaces, layer, tiledMap));
 			}
 		}
 	}
 
-	private T mergeCollisions(final int startX, final int startY, byte[][] collisions, TileLayer layer, TiledMap tiledMap) {
+	private T mergeCollisions(final int startX, final int startY, final int maxColumns, final int maxRows,
+			byte[][] collisions, TileLayer layer, TiledMap tiledMap) {
 		Tile startTile = tiledMap.getTile(layer.getTileId(startX, startY));
 		Tile nextTile = null;
 
@@ -649,6 +767,9 @@ public class TiledCollisionMapper<T extends Positionable> {
 				break;
 			}
 			maxYTiles = y;
+			if (maxYTiles >= maxRows) {
+				break;
+			}
 		}
 
 		for (int x = 1; x < layer.getWidth() - startX; x++) {
@@ -669,6 +790,9 @@ public class TiledCollisionMapper<T extends Positionable> {
 				break;
 			}
 			maxXTiles = x;
+			if (maxXTiles >= maxColumns) {
+				break;
+			}
 		}
 
 		// Clear the collision data for merged tiles
