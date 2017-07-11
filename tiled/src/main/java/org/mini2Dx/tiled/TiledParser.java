@@ -183,6 +183,10 @@ public class TiledParser implements TiledParserNotifier {
 			int localtid = tileElement.getIntAttribute("id", 0);
 			Tile tile = tileset.getTile(firstgid + localtid);
 			if (tile != null) {
+				String type = tileElement.getAttribute("type", null);
+				if (type != null) {
+					tile.setProperty("type", type);
+				}
 				String terrain = tileElement.getAttribute("terrain", null);
 				if (terrain != null) {
 					tile.setProperty("terrain", terrain);
