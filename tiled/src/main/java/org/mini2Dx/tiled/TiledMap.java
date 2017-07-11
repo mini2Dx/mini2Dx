@@ -515,6 +515,25 @@ public class TiledMap implements TiledParserListener {
 		}
 		return -1;
 	}
+	
+	/**
+	 * Returns the index of the {@link TileLayer} or {@link TiledObjectGroup}
+	 * with the given name ignoring upper/lowercase differences
+	 * 
+	 * @param name
+	 *            The name to search for
+	 * @return -1 if there is no such {@link TileLayer} or
+	 *         {@link TiledObjectGroup}
+	 */
+	public int getLayerIndexIgnoreCase(String name) {
+		for (int i = 0; i < layers.size(); i++) {
+			Layer layer = layers.get(i);
+			if (layer.getName().compareToIgnoreCase(name) == 0) {
+				return i;
+			}
+		}
+		return -1;
+	}
 
 	/**
 	 * Returns the {@link Tile} for the given tile ID
