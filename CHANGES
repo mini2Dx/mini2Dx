@@ -1,3 +1,5 @@
+[1.5.5-SNAPSHOT]
+
 [1.5.4]
 - Added more utility methods to TiledCollisionMapper
 - Added TiledMap.getLayerIndexIgnoreCase
