@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +22,7 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.tiled.exception.TiledException;
 import org.mini2Dx.tiled.exception.TiledParsingException;
 import org.mini2Dx.tiled.exception.UnsupportedOrientationException;
+import org.mini2Dx.tiled.renderer.HexagonalTileLayerRenderer;
 import org.mini2Dx.tiled.renderer.IsometricTileLayerRenderer;
 import org.mini2Dx.tiled.renderer.OrthogonalTileLayerRenderer;
 import org.mini2Dx.tiled.renderer.TileLayerRenderer;
@@ -31,6 +31,7 @@ import org.mini2Dx.tiled.renderer.TiledObjectGroupRenderer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  * An implementation of a parsed map from Tiled.
@@ -41,7 +42,9 @@ import com.badlogic.gdx.graphics.Color;
 public class TiledMap implements TiledParserListener {
 	private String orientationValue;
 	private Orientation orientation;
-	private int width, height, tileWidth, tileHeight, pixelWidth, pixelHeight;
+	private StaggerAxis staggerAxis;
+	private StaggerIndex staggerIndex;
+	private int width, height, tileWidth, tileHeight, pixelWidth, pixelHeight, sideLength;
 	private Color backgroundColor;
 	protected List<Tileset> tilesets;
 	protected List<Layer> layers;
@@ -127,8 +130,8 @@ public class TiledMap implements TiledParserListener {
 		case ISOMETRIC_STAGGERED:
 			// TODO: Add renderer for isometric maps
 			break;
-		case HEXAGONAL_STAGGERED:
-			// TODO: Add renderer for hexagonal maps
+		case HEXAGONAL:
+			tileLayerRenderer = new HexagonalTileLayerRenderer(this, cacheLayers);
 			break;
 		case UNKNOWN:
 		default:
@@ -244,7 +247,8 @@ public class TiledMap implements TiledParserListener {
 		case IMAGE:
 			break;
 		case OBJECT:
-			drawTiledObjectGroup(g, (TiledObjectGroup) tiledLayer, x, y, startTileX, startTileY, widthInTiles, heightInTiles);
+			drawTiledObjectGroup(g, (TiledObjectGroup) tiledLayer, x, y, startTileX, startTileY, widthInTiles,
+					heightInTiles);
 			break;
 		case TILE:
 			drawTileLayer(g, (TileLayer) tiledLayer, x, y, startTileX, startTileY, widthInTiles, heightInTiles);
@@ -315,12 +319,13 @@ public class TiledMap implements TiledParserListener {
 		onLayerRendered(g, layer, startTileX, startTileY, widthInTiles, heightInTiles);
 	}
 
-	private void drawTiledObjectGroup(Graphics g, TiledObjectGroup objectGroup, int renderX, int renderY, int startTileX,
-			int startTileY, int widthInTiles, int heightInTiles) {
+	private void drawTiledObjectGroup(Graphics g, TiledObjectGroup objectGroup, int renderX, int renderY,
+			int startTileX, int startTileY, int widthInTiles, int heightInTiles) {
 		if (tiledObjectGroupRenderer == null) {
 			return;
 		}
-		tiledObjectGroupRenderer.drawObjectGroup(g, objectGroup, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles);
+		tiledObjectGroupRenderer.drawObjectGroup(g, objectGroup, renderX, renderY, startTileX, startTileY, widthInTiles,
+				heightInTiles);
 	}
 
 	/**
@@ -364,8 +369,8 @@ public class TiledMap implements TiledParserListener {
 	}
 
 	@Override
-	public void onBeginParsing(String orientation, Color backgroundColor, int width, int height, int tileWidth,
-			int tileHeight) {
+	public void onBeginParsing(String orientation, String staggerAxis, String staggerIndex, Color backgroundColor,
+			int width, int height, int tileWidth, int tileHeight, int sideLength) {
 		this.orientationValue = orientation;
 		try {
 			this.orientation = Orientation.valueOf(orientation.toUpperCase());
@@ -375,12 +380,53 @@ public class TiledMap implements TiledParserListener {
 		if (backgroundColor != null) {
 			this.backgroundColor = backgroundColor;
 		}
+		if (staggerAxis != null) {
+			this.staggerAxis = StaggerAxis.valueOf(staggerAxis.toUpperCase());
+			if(sideLength < 0) {
+				switch(this.staggerAxis) {
+				case X:
+					sideLength = tileWidth / 2;
+					break;
+				case Y:
+				default:
+					sideLength = tileHeight / 2;
+					break;
+				}
+			}
+		}
+		if (staggerIndex != null) {
+			this.staggerIndex = StaggerIndex.valueOf(staggerIndex.toUpperCase());
+		}
 		this.width = width;
 		this.height = height;
 		this.tileWidth = tileWidth;
-		this.tileHeight = tileHeight;
-		this.pixelWidth = width * tileWidth;
-		this.pixelHeight = height * tileHeight;
+		this.tileHeight = tileHeight;		
+		this.sideLength = sideLength;
+		
+		switch(this.orientation) {
+		case HEXAGONAL:
+			switch(this.staggerAxis) {
+			case X:
+				this.pixelWidth = MathUtils.round(((tileWidth * 0.75f) * width) + (tileWidth * 0.25f));
+				this.pixelHeight = MathUtils.round((tileHeight * height) + (tileHeight * 0.5f));
+				break;
+			case Y:
+			default:
+				this.pixelWidth = MathUtils.round((tileWidth* width) + (tileWidth * 0.5f));
+				this.pixelHeight = MathUtils.round(((tileHeight * 0.75f) * height) + (tileHeight * 0.25f));
+				break;
+			}
+			break;
+		case ISOMETRIC_STAGGERED:
+			break;
+		case ISOMETRIC:
+		case ORTHOGONAL:
+		case UNKNOWN:
+		default:
+			this.pixelWidth = width * tileWidth;
+			this.pixelHeight = height * tileHeight;
+			break;
+		}
 	}
 
 	@Override
@@ -455,13 +501,14 @@ public class TiledMap implements TiledParserListener {
 	public TiledObjectGroup getObjectGroup(String name) {
 		return objectGroups.get(name);
 	}
-	
+
 	/**
 	 * Returns all the {@link TiledObjectGroup}s in this map
+	 * 
 	 * @return Null if there are no {@link TiledObjectGroup}s
 	 */
 	public Collection<TiledObjectGroup> getObjectGroups() {
-		if(objectGroups.isEmpty()) {
+		if (objectGroups.isEmpty()) {
 			return null;
 		}
 		return objectGroups.values();
@@ -485,7 +532,7 @@ public class TiledMap implements TiledParserListener {
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Returns the index of the {@link TileLayer} or {@link TiledObjectGroup}
 	 * with the given name ignoring upper/lowercase differences
@@ -562,6 +609,33 @@ public class TiledMap implements TiledParserListener {
 	}
 
 	/**
+	 * Returns the {@link StaggerAxis} of this map
+	 * 
+	 * @return Null if there is no value
+	 */
+	public StaggerAxis getStaggerAxis() {
+		return staggerAxis;
+	}
+
+	/**
+	 * Returns the {@link StaggerIndex} of this map
+	 * 
+	 * @return Null if there is no value
+	 */
+	public StaggerIndex getStaggerIndex() {
+		return staggerIndex;
+	}
+
+	/**
+	 * Returns the stagger side length of this map
+	 * 
+	 * @return -1 if there is no value
+	 */
+	public int getSideLength() {
+		return sideLength;
+	}
+
+	/**
 	 * Returns the width of the map in tiles
 	 * 
 	 * @return
@@ -623,9 +697,10 @@ public class TiledMap implements TiledParserListener {
 	public List<Tileset> getTilesets() {
 		return tilesets;
 	}
-	
+
 	/**
 	 * Returns the {@link Layer}s of this map
+	 * 
 	 * @return
 	 */
 	public List<Layer> getLayers() {

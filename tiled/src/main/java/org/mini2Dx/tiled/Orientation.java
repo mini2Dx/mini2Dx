@@ -15,5 +15,5 @@ package org.mini2Dx.tiled;
  * Represents the possible orientations of a {@link TiledMap}
  */
 public enum Orientation {
-	ORTHOGONAL, ISOMETRIC, ISOMETRIC_STAGGERED, HEXAGONAL_STAGGERED, UNKNOWN
+	ORTHOGONAL, ISOMETRIC, ISOMETRIC_STAGGERED, HEXAGONAL, UNKNOWN
 }

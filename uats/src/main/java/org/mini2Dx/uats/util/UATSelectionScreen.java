@@ -27,6 +27,7 @@ import org.mini2Dx.uats.ControllerMapping;
 import org.mini2Dx.uats.ControllerUAT;
 import org.mini2Dx.uats.GeometryUAT;
 import org.mini2Dx.uats.GraphicsUAT;
+import org.mini2Dx.uats.HexagonalTiledMapUAT;
 import org.mini2Dx.uats.IsometricTiledMapUAT;
 import org.mini2Dx.uats.OrthogonalTiledMapNoCachingUAT;
 import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
@@ -239,6 +240,17 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 					@Override
 					public void onActionEnd(ActionEvent event) {
 						nextScreenId = ScreenIds.getScreenId(IsometricTiledMapUAT.class);
+					}
+				})));
+		uatsDialog.add(Row.withElements("row-isometric-tiledmap",
+				UiUtils.createButton(uiNavigation, "Hexagonal TiledMap (No Caching)", new ActionListener() {
+					@Override
+					public void onActionBegin(ActionEvent event) {
+					}
+
+					@Override
+					public void onActionEnd(ActionEvent event) {
+						nextScreenId = ScreenIds.getScreenId(HexagonalTiledMapUAT.class);
 					}
 				})));
 		uatsDialog.add(

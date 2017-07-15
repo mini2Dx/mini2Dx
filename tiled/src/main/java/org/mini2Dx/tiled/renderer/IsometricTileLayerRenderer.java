@@ -11,13 +11,10 @@
  */
 package org.mini2Dx.tiled.renderer;
 
-import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.tiled.TileLayer;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.Tileset;
-
-import com.badlogic.gdx.math.MathUtils;
 
 /**
  * Renders isometric {@link TileLayer}s
@@ -30,6 +27,7 @@ public class IsometricTileLayerRenderer implements TileLayerRenderer {
 	private final float halfTileWidth, halfTileHeight;
 
 	public IsometricTileLayerRenderer(TiledMap tiledMap, boolean cacheLayers) {
+		super();
 		this.cacheLayers = cacheLayers;
 		this.tiledMap = tiledMap;
 		

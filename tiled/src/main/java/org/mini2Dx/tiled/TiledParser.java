@@ -15,7 +15,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.zip.DataFormatException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
@@ -70,13 +69,16 @@ public class TiledParser implements TiledParserNotifier {
 		int mapHeight = root.getIntAttribute("height", 0);
 		int tileWidth = root.getIntAttribute("tilewidth", 0);
 		int tileHeight = root.getIntAttribute("tileheight", 0);
+		int sideLength = root.getInt("hexsidelength", -1);
+		String staggerAxis = root.getAttribute("staggeraxis", null);
+		String staggerIndex = root.getAttribute("staggerindex", null);
 		String mapBackgroundColor = root.getAttribute("backgroundcolor", null);
 		Color backgroundColor = null;
 		if (mapBackgroundColor != null) {
 			backgroundColor = convertHexColorToColor(mapBackgroundColor);
 		}
 
-		notifyBeginParsing(mapOrientation, backgroundColor, mapWidth, mapHeight, tileWidth, tileHeight);
+		notifyBeginParsing(mapOrientation, staggerAxis, staggerIndex, backgroundColor, mapWidth, mapHeight, tileWidth, tileHeight, sideLength);
 
 		Element properties = root.getChildByName("properties");
 		if (properties != null) {
@@ -100,9 +102,12 @@ public class TiledParser implements TiledParserNotifier {
 
 	/**
 	 * Parses a TSX file
-	 * @param tsxFileHandle A {@link FileHandle} to a TSX file exported from Tiled
+	 * 
+	 * @param tsxFileHandle
+	 *            A {@link FileHandle} to a TSX file exported from Tiled
 	 * @return The resulting {@link ImageTilesetSource}
-	 * @throws IOException Thrown if the tileset file could not be parsed
+	 * @throws IOException
+	 *             Thrown if the tileset file could not be parsed
 	 */
 	public ImageTilesetSource parseTsx(FileHandle tsxFileHandle) throws IOException {
 		Element element = xmlReader.parse(tsxFileHandle);
@@ -116,11 +121,12 @@ public class TiledParser implements TiledParserNotifier {
 		int imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
 		String transparentColor = element.getChildByName("image").get("trans", null);
 
-		ImageTilesetSource result = new ImageTilesetSource(imageWidth, imageHeight, tileWidth, tileHeight, spacing, margin);
+		ImageTilesetSource result = new ImageTilesetSource(imageWidth, imageHeight, tileWidth, tileHeight, spacing,
+				margin);
 		result.setName(name);
 		result.setTilesetImagePath(imageSource);
 		result.setTransparentColorValue(transparentColor);
-		
+
 		loadTileProperties(result, element.getChildrenByName("tile"));
 
 		Element properties = element.getChildByName("properties");
@@ -155,7 +161,7 @@ public class TiledParser implements TiledParserNotifier {
 			Tileset tileset = null;
 			String source = element.getAttribute("source", null);
 			int firstGid = element.getIntAttribute("firstgid", 1);
-			
+
 			if (source == null) {
 				// Image tileset
 				String name = element.get("name", null);
@@ -434,10 +440,11 @@ public class TiledParser implements TiledParserNotifier {
 	}
 
 	@Override
-	public void notifyBeginParsing(String orientation, Color backgroundColor, int width, int height, int tileWidth,
-			int tileHeight) {
+	public void notifyBeginParsing(String orientation, String staggerAxis, String staggerIndex, Color backgroundColor,
+			int width, int height, int tileWidth, int tileHeight, int sideLength) {
 		for (TiledParserListener tiledParserListener : listeners) {
-			tiledParserListener.onBeginParsing(orientation, backgroundColor, width, height, tileWidth, tileHeight);
+			tiledParserListener.onBeginParsing(orientation, staggerAxis, staggerIndex, backgroundColor, width, height,
+					tileWidth, tileHeight, sideLength);
 		}
 	}
 

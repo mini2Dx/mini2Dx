@@ -35,6 +35,7 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 	private final TiledMap tiledMap;
 
 	public OrthogonalTileLayerRenderer(TiledMap tiledMap, boolean cacheLayers) {
+		super();
 		this.cacheLayers = cacheLayers;
 		this.tiledMap = tiledMap;
 

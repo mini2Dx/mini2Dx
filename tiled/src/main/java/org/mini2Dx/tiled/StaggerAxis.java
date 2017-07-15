@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2017 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,38 +11,9 @@
  */
 package org.mini2Dx.tiled;
 
-import com.badlogic.gdx.graphics.Color;
-
 /**
- * A common interface to notify {@link TiledParserListener}s
+ *
  */
-public interface TiledParserNotifier {
-	/**
-	 * Adds a listener to be notified of parsing results
-	 * 
-	 * @param tiledParserListener
-	 *            The {@link TiledParserListener} to be added
-	 */
-	public void addListener(TiledParserListener tiledParserListener);
-
-	/**
-	 * Removes a listener from being notified of parsing results
-	 * 
-	 * @param tiledParserListener
-	 *            The {@link TiledParserListener} to be removed
-	 */
-	public void removeListener(TiledParserListener tiledParserListener);
-
-	public void notifyBeginParsing(String orientation, String staggerAxis, String staggerIndex, Color backgroundColor,
-			int width, int height, int tileWidth, int tileHeight, int sideLength);
-
-	public void notifyMapPropertyParsed(String propertyName, String value);
-
-	public void notifyTilePropertyParsed(Tile tile);
-
-	public void notifyTilesetParsed(Tileset parsedTileset);
-
-	public void notifyTileLayerParsed(TileLayer parsedLayer);
-
-	public void notifyObjectGroupParsed(TiledObjectGroup parsedObjectGroup);
+public enum StaggerAxis {
+	X, Y
 }

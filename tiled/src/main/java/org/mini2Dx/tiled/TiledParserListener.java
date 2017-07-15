@@ -18,8 +18,8 @@ import com.badlogic.gdx.graphics.Color;
  */
 public interface TiledParserListener {
 
-	public void onBeginParsing(String orientation, Color backgroundColor,
-			int width, int height, int tileWidth, int tileHeight);
+	public void onBeginParsing(String orientation, String staggerAxis, String staggerIndex, Color backgroundColor,
+			int width, int height, int tileWidth, int tileHeight, int sideLength);
 
 	public void onMapPropertyParsed(String propertyName, String value);
 

@@ -12,9 +12,7 @@
 package org.mini2Dx.tiled;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Represents a group of {@link TiledObject}s loaded from a {@link TiledMap}
