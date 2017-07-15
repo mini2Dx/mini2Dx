@@ -95,27 +95,26 @@ public class TiledMap implements TiledParserListener {
 	 *            An existing {@link TiledParser} instance
 	 * @param fileHandle
 	 *            A {@link FileHandle} to a .tmx file
-	 * @param loadTilesets
-	 *            True if the tileset images should be loaded and the map
-	 *            pre-rendered
+	 * @param loadTilesetTextures
+	 *            True if the tileset images should be loaded
 	 * @throws TiledException
 	 *             Thrown if there were issues with the loaded map
 	 */
-	public TiledMap(TiledParser parser, FileHandle fileHandle, boolean loadTilesets, boolean cacheLayers)
+	public TiledMap(TiledParser parser, FileHandle fileHandle, boolean loadTilesetTextures, boolean cacheLayers)
 			throws TiledException {
 		this();
 		this.fileHandle = fileHandle;
 
 		parser.addListener(this);
 		try {
-			parser.parse(fileHandle);
+			parser.parseTmx(fileHandle);
 		} catch (IOException e) {
 			throw new TiledParsingException(e);
 		}
 		parser.removeListener(this);
 
-		if (loadTilesets) {
-			loadTilesets();
+		if (loadTilesetTextures) {
+			loadTilesetTextures();
 		}
 
 		switch (orientation) {
@@ -142,7 +141,7 @@ public class TiledMap implements TiledParserListener {
 	 * 
 	 * @return True if they have been loaded
 	 */
-	public boolean isTilesetsLoaded() {
+	public boolean isTilesetTexturesLoaded() {
 		boolean result = true;
 		for (int i = 0; i < tilesets.size(); i++) {
 			if (!tilesets.get(i).isTextureLoaded()) {
@@ -153,38 +152,9 @@ public class TiledMap implements TiledParserListener {
 	}
 
 	/**
-	 * Returns the total amount of {@link Tileset}s loaded
-	 * 
-	 * @return 0 if none are loaded
-	 */
-	public int getTotalTilesetsLoaded() {
-		int result = 0;
-		for (int i = 0; i < tilesets.size(); i++) {
-			if (tilesets.get(i).isTextureLoaded()) {
-				result++;
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Loads a specific {@link Tileset}
-	 * 
-	 * @param tilesetIndex
-	 */
-	public void loadTileset(int tilesetIndex) {
-		if (tilesetIndex < 0 || tilesetIndex >= tilesets.size()) {
-			throw new RuntimeException("No such tileset with index " + tilesetIndex);
-		}
-		if (!tilesets.get(tilesetIndex).isTextureLoaded()) {
-			tilesets.get(tilesetIndex).loadTexture(fileHandle.parent());
-		}
-	}
-
-	/**
 	 * Loads all {@link Tileset}s for this map if they are not already loaded
 	 */
-	public void loadTilesets() {
+	private void loadTilesetTextures() {
 		for (int i = 0; i < tilesets.size(); i++) {
 			if (!tilesets.get(i).isTextureLoaded()) {
 				tilesets.get(i).loadTexture(fileHandle.parent());
@@ -332,7 +302,7 @@ public class TiledMap implements TiledParserListener {
 
 	private void drawTileLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX, int startTileY,
 			int widthInTiles, int heightInTiles) {
-		if (!isTilesetsLoaded()) {
+		if (!isTilesetTexturesLoaded()) {
 			Gdx.app.error(TiledMap.class.getSimpleName(), "Attempting to render TiledMap without its tilesets loaded");
 			return;
 		}
@@ -576,6 +546,9 @@ public class TiledMap implements TiledParserListener {
 	public void dispose() {
 		if (tileLayerRenderer != null) {
 			tileLayerRenderer.dispose();
+		}
+		for (int i = 0; i < tilesets.size(); i++) {
+			tilesets.get(i).dispose();
 		}
 	}
 

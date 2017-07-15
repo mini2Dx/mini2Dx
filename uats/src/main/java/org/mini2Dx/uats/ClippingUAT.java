@@ -37,7 +37,7 @@ public class ClippingUAT extends BasicGameScreen {
     @Override
     public void initialise(GameContainer gc) {
         try {
-            tiledMap = new TiledMap(Gdx.files.classpath("orthogonal.tmx"));
+            tiledMap = new TiledMap(Gdx.files.internal("orthogonal.tmx"));
         } catch (TiledException e) {
             e.printStackTrace();
         }

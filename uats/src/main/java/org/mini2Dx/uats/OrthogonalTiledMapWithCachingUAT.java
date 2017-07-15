@@ -37,7 +37,7 @@ public class OrthogonalTiledMapWithCachingUAT extends BasicGameScreen {
     @Override
     public void initialise(GameContainer gc) {
         try {
-            tiledMap = new TiledMap(Gdx.files.classpath("orthogonal.tmx"), true, true);
+            tiledMap = new TiledMap(Gdx.files.internal("orthogonal_tsx.tmx"), true, true);
         } catch (TiledException e) {
             e.printStackTrace();
         }

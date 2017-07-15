@@ -29,13 +29,19 @@ public class SharedParserTiledMapTest {
 		
 		FileHandle orthogonalFile = new FileHandle(Thread.currentThread()
 				.getContextClassLoader().getResource("orthogonal.tmx").getFile());
+		FileHandle orthogonalTsxFile = new FileHandle(Thread.currentThread()
+				.getContextClassLoader().getResource("orthogonal_tsx.tmx").getFile());
 		FileHandle isometricFile = new FileHandle(Thread.currentThread()
 				.getContextClassLoader().getResource("isometric.tmx").getFile());
 		
 		TiledMap orthogonalTiledMap = new TiledMap(parser, orthogonalFile, false, false);
+		TiledMap orthogonalTsxTiledMap = new TiledMap(parser, orthogonalTsxFile, false, false);
 		TiledMap isometricTiledMap = new TiledMap(parser, isometricFile, false, false);
 		
 		Assert.assertEquals(Orientation.ORTHOGONAL, orthogonalTiledMap.getOrientation());
 		Assert.assertEquals(Orientation.ISOMETRIC, isometricTiledMap.getOrientation());
+		
+		Assert.assertEquals(Orientation.ORTHOGONAL, orthogonalTsxTiledMap.getOrientation());
+		Assert.assertEquals(1, orthogonalTsxTiledMap.tilesets.size());
 	}
 }

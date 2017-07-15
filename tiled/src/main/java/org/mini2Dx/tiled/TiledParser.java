@@ -20,6 +20,10 @@ import java.util.zip.DataFormatException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 
+import org.mini2Dx.tiled.tileset.ImageTilesetSource;
+import org.mini2Dx.tiled.tileset.TilesetSource;
+import org.mini2Dx.tiled.tileset.TsxTilesetSource;
+
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
@@ -59,7 +63,7 @@ public class TiledParser implements TiledParserNotifier {
 	 * @throws IOException
 	 *             Thrown if the map file could not be parsed
 	 */
-	public void parse(FileHandle tmxFileHandle) throws IOException {
+	public void parseTmx(FileHandle tmxFileHandle) throws IOException {
 		Element root = xmlReader.parse(tmxFileHandle);
 		String mapOrientation = root.getAttribute("orientation", null);
 		int mapWidth = root.getIntAttribute("width", 0);
@@ -72,8 +76,7 @@ public class TiledParser implements TiledParserNotifier {
 			backgroundColor = convertHexColorToColor(mapBackgroundColor);
 		}
 
-		notifyBeginParsing(mapOrientation, backgroundColor, mapWidth,
-				mapHeight, tileWidth, tileHeight);
+		notifyBeginParsing(mapOrientation, backgroundColor, mapWidth, mapHeight, tileWidth, tileHeight);
 
 		Element properties = root.getChildByName("properties");
 		if (properties != null) {
@@ -95,6 +98,45 @@ public class TiledParser implements TiledParserNotifier {
 		}
 	}
 
+	/**
+	 * Parses a TSX file
+	 * @param tsxFileHandle A {@link FileHandle} to a TSX file exported from Tiled
+	 * @return The resulting {@link ImageTilesetSource}
+	 * @throws IOException Thrown if the tileset file could not be parsed
+	 */
+	public ImageTilesetSource parseTsx(FileHandle tsxFileHandle) throws IOException {
+		Element element = xmlReader.parse(tsxFileHandle);
+		String name = element.get("name", null);
+		int tileWidth = element.getIntAttribute("tilewidth", 0);
+		int tileHeight = element.getIntAttribute("tileheight", 0);
+		int spacing = element.getIntAttribute("spacing", 0);
+		int margin = element.getIntAttribute("margin", 0);
+		String imageSource = element.getChildByName("image").getAttribute("source");
+		int imageWidth = element.getChildByName("image").getIntAttribute("width", 0);
+		int imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
+		String transparentColor = element.getChildByName("image").get("trans", null);
+
+		ImageTilesetSource result = new ImageTilesetSource(imageWidth, imageHeight, tileWidth, tileHeight, spacing, margin);
+		result.setName(name);
+		result.setTilesetImagePath(imageSource);
+		result.setTransparentColorValue(transparentColor);
+		
+		loadTileProperties(result, element.getChildrenByName("tile"));
+
+		Element properties = element.getChildByName("properties");
+		if (properties != null) {
+			for (Element property : properties.getChildrenByName("property")) {
+				String propertyName = property.getAttribute("name", null);
+				String propertyValue = property.getAttribute("value", null);
+				if (propertyValue == null) {
+					propertyValue = property.getText();
+				}
+				result.setProperty(propertyName, propertyValue);
+			}
+		}
+		return result;
+	}
+
 	private void loadMapProperties(Element element) {
 		if (element.getName().equals("properties")) {
 			for (Element property : element.getChildrenByName("property")) {
@@ -110,78 +152,62 @@ public class TiledParser implements TiledParserNotifier {
 
 	private void loadTileSet(Element element, FileHandle tmxFile) {
 		if (element.getName().equals("tileset")) {
-			String name = element.get("name", null);
-			int firstGid = element.getIntAttribute("firstgid", 1);
-			int tileWidth = element.getIntAttribute("tilewidth", 0);
-			int tileHeight = element.getIntAttribute("tileheight", 0);
-			int spacing = element.getIntAttribute("spacing", 0);
-			int margin = element.getIntAttribute("margin", 0);
+			Tileset tileset = null;
 			String source = element.getAttribute("source", null);
-			String transparentColor = null;
+			int firstGid = element.getIntAttribute("firstgid", 1);
+			
+			if (source == null) {
+				// Image tileset
+				String name = element.get("name", null);
+				int tileWidth = element.getIntAttribute("tilewidth", 0);
+				int tileHeight = element.getIntAttribute("tileheight", 0);
+				int spacing = element.getIntAttribute("spacing", 0);
+				int margin = element.getIntAttribute("margin", 0);
+				String transparentColor = null;
 
-			String imageSource = "";
-			int imageWidth = 0, imageHeight = 0;
+				String imageSource = "";
+				int imageWidth = 0, imageHeight = 0;
 
-			if (source != null) {
-				FileHandle tsx = getRelativeFileHandle(tmxFile, source);
-				try {
-					element = xmlReader.parse(tsx);
-					name = element.get("name", null);
-					tileWidth = element.getIntAttribute("tilewidth", 0);
-					tileHeight = element.getIntAttribute("tileheight", 0);
-					spacing = element.getIntAttribute("spacing", 0);
-					margin = element.getIntAttribute("margin", 0);
-					imageSource = element.getChildByName("image").getAttribute(
-							"source");
-					imageWidth = element.getChildByName("image")
-							.getIntAttribute("width", 0);
-					imageHeight = element.getChildByName("image")
-							.getIntAttribute("height", 0);
-				} catch (IOException e) {
-					throw new GdxRuntimeException(
-							"Error parsing external tileset.");
+				imageSource = element.getChildByName("image").getAttribute("source");
+				imageWidth = element.getChildByName("image").getIntAttribute("width", 0);
+				imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
+				transparentColor = element.getChildByName("image").get("trans", null);
+
+				ImageTilesetSource tilesetSource = new ImageTilesetSource(imageWidth, imageHeight, tileWidth,
+						tileHeight, spacing, margin);
+				tilesetSource.setName(name);
+				tilesetSource.setTransparentColorValue(transparentColor);
+				tilesetSource.setTilesetImagePath(imageSource);
+
+				tileset = new Tileset(firstGid, tilesetSource);
+
+				loadTileProperties(tilesetSource, element.getChildrenByName("tile"));
+
+				Element properties = element.getChildByName("properties");
+				if (properties != null) {
+					for (Element property : properties.getChildrenByName("property")) {
+						String propertyName = property.getAttribute("name", null);
+						String propertyValue = property.getAttribute("value", null);
+						if (propertyValue == null) {
+							propertyValue = property.getText();
+						}
+						tileset.setProperty(propertyName, propertyValue);
+					}
 				}
 			} else {
-				imageSource = element.getChildByName("image").getAttribute(
-						"source");
-				imageWidth = element.getChildByName("image").getIntAttribute(
-						"width", 0);
-				imageHeight = element.getChildByName("image").getIntAttribute(
-						"height", 0);
-				transparentColor = element.getChildByName("image").get("trans", null);
-			}
-
-			Tileset tileset = new Tileset(imageWidth, imageHeight, tileWidth,
-					tileHeight, spacing, margin, firstGid);
-			tileset.setName(name);
-			tileset.setTransparentColorValue(transparentColor);
-			tileset.setTilesetImagePath(imageSource);
-
-			loadTileProperties(tileset, firstGid,
-					element.getChildrenByName("tile"));
-
-			Element properties = element.getChildByName("properties");
-			if (properties != null) {
-				for (Element property : properties
-						.getChildrenByName("property")) {
-					String propertyName = property.getAttribute("name", null);
-					String propertyValue = property.getAttribute("value", null);
-					if (propertyValue == null) {
-						propertyValue = property.getText();
-					}
-					tileset.setProperty(propertyName, propertyValue);
-				}
+				// TSX tileset
+				TsxTilesetSource tilesetSource = new TsxTilesetSource(tmxFile.parent(), source);
+				tileset = new Tileset(firstGid, tilesetSource);
 			}
 
 			notifyTilesetParsed(tileset);
 		}
 	}
 
-	private void loadTileProperties(Tileset tileset, int firstgid,
-			Array<Element> tileElements) {
+	private void loadTileProperties(TilesetSource tilesetSource, Array<Element> tileElements) {
 		for (Element tileElement : tileElements) {
 			int localtid = tileElement.getIntAttribute("id", 0);
-			Tile tile = tileset.getTile(firstgid + localtid);
+			Tile tile = tilesetSource.getTile(localtid, 0);
 			if (tile != null) {
 				String type = tileElement.getAttribute("type", null);
 				if (type != null) {
@@ -191,19 +217,15 @@ public class TiledParser implements TiledParserNotifier {
 				if (terrain != null) {
 					tile.setProperty("terrain", terrain);
 				}
-				String probability = tileElement.getAttribute("probability",
-						null);
+				String probability = tileElement.getAttribute("probability", null);
 				if (probability != null) {
 					tile.setProperty("probability", probability);
 				}
 				Element properties = tileElement.getChildByName("properties");
 				if (properties != null) {
-					for (Element property : properties
-							.getChildrenByName("property")) {
-						String propertyName = property.getAttribute("name",
-								null);
-						String propertyValue = property.getAttribute("value",
-								null);
+					for (Element property : properties.getChildrenByName("property")) {
+						String propertyName = property.getAttribute("name", null);
+						String propertyValue = property.getAttribute("value", null);
 						if (propertyValue == null) {
 							propertyValue = property.getText();
 						}
@@ -230,15 +252,13 @@ public class TiledParser implements TiledParserNotifier {
 			String compression = data.getAttribute("compression", null);
 			if (encoding == null) { // no 'encoding' attribute means that the
 									// encoding is XML
-				throw new GdxRuntimeException(
-						"Unsupported encoding (XML) for TMX Layer Data");
+				throw new GdxRuntimeException("Unsupported encoding (XML) for TMX Layer Data");
 			}
 			if (encoding.equals("csv")) {
 				String[] array = data.getText().split(",");
 				for (int y = 0; y < height; y++) {
 					for (int x = 0; x < width; x++) {
-						int id = (int) Long.parseLong(array[y * width + x]
-								.trim());
+						int id = (int) Long.parseLong(array[y * width + x].trim());
 						id = id & ~MASK_CLEAR;
 						layer.setTileId(x, y, id);
 					}
@@ -251,8 +271,7 @@ public class TiledParser implements TiledParserNotifier {
 						for (int y = 0; y < height; y++) {
 							for (int x = 0; x < width; x++) {
 
-								int id = unsignedByteToInt(bytes[read++])
-										| unsignedByteToInt(bytes[read++]) << 8
+								int id = unsignedByteToInt(bytes[read++]) | unsignedByteToInt(bytes[read++]) << 8
 										| unsignedByteToInt(bytes[read++]) << 16
 										| unsignedByteToInt(bytes[read++]) << 24;
 								id = id & ~MASK_CLEAR;
@@ -262,13 +281,10 @@ public class TiledParser implements TiledParserNotifier {
 					} else if (compression.equals("gzip")) {
 						GZIPInputStream GZIS = null;
 						try {
-							GZIS = new GZIPInputStream(
-									new ByteArrayInputStream(bytes),
-									bytes.length);
+							GZIS = new GZIPInputStream(new ByteArrayInputStream(bytes), bytes.length);
 						} catch (IOException e) {
 							throw new GdxRuntimeException(
-									"Error Reading TMX Layer Data - IOException: "
-											+ e.getMessage());
+									"Error Reading TMX Layer Data - IOException: " + e.getMessage());
 						}
 
 						byte[] temp = new byte[4];
@@ -276,15 +292,12 @@ public class TiledParser implements TiledParserNotifier {
 							for (int x = 0; x < width; x++) {
 								try {
 									GZIS.read(temp, 0, 4);
-									int id = unsignedByteToInt(temp[0])
-											| unsignedByteToInt(temp[1]) << 8
-											| unsignedByteToInt(temp[2]) << 16
-											| unsignedByteToInt(temp[3]) << 24;
+									int id = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
+											| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
 									id = id & ~MASK_CLEAR;
 									layer.setTileId(x, y, id);
 								} catch (IOException e) {
-									throw new GdxRuntimeException(
-											"Error Reading TMX Layer Data.", e);
+									throw new GdxRuntimeException("Error Reading TMX Layer Data.", e);
 								}
 							}
 						}
@@ -299,16 +312,13 @@ public class TiledParser implements TiledParserNotifier {
 							for (int x = 0; x < width; x++) {
 								try {
 									zlib.inflate(temp, 0, 4);
-									int id = unsignedByteToInt(temp[0])
-											| unsignedByteToInt(temp[1]) << 8
-											| unsignedByteToInt(temp[2]) << 16
-											| unsignedByteToInt(temp[3]) << 24;
+									int id = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
+											| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
 									id = id & ~MASK_CLEAR;
 									layer.setTileId(x, y, id);
 
 								} catch (DataFormatException e) {
-									throw new GdxRuntimeException(
-											"Error Reading TMX Layer Data.", e);
+									throw new GdxRuntimeException("Error Reading TMX Layer Data.", e);
 								}
 							}
 						}
@@ -316,14 +326,12 @@ public class TiledParser implements TiledParserNotifier {
 				} else {
 					// any other value of 'encoding' is one we're not aware of,
 					// probably a feature of a future version of Tiled
-					throw new GdxRuntimeException("Unrecognised encoding ("
-							+ encoding + ") for TMX Layer Data");
+					throw new GdxRuntimeException("Unrecognised encoding (" + encoding + ") for TMX Layer Data");
 				}
 			}
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
-				for (Element property : properties
-						.getChildrenByName("property")) {
+				for (Element property : properties.getChildrenByName("property")) {
 					String propertyName = property.getAttribute("name", null);
 					String propertyValue = property.getAttribute("value", null);
 					if (propertyValue == null) {
@@ -343,8 +351,7 @@ public class TiledParser implements TiledParserNotifier {
 			tiledObjectGroup.setName(name);
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
-				for (Element property : properties
-						.getChildrenByName("property")) {
+				for (Element property : properties.getChildrenByName("property")) {
 					String propertyName = property.getAttribute("name", null);
 					String propertyValue = property.getAttribute("value", null);
 					if (propertyValue == null) {
@@ -386,8 +393,7 @@ public class TiledParser implements TiledParserNotifier {
 			object.setVisible(element.getIntAttribute("visible", 1) == 1);
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
-				for (Element property : properties
-						.getChildrenByName("property")) {
+				for (Element property : properties.getChildrenByName("property")) {
 					String propertyName = property.getAttribute("name", null);
 					String propertyValue = property.getAttribute("value", null);
 					if (propertyValue == null) {
@@ -399,20 +405,6 @@ public class TiledParser implements TiledParserNotifier {
 			return object;
 		}
 		return null;
-	}
-
-	private FileHandle getRelativeFileHandle(FileHandle file, String path) {
-		StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
-		FileHandle result = file.parent();
-		while (tokenizer.hasMoreElements()) {
-			String token = tokenizer.nextToken();
-			if (token.equals(".."))
-				result = result.parent();
-			else {
-				result = result.child(token);
-			}
-		}
-		return result;
 	}
 
 	static int unsignedByteToInt(byte b) {
@@ -442,11 +434,10 @@ public class TiledParser implements TiledParserNotifier {
 	}
 
 	@Override
-	public void notifyBeginParsing(String orientation, Color backgroundColor,
-			int width, int height, int tileWidth, int tileHeight) {
+	public void notifyBeginParsing(String orientation, Color backgroundColor, int width, int height, int tileWidth,
+			int tileHeight) {
 		for (TiledParserListener tiledParserListener : listeners) {
-			tiledParserListener.onBeginParsing(orientation, backgroundColor,
-					width, height, tileWidth, tileHeight);
+			tiledParserListener.onBeginParsing(orientation, backgroundColor, width, height, tileWidth, tileHeight);
 		}
 	}
 
@@ -486,8 +477,7 @@ public class TiledParser implements TiledParserNotifier {
 	}
 
 	private Color convertHexColorToColor(String hexColor) {
-		return new Color(
-				(Integer.valueOf(hexColor.substring(1, 3), 16) / 255f),
+		return new Color((Integer.valueOf(hexColor.substring(1, 3), 16) / 255f),
 				(Integer.valueOf(hexColor.substring(3, 5), 16) / 255f),
 				(Integer.valueOf(hexColor.substring(5, 7), 16) / 255f), 0f);
 	}

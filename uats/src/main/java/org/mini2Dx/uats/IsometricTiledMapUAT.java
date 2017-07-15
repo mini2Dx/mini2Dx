@@ -37,7 +37,7 @@ public class IsometricTiledMapUAT extends BasicGameScreen {
     @Override
     public void initialise(GameContainer gc) {
         try {
-            tiledMap = new TiledMap(Gdx.files.classpath("isometric.tmx"), true, false);
+            tiledMap = new TiledMap(Gdx.files.internal("isometric.tmx"), true, false);
         } catch (TiledException e) {
             e.printStackTrace();
         }

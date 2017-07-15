@@ -11,52 +11,28 @@
  */
 package org.mini2Dx.tiled;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.core.graphics.TextureRegion;
+import org.mini2Dx.tiled.tileset.TilesetSource;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * A tileset loaded with a {@link TiledMap}
  */
-public class Tileset {
-	private Tile[][] tiles;
-	private String name, tilesetImagePath, transparentColorValue;
-	private int width, height;
-	private int tileWidth, tileHeight;
-	private int spacing, margin;
+public class Tileset implements Disposable {
+	private final TilesetSource tilesetSource;
+	
 	private int firstGid;
 	private int lastGid = Integer.MAX_VALUE;
-	private int widthInTiles, heightInTiles;
-	private Map<String, String> properties;
 	
-	public Tileset(int width, int height, int tileWidth, int tileHeight, int spacing, int margin, int firstGid) {
-		this.width = width;
-		this.height = height;
-		this.tileWidth = tileWidth;
-		this.tileHeight = tileHeight;
-		this.spacing = spacing;
-		this.margin = margin;
+	public Tileset(int firstGid, TilesetSource tilesetSource) {
+		super();
+		this.tilesetSource = tilesetSource;
 		this.firstGid = firstGid;
-		this.widthInTiles = -1;
-		this.heightInTiles = -1;
-		
 		calculateLastGid();
-		tiles = new Tile[getWidthInTiles()][getHeightInTiles()];
-		for(int x = 0; x < getWidthInTiles(); x++) {
-			for(int y = 0; y < getHeightInTiles(); y++) {
-				tiles[x][y] = new Tile();
-				tiles[x][y].setTileId(this.getTileId(x, y));
-			}
-		}
 	}
 	
 	/**
@@ -65,9 +41,7 @@ public class Tileset {
 	 * @return True if the tileset contains the property
 	 */
 	public boolean containsProperty(String propertyName) {
-		if(properties == null)
-			return false;
-		return properties.containsKey(propertyName);
+		return tilesetSource.containsProperty(propertyName);
 	}
 
 	/**
@@ -76,9 +50,7 @@ public class Tileset {
 	 * @return Null if there is no such property
 	 */
 	public String getProperty(String propertyName) {
-		if(properties == null)
-			return null;
-		return properties.get(propertyName);
+		return tilesetSource.getProperty(propertyName);
 	}
 	
 	/**
@@ -87,9 +59,7 @@ public class Tileset {
 	 * @param value The value of the property to set
 	 */
 	public void setProperty(String propertyName, String value) {
-		if(properties == null)
-			properties = new HashMap<String, String>();
-		properties.put(propertyName, value);
+		tilesetSource.setProperty(propertyName, value);
 	}
 	
 	/**
@@ -97,7 +67,7 @@ public class Tileset {
 	 * @return Null if there are no properties
 	 */
 	public Map<String, String> getProperties() {
-		return properties;
+		return tilesetSource.getProperties();
 	}
 
 	/**
@@ -113,9 +83,7 @@ public class Tileset {
 	 *            The Y coordinate to render at
 	 */
 	public void drawTile(Graphics g, int tileId, int renderX, int renderY) {
-		int tileX = getTileX(tileId);
-		int tileY = getTileY(tileId);
-		tiles[tileX][tileY].draw(g, renderX, renderY); 
+		tilesetSource.drawTile(g, tileId, firstGid, renderX, renderY);
 	}
 
 	/**
@@ -129,12 +97,7 @@ public class Tileset {
 	 *            The Y coordinate to render at
 	 */
 	public void drawTileset(Graphics g, int renderX, int renderY) {
-		for (int y = 0; y < getHeightInTiles(); y++) {
-			for (int x = 0; x < getWidthInTiles(); x++) {
-				tiles[x][y].draw(g, renderX + (x * getTileWidth()), renderY
-						+ (y * getTileHeight())); 
-			}
-		}
+		tilesetSource.drawTileset(g, renderX, renderY);
 	}
 	
 	/**
@@ -143,9 +106,7 @@ public class Tileset {
 	 * @return The {@link Tile}
 	 */
 	public Tile getTile(int tileId) {
-		int tileX = getTileX(tileId);
-		int tileY = getTileY(tileId);
-		return tiles[tileX][tileY];
+		return tilesetSource.getTile(tileId, firstGid);
 	}
 	
 	/**
@@ -155,7 +116,7 @@ public class Tileset {
 	 * @return The {@link Tile}
 	 */
 	public Tile getTile(int x, int y) {
-		return tiles[x][y];
+		return getTile(tilesetSource.getTileId(x, y, firstGid));
 	}
 
 	/**
@@ -164,7 +125,7 @@ public class Tileset {
 	 * @return True if loaded
 	 */
 	public boolean isTextureLoaded() {
-		return tiles[0][0].getTileImage() != null;
+		return tilesetSource.isTextureLoaded();
 	}
 
 	/**
@@ -175,49 +136,12 @@ public class Tileset {
 	 *            {@link TiledMap} that has loaded this tileset
 	 */
 	public void loadTexture(FileHandle tmxDirectory) {
-		Pixmap pixmap = new Pixmap(tmxDirectory.child(tilesetImagePath));
-		Texture texture = null;
-		if(transparentColorValue != null) {
-			texture = modifyPixmapWithTransparentColor(pixmap);
-		} else {
-			texture = new Texture(pixmap);
-			pixmap.dispose();
-		}
-		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-
-		for (int x = 0; x < getWidthInTiles(); x++) {
-			for (int y = 0; y < getHeightInTiles(); y++) {
-				int tileX = margin + (x * spacing) + (x * tileWidth);
-				int tileY = margin + (y * spacing) + (y * tileHeight);
-				TextureRegion tileImage = new TextureRegion(texture, tileX, tileY,
-						tileWidth, tileHeight);
-				tiles[x][y].setTileImage(tileImage);
-			}
-		}
+		tilesetSource.loadTexture(tmxDirectory);
 	}
 	
-	private Texture modifyPixmapWithTransparentColor(Pixmap pixmap) {
-		float r = Integer.parseInt(transparentColorValue.substring(0, 2), 16) / 255f;
-		float g = Integer.parseInt(transparentColorValue.substring(2, 4), 16) / 255f;
-		float b = Integer.parseInt(transparentColorValue.substring(4, 6), 16) / 155f;
-		
-		int transparentColor = Color.rgba8888(new Color(r, g, b, 1f));
-		
-		Pixmap updatedPixmap = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGBA8888);
-		
-		for(int x = 0; x < pixmap.getWidth(); x++) {
-			for(int y = 0; y < pixmap.getHeight(); y++) {
-				int pixelColor = pixmap.getPixel(x, y);
-				if(pixelColor != transparentColor) {
-					updatedPixmap.drawPixel(x, y, pixelColor);
-				}
-			}
-		}
-		
-		Texture result = new Texture(updatedPixmap);
-		updatedPixmap.dispose();
-		pixmap.dispose();
-		return result;
+	@Override
+	public void dispose() {
+		tilesetSource.dispose();
 	}
 	
 	private void calculateLastGid() {
@@ -232,7 +156,7 @@ public class Tileset {
 	 * @return False if the tileset does not contain the tile
 	 */
 	public boolean contains(int tileId) {
-		return tileId >= firstGid && tileId <= lastGid;
+		return tilesetSource.contains(tileId, firstGid, lastGid);
 	}
 	
 	/**
@@ -242,7 +166,7 @@ public class Tileset {
 	 * @return The tile ID
 	 */
 	public int getTileId(int x, int y) {
-		return firstGid + (y * getWidthInTiles()) + x;
+		return tilesetSource.getTileId(x, y, firstGid);
 	}
 
 	/**
@@ -253,7 +177,7 @@ public class Tileset {
 	 * @return
 	 */
 	public int getTileX(int tileId) {
-		return (tileId - firstGid) % getWidthInTiles();
+		return tilesetSource.getTileX(tileId, firstGid);
 	}
 
 	/**
@@ -264,7 +188,7 @@ public class Tileset {
 	 * @return
 	 */
 	public int getTileY(int tileId) {
-		return (tileId - firstGid) / getWidthInTiles();
+		return tilesetSource.getTileY(tileId, firstGid);
 	}
 
 	/**
@@ -273,14 +197,7 @@ public class Tileset {
 	 * @return
 	 */
 	public int getWidthInTiles() {
-		if (widthInTiles < 0) {
-			int result = 0;
-			for(int x = margin; x <= width - tileWidth; x += tileWidth + spacing) {
-				result++;
-			}
-			widthInTiles = result;
-		}
-		return widthInTiles;
+		return tilesetSource.getWidthInTiles();
 	}
 
 	/**
@@ -289,33 +206,7 @@ public class Tileset {
 	 * @return
 	 */
 	public int getHeightInTiles() {
-		if (heightInTiles < 0) {
-			int result = 0;
-			for(int y = margin; y <= height - tileHeight; y += tileHeight + spacing) {
-				result++;
-			}
-			heightInTiles = result;
-		}
-		return heightInTiles;
-	}
-
-	/**
-	 * Returns the name of this tileset
-	 * 
-	 * @return
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Sets the name of this tileset
-	 * 
-	 * @param name
-	 *            The name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
+		return tilesetSource.getHeightInTiles();
 	}
 
 	/**
@@ -324,7 +215,7 @@ public class Tileset {
 	 * @return
 	 */
 	public int getWidth() {
-		return width;
+		return tilesetSource.getWidth();
 	}
 
 	/**
@@ -333,7 +224,7 @@ public class Tileset {
 	 * @return
 	 */
 	public int getHeight() {
-		return height;
+		return tilesetSource.getHeight();
 	}
 
 	/**
@@ -342,7 +233,7 @@ public class Tileset {
 	 * @return
 	 */
 	public int getTileWidth() {
-		return tileWidth;
+		return tilesetSource.getTileWidth();
 	}
 
 	/**
@@ -351,7 +242,7 @@ public class Tileset {
 	 * @return
 	 */
 	public int getTileHeight() {
-		return tileHeight;
+		return tilesetSource.getTileHeight();
 	}
 
 	/**
@@ -360,7 +251,7 @@ public class Tileset {
 	 * @return The spacing in pixels
 	 */
 	public int getSpacing() {
-		return spacing;
+		return tilesetSource.getSpacing();
 	}
 
 	/**
@@ -369,7 +260,7 @@ public class Tileset {
 	 * @return The margin in pixels
 	 */
 	public int getMargin() {
-		return margin;
+		return tilesetSource.getMargin();
 	}
 	
 	/**
@@ -380,31 +271,5 @@ public class Tileset {
 	 */
 	public int getFirstGid() {
 		return firstGid;
-	}
-
-	/**
-	 * Returns the relative path of the tileset image
-	 * 
-	 * @return
-	 */
-	public String getTilesetImagePath() {
-		return tilesetImagePath;
-	}
-
-	/**
-	 * Sets the relative path of the tileset image
-	 * 
-	 * @param tilesetImagePath
-	 */
-	public void setTilesetImagePath(String tilesetImagePath) {
-		this.tilesetImagePath = tilesetImagePath;
-	}
-
-	public String getTransparentColorValue() {
-		return transparentColorValue;
-	}
-
-	public void setTransparentColorValue(String transparentColorValue) {
-		this.transparentColorValue = transparentColorValue;
 	}
 }

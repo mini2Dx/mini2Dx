@@ -65,7 +65,7 @@ def docProjects() {
 	subprojects.findAll { !it.name.contains('uat') }
 }
 
-def projectVersion = '1.5.5-SNAPSHOT';
+def projectVersion = '1.6.0-SNAPSHOT';
 
 configure(docProjects()) {
 	apply plugin: "java"
@@ -288,12 +288,19 @@ project(":" + rootProject.name + "-uats") {
 		compile project(":" + rootProject.name + "-ui")
     }
 	
+	task copyTiledAssets(type: Copy) {
+		from '../tiled/src/test/resources'
+		into '../uats-android/assets'
+	}
+	
 	task docs(type: Javadoc) {
 		title = 'mini2Dx'
 		source docProjects().collect {p -> p.sourceSets.main.allJava }
 		classpath = files(docProjects().collect {p -> p.sourceSets.main.compileClasspath})
 		destinationDir = new File(project.parent.projectDir, "docs/javadoc/${projectVersion}")
 	}
+	
+	processResources.dependsOn copyTiledAssets
 	docs.dependsOn docProjects().build
 }
 

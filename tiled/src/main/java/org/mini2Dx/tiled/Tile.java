@@ -17,11 +17,13 @@ import java.util.Map;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.TextureRegion;
 
+import com.badlogic.gdx.utils.Disposable;
+
 
 /**
  * Represents a tileset tile
  */
-public class Tile {
+public class Tile implements Disposable {
 	private int tileId;
 	private TextureRegion tileImage;
 	
@@ -72,8 +74,13 @@ public class Tile {
 		return properties;
 	}
 
+	@Deprecated
 	public int getTileId() {
-		return tileId;
+		return getTileId(0);
+	}
+	
+	public int getTileId(int firstGid) {
+		return firstGid + tileId;
 	}
 
 	public void setTileId(int tileId) {
@@ -86,5 +93,10 @@ public class Tile {
 
 	public void setTileImage(TextureRegion tileImage) {
 		this.tileImage = tileImage;
+	}
+
+	@Override
+	public void dispose() {
+		tileImage = null;
 	}
 }
