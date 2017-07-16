@@ -382,8 +382,8 @@ public class TiledMap implements TiledParserListener {
 		}
 		if (staggerAxis != null) {
 			this.staggerAxis = StaggerAxis.valueOf(staggerAxis.toUpperCase());
-			if(sideLength < 0) {
-				switch(this.staggerAxis) {
+			if (sideLength < 0) {
+				switch (this.staggerAxis) {
 				case X:
 					sideLength = tileWidth / 2;
 					break;
@@ -400,19 +400,19 @@ public class TiledMap implements TiledParserListener {
 		this.width = width;
 		this.height = height;
 		this.tileWidth = tileWidth;
-		this.tileHeight = tileHeight;		
+		this.tileHeight = tileHeight;
 		this.sideLength = sideLength;
-		
-		switch(this.orientation) {
+
+		switch (this.orientation) {
 		case HEXAGONAL:
-			switch(this.staggerAxis) {
+			switch (this.staggerAxis) {
 			case X:
 				this.pixelWidth = MathUtils.round(((tileWidth * 0.75f) * width) + (tileWidth * 0.25f));
 				this.pixelHeight = MathUtils.round((tileHeight * height) + (tileHeight * 0.5f));
 				break;
 			case Y:
 			default:
-				this.pixelWidth = MathUtils.round((tileWidth* width) + (tileWidth * 0.5f));
+				this.pixelWidth = MathUtils.round((tileWidth * width) + (tileWidth * 0.5f));
 				this.pixelHeight = MathUtils.round(((tileHeight * 0.75f) * height) + (tileHeight * 0.25f));
 				break;
 			}
@@ -588,11 +588,24 @@ public class TiledMap implements TiledParserListener {
 	}
 
 	/**
-	 * Releases any resources used by this TiledMap
+	 * Releases any resources used by this TiledMap including tilesets
 	 */
 	public void dispose() {
+		dispose(true);
+	}
+
+	/**
+	 * Releases any resources used by this TiledMap
+	 * 
+	 * @param disposeTilesets
+	 *            True if tilesets should also be disposed
+	 */
+	public void dispose(boolean disposeTilesets) {
 		if (tileLayerRenderer != null) {
 			tileLayerRenderer.dispose();
+		}
+		if (!disposeTilesets) {
+			return;
 		}
 		for (int i = 0; i < tilesets.size(); i++) {
 			tilesets.get(i).dispose();
