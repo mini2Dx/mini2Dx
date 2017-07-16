@@ -19,7 +19,7 @@ import org.mini2Dx.tiled.Tileset;
 import com.badlogic.gdx.math.MathUtils;
 
 /**
- *
+ * Renders hexagonal {@link TileLayer}s
  */
 public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 	private final boolean cacheLayers;

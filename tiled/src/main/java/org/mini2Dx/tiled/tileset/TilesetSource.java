@@ -21,7 +21,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
- *
+ * Base class for tileset sources
  */
 public abstract class TilesetSource implements Disposable {
 
@@ -32,6 +32,8 @@ public abstract class TilesetSource implements Disposable {
 	 *            The x coordinate of the tile on a tileset
 	 * @param y
 	 *            The y coordinate of the tile on a tileset
+	 * @param firstGid
+	 *            The first gid of the tileset
 	 * @return The tile ID
 	 */
 	public int getTileId(int x, int y, int firstGid) {
@@ -79,8 +81,16 @@ public abstract class TilesetSource implements Disposable {
 		return tileId >= firstGid && tileId <= lastGid;
 	}
 
+	/**
+	 * Loads the tileset's texture image
+	 * @param tmxDirectory The directory of the TMX file
+	 */
 	public abstract void loadTexture(FileHandle tmxDirectory);
 
+	/**
+	 * Returns if the tileset texture image is loaded
+	 * @return True if loaded
+	 */
 	public abstract boolean isTextureLoaded();
 
 	/**
@@ -110,11 +120,14 @@ public abstract class TilesetSource implements Disposable {
 	 *            The Y coordinate to render at
 	 */
 	public abstract void drawTileset(Graphics g, int renderX, int renderY);
-	
+
 	/**
 	 * Returns the {@link Tile} for a given tile id
-	 * @param tileId The tile id to look up
-	 * @param firstGid The first gid for the tileset
+	 * 
+	 * @param tileId
+	 *            The tile id to look up
+	 * @param firstGid
+	 *            The first gid for the tileset
 	 * @return The {@link Tile}
 	 */
 	public abstract Tile getTile(int tileId, int firstGid);
@@ -174,30 +187,38 @@ public abstract class TilesetSource implements Disposable {
 	 * @return The margin in pixels
 	 */
 	public abstract int getMargin();
-	
+
 	/**
 	 * Returns if the tileset contains the specified property
-	 * @param propertyName The property name to search for
+	 * 
+	 * @param propertyName
+	 *            The property name to search for
 	 * @return True if the tileset contains the property
 	 */
 	public abstract boolean containsProperty(String propertyName);
 
 	/**
 	 * Returns the value of a specified property
-	 * @param propertyName The property name to search for
+	 * 
+	 * @param propertyName
+	 *            The property name to search for
 	 * @return Null if there is no such property
 	 */
 	public abstract String getProperty(String propertyName);
-	
+
 	/**
 	 * Sets the value of a specified property
-	 * @param propertyName The property name to set the value for
-	 * @param value The value of the property to set
+	 * 
+	 * @param propertyName
+	 *            The property name to set the value for
+	 * @param value
+	 *            The value of the property to set
 	 */
 	public abstract void setProperty(String propertyName, String value);
-	
+
 	/**
 	 * Returns the properties {@link Map} of this {@link Tileset}
+	 * 
 	 * @return Null if there are no properties
 	 */
 	public abstract Map<String, String> getProperties();

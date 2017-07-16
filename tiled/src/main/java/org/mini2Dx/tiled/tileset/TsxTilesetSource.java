@@ -23,25 +23,27 @@ import org.mini2Dx.tiled.TiledParser;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 
 /**
- *
+ * A {@link TilesetSource} loaded from a TSX file. Allows for sharing data
+ * across multiple {@link TiledMap} instances.
  */
 public class TsxTilesetSource extends TilesetSource {
 	private static final String LOGGING_TAG = TsxTilesetSource.class.getSimpleName();
-	
+
 	private static final TiledParser TSX_PARSER = new TiledParser();
 	private static final Map<String, ImageTilesetSource> TILESETS = new ConcurrentHashMap<String, ImageTilesetSource>();
 	private static final Map<String, AtomicInteger> TILESET_REFS = new HashMap<String, AtomicInteger>();
-	
+
 	private final String tsxPath;
 	private final ImageTilesetSource tileset;
 
 	public TsxTilesetSource(FileHandle tmxDirectory, String tsxPath) {
 		super();
 		this.tsxPath = tsxPath;
-		
-		if(!TILESETS.containsKey(tsxPath)) {
+
+		if (!TILESETS.containsKey(tsxPath)) {
 			try {
 				TILESETS.put(tsxPath, TSX_PARSER.parseTsx(tmxDirectory.child(tsxPath)));
 			} catch (IOException e) {
@@ -146,11 +148,11 @@ public class TsxTilesetSource extends TilesetSource {
 	@Override
 	public void dispose() {
 		int remainingRefs = TILESET_REFS.get(tsxPath).decrementAndGet();
-		if(remainingRefs > 0) {
+		if (remainingRefs > 0) {
 			return;
 		}
 		ImageTilesetSource tilesetSource = TILESETS.remove(tsxPath);
-		if(tilesetSource == null) {
+		if (tilesetSource == null) {
 			return;
 		}
 		tilesetSource.dispose();

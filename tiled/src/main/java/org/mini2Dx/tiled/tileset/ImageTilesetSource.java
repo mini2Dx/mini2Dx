@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 
 /**
- *
+ * A {@link TilesetSource} referenced by image directly in a TMX file
  */
 public class ImageTilesetSource extends TilesetSource {
 	private final Tile[][] tiles;

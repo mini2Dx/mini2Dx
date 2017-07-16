@@ -12,7 +12,7 @@
 package org.mini2Dx.tiled;
 
 /**
- *
+ * Represents the stagger axis in staggered {@link TiledMap} layouts
  */
 public enum StaggerAxis {
 	X, Y

@@ -12,7 +12,7 @@
 package org.mini2Dx.tiled;
 
 /**
- *
+ * Represents the stagger index in staggered {@link TiledMap} layouts
  */
 public enum StaggerIndex {
 	ODD, EVEN
