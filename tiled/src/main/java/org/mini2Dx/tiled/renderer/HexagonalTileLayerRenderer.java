@@ -71,13 +71,13 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 
 	private void drawStaggeredXLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX,
 			int startTileY, int widthInTiles, int heightInTiles) {
-		for (int y = startTileY; y < startTileY + heightInTiles; y++) {
+		for (int y = 0; y < heightInTiles; y++) {
 			switch (tiledMap.getStaggerIndex()) {
 			case EVEN: {
 				int row1Offset = startTileX % 2 == 0 ? 1 : 0;
 				int row2Offset = startTileX % 2 == 0 ? 0 : 1;
-				for (int x = startTileX + row1Offset; x < startTileX + widthInTiles; x += 2) {
-					int tileId = layer.getTileId(x, y);
+				for (int x = row1Offset; x < widthInTiles; x += 2) {
+					int tileId = layer.getTileId(x + startTileX, y + startTileY);
 
 					if (tileId < 1) {
 						continue;
@@ -86,8 +86,8 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 					int tileRenderY = renderY + (y * hexHeight);
 					renderTile(g, tileId, tileRenderX, tileRenderY);
 				}
-				for (int x = startTileX + row2Offset; x < startTileX + widthInTiles; x += 2) {
-					int tileId = layer.getTileId(x, y);
+				for (int x = row2Offset; x < widthInTiles; x += 2) {
+					int tileId = layer.getTileId(x + startTileX, y + startTileY);
 
 					if (tileId < 1) {
 						continue;
@@ -102,8 +102,8 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 			default: {
 				int row1Offset = startTileX % 2 == 0 ? 0 : 1;
 				int row2Offset = startTileX % 2 == 0 ? 1 : 0;
-				for (int x = startTileX + row1Offset; x < startTileX + widthInTiles; x += 2) {
-					int tileId = layer.getTileId(x, y);
+				for (int x = row1Offset; x <  + widthInTiles; x += 2) {
+					int tileId = layer.getTileId(x + startTileX, y + startTileY);
 
 					if (tileId < 1) {
 						continue;
@@ -112,8 +112,8 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 					int tileRenderY = renderY + (y * hexHeight);
 					renderTile(g, tileId, tileRenderX, tileRenderY);
 				}
-				for (int x = startTileX + row2Offset; x < startTileX + widthInTiles; x += 2) {
-					int tileId = layer.getTileId(x, y);
+				for (int x = row2Offset; x < widthInTiles; x += 2) {
+					int tileId = layer.getTileId(x + startTileX, y + startTileY);
 
 					if (tileId < 1) {
 						continue;
@@ -130,12 +130,11 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 
 	private void drawStaggeredYLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX,
 			int startTileY, int widthInTiles, int heightInTiles) {
-		for (int y = startTileY; y < startTileY + heightInTiles; y++) {
+		for (int y = 0; y < heightInTiles; y++) {
 			int tileRenderY = renderY + (y * threeQuarterHexHeight);
 
-			int row1Offset = startTileX % 2 == 0 ? 0 : 1;
-			for (int x = startTileX + row1Offset; x < startTileX + widthInTiles; x++) {
-				int tileId = layer.getTileId(x, y);
+			for (int x = 0; x < widthInTiles; x++) {
+				int tileId = layer.getTileId(x + startTileX, y + startTileY);
 
 				if (tileId < 1) {
 					continue;
