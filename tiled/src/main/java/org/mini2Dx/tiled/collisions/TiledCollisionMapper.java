@@ -757,43 +757,48 @@ public class TiledCollisionMapper<T extends Positionable> {
 		int maxXTiles = 0;
 		int maxYTiles = 0;
 
-		for (int y = 1; y < layer.getHeight() - startY; y++) {
-			if (collisions[startX][startY + y] == 0) {
-				break;
-			}
-
-			nextTile = tiledMap.getTile(layer.getTileId(startX, startY + y));
-			if (!collisionMerger.isMergable(startTile, nextTile)) {
-				break;
-			}
-			maxYTiles = y;
-			if (maxYTiles >= maxRows) {
-				break;
-			}
-		}
-
-		for (int x = 1; x < layer.getWidth() - startX; x++) {
-			boolean mergeable = true;
-			for (int y = 0; y <= maxYTiles; y++) {
-				if (collisions[startX + x][startY + y] == 0) {
-					mergeable = false;
+		if(maxRows > 1) {
+			for (int y = 1; y < layer.getHeight() - startY; y++) {
+				if (collisions[startX][startY + y] == 0) {
 					break;
 				}
 
-				nextTile = tiledMap.getTile(layer.getTileId(startX + x, startY + y));
+				nextTile = tiledMap.getTile(layer.getTileId(startX, startY + y));
 				if (!collisionMerger.isMergable(startTile, nextTile)) {
-					mergeable = false;
+					break;
+				}
+				maxYTiles = y;
+				if (maxYTiles >= maxRows - 1) {
 					break;
 				}
 			}
-			if (!mergeable) {
-				break;
-			}
-			maxXTiles = x;
-			if (maxXTiles >= maxColumns) {
-				break;
+		}
+
+		if(maxColumns > 1) {
+			for (int x = 1; x < layer.getWidth() - startX; x++) {
+				boolean mergeable = true;
+				for (int y = 0; y <= maxYTiles; y++) {
+					if (collisions[startX + x][startY + y] == 0) {
+						mergeable = false;
+						break;
+					}
+
+					nextTile = tiledMap.getTile(layer.getTileId(startX + x, startY + y));
+					if (!collisionMerger.isMergable(startTile, nextTile)) {
+						mergeable = false;
+						break;
+					}
+				}
+				if (!mergeable) {
+					break;
+				}
+				maxXTiles = x;
+				if (maxXTiles >= maxColumns - 1) {
+					break;
+				}
 			}
 		}
+
 
 		// Clear the collision data for merged tiles
 		for (int x = 0; x <= maxXTiles; x++) {
