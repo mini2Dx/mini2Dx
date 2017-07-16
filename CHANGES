@@ -1,4 +1,4 @@
-[1.6.0-SNAPSHOT]
+[1.6.0]
 - Added hexagonal Tiled map support
 - TSX tilesets now shared across TiledMap instances when path is same - reduces memory usage
 
