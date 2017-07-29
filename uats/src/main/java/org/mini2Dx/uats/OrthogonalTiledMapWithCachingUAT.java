@@ -49,6 +49,7 @@ public class OrthogonalTiledMapWithCachingUAT extends BasicGameScreen {
     	if(Gdx.input.justTouched()) {
             screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
         }
+    	tiledMap.update(delta);
     }
 
     @Override

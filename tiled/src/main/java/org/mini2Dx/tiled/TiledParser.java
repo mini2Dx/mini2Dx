@@ -19,6 +19,9 @@ import java.util.zip.DataFormatException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 
+import org.mini2Dx.tiled.renderer.AnimatedTileRenderer;
+import org.mini2Dx.tiled.renderer.StaticTileRenderer;
+import org.mini2Dx.tiled.renderer.TileFrame;
 import org.mini2Dx.tiled.tileset.ImageTilesetSource;
 import org.mini2Dx.tiled.tileset.TilesetSource;
 import org.mini2Dx.tiled.tileset.TsxTilesetSource;
@@ -238,7 +241,34 @@ public class TiledParser implements TiledParserNotifier {
 						tile.setProperty(propertyName, propertyValue);
 					}
 				}
+				Element animation = tileElement.getChildByName("animation");
+				if(animation != null) {
+					Array<Element> frameElements = animation.getChildrenByName("frame");
+					TileFrame [] frames = new TileFrame[frameElements.size];
+					for (int i = 0; i < frameElements.size; i++) {
+						Element frameElement = frameElements.get(i);
+						int tileId = frameElement.getIntAttribute("tileid");
+						float duration = frameElement.getFloatAttribute("duration") / 1000f;
+						frames[i] = new TileFrame(duration, tileId);
+					}
+					
+					tile.setTileRenderer(new AnimatedTileRenderer(tilesetSource, frames));
+				}
+				
 				notifyTilePropertyParsed(tile);
+			}
+		}
+		
+		for(int x = 0; x < tilesetSource.getWidthInTiles(); x++) {
+			for(int y = 0; y < tilesetSource.getHeightInTiles(); y++) {
+				Tile tile = tilesetSource.getTileByPosition(x, y);
+				if (tile == null) {
+					continue;
+				}
+				if (tile.getTileRenderer() != null) {
+					continue;
+				}
+				tile.setTileRenderer(new StaticTileRenderer(tilesetSource, tile));
 			}
 		}
 	}

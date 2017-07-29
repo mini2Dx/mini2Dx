@@ -46,6 +46,7 @@ public class TiledMap implements TiledParserListener {
 	private StaggerIndex staggerIndex;
 	private int width, height, tileWidth, tileHeight, pixelWidth, pixelHeight, sideLength;
 	private Color backgroundColor;
+	private List<Tile> animatedTiles;
 	protected List<Tileset> tilesets;
 	protected List<Layer> layers;
 	protected Map<String, TiledObjectGroup> objectGroups;
@@ -162,6 +163,19 @@ public class TiledMap implements TiledParserListener {
 			if (!tilesets.get(i).isTextureLoaded()) {
 				tilesets.get(i).loadTexture(fileHandle.parent());
 			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param delta
+	 */
+	public void update(float delta) {
+		if(animatedTiles == null) {
+			return;
+		}
+		for(int i = 0; i < animatedTiles.size(); i++) {
+			animatedTiles.get(i).update(delta);
 		}
 	}
 
@@ -436,7 +450,13 @@ public class TiledMap implements TiledParserListener {
 
 	@Override
 	public void onTilePropertiesParsed(Tile tile) {
-
+		if(tile.getTileRenderer() == null) {
+			return;
+		}
+		if(animatedTiles == null) {
+			animatedTiles = new ArrayList<Tile>(1);
+		}
+		animatedTiles.add(tile);
 	}
 
 	@Override

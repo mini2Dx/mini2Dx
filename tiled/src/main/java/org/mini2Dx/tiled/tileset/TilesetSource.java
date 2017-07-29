@@ -14,6 +14,7 @@ package org.mini2Dx.tiled.tileset;
 import java.util.Map;
 
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.Tileset;
 
@@ -83,15 +84,42 @@ public abstract class TilesetSource implements Disposable {
 
 	/**
 	 * Loads the tileset's texture image
-	 * @param tmxDirectory The directory of the TMX file
+	 * 
+	 * @param tmxDirectory
+	 *            The directory of the TMX file
 	 */
 	public abstract void loadTexture(FileHandle tmxDirectory);
 
 	/**
 	 * Returns if the tileset texture image is loaded
+	 * 
 	 * @return True if loaded
 	 */
 	public abstract boolean isTextureLoaded();
+
+	/**
+	 * Returns the {@link TextureRegion} for a given tile
+	 * 
+	 * @param tileId
+	 *            The tile id to retrieve
+	 * @return The {@link TextureRegion} or null if that textures haven't been
+	 *         loaded
+	 */
+	public abstract TextureRegion getTileImage(int tileId);
+
+	/**
+	 * Returns the {@link TextureRegion} for a given tile
+	 * 
+	 * @param tileId
+	 *            The tile id to retrieve
+	 * @param firstGid
+	 *            The first gid of the tileset
+	 * @return The {@link TextureRegion} or null if that textures haven't been
+	 *         loaded
+	 */
+	public TextureRegion getTileImage(int tileId, int firstGid) {
+		return getTileImage(tileId - firstGid);
+	}
 
 	/**
 	 * Draws a tile to the {@link Graphics} context
@@ -131,6 +159,18 @@ public abstract class TilesetSource implements Disposable {
 	 * @return The {@link Tile}
 	 */
 	public abstract Tile getTile(int tileId, int firstGid);
+
+	/**
+	 * Returns the {@link Tile} for a given x/y coordinate with the tileset
+	 * source
+	 * 
+	 * @param x
+	 *            The x coordinate of the tile within the tileset (in tiles)
+	 * @param y
+	 *            The y coordinate of the tile within the tileset (in tiles)
+	 * @return The {@link Tile}
+	 */
+	public abstract Tile getTileByPosition(int x, int y);
 
 	/**
 	 * Returns the width of this tileset in pixels

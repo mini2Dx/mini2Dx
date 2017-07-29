@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
  */
 public class ImageTilesetSource extends TilesetSource {
 	private final Tile[][] tiles;
+	private final Map<Integer, TextureRegion> tileImages = new HashMap<Integer, TextureRegion>();
 	private final int width, height;
 	private final int tileWidth, tileHeight;
 	private final int spacing, margin;
@@ -105,7 +106,7 @@ public class ImageTilesetSource extends TilesetSource {
 				int tileY = margin + (y * spacing) + (y * tileHeight);
 				TextureRegion tileImage = new TextureRegion(texture, tileX, tileY,
 						tileWidth, tileHeight);
-				tiles[x][y].setTileImage(tileImage);
+				tileImages.put(tiles[x][y].getTileId(0), tileImage);
 			}
 		}
 	}
@@ -113,6 +114,11 @@ public class ImageTilesetSource extends TilesetSource {
 	@Override
 	public boolean isTextureLoaded() {
 		return texture != null;
+	}
+	
+	@Override
+	public TextureRegion getTileImage(int tileId) {
+		return tileImages.get(tileId);
 	}
 
 	@Override
@@ -137,6 +143,11 @@ public class ImageTilesetSource extends TilesetSource {
 			heightInTiles = result;
 		}
 		return heightInTiles;
+	}
+	
+	@Override
+	public Tile getTileByPosition(int x, int y) {
+		return tiles[x][y];
 	}
 	
 	@Override

@@ -15,59 +15,75 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.core.graphics.TextureRegion;
+import org.mini2Dx.tiled.renderer.TileRenderer;
 
 import com.badlogic.gdx.utils.Disposable;
-
 
 /**
  * Represents a tileset tile
  */
 public class Tile implements Disposable {
 	private int tileId;
-	private TextureRegion tileImage;
-	
+	private TileRenderer tileRenderer;
 	private Map<String, String> properties;
-	
-	public void draw(Graphics g, int renderX, int renderY) {
-		g.drawTextureRegion(tileImage, renderX, renderY);
+
+	public void update(float delta) {
+		if (tileRenderer == null) {
+			return;
+		}
+		tileRenderer.update(delta);
 	}
-	
+
+	public void draw(Graphics g, int renderX, int renderY) {
+		if (tileRenderer == null) {
+			return;
+		}
+		tileRenderer.draw(g, renderX, renderY);
+	}
+
 	/**
 	 * Returns if the layer contains the specified property
-	 * @param propertyName The property name to search for
+	 * 
+	 * @param propertyName
+	 *            The property name to search for
 	 * @return True if the layer contains the property
 	 */
 	public boolean containsProperty(String propertyName) {
-		if(properties == null)
+		if (properties == null)
 			return false;
 		return properties.containsKey(propertyName);
 	}
 
 	/**
 	 * Returns the value of a specified property
-	 * @param propertyName The property name to search for
+	 * 
+	 * @param propertyName
+	 *            The property name to search for
 	 * @return Null if there is no such property
 	 */
 	public String getProperty(String propertyName) {
-		if(properties == null)
+		if (properties == null)
 			return null;
 		return properties.get(propertyName);
 	}
-	
+
 	/**
 	 * Sets the value of a specified property
-	 * @param propertyName The property name to set the value for
-	 * @param value The value of the property to set
+	 * 
+	 * @param propertyName
+	 *            The property name to set the value for
+	 * @param value
+	 *            The value of the property to set
 	 */
 	public void setProperty(String propertyName, String value) {
-		if(properties == null)
+		if (properties == null)
 			properties = new HashMap<String, String>();
 		properties.put(propertyName, value);
 	}
-	
+
 	/**
 	 * Returns the properties {@link Map} of this {@link Tile}
+	 * 
 	 * @return Null if there are no properties
 	 */
 	public Map<String, String> getProperties() {
@@ -78,7 +94,7 @@ public class Tile implements Disposable {
 	public int getTileId() {
 		return getTileId(0);
 	}
-	
+
 	public int getTileId(int firstGid) {
 		return firstGid + tileId;
 	}
@@ -87,16 +103,20 @@ public class Tile implements Disposable {
 		this.tileId = tileId;
 	}
 
-	public TextureRegion getTileImage() {
-		return tileImage;
+	public TileRenderer getTileRenderer() {
+		return tileRenderer;
 	}
 
-	public void setTileImage(TextureRegion tileImage) {
-		this.tileImage = tileImage;
+	public void setTileRenderer(TileRenderer tileRenderer) {
+		this.tileRenderer = tileRenderer;
 	}
 
 	@Override
 	public void dispose() {
-		tileImage = null;
+		if (tileRenderer == null) {
+			return;
+		}
+		tileRenderer.dispose();
+		tileRenderer = null;
 	}
 }

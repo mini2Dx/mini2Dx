@@ -167,7 +167,7 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 		for (int i = 0; i < tiledMap.getTilesets().size(); i++) {
 			Tileset tileset = tiledMap.getTilesets().get(i);
 			if (tileset.contains(tileId)) {
-				g.drawTextureRegion(tileset.getTile(tileId).getTileImage(), tileRenderX, tileRenderY);
+				tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY);
 				break;
 			}
 		}

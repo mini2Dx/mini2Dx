@@ -49,6 +49,8 @@ public class HexagonalTiledMapUAT extends BasicGameScreen {
     	if(Gdx.input.justTouched()) {
             screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
         }
+    	staggerXTiledMap.update(delta);
+    	staggerYTiledMap.update(delta);
     }
 
     @Override

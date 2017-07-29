@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="10" height="8" tilewidth="32" tileheight="32" backgroundcolor="#0000ff" nextobjectid="3">
+<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="10" height="8" tilewidth="32" tileheight="32" backgroundcolor="#0000ff" nextobjectid="3">
  <properties>
   <property name="testMapProperty" value="SUCCESS"/>
  </properties>
@@ -18,10 +18,21 @@
     <property name="testTileProperty" value="SUCCESS"/>
    </properties>
   </tile>
+  <tile id="157">
+   <animation>
+    <frame tileid="157" duration="100"/>
+    <frame tileid="156" duration="100"/>
+   </animation>
+  </tile>
  </tileset>
  <layer name="Ground" width="10" height="8">
   <data encoding="base64" compression="zlib">
    eJxjZGBgYCKAmYFYEIiFCGBhJHWGQKyEho2wqAOxN6FhQQrUOWJxvxMWdYT8oYjF/ehYGYgBhUoLPw==
+  </data>
+ </layer>
+ <layer name="Animated" width="10" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFMDCPSHVrkdgAKXQBTA==
   </data>
  </layer>
  <layer name="Collisions" width="10" height="8">

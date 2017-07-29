@@ -50,6 +50,7 @@ public class OrthogonalTiledMapNoCachingUAT extends BasicGameScreen {
 			screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(),
 					new FadeInTransition());
 		}
+		tiledMap.update(delta);
 	}
 
 	@Override

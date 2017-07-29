@@ -39,7 +39,7 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 		this.cacheLayers = cacheLayers;
 		this.tiledMap = tiledMap;
 
-		if(cacheLayers) {
+		if (cacheLayers) {
 			layerCache = new SpriteCache(5000, true);
 			layerCacheIds = new HashMap<Integer, Integer>();
 		}
@@ -48,9 +48,8 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 	}
 
 	@Override
-	public void drawLayer(Graphics g, TileLayer layer, int renderX,
-			int renderY, int startTileX, int startTileY, int widthInTiles,
-			int heightInTiles) {
+	public void drawLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX, int startTileY,
+			int widthInTiles, int heightInTiles) {
 		int startTileRenderX = (startTileX * tiledMap.getTileWidth());
 		int startTileRenderY = (startTileY * tiledMap.getTileHeight());
 
@@ -58,9 +57,8 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 		int tileRenderY = MathUtils.round(renderY - startTileRenderY);
 
 		Rectangle existingClip = g.removeClip();
-		Rectangle newClip = new Rectangle(startTileRenderX, startTileRenderY,
-				widthInTiles * tiledMap.getTileWidth(), heightInTiles
-						* tiledMap.getTileHeight());
+		Rectangle newClip = new Rectangle(startTileRenderX, startTileRenderY, widthInTiles * tiledMap.getTileWidth(),
+				heightInTiles * tiledMap.getTileHeight());
 
 		g.translate(-tileRenderX, -tileRenderY);
 
@@ -75,73 +73,64 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 		}
 
 		if (cacheLayers) {
-			renderCachedLayer(g, layer, tileRenderX, tileRenderY, startTileX,
-					startTileY, widthInTiles, heightInTiles);
+			renderCachedLayer(g, layer, tileRenderX, tileRenderY, startTileX, startTileY, widthInTiles, heightInTiles);
 		} else {
-			renderLayer(g, layer, tileRenderX, tileRenderY, startTileX,
-					startTileY, widthInTiles, heightInTiles);
+			renderLayer(g, layer, tileRenderX, tileRenderY, startTileX, startTileY, widthInTiles, heightInTiles);
 		}
 
 		g.removeClip();
 		g.translate(tileRenderX, tileRenderY);
 
 		if (existingClip != null) {
-			g.setClip(existingClip.getX(), existingClip.getY(),
-					existingClip.getWidth(), existingClip.getHeight());
+			g.setClip(existingClip.getX(), existingClip.getY(), existingClip.getWidth(), existingClip.getHeight());
 		}
 	}
 
-	private void renderCachedLayer(Graphics g, TileLayer layer, int renderX,
-			int renderY, int startTileX, int startTileY, int widthInTiles,
-			int heightInTiles) {
+	private void renderCachedLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX,
+			int startTileY, int widthInTiles, int heightInTiles) {
 		tmpClip.set(startTileX, startTileY, widthInTiles, heightInTiles);
 		if (!mapClip.equals(tmpClip)) {
 			layerCache.clear();
 			mapClip.set(startTileX, startTileY, widthInTiles, heightInTiles);
 		}
 		if (!layerCacheIds.containsKey(layer)) {
-			renderLayerToCache(g, layer, renderX, renderY, startTileX,
-					startTileY, widthInTiles, heightInTiles);
+			renderLayerToCache(g, layer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles);
 		}
 
 		int cacheId = layerCacheIds.get(layer.getIndex());
 		g.drawSpriteCache(layerCache, cacheId);
 	}
 
-	private void renderLayer(Graphics g, TileLayer layer, int renderX,
-			int renderY, int startTileX, int startTileY, int widthInTiles,
-			int heightInTiles) {
-		for (int y = startTileY; y < startTileY + heightInTiles
-				&& y < layer.getHeight(); y++) {
-			for (int x = startTileX; x < startTileX + widthInTiles
-					&& x < layer.getWidth(); x++) {
+	private void renderLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX, int startTileY,
+			int widthInTiles, int heightInTiles) {
+		for (int y = startTileY; y < startTileY + heightInTiles && y < layer.getHeight(); y++) {
+			for (int x = startTileX; x < startTileX + widthInTiles && x < layer.getWidth(); x++) {
 				int tileId = layer.getTileId(x, y);
 
 				if (tileId < 1) {
 					continue;
 				}
-				
+
 				int tileRenderX = x * tiledMap.getTileWidth();
 				int tileRenderY = y * tiledMap.getTileHeight();
-				
-				if(tileRenderX + tiledMap.getTileWidth() < g.getTranslationX()) {
+
+				if (tileRenderX + tiledMap.getTileWidth() < g.getTranslationX()) {
 					continue;
 				}
-				if(tileRenderY + tiledMap.getTileHeight() < g.getTranslationY()) {
+				if (tileRenderY + tiledMap.getTileHeight() < g.getTranslationY()) {
 					continue;
 				}
-				if(tileRenderX > g.getTranslationX() + g.getViewportWidth()) {
+				if (tileRenderX > g.getTranslationX() + g.getViewportWidth()) {
 					continue;
 				}
-				if(tileRenderY > g.getTranslationY() + g.getViewportHeight()) {
+				if (tileRenderY > g.getTranslationY() + g.getViewportHeight()) {
 					continue;
 				}
 
 				for (int i = 0; i < tiledMap.getTilesets().size(); i++) {
 					Tileset tileset = tiledMap.getTilesets().get(i);
 					if (tileset.contains(tileId)) {
-						g.drawTextureRegion(tileset.getTile(tileId)
-								.getTileImage(), tileRenderX, tileRenderY);
+						tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY);
 						break;
 					}
 				}
@@ -149,14 +138,11 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 		}
 	}
 
-	private void renderLayerToCache(Graphics g, TileLayer layer, int renderX,
-			int renderY, int startTileX, int startTileY, int widthInTiles,
-			int heightInTiles) {
+	private void renderLayerToCache(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX,
+			int startTileY, int widthInTiles, int heightInTiles) {
 		layerCache.beginCache();
-		for (int y = startTileY; y < startTileY + heightInTiles
-				&& y < layer.getHeight(); y++) {
-			for (int x = startTileX; x < startTileX + widthInTiles
-					&& x < layer.getWidth(); x++) {
+		for (int y = startTileY; y < startTileY + heightInTiles && y < layer.getHeight(); y++) {
+			for (int x = startTileX; x < startTileX + widthInTiles && x < layer.getWidth(); x++) {
 				int tileId = layer.getTileId(x, y);
 
 				if (tileId > 0) {
@@ -166,8 +152,8 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 					for (int i = 0; i < tiledMap.getTilesets().size(); i++) {
 						Tileset tileset = tiledMap.getTilesets().get(i);
 						if (tileset.contains(tileId)) {
-							layerCache.add(tileset.getTile(tileId)
-									.getTileImage(), tileRenderX, tileRenderY);
+							layerCache.add(tileset.getTile(tileId).getTileRenderer().getCurrentTileImage(), tileRenderX,
+									tileRenderY);
 							break;
 						}
 					}
@@ -179,7 +165,7 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 
 	@Override
 	public void dispose() {
-		if(layerCache == null) {
+		if (layerCache == null) {
 			return;
 		}
 		layerCache.dispose();

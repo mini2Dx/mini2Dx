@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.TiledParser;
 
@@ -64,6 +65,11 @@ public class TsxTilesetSource extends TilesetSource {
 	@Override
 	public boolean isTextureLoaded() {
 		return tileset.isTextureLoaded();
+	}
+	
+	@Override
+	public TextureRegion getTileImage(int tileId) {
+		return tileset.getTileImage(tileId);
 	}
 
 	@Override
@@ -115,6 +121,11 @@ public class TsxTilesetSource extends TilesetSource {
 	public int getMargin() {
 		return tileset.getMargin();
 	}
+	
+	@Override
+	public Tile getTileByPosition(int x, int y) {
+		return tileset.getTileByPosition(x, y);
+	}
 
 	@Override
 	public Tile getTile(int tileId, int firstGid) {
@@ -157,5 +168,4 @@ public class TsxTilesetSource extends TilesetSource {
 		}
 		tilesetSource.dispose();
 	}
-
 }
