@@ -65,7 +65,7 @@ def docProjects() {
 	subprojects.findAll { !it.name.contains('uat') }
 }
 
-def projectVersion = '1.6.1';
+def projectVersion = '1.6.2-SNAPSHOT';
 
 configure(docProjects()) {
 	apply plugin: "java"
