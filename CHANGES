@@ -1,4 +1,5 @@
 [1.6.2-SNAPSHOT]
+- Added TiledObject#getProperties method
 
 [1.6.1]
 - Added support for animated tiles

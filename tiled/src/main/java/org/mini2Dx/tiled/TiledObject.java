@@ -34,6 +34,14 @@ public class TiledObject {
 	}
 	
 	/**
+	 * Returns this object's properties
+	 * @return Null if there are no properties
+	 */
+	public Map<String, String> getProperties() {
+		return properties;
+	}
+	
+	/**
 	 * Returns if the object contains the specified property
 	 * @param propertyName The property name to search for
 	 * @return True if the object contains the property
