@@ -12,7 +12,7 @@
 package org.mini2Dx.tiled.renderer;
 
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.core.graphics.TextureRegion;
+import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.tileset.TilesetSource;
 
@@ -35,11 +35,39 @@ public class StaticTileRenderer implements TileRenderer {
 
 	@Override
 	public void draw(Graphics g, int renderX, int renderY) {
-		g.drawTextureRegion(getCurrentTileImage(), renderX, renderY);
+		g.drawSprite(getCurrentTileImage(), renderX, renderY);
+	}
+	
+	@Override
+	public void draw(Graphics g, int renderX, int renderY, boolean flipH, boolean flipV, boolean flipD) {
+		Sprite tileImage = getCurrentTileImage();
+		
+		boolean previousFlipX = tileImage.isFlipX();
+		boolean previousFlipY = tileImage.isFlipY();
+		
+		if(flipD) {
+			if (flipH && flipV) {
+				tileImage.setRotation(90f);
+				tileImage.setFlip(true, previousFlipY);
+			} else if (flipH) {
+				tileImage.setRotation(90f);
+			} else if (flipV) {
+				tileImage.setRotation(270f);
+			} else {
+				tileImage.setRotation(90f);
+				tileImage.setFlip(previousFlipX, true);
+			}
+		} else {
+			tileImage.setFlip(flipH, !flipV);
+		}
+		
+		g.drawSprite(tileImage, renderX, renderY);
+		tileImage.setRotation(0f);
+		tileImage.setFlip(previousFlipX, previousFlipY);
 	}
 
 	@Override
-	public TextureRegion getCurrentTileImage() {
+	public Sprite getCurrentTileImage() {
 		return tilesetSource.getTileImage(tile.getTileId(0));
 	}
 

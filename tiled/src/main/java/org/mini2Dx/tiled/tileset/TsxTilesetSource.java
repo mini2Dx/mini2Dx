@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.core.graphics.TextureRegion;
+import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.TiledParser;
 
@@ -68,7 +68,7 @@ public class TsxTilesetSource extends TilesetSource {
 	}
 	
 	@Override
-	public TextureRegion getTileImage(int tileId) {
+	public Sprite getTileImage(int tileId) {
 		return tileset.getTileImage(tileId);
 	}
 

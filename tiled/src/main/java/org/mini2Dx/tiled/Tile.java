@@ -33,6 +33,13 @@ public class Tile implements Disposable {
 		}
 		tileRenderer.update(delta);
 	}
+	
+	public void draw(Graphics g, int renderX, int renderY, boolean flipH, boolean flipV, boolean flipD) {
+		if (tileRenderer == null) {
+			return;
+		}
+		tileRenderer.draw(g, renderX, renderY, flipH, flipV, flipD);
+	}
 
 	public void draw(Graphics g, int renderX, int renderY) {
 		if (tileRenderer == null) {

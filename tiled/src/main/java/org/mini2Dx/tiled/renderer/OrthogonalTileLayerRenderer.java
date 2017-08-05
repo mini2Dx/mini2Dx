@@ -110,6 +110,9 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 				if (tileId < 1) {
 					continue;
 				}
+				boolean flipHorizontally = layer.isFlippedHorizontally(x, y);
+				boolean flipVertically = layer.isFlippedVertically(x, y);
+				boolean flipDiagonally = layer.isFlippedDiagonally(x, y);
 
 				int tileRenderX = x * tiledMap.getTileWidth();
 				int tileRenderY = y * tiledMap.getTileHeight();
@@ -130,7 +133,7 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 				for (int i = 0; i < tiledMap.getTilesets().size(); i++) {
 					Tileset tileset = tiledMap.getTilesets().get(i);
 					if (tileset.contains(tileId)) {
-						tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY);
+						tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY, flipHorizontally, flipVertically, flipDiagonally);
 						break;
 					}
 				}
@@ -145,17 +148,23 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 			for (int x = startTileX; x < startTileX + widthInTiles && x < layer.getWidth(); x++) {
 				int tileId = layer.getTileId(x, y);
 
-				if (tileId > 0) {
-					int tileRenderX = x * tiledMap.getTileWidth();
-					int tileRenderY = y * tiledMap.getTileHeight();
+				if (tileId < 1) {
+					continue;
+				}
+				
+				boolean flipHorizontally = layer.isFlippedHorizontally(x, y);
+				boolean flipVertically = layer.isFlippedVertically(x, y);
+				boolean flipDiagonally = layer.isFlippedDiagonally(x, y);
+				
+				int tileRenderX = x * tiledMap.getTileWidth();
+				int tileRenderY = y * tiledMap.getTileHeight();
 
-					for (int i = 0; i < tiledMap.getTilesets().size(); i++) {
-						Tileset tileset = tiledMap.getTilesets().get(i);
-						if (tileset.contains(tileId)) {
-							layerCache.add(tileset.getTile(tileId).getTileRenderer().getCurrentTileImage(), tileRenderX,
-									tileRenderY);
-							break;
-						}
+				for (int i = 0; i < tiledMap.getTilesets().size(); i++) {
+					Tileset tileset = tiledMap.getTilesets().get(i);
+					if (tileset.contains(tileId)) {
+						layerCache.add(tileset.getTile(tileId).getTileRenderer().getCurrentTileImage(), tileRenderX,
+								tileRenderY);
+						break;
 					}
 				}
 			}

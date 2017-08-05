@@ -12,7 +12,7 @@
 package org.mini2Dx.tiled.renderer;
 
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.core.graphics.TextureRegion;
+import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.tiled.Tile;
 
 import com.badlogic.gdx.utils.Disposable;
@@ -21,24 +21,49 @@ import com.badlogic.gdx.utils.Disposable;
  * Common interface for tile renderers
  */
 public interface TileRenderer extends Disposable {
-	
+
 	/**
 	 * Updates the {@link Tile} frame
-	 * @param delta The time since the last update in seconds
+	 * 
+	 * @param delta
+	 *            The time since the last update in seconds
 	 */
 	public void update(float delta);
-	
+
 	/**
 	 * Renders the {@link Tile} at the given coordinates
-	 * @param g The {@link Graphics} context to use
-	 * @param renderX The x coordinate to render at
-	 * @param renderY The y coordinate to render at
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context to use
+	 * @param renderX
+	 *            The x coordinate to render at
+	 * @param renderY
+	 *            The y coordinate to render at
 	 */
 	public void draw(Graphics g, int renderX, int renderY);
-	
+
+	/**
+	 * Renders the {@link Tile} at the given coordinates
+	 * 
+	 * @param g
+	 *            The {@link Graphics} context to use
+	 * @param renderX
+	 *            The x coordinate to render at
+	 * @param renderY
+	 *            The y coordinate to render at
+	 * @param flipH
+	 *            True if the tile is flipped horizontally
+	 * @param flipV
+	 *            True if the tile is flipped vertically
+	 * @param flipD
+	 *            True if the tile is flipped (anti) diagonally - rotation
+	 */
+	public void draw(Graphics g, int renderX, int renderY, boolean flipH, boolean flipV, boolean flipD);
+
 	/**
 	 * Returns the current {@link Tile} image
+	 * 
 	 * @return The current image
 	 */
-	public TextureRegion getCurrentTileImage();
+	public Sprite getCurrentTileImage();
 }

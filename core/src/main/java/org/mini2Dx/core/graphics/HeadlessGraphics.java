@@ -162,6 +162,11 @@ public class HeadlessGraphics implements Graphics {
 	@Override
 	public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height) {
 	}
+	
+	@Override
+	public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height,
+			float rotation) {
+	}
 
 	@Override
 	public void drawShape(Shape shape) {

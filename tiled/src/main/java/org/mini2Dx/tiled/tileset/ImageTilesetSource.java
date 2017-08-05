@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.tiled.Tile;
 
@@ -30,7 +31,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
  */
 public class ImageTilesetSource extends TilesetSource {
 	private final Tile[][] tiles;
-	private final Map<Integer, TextureRegion> tileImages = new HashMap<Integer, TextureRegion>();
+	private final Map<Integer, Sprite> tileImages = new HashMap<Integer, Sprite>();
 	private final int width, height;
 	private final int tileWidth, tileHeight;
 	private final int spacing, margin;
@@ -104,7 +105,7 @@ public class ImageTilesetSource extends TilesetSource {
 			for (int y = 0; y < getHeightInTiles(); y++) {
 				int tileX = margin + (x * spacing) + (x * tileWidth);
 				int tileY = margin + (y * spacing) + (y * tileHeight);
-				TextureRegion tileImage = new TextureRegion(texture, tileX, tileY,
+				Sprite tileImage = new Sprite(texture, tileX, tileY,
 						tileWidth, tileHeight);
 				tileImages.put(tiles[x][y].getTileId(0), tileImage);
 			}
@@ -117,7 +118,7 @@ public class ImageTilesetSource extends TilesetSource {
 	}
 	
 	@Override
-	public TextureRegion getTileImage(int tileId) {
+	public Sprite getTileImage(int tileId) {
 		return tileImages.get(tileId);
 	}
 

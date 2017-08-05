@@ -310,8 +310,11 @@ public class TiledParser implements TiledParserNotifier {
 								int id = unsignedByteToInt(bytes[read++]) | unsignedByteToInt(bytes[read++]) << 8
 										| unsignedByteToInt(bytes[read++]) << 16
 										| unsignedByteToInt(bytes[read++]) << 24;
+								boolean flipHorizontally = (id & FLAG_FLIP_HORIZONTALLY) != 0;
+							    boolean flipVertically = (id & FLAG_FLIP_VERTICALLY) != 0;
+							    boolean flipDiagonally = (id & FLAG_FLIP_DIAGONALLY) != 0;
 								id = id & ~MASK_CLEAR;
-								layer.setTileId(x, y, id);
+								layer.setTileId(x, y, id, flipHorizontally, flipVertically, flipDiagonally);
 							}
 						}
 					} else if (compression.equals("gzip")) {
@@ -330,8 +333,11 @@ public class TiledParser implements TiledParserNotifier {
 									GZIS.read(temp, 0, 4);
 									int id = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
 											| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
+									boolean flipHorizontally = (id & FLAG_FLIP_HORIZONTALLY) != 0;
+								    boolean flipVertically = (id & FLAG_FLIP_VERTICALLY) != 0;
+								    boolean flipDiagonally = (id & FLAG_FLIP_DIAGONALLY) != 0;
 									id = id & ~MASK_CLEAR;
-									layer.setTileId(x, y, id);
+									layer.setTileId(x, y, id, flipHorizontally, flipVertically, flipDiagonally);
 								} catch (IOException e) {
 									throw new GdxRuntimeException("Error Reading TMX Layer Data.", e);
 								}
@@ -350,8 +356,11 @@ public class TiledParser implements TiledParserNotifier {
 									zlib.inflate(temp, 0, 4);
 									int id = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
 											| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
+									boolean flipHorizontally = (id & FLAG_FLIP_HORIZONTALLY) != 0;
+								    boolean flipVertically = (id & FLAG_FLIP_VERTICALLY) != 0;
+								    boolean flipDiagonally = (id & FLAG_FLIP_DIAGONALLY) != 0;
 									id = id & ~MASK_CLEAR;
-									layer.setTileId(x, y, id);
+									layer.setTileId(x, y, id, flipHorizontally, flipVertically, flipDiagonally);
 
 								} catch (DataFormatException e) {
 									throw new GdxRuntimeException("Error Reading TMX Layer Data.", e);

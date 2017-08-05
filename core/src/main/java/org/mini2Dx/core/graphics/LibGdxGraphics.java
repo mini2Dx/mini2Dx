@@ -335,13 +335,19 @@ public class LibGdxGraphics implements Graphics {
 
 	@Override
 	public void drawTextureRegion(TextureRegion textureRegion, float x, float y) {
-		drawTextureRegion(textureRegion, x, y, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+		drawTextureRegion(textureRegion, x, y, textureRegion.getRegionWidth(), textureRegion.getRegionHeight(), 0f);
 	}
 
 	@Override
 	public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height) {
+		drawTextureRegion(textureRegion, x, y, textureRegion.getRegionWidth(), textureRegion.getRegionHeight(), 0f);
+	}
+	
+	@Override
+	public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height,
+			float rotation) {
 		beginRendering();
-		spriteBatch.draw(textureRegion, x, y, 0f, 0f, width, height, 1f, 1f, 0f);
+		spriteBatch.draw(textureRegion, x, y, 0f, 0f, width, height, 1f, 1f, rotation);
 	}
 
 	@Override

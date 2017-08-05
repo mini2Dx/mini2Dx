@@ -344,6 +344,26 @@ public interface Graphics {
 	public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height);
 
 	/**
+	 * Draws a texture region to this graphics context
+	 * 
+	 * @param textureRegion
+	 *            The {@link TextureRegion} to draw
+	 * @param x
+	 *            The x coordinate to draw at
+	 * @param y
+	 *            The y coordinate to draw at
+	 * @param width
+	 *            The width to draw the region (this can stretch/shrink the
+	 *            texture if not matching the region's width)
+	 * @param height
+	 *            The height to draw the region (this can stretch/shrink the
+	 *            texture if not matching the region's height)
+	 * @param rotation
+	 * 			  The rotation in degrees (rotated around the top-left corner of the region)
+	 */
+	public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height, float rotation);
+	
+	/**
 	 * Draws an instance of {@link Shape}
 	 * 
 	 * @param shape

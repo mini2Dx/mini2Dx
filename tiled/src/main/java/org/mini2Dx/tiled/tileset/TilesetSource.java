@@ -14,7 +14,7 @@ package org.mini2Dx.tiled.tileset;
 import java.util.Map;
 
 import org.mini2Dx.core.graphics.Graphics;
-import org.mini2Dx.core.graphics.TextureRegion;
+import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.Tileset;
 
@@ -98,26 +98,26 @@ public abstract class TilesetSource implements Disposable {
 	public abstract boolean isTextureLoaded();
 
 	/**
-	 * Returns the {@link TextureRegion} for a given tile
+	 * Returns the {@link Sprite} for a given tile
 	 * 
 	 * @param tileId
 	 *            The tile id to retrieve
-	 * @return The {@link TextureRegion} or null if that textures haven't been
+	 * @return The {@link Sprite} or null if that textures haven't been
 	 *         loaded
 	 */
-	public abstract TextureRegion getTileImage(int tileId);
+	public abstract Sprite getTileImage(int tileId);
 
 	/**
-	 * Returns the {@link TextureRegion} for a given tile
+	 * Returns the {@link Sprite} for a given tile
 	 * 
 	 * @param tileId
 	 *            The tile id to retrieve
 	 * @param firstGid
 	 *            The first gid of the tileset
-	 * @return The {@link TextureRegion} or null if that textures haven't been
+	 * @return The {@link Sprite} or null if that textures haven't been
 	 *         loaded
 	 */
-	public TextureRegion getTileImage(int tileId, int firstGid) {
+	public Sprite getTileImage(int tileId, int firstGid) {
 		return getTileImage(tileId - firstGid);
 	}
 
