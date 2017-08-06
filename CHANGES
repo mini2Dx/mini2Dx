@@ -1,6 +1,7 @@
 [1.6.2-SNAPSHOT]
 - Added support for rotated + flipped tiles
 - Added TiledObject#getProperties method
+- Fixed Tiled property parse notification for TSX tilesets
 
 [1.6.1]
 - Added support for animated tiles

@@ -167,8 +167,8 @@ public class TiledMap implements TiledParserListener {
 	}
 	
 	/**
-	 * 
-	 * @param delta
+	 * Updates map elements such as animated tiles
+	 * @param delta The time since the last frame (in seconds)
 	 */
 	public void update(float delta) {
 		if(animatedTiles == null) {
@@ -777,5 +777,16 @@ public class TiledMap implements TiledParserListener {
 	 */
 	public void setTiledObjectGroupRenderer(TiledObjectGroupRenderer tiledObjectGroupRenderer) {
 		this.tiledObjectGroupRenderer = tiledObjectGroupRenderer;
+	}
+	
+	/**
+	 * Returns if this map contains animated tiles
+	 * @return True if there are animated tiles
+	 */
+	public boolean containsAnimatedTiles() {
+		if(animatedTiles == null) {
+			return false;
+		}
+		return !animatedTiles.isEmpty();
 	}
 }

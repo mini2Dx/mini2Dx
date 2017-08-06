@@ -207,6 +207,23 @@ public class TiledParser implements TiledParserNotifier {
 				// TSX tileset
 				TsxTilesetSource tilesetSource = new TsxTilesetSource(tmxFile.parent(), source);
 				tileset = new Tileset(firstGid, tilesetSource);
+				
+				for(int x = 0; x < tilesetSource.getWidthInTiles(); x++) {
+					for(int y = 0; y < tilesetSource.getHeightInTiles(); y++) {
+						Tile tile = tilesetSource.getTileByPosition(x, y);
+						if (tile == null) {
+							continue;
+						}
+						if (tile.getTileRenderer() == null) {
+							continue;
+						}
+						if (tile.getTileRenderer() instanceof AnimatedTileRenderer) {
+							notifyTilePropertyParsed(tile);
+						} else if(tile.getProperties() != null) {
+							notifyTilePropertyParsed(tile);
+						}
+					}
+				}
 			}
 
 			notifyTilesetParsed(tileset);
