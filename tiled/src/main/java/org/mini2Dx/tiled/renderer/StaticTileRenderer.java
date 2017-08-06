@@ -55,7 +55,7 @@ public class StaticTileRenderer implements TileRenderer {
 				tileImage.setRotation(270f);
 			} else {
 				tileImage.setRotation(90f);
-				tileImage.setFlip(previousFlipX, true);
+				tileImage.setFlip(previousFlipX, false);
 			}
 		} else {
 			tileImage.setFlip(flipH, !flipV);
