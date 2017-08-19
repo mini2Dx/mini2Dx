@@ -24,6 +24,7 @@ import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.layout.FlexDirection;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.render.ParentRenderNode;
+import org.mini2Dx.ui.util.DeferredRunnable;
 
 /**
  * Base class for {@link UiElement}s that can contain child {@link UiElement}s
@@ -232,11 +233,6 @@ public abstract class ParentUiElement extends UiElement {
 		}
 		renderNode.setDirty(true);
 	}
-	
-	@Override
-	public void defer(Runnable runnable) {
-		deferredQueue.offer(runnable);
-	}
 
 	@Override
 	public void syncWithRenderNode() {
@@ -253,9 +249,7 @@ public abstract class ParentUiElement extends UiElement {
 		while (!asyncRemoveQueue.isEmpty()) {
 			remove(asyncRemoveQueue.poll());
 		}
-		while (!deferredQueue.isEmpty()) {
-			deferredQueue.poll().run();
-		}
+		processDeferred();
 	}
 
 	@Override

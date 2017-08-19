@@ -38,8 +38,7 @@ public class DummyUiElement extends UiElement {
 
 	@Override
 	public void syncWithRenderNode() {
-		// TODO Auto-generated method stub
-		
+		processDeferred();
 	}
 
 	@Override
@@ -153,9 +152,5 @@ public class DummyUiElement extends UiElement {
 			return;
 		}
 		renderNode.setDirty(true);
-	}
-
-	@Override
-	public void defer(Runnable runnable) {
 	}
 }

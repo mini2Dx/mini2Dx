@@ -283,20 +283,13 @@ public class Image extends UiElement {
 		}
 		renderNode.setDirty(true);
 	}
-
-	@Override
-	public void defer(Runnable runnable) {
-		deferredQueue.offer(runnable);
-	}
 	
 	@Override
 	public void syncWithRenderNode() {
 		while (!effects.isEmpty()) {
 			renderNode.applyEffect(effects.poll());
 		}
-		while (!deferredQueue.isEmpty()) {
-			deferredQueue.poll().run();
-		}
+		processDeferred();
 	}
 
 	@Override

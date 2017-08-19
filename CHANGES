@@ -1,3 +1,7 @@
+[1.6.3]
+- Added additional UiElement defer method that accepts a duration
+- UI defer operations can now be cancelled
+
 [1.6.2]
 - Added support for rotated + flipped tiles
 - Added TiledObject#getProperties method

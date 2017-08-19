@@ -45,20 +45,13 @@ public class ProgressBar extends UiElement {
 		super(id);
 		max = 1f;
 	}
-
-	@Override
-	public void defer(Runnable runnable) {
-		deferredQueue.offer(runnable);
-	}
 	
 	@Override
 	public void syncWithRenderNode() {
 		while (!effects.isEmpty()) {
 			renderNode.applyEffect(effects.poll());
 		}
-		while (!deferredQueue.isEmpty()) {
-			deferredQueue.poll().run();
-		}
+		processDeferred();
 	}
 
 	@Override

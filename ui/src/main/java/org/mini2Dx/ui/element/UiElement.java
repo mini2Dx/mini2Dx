@@ -12,6 +12,7 @@
 package org.mini2Dx.ui.element;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -26,6 +27,7 @@ import org.mini2Dx.ui.listener.UiEffectListener;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.RenderNode;
 import org.mini2Dx.ui.style.UiTheme;
+import org.mini2Dx.ui.util.DeferredRunnable;
 import org.mini2Dx.ui.util.IdAllocator;
 
 /**
@@ -35,7 +37,7 @@ import org.mini2Dx.ui.util.IdAllocator;
 public abstract class UiElement implements Hoverable {
 	private final String id;
 	protected final Queue<UiEffect> effects = new LinkedList<UiEffect>();
-	protected final Queue<Runnable> deferredQueue = new LinkedList<Runnable>();
+	protected final List<DeferredRunnable> deferred = new ArrayList<DeferredRunnable>(1);
 
 	@Field(optional = true)
 	protected Visibility visibility = UiContainer.getDefaultVisibility();
@@ -104,8 +106,36 @@ public abstract class UiElement implements Hoverable {
 	/**
 	 * Defers the execution of a {@link Runnable} instance until the next frame update
 	 * @param runnable The {@link Runnable} to execute
+	 * @return A {@link DeferredRunnable} that can be cancelled
 	 */
-	public abstract void defer(Runnable runnable);
+	public DeferredRunnable defer(Runnable runnable) {
+		return defer(runnable, 0f);
+	}
+	
+	/**
+	 * Defers the execution of a {@link Runnable} instance for a period of time
+	 * @param runnable The {@link Runnable} to execute
+	 * @param duration The time to wait (in seconds) until executing the {@link Runnable}
+	 * @return A {@link DeferredRunnable} that can be cancelled
+	 */
+	public DeferredRunnable defer(Runnable runnable, float duration) {
+		DeferredRunnable result = DeferredRunnable.allocate(runnable, duration);
+		deferred.add(0, result);
+		Collections.sort(deferred);
+		return result;
+	}
+	
+	/**
+	 * Processes all deferred actions
+	 */
+	protected void processDeferred() {
+		for(int i = deferred.size() - 1; i >= 0; i--) {
+			DeferredRunnable runnable = deferred.get(i);
+			if(runnable.run()) {
+				deferred.remove(i);
+			}
+		}
+	}
 
 	@Override
 	@ConstructorArg(clazz = String.class, name = "id")
