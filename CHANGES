@@ -1,3 +1,5 @@
+[1.6.4-SNAPSHOT]
+
 [1.6.3]
 - Added additional UiElement defer method that accepts a duration
 - UI defer operations can now be cancelled
