@@ -11,7 +11,7 @@ buildscript {
     }
     dependencies {
 		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.2'
         classpath 'me.champeau.gradle:jmh-gradle-plugin:0.4.4'
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.9.0'
@@ -261,7 +261,7 @@ project(":" + rootProject.name + "-ui") {
 		jmh project(":" + rootProject.name + "-headless")
 	}
 	
-	task packDefaultUiTheme << {
+	task packDefaultUiTheme {
 		TexturePacker.process("$projectDir/default-mdx-theme", "$projectDir/src/main/resources", "default-mdx-theme")
 	}
 	
@@ -351,8 +351,8 @@ if (hasAndroidSdk()) {
 		}
 		
 		dependencies {
-			compile project(":" + rootProject.name + "-uats")
 			compile project(":" + rootProject.name + "-android")
+			compile project(":" + rootProject.name + "-uats")
 			
 			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
@@ -428,7 +428,7 @@ if (Os.isFamily(Os.FAMILY_MAC)) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.0'
+    gradleVersion = '4.0.2'
 }
 
 boolean hasAndroidSdk() {
