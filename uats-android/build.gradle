@@ -1,5 +1,5 @@
 android {
-    buildToolsVersion "25.0.3"
+    buildToolsVersion "23.0.1"
     compileSdkVersion 21
 	defaultConfig {
 		testApplicationId "org.mini2Dx.uats.android.test"

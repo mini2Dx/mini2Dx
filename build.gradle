@@ -11,7 +11,7 @@ buildscript {
     }
     dependencies {
 		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:2.2.3'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.2'
         classpath 'me.champeau.gradle:jmh-gradle-plugin:0.4.4'
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.9.0'
