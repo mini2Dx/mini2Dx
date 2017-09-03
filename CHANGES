@@ -1,4 +1,5 @@
 [1.6.4-SNAPSHOT]
+- Fixed child UI elements receiving mouseDown events when hidden
 
 [1.6.3]
 - Added additional UiElement defer method that accepts a duration
