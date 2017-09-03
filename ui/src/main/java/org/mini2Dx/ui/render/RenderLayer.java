@@ -82,6 +82,9 @@ public class RenderLayer implements Comparable<RenderLayer> {
 	
 	public ActionableRenderNode mouseDown(int screenX, int screenY, int pointer, int button) {
 		for (int i = children.size() - 1; i >= 0; i--) {
+			if(!children.get(i).isIncludedInRender()) {
+				continue;
+			}
 			ActionableRenderNode result = children.get(i).mouseDown(screenX, screenY, pointer, button);
 			if (result != null) {
 				return result;
