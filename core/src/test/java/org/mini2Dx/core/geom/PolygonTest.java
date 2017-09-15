@@ -464,6 +464,23 @@ public class PolygonTest {
 	}
 	
 	@Test
+	public void testSetCenter() {
+		Polygon polygon = new Polygon(new Point [] {
+				new Point(0f, 10f),
+				new Point(10f, 10f),
+				new Point(10f, 20f),
+				new Point(0f, 20f)
+			});
+		Assert.assertEquals(5f, polygon.getCenterX());
+		Assert.assertEquals(15f, polygon.getCenterY());
+		
+		polygon.setCenter(10f, 20f);
+		
+		Assert.assertEquals(10f, polygon.getCenterX());
+		Assert.assertEquals(20f, polygon.getCenterY());
+	}
+	
+	@Test
 	public void testTranslate() {
 		Polygon polygon = new Polygon(new Point [] {
 			new Point(0f, 0f),

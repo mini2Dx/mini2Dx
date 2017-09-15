@@ -597,6 +597,35 @@ public class Polygon extends Shape {
 		}
 		return centroid.y;
 	}
+	
+	@Override
+	public void setCenter(float x, float y) {
+		float centerX = getCenterX();
+		float centerY = getCenterY();
+		
+		if(x == centerX && y == centerY) {
+			return;
+		}
+		translate(x - centerX, y - centerY);
+	}
+
+	@Override
+	public void setCenterX(float x) {
+		float centerX = getCenterX();
+		if(x == centerX) {
+			return;
+		}
+		translate(x - centerX, 0f);
+	}
+
+	@Override
+	public void setCenterY(float y) {
+		float centerY = getCenterY();
+		if(y == centerY) {
+			return;
+		}
+		translate(0f, y - centerY);
+	}
 
 	/**
 	 * Returns min X coordinate of this {@link Polygon}

@@ -453,6 +453,21 @@ public class Rectangle extends Shape implements
 	public float getCenterY() {
 		return polygon.getCenterY();
 	}
+	
+	@Override
+	public void setCenter(float x, float y) {
+		polygon.setCenter(x, y);
+	}
+
+	@Override
+	public void setCenterX(float x) {
+		polygon.setCenterX(x);
+	}
+
+	@Override
+	public void setCenterY(float y) {
+		polygon.setCenterY(y);
+	}
 
 	/**
 	 * Returns the least x coordinate this {@link Rectangle}

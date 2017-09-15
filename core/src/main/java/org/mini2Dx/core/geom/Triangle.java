@@ -234,6 +234,21 @@ public class Triangle extends Shape {
 	public float getCenterY() {
 		return polygon.getCenterY();
 	}
+	
+	@Override
+	public void setCenter(float x, float y) {
+		polygon.setCenter(x, y);
+	}
+
+	@Override
+	public void setCenterX(float x) {
+		polygon.setCenterX(x);
+	}
+
+	@Override
+	public void setCenterY(float y) {
+		polygon.setCenterY(y);
+	}
 
 	@Override
 	public void setRadius(float radius) {

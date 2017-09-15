@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.core.engine;
 
+import org.mini2Dx.core.geom.Circle;
 import org.mini2Dx.core.geom.Polygon;
 
 /**
@@ -84,6 +85,41 @@ public interface Sizeable {
 	 * @return The bottom-most y coordinate
 	 */
 	public float getMaxY();
+	
+	/**
+	 * Returns the center x coordinate of this object. Note for {@link Circle}
+	 * this is the same as x.
+	 * 
+	 * @return 0 by default
+	 */
+	public float getCenterX();
+	
+	/**
+	 * Returns the center y coordinate of this object. Note for {@link Circle}
+	 * this is the same as y.
+	 * 
+	 * @return 0 by default
+	 */
+	public float getCenterY();
+	
+	/**
+	 * Sets the center x,y coordinate of this object
+	 * @param x The x coordinate of the shape's center
+	 * @param y The y coordinate of the shape's center
+	 */
+	public void setCenter(float x, float y);
+	
+	/**
+	 * Sets the center x coordinate
+	 * @param x The x coordinate of the shape's center
+	 */
+	public void setCenterX(float x);
+	
+	/**
+	 * Sets the center y coordianate
+	 * @param y The y coordinate of the shape's center
+	 */
+	public void setCenterY(float y);
 
 	/**
 	 * Adds a {@link SizeChangeListener} to be notified of size changes

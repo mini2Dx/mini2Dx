@@ -205,6 +205,33 @@ public class StaticCollisionBox extends Rectangle implements CollisionShape {
 		super.setRadius(radius);
 		notifySizeChangeListeners();
 	}
+	
+	@Override
+	public void setCenter(float x, float y) {
+		if(x == getCenterX() && y == getCenterY()) {
+			return;
+		}
+		super.setCenter(x, y);
+		notifyPositionChangeListeners();
+	}
+
+	@Override
+	public void setCenterX(float x) {
+		if(x == getCenterX()) {
+			return;
+		}
+		super.setCenterX(x);
+		notifyPositionChangeListeners();
+	}
+
+	@Override
+	public void setCenterY(float y) {
+		if(y == getCenterY()) {
+			return;
+		}
+		super.setCenterY(y);
+		notifyPositionChangeListeners();
+	}
 
 	@Override
 	public void scale(float scale) {

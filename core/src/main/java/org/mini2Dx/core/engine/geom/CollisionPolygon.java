@@ -284,6 +284,36 @@ public class CollisionPolygon extends Polygon implements CollisionShape {
 	}
 	
 	@Override
+	public void setCenter(float x, float y) {
+		if(x == getCenterX() && y == getCenterY()) {
+			return;
+		}
+		super.setCenter(x, y);
+		interpolate = true;
+		notifyPositionChangeListeners();
+	}
+
+	@Override
+	public void setCenterX(float x) {
+		if(x == getCenterX()) {
+			return;
+		}
+		super.setCenterX(x);
+		interpolate = true;
+		notifyPositionChangeListeners();
+	}
+
+	@Override
+	public void setCenterY(float y) {
+		if(y == getCenterY()) {
+			return;
+		}
+		super.setCenterY(y);
+		interpolate = true;
+		notifyPositionChangeListeners();
+	}
+	
+	@Override
 	public void forceTo(float x, float y) {
 		boolean notifyPositionListeners = x != getX() || y != getY();
 		super.set(x, y);

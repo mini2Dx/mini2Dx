@@ -453,6 +453,36 @@ public class CollisionBox extends Rectangle implements CollisionShape {
 		notifySizeChangeListeners();
 		return this;
 	}
+	
+	@Override
+	public void setCenter(float x, float y) {
+		if(x == getCenterX() && y == getCenterY()) {
+			return;
+		}
+		super.setCenter(x, y);
+		interpolate = true;
+		notifyPositionChangeListeners();
+	}
+
+	@Override
+	public void setCenterX(float x) {
+		if(x == getCenterX()) {
+			return;
+		}
+		super.setCenterX(x);
+		interpolate = true;
+		notifyPositionChangeListeners();
+	}
+
+	@Override
+	public void setCenterY(float y) {
+		if(y == getCenterY()) {
+			return;
+		}
+		super.setCenterY(y);
+		interpolate = true;
+		notifyPositionChangeListeners();
+	}
 
 	@Override
 	public Rectangle setHeight(float height) {

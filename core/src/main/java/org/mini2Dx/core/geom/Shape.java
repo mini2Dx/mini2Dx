@@ -244,6 +244,25 @@ public abstract class Shape {
 	 * @return 0 by default
 	 */
 	public abstract float getCenterY();
+	
+	/**
+	 * Sets the center x,y coordinate of this object
+	 * @param x The x coordinate of the shape's center
+	 * @param y The y coordinate of the shape's center
+	 */
+	public abstract void setCenter(float x, float y);
+	
+	/**
+	 * Sets the center x coordinate
+	 * @param x The x coordinate of the shape's center
+	 */
+	public abstract void setCenterX(float x);
+	
+	/**
+	 * Sets the center y coordianate
+	 * @param y The y coordinate of the shape's center
+	 */
+	public abstract void setCenterY(float y);
 
 	/**
 	 * Sets the x coordinate of this object

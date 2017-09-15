@@ -38,6 +38,16 @@ public interface CollisionShape extends Positionable, Sizeable {
 	 *            The y coordinate to set
 	 */
 	public void forceTo(float x, float y);
+	
+	/**
+	 * Sets the x and y coordinate of this object
+	 * 
+	 * @param x
+	 *            The x coordinate
+	 * @param y
+	 *            The y coordinate
+	 */
+	public void set(float x, float y);
 
 	/**
 	 * Returns if this {@link CollisionShape} contains the specified {@link Shape}

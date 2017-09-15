@@ -40,29 +40,33 @@ public interface Positionable extends Updatable {
 	 * @return 0 by default
 	 */
 	public float getY();
-	
+
 	/**
 	 * Sets the x coordinate of this object
 	 * 
-	 * @param x The x coordinate
+	 * @param x
+	 *            The x coordinate
 	 */
 	public void setX(float x);
 
 	/**
 	 * Sets the y coordinate of this object
 	 * 
-	 * @param y The y coordinate
+	 * @param y
+	 *            The y coordinate
 	 */
 	public void setY(float y);
-	
+
 	/**
 	 * Returns the render x coordinate of this object
+	 * 
 	 * @return
 	 */
 	public int getRenderX();
-	
+
 	/**
 	 * Returns the render y coordinate of this object
+	 * 
 	 * @return
 	 */
 	public int getRenderY();
@@ -76,7 +80,7 @@ public interface Positionable extends Updatable {
 	 * @return 0 if the xy coordinates are the same
 	 */
 	public float getDistanceTo(Positionable positionable);
-	
+
 	/**
 	 * Returns this distance between this object's x,y coordinates and the
 	 * provided {@link Point}'s xy coordinates
@@ -86,28 +90,38 @@ public interface Positionable extends Updatable {
 	 * @return 0 if the xy coordinates are the same
 	 */
 	public float getDistanceTo(Point point);
-	
+
 	/**
 	 * Returns this distance between this object's x,y coordinates and the
 	 * provided xy coordinates
-	 * @param x The x coordinate to measure distance to
-	 * @param y The y coordinate to measure distance to
+	 * 
+	 * @param x
+	 *            The x coordinate to measure distance to
+	 * @param y
+	 *            The y coordinate to measure distance to
 	 * @return 0 if the xy coordinates are the same
 	 */
 	public float getDistanceTo(float x, float y);
-	
+
 	/**
 	 * Moves this {@link Positionable} towards a coordinate
-	 * @param x The target x coordinate
-	 * @param y The target y coordinate
-	 * @param speed The amount to move by
+	 * 
+	 * @param x
+	 *            The target x coordinate
+	 * @param y
+	 *            The target y coordinate
+	 * @param speed
+	 *            The amount to move by
 	 */
 	public void moveTowards(float x, float y, float speed);
-	
+
 	/**
 	 * Moves this {@link Positionable} towards another {@link Positionable}
-	 * @param positionable The target {@link Positionable}
-	 * @param speed The amount to move by
+	 * 
+	 * @param positionable
+	 *            The target {@link Positionable}
+	 * @param speed
+	 *            The amount to move by
 	 */
 	public void moveTowards(Positionable positionable, float speed);
 

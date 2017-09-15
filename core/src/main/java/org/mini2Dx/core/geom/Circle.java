@@ -285,6 +285,25 @@ public class Circle extends Shape {
 	}
 	
 	@Override
+	public void setCenter(float x, float y) {
+		circle.x = x;
+		circle.y = y;
+		setDirty();
+	}
+
+	@Override
+	public void setCenterX(float x) {
+		circle.x = x;
+		setDirty();
+	}
+
+	@Override
+	public void setCenterY(float y) {
+		circle.y = y;
+		setDirty();
+	}
+	
+	@Override
 	public void set(float x, float y) {
 		circle.x = x;
 		circle.y = y;

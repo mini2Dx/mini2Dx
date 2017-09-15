@@ -175,6 +175,81 @@ public class StaticCollisionCircle extends Circle implements CollisionShape {
 	}
 	
 	@Override
+	public void add(float x, float y) {
+		super.add(x, y);
+		notifyPositionChangeListeners();
+	}
+	
+	@Override
+	public void subtract(float x, float y) {
+		super.subtract(x, y);
+		notifyPositionChangeListeners();
+	}
+
+	@Override
+	public void setX(float x) {
+		if(x == getX()) {
+			return;
+		}
+		super.setX(x);
+		notifyPositionChangeListeners();
+	}
+	
+	@Override
+	public void setY(float y) {
+		if(y == getY()) {
+			return;
+		}
+		super.setY(y);
+		notifyPositionChangeListeners();
+	}
+	
+	@Override
+	public void set(float x, float y) {
+		if(x == getX() && y == getY()) {
+			return;
+		}
+		super.set(x, y);
+		notifyPositionChangeListeners();
+	}
+	
+	@Override
+	public void setRadius(float radius) {
+		if(radius == getRadius()) {
+			return;
+		}
+		super.setRadius(radius);
+		notifySizeChangeListeners();
+	}
+	
+	@Override
+	public void setCenter(float x, float y) {
+		if(x == getCenterX() && y == getCenterY()) {
+			return;
+		}
+		super.setCenter(x, y);
+		notifyPositionChangeListeners();
+	}
+
+	@Override
+	public void setCenterX(float x) {
+		if(x == getCenterX()) {
+			return;
+		}
+		super.setCenterX(x);
+		notifyPositionChangeListeners();
+	}
+
+	@Override
+	public void setCenterY(float y) {
+		if(y == getCenterY()) {
+			return;
+		}
+		super.setCenterY(y);
+		notifyPositionChangeListeners();
+	}
+	
+	@Override
 	public float getWidth() {
 		return getRadius() * 2f;
 	}
