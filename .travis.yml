@@ -5,6 +5,7 @@ android:
     - android-21
     - extra-google-m2repository
     - extra-android-m2repository
+    - sys-img-armeabi-v7a-android-21
 os:
   - linux
 notifications:
