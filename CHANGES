@@ -1,4 +1,4 @@
-[1.6.5-SNAPSHOT]
+[1.6.5]
 - (#72) Fixed support for flipped tiles in Tiled object GID
 
 [1.6.4]
