@@ -91,15 +91,14 @@ public class TiledCollisionMapperTest {
 		QuadTree<CollisionBox> quadTree = new PointQuadTree<CollisionBox>(8, 0f, 0f,
 				tiledMap.getWidth() * tiledMap.getTileWidth(), tiledMap.getHeight() * tiledMap.getTileHeight());
 		collisionBoxMapper.mapCollisionsByObjectGroup(quadTree, tiledMap, "Objects");
-		Rectangle area = new Rectangle(0f, 0f, tiledMap.getWidth() * tiledMap.getTileWidth(),
-				tiledMap.getHeight() * tiledMap.getTileHeight());
+		Rectangle area = new Rectangle(0f, 0f, tiledMap.getPixelWidth(), tiledMap.getPixelHeight());
 
 		List<CollisionBox> collisions = quadTree.getElementsWithinArea(area);
-		Assert.assertEquals(2, collisions.size());
-		Assert.assertEquals(32f, collisions.get(0).getX());
-		Assert.assertEquals(64f, collisions.get(0).getY());
-		Assert.assertEquals(16f, collisions.get(0).getWidth());
-		Assert.assertEquals(24f, collisions.get(0).getHeight());
+		Assert.assertEquals(3, collisions.size());
+		Assert.assertEquals(288f, collisions.get(0).getX());
+		Assert.assertEquals(96f, collisions.get(0).getY());
+		Assert.assertEquals(32f, collisions.get(0).getWidth());
+		Assert.assertEquals(32f, collisions.get(0).getHeight());
 	}
 
 	@Test
