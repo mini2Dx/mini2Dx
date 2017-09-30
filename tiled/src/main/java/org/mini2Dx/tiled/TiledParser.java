@@ -440,6 +440,12 @@ public class TiledParser implements TiledParserNotifier {
 
 			float width = element.getFloatAttribute("width", 0);
 			float height = element.getFloatAttribute("height", 0);
+			
+			long rawGid = Long.parseLong(element.getAttribute("gid", "-1"));
+			if (rawGid != -1) {
+				// Workaround for Tiled issue #386
+				y -= height;
+			}
 
 			TiledObject object = new TiledObject(x, y, width, height);
 
@@ -448,9 +454,17 @@ public class TiledParser implements TiledParserNotifier {
 			if (type != null) {
 				object.setType(type);
 			}
-			int gid = element.getIntAttribute("gid", -1);
-			if (gid != -1) {
+			
+			if (rawGid != -1) {
+				boolean gidFlipHorizontally = (rawGid & FLAG_FLIP_HORIZONTALLY) != 0;
+			    boolean gidFlipVertically = (rawGid & FLAG_FLIP_VERTICALLY) != 0;
+			    boolean gidFlipDiagonally = (rawGid & FLAG_FLIP_DIAGONALLY) != 0;
+				int gid = (int) (rawGid & ~MASK_CLEAR);
+				
 				object.setGid(gid);
+				object.setGidFlipDiagonally(gidFlipDiagonally);
+				object.setGidFlipHorizontally(gidFlipHorizontally);
+				object.setGidFlipVertically(gidFlipVertically);
 			}
 			object.setVisible(element.getIntAttribute("visible", 1) == 1);
 			Element properties = element.getChildByName("properties");

@@ -1,4 +1,5 @@
 [1.6.5-SNAPSHOT]
+- (#72) Fixed support for flipped tiles in Tiled object GID
 
 [1.6.4]
 - (#71) Fixed regression with missing setCenter method in shapes after 1.3 refactor

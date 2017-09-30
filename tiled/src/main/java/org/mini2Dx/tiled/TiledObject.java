@@ -24,6 +24,7 @@ public class TiledObject {
 	private float x, y, width, height;
 	private boolean visible;
 	private int gid;
+	private boolean gidFlipHorizontally, gidFlipVertically, gidFlipDiagonally;
 	private Map<String, String> properties;
 	
 	public TiledObject(float x, float y, float width, float height) {
@@ -139,7 +140,7 @@ public class TiledObject {
 	}
 	
 	/**
-	 * Returns the GID of this object
+	 * Returns the Tile GID of this object
 	 * @return
 	 */
 	public int getGid() {
@@ -147,11 +148,35 @@ public class TiledObject {
 	}
 	
 	/**
-	 * Sets the GID of this object
+	 * Sets the Tile GID of this object
 	 * @param gid
 	 */
 	public void setGid(int gid) {
 		this.gid = gid;
+	}
+
+	public boolean isGidFlipHorizontally() {
+		return gidFlipHorizontally;
+	}
+
+	public void setGidFlipHorizontally(boolean gidFlipHorizontally) {
+		this.gidFlipHorizontally = gidFlipHorizontally;
+	}
+
+	public boolean isGidFlipVertically() {
+		return gidFlipVertically;
+	}
+
+	public void setGidFlipVertically(boolean gidFlipVertically) {
+		this.gidFlipVertically = gidFlipVertically;
+	}
+
+	public boolean isGidFlipDiagonally() {
+		return gidFlipDiagonally;
+	}
+
+	public void setGidFlipDiagonally(boolean gidFlipDiagonally) {
+		this.gidFlipDiagonally = gidFlipDiagonally;
 	}
 
 	public String getPolyline() {

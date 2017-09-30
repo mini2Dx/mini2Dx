@@ -115,7 +115,7 @@ public class TiledMapTest {
 
 		TiledObjectGroup group = tiledMap.getObjectGroup("Objects");
 		Assert.assertEquals("Objects", group.getName());
-		Assert.assertEquals(2, group.getObjects().size());
+		Assert.assertEquals(3, group.getObjects().size());
 
 		for(int i = 0; i < group.getObjects().size(); i++) {
 			TiledObject obj = group.getObjects().get(i);
@@ -135,6 +135,16 @@ public class TiledMapTest {
 				Assert.assertEquals(192f, obj.getY());
 				Assert.assertEquals(24f, obj.getWidth());
 				Assert.assertEquals(16f, obj.getHeight());
+				break;
+			case "flipped_tile_object":
+				Assert.assertEquals(288f, obj.getX());
+				Assert.assertEquals(96f, obj.getY());
+				Assert.assertEquals(32f, obj.getWidth());
+				Assert.assertEquals(32f, obj.getHeight());
+				Assert.assertEquals(156, obj.getGid());
+				Assert.assertEquals(false, obj.isGidFlipDiagonally());
+				Assert.assertEquals(true, obj.isGidFlipHorizontally());
+				Assert.assertEquals(true, obj.isGidFlipVertically());
 				break;
 			}
 		}

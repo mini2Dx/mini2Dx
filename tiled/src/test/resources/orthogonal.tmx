@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="10" height="8" tilewidth="32" tileheight="32" backgroundcolor="#0000ff" nextobjectid="3">
+<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="10" height="8" tilewidth="32" tileheight="32" backgroundcolor="#0000ff" nextobjectid="6">
  <properties>
   <property name="testMapProperty" value="SUCCESS"/>
  </properties>
@@ -54,6 +54,7 @@
     <property name="testProperty" value="SUCCESS"/>
    </properties>
   </object>
+  <object id="5" name="flipped_tile_object" gid="3221225628" x="288" y="128" width="32" height="32"/>
  </objectgroup>
  <layer name="Higher" width="10" height="8">
   <data encoding="base64" compression="zlib">
