@@ -327,7 +327,13 @@ public class RadioButtonRenderNode extends RenderNode<RadioButton, RadioButtonSt
 
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
-		return calculatedHeight;
+		float result = calculatedHeight;
+		if(style.getMinHeight() > 0 && result + style.getPaddingTop() + style.getPaddingBottom() + style.getMarginTop()
+				+ style.getMarginBottom() < style.getMinHeight()) {
+			result = style.getMinHeight() - style.getPaddingTop() - style.getPaddingBottom() - style.getMarginTop()
+					- style.getMarginBottom();
+		}
+		return result;
 	}
 
 	@Override

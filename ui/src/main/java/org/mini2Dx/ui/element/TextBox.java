@@ -37,7 +37,9 @@ public class TextBox extends UiElement implements Actionable {
 	private String value = "";
 
 	@Field(optional=true)
-	private String layout = LayoutRuleset.DEFAULT_LAYOUT;
+	private String horizontalLayout = LayoutRuleset.DEFAULT_HORIZONTAL_RULESET;
+	@Field(optional=true)
+	private String verticalLayout = LayoutRuleset.DEFAULT_VERTICAL_RULESET;
 	@Field(optional = true)
 	private boolean enabled = true;
 	@Field(optional = true)
@@ -220,15 +222,46 @@ public class TextBox extends UiElement implements Actionable {
 		renderNode.setDirty(true);
 	}
 
-	public String getLayout() {
-		return layout;
+	/**
+	 * Returns the current horizontal layout rules
+	 * @return
+	 */
+	public String getHorizontalLayout() {
+		return horizontalLayout;
 	}
-
-	public void setLayout(String layout) {
-		if (layout == null) {
+	
+	/**
+	 * Sets the current horizontal layout rules
+	 * @param sizeRuleset
+	 */
+	public void setHorizontalLayout(String sizeRuleset) {
+		if (sizeRuleset == null) {
 			return;
 		}
-		this.layout = layout;
+		this.horizontalLayout = sizeRuleset;
+		if (renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+	
+	/**
+	 * Returns the current vertical layout rules
+	 * @return
+	 */
+	public String getVerticalLayout() {
+		return verticalLayout;
+	}
+
+	/**
+	 * Sets the current vertical layout rules
+	 * @param sizeRuleset
+	 */
+	public void setVerticalLayout(String sizeRuleset) {
+		if (sizeRuleset == null) {
+			return;
+		}
+		this.verticalLayout = sizeRuleset;
 		if (renderNode == null) {
 			return;
 		}

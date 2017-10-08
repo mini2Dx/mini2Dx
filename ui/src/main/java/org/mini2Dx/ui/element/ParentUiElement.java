@@ -32,18 +32,22 @@ import org.mini2Dx.ui.util.DeferredRunnable;
 public abstract class ParentUiElement extends UiElement {
 	@Field(optional = true)
 	protected final List<UiElement> children = new ArrayList<UiElement>(1);
-	
+
 	protected final Queue<UiElement> asyncAddQueue = new ConcurrentLinkedQueue<UiElement>();
 	protected final Queue<UiElement> asyncRemoveQueue = new ConcurrentLinkedQueue<UiElement>();
 	protected final AtomicBoolean asyncRemoveAll = new AtomicBoolean(false);
-	
-	@Field(optional=true)
-	private String layout = LayoutRuleset.DEFAULT_LAYOUT;
-	@Field(optional=true)
+
+	@Field(optional = true)
+	private String horizontalLayout = LayoutRuleset.DEFAULT_HORIZONTAL_RULESET;
+	@Field(optional = true)
+	private String verticalLayout = LayoutRuleset.DEFAULT_VERTICAL_RULESET;
+	@Field(optional = true)
+	private boolean overflowClipped = false;
+	@Field(optional = true)
 	private FlexDirection flexDirection = FlexDirection.COLUMN;
-	
+
 	protected ParentRenderNode<?, ?> renderNode;
-	
+
 	/**
 	 * Constructor. Generates a unique ID for this {@link ParentUiElement}
 	 */
@@ -60,14 +64,16 @@ public abstract class ParentUiElement extends UiElement {
 	public ParentUiElement(@ConstructorArg(clazz = String.class, name = "id") String id) {
 		super(id);
 	}
-	
+
 	/**
 	 * Creates the {@link ParentRenderNode} for this {@link UiElement}
-	 * @param parent The parent of this node
+	 * 
+	 * @param parent
+	 *            The parent of this node
 	 * @return A new instance of {@link ParentRenderNode}
 	 */
 	protected abstract ParentRenderNode<?, ?> createRenderNode(ParentRenderNode<?, ?> parent);
-	
+
 	/**
 	 * Adds a {@link UiElement} to this {@link ParentUiElement}
 	 * 
@@ -79,7 +85,7 @@ public abstract class ParentUiElement extends UiElement {
 			throw new MdxException("Cannot add null element to ParentUiElement");
 		}
 		children.add(element);
-		
+
 		if (renderNode == null) {
 			return;
 		}
@@ -87,8 +93,8 @@ public abstract class ParentUiElement extends UiElement {
 	}
 
 	/**
-	 * Inserts a {@link UiElement} at a specific index into this {@link ParentUiElement}
-	 * 's child elements
+	 * Inserts a {@link UiElement} at a specific index into this
+	 * {@link ParentUiElement} 's child elements
 	 * 
 	 * @param index
 	 *            The index to insert at
@@ -100,7 +106,7 @@ public abstract class ParentUiElement extends UiElement {
 			throw new MdxException("Cannot add null element to ParentUiElement");
 		}
 		children.add(index, element);
-		
+
 		if (renderNode == null) {
 			return;
 		}
@@ -122,7 +128,8 @@ public abstract class ParentUiElement extends UiElement {
 	 * 
 	 * @param element
 	 *            The {@link UiElement} to be removed
-	 * @return True if the {@link ParentUiElement} contained the {@link UiElement}
+	 * @return True if the {@link ParentUiElement} contained the
+	 *         {@link UiElement}
 	 */
 	public boolean remove(UiElement element) {
 		if (renderNode != null) {
@@ -130,7 +137,7 @@ public abstract class ParentUiElement extends UiElement {
 		}
 		return children.remove(element);
 	}
-	
+
 	/**
 	 * Removes a {@link UiElement} safely from a non-OpenGL thread
 	 * 
@@ -166,7 +173,7 @@ public abstract class ParentUiElement extends UiElement {
 			}
 		}
 	}
-	
+
 	/**
 	 * Removes all children safely from a non-OpenGL thread
 	 */
@@ -199,26 +206,72 @@ public abstract class ParentUiElement extends UiElement {
 	}
 
 	/**
-	 * Returns the current layout
+	 * Returns the current horizontal layout rules
+	 * 
 	 * @return
 	 */
-	public String getLayout() {
-		return layout;
+	public String getHorizontalLayout() {
+		return horizontalLayout;
 	}
-	
+
 	/**
-	 * Sets the current layout
-	 * @param layout
+	 * Sets the current horizontal layout rules
+	 * 
+	 * @param layoutRuleset
 	 */
-	public void setLayout(String layout) {
-		if (layout == null) {
+	public void setHorizontalLayout(String layoutRuleset) {
+		if (layoutRuleset == null) {
 			return;
 		}
-		this.layout = layout;
+		this.horizontalLayout = layoutRuleset;
 		if (renderNode == null) {
 			return;
 		}
 		renderNode.setDirty(true);
+	}
+
+	/**
+	 * Returns the current vertical layout rules
+	 * 
+	 * @return
+	 */
+	public String getVerticalLayout() {
+		return verticalLayout;
+	}
+
+	/**
+	 * Sets the current vertical layout rules
+	 * 
+	 * @param layoutRuleset
+	 */
+	public void setVerticalLayout(String layoutRuleset) {
+		if (layoutRuleset == null) {
+			return;
+		}
+		this.verticalLayout = layoutRuleset;
+		if (renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+
+	/**
+	 * Returns if child elements that overflow this element's bounds (e.g. using offsets
+	 * or margins) have their rendering clipped to the element's bounds
+	 * @return False by default
+	 */
+	public boolean isOverflowClipped() {
+		return overflowClipped;
+	}
+
+	/**
+	 * Sets if child elements that overflow this element's bounds (e.g. using offsets
+	 * or margins) have their rendering clipped to the element's bounds
+	 * 
+	 * @param overflowClipped True if child elements should have their rendering clipped
+	 */
+	public void setOverflowClipped(boolean overflowClipped) {
+		this.overflowClipped = overflowClipped;
 	}
 
 	@Override
@@ -239,7 +292,7 @@ public abstract class ParentUiElement extends UiElement {
 		while (!effects.isEmpty()) {
 			renderNode.applyEffect(effects.poll());
 		}
-		if(asyncRemoveAll.get()) {
+		if (asyncRemoveAll.get()) {
 			removeAll();
 			asyncRemoveAll.set(false);
 		}
@@ -267,7 +320,7 @@ public abstract class ParentUiElement extends UiElement {
 		}
 		renderNode.setDirty(true);
 	}
-	
+
 	@Override
 	public void setZIndex(int zIndex) {
 		this.zIndex = zIndex;
@@ -277,15 +330,16 @@ public abstract class ParentUiElement extends UiElement {
 		}
 		renderNode.setDirty(true);
 	}
-	
+
 	/**
 	 * Returns the total number of child elements for this element
+	 * 
 	 * @return 0 is there are no children
 	 */
 	public int getTotalChildren() {
 		return children.size();
 	}
-	
+
 	@Override
 	public UiElement getElementById(String id) {
 		if (getId().equals(id)) {
@@ -302,10 +356,12 @@ public abstract class ParentUiElement extends UiElement {
 
 	/**
 	 * Returns the {@link FlexDirection} of this element
-	 * @return The {@link FlexDirection} - defaults to {@link FlexDirection#COLUMN}
+	 * 
+	 * @return The {@link FlexDirection} - defaults to
+	 *         {@link FlexDirection#COLUMN}
 	 */
 	public FlexDirection getFlexDirection() {
-		if(flexDirection == null) {
+		if (flexDirection == null) {
 			flexDirection = FlexDirection.COLUMN;
 		}
 		return flexDirection;
@@ -313,11 +369,13 @@ public abstract class ParentUiElement extends UiElement {
 
 	/**
 	 * Sets the {@link FlexDirection} of this element
-	 * @param flexDirection The {@link FlexDirection} to set
+	 * 
+	 * @param flexDirection
+	 *            The {@link FlexDirection} to set
 	 */
 	public void setFlexDirection(FlexDirection flexDirection) {
 		this.flexDirection = flexDirection;
-		
+
 		if (renderNode == null) {
 			return;
 		}

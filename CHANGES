@@ -1,5 +1,7 @@
-[1.6.6-SNAPSHOT]
+[1.7.0-SNAPSHOT]
 - Added row reverse flex direction
+- [BREAKING] LayoutRuleset is now applied to both horizontal and vertical calculations
+- [BREAKING] UI minHeight now includes padding + margin in check
 
 [1.6.5]
 - (#72) Fixed support for flipped tiles in Tiled object GID

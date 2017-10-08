@@ -61,7 +61,7 @@ public class ColumnRenderNodeTest {
 		
 		theme = mockery.mock(UiTheme.class);
 		renderTree = mockery.mock(UiContainerRenderTree.class);
-		column.setLayout("xs-3c");
+		column.setHorizontalLayout("xs-3c");
 		
 		column.setVisibility(Visibility.VISIBLE);
 		row1.setVisibility(Visibility.VISIBLE);

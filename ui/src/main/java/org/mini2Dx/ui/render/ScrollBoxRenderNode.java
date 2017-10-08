@@ -33,12 +33,13 @@ import com.badlogic.gdx.math.MathUtils;
 /**
  * {@link RenderNode} implementation for {@link ScrollBox}
  */
-public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxStyleRule>implements ActionableRenderNode {
+public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxStyleRule>
+		implements ActionableRenderNode {
 	private final CollisionBox topScrollButton = new CollisionBox();
 	private final CollisionBox bottomScrollButton = new CollisionBox();
 	private final CollisionBox scrollThumb = new CollisionBox();
 	private final CollisionBox scrollTrack = new CollisionBox();
-	
+
 	private ScrollTo scrollTo = null;
 
 	private ButtonStyleRule topScrollButtonStyleRule, bottomScrollButtonStyleRule;
@@ -173,36 +174,38 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 			break;
 		}
 	}
-	
+
 	private void updateScrollTo(float delta) {
-		if(scrollTo == null) {
+		if (scrollTo == null) {
 			return;
 		}
 		RenderNode<?, ?> scrollToNode = scrollTo.getTargetRenderNode();
-		if(scrollToNode == null) {
+		if (scrollToNode == null) {
 			scrollToNode = getElementById(scrollTo.getTargetElement().getId());
-			if(scrollToNode == null) {
+			if (scrollToNode == null) {
 				scrollTo = null;
 				return;
 			}
 		}
-		
+
 		float currentScrollY = innerArea.getY() + scrollTranslationY;
 		float scrollFactor = ((ScrollBox) element).getScrollFactor() * contentHeight;
-		if(scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + innerArea.getHeight() + scrollFactor) {
-			if(scrollTo.isImmediate()) {
-				//TODO: Optimise this
-				while(scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + innerArea.getHeight() + scrollFactor) {
+		if (scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + innerArea.getHeight()
+				+ scrollFactor) {
+			if (scrollTo.isImmediate()) {
+				// TODO: Optimise this
+				while (scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + innerArea.getHeight()
+						+ scrollFactor) {
 					setScrollThumbPosition(scrollThumbPosition + ((ScrollBox) element).getScrollFactor());
 					currentScrollY = innerArea.getY() + scrollTranslationY;
 				}
 			} else {
 				setScrollThumbPosition(scrollThumbPosition + ((ScrollBox) element).getScrollFactor());
 			}
-		} else if(scrollToNode.getOuterY() < currentScrollY - scrollFactor) {
-			if(scrollTo.isImmediate()) {
-				//TODO: Optimise this
-				while(scrollToNode.getOuterY() < currentScrollY - scrollFactor) {
+		} else if (scrollToNode.getOuterY() < currentScrollY - scrollFactor) {
+			if (scrollTo.isImmediate()) {
+				// TODO: Optimise this
+				while (scrollToNode.getOuterY() < currentScrollY - scrollFactor) {
 					setScrollThumbPosition(scrollThumbPosition - ((ScrollBox) element).getScrollFactor());
 					currentScrollY = innerArea.getY() + scrollTranslationY;
 				}
@@ -322,7 +325,8 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 
 		NavigableSet<Integer> descendingLayerKeys = layers.descendingKeySet();
 		for (Integer layerIndex : descendingLayerKeys) {
-			ActionableRenderNode result = layers.get(layerIndex).mouseDown(screenX, screenY + scrollTranslationY, pointer, button);
+			ActionableRenderNode result = layers.get(layerIndex).mouseDown(screenX, screenY + scrollTranslationY,
+					pointer, button);
 			if (result != null) {
 				return result;
 			}
@@ -356,11 +360,15 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 			result = ((ScrollBox) element).getMaxHeight();
 		} else {
 			if (((ScrollBox) element).getMinHeight() > Float.MIN_VALUE) {
-				if (result < ((ScrollBox) element).getMinHeight()) {
-					result = ((ScrollBox) element).getMinHeight();
+				if (result + style.getPaddingTop() + style.getPaddingBottom() + style.getMarginTop()
+						+ style.getMarginBottom() < ((ScrollBox) element).getMinHeight()) {
+					result = ((ScrollBox) element).getMinHeight() - style.getPaddingTop() - style.getPaddingBottom()
+							- style.getMarginTop() - style.getMarginBottom();
 				}
-			} else if (result < style.getMinHeight()) {
-				result = style.getMinHeight();
+			} else if (style.getMinHeight() > 0 && result + style.getPaddingTop() + style.getPaddingBottom()
+					+ style.getMarginTop() + style.getMarginBottom() < style.getMinHeight()) {
+				result = style.getMinHeight() - style.getPaddingTop() - style.getPaddingBottom() - style.getMarginTop()
+						- style.getMarginBottom();
 			}
 		}
 
@@ -417,7 +425,7 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 		}
 		return result;
 	}
-	
+
 	public float getScrollThumbPosition() {
 		return scrollThumbPosition;
 	}
@@ -433,18 +441,18 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 		scrollTranslationY = MathUtils.round(scrollThumbPosition * contentHeight);
 		((ScrollBox) element).notifyScrollListeners(scrollThumbPosition);
 	}
-	
+
 	public boolean offerScrollTo(ScrollTo scrollTo) {
-		if(scrollTo == null) {
+		if (scrollTo == null) {
 			return false;
 		}
-		if(this.scrollTo != null) {
+		if (this.scrollTo != null) {
 			return false;
 		}
 		this.scrollTo = scrollTo;
 		return true;
 	}
-	
+
 	@Override
 	public float getPreferredContentWidth() {
 		return preferredContentWidth - scrollTrack.getWidth();

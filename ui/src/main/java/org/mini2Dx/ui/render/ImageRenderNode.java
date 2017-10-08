@@ -67,8 +67,10 @@ public class ImageRenderNode extends RenderNode<Image, StyleRule> {
 		} else {
 			result = textureRegion.getRegionHeight();
 		}
-		if (result < style.getMinHeight()) {
-			return style.getMinHeight();
+		if (style.getMinHeight() > 0 && result + style.getPaddingTop() + style.getPaddingBottom() + style.getMarginTop()
+				+ style.getMarginBottom() < style.getMinHeight()) {
+			return style.getMinHeight() - style.getPaddingTop() - style.getPaddingBottom() - style.getMarginTop()
+					- style.getMarginBottom();
 		}
 		return result;
 	}

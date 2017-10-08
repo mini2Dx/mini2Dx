@@ -29,12 +29,12 @@ public class StyleRulesetEditorRenderNode extends ColumnRenderNode {
 
 	@Override
 	public void layout(LayoutState layoutState) {
-		LayoutRuleset layoutRuleset = new LayoutRuleset(element.getLayout());
+		LayoutRuleset layoutRuleset = new LayoutRuleset(true, element.getHorizontalLayout());
 		
 		StyleRulesetEditor rulesetEditor = (StyleRulesetEditor) element;
 		LayoutState inGameState = new LayoutState(layoutState.getUiContainerRenderTree(), layoutState.getAssetManager(),
 				rulesetEditor.getInGameUiTheme(), rulesetEditor.getScreenSize(), layoutState.getTotalColumns(),
-				layoutRuleset.getPreferredWidth(layoutState), layoutState.isScreenSizeChanged());
+				layoutRuleset.getPreferredSize(layoutState), layoutState.isScreenSizeChanged());
 		RenderNode<?, ?> previewRenderNode = getElementById(rulesetEditor.getElementRow().getId());
 		if(previewRenderNode != null) {
 			previewRenderNode.layout(inGameState);

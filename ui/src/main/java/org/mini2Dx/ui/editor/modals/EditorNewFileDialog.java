@@ -42,7 +42,7 @@ public class EditorNewFileDialog extends AlignedModal implements ActionListener 
 	public EditorNewFileDialog() {
 		super("editorNewFileDialog");
 		
-		setLayout("xs-6c");
+		setHorizontalLayout("xs-6c");
 		
 		Label newFileLabel = new Label(getId() + "-newFileLabel");
 		newFileLabel.setStyleId("header");
@@ -59,10 +59,10 @@ public class EditorNewFileDialog extends AlignedModal implements ActionListener 
 		filenameLabel.setVisibility(Visibility.VISIBLE);
 		
 		Column filenameColumn = Column.withElements(filenameLabel);
-		filenameColumn.setLayout("xs-4c");
+		filenameColumn.setHorizontalLayout("xs-4c");
 		
 		filename = new TextBox(getId() + "-filename");
-		filename.setLayout("xs-8c");
+		filename.setHorizontalLayout("xs-8c");
 		filename.setVisibility(Visibility.VISIBLE);
 		filename.addActionListener(this);
 		
@@ -76,10 +76,10 @@ public class EditorNewFileDialog extends AlignedModal implements ActionListener 
 		containerTypeLabel.setVisibility(Visibility.VISIBLE);
 		
 		Column containerTypeColumn = Column.withElements(containerTypeLabel);
-		containerTypeColumn.setLayout("xs-4c");
+		containerTypeColumn.setHorizontalLayout("xs-4c");
 		
 		containerType = new Select<Class<?>>(getId() + "-containerType");
-		containerType.setLayout("xs-8c");
+		containerType.setHorizontalLayout("xs-8c");
 		containerType.setVisibility(Visibility.VISIBLE);
 		addContainerOption(AlignedContainer.class);
 		addContainerOption(AlignedModal.class);
@@ -98,10 +98,10 @@ public class EditorNewFileDialog extends AlignedModal implements ActionListener 
 		rootElementIdLabel.setVisibility(Visibility.VISIBLE);
 		
 		Column rootElementIdColumn = Column.withElements(rootElementIdLabel);
-		rootElementIdColumn.setLayout("xs-4c");
+		rootElementIdColumn.setHorizontalLayout("xs-4c");
 		
 		rootElementId = new TextBox(getId() + "-rootElementId");
-		rootElementId.setLayout("xs-8c");
+		rootElementId.setHorizontalLayout("xs-8c");
 		rootElementId.setVisibility(Visibility.VISIBLE);
 		rootElementId.addActionListener(this);
 		

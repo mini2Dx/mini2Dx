@@ -45,7 +45,7 @@ public class EditorOpenFileDialog extends AlignedModal implements ActionListener
 		super("editorOpenFileDialog");
 		this.directory = directory;
 		
-		setLayout("xs-6c");
+		setHorizontalLayout("xs-6c");
 		
 		Label openFileLabel = new Label();
 		openFileLabel.setStyleId("header");
@@ -60,14 +60,14 @@ public class EditorOpenFileDialog extends AlignedModal implements ActionListener
 		add(scrollBox);
 		
 		openButton = new TextButton(getId() + "-openButton");
-		openButton.setLayout("xs-6c");
+		openButton.setHorizontalLayout("xs-6c");
 		openButton.setVisibility(Visibility.VISIBLE);
 		openButton.setText("Open");
 		openButton.setEnabled(false);
 		openButton.addActionListener(this);
 		
 		cancelButton = new TextButton(getId() + "-cancelButton");
-		cancelButton.setLayout("xs-6c");
+		cancelButton.setHorizontalLayout("xs-6c");
 		cancelButton.setVisibility(Visibility.VISIBLE);
 		cancelButton.setText("Cancel");
 		cancelButton.addActionListener(this);

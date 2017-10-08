@@ -257,7 +257,13 @@ public class SliderRenderNode extends RenderNode<Slider, SliderStyleRule> implem
 
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
-		return style.getActiveTextureRegion().getRegionHeight();
+		float result = style.getActiveTextureRegion().getRegionHeight();
+		if (style.getMinHeight() > 0 && result + style.getPaddingTop() + style.getPaddingBottom() + style.getMarginTop()
+				+ style.getMarginBottom() < style.getMinHeight()) {
+			result = style.getMinHeight() - style.getPaddingTop() - style.getPaddingBottom() - style.getMarginTop()
+					- style.getMarginBottom();
+		}
+		return result;
 	}
 
 	@Override

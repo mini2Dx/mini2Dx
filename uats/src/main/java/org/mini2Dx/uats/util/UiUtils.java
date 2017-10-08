@@ -101,12 +101,24 @@ public class UiUtils {
 		return createLabel(text, "header", Label.COLOR_BLACK, textAnimation);
 	}
 	
+	public static Label createHeader(String text, TextAnimation textAnimation, boolean debug) {
+		return createLabel(text, "header", Label.COLOR_BLACK, textAnimation, debug);
+	}
+	
 	public static Label createLabel(String text) {
 		return createLabel(text, "default", Label.COLOR_BLACK);
 	}
 	
+	public static Label createLabel(String text, boolean debug) {
+		return createLabel(text, "default", Label.COLOR_BLACK, null, debug);
+	}
+	
 	public static Label createLabel(String text, TextAnimation textAnimation) {
 		return createLabel(text, "default", Label.COLOR_BLACK, textAnimation);
+	}
+	
+	public static Label createLabel(String text, TextAnimation textAnimation, boolean debug) {
+		return createLabel(text, "default", Label.COLOR_BLACK, textAnimation, debug);
 	}
 
 	private static Label createLabel(String text, String styleId, Color color) {
@@ -114,12 +126,17 @@ public class UiUtils {
 	}
 	
 	private static Label createLabel(String text, String styleId, Color color, TextAnimation textAnimation) {
+		return createLabel(text, styleId, color, textAnimation, false);
+	}
+	
+	private static Label createLabel(String text, String styleId, Color color, TextAnimation textAnimation, boolean debug) {
 		Label label = new Label("Label: " + text);
 		label.setText(text);
 		label.setStyleId(styleId);
 		label.setColor(color);
 		label.setVisibility(Visibility.VISIBLE);
 		label.setTextAnimation(textAnimation);
+		label.setDebugEnabled(debug);
 		return label;
 	}
 

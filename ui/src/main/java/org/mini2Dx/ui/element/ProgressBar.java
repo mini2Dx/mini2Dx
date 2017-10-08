@@ -32,7 +32,9 @@ public class ProgressBar extends UiElement {
 	@Field(optional=true)
 	private float value;
 	@Field(optional=true)
-	private String layout = LayoutRuleset.DEFAULT_LAYOUT;
+	private String horizontalLayout = LayoutRuleset.DEFAULT_HORIZONTAL_RULESET;
+	@Field(optional=true)
+	private String verticalLayout = LayoutRuleset.DEFAULT_VERTICAL_RULESET;
 	
 	protected ProgressBarRenderNode renderNode;
 	
@@ -112,22 +114,45 @@ public class ProgressBar extends UiElement {
 	}
 	
 	/**
-	 * Returns the current layout
+	 * Returns the current horizontal layout rules
 	 * @return
 	 */
-	public String getLayout() {
-		return layout;
+	public String getHorizontalLayout() {
+		return horizontalLayout;
 	}
 	
 	/**
-	 * Sets the current layout
-	 * @param layout
+	 * Sets the current horizontal layout rules
+	 * @param sizeRuleset
 	 */
-	public void setLayout(String layout) {
-		if (layout == null) {
+	public void setHorizontalLayout(String sizeRuleset) {
+		if (sizeRuleset == null) {
 			return;
 		}
-		this.layout = layout;
+		this.horizontalLayout = sizeRuleset;
+		if (renderNode == null) {
+			return;
+		}
+		renderNode.setDirty(true);
+	}
+	
+	/**
+	 * Returns the current vertical layout rules
+	 * @return
+	 */
+	public String getVerticalLayout() {
+		return verticalLayout;
+	}
+
+	/**
+	 * Sets the current vertical layout rules
+	 * @param sizeRuleset
+	 */
+	public void setVerticalLayout(String sizeRuleset) {
+		if (sizeRuleset == null) {
+			return;
+		}
+		this.verticalLayout = sizeRuleset;
 		if (renderNode == null) {
 			return;
 		}

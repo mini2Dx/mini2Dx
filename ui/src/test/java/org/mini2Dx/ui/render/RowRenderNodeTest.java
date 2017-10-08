@@ -97,6 +97,7 @@ public class RowRenderNodeTest {
 		renderNode2.setDirty(true);
 		rowRenderNode.layout(layoutState);
 		
+		System.out.println(rowRenderNode.determinePreferredContentHeight(layoutState));
 		Assert.assertEquals(preferredHeight, rowRenderNode.getPreferredContentHeight());
 	}
 	
@@ -320,6 +321,8 @@ public class RowRenderNodeTest {
 				will(returnValue(renderTree));
 				atLeast(1).of(layoutState).getTheme();
 				will(returnValue(theme));
+				atLeast(1).of(layoutState).getTotalColumns();
+				will(returnValue(12));
 				atLeast(1).of(layoutState).getScreenSize();
 				will(returnValue(ScreenSize.XS));
 				atLeast(1).of(layoutState).getScreenSizeScale();

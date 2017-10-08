@@ -150,7 +150,11 @@ public class CheckboxRenderNode extends RenderNode<Checkbox, CheckboxStyleRule> 
 
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
-		return style.getEnabledCheckTextureRegion().getRegionHeight();
+		if (element.isResponsive()) {
+			return style.getEnabledCheckTextureRegion().getRegionHeight() * (preferredContentWidth / style.getEnabledCheckTextureRegion().getRegionWidth());
+		} else {
+			return style.getEnabledCheckTextureRegion().getRegionHeight();
+		}
 	}
 
 	@Override

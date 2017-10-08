@@ -345,7 +345,7 @@
     "default": {
       "rules": {
         "XS": {
-          "minHeight": 16,
+          "minHeight": 20,
           "background": "progress_bar_background",
           "fill": "progress_bar_fill",
           "paddingTop": 2,
@@ -411,7 +411,7 @@
       "rules": {
         "XS": {
           "buttonWidth": 38,
-          "minHeight": 32,
+          "minHeight": 40,
           "enabledLabelStyle": "default",
           "disabledLabelStyle": "default",
           "leftButtonStyle": "select-left",

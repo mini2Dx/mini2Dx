@@ -92,24 +92,24 @@ public class UiEditorContainersView extends AlignedContainer implements ActionLi
 	
 	private void setUpUserInterface() {
 		inGameView = new EditorInGameView(inGameUiTheme);
-		inGameView.setLayout("xs-8c");
+		inGameView.setHorizontalLayout("xs-8c");
 		inGameView.setVisibility(Visibility.VISIBLE);
 		add(inGameView);
 
 		newButton = new TextButton(getId() + "-newButton");
-		newButton.setLayout("xs-4c");
+		newButton.setHorizontalLayout("xs-4c");
 		newButton.setVisibility(Visibility.VISIBLE);
 		newButton.setText("New");
 		newButton.addActionListener(this);
 
 		openButton = new TextButton(getId() + "-openButton");
-		openButton.setLayout("xs-4c");
+		openButton.setHorizontalLayout("xs-4c");
 		openButton.setVisibility(Visibility.VISIBLE);
 		openButton.setText("Open");
 		openButton.addActionListener(this);
 
 		saveButton = new TextButton(getId() + "-saveButton");
-		saveButton.setLayout("xs-4c");
+		saveButton.setHorizontalLayout("xs-4c");
 		saveButton.setVisibility(Visibility.VISIBLE);
 		saveButton.setText("Save");
 		saveButton.addActionListener(this);
@@ -139,7 +139,7 @@ public class UiEditorContainersView extends AlignedContainer implements ActionLi
 
 		Column controlsColumn = Column.withElements(getId() + "-controlsColumn", filesMenuRow, filenameRow, hierarchyLabelRow, hierarchyEditor, elementEditor);
 		controlsColumn.setStyleId("frame");
-		controlsColumn.setLayout("xs-4c");
+		controlsColumn.setHorizontalLayout("xs-4c");
 		add(controlsColumn);
 	}
 

@@ -95,21 +95,21 @@ public class TabButton extends Button {
 		if(renderNode == null) {
 			return 0;
 		}
-		if(renderNode.getLayoutRuleset() == null) {
+		if(renderNode.getHorizontalLayoutRuleset() == null) {
 			return 0;
 		}
-		if(renderNode.getLayoutRuleset().getCurrentSizeRule() == null) {
+		if(renderNode.getHorizontalLayoutRuleset().getCurrentSizeRule() == null) {
 			return 0;
 		}
-		return ((ResponsiveSizeRule) renderNode.getLayoutRuleset().getCurrentSizeRule()).getColumns();
+		return ((ResponsiveSizeRule) renderNode.getHorizontalLayoutRuleset().getCurrentSizeRule()).getColumns();
 	}
 	
 	@Override
-	public void setLayout(String layout) {
+	public void setHorizontalLayout(String layout) {
 		if(layout.contains("px")) {
 			throw new MdxException("Tab buttons do not support pixel sizes, please use columns");
 		}
-		super.setLayout(layout);
+		super.setHorizontalLayout(layout);
 	}
 
 	public Label getLabel() {

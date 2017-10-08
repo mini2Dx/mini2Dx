@@ -131,19 +131,35 @@ public enum FlexDirection {
 		@Override
 		public void layout(LayoutState layoutState, ParentRenderNode<?, ?> parentNode,
 				List<RenderNode<?, ?>> children) {
-			float startX = parentNode.getStyle().getPaddingLeft();
-			float startY = parentNode.getStyle().getPaddingTop();
-			
-			for (int i = children.size() - 1; i >= 0; i--) {
-				RenderNode<?, ?> node = children.get(i);
-				node.layout(layoutState);
-				if (!node.isIncludedInLayout()) {
-					continue;
-				}
+			final float startX = parentNode.getStyle().getPaddingLeft();
+			if(parentNode.getVerticalLayoutRuleset().getCurrentSizeRule().isAutoSize()) {
+				float startY = parentNode.getStyle().getPaddingTop();
+				
+				for (int i = children.size() - 1; i >= 0; i--) {
+					RenderNode<?, ?> node = children.get(i);
+					node.layout(layoutState);
+					if (!node.isIncludedInLayout()) {
+						continue;
+					}
 
-				node.setRelativeX(startX + node.getXOffset());
-				node.setRelativeY(startY + node.getYOffset());
-				startY += node.getPreferredOuterHeight() + node.getYOffset();
+					node.setRelativeX(startX + node.getXOffset());
+					node.setRelativeY(startY + node.getYOffset());
+					startY += node.getPreferredOuterHeight() + node.getYOffset();
+				}
+			} else {
+				float startY = parentNode.getPreferredContentHeight();
+				
+				for (int i = 0; i < children.size(); i++) {
+					RenderNode<?, ?> node = children.get(i);
+					node.layout(layoutState);
+					if (!node.isIncludedInLayout()) {
+						continue;
+					}
+					startY -= node.getPreferredOuterHeight() + node.getYOffset();
+					
+					node.setRelativeX(startX + node.getXOffset());
+					node.setRelativeY(startY + node.getYOffset());
+				}
 			}
 		}
 	};

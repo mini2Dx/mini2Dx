@@ -31,7 +31,7 @@ public class ResponsiveSizeRule implements SizeRule {
 	}
 
 	@Override
-	public float getWidth(LayoutState layoutState) {
+	public float getSize(LayoutState layoutState) {
 		if (columns == layoutState.getTotalColumns()) {
 			return layoutState.getParentWidth();
 		}
@@ -40,5 +40,10 @@ public class ResponsiveSizeRule implements SizeRule {
 
 	public int getColumns() {
 		return columns;
+	}
+	
+	@Override
+	public boolean isAutoSize() {
+		return false;
 	}
 }

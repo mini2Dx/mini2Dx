@@ -553,6 +553,22 @@ public class LibGdxGraphics implements Graphics {
 		clip = null;
 		return result;
 	}
+	
+	@Override
+	public Rectangle peekClip() {
+		Rectangle result = new Rectangle();
+		peekClip(result);
+		return result;
+	}
+
+	@Override
+	public void peekClip(Rectangle rectangle) {
+		if(clip == null) {
+			rectangle.set(0f, 0f, getViewportWidth(), getViewportHeight());
+		} else {
+			rectangle.set(clip);
+		}
+ 	}
 
 	@Override
 	public void setTint(Color tint) {

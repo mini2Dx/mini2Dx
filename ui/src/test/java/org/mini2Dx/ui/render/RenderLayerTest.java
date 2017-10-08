@@ -23,6 +23,7 @@ import org.mini2Dx.ui.dummy.DummyRenderNode;
 import org.mini2Dx.ui.dummy.DummyUiElement;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.layout.LayoutState;
+import org.mini2Dx.ui.layout.ScreenSize;
 
 import junit.framework.Assert;
 
@@ -344,7 +345,9 @@ public class RenderLayerTest {
 			{
 				atLeast(1).of(layoutState).getUiContainerRenderTree();
 				will(returnValue(renderTree));
-				one(layoutState).getParentWidth();
+				atLeast(1).of(layoutState).getScreenSize();
+				will(returnValue(ScreenSize.XS));
+				atLeast(1).of(layoutState).getParentWidth();
 				will(returnValue(parentWidth));
 				atLeast(1).of(layoutState).setParentWidth(with(any(Float.class)));
 			}

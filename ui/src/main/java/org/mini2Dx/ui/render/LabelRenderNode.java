@@ -93,8 +93,10 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
 		GLYPH_LAYOUT.setText(bitmapFontCache.getFont(), element.getText(), Color.WHITE, preferredContentWidth,
 				element.getHorizontalAlignment().getAlignValue(), true);
-		if (GLYPH_LAYOUT.height < style.getMinHeight()) {
-			return style.getMinHeight();
+		if (style.getMinHeight() > 0 && GLYPH_LAYOUT.height + style.getPaddingTop() + style.getPaddingBottom()
+				+ style.getMarginTop() + style.getMarginBottom() < style.getMinHeight()) {
+			return style.getMinHeight() - style.getPaddingTop() - style.getPaddingBottom() - style.getMarginTop()
+					- style.getMarginBottom();
 		}
 		return GLYPH_LAYOUT.height;
 	}

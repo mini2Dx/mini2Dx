@@ -52,7 +52,7 @@ public class TabView extends ParentUiElement implements Navigatable {
 	private int tabButtonViewIndex = 0;
 
 	@Field(optional=true)
-	private String layout = LayoutRuleset.DEFAULT_LAYOUT;
+	private String layout = LayoutRuleset.DEFAULT_HORIZONTAL_RULESET;
 	@Field(optional=true)
 	private String tabButtonLayout = "xs-6c sm-4c md-2c xl-1c";
 	@Field(optional = true)
@@ -97,24 +97,24 @@ public class TabView extends ParentUiElement implements Navigatable {
 
 		if (previousTabButton == null) {
 			TabButton previousButton = new TabButton(getId() + "-previousTabButton");
-			previousButton.setLayout(DEFAULT_CHANGE_TAB_BTN_LAYOUT);
+			previousButton.setHorizontalLayout(DEFAULT_CHANGE_TAB_BTN_LAYOUT);
 			previousButton.setText("<");
 			previousButton.setVisibility(Visibility.VISIBLE);
 			this.previousTabButton = previousButton;
 		} else {
-			previousTabButton.setLayout(DEFAULT_CHANGE_TAB_BTN_LAYOUT);
+			previousTabButton.setHorizontalLayout(DEFAULT_CHANGE_TAB_BTN_LAYOUT);
 			this.previousTabButton = previousTabButton;
 		}
 		this.previousTabButton.setEnabled(false);
 
 		if (nextTabButton == null) {
 			TabButton nextButton = new TabButton(getId() + "-nextTabButton");
-			nextButton.setLayout(DEFAULT_CHANGE_TAB_BTN_LAYOUT);
+			nextButton.setHorizontalLayout(DEFAULT_CHANGE_TAB_BTN_LAYOUT);
 			nextButton.setText(">");
 			nextButton.setVisibility(Visibility.VISIBLE);
 			this.nextTabButton = nextButton;
 		} else {
-			nextTabButton.setLayout(DEFAULT_CHANGE_TAB_BTN_LAYOUT);
+			nextTabButton.setHorizontalLayout(DEFAULT_CHANGE_TAB_BTN_LAYOUT);
 			this.nextTabButton = nextTabButton;
 		}
 		this.previousTabButton.addActionListener(new ActionListener() {
@@ -263,7 +263,7 @@ public class TabView extends ParentUiElement implements Navigatable {
 			// Tabs added
 			for (int i = tabButtons.size(); i < tabs.size(); i++) {
 				TabButton tabButton = new TabButton(getId() + "-tabButton-" + i);
-				tabButton.setLayout(tabButtonLayout);
+				tabButton.setHorizontalLayout(tabButtonLayout);
 				tabButton.setText(tabs.get(i).getTitle());
 				tabButton.setIconPath(tabs.get(i).getIconPath());
 				tabButton.addActionListener(new TabButtonActionListener(this, i));
@@ -670,11 +670,11 @@ public class TabView extends ParentUiElement implements Navigatable {
 				+ " only allows unsetPreviousTabHotkey and unsetNextTabHotkey methods. Clear hotkeys using Tab instances.");
 	}
 
-	public String getLayout() {
+	public String getHorizontalLayout() {
 		return layout;
 	}
 
-	public void setLayout(String layout) {
+	public void setHorizontalLayout(String layout) {
 		if (layout == null) {
 			return;
 		}
@@ -686,17 +686,17 @@ public class TabView extends ParentUiElement implements Navigatable {
 	}
 
 	public void setPreviousTabButtonLayout(String layout) {
-		previousTabButton.setLayout(layout);
+		previousTabButton.setHorizontalLayout(layout);
 	}
 
 	public void setNextTabButtonLayout(String layout) {
-		nextTabButton.setLayout(layout);
+		nextTabButton.setHorizontalLayout(layout);
 	}
 
 	public void setTabButtonLayout(String layout) {
 		this.tabButtonLayout = layout;
 		for (int i = 0; i < tabs.size(); i++) {
-			tabs.get(i).setLayout(layout);
+			tabs.get(i).setHorizontalLayout(layout);
 		}
 	}
 	

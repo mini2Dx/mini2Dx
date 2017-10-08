@@ -272,7 +272,7 @@ public class UiEditorThemeView extends AlignedContainer implements ActionListene
 			break;
 		}
 
-		rulesetEditor.setLayout("xs-6c");
+		rulesetEditor.setHorizontalLayout("xs-6c");
 		rulesetEditor.onResize(0, MathUtils.round(elementTypeScollBox.getMaxHeight()));
 		add(rulesetEditor);
 	}
@@ -354,7 +354,7 @@ public class UiEditorThemeView extends AlignedContainer implements ActionListene
 		returnButton = new TextButton(getId() + "-returnButton");
 		returnButton.setText("Save and return to main menu");
 		returnButton.setVisibility(Visibility.VISIBLE);
-		returnButton.setLayout("xs-12c md-6c lg-4c");
+		returnButton.setHorizontalLayout("xs-12c md-6c lg-4c");
 		returnButton.addActionListener(this);
 		add(Row.withElements(returnButton));
 		
@@ -367,7 +367,7 @@ public class UiEditorThemeView extends AlignedContainer implements ActionListene
 		elementTypeScollBox.setVisibility(Visibility.VISIBLE);
 
 		Column elementTypeColumn = Column.withElements(elementTypeLabel, elementTypeScollBox);
-		elementTypeColumn.setLayout("xs-3c");
+		elementTypeColumn.setHorizontalLayout("xs-3c");
 		add(elementTypeColumn);
 
 		Label rulesetLabel = new Label();
@@ -379,7 +379,7 @@ public class UiEditorThemeView extends AlignedContainer implements ActionListene
 		rulesetsScrollBox.setVisibility(Visibility.VISIBLE);
 
 		Column rulesetColumn = Column.withElements(rulesetLabel, rulesetsScrollBox);
-		rulesetColumn.setLayout("xs-3c");
+		rulesetColumn.setHorizontalLayout("xs-3c");
 		add(rulesetColumn);
 
 		for (int i = 0; i < ELEMENT_TYPES.length; i++) {
@@ -427,12 +427,12 @@ public class UiEditorThemeView extends AlignedContainer implements ActionListene
 		label.setResponsive(true);
 		
 		Column labelColumn = Column.withElements(label);
-		labelColumn.setLayout("xs-4c");
+		labelColumn.setHorizontalLayout("xs-4c");
 		
 		TextBox textBox = new TextBox();
 		textBox.setVisibility(Visibility.VISIBLE);
 		textBox.setValue("value");
-		textBox.setLayout("xs-8c");
+		textBox.setHorizontalLayout("xs-8c");
 		
 		parent.add(Row.withElements(labelColumn, textBox));
 	}

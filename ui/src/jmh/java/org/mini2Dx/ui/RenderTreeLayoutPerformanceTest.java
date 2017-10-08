@@ -74,7 +74,7 @@ public class RenderTreeLayoutPerformanceTest {
 			for(HorizontalAlignment hAlignment : HorizontalAlignment.values()) {
 				for(VerticalAlignment vAlignment : VerticalAlignment.values()) {
 					AlignedModal modal = new AlignedModal();
-					modal.setLayout("xs-4c");
+					modal.setHorizontalLayout("xs-4c");
 					modal.setVisibility(Visibility.VISIBLE);
 					modal.setHorizontalAlignment(hAlignment);
 					modal.setVerticalAlignment(vAlignment);
@@ -106,7 +106,7 @@ public class RenderTreeLayoutPerformanceTest {
 			}
 			for(int i = 0; i < CHILDREN_PER_NODE; i++) {
 				Column column = new Column();
-				column.setLayout("xs-4c");
+				column.setHorizontalLayout("xs-4c");
 				column.setVisibility(Visibility.VISIBLE);
 				
 				Label label = new Label();

@@ -18,10 +18,16 @@ import org.mini2Dx.ui.element.UiElement;
  */
 public interface SizeRule {
 	/**
-	 * Determines the preferred width of a {@link UiElement}
+	 * Determines the preferred size of a {@link UiElement}
 	 * 
 	 * @param layoutState The current {@link LayoutState}
-	 * @return The {@link UiElement} preferred width
+	 * @return The {@link UiElement} preferred size
 	 */
-	public float getWidth(LayoutState layoutState);
+	public float getSize(LayoutState layoutState);
+	
+	/**
+	 * Returns if the size rule is an 'auto' rule
+	 * @return True if set to 'auto'
+	 */
+	public boolean isAutoSize();
 }

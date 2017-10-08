@@ -106,7 +106,7 @@ public class UiEditor extends BasicGame implements GameResizeListener, ActionLis
 		
 		initialModal = new AlignedModal("editorInitialModal");
 		initialModal.setVisibility(Visibility.VISIBLE);
-		initialModal.setLayout("xs-6c");
+		initialModal.setHorizontalLayout("xs-6c");
 		uiContainer.add(initialModal);
 		
 		Label themeLabel = new Label(initialModal.getId() + "-themeLabel");

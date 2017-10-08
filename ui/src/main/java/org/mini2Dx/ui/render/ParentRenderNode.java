@@ -15,26 +15,29 @@ import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.TreeMap;
 
+import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.ui.element.ParentUiElement;
 import org.mini2Dx.ui.layout.FlexDirection;
-import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.LayoutState;
+import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.style.ParentStyleRule;
 
 /**
- * Base class for {@link RenderNode} implementations that contains child nodes 
+ * Base class for {@link RenderNode} implementations that contains child nodes
  */
 public abstract class ParentRenderNode<T extends ParentUiElement, S extends ParentStyleRule> extends RenderNode<T, S> {
 	protected final NavigableMap<Integer, RenderLayer> layers = new TreeMap<Integer, RenderLayer>();
-
+	protected final Rectangle cachedClip = new Rectangle();
+	
 	protected boolean childDirty = false;
 	protected FlexDirection flexDirection = FlexDirection.COLUMN;
-	protected LayoutRuleset layoutRuleset;
+	protected LayoutRuleset horizontalLayoutRuleset, verticalLayoutRuleset;
 
 	public ParentRenderNode(ParentRenderNode<?, ?> parent, T element) {
 		super(parent, element);
-		layoutRuleset = new LayoutRuleset(element.getLayout());
+		horizontalLayoutRuleset = new LayoutRuleset(true, element.getHorizontalLayout());
+		verticalLayoutRuleset = new LayoutRuleset(false, element.getVerticalLayout());
 	}
 
 	@Override
@@ -55,6 +58,11 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 
 	@Override
 	protected void renderElement(Graphics g) {
+		boolean overflowClipped = element.isOverflowClipped();
+		g.peekClip(cachedClip);
+		if (overflowClipped) {
+			g.setClip(outerArea);
+		}
 		if (style.getBackgroundNinePatch() != null) {
 			g.drawNinePatch(style.getBackgroundNinePatch(), getInnerRenderX(), getInnerRenderY(), getInnerRenderWidth(),
 					getInnerRenderHeight());
@@ -62,71 +70,92 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 		for (RenderLayer layer : layers.values()) {
 			layer.render(g);
 		}
+		if (overflowClipped) {
+			g.setClip(cachedClip);
+		}
 	}
-	
+
 	@Override
 	public void layout(LayoutState layoutState) {
-		if(!isDirty() && !layoutState.isScreenSizeChanged()) {
+		if (!isDirty() && !layoutState.isScreenSizeChanged()) {
 			return;
 		}
-		if(!layoutRuleset.equals(element.getLayout())) {
-			layoutRuleset = new LayoutRuleset(element.getLayout());
+		if (!horizontalLayoutRuleset.equals(element.getHorizontalLayout())) {
+			horizontalLayoutRuleset = new LayoutRuleset(true, element.getHorizontalLayout());
 		}
-		
+		if (!verticalLayoutRuleset.equals(element.getVerticalLayout())) {
+			verticalLayoutRuleset = new LayoutRuleset(false, element.getVerticalLayout());
+		}
+
 		float parentWidth = layoutState.getParentWidth();
 		rootNode = layoutState.getUiContainerRenderTree();
 		style = determineStyleRule(layoutState);
-		
-		if(this.zIndex != element.getZIndex()) {
+
+		if (this.zIndex != element.getZIndex()) {
 			parent.removeChild(this);
 			zIndex = element.getZIndex();
 			parent.addChild(this);
 		}
-		
+
 		flexDirection = element.getFlexDirection();
 		xOffset = determineXOffset(layoutState);
 		preferredContentWidth = determinePreferredContentWidth(layoutState);
 		layoutState.setParentWidth(getPreferredContentWidth());
 
-		for(RenderLayer layer : layers.values()) {
+		verticalLayoutRuleset.getPreferredSize(layoutState);
+		if (!verticalLayoutRuleset.getCurrentSizeRule().isAutoSize()) {
+			preferredContentHeight = determinePreferredContentHeight(layoutState);
+		}
+
+		for (RenderLayer layer : layers.values()) {
 			layer.layout(layoutState);
 		}
 
 		layoutState.setParentWidth(parentWidth);
 
 		yOffset = determineYOffset(layoutState);
-		preferredContentHeight = determinePreferredContentHeight(layoutState);
+		if (verticalLayoutRuleset.getCurrentSizeRule().isAutoSize()) {
+			preferredContentHeight = determinePreferredContentHeight(layoutState);
+		}
 		setImmediateDirty(false);
 		setDirty(false);
 		childDirty = false;
 		initialLayoutOccurred = true;
 	}
-	
+
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
 		if (preferredContentWidth <= 0f) {
 			return 0f;
 		}
 		float maxHeight = 0f;
+		float sizeRuleHeight = verticalLayoutRuleset.getPreferredSize(layoutState);
 
-		for (RenderLayer layer : layers.values()) {
-			float height = layer.determinePreferredContentHeight(layoutState);
-			if (height > maxHeight) {
-				maxHeight = height;
+		if (verticalLayoutRuleset.getCurrentSizeRule().isAutoSize()) {
+			for (RenderLayer layer : layers.values()) {
+				float height = layer.determinePreferredContentHeight(layoutState);
+				if (height > maxHeight) {
+					maxHeight = height;
+				}
 			}
+		} else {
+			maxHeight = sizeRuleHeight - style.getPaddingTop() - style.getPaddingBottom() - style.getMarginTop()
+					- style.getMarginBottom();
 		}
-		if(maxHeight < style.getMinHeight()) {
-			return style.getMinHeight();
+		if (style.getMinHeight() > 0 && maxHeight + style.getPaddingTop() + style.getPaddingBottom() + style.getMarginTop()
+				+ style.getMarginBottom() < style.getMinHeight()) {
+			return style.getMinHeight() - style.getPaddingTop() - style.getPaddingBottom() - style.getMarginTop()
+					- style.getMarginBottom();
 		}
 		return maxHeight;
 	}
 
 	@Override
 	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if (layoutRuleset.isHiddenByInputSource(layoutState)) {
+		if (horizontalLayoutRuleset.isHiddenByInputSource(layoutState)) {
 			return 0f;
 		}
-		float layoutRuleResult = layoutRuleset.getPreferredWidth(layoutState);
+		float layoutRuleResult = horizontalLayoutRuleset.getPreferredSize(layoutState);
 		if (layoutRuleResult <= 0f) {
 			hiddenByLayoutRule = true;
 			return 0f;
@@ -139,12 +168,12 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 
 	@Override
 	protected float determineXOffset(LayoutState layoutState) {
-		return layoutRuleset.getXOffset(layoutState);
+		return horizontalLayoutRuleset.getOffset(layoutState);
 	}
 
 	@Override
 	protected float determineYOffset(LayoutState layoutState) {
-		return 0f;
+		return verticalLayoutRuleset.getOffset(layoutState);
 	}
 
 	@Override
@@ -164,7 +193,7 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean mouseScrolled(int screenX, int screenY, float amount) {
 		if (outerArea.contains(screenX, screenY)) {
@@ -179,7 +208,7 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 		}
 		return false;
 	}
-	
+
 	@Override
 	public ActionableRenderNode mouseDown(int screenX, int screenY, int pointer, int button) {
 		if (!isIncludedInRender()) {
@@ -188,7 +217,7 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 		NavigableSet<Integer> descendingLayerKeys = layers.descendingKeySet();
 		for (Integer layerIndex : descendingLayerKeys) {
 			ActionableRenderNode result = layers.get(layerIndex).mouseDown(screenX, screenY, pointer, button);
-			if(result != null) {
+			if (result != null) {
 				return result;
 			}
 		}
@@ -197,7 +226,7 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 
 	public void addChild(RenderNode<?, ?> child) {
 		int zIndex = child.getZIndex();
-		if(!layers.containsKey(zIndex)) {
+		if (!layers.containsKey(zIndex)) {
 			layers.put(zIndex, new RenderLayer(this, zIndex));
 		}
 		layers.get(zIndex).add(child);
@@ -205,7 +234,7 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 	}
 
 	public void removeChild(RenderNode<?, ?> child) {
-		if(!layers.containsKey(child.getZIndex())) {
+		if (!layers.containsKey(child.getZIndex())) {
 			return;
 		}
 		layers.get(child.getZIndex()).remove(child);
@@ -221,10 +250,10 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 	public boolean isDirty() {
 		return childDirty || super.isDirty();
 	}
-	
+
 	@Override
 	public void setDirty(boolean dirty) {
-		if(layers == null || layers.size() == 0) {
+		if (layers == null || layers.size() == 0) {
 			super.setDirty(dirty);
 		} else {
 			for (RenderLayer layer : layers.values()) {
@@ -232,7 +261,7 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 			}
 		}
 	}
-	
+
 	protected void setImmediateDirty(boolean dirty) {
 		super.setDirty(dirty);
 	}
@@ -240,17 +269,17 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 	boolean isChildDirty() {
 		return childDirty;
 	}
-	
+
 	public void setChildDirty(boolean childDirty) {
 		if (!childDirty) {
 			return;
 		}
 		if (this.childDirty) {
-			//Prevent repeated bubbling
+			// Prevent repeated bubbling
 			return;
 		}
 		this.childDirty = childDirty;
-		
+
 		if (parent == null) {
 			return;
 		}
@@ -280,20 +309,24 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 		}
 		return null;
 	}
-	
+
 	public RenderNode<?, ?> searchTreeForElementById(String id) {
-		if(rootNode == null) {
+		if (rootNode == null) {
 			return getElementById(id);
 		}
 		return rootNode.getElementById(id);
 	}
-	
-	public LayoutRuleset getLayoutRuleset() {
-		return layoutRuleset;
+
+	public LayoutRuleset getHorizontalLayoutRuleset() {
+		return horizontalLayoutRuleset;
+	}
+
+	public LayoutRuleset getVerticalLayoutRuleset() {
+		return verticalLayoutRuleset;
 	}
 
 	public FlexDirection getFlexDirection() {
-		if(flexDirection == null) {
+		if (flexDirection == null) {
 			flexDirection = FlexDirection.COLUMN;
 		}
 		return flexDirection;

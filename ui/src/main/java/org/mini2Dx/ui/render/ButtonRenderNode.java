@@ -29,11 +29,9 @@ import com.badlogic.gdx.Input.Buttons;
  * {@link RenderNode} implementation for {@link Button}
  */
 public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> implements ActionableRenderNode {
-	protected LayoutRuleset layoutRuleset;
-
+	
 	public ButtonRenderNode(ParentRenderNode<?, ?> parent, Button element) {
 		super(parent, element);
-		layoutRuleset = new LayoutRuleset(element.getLayout());
 	}
 
 	@Override
@@ -106,48 +104,6 @@ public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> 
 	}
 
 	@Override
-	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if (layoutRuleset.isHiddenByInputSource(layoutState)) {
-			return 0f;
-		}
-		float layoutRuleResult = layoutRuleset.getPreferredWidth(layoutState);
-		if (layoutRuleResult <= 0f) {
-			hiddenByLayoutRule = true;
-			return 0f;
-		} else {
-			hiddenByLayoutRule = false;
-		}
-		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft()
-				- style.getMarginRight();
-	}
-
-	@Override
-	protected float determinePreferredContentHeight(LayoutState layoutState) {
-		float maxHeight = 0f;
-
-		for (RenderLayer layer : layers.values()) {
-			float height = layer.determinePreferredContentHeight(layoutState);
-			if (height > maxHeight) {
-				maxHeight = height;
-			}
-		}
-		if (maxHeight < style.getMinHeight()) {
-			return style.getMinHeight();
-		}
-		return maxHeight;
-	}
-
-	@Override
-	protected float determineXOffset(LayoutState layoutState) {
-		return layoutRuleset.getXOffset(layoutState);
-	}
-
-	@Override
-	protected float determineYOffset(LayoutState layoutState) {
-		return 0f;
-	}
-
-	@Override
 	protected ButtonStyleRule determineStyleRule(LayoutState layoutState) {
 		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 	}
@@ -160,9 +116,5 @@ public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> 
 	@Override
 	public void endAction(EventTrigger eventTrigger, EventTriggerParams eventTriggerParams) {
 		element.notifyActionListenersOfEndEvent(eventTrigger, eventTriggerParams);
-	}
-
-	public LayoutRuleset getLayoutRuleset() {
-		return layoutRuleset;
 	}
 }

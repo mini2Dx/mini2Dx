@@ -163,23 +163,27 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 			g.drawNinePatch(rightButtonStyleRule.getDisabledNinePatch(), rightButton.getRenderX(),
 					rightButton.getRenderY(), rightButton.getRenderWidth(), rightButton.getRenderHeight());
 		}
-		
-		if(element.getLeftButtonText() != null) {
+
+		if (element.getLeftButtonText() != null) {
 			g.setColor(leftButtonStyleRule.getColor());
 			g.setFont(leftButtonStyleRule.getBitmapFont());
 			glyphLayout.setText(leftButtonStyleRule.getBitmapFont(), element.getLeftButtonText());
-			
-			int textRenderX = MathUtils.round(leftButton.getRenderX() + (leftButton.getRenderWidth() / 2) - (glyphLayout.width / 2f));
-			int textRenderY = MathUtils.round(leftButton.getRenderY() + (leftButton.getRenderHeight() / 2) - (glyphLayout.height / 2f));
+
+			int textRenderX = MathUtils
+					.round(leftButton.getRenderX() + (leftButton.getRenderWidth() / 2) - (glyphLayout.width / 2f));
+			int textRenderY = MathUtils
+					.round(leftButton.getRenderY() + (leftButton.getRenderHeight() / 2) - (glyphLayout.height / 2f));
 			g.drawString(element.getLeftButtonText(), textRenderX, textRenderY, glyphLayout.width, Align.center);
 		}
-		if(element.getRightButtonText() != null) {
+		if (element.getRightButtonText() != null) {
 			g.setColor(rightButtonStyleRule.getColor());
 			g.setFont(rightButtonStyleRule.getBitmapFont());
 			glyphLayout.setText(rightButtonStyleRule.getBitmapFont(), element.getRightButtonText());
-			
-			int textRenderX = MathUtils.round(rightButton.getRenderX() + (rightButton.getRenderWidth() / 2) - (glyphLayout.width / 2f));
-			int textRenderY = MathUtils.round(rightButton.getRenderY() + (rightButton.getRenderHeight() / 2) - (glyphLayout.height / 2f));
+
+			int textRenderX = MathUtils
+					.round(rightButton.getRenderX() + (rightButton.getRenderWidth() / 2) - (glyphLayout.width / 2f));
+			int textRenderY = MathUtils
+					.round(rightButton.getRenderY() + (rightButton.getRenderHeight() / 2) - (glyphLayout.height / 2f));
 			g.drawString(element.getRightButtonText(), textRenderX, textRenderY, glyphLayout.width, Align.center);
 		}
 
@@ -299,10 +303,10 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 		leftButton.setWidth(style.getButtonWidth());
 		rightButton.setWidth(style.getButtonWidth());
 
-		if (element.getLayout().isHiddenByInputSource(layoutState)) {
+		if (element.getHorizontalLayout().isHiddenByInputSource(layoutState)) {
 			return 0f;
 		}
-		float layoutRuleResult = element.getLayout().getPreferredWidth(layoutState);
+		float layoutRuleResult = element.getHorizontalLayout().getPreferredSize(layoutState);
 		if (layoutRuleResult <= 0f) {
 			hiddenByLayoutRule = true;
 			return 0f;
@@ -331,8 +335,10 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 		labelHeight = glyphLayout.height;
 
 		float result = glyphLayout.height;
-		if (style.getMinHeight() > 0 && result < style.getMinHeight()) {
-			result = style.getMinHeight();
+		if (style.getMinHeight() > 0 && result + style.getPaddingTop() + style.getPaddingBottom() + style.getMarginTop()
+				+ style.getMarginBottom() < style.getMinHeight()) {
+			result = style.getMinHeight() - style.getPaddingTop() - style.getPaddingBottom() - style.getMarginTop()
+					- style.getMarginBottom();
 		}
 		leftButton.setHeight(result);
 		rightButton.setHeight(result);

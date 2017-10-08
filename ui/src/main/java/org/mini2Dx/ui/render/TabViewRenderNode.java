@@ -32,20 +32,14 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule>im
 	private final Map<Integer, String> keyboardHotkeys = new HashMap<Integer, String>();
 	private final Map<String, String> controllerHotkeys = new HashMap<String, String>();
 
-	protected LayoutRuleset layoutRuleset;
-
 	public TabViewRenderNode(ParentRenderNode<?, ?> parent, TabView tabView) {
 		super(parent, tabView);
-		layoutRuleset = new LayoutRuleset(element.getLayout());
 	}
 
 	@Override
 	public void layout(LayoutState layoutState) {
 		if(isDirty()) {
 			elementIdLookupCache.clear();
-		}
-		if (!layoutRuleset.equals(element.getLayout())) {
-			layoutRuleset = new LayoutRuleset(element.getLayout());
 		}
 		super.layout(layoutState);
 	}
@@ -119,51 +113,6 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule>im
 	protected TabStyleRule determineStyleRule(LayoutState layoutState) {
 		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 	}
-
-	@Override
-	protected float determinePreferredContentHeight(LayoutState layoutState) {
-		if (preferredContentWidth <= 0f) {
-			return 0f;
-		}
-		float maxHeight = 0f;
-
-		for (RenderLayer layer : layers.values()) {
-			float height = layer.determinePreferredContentHeight(layoutState);
-			if (height > maxHeight) {
-				maxHeight = height;
-			}
-		}
-		if(maxHeight < style.getMinHeight()) {
-			return style.getMinHeight();
-		}
-		return maxHeight;
-	}
-
-	@Override
-	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		if (layoutRuleset.isHiddenByInputSource(layoutState)) {
-			return 0f;
-		}
-		float layoutRuleResult = layoutRuleset.getPreferredWidth(layoutState);
-		if (layoutRuleResult <= 0f) {
-			hiddenByLayoutRule = true;
-			return 0f;
-		} else {
-			hiddenByLayoutRule = false;
-		}
-		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft()
-				- style.getMarginRight();
-	}
-
-	@Override
-	protected float determineXOffset(LayoutState layoutState) {
-		return layoutRuleset.getXOffset(layoutState);
-	}
-
-	@Override
-	protected float determineYOffset(LayoutState layoutState) {
-		return 0f;
-	}
 	
 	@Override
 	public RenderNode<?, ?> getElementById(String id) {
@@ -209,9 +158,5 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule>im
 
 	public String getTabContentStyleId() {
 		return style.getTabStyle();
-	}
-
-	public LayoutRuleset getLayoutRuleset() {
-		return layoutRuleset;
 	}
 }

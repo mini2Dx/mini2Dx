@@ -165,11 +165,11 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 
 	private void initialiseUi() {
 		topLeftFrame = new AbsoluteContainer("top-left-frame");
-		topLeftFrame.setLayout("xs-12c sm-6c md-4c lg-3c");
+		topLeftFrame.setHorizontalLayout("xs-12c sm-6c md-4c lg-3c");
 		topLeftFrame.setStyleId("no-background");
 		topLeftFrame.add(Row.withElements("top-left-header", UiUtils.createHeader("UI UAT")));
 		
-		Row backRow = Row.withElements("behind-header", UiUtils.createButton(null, "", new ActionListener() {
+		Button backRowButton = UiUtils.createButton(null, "", new ActionListener() {
 			
 			@Override
 			public void onActionEnd(ActionEvent event) {
@@ -182,7 +182,9 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 				// TODO Auto-generated method stub
 				
 			}
-		}));
+		});
+		backRowButton.setVerticalLayout("xs-20px");
+		Row backRow = Row.withElements("behind-header", backRowButton);
 		backRow.setZIndex(-1);
 		topLeftFrame.add(backRow);
 		
@@ -239,6 +241,9 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 				case "Row Layout":
 					radioButton.setFlexDirection(FlexDirection.ROW);
 					break;
+				case "Row-Reverse Layout":
+					radioButton.setFlexDirection(FlexDirection.ROW_REVERSE);
+					break;
 				case "Column Layout":
 					radioButton.setFlexDirection(FlexDirection.COLUMN);
 					break;
@@ -253,6 +258,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 			public void onActionBegin(ActionEvent event) {}
 		});
 		radioButton.addOption("Row Layout");
+		radioButton.addOption("Row-Reverse Layout");
 		radioButton.addOption("Column Layout");
 		radioButton.addOption("Column-Reverse Layout");
 		
@@ -286,7 +292,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		select.addOption("Item 3", "3");
 		
 		modal = new AlignedModal("main-modal");
-		modal.setLayout("xs-12c md-8c lg-6c md-offset-2c lg-offset-3c");
+		modal.setHorizontalLayout("xs-12c md-8c lg-6c md-offset-2c lg-offset-3c");
 		modal.setVerticalAlignment(VerticalAlignment.MIDDLE);
 		
 		tabView = new TabView("tabView");
@@ -304,7 +310,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		
 		Tab tab2 = new Tab("tab2", "Tab 2");
 		Column xsHiddenColumn = Column.withElements("col-not-visible-xs", UiUtils.createLabel("Not visible on XS screen size"));
-		xsHiddenColumn.setLayout("xs-0c sm-12c");
+		xsHiddenColumn.setHorizontalLayout("xs-0c sm-12c");
 		
 		ProgressBar progressBar = new ProgressBar();
 		progressBar.setValue(0.4f);
@@ -340,7 +346,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		hiddenButton.setVisibility(Visibility.HIDDEN);
 		tab3.add(Row.withElements(hiddenButton));
 		final ScrollBox scrollBox = new ScrollBox("scrollBox");
-		scrollBox.setLayout("xs-12c");
+		scrollBox.setHorizontalLayout("xs-12c");
 		scrollBox.setVisibility(Visibility.VISIBLE);
 		scrollBox.setMaxHeight(300f);
 		for(int i = 0; i < 30; i++) {
@@ -417,10 +423,12 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		uiContainer.add(modal);
 		
 		bottomRightFrame = new AbsoluteContainer("bottom-right-frame");
-		bottomRightFrame.setLayout("xs-12c sm-6c md-4c lg-3c");
+		bottomRightFrame.setHorizontalLayout("xs-12c sm-6c md-4c lg-3c");
 		bottomRightFrame.setVisibility(Visibility.VISIBLE);
-		Row bottomFrameRow = Row.withElements("row-os", UiUtils.createHeader("Detected OS: " + Mdx.os));
+		Row bottomFrameRow = Row.withElements("row-os", UiUtils.createHeader("OVERFLOW CLIPPED"));
 		bottomFrameRow.setFlexDirection(FlexDirection.COLUMN_REVERSE);
+		bottomFrameRow.setVerticalLayout("xs-12px");
+		bottomFrameRow.setOverflowClipped(true);
 		bottomRightFrame.add(bottomFrameRow);
 		uiContainer.add(bottomRightFrame);
 	}

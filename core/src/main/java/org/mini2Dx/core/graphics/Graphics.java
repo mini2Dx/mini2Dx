@@ -578,8 +578,21 @@ public interface Graphics {
 
 	/**
 	 * Removes the applied clip
+	 * @return Null if there is no clip
 	 */
 	public Rectangle removeClip();
+	
+	/**
+	 * Returns the current clip
+	 * @return A new {@link Rectangle} set to the clip coordinates. See {@link #peekClip(Rectangle)}
+	 */
+	public Rectangle peekClip();
+	
+	/**
+	 * Returns the current clip
+	 * @param rectangle Applies the current clip coordinates to this {@link Rectangle}. If there is no clip it is set to the viewport dimensions.
+	 */
+	public void peekClip(Rectangle rectangle);
 
 	/**
 	 * Sets the {@link Color} to apply to draw operations

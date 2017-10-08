@@ -26,8 +26,12 @@ public class AbsoluteSizeRule implements SizeRule {
 	}
 
 	@Override
-	public float getWidth(LayoutState layoutState) {
+	public float getSize(LayoutState layoutState) {
 		return width;
 	}
 
+	@Override
+	public boolean isAutoSize() {
+		return false;
+	}
 }

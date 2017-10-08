@@ -35,7 +35,7 @@ public class Select<V> extends UiElement implements Actionable {
 	private final List<SelectOption<V>> options = new ArrayList<SelectOption<V>>(1);
 	private List<ActionListener> actionListeners;
 
-	private LayoutRuleset layout = LayoutRuleset.DEFAULT_RULESET;
+	private LayoutRuleset horizontalLayout = LayoutRuleset.DEFAULT_PARSED_HORIZONTAL_RULESET;
 	private boolean enabled = true;
 	private int selectedIndex = 0;
 	private Color enabledTextColor = null;
@@ -335,24 +335,20 @@ public class Select<V> extends UiElement implements Actionable {
 		}
 		renderNode.setDirty(true);
 	}
-
-	public LayoutRuleset getLayout() {
-		return layout;
+	
+	public LayoutRuleset getHorizontalLayout() {
+		return horizontalLayout;
 	}
 	
-	public void setLayout(String layoutRuleset) {
-		setLayout(new LayoutRuleset(layoutRuleset));
+	public void setHorizontalLayout(String layoutRuleset) {
+		setHorizontalLayout(new LayoutRuleset(true, layoutRuleset));
 	}
 
-	public void setLayout(LayoutRuleset layoutRuleset) {
+	public void setHorizontalLayout(LayoutRuleset layoutRuleset) {
 		if (layoutRuleset == null) {
 			return;
 		}
-		this.layout = layoutRuleset;
-		if (renderNode == null) {
-			return;
-		}
-		renderNode.setDirty(true);
+		this.horizontalLayout = layoutRuleset;
 	}
 
 	public Color getEnabledTextColor() {

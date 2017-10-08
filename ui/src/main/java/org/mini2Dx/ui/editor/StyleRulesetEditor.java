@@ -81,13 +81,13 @@ public class StyleRulesetEditor<T extends StyleRule, E extends UiElement> extend
 
 		applyButton = new TextButton();
 		applyButton.setText("Apply");
-		applyButton.setLayout("xs-6c");
+		applyButton.setHorizontalLayout("xs-6c");
 		applyButton.setVisibility(Visibility.VISIBLE);
 		applyButton.addActionListener(this);
 
 		resetButton = new TextButton();
 		resetButton.setText("Reset");
-		resetButton.setLayout("xs-6c");
+		resetButton.setHorizontalLayout("xs-6c");
 		resetButton.setVisibility(Visibility.VISIBLE);
 		resetButton.addActionListener(this);
 
@@ -132,14 +132,14 @@ public class StyleRulesetEditor<T extends StyleRule, E extends UiElement> extend
 				fieldLabel.setText(field.getName());
 
 				Column fieldLabelColumn = Column.withElements(fieldLabel);
-				fieldLabelColumn.setLayout("xs-4c");
+				fieldLabelColumn.setHorizontalLayout("xs-4c");
 
 				UiElement valueElement = null;
 
 				try {
 					if (field.getType().equals(String.class)) {
 						TextBox textbox = new TextBox();
-						textbox.setLayout("xs-8c");
+						textbox.setHorizontalLayout("xs-8c");
 						textbox.setVisibility(Visibility.VISIBLE);
 						Object value = field.get(originalRuleset.getStyleRule(getScreenSize()));
 						if(value == null) {
@@ -150,7 +150,7 @@ public class StyleRulesetEditor<T extends StyleRule, E extends UiElement> extend
 						valueElement = textbox;
 					} else if (field.getType().equals(Integer.class) || field.getType().equals(Integer.TYPE)) {
 						TextBox textbox = new TextBox();
-						textbox.setLayout("xs-8c");
+						textbox.setHorizontalLayout("xs-8c");
 						textbox.setVisibility(Visibility.VISIBLE);
 						textbox.setValue(String.valueOf(field.get(originalRuleset.getStyleRule(getScreenSize()))));
 						valueElement = textbox;
@@ -163,7 +163,7 @@ public class StyleRulesetEditor<T extends StyleRule, E extends UiElement> extend
 							checkbox.setChecked(false);
 						}
 						Column column = Column.withElements(checkbox);
-						column.setLayout("xs-8c");
+						column.setHorizontalLayout("xs-8c");
 						valueElement = column;
 					} else {
 						System.err.println(field.getName() + " " + field.getType());
