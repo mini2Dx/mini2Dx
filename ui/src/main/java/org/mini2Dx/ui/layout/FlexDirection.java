@@ -16,12 +16,14 @@ import java.util.List;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.RenderNode;
 
+import com.badlogic.gdx.math.MathUtils;
+
 /**
  * Controls the order of child elements
  */
 public enum FlexDirection {
 	/**
-	 * Elements are ordered left-to-right, top-to-bottom
+	 * Child elements are ordered left-to-right, top-to-bottom
 	 */
 	COLUMN {
 		@Override
@@ -61,7 +63,7 @@ public enum FlexDirection {
 		}
 	},
 	/**
-	 * Elements are ordered right-to-left, top-to-bottom
+	 * Child elements are ordered right-to-left, top-to-bottom
 	 */
 	COLUMN_REVERSE {
 		@Override
@@ -102,7 +104,7 @@ public enum FlexDirection {
 		}
 	},
 	/**
-	 * Elements are ordered top-to-bottom
+	 * Child elements are ordered top-to-bottom
 	 */
 	ROW {
 		@Override
@@ -125,7 +127,7 @@ public enum FlexDirection {
 		}
 	},
 	/**
-	 * Elements are ordered bottom-to-top
+	 * Child elements are ordered bottom-to-top
 	 */
 	ROW_REVERSE {
 		@Override
@@ -160,6 +162,50 @@ public enum FlexDirection {
 					node.setRelativeX(startX + node.getXOffset());
 					node.setRelativeY(startY + node.getYOffset());
 				}
+			}
+		}
+	},
+	/**
+	 * Child elements are placed on top of each other in the center of the parent
+	 */
+	CENTER {
+		@Override
+		public void layout(LayoutState layoutState, ParentRenderNode<?, ?> parentNode,
+				List<RenderNode<?, ?>> children) {
+			final float paddingLeft = parentNode.getStyle().getPaddingLeft();
+			final float paddingRight = parentNode.getStyle().getPaddingRight();
+			final float paddingTop = parentNode.getStyle().getPaddingTop();
+			final float paddingBottom = parentNode.getStyle().getPaddingBottom();
+			
+			int maxHeight = 0;
+			if(parentNode.getVerticalLayoutRuleset().getCurrentSizeRule().isAutoSize()) {
+				for (int i = 0; i < children.size(); i++) {
+					RenderNode<?, ?> node = children.get(i);
+					node.layout(layoutState);
+					if (!node.isIncludedInLayout()) {
+						continue;
+					}
+					if(node.getOuterRenderHeight() > maxHeight) {
+						maxHeight = node.getOuterRenderHeight();
+					}
+				}
+			} else {
+				for (int i = 0; i < children.size(); i++) {
+					RenderNode<?, ?> node = children.get(i);
+					node.layout(layoutState);
+				}
+				maxHeight = MathUtils.round(parentNode.getPreferredContentHeight());
+			}
+			
+			int centerX = MathUtils.round((paddingLeft + paddingRight + parentNode.getPreferredContentWidth()) / 2f);
+			int centerY = MathUtils.round((paddingTop + paddingBottom + maxHeight) / 2);
+			for (int i = 0; i < children.size(); i++) {
+				RenderNode<?, ?> node = children.get(i);
+				if (!node.isIncludedInLayout()) {
+					continue;
+				}
+				node.setRelativeX(centerX - (node.getXOffset() / 2f) - (node.getPreferredOuterWidth() / 2f));
+				node.setRelativeY(centerY - (node.getYOffset() / 2f) - (node.getPreferredOuterHeight() / 2f));
 			}
 		}
 	};

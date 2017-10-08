@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.event.ActionEvent;
@@ -199,6 +200,9 @@ public class RadioButton extends UiElement implements Actionable {
 		}
 		if(this.flexDirection.equals(flexDirection)) {
 			return;
+		}
+		if(flexDirection.equals(FlexDirection.CENTER)) {
+			throw new MdxException(FlexDirection.CENTER + " is not supported for RadioButton");
 		}
 		this.flexDirection = flexDirection;
 		

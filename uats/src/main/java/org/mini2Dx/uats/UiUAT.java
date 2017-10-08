@@ -167,7 +167,10 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 		topLeftFrame = new AbsoluteContainer("top-left-frame");
 		topLeftFrame.setHorizontalLayout("xs-12c sm-6c md-4c lg-3c");
 		topLeftFrame.setStyleId("no-background");
-		topLeftFrame.add(Row.withElements("top-left-header", UiUtils.createHeader("UI UAT")));
+		Row topLeftHeaderRow = Row.withElements("top-left-header", UiUtils.createHeader("UI UAT"));
+		topLeftHeaderRow.setFlexDirection(FlexDirection.CENTER);
+		topLeftHeaderRow.setVerticalLayout("xs-20px");
+		topLeftFrame.add(topLeftHeaderRow);
 		
 		Button backRowButton = UiUtils.createButton(null, "", new ActionListener() {
 			
