@@ -286,6 +286,36 @@ public class RadioButtonRenderNode extends RenderNode<RadioButton, RadioButtonSt
 			}
 			break;
 		}
+		case ROW_REVERSE: {
+			int maxY = buttonY;
+			while (options.hasNext()) {
+				options.next();
+				maxY += lineHeight + style.getOptionsSpacing();
+			}
+			int buttonTextYDiff = textY - buttonY;
+			textY = maxY + buttonTextYDiff;
+			maxY -= lineHeight + style.getOptionsSpacing();
+			options = element.getOptions();
+
+			int i = 0;
+			while (options.hasNext()) {
+				String nextOption = options.next();
+				GLYPH_LAYOUT.setText(style.getBitmapFont(), nextOption);
+				if (buttonX + style.getActiveTextureRegion().getRegionWidth() + style.getLabelIndent()
+						+ GLYPH_LAYOUT.width > maxX) {
+					maxX = buttonX + style.getActiveTextureRegion().getRegionWidth() + style.getLabelIndent()
+							+ GLYPH_LAYOUT.width;
+				}
+				pushButtonRenderPosition(i, buttonX, maxY, MathUtils.round(availableWidth), lineHeight);
+				bitmapFontCache.addText(nextOption, textX, maxY + buttonTextYDiff, availableWidth,
+						HorizontalAlignment.LEFT.getAlignValue(), true);
+				maxY -= lineHeight + style.getOptionsSpacing();
+				buttonY += lineHeight + style.getOptionsSpacing();
+				i++;
+			}
+			
+			break;
+		}
 		case ROW:
 		default: {
 			int i = 0;
@@ -328,7 +358,7 @@ public class RadioButtonRenderNode extends RenderNode<RadioButton, RadioButtonSt
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
 		float result = calculatedHeight;
-		if(style.getMinHeight() > 0 && result + style.getPaddingTop() + style.getPaddingBottom() + style.getMarginTop()
+		if (style.getMinHeight() > 0 && result + style.getPaddingTop() + style.getPaddingBottom() + style.getMarginTop()
 				+ style.getMarginBottom() < style.getMinHeight()) {
 			result = style.getMinHeight() - style.getPaddingTop() - style.getPaddingBottom() - style.getMarginTop()
 					- style.getMarginBottom();
