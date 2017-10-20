@@ -1,3 +1,8 @@
+[1.7.1]
+- Fixed a bug in circle bounding box
+- Added jacocoTestReport for better code coverage report
+- (#53) Increased code coverage on Rectangle and Circle
+
 [1.7.0-SNAPSHOT]
 - Added new FlexDirections; ROW_REVERSE and CENTER
 - [BREAKING] LayoutRuleset is now applied to both horizontal and vertical calculations

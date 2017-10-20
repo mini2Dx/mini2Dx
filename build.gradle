@@ -102,7 +102,7 @@ configure(docProjects()) {
 		archives javadocJar, sourcesJar, testJar
 		testOutput testJar
 	}
-	
+  
 	// Maven Central publication
 	if(project.hasProperty('ossrhUser')) {
 		signing {
@@ -156,6 +156,7 @@ project(":" + rootProject.name + "-core") {
 	description = "mini2Dx core library"
     
     apply plugin: "me.champeau.gradle.jmh"
+    apply plugin: "jacoco"
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -180,6 +181,20 @@ project(":" + rootProject.name + "-core") {
 		fork = Runtime.getRuntime().availableProcessors()
 		jvmArgsPrepend = '-Xmx1024m'
 	}
+    
+  jacocoTestReport {
+    group = "Reporting"
+    reports {
+      xml.enabled true
+      csv.enabled false
+      html.destination "${buildDir}/reports/coverage"
+    }
+    afterEvaluate {
+      classDirectories = files(classDirectories.files.collect {
+        fileTree(dir: it)
+      })
+    }
+  }
 }
 
 project(":" + rootProject.name + "-desktop") {

@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.core.geom;
 
+import com.badlogic.gdx.math.Vector2;
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -89,4 +90,64 @@ public class CircleTest {
 		Assert.assertEquals(25f, circle.getY());
 	}
 
+	@Test
+	public void testContainsShape() {
+		Shape shape = new Circle(2f);
+		Assert.assertEquals(true, circle.contains(shape));
+		
+		shape = new Rectangle(0f,0f,1f,1f);
+		Assert.assertEquals(true, circle.contains(shape));
+
+		shape = new Rectangle(0f,0f,3f,3f);
+		Assert.assertEquals(false, circle.contains(shape));
+		
+		shape = new Triangle(new Vector2(0f, 4f), new Vector2(-4f,0f), new Vector2(4f,0f));
+		Assert.assertEquals(true,circle.contains(shape));
+
+		shape = new Triangle(new Vector2(0f, 5f), new Vector2(-4f,0f), new Vector2(4f,0f));
+		Assert.assertEquals(false,circle.contains(shape));
+	}
+
+	@Test
+	public void testContainsRectangle() {
+		Rectangle rectangle = new Rectangle(0f,0f,1f,1f);
+		Assert.assertEquals(true, circle.contains(rectangle));
+
+		rectangle = new Rectangle(0f,0f,3f,3f);
+		Assert.assertEquals(false, circle.contains(rectangle));
+	}
+
+	@Test
+	public void testIntersectLineSegmentsXY() {
+		Assert.assertEquals(true, circle.intersectsLineSegment(0f,0f,5f,5f));
+		Assert.assertEquals(false, circle.intersectsLineSegment(-5f,5f,5f,5f));
+	}
+
+	@Test
+	public void testIntersectLineSegmentsVectors() {
+		Vector2 point1 = new Vector2(0f, 0f);
+		Vector2 point2 = new Vector2(5f, 5f);
+		Assert.assertEquals(true, circle.intersectsLineSegment(point1, point2));
+
+		point1 = new Vector2(-5f,5f);
+		point2 = new Vector2(5f, 5f);
+		Assert.assertEquals(false, circle.intersectsLineSegment(point1, point2));
+
+	}
+
+	@Test
+	public void testGetBoundingBox() {
+		Rectangle boundingBox = circle.getBoundingBox();
+		Assert.assertEquals(-4f, boundingBox.getX());
+		Assert.assertEquals(-4f, boundingBox.getY());
+		Assert.assertEquals(8f, boundingBox.getWidth());
+		Assert.assertEquals(8f, boundingBox.getHeight());
+	}
+
+	@Test
+	public void testTranslate() {
+		circle.translate(1f,-1f);
+		Assert.assertEquals(1f,circle.getCenterX());
+		Assert.assertEquals(-1f,circle.getCenterY());
+	}
 }

@@ -170,7 +170,7 @@ public class RectangleTest {
 	}
 	
 	@Test
-	public void testContainsParallelogram() {
+	public void testContainsRectangle() {
 		rectangle1 = new Rectangle(0, 0, 50, 50);
 		rectangle2 = new Rectangle(50, 50, 50, 50);
 		
@@ -331,5 +331,64 @@ public class RectangleTest {
 		Assert.assertEquals(75f, rectangle1.getWidth());
 		Assert.assertEquals(75f, rectangle1.getHeight());
 		Assert.assertEquals(0f, rectangle1.getRotation());
+	}
+	
+	@Test(expected = UnsupportedOperationException.class)
+	public void testIntersectionRotatedException() {
+		rectangle1 = new Rectangle(0, 0, 50, 50);
+		rectangle2 = new Rectangle(50, 50, 100f, 100f);
+		
+		rectangle1.setRotation(10f);
+		rectangle2.setRotation(10f);
+		
+		rectangle1.intersection(rectangle1);
+	}
+
+	@Test
+	public void testIntersection() {
+		rectangle1 = new Rectangle(0, 0, 50f, 50f);
+		rectangle2 = new Rectangle(25, 25, 100f, 100f);
+
+		Rectangle rectangle3 = rectangle1.intersection(rectangle2);
+		
+		Assert.assertEquals(rectangle2.getX(), rectangle3.getX());
+		Assert.assertEquals(rectangle2.getY(), rectangle3.getY());
+		Assert.assertEquals(25f, rectangle3.getWidth());
+		Assert.assertEquals(25f, rectangle3.getHeight());
+	}
+	
+	@Test
+	public void testSetSizeWidthHeight() {
+		rectangle1 = new Rectangle(0, 0, 40f, 60f);
+		rectangle1.setSize(25f,30f);
+		
+		Assert.assertEquals(25f, rectangle1.getWidth());
+		Assert.assertEquals(30f, rectangle1.getHeight());
+	}
+
+	@Test
+	public void testSetSizeXY() {
+		rectangle1 = new Rectangle(0, 0, 40f, 60f);
+		rectangle1.setSize(25f);
+
+		Assert.assertEquals(25f, rectangle1.getWidth());
+		Assert.assertEquals(25f, rectangle1.getHeight());
+	}
+
+	@Test
+	public void testToString() {
+		rectangle1 = new Rectangle(0, 0, 40f, 60f);
+		String rectangle = rectangle1.toString();
+		String expected = "Rectangle [rotation=0.0, x=0.0, y=0.0, width=40.0, height=60.0]";
+		
+		Assert.assertEquals(expected, rectangle);
+	}
+	
+	@Test
+	public void testIntersectsXYWidthHeight() {
+		rectangle1 = new Rectangle(100f, 100f, 75f, 75f);
+
+		Assert.assertEquals(true, rectangle1.intersects(50f, 50f, 100f, 100f));
+		Assert.assertEquals(false, rectangle1.intersects(0f, 0f, 50f, 50f));
 	}
 }
