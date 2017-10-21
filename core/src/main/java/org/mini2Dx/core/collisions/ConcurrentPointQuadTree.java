@@ -471,7 +471,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 			return removeElementFromChild(element);
 		}
 		lock.readLock().unlock();
-		return removeElement(element);
+		return removeElement(element, true);
 	}
 
 	protected boolean removeElementFromChild(T element) {
@@ -495,7 +495,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		return false;
 	}
 
-	protected boolean removeElement(T element) {
+	protected boolean removeElement(T element, boolean topDownInvocation) {
 		lock.writeLock().lock();
 
 		// Another write may occur concurrently before this one
@@ -513,7 +513,13 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 			return result;
 		}
 		if (result && parent.isMergable()) {
+			if(!topDownInvocation) {
+				parent.lock.readLock().lock();
+			}
 			parent.merge();
+			if(!topDownInvocation) {
+				parent.lock.readLock().unlock();
+			}
 		}
 		return result;
 	}
@@ -681,7 +687,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		if (this.contains(moved.getX(), moved.getY()))
 			return;
 
-		removeElement(moved);
+		removeElement(moved, false);
 
 		QuadTree<T> parentQuad = parent;
 		while (parentQuad != null) {

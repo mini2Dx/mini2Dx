@@ -4,7 +4,8 @@
 - Added new FlexDirections; ROW_REVERSE and CENTER
 - Added Sprite#getAlpha() method
 - Added jacocoTestReport for better code coverage report
-- Fixed a bug in circle bounding box
+- Fixed merging concurrency exception during object movement within concurrent QuadTrees
+- Fixed incorrect Circle bounding box dimensions
 - (#53) Increased code coverage on Rectangle and Circle
 
 [1.6.5]

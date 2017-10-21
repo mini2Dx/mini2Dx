@@ -378,11 +378,11 @@ public class ConcurrentRegionQuadTree<T extends CollisionShape> extends Concurre
 			return false;
 		}
 		clearTotalElementsCache();
-		return removeElement(element);
+		return removeElement(element, true);
 	}
 	
 	@Override
-	protected boolean removeElement(T element) {
+	protected boolean removeElement(T element, boolean topDownInvocation) {
 		lock.writeLock().lock();
 		
 		//Another write may occur concurrently before this one
@@ -404,7 +404,13 @@ public class ConcurrentRegionQuadTree<T extends CollisionShape> extends Concurre
 			return result;
 		}
 		if (result && parent.isMergable()) {
+			if(!topDownInvocation) {
+				parent.lock.readLock().lock();
+			}
 			parent.merge();
+			if(!topDownInvocation) {
+				parent.lock.readLock().unlock();
+			}
 		}
 		return result;
 	}
@@ -559,7 +565,7 @@ public class ConcurrentRegionQuadTree<T extends CollisionShape> extends Concurre
 		if (this.contains(moved.getShape()))
 			return;
 
-		removeElement(moved);
+		removeElement(moved, false);
 
 		QuadTree<T> parentQuad = parent;
 		while (parentQuad != null) {
