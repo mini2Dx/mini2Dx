@@ -100,4 +100,12 @@ public class Sprite extends com.badlogic.gdx.graphics.g2d.Sprite {
 	public Sprite(Sprite sprite) {
 		super(sprite);
 	}
+	
+	/**
+	 * Returns the current alpha value of this Sprite
+	 * @return
+	 */
+	public float getAlpha() {
+		return getColor().a;
+	}
 }
