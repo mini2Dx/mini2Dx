@@ -3,7 +3,7 @@
 - [BREAKING] UI minHeight now includes padding + margin in check
 - Added new FlexDirections; ROW_REVERSE and CENTER
 - Added Sprite#getAlpha() method
-- Added jacocoTestReport for better code coverage report
+- Added jacocoTestReport for better code coverage reporting
 - Fixed merging concurrency exception during object movement within concurrent QuadTrees
 - Fixed incorrect Circle bounding box dimensions
 - (#53) Increased code coverage on Rectangle and Circle
