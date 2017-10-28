@@ -16,18 +16,18 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.di.bean.SingletonBean;
-import org.mini2Dx.core.di.dummy.TestBean;
+import org.mini2Dx.core.di.dummy.TestPrototypeBean;
 
 /**
  * Unit tests for {@link SingletonBean}
  */
 public class SingletonBeanTest {
-	private TestBean singleton;
+	private TestPrototypeBean singleton;
 	private SingletonBean bean;
 
 	@Before
 	public void setup() {
-		singleton = new TestBean();
+		singleton = new TestPrototypeBean();
 		singleton.setIntField(100);
 
 		bean = new SingletonBean(singleton);

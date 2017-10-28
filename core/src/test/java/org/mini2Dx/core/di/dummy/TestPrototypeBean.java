@@ -11,6 +11,8 @@
  */
 package org.mini2Dx.core.di.dummy;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.mini2Dx.core.di.annotation.Autowired;
 import org.mini2Dx.core.di.annotation.Prototype;
 
@@ -18,8 +20,10 @@ import org.mini2Dx.core.di.annotation.Prototype;
  * A dummy bean for testing dependency injection
  */
 @Prototype
-public class TestBean {
+public class TestPrototypeBean {
+	
 	private Integer intField;
+	
 	@Autowired
 	private TestDependency dependency;
 	@Autowired(required = false)

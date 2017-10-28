@@ -21,13 +21,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.di.bean.PrototypeBean;
-import org.mini2Dx.core.di.dummy.TestBean;
+import org.mini2Dx.core.di.dummy.TestPrototypeBean;
 
 /**
  * Unit tests for {@link PrototypeBean}
  */
 public class PrototypeBeanTest {
-	private TestBean prototype;
+	private TestPrototypeBean prototype;
 	private ExecutorService executorService;
 	private PrototypeBean bean;
 
@@ -37,7 +37,7 @@ public class PrototypeBeanTest {
 		
 		executorService = Executors.newFixedThreadPool(1);
 
-		prototype = new TestBean();
+		prototype = new TestPrototypeBean();
 		prototype.setIntField(100);
 
 		bean = new PrototypeBean(prototype, executorService);

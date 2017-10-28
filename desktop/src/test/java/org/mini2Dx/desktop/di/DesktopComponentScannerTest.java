@@ -15,7 +15,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.di.ComponentScanner;
-import org.mini2Dx.core.di.dummy.TestBean;
+import org.mini2Dx.core.di.dummy.TestPrototypeBean;
 import org.mini2Dx.core.di.dummy.TestDependency;
 
 /**
@@ -34,7 +34,7 @@ public class DesktopComponentScannerTest {
 		componentScanner.scan(new String[] { "org.mini2Dx.core.di.dummy" });
 
 		Assert.assertEquals(true, componentScanner.getPrototypeClasses()
-				.contains(TestBean.class));
+				.contains(TestPrototypeBean.class));
 		Assert.assertEquals(true, componentScanner.getSingletonClasses()
 				.contains(TestDependency.class));
 	}

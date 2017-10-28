@@ -4,8 +4,10 @@
 - Added new FlexDirections; ROW_REVERSE and CENTER
 - Added Sprite#getAlpha() method
 - Added jacocoTestReport for better code coverage reporting
+- Added #equals method to ControllerButton implementations
 - Fixed merging concurrency exception during object movement within concurrent QuadTrees
 - Fixed incorrect Circle bounding box dimensions
+- Fixed dependency injection validating injection too early
 - (#53) Increased code coverage on Rectangle and Circle
 
 [1.6.5]

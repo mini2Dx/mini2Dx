@@ -34,18 +34,17 @@ public class BeanInjector {
 	private Map<String, Object> prototypes;
 	private Map<String, NoSuchBeanException> exceptions;
 
-	public BeanInjector(Map<String, Object> singletons,
-			Map<String, Object> prototypes) {
+	public BeanInjector(Map<String, Object> singletons, Map<String, Object> prototypes) {
 		this.singletons = singletons;
 		this.prototypes = prototypes;
 		this.exceptions = new HashMap<String, NoSuchBeanException>();
 	}
 
-	public void inject() throws NoSuchBeanException, IllegalArgumentException,
-			IllegalAccessException {
+	public void inject() throws NoSuchBeanException, IllegalArgumentException, IllegalAccessException {
 		injectSingletons();
 		injectPrototypes();
-		
+		checkInjectionSuccessful();
+
 		for (String key : prototypes.keySet()) {
 			Object object = prototypes.get(key);
 			try {
@@ -71,43 +70,39 @@ public class BeanInjector {
 		}
 	}
 
-	public Map<String, Bean> getInjectionResult(
-			ExecutorService prototypeExecutorService) {
+	public Map<String, Bean> getInjectionResult(ExecutorService prototypeExecutorService) {
 		Map<String, Bean> result = new HashMap<String, Bean>();
 
 		for (String key : singletons.keySet()) {
 			Object object = singletons.get(key);
 			result.put(key, new SingletonBean(object));
-			
 		}
 
 		for (String key : prototypes.keySet()) {
 			Object object = prototypes.get(key);
-			PrototypeBean prototypeBean = new PrototypeBean(object,
-					prototypeExecutorService);
+			PrototypeBean prototypeBean = new PrototypeBean(object, prototypeExecutorService);
 			prototypeExecutorService.submit(prototypeBean);
 			result.put(key, prototypeBean);
 		}
 
 		return result;
 	}
-	
-	private void invokePostInject(Object object) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		for(Method method : object.getClass().getMethods()) {
-			if(!method.isAnnotationPresent(PostInject.class)) {
+
+	private void invokePostInject(Object object)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		for (Method method : object.getClass().getMethods()) {
+			if (!method.isAnnotationPresent(PostInject.class)) {
 				continue;
 			}
-			if(method.getParameterTypes().length > 0) {
+			if (method.getParameterTypes().length > 0) {
 				throw new PostInjectException();
 			}
 			method.invoke(object);
 		}
 	}
 
-	private void injectPrototypes() throws NoSuchBeanException,
-			IllegalArgumentException, IllegalAccessException {
-		Map<String, Object> prototypeInjectionMap = new PrototypeInjectionMap(
-				prototypes);
+	private void injectPrototypes() throws NoSuchBeanException, IllegalArgumentException, IllegalAccessException {
+		Map<String, Object> prototypeInjectionMap = new PrototypeInjectionMap(prototypes);
 
 		for (String key : prototypes.keySet()) {
 			Object object = prototypes.get(key);
@@ -120,8 +115,7 @@ public class BeanInjector {
 		}
 	}
 
-	private void injectSingletons() throws NoSuchBeanException,
-			IllegalArgumentException, IllegalAccessException {
+	private void injectSingletons() throws NoSuchBeanException, IllegalArgumentException, IllegalAccessException {
 		for (String key : singletons.keySet()) {
 			Object object = singletons.get(key);
 			inject(object, key, singletons);
@@ -132,63 +126,92 @@ public class BeanInjector {
 			inject(object, key, singletons);
 		}
 	}
+	
+	private void checkInjectionSuccessful() throws NoSuchBeanException, IllegalArgumentException, IllegalAccessException {
+		for (String key : singletons.keySet()) {
+			Object object = singletons.get(key);
+			checkInjectionSuccessful(object, key);
+		}
 
-	private void inject(Object object, String objectKey,
-			Map<String, Object> beans) throws NoSuchBeanException,
-			IllegalArgumentException, IllegalAccessException {
+		for (String key : prototypes.keySet()) {
+			Object object = prototypes.get(key);
+			checkInjectionSuccessful(object, key);
+		}
+	}
+
+	private void checkInjectionSuccessful(Object object, String objectKey)
+			throws NoSuchBeanException, IllegalArgumentException, IllegalAccessException {
 		Class<?> currentClass = object.getClass();
-		while(!currentClass.equals(Object.class)) {
+		while (!currentClass.equals(Object.class)) {
+			for (Field field : currentClass.getDeclaredFields()) {
+				field.setAccessible(true);
+
+				Autowired autowireAnnotaiton = field.getAnnotation(Autowired.class);
+				Object value = field.get(object);
+
+				if (autowireAnnotaiton == null) {
+					continue;
+				}
+				if (value != null) {
+					continue;
+				}
+				if (!autowireAnnotaiton.required()) {
+					continue;
+				}
+				Class<?> clazz = field.getType();
+				String clazzKey = Bean.getClassKey(clazz);
+				exceptions.put(clazzKey, new NoSuchBeanException(object.getClass().getSimpleName(), field.getName(),
+						clazz.getSimpleName()));
+			}
+			currentClass = currentClass.getSuperclass();
+		}
+	}
+
+	private void inject(Object object, String objectKey, Map<String, Object> beans)
+			throws NoSuchBeanException, IllegalArgumentException, IllegalAccessException {
+		Class<?> currentClass = object.getClass();
+		while (!currentClass.equals(Object.class)) {
 			for (Field field : currentClass.getDeclaredFields()) {
 				field.setAccessible(true);
 				Autowired autowireAnnotaiton = field.getAnnotation(Autowired.class);
-				
+
 				Object value = field.get(object);
-				
-				if (autowireAnnotaiton != null && value == null) {
-					Class<?> clazz = field.getType();
 
-					/* Injecting a class */
-					String clazzKey = Bean.getClassKey(clazz);
-					if (beans.containsKey(clazzKey)) {
-						Object dependency = beans.get(clazzKey);
-						field.set(object, dependency);
-					} else if (clazz.isInterface()) {
-						boolean found = false;
-						/*
-						 * Injecting a dependency implementation for an interface
-						 */
-						for (String beanKey : beans.keySet()) {
-							if (beanKey.compareTo(objectKey) != 0) {
-								Object beanToInject = beans.get(beanKey);
+				if (autowireAnnotaiton == null) {
+					continue;
+				}
+				if (value != null) {
+					continue;
+				}
 
-								for (Class<?> interfaceImpl : beanToInject
-										.getClass().getInterfaces()) {
-									if (interfaceImpl.equals(clazz)) {
-										field.set(object, beanToInject);
-										found = true;
-										break;
-									}
-								}
+				Class<?> clazz = field.getType();
 
-								if (found) {
+				/* Injecting a class */
+				String clazzKey = Bean.getClassKey(clazz);
+				if (beans.containsKey(clazzKey)) {
+					Object dependency = beans.get(clazzKey);
+					field.set(object, dependency);
+				} else if (clazz.isInterface()) {
+					boolean found = false;
+					/*
+					 * Injecting a dependency implementation for an interface
+					 */
+					for (String beanKey : beans.keySet()) {
+						if (beanKey.compareTo(objectKey) != 0) {
+							Object beanToInject = beans.get(beanKey);
+
+							for (Class<?> interfaceImpl : beanToInject.getClass().getInterfaces()) {
+								if (interfaceImpl.equals(clazz)) {
+									field.set(object, beanToInject);
+									found = true;
 									break;
 								}
 							}
-						}
 
-						if (!found && autowireAnnotaiton.required()) {
-							exceptions.put(clazzKey, new NoSuchBeanException(object
-									.getClass().getSimpleName(), field.getName(),
-									clazz.getSimpleName()));
-						} else if (found) {
-							exceptions.remove(clazzKey);
+							if (found) {
+								break;
+							}
 						}
-					} else if (autowireAnnotaiton.required()) {
-						exceptions.put(
-								clazzKey,
-								new NoSuchBeanException(object.getClass()
-										.getSimpleName(), field.getName(), clazz
-										.getSimpleName()));
 					}
 				}
 			}

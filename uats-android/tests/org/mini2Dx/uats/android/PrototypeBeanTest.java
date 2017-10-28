@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.mini2Dx.android.di.AndroidDependencyInjection;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.di.bean.PrototypeBean;
-import org.mini2Dx.core.di.dummy.TestBean;
+import org.mini2Dx.core.di.dummy.TestPrototypeBean;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.runner.AndroidJUnitRunner;
 
@@ -32,7 +32,7 @@ import android.support.test.runner.AndroidJUnitRunner;
  */
 @RunWith(AndroidJUnit4.class)
 public class PrototypeBeanTest {
-	private TestBean prototype;
+	private TestPrototypeBean prototype;
 	private ExecutorService executorService;
 	private PrototypeBean bean;
 
@@ -42,7 +42,7 @@ public class PrototypeBeanTest {
 		
 		executorService = Executors.newFixedThreadPool(1);
 
-		prototype = new TestBean();
+		prototype = new TestPrototypeBean();
 		prototype.setIntField(100);
 
 		bean = new PrototypeBean(prototype, executorService);

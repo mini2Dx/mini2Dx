@@ -15,11 +15,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.di.dummy.TestBean;
+import org.mini2Dx.core.di.dummy.TestBeanA;
+import org.mini2Dx.core.di.dummy.TestBeanB;
 import org.mini2Dx.core.di.dummy.TestDependency;
 import org.mini2Dx.core.di.dummy.TestInterfaceImpl;
 import org.mini2Dx.core.di.dummy.TestManualBean;
 import org.mini2Dx.core.di.dummy.TestPostInjectBean;
+import org.mini2Dx.core.di.dummy.TestPrototypeBean;
 
 /**
  * Integration test for {@link GameContext} and {@link DesktopComponentScanner}
@@ -30,29 +32,48 @@ public class DesktopDependencyInjectionTest {
 	public void setUp() {
 		Mdx.di = new DesktopDependencyInjection();
 	}
-
-	@Test
-	public void testDependencyInjection() throws Exception {
+	
+	private void scanDependencies() throws Exception {
 		Mdx.di.scan(new String[] { "org.mini2Dx.core.di.dummy" });
-
-		TestBean testBean1 = Mdx.di.getBean(TestBean.class);
-		TestBean testBean2 = Mdx.di.getBean(TestBean.class);
-
-		Assert.assertEquals(false, testBean1.equals(testBean2));
-		Assert.assertEquals(true, testBean1.getDependency().equals(testBean2.getDependency()));
-
-		Assert.assertEquals(true, testBean1.getInterfaceField() instanceof TestInterfaceImpl);
-
+	}
+	
+	@Test
+	public void testSingletonGeneration() throws Exception {
+		scanDependencies();
 		TestInterfaceImpl testInterfaceImpl1 = Mdx.di.getBean(TestInterfaceImpl.class);
 		TestInterfaceImpl testInterfaceImpl2 = Mdx.di.getBean(TestInterfaceImpl.class);
 
 		Assert.assertEquals(false, testInterfaceImpl1.getValue() == testInterfaceImpl2.getValue());
 	}
+
+	@Test
+	public void testPrototypeGeneration() throws Exception {
+		scanDependencies();
+		TestPrototypeBean testBean1 = Mdx.di.getBean(TestPrototypeBean.class);
+		TestPrototypeBean testBean2 = Mdx.di.getBean(TestPrototypeBean.class);
+
+		Assert.assertEquals(false, testBean1.equals(testBean2));
+		Assert.assertEquals(true, testBean1.getDependency().equals(testBean2.getDependency()));
+
+		Assert.assertEquals(true, testBean1.getInterfaceField() instanceof TestInterfaceImpl);
+	}
+	
+	@Test
+	public void testPrototypeInjection() throws Exception {
+		scanDependencies();
+		TestBeanA testBeanA = Mdx.di.getBean(TestBeanA.class);
+		TestBeanB testBeanB = Mdx.di.getBean(TestBeanB.class);
+		
+		testBeanA.getPrototypeBean().setIntField(10);
+		testBeanB.getPrototypeBean().setIntField(11);
+		
+		Assert.assertEquals(true, testBeanA.getPrototypeBean().getIntField() != testBeanB.getPrototypeBean().getIntField());
+	}
 	
 	@Test
 	public void testPresetSingleton() throws Exception {
 		Mdx.di.presetSingleton(TestManualBean.class);
-		testDependencyInjection();
+		scanDependencies();
 		TestManualBean result1 = Mdx.di.getBean(TestManualBean.class);
 		result1.setValue(77);
 		TestManualBean result2 = Mdx.di.getBean(TestManualBean.class);
@@ -64,7 +85,7 @@ public class DesktopDependencyInjectionTest {
 	@Test
 	public void testPresetPrototype() throws Exception {
 		Mdx.di.presetPrototype(TestManualBean.class);
-		testDependencyInjection();
+		scanDependencies();
 		TestManualBean result1 = Mdx.di.getBean(TestManualBean.class);
 		result1.setValue(77);
 		TestManualBean result2 = Mdx.di.getBean(TestManualBean.class);
@@ -76,7 +97,7 @@ public class DesktopDependencyInjectionTest {
 	
 	@Test
 	public void testPostInject() throws Exception {
-		testDependencyInjection();
+		scanDependencies();
 		
 		TestPostInjectBean result = Mdx.di.getBean(TestPostInjectBean.class);
 		Assert.assertEquals(101, result.getValue());
@@ -84,7 +105,7 @@ public class DesktopDependencyInjectionTest {
 	
 	@Test
 	public void testParentInjection() throws Exception {
-		testDependencyInjection();
+		scanDependencies();
 		
 		TestDependency testDependency = Mdx.di.getBean(TestDependency.class);
 		Assert.assertNotNull(testDependency.getParentDependency());
