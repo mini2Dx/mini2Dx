@@ -18,7 +18,10 @@ import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.Tileset;
 
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
@@ -83,12 +86,32 @@ public abstract class TilesetSource implements Disposable {
 	}
 
 	/**
+	 * Returns the dependencies of this source
+	 * 
+	 * @return null if there are no dependencies
+	 * 
+	 * @param tmxPath
+	 *            The path of the TMX file
+	 */
+	public abstract Array<AssetDescriptor> getDependencies(FileHandle tmxPath);
+
+	/**
 	 * Loads the tileset's texture image
 	 * 
-	 * @param tmxDirectory
-	 *            The directory of the TMX file
+	 * @param tmxPath
+	 *            The path of the TMX file
 	 */
-	public abstract void loadTexture(FileHandle tmxDirectory);
+	public abstract void loadTexture(FileHandle tmxPath);
+
+	/**
+	 * Loads the tileset's texture image
+	 * 
+	 * @param assetManager
+	 *            The {@link AssetManager} to use
+	 * @param tmxPath
+	 *            The path of the TMX file
+	 */
+	public abstract void loadTexture(AssetManager assetManager, FileHandle tmxPath);
 
 	/**
 	 * Returns if the tileset texture image is loaded
@@ -102,8 +125,7 @@ public abstract class TilesetSource implements Disposable {
 	 * 
 	 * @param tileId
 	 *            The tile id to retrieve
-	 * @return The {@link Sprite} or null if that textures haven't been
-	 *         loaded
+	 * @return The {@link Sprite} or null if that textures haven't been loaded
 	 */
 	public abstract Sprite getTileImage(int tileId);
 
@@ -114,8 +136,7 @@ public abstract class TilesetSource implements Disposable {
 	 *            The tile id to retrieve
 	 * @param firstGid
 	 *            The first gid of the tileset
-	 * @return The {@link Sprite} or null if that textures haven't been
-	 *         loaded
+	 * @return The {@link Sprite} or null if that textures haven't been loaded
 	 */
 	public Sprite getTileImage(int tileId, int firstGid) {
 		return getTileImage(tileId - firstGid);

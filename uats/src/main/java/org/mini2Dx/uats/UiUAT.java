@@ -82,6 +82,7 @@ public class UiUAT extends BasicGameScreen implements GameResizeListener {
 	private int nextScreenId = -1;
 
 	public UiUAT(AssetManager assetManager) {
+		super();
 		this.assetManager = assetManager;
 	}
 

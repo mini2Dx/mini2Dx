@@ -25,19 +25,30 @@ import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 
 /**
  *
  */
 public class HexagonalTiledMapUAT extends BasicGameScreen {
+	private final AssetManager assetManager;
+	
     private TiledMap staggerXTiledMap, staggerYTiledMap;
+    
+    public HexagonalTiledMapUAT(AssetManager assetManager) {
+    	super();
+		this.assetManager = assetManager;
+		assetManager.load("hexagonal_x.tmx", TiledMap.class);
+		assetManager.load("hexagonal_y.tmx", TiledMap.class);
+	}
 
     @Override
     public void initialise(GameContainer gc) {
+    	assetManager.finishLoading();
         try {
-            staggerXTiledMap = new TiledMap(Gdx.files.internal("hexagonal_x.tmx"), true, false);
-            staggerYTiledMap = new TiledMap(Gdx.files.internal("hexagonal_y.tmx"), true, false);
+            staggerXTiledMap = assetManager.get("hexagonal_x.tmx", TiledMap.class);
+            staggerYTiledMap = assetManager.get("hexagonal_y.tmx", TiledMap.class);
         } catch (TiledException e) {
             e.printStackTrace();
         }

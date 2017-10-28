@@ -14,6 +14,8 @@ package org.mini2Dx.uats.util;
 import org.mini2Dx.core.assets.FallbackFileHandleResolver;
 import org.mini2Dx.core.controller.MdxController;
 import org.mini2Dx.core.game.ScreenBasedGame;
+import org.mini2Dx.tiled.TiledMap;
+import org.mini2Dx.tiled.TiledMapLoader;
 import org.mini2Dx.uats.BlendingUAT;
 import org.mini2Dx.uats.ClippingUAT;
 import org.mini2Dx.uats.ControllerMapping;
@@ -54,6 +56,7 @@ public class UATApplication extends ScreenBasedGame {
 		assetManager.setLogger(new Logger("AssetManager", Application.LOG_ERROR));
 
 		assetManager.setLoader(UiTheme.class, new UiThemeLoader(fallbackFileHandleResolver));
+		assetManager.setLoader(TiledMap.class, new TiledMapLoader(fallbackFileHandleResolver));
 
 		addScreen(new LoadingScreen(assetManager));
 		addScreen(new UATSelectionScreen(assetManager));
@@ -62,10 +65,10 @@ public class UATApplication extends ScreenBasedGame {
 		addScreen(new GeometryUAT());
 		addScreen(new GraphicsUAT(assetManager));
 		addScreen(new TextureRegionUAT());
-		addScreen(new OrthogonalTiledMapNoCachingUAT());
-		addScreen(new OrthogonalTiledMapWithCachingUAT());
-		addScreen(new IsometricTiledMapUAT());
-		addScreen(new HexagonalTiledMapUAT());
+		addScreen(new OrthogonalTiledMapNoCachingUAT(assetManager));
+		addScreen(new OrthogonalTiledMapWithCachingUAT(assetManager));
+		addScreen(new IsometricTiledMapUAT(assetManager));
+		addScreen(new HexagonalTiledMapUAT(assetManager));
 		addScreen(new ParticleEffectsUAT());
 		addScreen(new ControllerUAT());
 		addScreen(new ControllerMapping());

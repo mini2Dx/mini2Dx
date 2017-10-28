@@ -205,7 +205,7 @@ public class TiledParser implements TiledParserNotifier {
 				}
 			} else {
 				// TSX tileset
-				TsxTilesetSource tilesetSource = new TsxTilesetSource(tmxFile.parent(), source);
+				TsxTilesetSource tilesetSource = new TsxTilesetSource(tmxFile, source);
 				tileset = new Tileset(firstGid, tilesetSource);
 				
 				for(int x = 0; x < tilesetSource.getWidthInTiles(); x++) {

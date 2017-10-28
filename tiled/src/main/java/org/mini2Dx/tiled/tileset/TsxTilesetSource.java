@@ -23,8 +23,11 @@ import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.TiledParser;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * A {@link TilesetSource} loaded from a TSX file. Allows for sharing data
@@ -40,13 +43,13 @@ public class TsxTilesetSource extends TilesetSource {
 	private final String tsxPath;
 	private final ImageTilesetSource tileset;
 
-	public TsxTilesetSource(FileHandle tmxDirectory, String tsxPath) {
+	public TsxTilesetSource(FileHandle tmxPath, String tsxPath) {
 		super();
 		this.tsxPath = tsxPath;
 
 		if (!TILESETS.containsKey(tsxPath)) {
 			try {
-				TILESETS.put(tsxPath, TSX_PARSER.parseTsx(tmxDirectory.child(tsxPath)));
+				TILESETS.put(tsxPath, TSX_PARSER.parseTsx(tmxPath.sibling(tsxPath)));
 			} catch (IOException e) {
 				Gdx.app.error(LOGGING_TAG, "Could not parse " + tsxPath + ". " + e.getMessage(), e);
 				TILESETS.put(tsxPath, null);
@@ -56,10 +59,20 @@ public class TsxTilesetSource extends TilesetSource {
 		tileset = TILESETS.get(tsxPath);
 		TILESET_REFS.get(tsxPath).incrementAndGet();
 	}
+	
+	@Override
+	public Array<AssetDescriptor> getDependencies(FileHandle tmxPath) {
+		return tileset.getDependencies(tmxPath);
+	}
 
 	@Override
-	public void loadTexture(FileHandle tmxDirectory) {
-		tileset.loadTexture(tmxDirectory);
+	public void loadTexture(FileHandle tmxPath) {
+		tileset.loadTexture(tmxPath);
+	}
+	
+	@Override
+	public void loadTexture(AssetManager assetManager, FileHandle tmxPath) {
+		tileset.loadTexture(assetManager, tmxPath);
 	}
 
 	@Override

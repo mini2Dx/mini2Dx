@@ -11,12 +11,13 @@
  */
 package org.mini2Dx.tiled.exception;
 
+import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.tiled.TiledMap;
 
 /**
  * Base class for any {@link TiledMap}-related exceptions
  */
-public class TiledException extends Exception {
+public class TiledException extends MdxException {
 	private static final long serialVersionUID = 7136873808958812907L;
 
 	public TiledException(String message) {

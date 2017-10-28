@@ -42,6 +42,6 @@ public class SharedParserTiledMapTest {
 		Assert.assertEquals(Orientation.ISOMETRIC, isometricTiledMap.getOrientation());
 		
 		Assert.assertEquals(Orientation.ORTHOGONAL, orthogonalTsxTiledMap.getOrientation());
-		Assert.assertEquals(1, orthogonalTsxTiledMap.tilesets.size());
+		Assert.assertEquals(1, orthogonalTsxTiledMap.getTilesets().size());
 	}
 }

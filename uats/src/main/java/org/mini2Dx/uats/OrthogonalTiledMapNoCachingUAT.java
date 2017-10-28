@@ -25,6 +25,7 @@ import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 
@@ -33,10 +34,18 @@ import com.badlogic.gdx.math.MathUtils;
  * {@link TiledMap} rendering with layer caching disabled
  */
 public class OrthogonalTiledMapNoCachingUAT extends BasicGameScreen {
+	private final AssetManager assetManager;
+	
 	private TiledMap tiledMap;
+	
+	public OrthogonalTiledMapNoCachingUAT(AssetManager assetManager) {
+    	super();
+		this.assetManager = assetManager;
+	}
 
 	@Override
 	public void initialise(GameContainer gc) {
+		assetManager.finishLoading();
 		try {
 			tiledMap = new TiledMap(Gdx.files.internal("orthogonal.tmx"), true, false);
 		} catch (TiledException e) {

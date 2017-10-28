@@ -16,15 +16,17 @@ import java.util.Map;
 
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
-import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.tiled.Tile;
 
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * A {@link TilesetSource} referenced by image directly in a TMX file
@@ -85,14 +87,28 @@ public class ImageTilesetSource extends TilesetSource {
 		pixmap.dispose();
 		return result;
 	}
+	
+	@Override
+	public Array<AssetDescriptor> getDependencies(FileHandle tmxPath) {
+		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
+		dependencies.add(new AssetDescriptor(tmxPath.sibling(tilesetImagePath).path(), Pixmap.class));
+		return dependencies;
+	}
 
 	@Override
-	public void loadTexture(FileHandle tmxDirectory) {
+	public void loadTexture(FileHandle tmxPath) {
 		if(texture != null) {
 			return;
 		}
-		
-		Pixmap pixmap = new Pixmap(tmxDirectory.child(tilesetImagePath));
+		loadTileImages(new Pixmap(tmxPath.sibling(tilesetImagePath)));
+	}
+	
+	@Override
+	public void loadTexture(AssetManager assetManager, FileHandle tmxPath) {
+		loadTileImages(assetManager.get(tmxPath.sibling(tilesetImagePath).path(), Pixmap.class));
+	}
+	
+	private void loadTileImages(Pixmap pixmap) {
 		if(transparentColorValue != null) {
 			texture = modifyPixmapWithTransparentColor(pixmap);
 		} else {

@@ -16,7 +16,10 @@ import java.util.Map;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.tiled.tileset.TilesetSource;
 
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
@@ -24,20 +27,22 @@ import com.badlogic.gdx.utils.Disposable;
  */
 public class Tileset implements Disposable {
 	private final TilesetSource tilesetSource;
-	
+
 	private int firstGid;
 	private int lastGid = Integer.MAX_VALUE;
-	
+
 	public Tileset(int firstGid, TilesetSource tilesetSource) {
 		super();
 		this.tilesetSource = tilesetSource;
 		this.firstGid = firstGid;
 		calculateLastGid();
 	}
-	
+
 	/**
 	 * Returns if the tileset contains the specified property
-	 * @param propertyName The property name to search for
+	 * 
+	 * @param propertyName
+	 *            The property name to search for
 	 * @return True if the tileset contains the property
 	 */
 	public boolean containsProperty(String propertyName) {
@@ -46,24 +51,30 @@ public class Tileset implements Disposable {
 
 	/**
 	 * Returns the value of a specified property
-	 * @param propertyName The property name to search for
+	 * 
+	 * @param propertyName
+	 *            The property name to search for
 	 * @return Null if there is no such property
 	 */
 	public String getProperty(String propertyName) {
 		return tilesetSource.getProperty(propertyName);
 	}
-	
+
 	/**
 	 * Sets the value of a specified property
-	 * @param propertyName The property name to set the value for
-	 * @param value The value of the property to set
+	 * 
+	 * @param propertyName
+	 *            The property name to set the value for
+	 * @param value
+	 *            The value of the property to set
 	 */
 	public void setProperty(String propertyName, String value) {
 		tilesetSource.setProperty(propertyName, value);
 	}
-	
+
 	/**
 	 * Returns the properties {@link Map} of this {@link Tileset}
+	 * 
 	 * @return Null if there are no properties
 	 */
 	public Map<String, String> getProperties() {
@@ -99,24 +110,38 @@ public class Tileset implements Disposable {
 	public void drawTileset(Graphics g, int renderX, int renderY) {
 		tilesetSource.drawTileset(g, renderX, renderY);
 	}
-	
+
 	/**
 	 * Returns the {@link Tile} for a given tile id
-	 * @param tileId The tile id to look up
+	 * 
+	 * @param tileId
+	 *            The tile id to look up
 	 * @return The {@link Tile}
 	 */
 	public Tile getTile(int tileId) {
 		return tilesetSource.getTile(tileId, firstGid);
 	}
-	
+
 	/**
 	 * Returns the {@link Tile} for a given tile coordinate on the tileset
-	 * @param x The x coordinate in tiles
-	 * @param y The y coordinate in tiles
+	 * 
+	 * @param x
+	 *            The x coordinate in tiles
+	 * @param y
+	 *            The y coordinate in tiles
 	 * @return The {@link Tile}
 	 */
 	public Tile getTile(int x, int y) {
 		return getTile(tilesetSource.getTileId(x, y, firstGid));
+	}
+	
+	/**
+	 * Returns the {@link AssetManager} dependencies for this tileset
+	 * @param tmxPath The path of the TMX file
+	 * @return null if there are no dependencies
+	 */
+	public Array<AssetDescriptor> getDependencies(FileHandle tmxPath) {
+		return tilesetSource.getDependencies(tmxPath);
 	}
 
 	/**
@@ -131,19 +156,30 @@ public class Tileset implements Disposable {
 	/**
 	 * Loads the tileset image
 	 * 
-	 * @param tmxDirectory
-	 *            The directory containing the TMX files for the
-	 *            {@link TiledMap} that has loaded this tileset
+	 * @param tmxPath
+	 *            The path of the TMX file for the {@link TiledMap} that has
+	 *            loaded this tileset
 	 */
-	public void loadTexture(FileHandle tmxDirectory) {
-		tilesetSource.loadTexture(tmxDirectory);
+	public void loadTexture(FileHandle tmxPath) {
+		tilesetSource.loadTexture(tmxPath);
 	}
-	
+
+	/**
+	 * Loads the tileset image
+	 * 
+	 * @param assetManager The {@link AssetManager} to use
+	 * @param tmxPath The path of the TMX file for the {@link TiledMap} that has
+	 *            loaded this tileset
+	 */
+	public void loadTexture(AssetManager assetManager, FileHandle tmxPath) {
+		tilesetSource.loadTexture(tmxPath);
+	}
+
 	@Override
 	public void dispose() {
 		tilesetSource.dispose();
 	}
-	
+
 	private void calculateLastGid() {
 		lastGid = (getWidthInTiles() * getHeightInTiles()) + firstGid - 1;
 	}
@@ -158,11 +194,14 @@ public class Tileset implements Disposable {
 	public boolean contains(int tileId) {
 		return tilesetSource.contains(tileId, firstGid, lastGid);
 	}
-	
+
 	/**
 	 * Returns the tile ID for a given tile within this tileset
-	 * @param x The x coordinate of the tile on the tileset
-	 * @param y The y coordinate of the tile on the tileset
+	 * 
+	 * @param x
+	 *            The x coordinate of the tile on the tileset
+	 * @param y
+	 *            The y coordinate of the tile on the tileset
 	 * @return The tile ID
 	 */
 	public int getTileId(int x, int y) {
@@ -262,10 +301,11 @@ public class Tileset implements Disposable {
 	public int getMargin() {
 		return tilesetSource.getMargin();
 	}
-	
+
 	/**
 	 * Returns the first GID. See:
-	 * <a href="https://github.com/bjorn/tiled/wiki/TMX-Map-Format">TMX Map Format</a>
+	 * <a href="https://github.com/bjorn/tiled/wiki/TMX-Map-Format">TMX Map
+	 * Format</a>
 	 * 
 	 * @return
 	 */
