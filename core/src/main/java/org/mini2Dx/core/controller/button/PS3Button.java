@@ -45,6 +45,11 @@ public enum PS3Button implements ControllerButton {
 		return absoluteValue;
 	}
 	
+	@Override
+	public boolean equals(ControllerButton controllerButton) {
+		return absoluteValue.equals(controllerButton.getAbsoluteValue());
+	}
+	
 	public static PS3Button fromAbsoluteValue(String value) {
 		for(PS3Button button : PS3Button.values()) {
 			if(button.getAbsoluteValue().equals(value)) {

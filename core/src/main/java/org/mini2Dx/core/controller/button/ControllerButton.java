@@ -17,4 +17,6 @@ package org.mini2Dx.core.controller.button;
 public interface ControllerButton {
 
 	public String getAbsoluteValue();
+	
+	public boolean equals(ControllerButton controllerButton);
 }

@@ -46,6 +46,11 @@ public enum XboxOneButton implements ControllerButton {
 		return absoluteValue;
 	}
 	
+	@Override
+	public boolean equals(ControllerButton controllerButton) {
+		return absoluteValue.equals(controllerButton.getAbsoluteValue());
+	}
+	
 	public static XboxOneButton fromAbsoluteValue(String value) {
 		for(XboxOneButton button : XboxOneButton.values()) {
 			if(button.getAbsoluteValue().equals(value)) {
