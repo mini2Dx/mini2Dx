@@ -17,7 +17,7 @@ import java.lang.reflect.Modifier;
 import org.mini2Dx.core.exception.MdxException;
 
 /**
- * Common interface for platform-dependent bean utility functions
+ * Bean utility functions
  */
 public class BeanUtils {
 	/**
