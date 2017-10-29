@@ -12,6 +12,7 @@
 package org.mini2Dx.core.di;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import org.mini2Dx.core.exception.MdxException;
 
@@ -33,6 +34,9 @@ public class BeanUtils {
 			while (!currentClass.equals(Object.class)) {
 				for (Field field : currentClass.getDeclaredFields()) {
 					field.setAccessible(true);
+					if(Modifier.isFinal(field.getModifiers())) {
+						continue;
+					}
 					Object value = field.get(bean);
 					field.set(result, value);
 				}

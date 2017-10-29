@@ -21,6 +21,7 @@ import org.mini2Dx.core.di.annotation.Prototype;
  */
 @Prototype
 public class TestPrototypeBean {
+	private static final int STATIC_INT = 3094;
 	
 	private Integer intField;
 	
