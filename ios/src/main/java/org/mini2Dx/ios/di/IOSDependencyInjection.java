@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.ios.di;
 
+import org.mini2Dx.core.di.BeanUtils;
 import org.mini2Dx.core.di.DependencyInjection;
 
 /**
@@ -19,6 +20,6 @@ import org.mini2Dx.core.di.DependencyInjection;
 public class IOSDependencyInjection extends DependencyInjection {
 	
 	public IOSDependencyInjection() {
-		super(new IOSBeanUtils(), new IOSComponentScanner());
+		super(new BeanUtils(), new IOSComponentScanner());
 	}
 }

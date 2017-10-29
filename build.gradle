@@ -209,7 +209,6 @@ project(":" + rootProject.name + "-desktop") {
         compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
     	
-		compile "commons-beanutils:commons-beanutils:$beanutilsVersion"
     	compile "org.reflections:reflections:$reflectionsVersion"
     	
     	testCompile "junit:junit:$junitVersion"
@@ -341,7 +340,6 @@ if (hasAndroidSdk()) {
 		dependencies {
 			compile project(":" + rootProject.name + "-core")
 			compile files(fileTree(dir: 'libs', includes: ['*.jar']))
-			compile "org.mini2Dx:android-beans:$androidBeansVersion"
 			
 			compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 			compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
@@ -412,7 +410,6 @@ if (Os.isFamily(Os.FAMILY_MAC)) {
 			compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
 			
 			compile "org.reflections:reflections:$reflectionsVersion"
-			compile "commons-beanutils:commons-beanutils:$beanutilsVersion"
 			
 			testCompile "junit:junit:$junitVersion"
 			testCompile "org.jmock:jmock-junit4:$jmockVersion"

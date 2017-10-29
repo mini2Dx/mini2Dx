@@ -26,6 +26,8 @@ public class TestPrototypeBean {
 	
 	@Autowired
 	private TestDependency dependency;
+	@Autowired
+	private TestDependency dependencyWithNoSetter;
 	@Autowired(required = false)
 	private TestInterface interfaceField;
 	
@@ -51,5 +53,9 @@ public class TestPrototypeBean {
 
 	public void setInterfaceField(TestInterface interfaceField) {
 		this.interfaceField = interfaceField;
+	}
+
+	public TestDependency getDependencyWithNoSetter() {
+		return dependencyWithNoSetter;
 	}
 }

@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.desktop.di;
 
+import org.mini2Dx.core.di.BeanUtils;
 import org.mini2Dx.core.di.DependencyInjection;
 
 /**
@@ -19,6 +20,6 @@ import org.mini2Dx.core.di.DependencyInjection;
 public class DesktopDependencyInjection extends DependencyInjection {
 
 	public DesktopDependencyInjection() {
-		super(new DesktopBeanUtils(), new DesktopComponentScanner());
+		super(new BeanUtils(), new DesktopComponentScanner());
 	}
 }

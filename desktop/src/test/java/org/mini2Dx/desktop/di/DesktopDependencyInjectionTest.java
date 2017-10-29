@@ -40,10 +40,10 @@ public class DesktopDependencyInjectionTest {
 	@Test
 	public void testSingletonGeneration() throws Exception {
 		scanDependencies();
-		TestInterfaceImpl testInterfaceImpl1 = Mdx.di.getBean(TestInterfaceImpl.class);
-		TestInterfaceImpl testInterfaceImpl2 = Mdx.di.getBean(TestInterfaceImpl.class);
+		TestDependency testDependency1 = Mdx.di.getBean(TestDependency.class);
+		TestDependency testDependency2 = Mdx.di.getBean(TestDependency.class);
 
-		Assert.assertEquals(false, testInterfaceImpl1.getValue() == testInterfaceImpl2.getValue());
+		Assert.assertEquals(testDependency1.getValue(), testDependency2.getValue());
 	}
 
 	@Test
@@ -68,6 +68,14 @@ public class DesktopDependencyInjectionTest {
 		testBeanB.getPrototypeBean().setIntField(11);
 		
 		Assert.assertEquals(true, testBeanA.getPrototypeBean().getIntField() != testBeanB.getPrototypeBean().getIntField());
+		
+		Assert.assertEquals(true, testBeanA.getPrototypeBean().getDependency() != null);
+		Assert.assertEquals(true, testBeanB.getPrototypeBean().getDependency() != null);
+		Assert.assertEquals(testBeanA.getPrototypeBean().getDependency(), testBeanB.getPrototypeBean().getDependency());
+	
+		Assert.assertEquals(true, testBeanA.getPrototypeBean().getDependencyWithNoSetter() != null);
+		Assert.assertEquals(true, testBeanB.getPrototypeBean().getDependencyWithNoSetter() != null);
+		Assert.assertEquals(testBeanA.getPrototypeBean().getDependencyWithNoSetter(), testBeanB.getPrototypeBean().getDependencyWithNoSetter());
 	}
 	
 	@Test

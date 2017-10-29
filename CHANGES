@@ -6,6 +6,7 @@
 - Added Sprite#getAlpha() method
 - Added jacocoTestReport for better code coverage reporting
 - Added #equals method to ControllerButton implementations
+- Prototype beans no longer require setters/getters for dependency injection
 - Fixed merging concurrency exception during object movement within concurrent QuadTrees
 - Fixed incorrect Circle bounding box dimensions
 - Fixed dependency injection validating injection too early

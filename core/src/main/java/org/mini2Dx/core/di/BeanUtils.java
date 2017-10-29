@@ -11,17 +11,38 @@
  */
 package org.mini2Dx.core.di;
 
+import java.lang.reflect.Field;
+
 import org.mini2Dx.core.exception.MdxException;
 
 /**
  * Common interface for platform-dependent bean utility functions
  */
-public interface BeanUtils {
+public class BeanUtils {
 	/**
 	 * Creates a deep copy of an {@link Object}
 	 * @param bean The {@link Object} to copy
 	 * @return A new instance of {@link Object} with all its properties copied
 	 * @throws MdxException Thrown if an exception occurs during the copy
 	 */
-	public Object cloneBean(Object bean) throws MdxException;
+	public Object cloneBean(Object bean) throws MdxException {
+		try {
+			Class<?> currentClass = bean.getClass();
+			Object result = currentClass.newInstance();
+			
+			while (!currentClass.equals(Object.class)) {
+				for (Field field : currentClass.getDeclaredFields()) {
+					field.setAccessible(true);
+					Object value = field.get(bean);
+					field.set(result, value);
+				}
+				currentClass = currentClass.getSuperclass();
+			}
+			return result;
+		} catch (IllegalAccessException e) {
+			throw new MdxException(e.getMessage(), e);
+		} catch (InstantiationException e) {
+			throw new MdxException(e.getMessage(), e);
+		}
+	}
 }

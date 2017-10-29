@@ -11,6 +11,7 @@
  */
 package org.mini2Dx.android.di;
 
+import org.mini2Dx.core.di.BeanUtils;
 import org.mini2Dx.core.di.DependencyInjection;
 
 import android.content.Context;
@@ -22,6 +23,6 @@ public class AndroidDependencyInjection extends DependencyInjection {
 	
 	
 	public AndroidDependencyInjection(Context applicationContext) {
-		super(new AndroidBeanUtils(), new AndroidComponentScanner(applicationContext));
+		super(new BeanUtils(), new AndroidComponentScanner(applicationContext));
 	}
 }
