@@ -13,6 +13,7 @@ package org.mini2Dx.tiled.collisions;
 
 import org.mini2Dx.core.engine.geom.CollisionPoint;
 import org.mini2Dx.tiled.Tile;
+import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.TiledObject;
 
 /**
@@ -22,12 +23,12 @@ import org.mini2Dx.tiled.TiledObject;
 public class TiledCollisionPointFactory implements TiledCollisionFactory<CollisionPoint> {
 
 	@Override
-	public CollisionPoint createCollision(Tile tile, float x, float y, float width, float height) {
+	public CollisionPoint createCollision(TiledMap map, Tile tile, float x, float y, float width, float height) {
 		return new CollisionPoint(x, y);
 	}
 
 	@Override
-	public CollisionPoint createCollision(TiledObject tiledObject) {
+	public CollisionPoint createCollision(TiledMap map, TiledObject tiledObject) {
 		return new CollisionPoint(tiledObject.getX(), tiledObject.getY());
 	}
 

@@ -13,6 +13,7 @@ package org.mini2Dx.tiled.collisions;
 
 import org.mini2Dx.core.engine.Positionable;
 import org.mini2Dx.tiled.Tile;
+import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.TiledObject;
 
 /**
@@ -20,7 +21,7 @@ import org.mini2Dx.tiled.TiledObject;
  */
 public interface TiledCollisionFactory<T extends Positionable> {
 	
-	public T createCollision(Tile tile, float x, float y, float width, float height);
+	public T createCollision(TiledMap map, Tile tile, float x, float y, float width, float height);
 	
-	public T createCollision(TiledObject tiledObject);
+	public T createCollision(TiledMap map, TiledObject tiledObject);
 }
