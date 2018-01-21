@@ -20,8 +20,38 @@ import org.mini2Dx.tiled.TiledObject;
  * Creates objects to represent collision data
  */
 public interface TiledCollisionFactory<T extends Positionable> {
-	
+
+	/**
+	 * Create a new collision from a {@link Tile}
+	 * 
+	 * @param map
+	 *            The source {@link TiledMap}
+	 * @param tile
+	 *            The source {@link Tile}
+	 * @param x
+	 *            The x coordinate of the {@link Tile}
+	 * @param y
+	 *            The y coordinate of the {@link Tile}
+	 * @param width
+	 *            The width of the {@link Tile} (Note: if wider than
+	 *            {@link Tile} this means there are multiple of the same
+	 *            {@link Tile} - this will only happen when using {@link TiledCollisionMerger})
+	 * @param height
+	 *            The height of the {@link Tile} (Note: if higher than
+	 *            {@link Tile} this means there are multiple of the same
+	 *            {@link Tile} - this will only happen when using {@link TiledCollisionMerger})
+	 * @return Null if there is no collision
+	 */
 	public T createCollision(TiledMap map, Tile tile, float x, float y, float width, float height);
-	
+
+	/**
+	 * Create a new collision from a {@link TiledObject}
+	 * 
+	 * @param map
+	 *            The source {@link TiledMap}
+	 * @param tiledObject
+	 *            The {@link TiledObject}
+	 * @return Null if there is no collision
+	 */
 	public T createCollision(TiledMap map, TiledObject tiledObject);
 }

@@ -166,9 +166,13 @@ public class TiledCollisionMapper<T extends Positionable> {
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = 0; y < layer.getHeight(); y++) {
 				if (layer.getTileId(x, y) > 0) {
-					quadTree.add(collisionFactory.createCollision(tiledMap, tiledMap.getTile(layer.getTileId(x, y)),
+					T collision = collisionFactory.createCollision(tiledMap, tiledMap.getTile(layer.getTileId(x, y)),
 							x * tiledMap.getTileWidth(), y * tiledMap.getTileHeight(), tiledMap.getTileWidth(),
-							tiledMap.getTileHeight()));
+							tiledMap.getTileHeight());
+					if(collision == null) {
+						continue;
+					}
+					quadTree.add(collision);
 				}
 			}
 		}
@@ -194,9 +198,13 @@ public class TiledCollisionMapper<T extends Positionable> {
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = 0; y < layer.getHeight(); y++) {
 				if (layer.getTileId(x, y) == 0) {
-					quadTree.add(collisionFactory.createCollision(tiledMap, tiledMap.getTile(layer.getTileId(x, y)),
+					T collision = collisionFactory.createCollision(tiledMap, tiledMap.getTile(layer.getTileId(x, y)),
 							x * tiledMap.getTileWidth(), y * tiledMap.getTileHeight(), tiledMap.getTileWidth(),
-							tiledMap.getTileHeight()));
+							tiledMap.getTileHeight());
+					if(collision == null) {
+						continue;
+					}
+					quadTree.add(collision);
 				}
 			}
 		}
@@ -222,9 +230,13 @@ public class TiledCollisionMapper<T extends Positionable> {
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = 0; y < layer.getHeight(); y++) {
 				if (layer.getTileId(x, y) > 0) {
-					results.add(collisionFactory.createCollision(tiledMap, tiledMap.getTile(layer.getTileId(x, y)),
+					T collision = collisionFactory.createCollision(tiledMap, tiledMap.getTile(layer.getTileId(x, y)),
 							x * tiledMap.getTileWidth(), y * tiledMap.getTileHeight(), tiledMap.getTileWidth(),
-							tiledMap.getTileHeight()));
+							tiledMap.getTileHeight());
+					if(collision == null) {
+						continue;
+					}
+					results.add(collision);
 				}
 			}
 		}
@@ -250,9 +262,13 @@ public class TiledCollisionMapper<T extends Positionable> {
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = 0; y < layer.getHeight(); y++) {
 				if (layer.getTileId(x, y) == 0) {
-					results.add(collisionFactory.createCollision(tiledMap, tiledMap.getTile(layer.getTileId(x, y)),
+					T collision = collisionFactory.createCollision(tiledMap, tiledMap.getTile(layer.getTileId(x, y)),
 							x * tiledMap.getTileWidth(), y * tiledMap.getTileHeight(), tiledMap.getTileWidth(),
-							tiledMap.getTileHeight()));
+							tiledMap.getTileHeight());
+					if(collision == null) {
+						continue;
+					}
+					results.add(collision);
 				}
 			}
 		}
@@ -341,7 +357,11 @@ public class TiledCollisionMapper<T extends Positionable> {
 		}
 
 		for (TiledObject tiledObject : objectGroup.getObjects()) {
-			quadTree.add(collisionFactory.createCollision(tiledMap, tiledObject));
+			T collision = collisionFactory.createCollision(tiledMap, tiledObject);
+			if(collision == null) {
+				continue;
+			}
+			quadTree.add(collision);
 		}
 	}
 
@@ -374,7 +394,11 @@ public class TiledCollisionMapper<T extends Positionable> {
 			if (!tiledObject.getType().equalsIgnoreCase(objectType)) {
 				continue;
 			}
-			quadTree.add(collisionFactory.createCollision(tiledMap, tiledObject));
+			T collision = collisionFactory.createCollision(tiledMap, tiledObject);
+			if(collision == null) {
+				continue;
+			}
+			quadTree.add(collision);
 		}
 	}
 
@@ -397,7 +421,11 @@ public class TiledCollisionMapper<T extends Positionable> {
 		}
 
 		for (TiledObject tiledObject : objectGroup.getObjects()) {
-			results.add(collisionFactory.createCollision(tiledMap, tiledObject));
+			T collision = collisionFactory.createCollision(tiledMap, tiledObject);
+			if(collision == null) {
+				continue;
+			}
+			results.add(collision);
 		}
 	}
 
@@ -429,7 +457,11 @@ public class TiledCollisionMapper<T extends Positionable> {
 			if (!tiledObject.getType().equalsIgnoreCase(objectType)) {
 				continue;
 			}
-			results.add(collisionFactory.createCollision(tiledMap, tiledObject));
+			T collision = collisionFactory.createCollision(tiledMap, tiledObject);
+			if(collision == null) {
+				continue;
+			}
+			results.add(collision);
 		}
 	}
 
@@ -507,7 +539,11 @@ public class TiledCollisionMapper<T extends Positionable> {
 				if (collisions[x][y] == 0) {
 					continue;
 				}
-				quadTree.add(mergeCollisions(x, y, maxColumns, maxRows, collisions, layer, tiledMap));
+				T collision = mergeCollisions(x, y, maxColumns, maxRows, collisions, layer, tiledMap);
+				if(collision == null) {
+					continue;
+				}
+				quadTree.add(collision);
 			}
 		}
 	}
@@ -586,7 +622,11 @@ public class TiledCollisionMapper<T extends Positionable> {
 				if (emptySpaces[x][y] == 0) {
 					continue;
 				}
-				quadTree.add(mergeCollisions(x, y, maxColumns, maxRows, emptySpaces, layer, tiledMap));
+				T collision = mergeCollisions(x, y, maxColumns, maxRows, emptySpaces, layer, tiledMap);
+				if(collision == null) {
+					continue;
+				}
+				quadTree.add(collision);
 			}
 		}
 	}
@@ -665,7 +705,11 @@ public class TiledCollisionMapper<T extends Positionable> {
 				if (collisions[x][y] == 0) {
 					continue;
 				}
-				results.add(mergeCollisions(x, y, maxColumns, maxRows, collisions, layer, tiledMap));
+				T collision = mergeCollisions(x, y, maxColumns, maxRows, collisions, layer, tiledMap);
+				if(collision == null) {
+					continue;
+				}
+				results.add(collision);
 			}
 		}
 	}
@@ -744,7 +788,11 @@ public class TiledCollisionMapper<T extends Positionable> {
 				if (emptySpaces[x][y] == 0) {
 					continue;
 				}
-				results.add(mergeCollisions(x, y, maxColumns, maxRows, emptySpaces, layer, tiledMap));
+				T collision = mergeCollisions(x, y, maxColumns, maxRows, emptySpaces, layer, tiledMap);
+				if(collision == null) {
+					continue;
+				}
+				results.add(collision);
 			}
 		}
 	}
