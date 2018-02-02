@@ -28,6 +28,10 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'rebel.xml'
     }
+    adbOptions {
+		timeOutInMs 10 * 60 * 1000
+		installOptions "-d","-t"
+	}
 }
 
 
