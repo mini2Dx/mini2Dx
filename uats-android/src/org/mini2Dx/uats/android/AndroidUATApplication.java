@@ -16,7 +16,10 @@ import org.mini2Dx.uats.util.UATApplication;
 
 import com.badlogic.gdx.backends.android.AndroidMini2DxGame;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.multidex.MultiDex;
+
 
 /**
  * Main entry point for Android UAT app
@@ -28,4 +31,10 @@ public class AndroidUATApplication extends AndroidMini2DxGame {
         AndroidMini2DxConfig config = new AndroidMini2DxConfig("");
         initialize(new UATApplication(), config);
     }
+    
+	@Override
+	protected void attachBaseContext(Context base) {
+		super.attachBaseContext(base);
+		MultiDex.install(this);
+	}
 }

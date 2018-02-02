@@ -1,7 +1,7 @@
 language: android
 android:
   components:
-    - build-tools-23.0.1
+    - build-tools-27.0.3
     - android-21
     - extra-android-support
     - extra-google-google_play_services

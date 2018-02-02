@@ -7,11 +7,12 @@ buildscript {
         mavenCentral()
         maven { url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/' }
         jcenter()
+        maven { url 'https://maven.google.com' }
         maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
 		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'		
-		classpath 'com.android.tools.build:gradle:2.1.3'
+		classpath 'com.android.tools.build:gradle:3.0.1'
 		classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.0'
 		classpath 'gradle.plugin.me.champeau.gradle:jmh-gradle-plugin:0.3.0'
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.9.0'
@@ -30,15 +31,16 @@ if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
 }
 
 ext {
-	nativesLoaderVersion="1.0.0"
-	gdxVersion="1.9.6"
-	roboVMVersion="2.3.0"
-	androidVersion="4.4"
-	beanutilsVersion="1.8.3"
-	langVersion="3.1"
-	reflectionsVersion="0.9.10"
-	artemisVersion="2.1.0"
 	androidBeansVersion="1.0.0"
+	androidVersion="4.4"
+	artemisVersion="2.1.0"
+	beanutilsVersion="1.8.3"
+	gdxVersion="1.9.6"
+	langVersion="3.1"
+	multiDexVersion="1.0.1"
+	nativesLoaderVersion="1.0.0"
+	reflectionsVersion="0.9.10"
+	roboVMVersion="2.3.0"
 	
 	junitVersion="4.8.1"
 	jmockVersion="2.5.1"
@@ -50,7 +52,7 @@ subprojects {
     apply plugin: "idea"
     
     tasks.eclipse.doLast {
-    	delete ".project"
+    		delete ".project"
 	}
 	
 	repositories {
@@ -58,6 +60,7 @@ subprojects {
 		mavenCentral()
 		maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 		maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+		maven { url 'https://maven.google.com' }
 	}
 }
 
@@ -68,39 +71,84 @@ def docProjects() {
 def projectVersion = '1.7.0-SNAPSHOT';
 
 configure(docProjects()) {
-	apply plugin: "java"
 	apply plugin: "signing"
 	apply plugin: "maven"
 	
 	group = 'org.mini2Dx'
 	version = projectVersion
-	
-	sourceCompatibility = 1.7
-	targetCompatibility = 1.7
-	
-	configurations {
-		testOutput.extendsFrom (testCompile)
-	}
-	
-	task javadocJar(type: Jar) {
-		classifier = 'javadoc'
-		from javadoc
-	}
 
-	task sourcesJar(type: Jar) {
-		classifier = 'sources'
-		from sourceSets.main.allSource
-	}
-	
-	task testJar(type: Jar, dependsOn: testClasses) {
-		from sourceSets.test.output
-		include '**/serialization/**/*.class','**/di/**/*.class'
-		classifier = 'test'
-	}
-
-	artifacts {
-		archives javadocJar, sourcesJar, testJar
-		testOutput testJar
+	if(project.name.contains("android")) {
+		apply plugin: "com.android.library"
+		
+		task javadoc(type: Javadoc) {
+			failOnError = false
+			source = android.sourceSets.main.java.srcDirs
+		    classpath += configurations.compile
+		
+		    afterEvaluate {
+		        // Wait after evaluation to add the android classpath
+		        // to avoid "buildToolsVersion is not specified" error
+		        classpath += files(android.getBootClasspath())
+		
+		        // Process AAR dependencies
+		        def aarDependencies = classpath.filter { it.name.endsWith('.aar') }
+		        classpath -= aarDependencies
+		        aarDependencies.each { aar ->
+		            // Extract classes.jar from the AAR dependency, and add it to the javadoc classpath
+		            def outputPath = "$buildDir/tmp/aarJar/${aar.name.replace('.aar', '.jar')}"
+		            classpath += files(outputPath)
+		
+		            // Use a task so the actual extraction only happens before the javadoc task is run
+		            dependsOn task(name: "extract ${aar.name}").doLast {
+		                extractEntry(aar, 'classes.jar', outputPath)
+		            }
+		        }
+		    }
+		}
+		
+		task sourcesJar(type: Jar) {
+			classifier = 'sources'
+			from android.sourceSets.main.java.srcDirs[0]
+		}
+		
+		task javadocJar(type: Jar) {
+			classifier = 'javadoc'
+			from javadoc
+		}
+		
+		artifacts {
+			archives javadocJar, sourcesJar
+		}
+	} else {
+		apply plugin: "java"
+		
+		sourceCompatibility = 1.7
+		targetCompatibility = 1.7
+		
+		configurations {
+			testOutput.extendsFrom (testCompile)
+		}
+		
+		task sourcesJar(type: Jar) {
+			classifier = 'sources'
+			from sourceSets.main.allSource
+		}
+		
+		task testJar(type: Jar, dependsOn: testClasses) {
+			from sourceSets.test.output
+			include '**/serialization/**/*.class','**/di/**/*.class'
+			classifier = 'test'
+		}
+		
+		task javadocJar(type: Jar) {
+			classifier = 'javadoc'
+			from javadoc
+		}
+		
+		artifacts {
+			archives javadocJar, sourcesJar, testJar
+			testOutput testJar
+		}
 	}
   
 	// Maven Central publication
@@ -308,9 +356,10 @@ project(":" + rootProject.name + "-uats") {
 	}
 	
 	task docs(type: Javadoc) {
+		failOnError = false
 		title = 'mini2Dx'
-		source docProjects().collect {p -> p.sourceSets.main.allJava }
-		classpath = files(docProjects().collect {p -> p.sourceSets.main.compileClasspath})
+		source docProjects().collect {p -> p.name.contains("android") ? p.android.sourceSets.main.java.srcDirs : p.sourceSets.main.allJava }
+		classpath = files(docProjects().collect {p -> p.name.contains("android") ? p.configurations.compile : p.sourceSets.main.compileClasspath})
 		destinationDir = new File(project.parent.projectDir, "docs/javadoc/${projectVersion}")
 	}
 	
@@ -338,12 +387,11 @@ if (hasAndroidSdk()) {
 		description = "mini2Dx Android runtime"
 		
 		dependencies {
-			compile project(":" + rootProject.name + "-core")
-			compile files(fileTree(dir: 'libs', includes: ['*.jar']))
+			implementation project(":" + rootProject.name + "-core")
 			
-			compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-			compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-			compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
+			implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+			implementation "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+			implementation "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
 		}
 	}
 	
@@ -364,19 +412,24 @@ if (hasAndroidSdk()) {
 		}
 		
 		dependencies {
-			compile project(":" + rootProject.name + "-android")
-			compile project(":" + rootProject.name + "-uats")
+			implementation project(":" + rootProject.name + "-android")
+			implementation project(":" + rootProject.name + "-uats")
+			
+			implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+			implementation "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+			implementation "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
+			implementation "com.android.support:multidex:$multiDexVersion"
 			
 			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
-        	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
-        	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
-        	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
+			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
        		natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
        		natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi"
        		natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
-        	natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
-        	natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
-        	natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
+			natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
+			natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
+			natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
 			
 			androidTestCompile (project(path: ":" + rootProject.name + "-core", configuration: 'testOutput')) {
 				exclude group: 'junit'
@@ -440,7 +493,7 @@ if (Os.isFamily(Os.FAMILY_MAC)) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.14.1'
+    gradleVersion = '4.5'
 }
 
 boolean hasAndroidSdk() {

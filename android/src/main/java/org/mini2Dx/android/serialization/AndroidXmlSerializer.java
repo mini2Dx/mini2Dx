@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.stream.XMLStreamException;
-
 import org.mini2Dx.core.serialization.RequiredFieldException;
 import org.mini2Dx.core.serialization.SerializationException;
 import org.mini2Dx.core.serialization.XmlSerializer;
@@ -429,7 +427,7 @@ public class AndroidXmlSerializer implements XmlSerializer {
 
 	private <T> T construct(XmlPullParser xmlParser, Ref<Boolean> isEndElement, Class<?> clazz)
 			throws InstantiationException, IllegalAccessException, SerializationException, IllegalArgumentException,
-			InvocationTargetException, XMLStreamException, XmlPullParserException, IOException, ClassNotFoundException {		
+			InvocationTargetException, XmlPullParserException, IOException, ClassNotFoundException {		
 		Constructor<?>[] constructors = clazz.getConstructors();
 		// Single constructor with no args
 		if (constructors.length == 1 && constructors[0].getParameterAnnotations().length == 0) {
