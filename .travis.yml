@@ -24,6 +24,7 @@ addons:
       - libudev-dev
       - mesa-utils
       - libgl1-mesa-glx
+      - libgles2-mesa-dev
 android:
   components:
     - tools
@@ -53,7 +54,7 @@ before_install:
   - export LIBGL_ALWAYS_SOFTWARE=1
   - sudo add-apt-repository -y ppa:oibaf/graphics-drivers
   - sudo apt-get update -qq --force-yes
-  - sudo apt-get -yq --force-yes install libgl1-mesa-dev libgl1-mesa-glx mesa-utils mesa-common-dev libglapi-mesa libgbm1 libgl1-mesa-dri libxatracker-dev xvfb
+  - sudo apt-get -yq --force-yes install libgl1-mesa-dev libgl1-mesa-glx libgles2-mesa-dev mesa-utils mesa-common-dev libglapi-mesa libgbm1 libgl1-mesa-dri libxatracker-dev xvfb
   #- /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1400x900x24 -ac +extension GLX +render
   - xpra --xvfb="Xorg +extension GLX +extension RANDR +extension RENDER -config `pwd`/xorg.conf -logfile ${HOME}/.xpra/xorg.log"  start :99
   - sleep 3 
