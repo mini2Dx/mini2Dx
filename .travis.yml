@@ -5,6 +5,9 @@ env:
     - ADB_INSTALL_TIMEOUT=5 # minutes
 android:
   components:
+    - tools
+    - platform-tools
+    - tools
     - build-tools-27.0.3
     - android-21
     - extra-android-support
