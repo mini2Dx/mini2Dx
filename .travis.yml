@@ -55,14 +55,10 @@ before_install:
   - sudo add-apt-repository -y ppa:oibaf/graphics-drivers
   - sudo apt-get update -qq --force-yes
   - sudo apt-get -yq --force-yes install libgl1-mesa-dev libgl1-mesa-glx libgles2-mesa-dev mesa-utils mesa-common-dev libglapi-mesa libgbm1 libgl1-mesa-dri libxatracker-dev xvfb
-  #- /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1400x900x24 -ac +extension GLX +render
   - xpra --xvfb="Xorg +extension GLX +extension RANDR +extension RENDER -config `pwd`/xorg.conf -logfile ${HOME}/.xpra/xorg.log"  start :99
   - sleep 3 
   - LIBGL_ALWAYS_SOFTWARE=1 glxinfo
   - glxinfo
 before_script:
   - android-update-sdk --components=sys-img-armeabi-v7a-android-21 --accept-licenses='android-sdk-license-[0-9a-f]{8}'
-  - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
-  - emulator -avd test -no-audio -no-window -gpu on
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
+script: ./gradlew clean build -x :mini2Dx-uats-android:test
