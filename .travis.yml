@@ -3,6 +3,27 @@ sudo: true
 env:
   global:
     - ADB_INSTALL_TIMEOUT=5 # minutes
+addons:
+  apt:
+    packages:
+      - libglew-dev
+      - freeglut3-dev
+      - libxi-dev
+      - libxmu-dev
+      - xserver-xorg-video-dummy
+      - xpra
+      - xorg-dev
+      - opencl-headers
+      - libgl1-mesa-dev
+      - libxcursor-dev
+      - libpulse-dev
+      - libxinerama-dev
+      - libxrandr-dev
+      - libxv-dev
+      - libasound2-dev
+      - libudev-dev
+      - mesa-utils
+      - libgl1-mesa-glx
 android:
   components:
     - tools
@@ -29,9 +50,15 @@ notifications:
     on_failure: always
 before_install:
   - export DISPLAY=:99
+  - export LIBGL_ALWAYS_SOFTWARE=1
+  - sudo add-apt-repository -y ppa:oibaf/graphics-drivers
   - sudo apt-get update -qq --force-yes
-  - sudo apt-get install -qq --force-yes libgl1-mesa-dev libgl1-mesa-glx mesa-utils xvfb
-  - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1400x900x24 -ac +extension GLX +render
+  - sudo apt-get -yq --force-yes install libgl1-mesa-dev libgl1-mesa-glx mesa-utils mesa-common-dev libglapi-mesa libgbm1 libgl1-mesa-dri libxatracker-dev xvfb
+  #- /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1400x900x24 -ac +extension GLX +render
+  - xpra --xvfb="Xorg +extension GLX +extension RANDR +extension RENDER -config `pwd`/xorg.conf -logfile ${HOME}/.xpra/xorg.log"  start :99
+  - sleep 3 
+  - LIBGL_ALWAYS_SOFTWARE=1 glxinfo
+  - glxinfo
 before_script:
   - android-update-sdk --components=sys-img-armeabi-v7a-android-21 --accept-licenses='android-sdk-license-[0-9a-f]{8}'
   - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
