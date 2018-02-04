@@ -61,4 +61,4 @@ before_install:
   - glxinfo
 before_script:
   - android-update-sdk --components=sys-img-armeabi-v7a-android-21 --accept-licenses='android-sdk-license-[0-9a-f]{8}'
-script: ./gradlew clean build -x :mini2Dx-uats-android:check -x :mini2Dx-uats-android:validateSigningDebug
+script: ./gradlew clean build -x :mini2Dx-uats-android:check -x :mini2Dx-uats-android:validateSigningDebug -x :mini2Dx-uats-android:packageDebug
