@@ -245,7 +245,7 @@ public class SliderRenderNode extends RenderNode<Slider, SliderStyleRule> implem
 		float availableWidth = layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight()
 				- style.getMarginLeft() - style.getMarginRight();
 		determineSliderPosiitonByElementValue(availableWidth);
-		return availableWidth;
+		return style.getRounding().calculateRounding(availableWidth);
 	}
 
 	private void determineSliderPosiitonByElementValue(float sliderWidth) {

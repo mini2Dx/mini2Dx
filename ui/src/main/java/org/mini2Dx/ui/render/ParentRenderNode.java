@@ -23,6 +23,8 @@ import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.style.ParentStyleRule;
 
+import com.badlogic.gdx.math.MathUtils;
+
 /**
  * Base class for {@link RenderNode} implementations that contains child nodes
  */
@@ -162,8 +164,9 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 		} else {
 			hiddenByLayoutRule = false;
 		}
-		return layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft()
+		float result = layoutRuleResult - style.getPaddingLeft() - style.getPaddingRight() - style.getMarginLeft()
 				- style.getMarginRight();
+		return style.getRounding().calculateRounding(result);
 	}
 
 	@Override

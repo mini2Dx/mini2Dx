@@ -78,14 +78,14 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 		float availableWidth = layoutState.getParentWidth() - style.getPaddingLeft() - style.getPaddingRight()
 				- style.getMarginLeft() - style.getMarginRight();
 		if (element.isResponsive()) {
-			return availableWidth;
+			return style.getRounding().calculateRounding(availableWidth);
 		} else {
 			GLYPH_LAYOUT.setText(bitmapFontCache.getFont(), element.getText());
 
 			if (GLYPH_LAYOUT.width > availableWidth) {
-				return availableWidth;
+				return style.getRounding().calculateRounding(availableWidth);
 			}
-			return GLYPH_LAYOUT.width;
+			return style.getRounding().calculateRounding(GLYPH_LAYOUT.width);
 		}
 	}
 

@@ -341,9 +341,9 @@ public class RadioButtonRenderNode extends RenderNode<RadioButton, RadioButtonSt
 		calculatedHeight = textY + lineHeight;
 
 		if (element.isResponsive()) {
-			return availableWidth;
+			return style.getRounding().calculateRounding(availableWidth);
 		} else {
-			return maxX;
+			return style.getRounding().calculateRounding(maxX);
 		}
 	}
 

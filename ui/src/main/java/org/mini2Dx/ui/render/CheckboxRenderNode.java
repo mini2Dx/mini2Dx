@@ -142,7 +142,7 @@ public class CheckboxRenderNode extends RenderNode<Checkbox, CheckboxStyleRule> 
 				- style.getMarginLeft() - style.getMarginRight();
 
 		if (element.isResponsive()) {
-			return availableWidth;
+			return style.getRounding().calculateRounding(availableWidth);
 		} else {
 			return style.getEnabledCheckTextureRegion().getRegionWidth();
 		}

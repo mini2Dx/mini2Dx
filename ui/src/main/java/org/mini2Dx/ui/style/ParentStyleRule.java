@@ -16,6 +16,7 @@ import org.mini2Dx.core.graphics.RepeatedNinePatch;
 import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.element.ParentUiElement;
+import org.mini2Dx.ui.render.SizeRounding;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -32,8 +33,11 @@ public class ParentStyleRule extends StyleRule {
 	@Field(optional=true)
 	private String backgroundMode;
 	@Field(optional=true)
+	private String sizeRounding;
+	@Field(optional=true)
 	private int ninePatchTop, ninePatchBottom, ninePatchLeft, ninePatchRight;
 	
+	private SizeRounding rounding = SizeRounding.NONE;
 	private NinePatch backgroundNinePatch;
 	
 	@Override
@@ -50,6 +54,9 @@ public class ParentStyleRule extends StyleRule {
 				backgroundNinePatch = new NinePatch(new TextureRegion(theme.getTextureAtlas().findRegion(background)), getNinePatchLeft(),
 						getNinePatchRight(), getNinePatchTop(), getNinePatchBottom());
 			}
+		}
+		if(sizeRounding != null) {
+			rounding = SizeRounding.valueOf(sizeRounding.toUpperCase());
 		}
 	}
 
@@ -81,6 +88,17 @@ public class ParentStyleRule extends StyleRule {
 		} else {
 			this.backgroundMode = BG_STRETCH_MODE;
 		}
+	}
+	
+	public SizeRounding getRounding() {
+		return rounding;
+	}
+
+	public void setRounding(SizeRounding rounding) {
+		if(rounding == null) {
+			return;
+		}
+		this.rounding = rounding;
 	}
 
 	public int getNinePatchTop() {

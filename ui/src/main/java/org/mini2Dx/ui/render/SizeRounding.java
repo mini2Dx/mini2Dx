@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2018 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,27 +11,40 @@
  */
 package org.mini2Dx.ui.render;
 
-import org.mini2Dx.ui.element.Row;
-import org.mini2Dx.ui.layout.LayoutState;
-import org.mini2Dx.ui.style.ParentStyleRule;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
- * {@link RenderNode} implementation for {@link Row}
+ * Different modes for rounding element sizes
  */
-public class RowRenderNode extends ParentRenderNode<Row, ParentStyleRule> {
-
-	public RowRenderNode(ParentRenderNode<?, ?> parent, Row row) {
-		super(parent, row);
-	}
-
-	@Override
-	protected float determinePreferredContentWidth(LayoutState layoutState) {
-		return style.getRounding().calculateRounding(layoutState.getParentWidth() - style.getPaddingLeft()
-				- style.getPaddingRight() - style.getMarginLeft() - style.getMarginRight());
-	}
-
-	@Override
-	protected ParentStyleRule determineStyleRule(LayoutState layoutState) {
-		return layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
+public enum SizeRounding {
+	/**
+	 * Default mode - no-op
+	 */
+	NONE,
+	/**
+	 * If element size is uneven, adds 1 pixel
+	 */
+	UP,
+	/**
+	 * If element size is uneven, subtracts 1 pixel
+	 */
+	DOWN;
+	
+	public float calculateRounding(float value) {
+		switch(this) {
+		case DOWN:
+			if(MathUtils.round(value) % 2 == 1) {
+				return value - 1f;
+			}
+			return value;
+		case UP:
+			if(MathUtils.round(value) % 2 == 1) {
+				return value + 1f;
+			}
+			return value;
+		case NONE:
+		default:
+			return value;
+		}
 	}
 }
