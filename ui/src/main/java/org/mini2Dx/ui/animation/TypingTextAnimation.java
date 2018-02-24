@@ -47,7 +47,7 @@ public class TypingTextAnimation extends BaseTextAnimation {
 		if(characterIndex >= text.length() - 1) {
 			if(!isFinished()) {
 				cache.clear();
-				cache.addText(text.substring(0, characterIndex), 0f, 0f, renderWidth, hAlign, true);
+				cache.addText(text, 0f, 0f, renderWidth, hAlign, true);
 				setFinished(true);
 			}
 			return;
