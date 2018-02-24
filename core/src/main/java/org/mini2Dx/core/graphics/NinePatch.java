@@ -17,10 +17,13 @@ package org.mini2Dx.core.graphics;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
- * Modified version of {@link com.badlogic.gdx.graphics.g2d.NinePatch} for mini2Dx
+ * Modified version of {@link com.badlogic.gdx.graphics.g2d.NinePatch} for
+ * mini2Dx
  */
 public class NinePatch {
 	public static final int TOP_LEFT = 0;
@@ -36,7 +39,7 @@ public class NinePatch {
 	static private final Color tmpDrawColor = new Color();
 
 	private Texture texture;
-	protected TextureRegion [] patches;
+	protected TextureRegion[] patches;
 	private int bottomLeft = -1, bottomCenter = -1, bottomRight = -1;
 	private int middleLeft = -1, middleCenter = -1, middleRight = -1;
 	private int topLeft = -1, topCenter = -1, topRight = -1;
@@ -47,9 +50,9 @@ public class NinePatch {
 	private float paddingLeft = -1, paddingRight = -1, paddingTop = -1, paddingBottom = -1;
 
 	/**
-	 * Create a {@link NinePatch} by cutting up the given texture into nine
-	 * patches. The subsequent parameters define the 4 lines that will cut the
-	 * texture region into 9 pieces.
+	 * Create a {@link NinePatch} by cutting up the given texture into nine patches.
+	 * The subsequent parameters define the 4 lines that will cut the texture region
+	 * into 9 pieces.
 	 * 
 	 * @param left
 	 *            Pixels from left edge.
@@ -65,9 +68,9 @@ public class NinePatch {
 	}
 
 	/**
-	 * Create a {@link NinePatch} by cutting up the given texture region into
-	 * nine patches. The subsequent parameters define the 4 lines that will cut
-	 * the texture region into 9 pieces.
+	 * Create a {@link NinePatch} by cutting up the given texture region into nine
+	 * patches. The subsequent parameters define the 4 lines that will cut the
+	 * texture region into 9 pieces.
 	 * 
 	 * @param left
 	 *            Pixels from left edge.
@@ -244,37 +247,39 @@ public class NinePatch {
 		// to the center
 		// of the texel where the neighboring pixel has 0% contribution in
 		// linear blending mode.
-		if (isStretchW) {
-			float halfTexelWidth = 0.5f * 1.0f / texture.getWidth();
-			u += halfTexelWidth;
-			u2 -= halfTexelWidth;
-		}
-		if (isStretchH) {
-			float halfTexelHeight = 0.5f * 1.0f / texture.getHeight();
-			v -= halfTexelHeight;
-			v2 += halfTexelHeight;
+		if (texture.getMagFilter() == TextureFilter.Linear || texture.getMinFilter() == TextureFilter.Linear) {
+			if (isStretchW) {
+				float halfTexelWidth = 0.5f * 1.0f / texture.getWidth();
+				u += halfTexelWidth;
+				u2 -= halfTexelWidth;
+			}
+			if (isStretchH) {
+				float halfTexelHeight = 0.5f * 1.0f / texture.getHeight();
+				v -= halfTexelHeight;
+				v2 += halfTexelHeight;
+			}
 		}
 
 		final float[] vertices = this.vertices;
 
-		idx += 2;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx] = v;
-		idx += 3;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx] = v2;
-		idx += 3;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx] = v2;
-		idx += 3;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v;
+		vertices[idx + 2] = color;
+		vertices[idx + 3] = u;
+		vertices[idx + 4] = v;
 
-		return idx - 4 * 5;
+		vertices[idx + 7] = color;
+		vertices[idx + 8] = u;
+		vertices[idx + 9] = v2;
+
+		vertices[idx + 12] = color;
+		vertices[idx + 13] = u2;
+		vertices[idx + 14] = v2;
+
+		vertices[idx + 17] = color;
+		vertices[idx + 18] = u2;
+		vertices[idx + 19] = v;
+		idx += 20;
+
+		return idx - 20;
 	}
 
 	/** Set the coordinates and color of a ninth of the patch. */
@@ -282,61 +287,95 @@ public class NinePatch {
 		final float fx2 = x + width;
 		final float fy2 = y + height;
 		final float[] vertices = this.vertices;
-		vertices[idx++] = x;
-		vertices[idx++] = y;
-		vertices[idx] = color;
-		idx += 3;
-		vertices[idx++] = x;
-		vertices[idx++] = fy2;
-		vertices[idx] = color;
-		idx += 3;
-		vertices[idx++] = fx2;
-		vertices[idx++] = fy2;
-		vertices[idx] = color;
-		idx += 3;
-		vertices[idx++] = fx2;
-		vertices[idx++] = y;
-		vertices[idx] = color;
+		vertices[idx] = x;
+		vertices[idx + 1] = y;
+		vertices[idx + 2] = color;
+
+		vertices[idx + 5] = x;
+		vertices[idx + 6] = fy2;
+		vertices[idx + 7] = color;
+
+		vertices[idx + 10] = fx2;
+		vertices[idx + 11] = fy2;
+		vertices[idx + 12] = color;
+
+		vertices[idx + 15] = fx2;
+		vertices[idx + 16] = y;
+		vertices[idx + 17] = color;
 	}
 
 	public void render(Graphics g, float x, float y, float width, float height) {
 		g.drawNinePatch(this, x, y, width, height);
 	}
 
-	void draw(Batch batch, float x, float y, float width, float height) {
+	private void prepareVertices(Batch batch, float x, float y, float width, float height) {
 		final float centerColumnX = x + leftWidth;
 		final float rightColumnX = x + width - rightWidth;
 		final float middleRowY = y + bottomHeight;
 		final float topRowY = y + height - topHeight;
 		final float c = tmpDrawColor.set(color).mul(batch.getColor()).toFloatBits();
 
-		if (bottomLeft != -1)
+		if (bottomLeft != -1) {
 			set(bottomLeft, x, y, centerColumnX - x, middleRowY - y, c);
-		if (bottomCenter != -1)
+		}
+		if (bottomCenter != -1) {
 			set(bottomCenter, centerColumnX, y, rightColumnX - centerColumnX, middleRowY - y, c);
-		if (bottomRight != -1)
+		}
+		if (bottomRight != -1) {
 			set(bottomRight, rightColumnX, y, x + width - rightColumnX, middleRowY - y, c);
-		if (middleLeft != -1)
+		}
+		if (middleLeft != -1) {
 			set(middleLeft, x, middleRowY, centerColumnX - x, topRowY - middleRowY, c);
-		if (middleCenter != -1)
+		}
+		if (middleCenter != -1) {
 			set(middleCenter, centerColumnX, middleRowY, rightColumnX - centerColumnX, topRowY - middleRowY, c);
-		if (middleRight != -1)
+		}
+		if (middleRight != -1) {
 			set(middleRight, rightColumnX, middleRowY, x + width - rightColumnX, topRowY - middleRowY, c);
-		if (topLeft != -1)
+		}
+		if (topLeft != -1) {
 			set(topLeft, x, topRowY, centerColumnX - x, y + height - topRowY, c);
-		if (topCenter != -1)
+		}
+		if (topCenter != -1) {
 			set(topCenter, centerColumnX, topRowY, rightColumnX - centerColumnX, y + height - topRowY, c);
-		if (topRight != -1)
+		}
+		if (topRight != -1) {
 			set(topRight, rightColumnX, topRowY, x + width - rightColumnX, y + height - topRowY, c);
+		}
+	}
 
+	void draw(Batch batch, float x, float y, float width, float height) {
+		prepareVertices(batch, x, y, width, height);
 		batch.draw(texture, vertices, 0, idx);
+	}
+
+	void draw(Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
+			float scaleY, float rotation) {
+		prepareVertices(batch, x, y, width, height);
+		float worldOriginX = x + originX, worldOriginY = y + originY;
+		int n = this.idx;
+		float[] vertices = this.vertices;
+		if (rotation != 0) {
+			for (int i = 0; i < n; i += 5) {
+				float vx = (vertices[i] - worldOriginX) * scaleX, vy = (vertices[i + 1] - worldOriginY) * scaleY;
+				float cos = MathUtils.cosDeg(rotation), sin = MathUtils.sinDeg(rotation);
+				vertices[i] = cos * vx - sin * vy + worldOriginX;
+				vertices[i + 1] = sin * vx + cos * vy + worldOriginY;
+			}
+		} else if (scaleX != 1 || scaleY != 1) {
+			for (int i = 0; i < n; i += 5) {
+				vertices[i] = (vertices[i] - worldOriginX) * scaleX + worldOriginX;
+				vertices[i + 1] = (vertices[i + 1] - worldOriginY) * scaleY + worldOriginY;
+			}
+		}
+		batch.draw(texture, vertices, 0, n);
 	}
 
 	/**
 	 * Copy given color. The color will be blended with the batch color, then
 	 * combined with the texture colors at
-	 * {@link NinePatch#draw(Batch, float, float, float, float) draw} time.
-	 * Default is {@link Color#WHITE}.
+	 * {@link NinePatch#draw(Batch, float, float, float, float) draw} time. Default
+	 * is {@link Color#WHITE}.
 	 */
 	public void setColor(Color color) {
 		this.color.set(color);
@@ -402,8 +441,8 @@ public class NinePatch {
 
 	/**
 	 * Set the height of the middle row of the patch. At render time, this is
-	 * implicitly the requested render-height of the entire nine patch, minus
-	 * the top and bottom height. This value is only used for computing the
+	 * implicitly the requested render-height of the entire nine patch, minus the
+	 * top and bottom height. This value is only used for computing the
 	 * {@link #getTotalHeight() default total height}.
 	 */
 	public void setMiddleHeight(float middleHeight) {
@@ -419,9 +458,9 @@ public class NinePatch {
 	}
 
 	/**
-	 * Set the padding for content inside this ninepatch. By default the padding
-	 * is set to match the exterior of the ninepatch, so the content should fit
-	 * exactly within the middle patch.
+	 * Set the padding for content inside this ninepatch. By default the padding is
+	 * set to match the exterior of the ninepatch, so the content should fit exactly
+	 * within the middle patch.
 	 */
 	public void setPadding(float left, float right, float top, float bottom) {
 		this.paddingLeft = left;
@@ -471,8 +510,7 @@ public class NinePatch {
 	}
 
 	/**
-	 * Returns the bottom padding if set, else returns
-	 * {@link #getBottomHeight()}.
+	 * Returns the bottom padding if set, else returns {@link #getBottomHeight()}.
 	 */
 	public float getPaddingBottom() {
 		if (paddingBottom == -1)
