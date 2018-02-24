@@ -88,4 +88,13 @@ public class TextButton extends Button {
 		checkInitialised();
 		label.setHorizontalAlignment(textAlignment);
 	}
+
+	/**
+	 * Returns the backing label for the button
+	 * @return
+	 */
+	public Label getLabel() {
+		checkInitialised();
+		return label;
+	}
 }
