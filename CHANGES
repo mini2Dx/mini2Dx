@@ -12,6 +12,7 @@
 - Fixed merging concurrency exception during object movement within concurrent QuadTrees
 - Fixed incorrect Circle bounding box dimensions
 - Fixed dependency injection validating injection too early
+- Fixed typing text animation cutting off last character
 - (#53) Increased code coverage on Rectangle and Circle
 
 [1.6.5]
