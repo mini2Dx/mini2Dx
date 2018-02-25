@@ -31,7 +31,11 @@ public class SlideIn implements UiEffect {
 	private final float duration;
 
 	private float speed = 0f;
+	private float remainingDuration;
+	private float previousTargetX, previousTargetY;
+
 	private boolean started = false;
+	private boolean speedCalculated = false;
 	private boolean finished = false;
 
 	/**
@@ -75,6 +79,7 @@ public class SlideIn implements UiEffect {
 		super();
 		this.direction = direction;
 		this.duration = duration;
+		this.remainingDuration = duration;
 	}
 
 	@Override
@@ -87,19 +92,28 @@ public class SlideIn implements UiEffect {
 		float targetX = targetArea.getX();
 		float targetY = targetArea.getY();
 
+		if (!MathUtils.isEqual(targetX, previousTargetX, 0.1f) || !MathUtils.isEqual(targetY, previousTargetY, 0.1f)) {
+			speedCalculated = false;
+		}
+		previousTargetX = targetX;
+		previousTargetY = targetY;
+
 		switch (direction) {
 		case UP:
 			if (!started) {
 				currentArea.forceTo(targetX, uiContainer.getOuterRenderY() + uiContainer.getOuterRenderHeight() + 1f,
 						targetArea.getWidth(), targetArea.getHeight());
-				speed = Math.abs(currentArea.getY() - targetY) / duration;
 				started = true;
+			}
+			if (!speedCalculated) {
+				speed = Math.abs(currentArea.getY() - targetY) / remainingDuration;
+				speedCalculated = true;
 			}
 			currentArea.setWidth(targetArea.getWidth());
 			currentArea.setHeight(targetArea.getHeight());
 			currentArea.setX(targetX);
 			currentArea.setY(Math.max(targetY, currentArea.getY() - (speed * delta)));
-			
+
 			if (MathUtils.isEqual(currentArea.getY(), targetY, 0.1f)) {
 				finished = true;
 			}
@@ -108,14 +122,17 @@ public class SlideIn implements UiEffect {
 			if (!started) {
 				currentArea.forceTo(targetX, uiContainer.getOuterRenderY() - targetArea.getHeight() - 1f,
 						targetArea.getWidth(), targetArea.getHeight());
-				speed = Math.abs(targetY - currentArea.getY()) / duration;
 				started = true;
+			}
+			if (!speedCalculated) {
+				speed = Math.abs(targetY - currentArea.getY()) / remainingDuration;
+				speedCalculated = true;
 			}
 			currentArea.setWidth(targetArea.getWidth());
 			currentArea.setHeight(targetArea.getHeight());
 			currentArea.setX(targetX);
 			currentArea.setY(Math.min(targetY, currentArea.getY() + (speed * delta)));
-			
+
 			if (MathUtils.isEqual(currentArea.getY(), targetY, 0.1f)) {
 				finished = true;
 			}
@@ -124,14 +141,17 @@ public class SlideIn implements UiEffect {
 			if (!started) {
 				currentArea.forceTo(uiContainer.getOuterRenderX() + uiContainer.getOuterRenderWidth() + 1f, targetY,
 						targetArea.getWidth(), targetArea.getHeight());
-				speed = Math.abs(currentArea.getX() - targetX) / duration;
 				started = true;
+			}
+			if (!speedCalculated) {
+				speed = Math.abs(currentArea.getX() - targetX) / remainingDuration;
+				speedCalculated = true;
 			}
 			currentArea.setWidth(targetArea.getWidth());
 			currentArea.setHeight(targetArea.getHeight());
 			currentArea.setX(Math.max(targetX, currentArea.getX() - (speed * delta)));
 			currentArea.setY(targetY);
-			
+
 			if (MathUtils.isEqual(currentArea.getX(), targetX, 0.1f)) {
 				finished = true;
 			}
@@ -140,19 +160,24 @@ public class SlideIn implements UiEffect {
 			if (!started) {
 				currentArea.forceTo(uiContainer.getOuterRenderX() - targetArea.getWidth() - 1f, targetY,
 						targetArea.getWidth(), targetArea.getHeight());
-				speed = Math.abs(targetX - currentArea.getX()) / duration;
 				started = true;
+			}
+			if (!speedCalculated) {
+				speed = Math.abs(targetX - currentArea.getX()) / remainingDuration;
+				speedCalculated = true;
 			}
 			currentArea.setWidth(targetArea.getWidth());
 			currentArea.setHeight(targetArea.getHeight());
 			currentArea.setX(Math.min(targetX, currentArea.getX() + (speed * delta)));
 			currentArea.setY(targetY);
-			
+
 			if (MathUtils.isEqual(currentArea.getX(), targetX, 0.1f)) {
 				finished = true;
 			}
 			break;
 		}
+		
+		remainingDuration -= delta;
 		return true;
 	}
 

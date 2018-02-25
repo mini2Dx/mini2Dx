@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.mini2Dx.core.engine.geom.CollisionBox;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.ui.effect.SlideDirection;
+import org.mini2Dx.ui.effect.SlideIn;
 import org.mini2Dx.ui.effect.SlideOut;
 import org.mini2Dx.ui.render.UiContainerRenderTree;
 

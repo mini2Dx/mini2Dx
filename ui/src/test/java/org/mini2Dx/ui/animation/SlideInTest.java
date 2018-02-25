@@ -167,4 +167,39 @@ public class SlideInTest {
 			Assert.assertEquals(TARGET_Y, currentArea.getY(), 0.1f);
 		}
 	}
+	
+	@Test
+	public void testSlideInWithTargetPositionChangeDuringAnimation() {
+		final int duration = 1;
+		final int totalFrames = (duration * 60);
+		final int halfTotalFrames = totalFrames / 2;
+		
+		targetArea.set(0f, 0f, TARGET_WIDTH, TARGET_HEIGHT);
+		float expectedSpeed = CONTAINER_HEIGHT / duration;
+		
+		mockery.checking(new Expectations() {
+			{
+				oneOf(renderTree).getOuterRenderY();
+				will(returnValue(0));
+				oneOf(renderTree).getOuterRenderHeight();
+				will(returnValue(CONTAINER_HEIGHT));
+			}
+		});
+		
+		SlideIn slideIn = new SlideIn(SlideDirection.UP, duration);
+		for(int i = 0; i < halfTotalFrames; i++) {
+			slideIn.update(renderTree, currentArea, targetArea, DELTA);
+		}
+		Assert.assertEquals(false, slideIn.isFinished());
+		Assert.assertEquals(expectedSpeed, slideIn.getSpeed(), 1f);
+		
+		targetArea.set(TARGET_X, TARGET_Y, TARGET_WIDTH, TARGET_HEIGHT);
+		expectedSpeed = (currentArea.getY() - TARGET_Y) / (duration * 0.5f);
+		
+		for(int i = halfTotalFrames; i < totalFrames; i++) {
+			slideIn.update(renderTree, currentArea, targetArea, DELTA);
+		}
+		Assert.assertEquals(true, slideIn.isFinished());
+		Assert.assertEquals(expectedSpeed, slideIn.getSpeed(), 1f);
+	}
 }
