@@ -17,6 +17,7 @@ import java.util.Queue;
 import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.core.serialization.annotation.PostDeserialize;
 import org.mini2Dx.ui.render.ImageRenderNode;
 import org.mini2Dx.ui.render.ParentRenderNode;
 
@@ -123,6 +124,11 @@ public class Image extends UiElement {
 	public Image(String id, TextureRegion textureRegion) {
 		super(id);
 		this.textureRegion = textureRegion;
+	}
+	
+	@PostDeserialize
+	public void postDeserialize() {
+		this.cachedTexturePath = texturePath;
 	}
 
 	@Override

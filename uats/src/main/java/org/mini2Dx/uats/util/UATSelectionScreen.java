@@ -136,7 +136,6 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 	public void preTransitionOut(Transition transitionOut) {
 		if(controllerInput != null) {
 			controllerInput.disable();
-			System.out.println("here1");
 		}
 	}
 

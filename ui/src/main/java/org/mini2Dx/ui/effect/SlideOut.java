@@ -18,67 +18,131 @@ import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.render.UiContainerRenderTree;
 
+import com.badlogic.gdx.math.MathUtils;
+
 /**
- * A {@link UiEffect} that moves a {@link UiElement} off the screen from its current position
+ * A {@link UiEffect} that moves a {@link UiElement} off the screen from its
+ * current position
  */
 public class SlideOut implements UiEffect {
-	public static final float DEFAULT_SPEED = 8f;
-	
+	public static final float DEFAULT_DURATION = 1f;
+
 	private final SlideDirection direction;
-	private final float speed;
-	
+	private final float duration;
+
+	private float speed;
+	private boolean started = false;
 	private boolean finished = false;
-	
+
+	/**
+	 * Slide out via top of screen with {@link #DEFAULT_DURATION}
+	 */
 	public SlideOut() {
-		this(DEFAULT_SPEED);
-	}
-	
-	public SlideOut(float speed) {
-		this(SlideDirection.UP, speed);
-	}
-	
-	public SlideOut(SlideDirection direction) {
-		this(direction, DEFAULT_SPEED);
+		this(DEFAULT_DURATION);
 	}
 
-	public SlideOut(SlideDirection direction, float speed) {
+	/**
+	 * Slide out via top of screen with specific duration
+	 * 
+	 * @param duration
+	 *            The duration of the animation
+	 */
+	public SlideOut(float duration) {
+		this(SlideDirection.UP, duration);
+	}
+
+	/**
+	 * Slide out via one side of screen with {@link #DEFAULT_DURATION}
+	 * 
+	 * @param direction
+	 *            The direction to slide out. Note that this is the direction that
+	 *            the {@link UiElement} will move.
+	 */
+	public SlideOut(SlideDirection direction) {
+		this(direction, DEFAULT_DURATION);
+	}
+
+	/**
+	 * Slide out via one side of screen with specific duration
+	 * 
+	 * @param direction
+	 *            The direction to slide out. Note that this is the direction that
+	 *            the {@link UiElement} will move.
+	 * @param duration
+	 *            The duration of the animation
+	 */
+	public SlideOut(SlideDirection direction, float duration) {
+		super();
 		this.direction = direction;
-		this.speed = speed;
+		this.duration = duration;
 	}
 
 	@Override
 	public boolean update(UiContainerRenderTree uiContainer, CollisionBox currentArea, Rectangle targetArea,
 			float delta) {
-		if(finished) {
+		if (finished) {
 			return false;
 		}
-		
-		switch(direction) {
+
+		switch (direction) {
 		case UP:
-			if(currentArea.getY() + currentArea.getHeight() > 0f) {
-				currentArea.setY(currentArea.getY() - speed);
-			} else {
+			if (!started) {
+				speed = Math.abs(currentArea.getY() + currentArea.getHeight()) / duration;
+				started = true;
+			}
+
+			if (currentArea.getY() + currentArea.getHeight() > 0f) {
+				currentArea.setY(currentArea.getY() - (speed * delta));
+			}
+			if (currentArea.getY() + currentArea.getHeight() <= 0f) {
+				finished = true;
+			} else if (MathUtils.isEqual(currentArea.getY() + currentArea.getHeight(), 0f, 0.1f)) {
 				finished = true;
 			}
 			break;
 		case DOWN:
-			if(currentArea.getY() < uiContainer.getOuterHeight()) {
-				currentArea.setY(currentArea.getY() + speed);
-			} else {
+			if (!started) {
+				speed = Math
+						.abs((uiContainer.getOuterRenderY() + uiContainer.getOuterRenderHeight()) - currentArea.getY())
+						/ duration;
+				started = true;
+			}
+			if (currentArea.getY() < uiContainer.getOuterRenderHeight()) {
+				currentArea.setY(currentArea.getY() + (speed * delta));
+			}
+			if (currentArea.getY() >= uiContainer.getOuterRenderHeight()) {
+				finished = true;
+			} else if (MathUtils.isEqual(currentArea.getY(), uiContainer.getOuterRenderHeight(), 0.1f)) {
 				finished = true;
 			}
 			break;
 		case LEFT:
-			if(currentArea.getX() + currentArea.getWidth() > 0f) {
-				currentArea.setX(currentArea.getX() - speed);
-			} else {
+			if (!started) {
+				speed = Math.abs(currentArea.getX() + currentArea.getWidth()) / duration;
+				started = true;
+			}
+			if (currentArea.getX() + currentArea.getWidth() > 0f) {
+				currentArea.setX(currentArea.getX() - (speed * delta));
+			}
+			if (currentArea.getX() + currentArea.getWidth() <= 0f) {
+				finished = true;
+			} else if (MathUtils.isEqual(currentArea.getX() + currentArea.getWidth(), 0f, 0.1f)) {
 				finished = true;
 			}
 			break;
 		case RIGHT:
-			if(currentArea.getX() < uiContainer.getOuterWidth()) {
-				currentArea.setX(currentArea.getX() + speed);
-			} else {
+			if (!started) {
+				speed = Math
+						.abs((uiContainer.getOuterRenderX() + uiContainer.getOuterRenderWidth()) - currentArea.getX())
+						/ duration;
+				started = true;
+			}
+			if (currentArea.getX() < uiContainer.getOuterRenderWidth()) {
+				currentArea.setX(currentArea.getX() + (speed * delta));
+			} 
+			if (currentArea.getX() >= uiContainer.getOuterRenderWidth()) {
+				finished = true;
+			} else if (MathUtils.isEqual(currentArea.getX(), uiContainer.getOuterRenderWidth(), 0.1f)) {
 				finished = true;
 			}
 			break;
@@ -87,9 +151,10 @@ public class SlideOut implements UiEffect {
 		}
 		return true;
 	}
-	
+
 	@Override
-	public void preBegin(UiElement element) {}
+	public void preBegin(UiElement element) {
+	}
 
 	@Override
 	public void postEnd(UiElement element) {
@@ -97,14 +162,24 @@ public class SlideOut implements UiEffect {
 	}
 
 	@Override
-	public void preRender(Graphics g) {}
+	public void preRender(Graphics g) {
+	}
 
 	@Override
-	public void postRender(Graphics g) {}
+	public void postRender(Graphics g) {
+	}
 
 	@Override
 	public boolean isFinished() {
 		return finished;
+	}
+
+	public float getDuration() {
+		return duration;
+	}
+
+	public float getSpeed() {
+		return speed;
 	}
 
 }

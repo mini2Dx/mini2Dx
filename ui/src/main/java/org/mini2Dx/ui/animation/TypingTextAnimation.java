@@ -38,6 +38,7 @@ public class TypingTextAnimation extends BaseTextAnimation {
 	 * @param charactersPerSecond The amount of characters to reveal per second
 	 */
 	public TypingTextAnimation(@ConstructorArg(clazz=Float.class, name="charactersPerSecond") float charactersPerSecond) {
+		super();
 		this.charactersPerSecond = charactersPerSecond;
 		speed = 1f / charactersPerSecond;
 	}

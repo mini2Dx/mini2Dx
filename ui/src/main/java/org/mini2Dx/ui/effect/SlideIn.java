@@ -18,34 +18,63 @@ import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.render.UiContainerRenderTree;
 
+import com.badlogic.gdx.math.MathUtils;
+
 /**
  * A {@link UiEffect} that moves a {@link UiElement} from off-screen to its
  * target position
  */
 public class SlideIn implements UiEffect {
-	public static final float DEFAULT_SPEED = 8f;
+	public static final float DEFAULT_DURATION = 1f;
 
 	private final SlideDirection direction;
-	private final float speed;
+	private final float duration;
 
+	private float speed = 0f;
 	private boolean started = false;
 	private boolean finished = false;
 
+	/**
+	 * Slide in from bottom of screen with {@link #DEFAULT_DURATION}
+	 */
 	public SlideIn() {
-		this(DEFAULT_SPEED);
+		this(DEFAULT_DURATION);
 	}
 
-	public SlideIn(float speed) {
-		this(SlideDirection.UP, speed);
+	/**
+	 * Slide in from bottom of screen with specific duration
+	 * 
+	 * @param duration
+	 *            The duration of the animation in seconds
+	 */
+	public SlideIn(float duration) {
+		this(SlideDirection.UP, duration);
 	}
 
+	/**
+	 * Slide in from outside of the screen with {@link #DEFAULT_DURATION}
+	 * 
+	 * @param direction
+	 *            The slide direction. Note that this is the direction that the
+	 *            {@link UiElement} moves
+	 */
 	public SlideIn(SlideDirection direction) {
-		this(direction, DEFAULT_SPEED);
+		this(direction, DEFAULT_DURATION);
 	}
 
-	public SlideIn(SlideDirection direction, float speed) {
+	/**
+	 * Slide in from outside of the screen with specific duration
+	 * 
+	 * @param direction
+	 *            The slide direction. Note that this is the direction that the
+	 *            {@link UiElement} moves
+	 * @param duration
+	 *            The duration of the animation in seconds
+	 */
+	public SlideIn(SlideDirection direction, float duration) {
+		super();
 		this.direction = direction;
-		this.speed = speed;
+		this.duration = duration;
 	}
 
 	@Override
@@ -61,15 +90,17 @@ public class SlideIn implements UiEffect {
 		switch (direction) {
 		case UP:
 			if (!started) {
-				currentArea.forceTo(targetX, uiContainer.getOuterRenderY() + uiContainer.getOuterHeight() + 1f,
+				currentArea.forceTo(targetX, uiContainer.getOuterRenderY() + uiContainer.getOuterRenderHeight() + 1f,
 						targetArea.getWidth(), targetArea.getHeight());
+				speed = Math.abs(currentArea.getY() - targetY) / duration;
 				started = true;
 			}
-			if (currentArea.getY() > targetY) {
-				currentArea.setWidth(targetArea.getWidth());
-				currentArea.setHeight(targetArea.getHeight());
-				currentArea.setY(Math.max(targetY, currentArea.getY() - speed));
-			} else {
+			currentArea.setWidth(targetArea.getWidth());
+			currentArea.setHeight(targetArea.getHeight());
+			currentArea.setX(targetX);
+			currentArea.setY(Math.max(targetY, currentArea.getY() - (speed * delta)));
+			
+			if (MathUtils.isEqual(currentArea.getY(), targetY, 0.1f)) {
 				finished = true;
 			}
 			break;
@@ -77,27 +108,31 @@ public class SlideIn implements UiEffect {
 			if (!started) {
 				currentArea.forceTo(targetX, uiContainer.getOuterRenderY() - targetArea.getHeight() - 1f,
 						targetArea.getWidth(), targetArea.getHeight());
+				speed = Math.abs(targetY - currentArea.getY()) / duration;
 				started = true;
 			}
-			if (currentArea.getY() < targetY) {
-				currentArea.setWidth(targetArea.getWidth());
-				currentArea.setHeight(targetArea.getHeight());
-				currentArea.setY(Math.min(targetY, currentArea.getY() + speed));
-			} else {
+			currentArea.setWidth(targetArea.getWidth());
+			currentArea.setHeight(targetArea.getHeight());
+			currentArea.setX(targetX);
+			currentArea.setY(Math.min(targetY, currentArea.getY() + (speed * delta)));
+			
+			if (MathUtils.isEqual(currentArea.getY(), targetY, 0.1f)) {
 				finished = true;
 			}
 			break;
 		case LEFT:
 			if (!started) {
-				currentArea.forceTo(uiContainer.getOuterRenderX() + uiContainer.getOuterWidth() + 1f, targetY,
+				currentArea.forceTo(uiContainer.getOuterRenderX() + uiContainer.getOuterRenderWidth() + 1f, targetY,
 						targetArea.getWidth(), targetArea.getHeight());
+				speed = Math.abs(currentArea.getX() - targetX) / duration;
 				started = true;
 			}
-			if (currentArea.getX() > targetX) {
-				currentArea.setWidth(targetArea.getWidth());
-				currentArea.setHeight(targetArea.getHeight());
-				currentArea.setX(Math.max(targetX, currentArea.getX() - speed));
-			} else {
+			currentArea.setWidth(targetArea.getWidth());
+			currentArea.setHeight(targetArea.getHeight());
+			currentArea.setX(Math.max(targetX, currentArea.getX() - (speed * delta)));
+			currentArea.setY(targetY);
+			
+			if (MathUtils.isEqual(currentArea.getX(), targetX, 0.1f)) {
 				finished = true;
 			}
 			break;
@@ -105,13 +140,15 @@ public class SlideIn implements UiEffect {
 			if (!started) {
 				currentArea.forceTo(uiContainer.getOuterRenderX() - targetArea.getWidth() - 1f, targetY,
 						targetArea.getWidth(), targetArea.getHeight());
+				speed = Math.abs(targetX - currentArea.getX()) / duration;
 				started = true;
 			}
-			if (currentArea.getX() < targetX) {
-				currentArea.setWidth(targetArea.getWidth());
-				currentArea.setHeight(targetArea.getHeight());
-				currentArea.setX(Math.min(targetX, currentArea.getX() + speed));
-			} else {
+			currentArea.setWidth(targetArea.getWidth());
+			currentArea.setHeight(targetArea.getHeight());
+			currentArea.setX(Math.min(targetX, currentArea.getX() + (speed * delta)));
+			currentArea.setY(targetY);
+			
+			if (MathUtils.isEqual(currentArea.getX(), targetX, 0.1f)) {
 				finished = true;
 			}
 			break;
@@ -139,5 +176,13 @@ public class SlideIn implements UiEffect {
 	@Override
 	public boolean isFinished() {
 		return finished;
+	}
+
+	public float getDuration() {
+		return duration;
+	}
+
+	public float getSpeed() {
+		return speed;
 	}
 }
