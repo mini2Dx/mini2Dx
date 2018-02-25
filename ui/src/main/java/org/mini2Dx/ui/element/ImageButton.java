@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.Texture;
  * Utility implementation of {@link Button} that contains an {@link Image}
  */
 public class ImageButton extends Button {	
-	private Image image;
+	protected Image image;
 	
 	/**
 	 * Constructor. Generates a unique ID for this {@link ImageButton}
@@ -89,6 +89,16 @@ public class ImageButton extends Button {
 	}
 	
 	/**
+	 * Returns the current texture path
+	 * 
+	 * @return Null if no path is used
+	 */
+	public String getTexturePath() {
+		checkInitialised();
+		return image.getTexturePath();
+	}
+	
+	/**
 	 * Sets the current texture path. This will set the current
 	 * {@link TextureRegion} by loading it via the {@link AssetManager}
 	 * 
@@ -134,5 +144,14 @@ public class ImageButton extends Button {
 	public void setResponsive(boolean responsive) {
 		checkInitialised();
 		image.setResponsive(responsive);
+	}
+	
+	/**
+	 * Returns the backing {@link Image} for the button
+	 * @return
+	 */
+	public Image getImage() {
+		checkInitialised();
+		return image;
 	}
 }

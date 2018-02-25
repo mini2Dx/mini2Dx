@@ -18,7 +18,7 @@ import org.mini2Dx.ui.layout.HorizontalAlignment;
  * Utility implementation of {@link Button} that contains a {@link Label}
  */
 public class TextButton extends Button {
-	private Label label;
+	protected Label label;
 	
 	/**
 	 * Constructor. Generates a unique ID for this {@link TextButton}

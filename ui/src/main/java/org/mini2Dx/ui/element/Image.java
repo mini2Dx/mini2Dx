@@ -217,6 +217,10 @@ public class Image extends UiElement {
 	 *            The path to the texture
 	 */
 	public void setTexturePath(String texturePath) {
+		if(this.texturePath != null && this.texturePath.equals(texturePath)) {
+			return;
+		}
+		
 		this.texturePath = texturePath;
 
 		if (renderNode == null) {
@@ -238,6 +242,10 @@ public class Image extends UiElement {
 	 * @param atlas Null if the texture should not be looked up via an atlas
 	 */
 	public void setAtlas(String atlas) {
+		if(this.atlas != null && this.atlas.equals(atlas)) {
+			return;
+		}
+		
 		this.atlas = atlas;
 		
 		if (renderNode == null) {
