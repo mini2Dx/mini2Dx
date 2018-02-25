@@ -32,7 +32,6 @@ import com.badlogic.gdx.Gdx;
 public abstract class RenderNode<T extends UiElement, S extends StyleRule> implements HoverableRenderNode {
 	protected final List<UiEffect> effects = new ArrayList<UiEffect>(1);
 	protected final CollisionBox outerArea = new CollisionBox();
-	protected final CollisionBox innerArea = new CollisionBox();
 	protected final Rectangle targetOuterArea = new Rectangle();
 	protected final ParentRenderNode<?, ?> parent;
 	protected final T element;
@@ -57,18 +56,6 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		setDirty(true);
 	}
 
-	private void setInnerArea(boolean force) {
-		if(force) {
-			innerArea.forceTo(outerArea.getX() + style.getMarginLeft(), outerArea.getY() + style.getMarginTop(),
-					outerArea.getWidth() - style.getMarginLeft() - style.getMarginRight(),
-					outerArea.getHeight() - style.getMarginTop() - style.getMarginBottom());
-		} else {
-			innerArea.set(outerArea.getX() + style.getMarginLeft(), outerArea.getY() + style.getMarginTop(),
-					outerArea.getWidth() - style.getMarginLeft() - style.getMarginRight(),
-					outerArea.getHeight() - style.getMarginTop() - style.getMarginBottom());
-		}
-	}
-
 	public void update(UiContainerRenderTree uiContainer, float delta) {
 		if (!initialLayoutOccurred) {
 			return;
@@ -85,14 +72,12 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 					getPreferredOuterHeight());
 		}
 		outerArea.preUpdate();
-		innerArea.preUpdate();
 
 		element.syncWithRenderNode();
 
 		boolean visible = isScheduledToRender();
 		if (effects.size() == 0) {
 			outerArea.forceTo(targetOuterArea);
-			setInnerArea(true);
 		} else {
 			for (int i = 0; i < effects.size(); i++) {
 				UiEffect effect = effects.get(i);
@@ -106,12 +91,11 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 
 				visible &= effect.update(uiContainer, outerArea, targetOuterArea, delta);
 			}
-			setInnerArea(false);
 		}
 		includeInRender = visible;
 
 		if (element.isDebugEnabled()) {
-			Gdx.app.log(element.getId(), "UPDATE - outerArea: " + outerArea + ", innerArea: " + innerArea + ", targetArea: " + targetOuterArea
+			Gdx.app.log(element.getId(), "UPDATE - outerArea: " + outerArea + ", targetArea: " + targetOuterArea
 					+ ", visibility: " + element.getVisibility());
 		}
 	}
@@ -121,7 +105,6 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 			return;
 		}
 		outerArea.interpolate(null, alpha);
-		innerArea.interpolate(null, alpha);
 	}
 
 	public void render(Graphics g) {
@@ -368,63 +351,87 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 	
 	public float getInnerX() {
-		return innerArea.getX();
+		if(style == null) {
+			return outerArea.getX();
+		}
+		return outerArea.getX() + style.getMarginLeft();
 	}
 
 	public float getInnerY() {
-		return innerArea.getY();
+		if(style == null) {
+			return outerArea.getY();
+		}
+		return outerArea.getY() + style.getMarginTop();
 	}
 
 	public float getInnerWidth() {
-		return innerArea.getWidth();
+		if(style == null) {
+			return outerArea.getWidth();
+		}
+		return outerArea.getWidth() - style.getMarginLeft() - style.getMarginRight();
 	}
 
 	public float getInnerHeight() {
-		return innerArea.getHeight();
+		if(style == null) {
+			return outerArea.getHeight();
+		}
+		return outerArea.getHeight() - style.getMarginTop() - style.getMarginBottom();
 	}
 
 	public int getInnerRenderX() {
-		return innerArea.getRenderX();
+		if(style == null) {
+			return outerArea.getRenderX();
+		}
+		return outerArea.getRenderX() + style.getMarginLeft();
 	}
 
 	public int getInnerRenderY() {
-		return innerArea.getRenderY();
+		if(style == null) {
+			return outerArea.getRenderY();
+		}
+		return outerArea.getRenderY() + style.getMarginTop();
 	}
 
 	public int getInnerRenderWidth() {
-		return innerArea.getRenderWidth();
+		if(style == null) {
+			return outerArea.getRenderWidth();
+		}
+		return outerArea.getRenderWidth() - style.getMarginLeft() - style.getMarginRight();
 	}
 
 	public int getInnerRenderHeight() {
-		return innerArea.getRenderHeight();
+		if(style == null) {
+			return outerArea.getRenderHeight();
+		}
+		return outerArea.getRenderHeight() - style.getMarginTop() - style.getMarginBottom();
 	}
 	
 	public int getContentRenderX() {
 		if(style == null) {
-			return innerArea.getRenderX();
+			return getInnerRenderX();
 		}
-		return innerArea.getRenderX() + style.getPaddingLeft();
+		return getInnerRenderX()+ style.getPaddingLeft();
 	}
 	
 	public int getContentRenderY() {
 		if(style == null) {
-			return innerArea.getRenderY();
+			return getInnerRenderY();
 		}
-		return innerArea.getRenderY() + style.getPaddingTop();
+		return getInnerRenderY() + style.getPaddingTop();
 	}
 	
 	public int getContentRenderWidth() {
 		if(style == null) {
-			return innerArea.getRenderWidth();
+			return getInnerRenderWidth();
 		}
-		return innerArea.getRenderWidth() - style.getPaddingLeft() - style.getPaddingRight();
+		return getInnerRenderWidth() - style.getPaddingLeft() - style.getPaddingRight();
 	}
 	
 	public int getContentRenderHeight() {
 		if(style == null) {
-			return innerArea.getRenderHeight();
+			return getInnerRenderHeight();
 		}
-		return innerArea.getRenderHeight() - style.getPaddingTop() - style.getPaddingBottom();
+		return getInnerRenderHeight() - style.getPaddingTop() - style.getPaddingBottom();
 	}
 
 	public NodeState getState() {

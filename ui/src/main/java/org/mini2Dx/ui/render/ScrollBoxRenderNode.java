@@ -82,7 +82,7 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 		}
 		updateScrollTo(delta);
 
-		topScrollButton.set(innerArea.getX() + innerArea.getWidth() - style.getScrollBarWidth(), innerArea.getY());
+		topScrollButton.set(getInnerX() + getInnerWidth() - style.getScrollBarWidth(), getInnerY());
 		scrollTrack.set(topScrollButton.getX(), topScrollButton.getY() + topScrollButton.getHeight());
 		bottomScrollButton.set(scrollTrack.getX(), scrollTrack.getY() + scrollTrack.getHeight());
 		scrollThumb.set(scrollTrack.getX(), scrollTrack.getY() + (scrollThumbPosition * scrollTrack.getHeight()));
@@ -188,16 +188,16 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 			}
 		}
 
-		float currentScrollY = innerArea.getY() + scrollTranslationY;
+		float currentScrollY = getInnerY() + scrollTranslationY;
 		float scrollFactor = ((ScrollBox) element).getScrollFactor() * contentHeight;
-		if (scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + innerArea.getHeight()
+		if (scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + getInnerHeight()
 				+ scrollFactor) {
 			if (scrollTo.isImmediate()) {
 				// TODO: Optimise this
-				while (scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + innerArea.getHeight()
+				while (scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + getInnerHeight()
 						+ scrollFactor) {
 					setScrollThumbPosition(scrollThumbPosition + ((ScrollBox) element).getScrollFactor());
-					currentScrollY = innerArea.getY() + scrollTranslationY;
+					currentScrollY = getInnerY() + scrollTranslationY;
 				}
 			} else {
 				setScrollThumbPosition(scrollThumbPosition + ((ScrollBox) element).getScrollFactor());
@@ -207,7 +207,7 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 				// TODO: Optimise this
 				while (scrollToNode.getOuterY() < currentScrollY - scrollFactor) {
 					setScrollThumbPosition(scrollThumbPosition - ((ScrollBox) element).getScrollFactor());
-					currentScrollY = innerArea.getY() + scrollTranslationY;
+					currentScrollY = getInnerY() + scrollTranslationY;
 				}
 			} else {
 				setScrollThumbPosition(scrollThumbPosition - ((ScrollBox) element).getScrollFactor());
