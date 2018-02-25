@@ -45,6 +45,8 @@ public class Image extends UiElement {
 	private boolean flipX = false;
 	@Field(optional=true)
 	private boolean flipY = false;
+	
+	private String cachedTexturePath;
 
 	/**
 	 * Constructor. Generates a unique ID for this {@link Image}
@@ -162,10 +164,12 @@ public class Image extends UiElement {
 					return null;
 				}
 				textureRegion = new TextureRegion(atlasRegion);
+				cachedTexturePath = texturePath;
 				texturePath = null;
 			}
 		} else if (texturePath != null) {
 			textureRegion = new TextureRegion(assetManager.get(texturePath, Texture.class));
+			cachedTexturePath = texturePath;
 			texturePath = null;
 		}
 		return textureRegion;
@@ -206,7 +210,7 @@ public class Image extends UiElement {
 	 * @return Null if no path is used
 	 */
 	public String getTexturePath() {
-		return texturePath;
+		return cachedTexturePath;
 	}
 
 	/**
@@ -221,6 +225,7 @@ public class Image extends UiElement {
 			return;
 		}
 		
+		this.cachedTexturePath = texturePath;
 		this.texturePath = texturePath;
 
 		if (renderNode == null) {

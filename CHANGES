@@ -14,6 +14,7 @@
 - Fixed dependency injection validating injection too early
 - Fixed typing text animation cutting off last character
 - Fixed unnecessary Image render node layouts when setting same value for texture path
+- Fixed Image#getTexturePath returning null
 - (#53) Increased code coverage on Rectangle and Circle
 
 [1.6.5]
