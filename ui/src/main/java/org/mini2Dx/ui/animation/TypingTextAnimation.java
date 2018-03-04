@@ -20,17 +20,20 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
  * A {@link TextAnimation} that reveals the text as if it were being typed
  */
 public class TypingTextAnimation extends BaseTextAnimation {
+	public static final float DEFAULT_CHARACTERS_PER_SECOND = 24f;
+	
 	private final float charactersPerSecond;
 	private final float speed;
 	
 	private float timer = 0f;
+	private boolean skip = false;
 	private int characterIndex = 0;
 
 	/**
-	 * Constructor. Defaults to 24 characters revealed per second.
+	 * Constructor. Defaults to {@link #DEFAULT_CHARACTERS_PER_SECOND} characters revealed per second.
 	 */
 	public TypingTextAnimation() {
-		this(24f);
+		this(DEFAULT_CHARACTERS_PER_SECOND);
 	}
 	
 	/**
@@ -45,7 +48,7 @@ public class TypingTextAnimation extends BaseTextAnimation {
 	
 	@Override
 	public void update(BitmapFontCache cache, String text, float renderWidth, int hAlign, float delta) {
-		if(characterIndex >= text.length() - 1) {
+		if(skip || characterIndex >= text.length() - 1) {
 			if(!isFinished()) {
 				cache.clear();
 				cache.addText(text, 0f, 0f, renderWidth, hAlign, true);
@@ -75,7 +78,7 @@ public class TypingTextAnimation extends BaseTextAnimation {
 
 	@Override
 	public void skip() {
-		setFinished(true);
+		skip = true;
 	}
 
 	@ConstructorArg(clazz=Float.class, name="charactersPerSecond")
