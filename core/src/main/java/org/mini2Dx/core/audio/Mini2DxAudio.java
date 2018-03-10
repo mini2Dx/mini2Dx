@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2018 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -9,64 +9,34 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core;
+package org.mini2Dx.core.audio;
 
-import org.mini2Dx.core.audio.Mini2DxAudio;
-import org.mini2Dx.core.controller.ControllerMapping;
-import org.mini2Dx.core.di.DependencyInjection;
-import org.mini2Dx.core.playerdata.PlayerData;
-import org.mini2Dx.core.serialization.JsonSerializer;
-import org.mini2Dx.core.serialization.XmlSerializer;
-import org.mini2Dx.core.util.PerformanceTracker;
-import org.mini2Dx.natives.Os;
-import org.mini2Dx.natives.OsInformation;
+import com.badlogic.gdx.Audio;
 
 /**
- * Mini2Dx utility classes
+ * Interface to platform audio implementations
  */
-public class Mdx {
-	/**
-	 * Provides access to controller mappings
-	 */
-	public static ControllerMapping controllers = new ControllerMapping();
+public interface Mini2DxAudio extends Audio {
 	
 	/**
-	 * Interface for reading/writing player data, e.g. save games, preferences
+	 * Adds a {@link SoundCompletionListener} to listen for sound effect completion events
+	 * @param listener The {@link SoundCompletionListener} implementation to add
 	 */
-	public static PlayerData playerData;
+	public void addSoundCompletionListener(SoundCompletionListener listener);
 	
 	/**
-	 * Dependency injection
+	 * Removes a {@link SoundCompletionListener}
+	 * @param listener The {@link SoundCompletionListener} implementation to remove
 	 */
-	public static DependencyInjection di;
+	public void removeSoundCompletionListener(SoundCompletionListener listener);
 	
 	/**
-	 * Audio
+	 * Updates the audio device and events
 	 */
-	public static Mini2DxAudio audio;
-	
+	public void update();
+
 	/**
-	 * Returns the current operating system. See <a href="https://github.com/mini2Dx/natives-loader">natives-loader project</a> for more javadocs
+	 * Disposes of allocated audio resources
 	 */
-	public static Os os = OsInformation.getOs();
-	
-	/**
-	 * Tracks updates + frames per second
-	 */
-	public static PerformanceTracker performanceTracker = new PerformanceTracker();
-	
-	/**
-	 * JSON serialization
-	 */
-	public static JsonSerializer json = new JsonSerializer();
-	
-	/**
-	 * XML serialization
-	 */
-	public static XmlSerializer xml;
-	
-	/**
-	 * This game's unique identifier for app stores
-	 */
-	public static String gameIdentifier;
+	public void dispose();
 }

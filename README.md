@@ -21,6 +21,8 @@ License
 
 The project is licensed under the BSD 3-Clause License.
 
+Assets used for UATs are licensed under Creative Commons (Kenney.nl, Alexander Ehlers, Juan Rodriguez)
+
 However, some classes are based on LibGDX's code and are licensed under the Apache License Version 2.0 per LibGDX's license. Such classes are placed under ```com.badlogic.gdx``` packages.
 
 Contributing

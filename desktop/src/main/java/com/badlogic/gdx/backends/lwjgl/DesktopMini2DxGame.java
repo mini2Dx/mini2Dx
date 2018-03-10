@@ -20,6 +20,7 @@ import java.awt.Canvas;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.audio.Mini2DxAudio;
 import org.mini2Dx.core.game.ApplicationListener;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.desktop.DesktopGameWrapper;
@@ -34,7 +35,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
+import com.badlogic.gdx.backends.lwjgl.audio.Mini2DxOpenALAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -48,7 +49,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class DesktopMini2DxGame implements Application {
 	protected final DesktopMini2DxConfig config;
 	protected final LwjglGraphics graphics;
-	protected OpenALAudio audio;
+	protected Mini2DxAudio audio;
 	protected final LwjglFiles files;
 	protected final LwjglInput input;
 	protected final LwjglNet net;
@@ -90,10 +91,10 @@ public class DesktopMini2DxGame implements Application {
 		launchGame();
 	}
 
-	private void initialiseLibGDX() {
+	protected void initialiseLibGDX() {
 		if (!LwjglApplicationConfiguration.disableAudio) {
 			try {
-				audio = new OpenALAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
+				audio = new Mini2DxOpenALAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
 						config.audioDeviceBufferSize);
 			} catch (Throwable t) {
 				log("LwjglApplication", "Couldn't initialize audio, disabling audio", t);
@@ -105,6 +106,7 @@ public class DesktopMini2DxGame implements Application {
 		Gdx.app = this;
 		Gdx.graphics = graphics;
 		Gdx.audio = audio;
+		Mdx.audio = audio;
 		Gdx.files = files;
 		Gdx.input = input;
 		Gdx.net = net;

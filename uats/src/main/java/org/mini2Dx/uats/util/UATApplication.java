@@ -16,6 +16,7 @@ import org.mini2Dx.core.controller.MdxController;
 import org.mini2Dx.core.game.ScreenBasedGame;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.TiledMapLoader;
+import org.mini2Dx.uats.AudioUAT;
 import org.mini2Dx.uats.BlendingUAT;
 import org.mini2Dx.uats.ClippingUAT;
 import org.mini2Dx.uats.ControllerMapping;
@@ -65,6 +66,7 @@ public class UATApplication extends ScreenBasedGame {
 		addScreen(new GeometryUAT());
 		addScreen(new GraphicsUAT(assetManager));
 		addScreen(new TextureRegionUAT());
+		addScreen(new AudioUAT());
 		addScreen(new OrthogonalTiledMapNoCachingUAT(assetManager));
 		addScreen(new OrthogonalTiledMapWithCachingUAT(assetManager));
 		addScreen(new IsometricTiledMapUAT(assetManager));

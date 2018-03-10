@@ -21,6 +21,7 @@ import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
+import org.mini2Dx.uats.AudioUAT;
 import org.mini2Dx.uats.BlendingUAT;
 import org.mini2Dx.uats.ClippingUAT;
 import org.mini2Dx.uats.ControllerMapping;
@@ -206,6 +207,16 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 			@Override
 			public void onActionEnd(ActionEvent event) {
 				nextScreenId = ScreenIds.getScreenId(TextureRegionUAT.class);
+			}
+		})));
+		uatsDialog.add(Row.withElements("row-audio", UiUtils.createButton(uiNavigation, "Audio", new ActionListener() {
+			@Override
+			public void onActionBegin(ActionEvent event) {
+			}
+
+			@Override
+			public void onActionEnd(ActionEvent event) {
+				nextScreenId = ScreenIds.getScreenId(AudioUAT.class);
 			}
 		})));
 		uatsDialog.add(Row.withElements("row-orthogonal-tiledmap",

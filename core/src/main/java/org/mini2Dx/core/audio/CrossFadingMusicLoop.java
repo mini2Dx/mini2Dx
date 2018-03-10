@@ -26,6 +26,7 @@ import com.badlogic.gdx.math.MathUtils;
  * Note: It is required to call {@link #update()} each frame when using this
  * object
  */
+@Deprecated
 public class CrossFadingMusicLoop {
     private static final float ONE_SECOND_IN_NANOSECONDS = 1000000000f;
     
