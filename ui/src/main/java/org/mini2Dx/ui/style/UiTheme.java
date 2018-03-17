@@ -17,6 +17,7 @@ import java.util.Map;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.element.AnimatedImage;
 import org.mini2Dx.ui.element.Button;
 import org.mini2Dx.ui.element.Checkbox;
 import org.mini2Dx.ui.element.Column;
@@ -319,6 +320,10 @@ public class UiTheme {
 	
 	public boolean containsLabelStyleRuleset(String id) {
 		return labels.containsKey(id);
+	}
+	
+	public StyleRule getStyleRule(AnimatedImage image, ScreenSize screenSize) {
+		return getStyleRule(image, screenSize, images);
 	}
 
 	public ButtonStyleRule getStyleRule(Button button, ScreenSize screenSize) {
