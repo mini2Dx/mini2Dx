@@ -447,4 +447,30 @@ public class Circle extends Shape {
 	public Polygon getPolygon() {
 		return null;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((circle == null) ? 0 : circle.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Circle other = (Circle) obj;
+		if (Float.floatToIntBits(getX()) != Float.floatToIntBits(other.getX()))
+			return false;
+		if (Float.floatToIntBits(getY()) != Float.floatToIntBits(other.getY()))
+			return false;
+		if (Float.floatToIntBits(getRadius()) != Float.floatToIntBits(other.getRadius()))
+			return false;
+		return true;
+	}
 }

@@ -391,4 +391,18 @@ public class RectangleTest {
 		Assert.assertEquals(true, rectangle1.intersects(50f, 50f, 100f, 100f));
 		Assert.assertEquals(false, rectangle1.intersects(0f, 0f, 50f, 50f));
 	}
+	
+	@Test
+	public void testEquals() {
+		rectangle1 = new Rectangle(0, 0, 50, 50);
+		rectangle2 = new Rectangle(0, 0, 50, 50);
+		
+		Assert.assertEquals(true, rectangle1.equals(rectangle2));
+		
+		rectangle2.rotate(1f);
+		Assert.assertEquals(false, rectangle1.equals(rectangle2));
+		
+		rectangle2 = new Rectangle(0.001f, 0, 50, 50);
+		Assert.assertEquals(false, rectangle1.equals(rectangle2));
+	}
 }

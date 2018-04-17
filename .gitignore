@@ -17,3 +17,4 @@ Gemfile.lock
 
 local.properties
 uats/src/main/resources/crossfade.ogg
+uats-android/gen/

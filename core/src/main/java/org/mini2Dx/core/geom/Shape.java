@@ -375,4 +375,44 @@ public abstract class Shape {
 	 * @return Null if this {@link Shape} is a {@link Circle}
 	 */
 	public abstract Polygon getPolygon();
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Float.floatToIntBits(getNumberOfSides());
+		result = prime * result + Float.floatToIntBits(getX());
+		result = prime * result + Float.floatToIntBits(getY());
+		result = prime * result + Float.floatToIntBits(getMinX());
+		result = prime * result + Float.floatToIntBits(getMinY());
+		result = prime * result + Float.floatToIntBits(getMaxX());
+		result = prime * result + Float.floatToIntBits(getMaxY());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Shape other = (Shape) obj;
+		if (Float.floatToIntBits(getNumberOfSides()) != Float.floatToIntBits(other.getNumberOfSides()))
+			return false;
+		if (Float.floatToIntBits(getX()) != Float.floatToIntBits(other.getX()))
+			return false;
+		if (Float.floatToIntBits(getY()) != Float.floatToIntBits(other.getY()))
+			return false;
+		if (Float.floatToIntBits(getMinX()) != Float.floatToIntBits(other.getMinX()))
+			return false;
+		if (Float.floatToIntBits(getMinY()) != Float.floatToIntBits(other.getMinY()))
+			return false;
+		if (Float.floatToIntBits(getMaxX()) != Float.floatToIntBits(other.getMaxX()))
+			return false;
+		if (Float.floatToIntBits(getMaxY()) != Float.floatToIntBits(other.getMaxY()))
+			return false;
+		return true;
+	}
 }

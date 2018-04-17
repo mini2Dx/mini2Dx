@@ -787,6 +787,32 @@ public class PolygonTest {
 		iterator.end();
 	}
 	
+	@Test
+	public void testEquals() {
+		Polygon polygon1 = new Polygon(new Point [] {
+			new Point(0f, 0f),
+			new Point(10f, 0f),
+			new Point(10f, 10f),
+			new Point(0f, 10f)
+		});
+		Polygon polygon2 = new Polygon(new Point [] {
+				new Point(0f, 0f),
+				new Point(10f, 0f),
+				new Point(10f, 10f),
+				new Point(0f, 10f)
+			});
+		
+		Assert.assertEquals(true, polygon1.equals(polygon2));
+		
+		polygon2 = new Polygon(new Point [] {
+				new Point(0.00001f, 0f),
+				new Point(10f, 0f),
+				new Point(10f, 10f),
+				new Point(0f, 10f)
+			});
+		Assert.assertEquals(false, polygon1.equals(polygon2));
+	}
+	
 	private void clearDirtyBit(Polygon polygon) {
 		polygon.getMaxX();
 		polygon.getTriangles();

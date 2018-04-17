@@ -334,6 +334,9 @@ public class Rectangle extends Shape implements
 	}
 
 	public void set(Rectangle rectangle) {
+		if(this.equals(rectangle)) {
+			return;
+		}
 		set(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
 		setRotation(rectangle.getRotation());
 	}
@@ -527,5 +530,38 @@ public class Rectangle extends Shape implements
 	@Override
 	public Polygon getPolygon() {
 		return polygon;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Float.floatToIntBits(getX());
+		result = prime * result + Float.floatToIntBits(getY());
+		result = prime * result + Float.floatToIntBits(height);
+		result = prime * result + Float.floatToIntBits(width);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Rectangle other = (Rectangle) obj;
+		if (Float.floatToIntBits(getX()) != Float.floatToIntBits(other.getX()))
+			return false;
+		if (Float.floatToIntBits(getY()) != Float.floatToIntBits(other.getY()))
+			return false;
+		if (Float.floatToIntBits(height) != Float.floatToIntBits(other.height))
+			return false;
+		if (Float.floatToIntBits(width) != Float.floatToIntBits(other.width))
+			return false;
+		if (Float.floatToIntBits(getRotation()) != Float.floatToIntBits(other.getRotation()))
+			return false;
+		return true;
 	}
 }

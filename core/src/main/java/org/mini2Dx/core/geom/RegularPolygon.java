@@ -370,4 +370,29 @@ public class RegularPolygon extends Shape {
 	public void setCenterY(float y) {
 		polygon.setCenterY(y);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((polygon == null) ? 0 : polygon.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RegularPolygon other = (RegularPolygon) obj;
+		if (polygon == null) {
+			if (other.polygon != null)
+				return false;
+		} else if (!polygon.equals(other.polygon))
+			return false;
+		return true;
+	}
 }

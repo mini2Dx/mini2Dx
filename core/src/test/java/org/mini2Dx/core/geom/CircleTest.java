@@ -22,26 +22,26 @@ import org.mini2Dx.core.engine.PositionChangeListener;
  * Unit tests for {@link Circle}
  */
 public class CircleTest {
-	private Circle circle;
+	private Circle circle1, circle2;
 
 	@Before
 	public void setup() {
-		circle = new Circle(4);
+		circle1 = new Circle(4);
 	}
 	
 	@Test
 	public void testXY() {
-		circle = new Circle(100f, 50f, 25f);
-		Assert.assertEquals(100f, circle.getX());
-		Assert.assertEquals(50f, circle.getY());
-		Assert.assertEquals(25f, circle.getRadius());
+		circle1 = new Circle(100f, 50f, 25f);
+		Assert.assertEquals(100f, circle1.getX());
+		Assert.assertEquals(50f, circle1.getY());
+		Assert.assertEquals(25f, circle1.getRadius());
 	}
 
 	@Test
 	public void testContains() {
 		for (float x = -5f; x <= 5f; x += 0.1f) {
 			for (float y = -5f; y <= 5f; y += 0.1f) {
-				Assert.assertEquals(circle.getDistanceFromCenter(x, y) <= circle.getRadius(), circle.contains(x, y));
+				Assert.assertEquals(circle1.getDistanceFromCenter(x, y) <= circle1.getRadius(), circle1.contains(x, y));
 			}
 		}
 	}
@@ -49,95 +49,95 @@ public class CircleTest {
 	@Test
 	public void testIntersectsCircle() {
 		Circle circle2 = new Circle(20f, 20f, 4);
-		Assert.assertEquals(false, circle.intersects(circle2));
-		Assert.assertEquals(false, circle2.intersects(circle));
+		Assert.assertEquals(false, circle1.intersects(circle2));
+		Assert.assertEquals(false, circle2.intersects(circle1));
 
 		circle2.set(5f, 0f);
-		Assert.assertEquals(true, circle.intersects(circle2));
-		Assert.assertEquals(true, circle2.intersects(circle));
+		Assert.assertEquals(true, circle1.intersects(circle2));
+		Assert.assertEquals(true, circle2.intersects(circle1));
 	}
 
 	@Test
 	public void testGetDistanceToPositionable() {
 		Point point = new Point(3f, 0f);
-		Assert.assertEquals(0f, circle.getDistanceTo(point));
+		Assert.assertEquals(0f, circle1.getDistanceTo(point));
 
 		point.set(5f, 0f);
-		Assert.assertEquals(1f, circle.getDistanceTo(point));
+		Assert.assertEquals(1f, circle1.getDistanceTo(point));
 	}
 
 	@Test
 	public void testSetCenter() {
-		circle.set(20f, 25f);
+		circle1.set(20f, 25f);
 
-		Assert.assertEquals(20f, circle.getX());
-		Assert.assertEquals(25f, circle.getY());
+		Assert.assertEquals(20f, circle1.getX());
+		Assert.assertEquals(25f, circle1.getY());
 	}
 
 	@Test
 	public void testSetX() {
-		circle.setX(25f);
+		circle1.setX(25f);
 
-		Assert.assertEquals(25f, circle.getX());
-		Assert.assertEquals(0f, circle.getY());
+		Assert.assertEquals(25f, circle1.getX());
+		Assert.assertEquals(0f, circle1.getY());
 	}
 
 	@Test
 	public void testSetY() {
-		circle.setY(25f);
+		circle1.setY(25f);
 
-		Assert.assertEquals(0f, circle.getX());
-		Assert.assertEquals(25f, circle.getY());
+		Assert.assertEquals(0f, circle1.getX());
+		Assert.assertEquals(25f, circle1.getY());
 	}
 
 	@Test
 	public void testContainsShape() {
 		Shape shape = new Circle(2f);
-		Assert.assertEquals(true, circle.contains(shape));
+		Assert.assertEquals(true, circle1.contains(shape));
 		
 		shape = new Rectangle(0f,0f,1f,1f);
-		Assert.assertEquals(true, circle.contains(shape));
+		Assert.assertEquals(true, circle1.contains(shape));
 
 		shape = new Rectangle(0f,0f,3f,3f);
-		Assert.assertEquals(false, circle.contains(shape));
+		Assert.assertEquals(false, circle1.contains(shape));
 		
 		shape = new Triangle(new Vector2(0f, 4f), new Vector2(-4f,0f), new Vector2(4f,0f));
-		Assert.assertEquals(true,circle.contains(shape));
+		Assert.assertEquals(true,circle1.contains(shape));
 
 		shape = new Triangle(new Vector2(0f, 5f), new Vector2(-4f,0f), new Vector2(4f,0f));
-		Assert.assertEquals(false,circle.contains(shape));
+		Assert.assertEquals(false,circle1.contains(shape));
 	}
 
 	@Test
 	public void testContainsRectangle() {
 		Rectangle rectangle = new Rectangle(0f,0f,1f,1f);
-		Assert.assertEquals(true, circle.contains(rectangle));
+		Assert.assertEquals(true, circle1.contains(rectangle));
 
 		rectangle = new Rectangle(0f,0f,3f,3f);
-		Assert.assertEquals(false, circle.contains(rectangle));
+		Assert.assertEquals(false, circle1.contains(rectangle));
 	}
 
 	@Test
 	public void testIntersectLineSegmentsXY() {
-		Assert.assertEquals(true, circle.intersectsLineSegment(0f,0f,5f,5f));
-		Assert.assertEquals(false, circle.intersectsLineSegment(-5f,5f,5f,5f));
+		Assert.assertEquals(true, circle1.intersectsLineSegment(0f,0f,5f,5f));
+		Assert.assertEquals(false, circle1.intersectsLineSegment(-5f,5f,5f,5f));
 	}
 
 	@Test
 	public void testIntersectLineSegmentsVectors() {
 		Vector2 point1 = new Vector2(0f, 0f);
 		Vector2 point2 = new Vector2(5f, 5f);
-		Assert.assertEquals(true, circle.intersectsLineSegment(point1, point2));
+		Assert.assertEquals(true, circle1.intersectsLineSegment(point1, point2));
 
 		point1 = new Vector2(-5f,5f);
 		point2 = new Vector2(5f, 5f);
-		Assert.assertEquals(false, circle.intersectsLineSegment(point1, point2));
+		Assert.assertEquals(false, circle1.intersectsLineSegment(point1, point2));
 
 	}
 
 	@Test
 	public void testGetBoundingBox() {
-		Rectangle boundingBox = circle.getBoundingBox();
+		Rectangle boundingBox = circle1.getBoundingBox();
 		Assert.assertEquals(-4f, boundingBox.getX());
 		Assert.assertEquals(-4f, boundingBox.getY());
 		Assert.assertEquals(8f, boundingBox.getWidth());
@@ -146,8 +146,26 @@ public class CircleTest {
 
 	@Test
 	public void testTranslate() {
-		circle.translate(1f,-1f);
-		Assert.assertEquals(1f,circle.getCenterX());
-		Assert.assertEquals(-1f,circle.getCenterY());
+		circle1.translate(1f,-1f);
+		Assert.assertEquals(1f,circle1.getCenterX());
+		Assert.assertEquals(-1f,circle1.getCenterY());
+	}
+	
+	@Test
+	public void testEquals() {
+		circle1 = new Circle(4);
+		circle2 = new Circle(4);
+		
+		Assert.assertEquals(true, circle1.equals(circle2));
+		
+		circle1 = new Circle(1, 1, 4);
+		circle2 = new Circle(1, 1, 4);
+		
+		Assert.assertEquals(true, circle1.equals(circle2));
+		
+		circle1 = new Circle(4);
+		circle2 = new Circle(4.00001f);
+		
+		Assert.assertEquals(false, circle1.equals(circle2));
 	}
 }
