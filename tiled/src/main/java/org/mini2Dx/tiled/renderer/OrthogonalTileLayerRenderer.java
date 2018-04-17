@@ -33,6 +33,7 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 
 	private final boolean cacheLayers;
 	private final TiledMap tiledMap;
+	private final Rectangle graphicsClip = new Rectangle();
 
 	public OrthogonalTileLayerRenderer(TiledMap tiledMap, boolean cacheLayers) {
 		super();
@@ -57,19 +58,19 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 		int tileRenderY = MathUtils.round(renderY - startTileRenderY);
 
 		Rectangle existingClip = g.removeClip();
-		Rectangle newClip = new Rectangle(startTileRenderX, startTileRenderY, widthInTiles * tiledMap.getTileWidth(),
+		graphicsClip.set(startTileRenderX, startTileRenderY, widthInTiles * tiledMap.getTileWidth(),
 				heightInTiles * tiledMap.getTileHeight());
 
 		g.translate(-tileRenderX, -tileRenderY);
 
 		if (existingClip != null) {
-			if (existingClip.intersects(newClip)) {
-				g.setClip(existingClip.intersection(newClip));
+			if (existingClip.intersects(graphicsClip)) {
+				g.setClip(existingClip.intersection(graphicsClip));
 			} else {
 				g.setClip(existingClip);
 			}
 		} else {
-			g.setClip(newClip);
+			g.setClip(graphicsClip);
 		}
 
 		if (cacheLayers) {
