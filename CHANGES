@@ -9,6 +9,7 @@
 - Added Sprite#getAlpha() method
 - Added jacocoTestReport for better code coverage reporting
 - Added #equals method to ControllerButton implementations
+- Added #equals and #hashcode methods to geometry classes
 - TiledCollisionFactory can now return null to specify no collision
 - Prototype beans no longer require setters/getters for dependency injection
 - Fixed merging concurrency exception during object movement within concurrent QuadTrees
@@ -17,6 +18,7 @@
 - Fixed typing text animation cutting off last character
 - Fixed unnecessary Image render node layouts when setting same value for texture path
 - Fixed Image#getTexturePath returning null
+- Fixed duplicate notifications for CollisionPoint listeners
 - (#53) Increased code coverage on Rectangle and Circle
 
 [1.6.5]
