@@ -11,23 +11,28 @@
  */
 package org.mini2Dx.core.engine.geom;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.engine.PositionChangeListener;
+
 
 /**
  * Unit tests for {@link CollisionCollisionPoint}
  * @author Thomas Cashman
  */
-public class CollisionPointTest {
+public class CollisionPointTest implements PositionChangeListener<CollisionPoint> {
 	private CollisionPoint point1, point2, point3;
+	
+	private int totalNotifications = 0;
 	
 	@Before
 	public void setup() {
 		point1 = new CollisionPoint();
 		point2 = new CollisionPoint();
 		point3 = new CollisionPoint();
+		
+		point1.addPostionChangeListener(this);
 	}
 	
 	@Test
@@ -111,13 +116,13 @@ public class CollisionPointTest {
 		point2.set(10, 0);
 		
 		point2.rotateAround(point1, 90f);
-		Assert.assertEquals(10f, point2.getY());
+		Assert.assertEquals(10f, point2.getY(), 0.0f);
 		
 		point1.set(10, 0);
 		point2.set(20, 0);
 		
 		point2.rotateAround(point1, 90f);
-		Assert.assertEquals(10f, point2.getY());
+		Assert.assertEquals(10f, point2.getY(), 0.0f);
 	}
 	
 	@Test
@@ -128,5 +133,32 @@ public class CollisionPointTest {
 		point1.moveTowards(point2, 1f);
 		Assert.assertEquals(0.707f, point1.getX(), 0.01f);
 		Assert.assertEquals(0.701f, point1.getY(), 0.01f);
+	}
+	
+	@Test
+	public void testPositionChangedNotification() {
+		point1.setX(1f);
+		Assert.assertEquals(1, totalNotifications);
+		
+		point1.setY(1f);
+		Assert.assertEquals(2, totalNotifications);
+		
+		point1.add(1f, 1f);
+		Assert.assertEquals(3, totalNotifications);
+		
+		point1.sub(1f, 1f);
+		Assert.assertEquals(4, totalNotifications);
+		
+		point1.set(10f, 10f);
+		Assert.assertEquals(5, totalNotifications);
+		
+		//Check no unnecessary notification
+		point1.set(10f, 10f);
+		Assert.assertEquals(5, totalNotifications);
+	}
+
+	@Override
+	public void positionChanged(CollisionPoint moved) {
+		totalNotifications++;
 	}
 }

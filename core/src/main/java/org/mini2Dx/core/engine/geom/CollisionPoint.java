@@ -204,7 +204,7 @@ public class CollisionPoint extends Point implements Positionable {
 		if(x == getX()) {
 			return;
 		}
-		super.setX(x);
+		super.set(x, getY());
 		interpolate = true;
 		notifyPositionChangeListeners();
 	}
@@ -214,7 +214,7 @@ public class CollisionPoint extends Point implements Positionable {
 		if(y == getY()) {
 			return;
 		}
-		super.setY(y);
+		super.set(getX(), y);
 		interpolate = true;
 		notifyPositionChangeListeners();
 	}
