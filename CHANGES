@@ -3,6 +3,7 @@
 - [BREAKING] UI minHeight now includes padding + margin in check
 - [BREAKING] TiledCollisionFactory now takes TiledMap as parameter
 - [BREAKING] SlideIn/SlideOut animations now take duration as parameter
+- [BREAKING] TiledCollisionMerger#isMergable now accepts TiledMap and TileLayer parameters
 - (#74) Added TiledMapLoader for loading TiledMap instances via AssetManager
 - Added AnimatedImage element to UI library
 - Added new FlexDirections; ROW_REVERSE and CENTER

@@ -126,14 +126,14 @@ public class TiledCollisionMapperTest {
 		collisionBoxMapper.mapAndMergeCollisionsByLayer(quadTree, tiledMap, collisionLayerIndex);
 
 		List<CollisionBox> collisions = quadTree.getElementsWithinArea(quadTree);
-		Assert.assertEquals(3, collisions.size());
+		Assert.assertEquals(4, collisions.size());
 
 		CollisionBox collision = getCollisionAt(1, 5, quadTree, tiledMap);
 		Assert.assertEquals(tiledMap.getTileWidth() * 2f, collision.getWidth());
 		Assert.assertEquals(tiledMap.getTileHeight() * 2f, collision.getHeight());
 
 		collision = getCollisionAt(5, 4, quadTree, tiledMap);
-		Assert.assertEquals(tiledMap.getTileWidth() * 2f, collision.getWidth());
+		Assert.assertEquals(tiledMap.getTileWidth() * 1f, collision.getWidth());
 		Assert.assertEquals(tiledMap.getTileHeight() * 1f, collision.getHeight());
 
 		collision = getCollisionAt(6, 3, quadTree, tiledMap);
@@ -211,7 +211,7 @@ public class TiledCollisionMapperTest {
 		collisionBoxMapper.mapAndMergeEmptySpacesByLayer(quadTree, tiledMap, collisionLayerIndex);
 
 		List<CollisionBox> collisions = quadTree.getElementsWithinArea(quadTree);
-		Assert.assertEquals(7, collisions.size());
+		Assert.assertEquals(19, collisions.size());
 	}
 
 	private void assertCollisionAt(int tileX, int tileY, QuadTree<?> quadTree, TiledMap tiledMap) {

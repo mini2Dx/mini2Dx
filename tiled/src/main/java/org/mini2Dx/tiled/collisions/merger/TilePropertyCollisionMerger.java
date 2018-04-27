@@ -12,6 +12,8 @@
 package org.mini2Dx.tiled.collisions.merger;
 
 import org.mini2Dx.tiled.Tile;
+import org.mini2Dx.tiled.TileLayer;
+import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.collisions.TiledCollisionMerger;
 
 /**
@@ -28,7 +30,8 @@ public class TilePropertyCollisionMerger implements TiledCollisionMerger {
 	}
 
 	@Override
-	public boolean isMergable(Tile tile1, Tile tile2) {
+	public boolean isMergable(TiledMap tiledMap, TileLayer layer, Tile tile1, int tile1X, int tile1Y, int tile2X, int tile2Y) {
+		final Tile tile2 = tiledMap.getTile(layer.getTileId(tile2X, tile2Y));
 		if(tile1.containsProperty(propertyName)) {
 			if(tile2.containsProperty(propertyName)) {
 				return tile1.getProperty(propertyName).equals(tile2.getProperty(propertyName));

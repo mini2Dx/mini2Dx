@@ -12,6 +12,8 @@
 package org.mini2Dx.tiled.collisions;
 
 import org.mini2Dx.tiled.Tile;
+import org.mini2Dx.tiled.TileLayer;
+import org.mini2Dx.tiled.TiledMap;
 
 /**
  * Interface for determining if one {@link Tile} can be merged
@@ -19,5 +21,5 @@ import org.mini2Dx.tiled.Tile;
  */
 public interface TiledCollisionMerger {
 
-	public boolean isMergable(Tile tile1, Tile tile2);
+	public boolean isMergable(TiledMap tiledMap, TileLayer layer, Tile tile1, int tile1X, int tile1Y, int tile2X, int tile2Y);
 }
