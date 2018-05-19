@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 
 import org.mini2Dx.android.AndroidGameWrapper;
 import org.mini2Dx.android.AndroidMini2DxConfig;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.ApplicationListener;
 import org.mini2Dx.core.game.GameContainer;
 
@@ -65,7 +66,7 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 
 	protected AndroidMini2DxGraphics graphics;
 	protected AndroidInput input;
-	protected AndroidAudio audio;
+	protected AndroidMini2DxAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
 	protected AndroidClipboard clipboard;
@@ -163,7 +164,7 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 		graphics = new AndroidMini2DxGraphics(this, config,
 				config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
-		audio = new AndroidAudio(this, config);
+		audio = new AndroidMini2DxAudio(this, config);
 		this.getFilesDir(); // workaround for Android bug #10515463
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		net = new AndroidNet(this);
@@ -195,6 +196,7 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
+		Mdx.audio = audio;
 		Gdx.files = this.getFiles();
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
