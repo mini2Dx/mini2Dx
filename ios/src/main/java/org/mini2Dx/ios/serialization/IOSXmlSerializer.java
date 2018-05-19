@@ -41,6 +41,7 @@ import org.mini2Dx.core.serialization.annotation.NonConcrete;
 import org.mini2Dx.core.serialization.annotation.PostDeserialize;
 import org.mini2Dx.core.util.Ref;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.Annotation;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
@@ -54,6 +55,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class IOSXmlSerializer implements XmlSerializer {
+	private static final String LOGGING_TAG = IOSXmlSerializer.class.getSimpleName();
 
 	@Override
 	public <T> T fromXml(String xml, Class<T> clazz) throws SerializationException {
@@ -507,10 +509,10 @@ public class IOSXmlSerializer implements XmlSerializer {
 				bestMatchedConstructor = constructors[i];
 			}
 		}
-		if (bestMatchedConstructor == null) {
-			throw new SerializationException("Could not find suitable constructor for class " + clazz.getName());
-		}
-		if (detectedAnnotations.size() == 0) {
+		if (bestMatchedConstructor == null || detectedAnnotations.size() == 0) {
+			if(Gdx.app != null) {
+				Gdx.app.error(LOGGING_TAG, "Could not find suitable constructor for " + clazz.getSimpleName() + ". Falling back to default constructor.");
+			}
 			return (T) bestMatchedConstructor.newInstance();
 		}
 

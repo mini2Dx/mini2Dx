@@ -52,6 +52,7 @@ import android.util.Xml;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class AndroidXmlSerializer implements XmlSerializer {
+	private static final String LOGGING_TAG = AndroidXmlSerializer.class.getSimpleName();
 
 	@Override
 	public <T> T fromXml(String xml, Class<T> clazz) throws SerializationException {
@@ -493,10 +494,10 @@ public class AndroidXmlSerializer implements XmlSerializer {
 				bestMatchedConstructor = constructors[i];
 			}
 		}
-		if (bestMatchedConstructor == null) {
-			throw new SerializationException("Could not find suitable constructor for class " + clazz.getName());
-		}
-		if (detectedAnnotations.size() == 0) {
+		if (bestMatchedConstructor == null || detectedAnnotations.size() == 0) {
+			if(Gdx.app != null) {
+				Gdx.app.error(LOGGING_TAG, "Could not find suitable constructor for " + clazz.getSimpleName() + ". Falling back to default constructor.");
+			}
 			return (T) clazz.newInstance();
 		}
 
