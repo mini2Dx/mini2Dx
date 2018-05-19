@@ -18,3 +18,11 @@ Gemfile.lock
 local.properties
 uats/src/main/resources/crossfade.ogg
 uats-android/gen/
+uats-android/assets/ui.xml
+uats-android/assets/explosion.p
+uats-android/assets/music.ogg
+uats-android/assets/particles/particle.png
+uats-android/assets/repeatedNinePatch.png
+uats-android/assets/sound.ogg
+uats-android/assets/texture-region-uat.atlas
+uats-android/assets/texture-region-uat.png

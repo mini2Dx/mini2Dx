@@ -34,6 +34,7 @@ import org.mini2Dx.uats.OrthogonalTiledMapNoCachingUAT;
 import org.mini2Dx.uats.OrthogonalTiledMapWithCachingUAT;
 import org.mini2Dx.uats.ParticleEffectsUAT;
 import org.mini2Dx.uats.TextureRegionUAT;
+import org.mini2Dx.uats.UiSerializationUAT;
 import org.mini2Dx.uats.UiUAT;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.animation.TypingTextAnimation;
@@ -292,6 +293,16 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 			@Override
 			public void onActionEnd(ActionEvent event) {
 				nextScreenId = ScreenIds.getScreenId(UiUAT.class);
+			}
+		})));
+		uatsDialog.add(Row.withElements("row-ui-serialization", UiUtils.createButton(uiNavigation, "UI Serialization", new ActionListener() {
+			@Override
+			public void onActionBegin(ActionEvent event) {
+			}
+
+			@Override
+			public void onActionEnd(ActionEvent event) {
+				nextScreenId = ScreenIds.getScreenId(UiSerializationUAT.class);
 			}
 		})));
 		uatsDialog.add(Row.withElements("row-utilities", UiUtils.createHeader("Utilities")));

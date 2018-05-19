@@ -34,6 +34,12 @@ android {
 	}
 }
 
+task copyUatResources(type: Copy) {
+    from '../uats/src/main/resources'
+    into 'assets'
+}
+build.dependsOn copyUatResources
+task(':mini2Dx-uats-android:installDebug').dependsOn copyUatResources
 
 // called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders
@@ -58,7 +64,7 @@ task copyAndroidNatives() {
     }
 }
 
-task launchAndroid(type: Exec, dependsOn: ':mini2Dx-uats-android:installDebug') {
+task launchAndroid(type: Exec, dependsOn: [':mini2Dx-uats-android:installDebug', copyUatResources]) {
     def path
     def localProperties = project.file("../local.properties")
     if (localProperties.exists()) {

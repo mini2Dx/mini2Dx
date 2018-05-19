@@ -33,7 +33,7 @@ import org.mini2Dx.ui.render.RadioButtonRenderNode;
  * A responsive radio buttons UI element
  */
 public class RadioButton extends UiElement implements Actionable {
-	@Field
+	@Field(optional=true)
 	private final List<String> options = new ArrayList<String>(2);
 	@Field(optional = true)
 	private String defaultSelectedOption = null;
