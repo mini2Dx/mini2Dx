@@ -73,6 +73,15 @@ public abstract class ParentUiElement extends UiElement {
 	 * @return A new instance of {@link ParentRenderNode}
 	 */
 	protected abstract ParentRenderNode<?, ?> createRenderNode(ParentRenderNode<?, ?> parent);
+	
+	/**
+	 * Returns the child {@link UiElement} at the specified index
+	 * @param index The index of the child element
+	 * @return The {@link UiElement} instance
+	 */
+	public UiElement get(int index) {
+		return children.get(index);
+	}
 
 	/**
 	 * Adds a {@link UiElement} to this {@link ParentUiElement}

@@ -468,7 +468,7 @@ public class DesktopXmlSerializer implements XmlSerializer {
 
 		for (int i = 0; i < constructors.length; i++) {
 			detectedAnnotations.clear();
-			boolean allAnnotated = true;
+			boolean allAnnotated = constructors[i].getParameterAnnotations().length > 0;
 
 			for (int j = 0; j < constructors[i].getParameterAnnotations().length; j++) {
 				java.lang.annotation.Annotation[] annotations = constructors[i].getParameterAnnotations()[j];

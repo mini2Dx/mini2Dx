@@ -36,6 +36,7 @@ import org.mini2Dx.core.util.Ref;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.Annotation;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
@@ -432,12 +433,17 @@ public class AndroidXmlSerializer implements XmlSerializer {
 		// Single constructor with no args
 		if (constructors.length == 1 && constructors[0].getParameterAnnotations().length == 0) {
 			isEndElement.set(false);
+			Gdx.app.log("XML", "Only no-arg constructor found for " + clazz.getSimpleName());
 			return (T) clazz.newInstance();
 		}
 
 		Map<String, String> attributes = new HashMap<String, String>();
 		for (int i = 0; i < xmlParser.getAttributeCount(); i++) {
-			attributes.put(xmlParser.getAttributeName(i).toString(), xmlParser.getAttributeValue(i));
+			final String attributeName = xmlParser.getAttributeName(i).toString();
+			if(attributeName.equalsIgnoreCase("class")) {
+				continue;
+			}
+			attributes.put(attributeName, xmlParser.getAttributeValue(i));
 		}
 		xmlParser.next();
 		isEndElement.set(xmlParser.getEventType() == XmlPullParser.END_TAG);
@@ -447,8 +453,8 @@ public class AndroidXmlSerializer implements XmlSerializer {
 
 		for (int i = 0; i < constructors.length; i++) {
 			detectedAnnotations.clear();
-			boolean allAnnotated = true;
-
+			boolean allAnnotated = constructors[i].getParameterAnnotations().length > 0;
+			
 			for (int j = 0; j < constructors[i].getParameterAnnotations().length; j++) {
 				java.lang.annotation.Annotation[] annotations = constructors[i].getParameterAnnotations()[j];
 				if (annotations.length == 0) {

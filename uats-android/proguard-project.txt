@@ -40,3 +40,7 @@
    boolean reportFixture(long);
    float   reportRayFixture(long, float, float, float, float, float);
 }
+
+-keep public class * extends org.mini2Dx.element.UiElement { 
+      public <init>*(...); 
+}

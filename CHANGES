@@ -20,6 +20,7 @@
 - Fixed unnecessary Image render node layouts when setting same value for texture path
 - Fixed Image#getTexturePath returning null
 - Fixed duplicate notifications for CollisionPoint listeners
+- Fixed XML deserialization constructor matching on Android
 - (#53) Increased code coverage on Rectangle and Circle
 
 [1.6.5]
