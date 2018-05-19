@@ -513,7 +513,7 @@ public class IOSXmlSerializer implements XmlSerializer {
 			if(Gdx.app != null) {
 				Gdx.app.error(LOGGING_TAG, "Could not find suitable constructor for " + clazz.getSimpleName() + ". Falling back to default constructor.");
 			}
-			return (T) bestMatchedConstructor.newInstance();
+			return (T) clazz.newInstance();
 		}
 
 		Object[] constructorParameters = new Object[detectedAnnotations.size()];
