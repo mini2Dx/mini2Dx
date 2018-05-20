@@ -511,7 +511,7 @@ public class DesktopXmlSerializer implements XmlSerializer {
 			}
 		}
 		if (bestMatchedConstructor == null || detectedAnnotations.size() == 0) {
-			if(Gdx.app != null) {
+			if(Gdx.app != null && detectedAnnotations.size() > 0) {
 				Gdx.app.error(LOGGING_TAG, "Could not find suitable constructor for " + clazz.getSimpleName() + ". Falling back to default constructor.");
 			}
 			return (T) clazz.newInstance();
