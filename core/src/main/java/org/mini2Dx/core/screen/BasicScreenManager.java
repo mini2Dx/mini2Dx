@@ -102,6 +102,8 @@ public class BasicScreenManager<T extends GameScreen> implements
 		this.transitionOut = transitionOut;
 
 		this.nextScreen = gameScreens.get(id);
+		
+		this.transitionIn.initialise(currentScreen, nextScreen);
 		this.transitionOut.initialise(currentScreen, nextScreen);
 
 		if (currentScreen != null) {
