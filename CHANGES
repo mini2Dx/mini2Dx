@@ -1,4 +1,6 @@
-[1.7.0-SNAPSHOT]
+[1.7.1-SNAPSHOT]
+
+[1.7.0]
 - [BREAKING] LayoutRuleset is now applied to both horizontal and vertical calculations
 - [BREAKING] UI minHeight now includes padding + margin in check
 - [BREAKING] TiledCollisionFactory now takes TiledMap as parameter
