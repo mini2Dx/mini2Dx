@@ -5,13 +5,15 @@ title:  "mini2Dx 1.7.0 released and the roadmap ahead"
 date:   2018-06-10 16:00:00 +0300
 ---
 
-## 1.7.0
+1.7.0
+-----------------------
 
 After several months work, I'm happy to announce the release of mini2Dx 1.7.0. This release comes with a lot of bug fixes, optimisations and improvements. You can find the full list in the [CHANGES file](https://github.com/mini2Dx/mini2Dx/blob/master/CHANGES) on the repository.
 
 To update your existing projects, see the [Updating mini2Dx](https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx) wiki page.
 
-## Roadmap
+Roadmap
+-----------------------
 
 Now that 1.7.0 is released, it's time to talk about the future of mini2Dx.
 
