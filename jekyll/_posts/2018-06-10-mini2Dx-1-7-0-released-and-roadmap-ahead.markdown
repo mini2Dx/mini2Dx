@@ -21,11 +21,12 @@ Recently, Apple deprecated OpenGL on Mac. This means that at some point in the f
 
 Furthermore, I'm hoping to bring my next mini2Dx-based game [Alchemic Cutie](https://alchemiccutie.com) to consoles - this means that using a JRE-based environemt won't be possible due to performance/licensing/etc. However, I like coding games in Java and would like to continue to do so.
 
-So with that, I'm beginning work on the next generation of mini2Dx - 2.0! This next generation of mini2Dx aims to be the best 2D game development framework for all game developers. Here's how:
+So with that, I'm beginning work on the next generation of mini2Dx - 2.0! The goal of the next generation is to support more platforms such as web browsers and consoles. But also, it aims to be the best 2D game development framework for both Java and C# developers. Here's how:
 
- * Core API will be implemented via Haxe and cross-compiled to Java, C#, Javascript, etc.
- * Language-specific runtimes will then be implemented using existing optimised libraries (LibGDX, MonoGame, etc.)
- * Same API across all platforms will allow for cross-compiling between platforms (e.g. compile your Java-based mini2Dx game to run via MonoGame)
+ * Core API will be implemented in both Java and C#
+ * Java will use two runtimes; LibGDX and bgfx
+ * C# will use MonoGame for its runtime
+ * From the first version, it will be possible to cross-compile your Java game to the C# runtime
 
 This development will take a lot of time and won't be completed until 2019. In the meantime, you can expect that I'll keep supporting 1.7.x of mini2Dx with fixes.
 
