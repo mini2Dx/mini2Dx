@@ -19,14 +19,15 @@ Now that 1.7.0 is released, it's time to talk about the future of mini2Dx.
 
 Recently, Apple deprecated OpenGL on Mac. This means that at some point in the future, the current version of mini2Dx will stop working as it is tightly coupled to OpenGL via LibGDX. While I'm disappointed in this decision from Apple, I still want game developers using mini2Dx to be able to release on Mac.
 
-Furthermore, I'm hoping to bring my next mini2Dx-based game [Alchemic Cutie](https://alchemiccutie.com) to consoles - this means that using a JRE-based environemt won't be possible due to performance/licensing/etc. However, I like coding games in Java and would like to continue to do so.
+Furthermore, I'm hoping to bring my next mini2Dx-based game [Alchemic Cutie](https://alchemiccutie.com) to consoles - this means that using a JRE-based environemt won't be possible. However, I like coding games in Java and would like to continue to do so.
 
-So with that, I'm beginning work on the next generation of mini2Dx - 2.0! The goal of the next generation is to support more platforms such as web browsers and consoles. But also, it aims to be the best 2D game development framework for both Java and C# developers. Here's how:
+So with that, I'm beginning work on the next generation of mini2Dx - 2.0! The goal of the next generation is to support more platforms such as web browsers and consoles. Here's how:
 
- * Core API will be implemented in both Java and C#
- * Java will use two runtimes; LibGDX and bgfx
- * C# will use MonoGame for its runtime
- * From the first version, it will be possible to cross-compile your Java game to the C# runtime
+ * Core API will consist mostly of interfaces to platform implementations
+ * Desktop will use two runtimes; the current LibGDX runtime and eventually a bgfx runtime
+ * Android/iOS will continue to use the LibGDX runtime
+ * Web support will also be added via the LibGDX runtime
+ * Console support will be added via MonoGame and cross-compilation
 
 This development will take a lot of time and won't be completed until 2019. In the meantime, you can expect that I'll keep supporting 1.7.x of mini2Dx with fixes.
 
