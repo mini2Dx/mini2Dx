@@ -29,7 +29,7 @@ So with that, I'm beginning work on the next generation of mini2Dx - 2.0! The go
  * Web support will also be added via the LibGDX runtime
  * Console support will be added via MonoGame and cross-compilation
 
-This development will take a lot of time and won't be completed until 2019. In the meantime, you can expect that I'll keep supporting 1.7.x of mini2Dx with fixes.
+This development will take a lot of time and won't be completed until 2019. In the meantime, you can expect that I'll keep supporting 1.7.x of mini2Dx with fixes. All 1.7.x development will continue in the [mini2Dx Vintage Edition](https://github.com/mini2Dx/mini2Dx-ve) repository.
 
 As an existing mini2Dx user, you're probably wondering what this means for your current game. My goal is to keep the 2.0 API as close as possible to the existing 1.7.x API (since I'm also implementing a game against 1.7.x). So there may be a small number of method changes needed during the upgrade but you can expect the same functionality to be available and more!
 <!--more-->
