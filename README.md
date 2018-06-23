@@ -16,6 +16,13 @@ Goals
 
 The main objective of mini2Dx is to provide a beginner-friendly, master-ready framework for rapidly prototyping and building 2D games in Java.
 
+What's New
+---------------------
+
+__10th June 2018__
+
+This is repository will be focused on development of the next generation of mini2Dx - 2.0. For 1.x development, see the [mini2Dx Vintage Edition](https://github.com/mini2Dx/mini2Dx-ve) repository. 1.x will receive bug fixes and optimisations during 2.0 development. Once 2.0 is released, 1.x will be 100% community-driven.
+
 License
 ---------------------
 
