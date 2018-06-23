@@ -1,4 +1,8 @@
-[1.7.1-SNAPSHOT]
+[1.7.2]
+- Significant memory usage improvements across all geometry classes
+
+[1.7.1]
+- Added TypingTextAnimation#getCurrentCharacterIndex
 
 [1.7.0]
 - [BREAKING] LayoutRuleset is now applied to both horizontal and vertical calculations
