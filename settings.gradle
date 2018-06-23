@@ -1,59 +1,6 @@
 import org.apache.tools.ant.taskdefs.condition.Os
 
-boolean hasAndroidSdk() {
-	try {
-		def rootDir = "$rootDir"
-		def localProperties = new File(rootDir, "local.properties")
-		if (localProperties.exists()) {
-			Properties properties = new Properties()
-			localProperties.withInputStream { instr ->
-				properties.load(instr)
-			}
-			def androidHome = properties.getProperty('sdk.dir')
-			if(androidHome != null && androidHome.length() > 0) {
-				println androidHome
-				return true;
-			}
-		}
-	} catch (all) {
-		println all
-	}
-	try {
-		def androidHome = "$System.env.ANDROID_HOME"
-		if(androidHome != null && androidHome.length() > 0 && !androidHome.contains('null')) {
-			println androidHome
-			return true;
-		}
-	} catch (all) {
-		println all
-	}
-	
-	try {
-		def androidExecPath = new ByteArrayOutputStream()
-		if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-			return false
-		} else {
-			exec {
-				commandLine 'which', 'android'
-				standardOutput = androidExecPath
-			}
-		}
-		return androidExecPath.toString() != null && androidExecPath.toString().trim().length() > 0;
-	} catch (all) {
-		println all
-	}
-	return false
-}
-
-include "core", "desktop", "headless", "tiled", "artemis-odb", "ui", "uats", "uats-desktop"
-
-if (hasAndroidSdk()) {
-	include "android", "uats-android"
-}
-
-if (Os.isFamily(Os.FAMILY_MAC)) {
-	include "ios", "uats-ios"
-}
+include "core"
 
 rootProject.name = 'mini2Dx'
 rootProject.children.each { it.name = rootProject.name + "-" + it.name }

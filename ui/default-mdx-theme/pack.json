@@ -1,8 +1,0 @@
-{
-	"filterMin": "Nearest",
-    "filterMag": "Nearest",
-	"maxWidth": 512,
-	"maxHeight": 512,
-	"square": false,
-	"combineSubdirectories": true
-}

@@ -11,12 +11,9 @@ buildscript {
         maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
-		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'		
-		classpath 'com.android.tools.build:gradle:3.0.1'
-		classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.0'
 		classpath 'gradle.plugin.me.champeau.gradle:jmh-gradle-plugin:0.3.0'
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.9.0'
-		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.2'
+		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.8'
     }
 }
 
@@ -35,7 +32,7 @@ ext {
 	androidVersion="4.4"
 	artemisVersion="2.1.0"
 	beanutilsVersion="1.8.3"
-	gdxVersion="1.9.6"
+	gdxVersion="1.9.8"
 	langVersion="3.1"
 	multiDexVersion="1.0.1"
 	nativesLoaderVersion="1.0.0"
@@ -68,7 +65,7 @@ def docProjects() {
 	subprojects.findAll { !it.name.contains('uat') }
 }
 
-def projectVersion = '1.7.1-SNAPSHOT';
+def projectVersion = '2.0.0-SNAPSHOT';
 
 configure(docProjects()) {
 	apply plugin: "signing"
@@ -207,12 +204,8 @@ project(":" + rootProject.name + "-core") {
     apply plugin: "jacoco"
 
     dependencies {
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-        
-		compile "org.mini2Dx:natives-loader:$nativesLoaderVersion"
-        compile "org.apache.commons:commons-lang3:$langVersion"
+		compile "org.mini2Dx:gdx-math:$gdxVersion"
+		compile "org.mini2Dx:gdx-input:$gdxVersion"
         
 		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         testCompile "junit:junit:$junitVersion"
@@ -231,312 +224,16 @@ project(":" + rootProject.name + "-core") {
 	}
     
   jacocoTestReport {
-    group = "Reporting"
-    reports {
-      xml.enabled true
-      csv.enabled false
-      html.destination "${buildDir}/reports/coverage"
-    }
-    afterEvaluate {
-      classDirectories = files(classDirectories.files.collect {
-        fileTree(dir: it)
-      })
-    }
-  }
-}
-
-project(":" + rootProject.name + "-desktop") {
-	description = "mini2Dx desktop runtime"
-	
-    dependencies {
-    	compile project(":" + rootProject.name + "-core")
-    	
-    	compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
-    	
-    	compile "org.reflections:reflections:$reflectionsVersion"
-    	
-    	testCompile "junit:junit:$junitVersion"
-		testCompile "org.jmock:jmock-junit4:$jmockVersion"
-		testCompile "org.jmock:jmock-legacy:$jmockVersion"
-		testCompile project(path: ":" + rootProject.name + "-core", configuration: 'testOutput')
-    }
-}
-
-project(":" + rootProject.name + "-headless") {
-	description = "mini2Dx headless runtime"
-	
-    dependencies {
-    	compile project(":" + rootProject.name + "-desktop")
-    	
-    	compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-    	
-    	testCompile "junit:junit:$junitVersion"
-		testCompile "org.jmock:jmock-junit4:$jmockVersion"
-		testCompile "org.jmock:jmock-legacy:$jmockVersion"
-		testCompile project(path: ":" + rootProject.name + "-core", configuration: 'testOutput')
-    }
-}
-
-project(":" + rootProject.name + "-tiled") {
-	description = "mini2Dx Tiled support library"
-	
-    dependencies {
-		compile project(":" + rootProject.name + "-core")
-		
-		testCompile "junit:junit:$junitVersion"
-		testCompile "org.jmock:jmock-junit4:$jmockVersion"
-		testCompile "org.jmock:jmock-legacy:$jmockVersion"
-    }
-}
-
-project(":" + rootProject.name + "-artemis-odb") {
-	description = "mini2Dx artemis-odb support library"
-	
-    dependencies {
-		compile project(":" + rootProject.name + "-core")
-		compile "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
-		compile "net.onedaybeard.artemis:artemis-odb-serializer:$artemisVersion"
-		
-		testCompile "junit:junit:$junitVersion"
-		testCompile "org.jmock:jmock-junit4:$jmockVersion"
-		testCompile "org.jmock:jmock-legacy:$jmockVersion"
-    }
-}
-
-project(":" + rootProject.name + "-ui") {
-	description = "mini2Dx UI library"
-	
-	apply plugin: "me.champeau.gradle.jmh"
-	
-	dependencies {
-		compile project(":" + rootProject.name + "-core")
-		
-		testCompile "junit:junit:$junitVersion"
-		testCompile "org.jmock:jmock-junit4:$jmockVersion"
-		testCompile "org.jmock:jmock-legacy:$jmockVersion"
-		testCompile project(":" + rootProject.name + "-desktop")
-		
-		jmh project(":" + rootProject.name + "-headless")
-	}
-	
-	task packDefaultUiTheme {
-		TexturePacker.process("$projectDir/default-mdx-theme", "$projectDir/src/main/resources", "default-mdx-theme")
-	}
-	
-	jmh {
-		timeUnit = 'ns'
-		threads = Runtime.getRuntime().availableProcessors()
-		warmupIterations = 10
-		iterations = 10
-		fork = Runtime.getRuntime().availableProcessors()
-		jvmArgsPrepend = '-Xmx1024m'
-	}
-}
-
-project(":" + rootProject.name + "-uats") {
-	description = "mini2Dx UATs library"
-	
-    apply plugin: "java"
-	
-	sourceCompatibility = 1.7
-	targetCompatibility = 1.7
-
-    dependencies {
-    	compile project(":" + rootProject.name + "-tiled")
-		compile project(":" + rootProject.name + "-ui")
-    }
-	
-	task copyTiledAssets(type: Copy) {
-		from '../tiled/src/test/resources'
-		into '../uats-android/assets'
-	}
-	
-	task docs(type: Javadoc) {
-		failOnError = false
-		title = 'mini2Dx'
-		source docProjects().collect {p -> p.name.contains("android") ? p.android.sourceSets.main.java.srcDirs : p.sourceSets.main.allJava }
-		classpath = files(docProjects().collect {p -> p.name.contains("android") ? p.configurations.compile : p.sourceSets.main.compileClasspath})
-		destinationDir = new File(project.parent.projectDir, "docs/javadoc/${projectVersion}")
-	}
-	
-	processResources.dependsOn copyTiledAssets
-	docs.dependsOn docProjects().build
-}
-
-project(":" + rootProject.name + "-uats-desktop") {
-	description = "mini2Dx desktop UATs launcher"
-	
-    apply plugin: "java"
-    
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-
-    dependencies {
-        compile project(":" + rootProject.name + "-uats")
-        compile project(":" + rootProject.name + "-desktop")
-		compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-    }
-}
-
-if (hasAndroidSdk()) {
-	project(":" + rootProject.name + "-android") {
-		description = "mini2Dx Android runtime"
-		
-		dependencies {
-			implementation project(":" + rootProject.name + "-core")
-			
-			implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-			implementation "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-			implementation "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
+		group = "Reporting"
+		reports {
+			xml.enabled true
+			csv.enabled false
+			html.destination "${buildDir}/reports/coverage"
 		}
+		afterEvaluate {
+			classDirectories = files(classDirectories.files.collect {
+				fileTree(dir: it)
+			})
+    	}
 	}
-	
-	project(":" + rootProject.name + "-uats-android") {
-		description = "mini2Dx Android UATs launcher"
-		
-		apply plugin: "com.android.application"
-		
-		sourceCompatibility = 1.7
-		targetCompatibility = 1.7
-		
-		ext {
-			appName = 'mini2Dx-uats'
-		}
-		
-		configurations { 
-			natives
-		}
-		
-		dependencies {
-			implementation project(":" + rootProject.name + "-android")
-			implementation project(":" + rootProject.name + "-uats")
-			
-			implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-			implementation "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-			implementation "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
-			implementation "com.android.support:multidex:$multiDexVersion"
-			
-			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
-			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
-			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
-			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
-       		natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
-       		natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi"
-       		natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
-			natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
-			natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
-			natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
-			
-			androidTestCompile (project(path: ":" + rootProject.name + "-core", configuration: 'testOutput')) {
-				exclude group: 'junit'
-				exclude group: 'org.hamcrest'
-			}
-			androidTestCompile ("org.jmock:jmock-junit4:$jmockVersion") {
-				exclude group: 'junit'
-				exclude group: 'org.hamcrest'
-			}
-			androidTestCompile ("org.jmock:jmock-legacy:$jmockVersion") {
-				exclude group: 'junit'
-				exclude group: 'org.hamcrest'
-			}
-			androidTestCompile 'com.android.support.test:runner:0.4'
-			androidTestCompile 'com.android.support.test:rules:0.4'
-		}
-	}
-}
-
-if (Os.isFamily(Os.FAMILY_MAC)) {
-	project(":" + rootProject.name + "-ios") {
-		description = "mini2Dx iOS runtime"
-	
-		dependencies {
-			compile project(":" + rootProject.name + "-core")
-			
-			compile "com.mobidevelop.robovm:robovm-rt:$roboVMVersion"
-        	compile "com.mobidevelop.robovm:robovm-cocoatouch:$roboVMVersion"
-			compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
-			compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
-			compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
-			
-			compile "org.reflections:reflections:$reflectionsVersion"
-			
-			testCompile "junit:junit:$junitVersion"
-			testCompile "org.jmock:jmock-junit4:$jmockVersion"
-			testCompile "org.jmock:jmock-legacy:$jmockVersion"
-		}
-	}
-	
-	project(":" + rootProject.name + "-uats-ios") {
-		description = "mini2Dx UATs iOS launcher"
-		
-		apply plugin: "java"
-		apply plugin: "robovm"
-		
-		sourceCompatibility = 1.7
-		targetCompatibility = 1.7
-		
-		configurations { natives }
-		
-		eclipse.project {
-			natures 'org.robovm.eclipse.RoboVMNature'
-		}
-		
-		dependencies {
-			compile project(":" + rootProject.name + "-uats")
-			compile project(":" + rootProject.name + "-ios")
-		}
-	}
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.5'
-}
-
-boolean hasAndroidSdk() {
-	try {
-		def rootDir = "$rootDir"
-		def localProperties = new File(rootDir, "local.properties")
-		if (localProperties.exists()) {
-			Properties properties = new Properties()
-			localProperties.withInputStream { instr ->
-				properties.load(instr)
-			}
-			def androidHome = properties.getProperty('sdk.dir')
-			if(androidHome != null && androidHome.length() > 0) {
-				println androidHome
-				return true;
-			}
-		}
-	} catch (all) {
-		println all
-	}
-	try {
-		def androidHome = "$System.env.ANDROID_HOME"
-		if(androidHome != null && androidHome.length() > 0 && !androidHome.contains('null')) {
-			println androidHome
-			return true;
-		}
-	} catch (all) {
-		println all
-	}
-	
-	try {
-		def androidExecPath = new ByteArrayOutputStream()
-		if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-			return false
-		} else {
-			exec {
-				commandLine 'which', 'android'
-				standardOutput = androidExecPath
-			}
-		}
-		return androidExecPath.toString() != null && androidExecPath.toString().trim().length() > 0;
-	} catch (all) {
-		println all
-	}
-	return false
 }
