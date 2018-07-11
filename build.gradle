@@ -14,8 +14,12 @@ buildscript {
 		classpath 'gradle.plugin.me.champeau.gradle:jmh-gradle-plugin:0.3.0'
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.9.0'
 		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.8'
+		classpath "com.ullink.gradle:gradle-ikvm-plugin:2.3"
     }
 }
+
+Properties sdkProperties = new Properties()
+sdkProperties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
 	apply plugin: "io.codearte.nexus-staging"
@@ -202,6 +206,7 @@ project(":" + rootProject.name + "-core") {
     
     apply plugin: "me.champeau.gradle.jmh"
     apply plugin: "jacoco"
+	apply plugin:'ikvm'
 
     dependencies {
 		compile "org.mini2Dx:gdx-math:$gdxVersion"
@@ -213,6 +218,11 @@ project(":" + rootProject.name + "-core") {
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
 		testCompile "net.jodah:concurrentunit:$concurrentUnitVersion"
     }
+
+	ikvm {
+		ikvmHome = sdkProperties.getProperty('sdk.ikvm.dir')
+		debug = false
+	}
 	
 	jmh {
 		timeUnit = 'ns'

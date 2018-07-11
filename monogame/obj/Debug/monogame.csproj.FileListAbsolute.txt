@@ -1,0 +1,9 @@
+/Users/thomas/git/mini2Dx/monogame/bin/Debug/monogame.dll
+/Users/thomas/git/mini2Dx/monogame/bin/Debug/monogame.pdb
+/Users/thomas/git/mini2Dx/monogame/bin/Debug/mini2Dx-core.dll
+/Users/thomas/git/mini2Dx/monogame/bin/Debug/MonoGame.Framework.dll
+/Users/thomas/git/mini2Dx/monogame/bin/Debug/MonoGame.Framework.xml
+/Users/thomas/git/mini2Dx/monogame/obj/Debug/monogame.csprojResolveAssemblyReference.cache
+/Users/thomas/git/mini2Dx/monogame/obj/Debug/monogame.csproj.CoreCompileInputs.cache
+/Users/thomas/git/mini2Dx/monogame/obj/Debug/monogame.dll
+/Users/thomas/git/mini2Dx/monogame/obj/Debug/monogame.pdb
