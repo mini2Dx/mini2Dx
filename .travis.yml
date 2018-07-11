@@ -1,4 +1,6 @@
 language: android
+mono:
+  - latest
 sudo: true
 env:
   global:

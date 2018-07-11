@@ -78,7 +78,9 @@ configure(docProjects()) {
 	group = 'org.mini2Dx'
 	version = projectVersion
 
-	if(project.name.contains("android")) {
+	if(project.name.contains("monogame")) {
+
+	} else if(project.name.contains("android")) {
 		apply plugin: "com.android.library"
 		
 		task javadoc(type: Javadoc) {
@@ -233,7 +235,7 @@ project(":" + rootProject.name + "-core") {
 		jvmArgsPrepend = '-Xmx1024m'
 	}
     
-  jacocoTestReport {
+	jacocoTestReport {
 		group = "Reporting"
 		reports {
 			xml.enabled true
@@ -244,6 +246,22 @@ project(":" + rootProject.name + "-core") {
 			classDirectories = files(classDirectories.files.collect {
 				fileTree(dir: it)
 			})
-    	}
+		}
 	}
+
+	build.dependsOn ikvm
+}
+
+project(":" + rootProject.name + "-monogame") {
+
+	if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+		task msbuild(type:Exec, dependsOn: project(":" + rootProject.name + "-core").ikvm) {
+			commandLine 'cmd', '/c', 'msbuild.exe', '../mini2Dx.sln'
+		}
+	} else {
+		task msbuild(type:Exec, dependsOn: project(":" + rootProject.name + "-core").ikvm) {
+			commandLine 'msbuild', '../mini2Dx.sln'
+		}
+	}
+	build.dependsOn msbuild
 }
