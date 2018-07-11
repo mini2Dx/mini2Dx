@@ -19,7 +19,15 @@ buildscript {
 }
 
 Properties sdkProperties = new Properties()
-sdkProperties.load(project.rootProject.file('local.properties').newDataInputStream())
+def sdkPropertiesFile = project.rootProject.file('local.properties');
+if(sdkPropertiesFile.exists()) {
+	sdkProperties.load(sdkPropertiesFile.newDataInputStream())
+}
+if(sdkProperties.getProperty('sdk.ikvm.dir') == null) {
+	sdkProperties.setProperty('sdk.ikvm.dir', '../_tools/ikvm')
+}
+
+def ikvmDir = sdkProperties.getProperty('sdk.ikvm.dir')
 
 if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
 	apply plugin: "io.codearte.nexus-staging"
@@ -79,7 +87,15 @@ configure(docProjects()) {
 	version = projectVersion
 
 	if(project.name.contains("monogame")) {
-
+		if(ikvmDir.contains('_tools')) {
+			if(!project.file(ikvmDir).exists()) {
+				def ikvmZipFile = file('../_tools/ikvm.zip')
+				project.copy({
+					from zipTree(ikvmZipFile)
+					into '../_tools/'
+				})
+			}
+		}
 	} else if(project.name.contains("android")) {
 		apply plugin: "com.android.library"
 		
@@ -208,7 +224,7 @@ project(":" + rootProject.name + "-core") {
     
     apply plugin: "me.champeau.gradle.jmh"
     apply plugin: "jacoco"
-	apply plugin:'ikvm'
+	apply plugin: "ikvm"
 
     dependencies {
 		compile "org.mini2Dx:gdx-math:$gdxVersion"
@@ -222,7 +238,7 @@ project(":" + rootProject.name + "-core") {
     }
 
 	ikvm {
-		ikvmHome = sdkProperties.getProperty('sdk.ikvm.dir')
+		ikvmHome = ikvmDir
 		debug = false
 	}
 	

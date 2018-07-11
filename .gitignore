@@ -1,4 +1,5 @@
 target/
+_tools/ikvm/
 monogame/obj/
 packages/
 .DS_Store
