@@ -1,32 +1,15 @@
 language: android
-mono:
-  - latest
 sudo: true
 env:
   global:
     - ADB_INSTALL_TIMEOUT=5 # minutes
 addons:
   apt:
+    sources:
+      - sourceline: 'deb https://download.mono-project.com/repo/ubuntu stable-xenial main'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xA6A19B38D3D831EF'
     packages:
-      - libglew-dev
-      - freeglut3-dev
-      - libxi-dev
-      - libxmu-dev
-      - xserver-xorg-video-dummy
-      - xpra
-      - xorg-dev
-      - opencl-headers
-      - libgl1-mesa-dev
-      - libxcursor-dev
-      - libpulse-dev
-      - libxinerama-dev
-      - libxrandr-dev
-      - libxv-dev
-      - libasound2-dev
-      - libudev-dev
-      - mesa-utils
-      - libgl1-mesa-glx
-      - libgles2-mesa-dev
+      - mono-devel
 android:
   components:
     - tools
