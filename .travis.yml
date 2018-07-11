@@ -9,7 +9,7 @@ addons:
       - sourceline: 'deb https://download.mono-project.com/repo/ubuntu stable-trusty main'
         key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xA6A19B38D3D831EF'
     packages:
-      - mono-devel
+      - mono-complete
 android:
   components:
     - tools
