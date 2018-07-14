@@ -1,3 +1,7 @@
+[1.7.3]
+- Added additional assert in DisperedIntervalEntitySystemTest
+- Fixed multiple UiElement defer ordering when durations are same
+
 [1.7.2]
 - Significant memory usage improvements across all geometry classes
 
