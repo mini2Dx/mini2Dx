@@ -29,5 +29,9 @@
  */
 package org.mini2Dx.core;
 
+import org.mini2Dx.gdx.InputProcessor;
+
 public interface Input {
+
+    public void setInputProcessor(InputProcessor inputProcessor);
 }

@@ -27,7 +27,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.graphics;
+package org.mini2Dx.core.geom;
 
-public interface SpriteCache {
+import org.junit.Test;
+
+
+import junit.framework.Assert;
+import org.mini2Dx.gdx.math.MathUtils;
+
+/**
+ * Unit tests for {@link RegularPentagon}
+ */
+public class RegularPentagonTest {
+	@Test
+	public void testRotationalSymmetry() {
+		RegularPentagon pentagon = new RegularPentagon(0f, 0f, 100f);
+		
+		Assert.assertEquals(0, MathUtils.round(pentagon.getX(0)));
+		Assert.assertEquals(-100, MathUtils.round(pentagon.getY(0)));
+		
+		Assert.assertEquals(95, MathUtils.round(pentagon.getX(1)));
+		Assert.assertEquals(-31, MathUtils.round(pentagon.getY(1)));
+		
+		Assert.assertEquals(59, MathUtils.round(pentagon.getX(2)));
+		Assert.assertEquals(81, MathUtils.round(pentagon.getY(2)));
+		
+		Assert.assertEquals(-59, MathUtils.round(pentagon.getX(3)));
+		Assert.assertEquals(81, MathUtils.round(pentagon.getY(3)));
+		
+		Assert.assertEquals(-95, MathUtils.round(pentagon.getX(4)));
+		Assert.assertEquals(-31, MathUtils.round(pentagon.getY(4)));
+	}
+	
+	@Test
+	public void testNumberOfSides() {
+		RegularPentagon pentagon = new RegularPentagon(0f, 0f, 100f);
+		Assert.assertEquals(5, pentagon.getNumberOfSides());
+	}
 }

@@ -27,7 +27,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.graphics;
+package org.mini2Dx.core.geom;
 
-public interface SpriteCache {
+/**
+ * A <a href="https://en.wikipedia.org/wiki/Hexagon">hexagon</a> where all
+ * interior angles are 120 degrees.
+ */
+public class RegularHexagon extends RegularPolygon {
+    public static final float ROTATION_SYMMETRY = 60f;
+    private static final int TOTAL_SIDES = 6;
+
+    /**
+     * Constructor
+     * @param centerX The center X coordinate
+     * @param centerY The center Y coordinate
+     * @param radius The distance from the center to the corner points
+     */
+    public RegularHexagon(float centerX, float centerY, float radius) {
+        super(centerX, centerY, radius, TOTAL_SIDES, ROTATION_SYMMETRY);
+    }
 }

@@ -27,7 +27,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.graphics;
+package org.mini2Dx.core.game;
 
-public interface SpriteCache {
+/**
+ * Common interface for listening to {@link GameContainer} resizes
+ */
+public interface GameResizeListener {
+
+    /**
+     * Called when the game window is resized
+     * @param width The new window width
+     * @param height The new window height
+     */
+    public void onResize(int width, int height);
 }

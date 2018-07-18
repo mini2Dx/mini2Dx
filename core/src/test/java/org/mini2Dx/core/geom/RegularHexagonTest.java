@@ -27,7 +27,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.graphics;
+package org.mini2Dx.core.geom;
 
-public interface SpriteCache {
+import org.junit.Test;
+
+import junit.framework.Assert;
+import org.mini2Dx.gdx.math.MathUtils;
+
+/**
+ * Unit tests for {@link RegularHexagon}
+ */
+public class RegularHexagonTest {
+	@Test
+	public void testRotationalSymmetry() {
+		RegularHexagon hexagon = new RegularHexagon(0f, 0f, 100f);
+		
+		Assert.assertEquals(0, MathUtils.round(hexagon.getX(0)));
+		Assert.assertEquals(-100, MathUtils.round(hexagon.getY(0)));
+		
+		Assert.assertEquals(87, MathUtils.round(hexagon.getX(1)));
+		Assert.assertEquals(-50, MathUtils.round(hexagon.getY(1)));
+		
+		Assert.assertEquals(87, MathUtils.round(hexagon.getX(2)));
+		Assert.assertEquals(50, MathUtils.round(hexagon.getY(2)));
+		
+		Assert.assertEquals(0, MathUtils.round(hexagon.getX(3)));
+		Assert.assertEquals(100, MathUtils.round(hexagon.getY(3)));
+		
+		Assert.assertEquals(-87, MathUtils.round(hexagon.getX(4)));
+		Assert.assertEquals(50, MathUtils.round(hexagon.getY(4)));
+		
+		Assert.assertEquals(-87, MathUtils.round(hexagon.getX(5)));
+		Assert.assertEquals(-50, MathUtils.round(hexagon.getY(5)));
+	}
+	
+	@Test
+	public void testNumberOfSides() {
+		RegularHexagon hexagon = new RegularHexagon(0f, 0f, 100f);
+		Assert.assertEquals(6, hexagon.getNumberOfSides());
+	}
 }

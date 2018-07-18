@@ -27,7 +27,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.graphics;
+package org.mini2Dx.core.geom;
 
-public interface SpriteCache {
+import junit.framework.Assert;
+
+import org.junit.Test;
+import org.mini2Dx.gdx.math.Vector2;
+
+/**
+ * Implements unit tests for {@link Intersector}
+ */
+public class IntersectorTest {
+
+	@Test
+	public void testIntersectLinesWithNonIntersectingLines() {
+		Vector2 line1Start = new Vector2(0, 0);
+		Vector2 line1End = new Vector2(0, 32);
+		
+		Vector2 line2Start = new Vector2(32, 0);
+		Vector2 line2End = new Vector2(32, 32);
+		
+		Assert.assertEquals(false, Intersector.intersectLines(line1Start, line1End, line2Start, line2End, new Vector2()));
+	}
+	
+	@Test
+	public void testIntersectLinesWithIntersectingLines() {
+		Vector2 line1Start = new Vector2(0, 0);
+		Vector2 line1End = new Vector2(0, 32);
+		
+		Vector2 line2Start = new Vector2(-32, 16);
+		Vector2 line2End = new Vector2(32, 16);
+		
+		Assert.assertEquals(true, Intersector.intersectLines(line1Start, line1End, line2Start, line2End, new Vector2()));
+		
+		
+		line1Start = new Vector2(100, 100);
+		line1End = new Vector2(150, 100);
+		
+		line2Start = new Vector2(50, 100);
+		line2End = new Vector2(50, 200);
+		
+		Assert.assertEquals(true, Intersector.intersectLines(line1Start, line1End, line2Start, line2End, new Vector2()));
+	}
 }

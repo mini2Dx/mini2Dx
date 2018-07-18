@@ -27,7 +27,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.graphics;
+package org.mini2Dx.core.geom;
 
-public interface SpriteCache {
+import org.mini2Dx.gdx.math.Intersector;
+
+public class Line extends LineSegment {
+
+    public Line() {
+        this(0, 0, 0, 0);
+    }
+
+    public Line(float x1, float y1, float x2, float y2) {
+        super(x1, y1, x2, y2);
+    }
+
+    @Override
+    public boolean contains(float x, float y) {
+        return Intersector.distanceLinePoint(pointA.x, pointA.y, pointB.x, pointB.y, x, y) == 0;
+    }
 }

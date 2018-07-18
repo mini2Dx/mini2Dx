@@ -79,6 +79,11 @@ public class Mdx {
     public static JsonSerializer json;
 
     /**
+     * {@link Logger} API
+     */
+    public static Logger logger;
+
+    /**
      * API for reading/writing {@link PlayerData}
      */
     public static PlayerData playerData;

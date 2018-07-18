@@ -27,7 +27,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.graphics;
+package org.mini2Dx.core;
 
-public interface SpriteCache {
+/**
+ * Interface for game/application logging
+ */
+public interface Logger {
+
+    public void log(String tag, String message);
+
+    public void debug(String tag, String message);
+
+    public void error(String tag, String message);
+
+    public void error(String tag, String message, Exception e);
 }

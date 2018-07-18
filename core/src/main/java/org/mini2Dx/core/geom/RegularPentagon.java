@@ -27,7 +27,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.graphics;
+package org.mini2Dx.core.geom;
 
-public interface SpriteCache {
+/**
+ * A <a href="https://en.wikipedia.org/wiki/Pentagon">pentagon</a> where all
+ * interior angles are 108 degrees.
+ */
+public class RegularPentagon extends RegularPolygon {
+    public static final float ROTATION_SYMMETRY = 72f;
+    private static final int TOTAL_SIDES = 5;
+
+    /**
+     * Constructor
+     * @param centerX The center X coordinate
+     * @param centerY The center Y coordinate
+     * @param radius The distance from the center to the corner points
+     */
+    public RegularPentagon(float centerX, float centerY, float radius) {
+        super(centerX, centerY, radius, TOTAL_SIDES, ROTATION_SYMMETRY);
+    }
 }

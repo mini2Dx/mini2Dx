@@ -27,7 +27,70 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.core.graphics;
+package org.mini2Dx.core.game;
 
-public interface SpriteCache {
+import org.mini2Dx.core.Graphics;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.gdx.InputProcessor;
+
+/**
+ * A simplified {@link GameContainer} for beginners to build upon
+ */
+public abstract class BasicGame extends GameContainer implements InputProcessor {
+    @Override
+    protected void preinit(Graphics g) {
+        super.preinit(g);
+        Mdx.input.setInputProcessor(this);
+    }
+
+    @Override
+    public void onPause() {
+        Mdx.logger.log("INFO", "Game window paused");
+    }
+
+    @Override
+    public void onResume() {
+        Mdx.logger.log("INFO", "Game window resumed");
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int x, int y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int x, int y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int x, int y, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int x, int y) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+    }
 }
+
