@@ -1,6 +1,14 @@
 [2.0.0-SNAPSHOT]
 ...In development...
 
+[1.7.7]
+- Added Select#getOption(index) method
+- Fixed nested defer() tasks immediately completing with parent
+
+[1.7.6]
+- Changed RenderLayer#render to public method
+- Reduce memory usage of ParentRenderNode by sharing clip cache across instances
+
 [1.7.5]
 - Changed ImageRenderNode textureRegion field visibility to protected
 - Fixed TypingTextAnimation not resetting after initially skipped

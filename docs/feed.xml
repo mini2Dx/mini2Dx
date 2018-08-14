@@ -1,5 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://mini2dx.org/feed.xml" rel="self" type="application/atom+xml" /><link href="http://mini2dx.org/" rel="alternate" type="text/html" /><updated>2018-08-01T21:00:45+02:00</updated><id>http://mini2dx.org/</id><title type="html">mini2Dx</title><subtitle>mini2Dx is an open-source beginner-friendly, master-ready framework for rapidly prototyping and building 2D games in Java.
-</subtitle><entry><title type="html">mini2Dx 1.7.5 released</title><link href="http://mini2dx.org/2018/08/01/mini2Dx-1-7-5-released.html" rel="alternate" type="text/html" title="mini2Dx 1.7.5 released" /><published>2018-08-01T17:00:00+02:00</published><updated>2018-08-01T17:00:00+02:00</updated><id>http://mini2dx.org/2018/08/01/mini2Dx-1-7-5-released</id><content type="html" xml:base="http://mini2dx.org/2018/08/01/mini2Dx-1-7-5-released.html">&lt;p&gt;mini2Dx 1.7.5 has been released with the following changes:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://mini2dx.org/feed.xml" rel="self" type="application/atom+xml" /><link href="http://mini2dx.org/" rel="alternate" type="text/html" /><updated>2018-08-14T14:27:25+02:00</updated><id>http://mini2dx.org/</id><title type="html">mini2Dx</title><subtitle>mini2Dx is an open-source beginner-friendly, master-ready framework for rapidly prototyping and building 2D games in Java.
+</subtitle><entry><title type="html">mini2Dx 1.7.7 released</title><link href="http://mini2dx.org/2018/08/14/mini2Dx-1-7-7-released.html" rel="alternate" type="text/html" title="mini2Dx 1.7.7 released" /><published>2018-08-14T12:00:00+02:00</published><updated>2018-08-14T12:00:00+02:00</updated><id>http://mini2dx.org/2018/08/14/mini2Dx-1-7-7-released</id><content type="html" xml:base="http://mini2dx.org/2018/08/14/mini2Dx-1-7-7-released.html">&lt;p&gt;mini2Dx 1.7.7 has been released with the following changes:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Added Select#getOption(index) method&lt;/li&gt;
+  &lt;li&gt;Fixed nested defer() tasks immediately completing with parent&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To update your existing projects, see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;Updating mini2Dx&lt;/a&gt; wiki page.&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">mini2Dx 1.7.7 has been released with the following changes: Added Select#getOption(index) method Fixed nested defer() tasks immediately completing with parent To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry><entry><title type="html">mini2Dx 1.7.6 released</title><link href="http://mini2dx.org/2018/08/02/mini2Dx-1-7-6-released.html" rel="alternate" type="text/html" title="mini2Dx 1.7.6 released" /><published>2018-08-02T17:00:00+02:00</published><updated>2018-08-02T17:00:00+02:00</updated><id>http://mini2dx.org/2018/08/02/mini2Dx-1-7-6-released</id><content type="html" xml:base="http://mini2dx.org/2018/08/02/mini2Dx-1-7-6-released.html">&lt;p&gt;mini2Dx 1.7.6 has been released with the following changes:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Changed RenderLayer#render to public method&lt;/li&gt;
+  &lt;li&gt;Reduce memory usage of ParentRenderNode by sharing clip cache across instances&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To update your existing projects, see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;Updating mini2Dx&lt;/a&gt; wiki page.&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">mini2Dx 1.7.6 has been released with the following changes: Changed RenderLayer#render to public method Reduce memory usage of ParentRenderNode by sharing clip cache across instances To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry><entry><title type="html">mini2Dx 1.7.5 released</title><link href="http://mini2dx.org/2018/08/01/mini2Dx-1-7-5-released.html" rel="alternate" type="text/html" title="mini2Dx 1.7.5 released" /><published>2018-08-01T17:00:00+02:00</published><updated>2018-08-01T17:00:00+02:00</updated><id>http://mini2dx.org/2018/08/01/mini2Dx-1-7-5-released</id><content type="html" xml:base="http://mini2dx.org/2018/08/01/mini2Dx-1-7-5-released.html">&lt;p&gt;mini2Dx 1.7.5 has been released with the following changes:&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Changed ImageRenderNode textureRegion field visibility to protected&lt;/li&gt;
@@ -53,25 +67,4 @@
 &lt;/ul&gt;
 
 &lt;p&gt;To update your existing projects, see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;Updating mini2Dx&lt;/a&gt; wiki page.
-&lt;!--more--&gt;&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">mini2Dx 1.7.0-beta.3 has now been released to Maven Central which adds the following fixes and improvements: (#74) Added TiledMapLoader for loading TiledMap instances via AssetManager Added #equals method to ControllerButton implementations Fixed dependency injection validating injection too early To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry><entry><title type="html">mini2Dx 1.7.0-beta.2 released</title><link href="http://mini2dx.org/2017/10/22/mini2Dx-1-7-0-beta.2-released.html" rel="alternate" type="text/html" title="mini2Dx 1.7.0-beta.2 released" /><published>2017-10-22T10:00:00+02:00</published><updated>2017-10-22T10:00:00+02:00</updated><id>http://mini2dx.org/2017/10/22/mini2Dx-1-7-0-beta.2-released</id><content type="html" xml:base="http://mini2dx.org/2017/10/22/mini2Dx-1-7-0-beta.2-released.html">&lt;p&gt;mini2Dx 1.7.0-beta.2 has now been released to Maven Central which includes several fixes and test coverage improvements thanks to &lt;a href=&quot;https://github.com/CauchyAbel&quot;&gt;Ben Xiao (CauchyAbel)&lt;/a&gt;.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Added jacocoTestReport for better code coverage reporting&lt;/li&gt;
-  &lt;li&gt;Fixed incorrect Circle bounding box dimensions&lt;/li&gt;
-  &lt;li&gt;Fixed merging concurrency exception during object movement within concurrent QuadTrees&lt;/li&gt;
-  &lt;li&gt;(#53) Increased code coverage on Rectangle and Circle&lt;/li&gt;
-  &lt;li&gt;Added Sprite#getAlpha() method&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;To update your existing projects, see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;Updating mini2Dx&lt;/a&gt; wiki page.
-&lt;!--more--&gt;&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">mini2Dx 1.7.0-beta.2 has now been released to Maven Central which includes several fixes and test coverage improvements thanks to Ben Xiao (CauchyAbel). Added jacocoTestReport for better code coverage reporting Fixed incorrect Circle bounding box dimensions Fixed merging concurrency exception during object movement within concurrent QuadTrees (#53) Increased code coverage on Rectangle and Circle Added Sprite#getAlpha() method To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry><entry><title type="html">mini2Dx 1.7.0-beta.1 released</title><link href="http://mini2dx.org/2017/10/10/mini2Dx-1-7-0-beta.1-released.html" rel="alternate" type="text/html" title="mini2Dx 1.7.0-beta.1 released" /><published>2017-10-10T22:00:00+02:00</published><updated>2017-10-10T22:00:00+02:00</updated><id>http://mini2dx.org/2017/10/10/mini2Dx-1-7-0-beta.1-released</id><content type="html" xml:base="http://mini2dx.org/2017/10/10/mini2Dx-1-7-0-beta.1-released.html">&lt;p&gt;mini2Dx 1.7.0-beta.1 has now been released to Maven Central which begins work on improving the UI framework for more complex UIs.&lt;/p&gt;
-
-&lt;p&gt;This beta includes the following changes:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Added new FlexDirections; ROW_REVERSE and CENTER&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;[BREAKING]&lt;/strong&gt; LayoutRuleset is now applied to both horizontal and vertical calculations&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;[BREAKING]&lt;/strong&gt; UI minHeight now includes padding + margin in check&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;To update your existing projects, see the &lt;a href=&quot;https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx&quot;&gt;Updating mini2Dx&lt;/a&gt; wiki page.
-&lt;!--more--&gt;&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">mini2Dx 1.7.0-beta.1 has now been released to Maven Central which begins work on improving the UI framework for more complex UIs. This beta includes the following changes: Added new FlexDirections; ROW_REVERSE and CENTER [BREAKING] LayoutRuleset is now applied to both horizontal and vertical calculations [BREAKING] UI minHeight now includes padding + margin in check To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry></feed>
+&lt;!--more--&gt;&lt;/p&gt;</content><author><name>Thomas Cashman</name></author><summary type="html">mini2Dx 1.7.0-beta.3 has now been released to Maven Central which adds the following fixes and improvements: (#74) Added TiledMapLoader for loading TiledMap instances via AssetManager Added #equals method to ControllerButton implementations Fixed dependency injection validating injection too early To update your existing projects, see the Updating mini2Dx wiki page.</summary></entry></feed>
