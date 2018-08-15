@@ -1,6 +1,10 @@
 [2.0.0-SNAPSHOT]
 ...In development...
 
+[1.7.8]
+- Fix collisions not using IDs for equals/hashcode
+- Optimise debug rendering of QuadTrees
+
 [1.7.7]
 - Added Select#getOption(index) method
 - Fixed nested defer() tasks immediately completing with parent
