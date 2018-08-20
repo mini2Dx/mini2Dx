@@ -1,6 +1,11 @@
 [2.0.0-SNAPSHOT]
 ...In development...
 
+[1.7.9]
+- [BREAKING] mini2Dx artemis systems moved from package com.artemis.system to com.artemis to provide access to artemis-odb scopes
+- Fix interpolation and rendering systems not checking disabled flag
+- Fix DispersedIntervalEntitySystem not removing entities from processing queue if deleted between intervals
+
 [1.7.8]
 - Fix collisions not using IDs for equals/hashcode
 - Optimise debug rendering of QuadTrees
