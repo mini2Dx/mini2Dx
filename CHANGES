@@ -1,6 +1,9 @@
 [2.0.0-SNAPSHOT]
 ...In development...
 
+[1.7.10]
+- Significantly reduce memory usage of XML and JSON serializers
+
 [1.7.9]
 - [BREAKING] mini2Dx artemis systems moved from package com.artemis.system to com.artemis to provide access to artemis-odb scopes
 - Fix interpolation and rendering systems not checking disabled flag
