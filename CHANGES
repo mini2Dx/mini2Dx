@@ -1,6 +1,13 @@
 [2.0.0-SNAPSHOT]
 ...In development...
 
+[1.7.11]
+- Fixed Xbox360 controller left/right trigger detection on Windows
+- Fixed incorrect Mac/Linux key bindings on Xbox360 controller
+- Fixed UiUtils#setUpControllerInput not initializing PS4 controller correctly
+- Fixed TiledMapLoader crashing when loading cached Tiled layers asynchronously
+- [BREAKING] Removed PS3 controller support due to inconsistent support across platforms
+
 [1.7.10]
 - Significantly reduce memory usage of XML and JSON serializers
 
