@@ -1,6 +1,12 @@
 [2.0.0-SNAPSHOT]
 ...In development...
 
+[1.7.12]
+- Added IntTreeMap implementation
+- Fixed incorrect clip caching between scrollbox and other elements
+- Reduced UI render node + layer memory usage
+- Reduced memory usage by switching to IntMap where appropriate
+
 [1.7.11]
 - Fixed Xbox360 controller left/right trigger detection on Windows
 - Fixed incorrect Mac/Linux key bindings on Xbox360 controller
