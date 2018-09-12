@@ -36,9 +36,8 @@ import org.mini2Dx.core.di.annotation.Prototype;
 import org.mini2Dx.core.di.annotation.Singleton;
 import org.mini2Dx.core.di.bean.Bean;
 import org.mini2Dx.core.di.injection.BeanInjector;
+import org.mini2Dx.gdx.utils.OrderedMap;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,13 +45,13 @@ import java.util.concurrent.Executors;
  * Provides cross-platform dependency injection
  */
 public class DependencyInjection {
-    private final Map<String, Object> presetSingletons = new HashMap<String, Object>();
-    private final Map<String, Object> presetPrototypes = new HashMap<String, Object>();
+    private final OrderedMap<String, Object> presetSingletons = new OrderedMap<String, Object>();
+    private final OrderedMap<String, Object> presetPrototypes = new OrderedMap<String, Object>();
 
     private final BeanUtils beanUtils;
     private final ComponentScanner componentScanner;
 
-    private Map<String, Bean> beans;
+    private OrderedMap<String, Bean> beans;
     private ExecutorService prototypeService;
 
     public DependencyInjection(BeanUtils beanUtils, ComponentScanner componentScanner) {
@@ -113,8 +112,8 @@ public class DependencyInjection {
     public void scan(String... packageNames) throws Exception {
         componentScanner.scan(packageNames);
 
-        Map<String, Object> singletons = new HashMap<String, Object>(presetSingletons);
-        Map<String, Object> prototypes = new HashMap<String, Object>(presetPrototypes);
+        OrderedMap<String, Object> singletons = new OrderedMap<String, Object>(presetSingletons);
+        OrderedMap<String, Object> prototypes = new OrderedMap<String, Object>(presetPrototypes);
 
         for (Class clazz : componentScanner.getSingletonClasses()) {
             String key = Bean.getClassKey(clazz);

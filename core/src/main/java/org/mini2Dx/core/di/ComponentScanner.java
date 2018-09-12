@@ -32,9 +32,9 @@ package org.mini2Dx.core.di;
 import org.mini2Dx.core.di.annotation.Prototype;
 import org.mini2Dx.core.di.annotation.Singleton;
 import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.gdx.utils.Array;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * A common interface to component scanning implementations.
@@ -52,7 +52,7 @@ public interface ComponentScanner {
      */
     public void scan(String[] packageNames) throws MdxException;
 
-    public List<Class<?>> getSingletonClasses();
+    public Array<Class<?>> getSingletonClasses();
 
-    public List<Class<?>> getPrototypeClasses();
+    public Array<Class<?>> getPrototypeClasses();
 }
