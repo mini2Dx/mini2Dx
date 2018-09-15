@@ -187,6 +187,11 @@ configure(docProjects()) {
 			configFile = project.file("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
 			toolVersion = "8.12"
 		}
+
+		checkstyle {
+			configFile = project.file("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
+			toolVersion = "8.12"
+		}
 	}
   
 	// Maven Central publication
