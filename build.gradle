@@ -152,21 +152,34 @@ configure(docProjects()) {
 			classifier = 'sources'
 			from sourceSets.main.allSource
 		}
-		
+
 		task testJar(type: Jar, dependsOn: testClasses) {
 			from sourceSets.test.output
 			include '**/serialization/**/*.class','**/di/**/*.class'
 			classifier = 'test'
 		}
-		
+
 		task javadocJar(type: Jar) {
 			classifier = 'javadoc'
 			from javadoc
 		}
-		
-		artifacts {
-			archives javadocJar, sourcesJar, testJar
-			testOutput testJar
+
+		if(project.name.contains("core")) {
+			task fatJar(type: Jar) {
+				classifier = 'fat'
+				from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+				with jar
+			}
+
+			artifacts {
+				archives javadocJar, sourcesJar, testJar, fatJar
+				testOutput testJar
+			}
+		} else {
+			artifacts {
+				archives javadocJar, sourcesJar, testJar
+				testOutput testJar
+			}
 		}
 	}
   
