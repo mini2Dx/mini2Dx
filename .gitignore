@@ -1,4 +1,5 @@
 target/
+out/
 _tools/ikvm/
 monogame/obj/
 packages/
@@ -30,3 +31,4 @@ uats-android/assets/sound.ogg
 uats-android/assets/texture-region-uat.atlas
 uats-android/assets/texture-region-uat.png
 *.bak
+*.iml

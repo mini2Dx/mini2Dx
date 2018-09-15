@@ -140,6 +140,7 @@ configure(docProjects()) {
 		}
 	} else {
 		apply plugin: "java"
+		apply plugin: "checkstyle"
 		
 		sourceCompatibility = 1.7
 		targetCompatibility = 1.7
@@ -180,6 +181,11 @@ configure(docProjects()) {
 				archives javadocJar, sourcesJar, testJar
 				testOutput testJar
 			}
+		}
+
+		checkstyle {
+			configFile = project.file("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
+			toolVersion = "8.12"
 		}
 	}
   
