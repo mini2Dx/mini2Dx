@@ -1,6 +1,10 @@
 [2.0.0-SNAPSHOT]
 ...In development...
 
+[1.7.14]
+- (#76) Added support for Tiled object shapes
+- (#77) Fixed fade transitions modifying the color instance
+
 [1.7.13]
 - Fixed out of bounds exception when switch between TabView and another navigation type
 
