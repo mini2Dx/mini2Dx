@@ -1,6 +1,32 @@
 [2.0.0-SNAPSHOT]
 ...In development...
 
+[1.8.0]
+- Update to RoboVM 2.3.3
+- [BREAKING] Replace usages of Java collections with GDX collections to improve performance
+- [BREAKING] UI Modal and Containers are now unified into a single Container class
+- [BREAKING] Deferred UI tasks can now be deferred until update() or layout()
+- [BREAKING] UI elements now default to pixel coordinate UI layout
+- [BREAKING] Rename PS4Button.X to PS4Button.CROSS per PS specification
+- Added support for all GDX collection classes in XML/JSON serialization
+- Added CustomUiElement class to simplify implementing custom UI elements
+- Added support for both flex and pixel coordinate UI layouts
+- Added support for static, ninepatch and tiling UI element backgrounds
+- Added multiple images to ImageButton to allow for images based on button state
+- Added NodeStateListener to UiElement
+- Added shadow, spacing, kerning and flip options to UiFont
+- Added controller trigger button down/up notifications
+- Added option to set hover state when resetting a UiNavigation cursor
+- UI can now use controller triggers as hotkeys and D-PAD for UI navigation
+- Improved UI theme JSON consistency
+- Improved scrolling when dragging scroll thumb in ScrollBox
+- Fixed hotkey based actions not triggering correct UI state
+- Fixed TypingTextAnimation not resetting correctly
+- Fixed UI elements changing state within margin area
+- Fixed SlideIn/SlideOut visibility timing
+- Fixed graphics context unnecessarily applying clip when clip is same size as viewport
+- Seperated resize events from reset events in text animations
+
 [1.7.14]
 - (#76) Added support for Tiled object shapes
 - (#77) Fixed fade transitions modifying the color instance

@@ -106,6 +106,49 @@
                     <div class="col-md-8 col-md-offset-2 margin20">
                         <ul class="list-inline post-detail">
                             <li>by Thomas Cashman</li>
+                            <li><i class="fa fa-calendar"></i> 2018-06-10 14:00:00 +0100</li>
+                        </ul>
+                        <h2><a href="/2018/06/10/mini2Dx-1-7-0-released-and-roadmap-ahead.html">mini2Dx 1.7.0 released and the roadmap ahead</a></h2>
+                        <h2 id="170">1.7.0</h2>
+
+<p>After several months work, I’m happy to announce the release of mini2Dx 1.7.0. This release comes with a lot of bug fixes, optimisations and improvements. You can find the full list in the <a href="https://github.com/mini2Dx/mini2Dx/blob/master/CHANGES">CHANGES file</a> on the repository.</p>
+
+<p>To update your existing projects, see the <a href="https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx">Updating mini2Dx</a> wiki page.</p>
+
+<h2 id="roadmap">Roadmap</h2>
+
+<p>Now that 1.7.0 is released, it’s time to talk about the future of mini2Dx.</p>
+
+<p>Recently, Apple deprecated OpenGL on Mac. This means that at some point in the future, the current version of mini2Dx will stop working as it is tightly coupled to OpenGL via LibGDX. While I’m disappointed in this decision from Apple, I still want game developers using mini2Dx to be able to release on Mac.</p>
+
+<p>Furthermore, I’m hoping to bring my next mini2Dx-based game <a href="https://alchemiccutie.com">Alchemic Cutie</a> to consoles - this means that using a JRE-based environemt won’t be possible. However, I like coding games in Java and would like to continue to do so.</p>
+
+<p>So with that, I’m beginning work on the next generation of mini2Dx - 2.0! The goal of the next generation is to support more platforms such as web browsers and consoles. Here’s how:</p>
+
+<ul>
+  <li>Core API will consist mostly of interfaces to platform implementations</li>
+  <li>Desktop will use two runtimes; the current LibGDX runtime and eventually a bgfx runtime</li>
+  <li>Android/iOS will continue to use the LibGDX runtime</li>
+  <li>Web support will also be added via the LibGDX runtime</li>
+  <li>Console support will be added via MonoGame and cross-compilation</li>
+</ul>
+
+<p>This development will take a lot of time and won’t be completed until 2019. In the meantime, you can expect that I’ll keep supporting 1.7.x of mini2Dx with fixes. All 1.7.x development will continue in the <a href="https://github.com/mini2Dx/mini2Dx-ve">mini2Dx Vintage Edition</a> repository.</p>
+
+<p>As an existing mini2Dx user, you’re probably wondering what this means for your current game. My goal is to keep the 2.0 API as close as possible to the existing 1.7.x API (since I’m also implementing a game against 1.7.x). So there may be a small number of method changes needed during the upgrade but you can expect the same functionality to be available and more!</p>
+
+                        <p>
+                            <a href="/2018/06/10/mini2Dx-1-7-0-released-and-roadmap-ahead.html">Read more</a>
+                        </p>
+                    </div>
+                </div>
+            </div><!--blog post-->
+            
+            <div class="blog-post">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2 margin20">
+                        <ul class="list-inline post-detail">
+                            <li>by Thomas Cashman</li>
                             <li><i class="fa fa-calendar"></i> 2017-10-29 11:00:00 +0000</li>
                         </ul>
                         <h2><a href="/2017/10/29/mini2Dx-1-7-0-beta.4-released.html">mini2Dx 1.7.0-beta.4 released</a></h2>
@@ -193,25 +236,6 @@
 
                         <p>
                             <a href="/2017/10/10/mini2Dx-1-7-0-beta.1-released.html">Read more</a>
-                        </p>
-                    </div>
-                </div>
-            </div><!--blog post-->
-            
-            <div class="blog-post">
-                <div class="row">
-                    <div class="col-md-8 col-md-offset-2 margin20">
-                        <ul class="list-inline post-detail">
-                            <li>by Thomas Cashman</li>
-                            <li><i class="fa fa-calendar"></i> 2017-09-30 14:55:00 +0100</li>
-                        </ul>
-                        <h2><a href="/2017/09/30/mini2Dx-1-6-5-released.html">mini2Dx 1.6.5 released</a></h2>
-                        <p>mini2Dx 1.6.5 has now been released to Maven Central which fixes support for flipped tiles in Tiled object GID.</p>
-
-<p>To update your existing projects, see the <a href="https://github.com/mini2Dx/mini2Dx/wiki/Updating-mini2Dx">Updating mini2Dx</a> wiki page.</p>
-
-                        <p>
-                            <a href="/2017/09/30/mini2Dx-1-6-5-released.html">Read more</a>
                         </p>
                     </div>
                 </div>
