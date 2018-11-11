@@ -459,75 +459,6 @@ public interface Graphics {
     public void drawBitmapFontCache(BitmapFontCache bitmapFontCache);
 
     /**
-     * Rotates the canvas by the provided degrees around the provided point
-     *
-     * @param degrees
-     *            The degree value in a clockwise direction
-     * @param x
-     *            The x coordinate to rotate around
-     * @param y
-     *            The y coordinate to rotate around
-     */
-    public void rotate(float degrees, float x, float y);
-
-    /**
-     * Sets the canvas rotation around a provided point
-     *
-     * @param degrees
-     *            The degree value in a clockwise direction
-     * @param x
-     *            The x coordinate to rotate around
-     * @param y
-     *            The y coordinate to rotate around
-     */
-    public void setRotation(float degrees, float x, float y);
-
-    /**
-     * Scales the canvas (multiplies scale value)
-     *
-     * @param scaleX
-     *            Scaling along the X axis
-     * @param scaleY
-     *            Scaling along the Y axis
-     */
-    public void scale(float scaleX, float scaleY);
-
-    /**
-     * Sets the canvas scale
-     *
-     * @param scaleX
-     *            Scaling along the X axis
-     * @param scaleY
-     *            Scaling along the Y axis
-     */
-    public void setScale(float scaleX, float scaleY);
-
-    /**
-     * Resets scaling back to default values
-     */
-    public void clearScaling();
-
-    /**
-     * Moves the graphics context by a certain amount of the X and Y axis
-     *
-     * @param translateX
-     *            The x axis translation
-     * @param translateY
-     *            The y axis translation
-     */
-    public void translate(float translateX, float translateY);
-
-    /**
-     * Sets the translation coordinates
-     *
-     * @param translateX
-     *            The x axis translation
-     * @param translateY
-     *            The y axis translation
-     */
-    public void setTranslation(float translateX, float translateY);
-
-    /**
      * Sets the graphics context clip. Only pixels within this area will be
      * rendered
      *
@@ -700,20 +631,121 @@ public interface Graphics {
      */
     public Color getTint();
 
+    /**
+     * Returns the X scaling factor
+     * @return
+     */
     public float getScaleX();
 
+    /**
+     * Returns the Y scaling factor
+     * @return
+     */
     public float getScaleY();
 
+    /**
+     * Scales the canvas (multiplies scale value)
+     *
+     * @param scaleX
+     *            Scaling along the X axis
+     * @param scaleY
+     *            Scaling along the Y axis
+     */
+    public void scale(float scaleX, float scaleY);
+
+    /**
+     * Sets the canvas scale
+     *
+     * @param scaleX
+     *            Scaling along the X axis
+     * @param scaleY
+     *            Scaling along the Y axis
+     */
+    public void setScale(float scaleX, float scaleY);
+
+    /**
+     * Resets scaling back to default values
+     */
+    public void clearScaling();
+
+    /**
+     * Returns the translation of the viewport along the X axis
+     * @return
+     */
     public float getTranslationX();
 
+    /**
+     * Returns the translation of the viewport along the Y axis
+     * @return
+     */
     public float getTranslationY();
 
+    /**
+     * Moves the graphics context by a certain amount of the X and Y axis
+     *
+     * @param translateX
+     *            The x axis translation
+     * @param translateY
+     *            The y axis translation
+     */
+    public void translate(float translateX, float translateY);
+
+    /**
+     * Sets the translation coordinates
+     *
+     * @param translateX
+     *            The x axis translation
+     * @param translateY
+     *            The y axis translation
+     */
+    public void setTranslation(float translateX, float translateY);
+
+    /**
+     * Returns the viewport rotation (in degrees)
+     * @return Defaults to 0f
+     */
     public float getRotation();
 
+    /**
+     * Returns the origin X coordinate of the viewport rotation
+     * @return Defaults to 0f
+     */
     public float getRotationX();
 
+    /**
+     * Returns the origin Y coordinate of the viewport rotation
+     * @return Defaults to 0f
+     */
     public float getRotationY();
 
+    /**
+     * Rotates the canvas by the provided degrees around the provided point
+     *
+     * @param degrees
+     *            The degree value in a clockwise direction
+     * @param x
+     *            The x coordinate to rotate around
+     * @param y
+     *            The y coordinate to rotate around
+     */
+    public void rotate(float degrees, float x, float y);
+
+    /**
+     * Sets the canvas rotation around a provided point
+     *
+     * @param degrees
+     *            The degree value in a clockwise direction
+     * @param x
+     *            The x coordinate to rotate around
+     * @param y
+     *            The y coordinate to rotate around
+     */
+    public void setRotation(float degrees, float x, float y);
+
+    /**
+     * Returns the {@link Matrix4} viewport projection
+     * @return
+     */
     public Matrix4 getProjectionMatrix();
 
     /**
@@ -723,28 +755,56 @@ public interface Graphics {
     public boolean isWindowReady();
 
     /**
-     * Returns the width of the window width
+     * Returns the width of the window
      *
      * @return
      */
     public int getWindowWidth();
 
     /**
-     * Returns the height of the window height
+     * Returns the height of the window
      *
      * @return
      */
     public int getWindowHeight();
 
     /**
-     * Returns the width of the viewport width
+     * Returns the X coordinate of the beginning of the safe area. This only applies to consoles running on television. See more info <a href="https://en.wikipedia.org/wiki/Safe_area_(television)">here</a>.
+     *
+     * @return
+     */
+    public int getWindowSafeX();
+
+    /**
+     * Returns the Y coordinate of the beginning of the safe area. This only applies to consoles running on television. See more info <a href="https://en.wikipedia.org/wiki/Safe_area_(television)">here</a>.
+     *
+     * @return
+     */
+    public int getWindowSafeY();
+
+    /**
+     * Returns the safe width of the window. This only applies to consoles running on television. See more info <a href="https://en.wikipedia.org/wiki/Safe_area_(television)">here</a>.
+     *
+     * @return
+     */
+    public int getWindowSafeWidth();
+
+    /**
+     * Returns the safe height of the window. This only applies to consoles running on television. See more info <a href="https://en.wikipedia.org/wiki/Safe_area_(television)">here</a>.
+     *
+     * @return
+     */
+    public int getWindowSafeHeight();
+
+    /**
+     * Returns the width of the viewport
      *
      * @return
      */
     public float getViewportWidth();
 
     /**
-     * Returns the height of the viewport height
+     * Returns the height of the viewport
      *
      * @return
      */
