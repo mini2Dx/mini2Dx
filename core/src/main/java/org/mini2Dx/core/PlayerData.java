@@ -32,6 +32,9 @@ package org.mini2Dx.core;
 import org.mini2Dx.core.exception.PlayerDataException;
 import org.mini2Dx.core.serialization.annotation.Field;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+
 /**
  * Common interface for reading/writing player data, e.g. game saves, preferences,
  * etc.
@@ -45,6 +48,31 @@ import org.mini2Dx.core.serialization.annotation.Field;
  * serialized/deserialized properly
  */
 public interface PlayerData {
+    /**
+     * Reads the contents of a file in the player data location via a {@link DataInputStream}
+     *
+     * @param filepath
+     *            The path to the file. This will be resolved as a path
+     *            within the game data location.
+     * @return A {@link DataInputStream} to read from
+     * @throws PlayerDataException
+     *             Thrown if the file does not exist
+     */
+    public DataInputStream readBytes(String... filepath) throws PlayerDataException;
+
+    /**
+     * Writes contents to a file in the player data location
+     *
+     * @param filepath
+     *            The path to the file. This will be resolved as a path
+     *            within the game data location.
+     * @return A {@link DataOutputStream} to write to
+     * @throws PlayerDataException
+     *             Thrown if the game data location cannot be accessed or the
+     *             data cannot be written to the file.
+     */
+    public DataOutputStream writeBytes(String... filepath) throws PlayerDataException;
+
     /**
      * Reads the contents of a file in the player data location into a {@link String}
      *
