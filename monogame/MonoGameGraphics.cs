@@ -374,6 +374,26 @@ namespace monogame
         {
             throw new System.NotImplementedException();
         }
+        
+        public int getWindowSafeX()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public int getWindowSafeY()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public int getWindowSafeWidth()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public int getWindowSafeHeight()
+        {
+            throw new System.NotImplementedException();
+        }
 
         public float getViewportWidth()
         {
