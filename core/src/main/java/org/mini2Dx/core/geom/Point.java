@@ -29,22 +29,62 @@
  */
 package org.mini2Dx.core.geom;
 
+import org.mini2Dx.core.Geometry;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
 
+/**
+ * Extends {@link Vector2} with additional functionality
+ */
 public class Point extends Vector2 {
     private static final long serialVersionUID = 3773673953486445831L;
 
+    private final Geometry geometry;
+
+    /**
+     * Constructs a new {@link Point} belonging to the {@link Geometry} pool
+     * @param geometry The {@link Geometry} pool
+     */
+    public Point(Geometry geometry) {
+        super();
+        this.geometry = geometry;
+    }
+
+    /**
+     * Constructs a new {@link Point} at 0,0
+     */
     public Point() {
         super();
+        this.geometry = null;
     }
 
+    /**
+     * Constructs a new {@link Point} at a specific coordinate
+     * @param x The x coordinate
+     * @param y The y coordinate
+     */
     public Point(float x, float y) {
         super(x, y);
+        this.geometry = null;
     }
 
+    /**
+     * Constructs a new {@link Point} with the same coordinates as another {@link Point}
+     * @param point The {@link Point} to copy from
+     */
     public Point(Point point) {
         super(point);
+        this.geometry = null;
+    }
+
+    /**
+     * Releases this {@link Point} back to the {@link Geometry} pool (if it was created from the pool)
+     */
+    public void release() {
+        if(geometry == null) {
+            return;
+        }
+        geometry.release(this);
     }
 
     public float getDistanceTo(Point point) {

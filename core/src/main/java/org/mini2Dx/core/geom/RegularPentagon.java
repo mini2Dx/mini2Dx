@@ -29,6 +29,8 @@
  */
 package org.mini2Dx.core.geom;
 
+import org.mini2Dx.core.Geometry;
+
 /**
  * A <a href="https://en.wikipedia.org/wiki/Pentagon">pentagon</a> where all
  * interior angles are 108 degrees.
@@ -45,5 +47,21 @@ public class RegularPentagon extends RegularPolygon {
      */
     public RegularPentagon(float centerX, float centerY, float radius) {
         super(centerX, centerY, radius, TOTAL_SIDES, ROTATION_SYMMETRY);
+    }
+
+    /**
+     * Constructs a {@link RegularPentagon} belonging to the {@link Geometry} pool
+     * @param geometry the {@link Geometry} pool
+     */
+    public RegularPentagon(Geometry geometry) {
+        super(geometry, TOTAL_SIDES, ROTATION_SYMMETRY);
+    }
+
+    @Override
+    public void release() {
+        if(geometry == null) {
+            return;
+        }
+        geometry.release(this);
     }
 }

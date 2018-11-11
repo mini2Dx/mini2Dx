@@ -29,6 +29,8 @@
  */
 package org.mini2Dx.core.geom;
 
+import org.mini2Dx.core.Geometry;
+
 /**
  * A <a href="https://en.wikipedia.org/wiki/Hexagon">hexagon</a> where all
  * interior angles are 120 degrees.
@@ -45,5 +47,21 @@ public class RegularHexagon extends RegularPolygon {
      */
     public RegularHexagon(float centerX, float centerY, float radius) {
         super(centerX, centerY, radius, TOTAL_SIDES, ROTATION_SYMMETRY);
+    }
+
+    /**
+     * Constructs a {@link RegularHexagon} belonging to the {@link Geometry} pool
+     * @param geometry the {@link Geometry} pool
+     */
+    public RegularHexagon(Geometry geometry) {
+        super(geometry, TOTAL_SIDES, ROTATION_SYMMETRY);
+    }
+
+    @Override
+    public void release() {
+        if(geometry == null) {
+            return;
+        }
+        geometry.release(this);
     }
 }

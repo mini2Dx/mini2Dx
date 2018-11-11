@@ -29,8 +29,10 @@
  */
 package org.mini2Dx.core.geom;
 
+import org.mini2Dx.core.Geometry;
+
 /**
- * Implements an equilateral triangle
+ * Implements an equilateral triangle (all three sides are equal length)
  */
 public class EquilateralTriangle extends RegularPolygon {
     public static final float ROTATION_SYMMETRY = 120f;
@@ -46,4 +48,19 @@ public class EquilateralTriangle extends RegularPolygon {
         super(centerX, centerY, radius, TOTAL_SIDES, ROTATION_SYMMETRY);
     }
 
+    /**
+     * Constructs a {@link EquilateralTriangle} belonging to the {@link Geometry} pool
+     * @param geometry the {@link Geometry} pool
+     */
+    public EquilateralTriangle(Geometry geometry) {
+        super(geometry, TOTAL_SIDES, ROTATION_SYMMETRY);
+    }
+
+    @Override
+    public void release() {
+        if(geometry == null) {
+            return;
+        }
+        geometry.release(this);
+    }
 }

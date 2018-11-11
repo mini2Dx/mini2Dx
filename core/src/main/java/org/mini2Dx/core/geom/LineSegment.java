@@ -29,13 +29,27 @@
  */
 package org.mini2Dx.core.geom;
 
+import org.mini2Dx.core.Geometry;
+
 /**
  * Represents a segment of a line (the space between two points)
  */
 public class LineSegment {
     private static final Point TMP_INTERSECTION = new Point();
 
+    protected final Geometry geometry;
     protected Point pointA, pointB;
+
+    /**
+     * Constructs a {@link LineSegment} belonging to the {@link Geometry} pool
+     * @param geometry The {@link Geometry} pool
+     */
+    public LineSegment(Geometry geometry) {
+        super();
+        this.pointA = new Point();
+        this.pointB = new Point();
+        this.geometry = geometry;
+    }
 
     /**
      * Constructs a line segment between point A and point B
@@ -62,8 +76,20 @@ public class LineSegment {
      *            {@link Point} B
      */
     public LineSegment(Point pA, Point pB) {
+        super();
         this.pointA = pA;
         this.pointB = pB;
+        this.geometry = null;
+    }
+
+    /**
+     * Releases this {@link LineSegment} back to the {@link Geometry} pool (if it was created from the pool)
+     */
+    public void release() {
+        if(geometry == null) {
+            return;
+        }
+        geometry.release(this);
     }
 
     /**
