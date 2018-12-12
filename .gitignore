@@ -32,3 +32,5 @@ uats-android/assets/texture-region-uat.atlas
 uats-android/assets/texture-region-uat.png
 *.bak
 *.iml
+.vs/
+*.csproj.user
