@@ -1,5 +1,7 @@
-﻿using org.mini2Dx.core.geom;
+﻿using org.mini2Dx.core;
+using org.mini2Dx.core.geom;
 using org.mini2Dx.core.graphics;
+using org.mini2Dx.gdx.math;
 
 namespace monogame
 {
@@ -205,26 +207,6 @@ namespace monogame
             throw new System.NotImplementedException();
         }
 
-        public void setClip(Rectangle r)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Rectangle removeClip()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Rectangle peekClip()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void peekClip(Rectangle r)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public void setTint(Color c)
         {
             throw new System.NotImplementedException();
@@ -401,6 +383,31 @@ namespace monogame
         }
 
         public float getViewportHeight()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        Matrix4 Graphics.getProjectionMatrix()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void setClip(org.mini2Dx.core.geom.Rectangle r)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public org.mini2Dx.core.geom.Rectangle removeClip()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public org.mini2Dx.core.geom.Rectangle peekClip()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void peekClip(org.mini2Dx.core.geom.Rectangle r)
         {
             throw new System.NotImplementedException();
         }

@@ -11,10 +11,10 @@ buildscript {
         maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
-		classpath 'gradle.plugin.me.champeau.gradle:jmh-gradle-plugin:0.3.0'
+		classpath 'me.champeau.gradle:jmh-gradle-plugin:0.4.8'
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.9.0'
 		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.8'
-		classpath "com.ullink.gradle:gradle-ikvm-plugin:2.3"
+		classpath "org.mini2Dx:gradle-ikvm-plugin:2.10.0"
     }
 }
 
@@ -49,7 +49,7 @@ ext {
 	multiDexVersion="1.0.1"
 	nativesLoaderVersion="1.0.0"
 	reflectionsVersion="0.9.10"
-	roboVMVersion="2.3.0"
+	roboVMVersion="2.3.6"
 	
 	junitVersion="4.8.1"
 	jmockVersion="2.5.1"
@@ -67,6 +67,7 @@ subprojects {
 	repositories {
 		mavenLocal()
 		mavenCentral()
+		jcenter()
 		maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 		maven { url "https://oss.sonatype.org/content/repositories/releases/" }
 		maven { url 'https://maven.google.com' }
@@ -126,12 +127,12 @@ configure(docProjects()) {
 		}
 		
 		task sourcesJar(type: Jar) {
-			classifier = 'sources'
+			archiveClassifier = 'sources'
 			from android.sourceSets.main.java.srcDirs[0]
 		}
 		
 		task javadocJar(type: Jar) {
-			classifier = 'javadoc'
+			archiveClassifier = 'javadoc'
 			from javadoc
 		}
 		
@@ -150,24 +151,24 @@ configure(docProjects()) {
 		}
 		
 		task sourcesJar(type: Jar) {
-			classifier = 'sources'
+			archiveClassifier = 'sources'
 			from sourceSets.main.allSource
 		}
 
 		task testJar(type: Jar, dependsOn: testClasses) {
 			from sourceSets.test.output
 			include '**/serialization/**/*.class','**/di/**/*.class'
-			classifier = 'test'
+			archiveClassifier = 'test'
 		}
 
 		task javadocJar(type: Jar) {
-			classifier = 'javadoc'
+			archiveClassifier = 'javadoc'
 			from javadoc
 		}
 
 		if(project.name.contains("core")) {
 			task fatJar(type: Jar) {
-				classifier = 'fat'
+				archiveClassifier = 'fat'
 				from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 				with jar
 			}
@@ -181,11 +182,6 @@ configure(docProjects()) {
 				archives javadocJar, sourcesJar, testJar
 				testOutput testJar
 			}
-		}
-
-		checkstyle {
-			configFile = project.file("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
-			toolVersion = "8.12"
 		}
 
 		checkstyle {
@@ -264,6 +260,8 @@ project(":" + rootProject.name + "-core") {
 	ikvm {
 		ikvmHome = ikvmDir
 		debug = false
+		generateDoc = true
+		jars = project.files(project.fatJar.archivePath)
 	}
 	
 	jmh {
@@ -280,7 +278,7 @@ project(":" + rootProject.name + "-core") {
 		reports {
 			xml.enabled true
 			csv.enabled false
-			html.destination "${buildDir}/reports/coverage"
+			html.destination file("${buildDir}/reports/coverage")
 		}
 		afterEvaluate {
 			classDirectories = files(classDirectories.files.collect {
