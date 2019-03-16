@@ -1,34 +1,22 @@
-/**
- * Copyright (c) 2018 See AUTHORS file
- * All rights reserved.
+/*******************************************************************************
+ * Copyright 2019 See AUTHORS file
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * * Redistributions in binary form must reproduce the above copyright notice, this
- *   list of conditions and the following disclaimer in the documentation and/or
- *   other materials provided with the distribution.
- *
- * * Neither the name of mini2Dx nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.mini2Dx.core;
 
+import org.mini2Dx.core.font.GameFont;
+import org.mini2Dx.core.font.GameFontCache;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.geom.Shape;
 import org.mini2Dx.core.graphics.*;
@@ -451,12 +439,12 @@ public interface Graphics {
     public void drawTilingDrawable(TilingDrawable tilingDrawable, float x, float y, float width, float height);
 
     /**
-     * Draws a {@link BitmapFontCache} to the screen
+     * Draws a {@link GameFontCache} to the screen
      *
-     * @param bitmapFontCache
-     *            The {@link BitmapFontCache} to render
+     * @param gameFontCache
+     *            The {@link GameFontCache} to render
      */
-    public void drawBitmapFontCache(BitmapFontCache bitmapFontCache);
+    public void drawFontCache(GameFontCache gameFontCache);
 
     /**
      * Sets the graphics context clip. Only pixels within this area will be
@@ -509,12 +497,12 @@ public interface Graphics {
     public void setTint(Color tint);
 
     /**
-     * Sets the {@link BitmapFont} to draw {@link String}s with
+     * Sets the {@link GameFont} to draw {@link String}s with
      *
      * @param font
-     *            A non-null instance of {@link BitmapFont}
+     *            A non-null instance of {@link GameFont}
      */
-    public void setFont(BitmapFont font);
+    public void setFont(GameFont font);
 
     /**
      * Removes the tinting {@link Color}
@@ -532,24 +520,24 @@ public interface Graphics {
     public void disableBlending();
 
     /**
-     * Applies a {@link ShaderProgram} to this instance
+     * Applies a {@link Shader} program to this instance
      *
-     * @param shaderProgram
-     *            The {@link ShaderProgram} to apply
+     * @param shader
+     *            The {@link Shader} to apply
      */
-    public void setShaderProgram(ShaderProgram shaderProgram);
+    public void setShader(Shader shader);
 
     /**
-     * Returns the currently applied {@link ShaderProgram}
+     * Returns the currently applied {@link Shader} program
      *
      * @return
      */
-    public ShaderProgram getShaderProgram();
+    public Shader getShader();
 
     /**
-     * Clears the {@link ShaderProgram} applied to this instance
+     * Clears the {@link Shader} program applied to this instance
      */
-    public void clearShaderProgram();
+    public void clearShader();
 
     /**
      * Sets the blend function to be applied
@@ -618,11 +606,11 @@ public interface Graphics {
     public void setBackgroundColor(Color backgroundColor);
 
     /**
-     * Returns the {@link BitmapFont} to draw {@link String}s with
+     * Returns the {@link GameFont} to draw {@link String}s with
      *
      * @return 15pt Arial font by default unless setFont() is called
      */
-    public BitmapFont getFont();
+    public GameFont getFont();
 
     /**
      * Returns the {@link Color} tint being applied to all draw operations

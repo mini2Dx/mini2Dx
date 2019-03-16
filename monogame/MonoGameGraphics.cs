@@ -1,4 +1,5 @@
 ﻿using org.mini2Dx.core;
+using org.mini2Dx.core.font;
 using org.mini2Dx.core.geom;
 using org.mini2Dx.core.graphics;
 using org.mini2Dx.gdx.math;
@@ -162,11 +163,6 @@ namespace monogame
             throw new System.NotImplementedException();
         }
 
-        public void drawBitmapFontCache(BitmapFontCache bfc)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public void rotate(float f1, float f2, float f3)
         {
             throw new System.NotImplementedException();
@@ -212,10 +208,6 @@ namespace monogame
             throw new System.NotImplementedException();
         }
 
-        public void setFont(BitmapFont bf)
-        {
-            throw new System.NotImplementedException();
-        }
 
         public void removeTint()
         {
@@ -228,16 +220,6 @@ namespace monogame
         }
 
         public void disableBlending()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void setShaderProgram(ShaderProgram sp)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public ShaderProgram getShaderProgram()
         {
             throw new System.NotImplementedException();
         }
@@ -288,11 +270,6 @@ namespace monogame
         }
 
         public void setBackgroundColor(Color c)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public BitmapFont getFont()
         {
             throw new System.NotImplementedException();
         }
@@ -408,6 +385,41 @@ namespace monogame
         }
 
         public void peekClip(org.mini2Dx.core.geom.Rectangle r)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void drawFontCache(GameFontCache gfc)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void setFont(GameFont gf)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void setShaderProgram(Shader s)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Shader getShader()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public GameFont getFont()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void setShader(Shader s)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void clearShader()
         {
             throw new System.NotImplementedException();
         }
