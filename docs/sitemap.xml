@@ -157,10 +157,6 @@
         <lastmod>2017-10-29T13:12:11+00:00</lastmod>
     </url>
     <url>
-        <loc>http://mini2dx.org/2018/04/20/mini2Dx-1-9-0-released.html</loc>
-        <lastmod>2019-04-20T21:19:31+01:00</lastmod>
-    </url>
-    <url>
         <loc>http://mini2dx.org/2018/06/10/mini2Dx-1-7-0-released-and-roadmap-ahead.html</loc>
         <lastmod>2018-06-23T12:04:18+01:00</lastmod>
     </url>
@@ -233,6 +229,10 @@
         <lastmod>2018-11-27T19:12:00+00:00</lastmod>
     </url>
     <url>
+        <loc>http://mini2dx.org/2019/04/20/mini2Dx-1-9-0-released.html</loc>
+        <lastmod>2019-04-20T21:36:35+01:00</lastmod>
+    </url>
+    <url>
         <loc>http://mini2dx.org/about/</loc>
         <lastmod>2018-07-09T23:15:41+01:00</lastmod>
     </url>
@@ -250,7 +250,7 @@
     </url>
     <url>
         <loc>http://mini2dx.org/blog/</loc>
-        <lastmod>2019-04-20T21:19:31+01:00</lastmod>
+        <lastmod>2019-04-20T21:36:35+01:00</lastmod>
     </url>
     <url>
         <loc>http://mini2dx.org/</loc>
