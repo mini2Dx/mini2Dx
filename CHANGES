@@ -1,6 +1,37 @@
 [2.0.0-SNAPSHOT]
 ...In development...
 
+[1.9.0]
+- Update to LibGDX 1.9.8
+- [BREAKING] UiContainer can now select a NavigationMode instead of only enabling/disabling keyboard
+- [BREAKING] Font loading split into BitmapFont and MonospaceFont
+- [BREAKING] Game no longer pauses when changing to/from foreground/background. Game now pauses when minimised/restored. Toggle these settings via DesktopMini2DxConfig.
+- Added SpriteSheet class
+- Added GameDataSerializable interface for reading/writing binary data
+- Added method to get file handles within the player data directory
+- Added CustomCursor class for implementing custom cursors with up/down state
+- Added Viewport implementations (Extend, Fill, Fit, Screen and Stretch)
+- Added MonospaceFont, MonospaceFontCache and FontGlyphLayout for simplified font rendering
+- Added method to show/hide ScrollBox scroll track
+- Added support for Tiled object templates
+- Added TextInputListener interface for TextBox
+- Added grabInput method to TextBox
+- Added support for Tiled layer groups
+- Added flag to set strict Tile layer visibility state
+- Improved Graphics performance by reducing spritebatch flushes
+- Tilesets can now be loaded from TextureAtlas instances
+- UiContainer can now have multiple navigation action keys
+- Mdx.playerData now uses temp files to write before moving files to target filename
+- Fixed ScrollBox not using disabled button state when thumb cannot scroll
+- Fixed Graphics#tint not being reset each frame
+- Fixed UI element clipping when UI animation is playing
+- Fixed UI navigation cursor not updating when switching between controller and mouse
+- Fixed DesktopPlayerData not ensuring data directory exists when writing JSON or binary files
+- Fixed Sprite not carrying over flip status from TextureRegion
+- Fixed out of bounds error when TextBox is set to value smaller than previous value
+- Fixed LibGDX stages rendering upside-down
+- (#79) Add isInterpolateRequired() to collision classes
+
 [1.8.2]
 - Fixed UI hotkeys triggering actions while elements are disabled
 
