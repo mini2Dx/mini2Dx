@@ -1,6 +1,9 @@
 [2.0.0-SNAPSHOT]
 ...In development...
 
+[1.9.1]
+- Fix hexagonal Tiled map rendering when tile sizes do not match hex side length
+
 [1.9.0]
 - Update to LibGDX 1.9.8
 - [BREAKING] UiContainer can now select a NavigationMode instead of only enabling/disabling keyboard
