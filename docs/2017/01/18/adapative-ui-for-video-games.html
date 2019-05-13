@@ -240,7 +240,8 @@ To avoid confusion between input response times (also known as “responsiveness
 	<span class="p">}</span>
 	
 	<span class="kd">function</span> <span class="nx">setRelativePositionToParent</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">parentWidth</span><span class="p">)</span> <span class="p">{</span>
-		<span class="c1">//Compute position relative to other elements at same level in tree - wrapping if necessary</span>
+		<span class="c1">//Compute position relative to other elements at same level in tree - wrapping if necessary
+</span>
 		<span class="nx">relativeX</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">%</span> <span class="nx">parentWidth</span><span class="p">;</span>
 		<span class="nx">relativeY</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">/</span> <span class="nx">parentWidth</span><span class="p">;</span>
 	<span class="p">}</span>
@@ -257,7 +258,8 @@ To avoid confusion between input response times (also known as “responsiveness
 			<span class="nx">child</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
 		<span class="p">}</span>
 	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		<span class="c1">//Render content at renderX, renderY</span>
+		<span class="c1">//Render content at renderX, renderY
+</span>
 	<span class="p">}</span>	
 <span class="p">}</span></code></pre></figure>
 
@@ -281,10 +283,12 @@ To avoid confusion between input response times (also known as “responsiveness
 <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">Navigation</span> <span class="o">{</span>
 	<span class="kt">void</span> <span class="nf">setHotKey</span><span class="o">(</span><span class="kt">int</span> <span class="n">keycode</span><span class="o">,</span> <span class="n">UiElement</span> <span class="n">element</span><span class="o">)</span>
 
-	<span class="c1">//Sets navigation - where 0 is the first element</span>
+	<span class="c1">//Sets navigation - where 0 is the first element
+</span>
 	<span class="kt">void</span> <span class="nf">setNavigation</span><span class="o">(</span><span class="kt">int</span> <span class="n">index</span><span class="o">,</span> <span class="n">UiElement</span> <span class="n">element</span><span class="o">)</span>
 
-	<span class="c1">//If returns null, call navigate</span>
+	<span class="c1">//If returns null, call navigate
+</span>
 	<span class="n">RenderNode</span> <span class="nf">hotkey</span><span class="o">(</span><span class="kt">int</span> <span class="n">keycode</span><span class="o">);</span>
 
 	<span class="n">RenderNode</span> <span class="nf">navigate</span><span class="o">(</span><span class="kt">int</span> <span class="n">keycode</span><span class="o">);</span>
