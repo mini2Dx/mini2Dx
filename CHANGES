@@ -1,6 +1,9 @@
 [2.0.0-SNAPSHOT]
 ...In development...
 
+[1.9.2]
+- (#86) Fix cast exception when minimizing desktop-based games
+
 [1.9.1]
 - Fix hexagonal Tiled map rendering when tile sizes do not match hex side length
 
