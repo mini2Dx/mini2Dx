@@ -17,7 +17,6 @@ package org.mini2Dx.core.graphics;
 
 import org.mini2Dx.gdx.utils.Disposable;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public interface Pixmap extends Disposable {

@@ -16,37 +16,71 @@
 package org.mini2Dx.core;
 
 import org.mini2Dx.core.audio.Music;
+import org.mini2Dx.core.audio.MusicCompletionListener;
 import org.mini2Dx.core.audio.Sound;
+import org.mini2Dx.core.audio.SoundCompletionListener;
 import org.mini2Dx.core.files.FileHandle;
 
 import java.io.IOException;
 
+/**
+ * Provides audio functionality
+ */
 public interface Audio {
-
-	/** <p>
-	 * Creates a new {@link Sound} which is used to play back audio effects such as gun shots or explosions. The Sound's audio data
-	 * is retrieved from the file specified via the {@link FileHandle}. Note that the complete audio data is loaded into RAM. You
-	 * should therefore not load big audio files with this methods. The current upper limit for decoded audio is 1 MB.
-	 * </p>
-	 *
+	/**
 	 * <p>
-	 * Currently supported formats are WAV, MP3 and OGG.
+	 * Creates a new {@link Sound} instance used to play back audio sound effects (e.g. explosions, gunshots, etc.).
+	 * Note that the complete audio data is loaded into RAM and you should avoid loading large files.
+	 * The current upper limit for decoded audio is 1 MB.
 	 * </p>
 	 *
-	 * <p>
-	 * The Sound has to be disposed if it is no longer used via the {@link Sound#dispose()} method.
-	 * </p>
+	 * <p>Currently supported formats are WAV, MP3 and OGG.</p>
 	 *
-	 * @return the new Sound
-	 * @throws IOException in case the sound could not be loaded */
-	public Sound newSound (FileHandle fileHandle) throws IOException;
+	 * <p>When the {@link Sound} instance is no longer needed, call the {@link Sound#dispose()} method</p>
+	 *
+	 * @param fileHandle The {@link FileHandle} to load the audio from
+	 * @return The new {@link Sound} instance
+	 * @throws IOException Thrown when the sound could not be loaded
+	 */
+	public Sound newSound(FileHandle fileHandle) throws IOException;
 
-	/** Creates a new {@link Music} instance which is used to play back a music stream from a file. Currently supported formats are
-	 * WAV, MP3 and OGG. The Music instance has to be disposed if it is no longer used via the {@link Music#dispose()} method.
+	/**
+	 * <p>
+	 * Creates a new {@link Music} instance used to play back an audio stream from a file.
 	 * Music instances are automatically paused when the application is paused and resumed when the application is resumed.
+	 * </p>
 	 *
-	 * @param file the FileHandle
-	 * @return the new Music or null if the Music could not be loaded
-	 * @throws IOException in case the music could not be loaded */
-	public Music newMusic (FileHandle file) throws IOException;
+	 * <p>Currently supported formats are WAV, MP3 and OGG.</p>
+	 *
+	 * <p>When the {@link Music} instance is no longer needed, call the {@link Music#dispose()} method</p>
+	 *
+	 * @param fileHandle The {@link FileHandle} to stream the audio from
+	 * @return The new {@link Music} instance
+	 * @throws IOException Thrown when the music could not be loaded
+	 */
+	public Music newMusic(FileHandle fileHandle) throws IOException;
+
+	/**
+	 * Adds a {@link MusicCompletionListener}
+	 * @param completionListener The {@link MusicCompletionListener} to be notified of {@link Music} completion events.
+	 */
+	public void addMusicCompletionListener(MusicCompletionListener completionListener);
+
+	/**
+	 * Removes a {@link MusicCompletionListener}
+	 * @param completionListener The {@link MusicCompletionListener} to be removed
+	 */
+	public void removeMusicCompletionListener(MusicCompletionListener completionListener);
+
+	/**
+	 * Adds a {@link SoundCompletionListener}
+	 * @param completionListener The {@link SoundCompletionListener} to be notified of {@link Sound} completion events.
+	 */
+	public void addSoundCompletionListener(SoundCompletionListener completionListener);
+
+	/**
+	 * Removes a {@link SoundCompletionListener}
+	 * @param completionListener The {@link SoundCompletionListener} to be removed
+	 */
+	public void removeSoundCompletionListener(SoundCompletionListener completionListener);
 }

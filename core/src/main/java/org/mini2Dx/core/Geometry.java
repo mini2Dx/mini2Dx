@@ -19,7 +19,7 @@ import org.mini2Dx.core.geom.*;
 import org.mini2Dx.gdx.utils.Queue;
 
 /**
- * Provides pooled geometry classes
+ * Provides pooled geometry classes. Note that this is not a thread-safe API.
  */
 public class Geometry {
     /**

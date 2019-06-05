@@ -20,8 +20,6 @@ import org.mini2Dx.core.di.annotation.Singleton;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.gdx.utils.Array;
 
-import java.io.IOException;
-
 /**
  * A common interface to component scanning implementations.
  *

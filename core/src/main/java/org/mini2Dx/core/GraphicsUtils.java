@@ -92,4 +92,6 @@ public interface GraphicsUtils {
 	public NinePatch newNinePatch(Texture texture, int left, int right, int top, int bottom);
 
 	public NinePatch newNinePatch(TextureRegion region, int left, int right, int top, int bottom);
+
+	public FrameBuffer newFrameBuffer(int width, int height);
 }

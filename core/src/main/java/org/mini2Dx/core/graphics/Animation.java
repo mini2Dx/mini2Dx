@@ -31,7 +31,7 @@ public class Animation<T extends Sprite> {
 	private float rotation;
 	private float originX;
 	private float originY;
-	private Color tint;
+	private Color color;
 	private boolean flipX;
 	private boolean flipY;
 
@@ -57,8 +57,8 @@ public class Animation<T extends Sprite> {
 	public void addFrame(T frame, float duration) {
 		durations.add(duration);
 		frames.add(frame);
-		if(tint == null)
-			tint = frame.getTint();
+		if(color == null)
+			color = frame.getTint();
 		originX = frame.getOriginX();
 		originY = frame.getOriginY();
 	}
@@ -112,7 +112,8 @@ public class Animation<T extends Sprite> {
 	/**
 	 * Draws the current frame of the animation
 	 *
-	 * @param g The {@link Graphics} context available for rendering
+	 * @param g
+	 *            The {@link Graphics} context available for rendering
 	 */
 	public void draw(Graphics g) {
 		if(currentFrameIndex >= frames.size)
@@ -121,7 +122,7 @@ public class Animation<T extends Sprite> {
 		T sprite = getCurrentFrame();
 		sprite.setOrigin(originX, originY);
 		sprite.setRotation(rotation);
-		sprite.setTint(tint);
+		sprite.setTint(color);
 		sprite.setFlip(flipX, flipY);
 		g.drawSprite(sprite);
 		sprite.setRotation(0f);
@@ -144,7 +145,7 @@ public class Animation<T extends Sprite> {
 		T sprite = getCurrentFrame();
 		sprite.setOrigin(originX, originY);
 		sprite.setRotation(rotation);
-		sprite.setTint(tint);
+		sprite.setTint(color);
 		sprite.setFlip(flipX, flipY);
 		g.drawSprite(sprite, x, y);
 		sprite.setRotation(0f);
@@ -235,18 +236,18 @@ public class Animation<T extends Sprite> {
 	 * Returns the {@link Color} tint applied to each frame
 	 * @return
 	 */
-	public Color getTint() {
-		return tint;
+	public Color getColor() {
+		return color;
 	}
 
 	/**
 	 * Sets the {@link Color} tint applied to each frame
-	 * @param tint
+	 * @param color
 	 */
-	public void setTint(Color tint) {
-		if(tint == null)
+	public void setColor(Color color) {
+		if(color == null)
 			return;
-		this.tint = tint;
+		this.color = color;
 	}
 
 	/**
@@ -257,10 +258,10 @@ public class Animation<T extends Sprite> {
 	 * @param a The alpha value (0f - 1f)
 	 */
 	public void setColor(float r, float g, float b, float a) {
-		if(tint == null) {
-			tint = Mdx.graphics.newColor(r, g, b, a);
+		if(color == null) {
+			color = Mdx.graphics.newColor(r, g, b, a);
 		} else {
-			tint.set(r, g, b, a);
+			color.set(r, g, b, a);
 		}
 	}
 

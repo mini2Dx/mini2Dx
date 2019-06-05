@@ -19,9 +19,6 @@ import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.gdx.utils.Disposable;
 
-import java.io.IOException;
-import java.io.Writer;
-
 public interface ParticleEffect extends Disposable {
 
 	public void load(FileHandle effectFile, FileHandle imagesDir);
