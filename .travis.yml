@@ -36,8 +36,16 @@ notifications:
     on_failure: always
 before_install:
   - sudo apt-get update
+  - sudo apt-get install gtk-sharp3
 before_script:
   - android-update-sdk --components=sys-img-armeabi-v7a-android-21 --accept-licenses='android-sdk-license-[0-9a-f]{8}'
   - curl -O https://github.com/MonoGame/MonoGame/releases/download/v3.7.1/monogame-sdk.run
-  - yes Y | sudo bash monogame-sdk.run
+  - chmod +x monogame-sdk.run
+  - sudo ./monogame-sdk.run --noexec --keep --target ./monogame
+  - sudo chmod 777 ./monogame/postinstall.sh
+  - cp Build/postinstall.sh ./monogame
+  - cd monogame
+  - sudo chmod +x postinstall.sh
+  - sudo ./postinstall.sh
+  - cd ..
 script: ./gradlew clean build --stacktrace
