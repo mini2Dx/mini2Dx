@@ -1,4 +1,0 @@
----
-title: Community
-layout: community
----

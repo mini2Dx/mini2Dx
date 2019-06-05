@@ -1,9 +1,0 @@
-org.mini2Dx.core.game
-org.mini2Dx.core.geom
-org.mini2Dx.core.graphics
-org.mini2Dx.core.screen
-org.mini2Dx.core.screen.transition
-org.mini2Dx.injection
-org.mini2Dx.injection.exceptions
-org.mini2Dx.tiled
-org.mini2Dx.uats.common

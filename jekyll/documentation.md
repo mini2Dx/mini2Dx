@@ -1,4 +1,0 @@
----
-title: Documentation
-layout: documentation
----
