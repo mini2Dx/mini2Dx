@@ -70,11 +70,7 @@ public interface Music extends Disposable {
 	 * @return A value between 0.0 and 1.0 where 0.0 is silent and 1.0 is maximum volume.
 	 */
 	public float getVolume ();
-
-	/** Sets the panning and volume of this music stream.
-	 * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
-	 * @param volume the volume in the range [0,1]. */
-
+	
 	/**
 	 * Sets the panning and volume of the music
 	 * @param pan The panning where -1.0 is full left, 1.0 is full right and 0.0 is center.

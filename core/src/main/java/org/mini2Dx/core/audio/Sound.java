@@ -36,14 +36,14 @@ public interface Sound extends Disposable {
 
 	/** Plays the sound. If the sound is already playing, it will be played again, concurrently.
 	 * @param volume the volume in the range [0,1]
-	 * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0
+	 * @param pitch the pitch multiplier, 1 == default, &gt;1 == faster, &lt;1 == slower, the value has to be between 0.5 and 2.0
 	 * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
 	 * @return the id of the sound instance if successful, or -1 on failure. */
 
 	/**
 	 * Plays the sound at the specified volume, pitch and panning. If it is already playing, it will be played again concurrently.
 	 * @param volume The volume to play at where 0.0 is silent and 1.0 is full volume
-	 * @param pitch The pitch multiplier where 1.0 is default, >1 is faster and <1 is slower. The value range must be between 0.5 and 2.0
+	 * @param pitch The pitch multiplier where 1.0 is default, &gt;1 is faster and &lt;1 is slower. The value range must be between 0.5 and 2.0
 	 * @param pan The panning where -1.0 is full left, 1.0 is full right and 0.0 is center.
 	 * @return -1 on failure, otherwise the unique ID of the playing instance.
 	 */
@@ -65,7 +65,7 @@ public interface Sound extends Disposable {
 	/**
 	 * Loops the sound at the specified volume, pitch and panning. If it is already playing, it will be played again concurrently.
 	 * @param volume The volume to play at where 0.0 is silent and 1.0 is full volume
-	 * @param pitch The pitch multiplier where 1.0 is default, >1 is faster and <1 is slower. The value range must be between 0.5 and 2.0
+	 * @param pitch The pitch multiplier where 1.0 is default, &gt;1 is faster and &lt;1 is slower. The value range must be between 0.5 and 2.0
 	 * @param pan The panning where -1.0 is full left, 1.0 is full right and 0.0 is center.
 	 * @return -1 on failure, otherwise the unique ID of the playing instance.
 	 */
@@ -114,7 +114,7 @@ public interface Sound extends Disposable {
 	/**
 	 * Sets the pitch of the specific instance of this sound. If it is no longer playing this has no effect.
 	 * @param soundId The sound ID that was returned when play/loop was called
-	 * @param pitch The pitch multiplier where 1.0 is default, >1 is faster and <1 is slower. The value range must be between 0.5 and 2.0
+	 * @param pitch The pitch multiplier where 1.0 is default, &gt;1 is faster and &lt;1 is slower. The value range must be between 0.5 and 2.0
 	 */
 	public void setPitch (long soundId, float pitch);
 
