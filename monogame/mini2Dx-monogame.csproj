@@ -41,7 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MonoGameAudio.cs" />
+    <Compile Include="MonoGameFiles.cs" />
     <Compile Include="MonoGameGraphics.cs" />
+    <Compile Include="MonoGameGraphicsUtils.cs" />
+    <Compile Include="MonoGameInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

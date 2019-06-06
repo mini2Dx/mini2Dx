@@ -10,12 +10,32 @@ namespace monogame
 {
     class MonoGameAudio : org.mini2Dx.core.Audio
     {
-        public Music newMusic(FileHandle fh)
+        public Music newMusic(FileHandle fileHandle)
         {
             throw new NotImplementedException();
         }
 
-        public Sound newSound(FileHandle fh)
+        public void addMusicCompletionListener(MusicCompletionListener completionListener)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void removeMusicCompletionListener(MusicCompletionListener completionListener)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void addSoundCompletionListener(SoundCompletionListener completionListener)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void removeSoundCompletionListener(SoundCompletionListener completionListener)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Sound newSound(FileHandle fileHandle)
         {
             throw new NotImplementedException();
         }

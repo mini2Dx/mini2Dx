@@ -10,32 +10,37 @@ namespace monogame
 {
     class MonoGameGraphicsUtils : org.mini2Dx.core.GraphicsUtils
     {
-        public Color newColor(float f1, float f2, float f3, float f4)
+        public Color newColor(float r, float g, float b, float a)
         {
             throw new NotImplementedException();
         }
 
-        public Color newColor(int i)
+        public Color newColor(int rgba8888)
         {
             throw new NotImplementedException();
         }
 
-        public Color newColor(int i1, int i2, int i3, int i4)
+        public Color newColor(int r, int g, int b, int a)
         {
             throw new NotImplementedException();
         }
 
-        public Color newColor(byte b1, byte b2, byte b3, byte b4)
+        public Color newColor(byte r, byte g, byte b, byte a)
         {
             throw new NotImplementedException();
         }
 
-        public NinePatch newNinePatch(Texture t, int i1, int i2, int i3, int i4)
+        public NinePatch newNinePatch(Texture texture, int left, int right, int top, int bottom)
         {
             throw new NotImplementedException();
         }
 
-        public NinePatch newNinePatch(TextureRegion tr, int i1, int i2, int i3, int i4)
+        public NinePatch newNinePatch(TextureRegion region, int left, int right, int top, int bottom)
+        {
+            throw new NotImplementedException();
+        }
+
+        public FrameBuffer newFrameBuffer(int width, int height)
         {
             throw new NotImplementedException();
         }
@@ -45,57 +50,57 @@ namespace monogame
             throw new NotImplementedException();
         }
 
-        public ParticleEffect newParticleEffect(FileHandle fh1, FileHandle fh2)
+        public ParticleEffect newParticleEffect(FileHandle effectFile, FileHandle imagesDir)
         {
             throw new NotImplementedException();
         }
 
-        public ParticleEffect newParticleEffect(FileHandle fh, TextureAtlas ta)
+        public ParticleEffect newParticleEffect(FileHandle effectFile, TextureAtlas atlas)
         {
             throw new NotImplementedException();
         }
 
-        public Pixmap newPixmap(int i1, int i2, PixmapFormat pf)
+        public Pixmap newPixmap(int width, int height, PixmapFormat format)
         {
             throw new NotImplementedException();
         }
 
-        public Pixmap newPixmap(byte[] barr, int i1, int i2)
+        public Pixmap newPixmap(byte[] encodedData, int offset, int len)
         {
             throw new NotImplementedException();
         }
 
-        public Pixmap newPixmap(FileHandle fh)
+        public Pixmap newPixmap(FileHandle file)
         {
             throw new NotImplementedException();
         }
 
-        public Sprite newSprite(TextureRegion tr)
+        public Sprite newSprite(TextureRegion texture)
         {
             throw new NotImplementedException();
         }
 
-        public Sprite newSprite(Texture t)
+        public Sprite newSprite(Texture texture)
         {
             throw new NotImplementedException();
         }
 
-        public Sprite newSprite(Texture t, int i1, int i2)
+        public Sprite newSprite(Texture texture, int width, int height)
         {
             throw new NotImplementedException();
         }
 
-        public Sprite newSprite(Texture t, int i1, int i2, int i3, int i4)
+        public Sprite newSprite(Texture texture, int x, int y, int width, int height)
         {
             throw new NotImplementedException();
         }
 
-        public Sprite newSprite(TextureRegion tr, int i1, int i2)
+        public Sprite newSprite(TextureRegion texture, int width, int height)
         {
             throw new NotImplementedException();
         }
 
-        public Sprite newSprite(TextureRegion tr, int i1, int i2, int i3, int i4)
+        public Sprite newSprite(TextureRegion texture, int x, int y, int width, int height)
         {
             throw new NotImplementedException();
         }
@@ -105,82 +110,82 @@ namespace monogame
             throw new NotImplementedException();
         }
 
-        public Texture newTexture(FileHandle fh)
+        public Texture newTexture(FileHandle fileHandle)
         {
             throw new NotImplementedException();
         }
 
-        public Texture newTexture(FileHandle fh, bool b)
+        public Texture newTexture(FileHandle fileHandle, bool useMipMaps)
         {
             throw new NotImplementedException();
         }
 
-        public Texture newTexture(FileHandle fh, PixmapFormat pf, bool b)
+        public Texture newTexture(FileHandle fileHandle, PixmapFormat format, bool useMipMaps)
         {
             throw new NotImplementedException();
         }
 
-        public Texture newTexture(Pixmap p)
+        public Texture newTexture(Pixmap pixmap)
         {
             throw new NotImplementedException();
         }
 
-        public Texture newTexture(Pixmap p, bool b)
+        public Texture newTexture(Pixmap pixmap, bool useMipMaps)
         {
             throw new NotImplementedException();
         }
 
-        public Texture newTexture(Pixmap p, PixmapFormat pf, bool b)
+        public Texture newTexture(Pixmap pixmap, PixmapFormat format, bool useMipMaps)
         {
             throw new NotImplementedException();
         }
 
-        public TextureAtlas newTextureAtlas(FileHandle fh)
+        public TextureAtlas newTextureAtlas(FileHandle packFile)
         {
             throw new NotImplementedException();
         }
 
-        public TextureAtlas newTextureAtlas(FileHandle fh, bool b)
+        public TextureAtlas newTextureAtlas(FileHandle packFile, bool flip)
         {
             throw new NotImplementedException();
         }
 
-        public TextureAtlas newTextureAtlas(FileHandle fh1, FileHandle fh2)
+        public TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir)
         {
             throw new NotImplementedException();
         }
 
-        public TextureAtlas newTextureAtlas(FileHandle fh1, FileHandle fh2, bool b)
+        public TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir, bool flip)
         {
             throw new NotImplementedException();
         }
 
-        public TextureRegion newTextureRegion(Texture t)
+        public TextureRegion newTextureRegion(Texture texture)
         {
             throw new NotImplementedException();
         }
 
-        public TextureRegion newTextureRegion(TextureRegion tr, int i1, int i2, int i3, int i4)
+        public TextureRegion newTextureRegion(TextureRegion texture, int x, int y, int width, int height)
         {
             throw new NotImplementedException();
         }
 
-        public TextureRegion newTextureRegion(Texture t, int i1, int i2)
+        public TextureRegion newTextureRegion(Texture texture, int width, int height)
         {
             throw new NotImplementedException();
         }
 
-        public TextureRegion newTextureRegion(Texture t, int i1, int i2, int i3, int i4)
+        public TextureRegion newTextureRegion(Texture texture, int x, int y, int width, int height)
         {
             throw new NotImplementedException();
         }
 
-        public TextureRegion newTextureRegion(TextureRegion tr)
+        public TextureRegion newTextureRegion(TextureRegion texture)
         {
             throw new NotImplementedException();
         }
 
-        public TextureRegion newTextureRegion(TextureRegion tr, int i1, int i2)
+        public TextureRegion newTextureRegion(TextureRegion texture, int width, int height)
         {
             throw new NotImplementedException();
         }
