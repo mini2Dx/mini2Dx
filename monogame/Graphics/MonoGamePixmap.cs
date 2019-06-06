@@ -14,42 +14,42 @@ namespace monogame.Graphics
             throw new NotImplementedException();
         }
 
-        public void drawCircle(int i1, int i2, int i3)
+        public void drawCircle(int x, int y, int radius)
         {
             throw new NotImplementedException();
         }
 
-        public void drawLine(int i1, int i2, int i3, int i4)
+        public void drawLine(int x, int y, int x2, int y2)
         {
             throw new NotImplementedException();
         }
 
-        public void drawPixel(int i1, int i2)
+        public void drawPixel(int x, int y)
         {
             throw new NotImplementedException();
         }
 
-        public void drawPixel(int i1, int i2, Color c)
+        public void drawPixel(int x, int y, Color color)
         {
             throw new NotImplementedException();
         }
 
-        public void drawPixmap(Pixmap p, int i1, int i2)
+        public void drawPixmap(Pixmap pixmap, int x, int y)
         {
             throw new NotImplementedException();
         }
 
-        public void drawPixmap(Pixmap p, int i1, int i2, int i3, int i4, int i5, int i6)
+        public void drawPixmap(Pixmap pixmap, int x, int y, int srcX, int srcY, int srcWidth, int srcHeight)
         {
             throw new NotImplementedException();
         }
 
-        public void drawPixmap(Pixmap p, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8)
+        public void drawPixmap(Pixmap pixmap, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight)
         {
             throw new NotImplementedException();
         }
 
-        public void drawRectangle(int i1, int i2, int i3, int i4)
+        public void drawRectangle(int x, int y, int width, int height)
         {
             throw new NotImplementedException();
         }
@@ -59,17 +59,17 @@ namespace monogame.Graphics
             throw new NotImplementedException();
         }
 
-        public void fillCircle(int i1, int i2, int i3)
+        public void fillCircle(int x, int y, int radius)
         {
             throw new NotImplementedException();
         }
 
-        public void fillRectangle(int i1, int i2, int i3, int i4)
+        public void fillRectangle(int x, int y, int width, int height)
         {
             throw new NotImplementedException();
         }
 
-        public void fillTriangle(int i1, int i2, int i3, int i4, int i5, int i6)
+        public void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3)
         {
             throw new NotImplementedException();
         }
@@ -94,12 +94,12 @@ namespace monogame.Graphics
             throw new NotImplementedException();
         }
 
-        public int getPixel(int i1, int i2)
+        public int getPixel(int x, int y)
         {
             throw new NotImplementedException();
         }
 
-        public global::java.nio.ByteBuffer getPixels()
+        public byte[] getPixels()
         {
             throw new NotImplementedException();
         }
@@ -109,17 +109,17 @@ namespace monogame.Graphics
             throw new NotImplementedException();
         }
 
-        public void setBlending(PixmapBlending pb)
+        public void setBlending(PixmapBlending blending)
         {
             throw new NotImplementedException();
         }
 
-        public void setColor(Color c)
+        public void setColor(Color color)
         {
             throw new NotImplementedException();
         }
 
-        public void setFilter(PixmapFilter pf)
+        public void setFilter(PixmapFilter filter)
         {
             throw new NotImplementedException();
         }
