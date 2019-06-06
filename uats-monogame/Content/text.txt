@@ -1,0 +1,1 @@
+This is just some random text used for testing MonoGameFileHandle.cs

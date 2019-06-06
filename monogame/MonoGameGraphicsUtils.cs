@@ -14,31 +14,50 @@
  * limitations under the License.
  ******************************************************************************/
 using System;
+using System.IO;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using monogame.Files;
+using monogame.Graphics;
 using org.mini2Dx.core.files;
 using org.mini2Dx.core.graphics;
+using Color = org.mini2Dx.core.graphics.Color;
+using Texture = org.mini2Dx.core.graphics.Texture;
 
 namespace monogame
 {
     class MonoGameGraphicsUtils : org.mini2Dx.core.GraphicsUtils
     {
+        private readonly Game _gameInstance;
+
+        public MonoGameGraphicsUtils()
+        {
+            
+        }
+
+        public MonoGameGraphicsUtils(Game game)
+        {
+            _gameInstance = game;
+        }
+        
         public Color newColor(float r, float g, float b, float a)
         {
-            throw new NotImplementedException();
+            return new MonoGameColor(r,g,b,a);
         }
 
         public Color newColor(int rgba8888)
         {
-            throw new NotImplementedException();
+            return new MonoGameColor((uint) rgba8888);
         }
 
         public Color newColor(int r, int g, int b, int a)
         {
-            throw new NotImplementedException();
+            return new MonoGameColor(r,g,b,a);
         }
 
         public Color newColor(byte r, byte g, byte b, byte a)
         {
-            throw new NotImplementedException();
+            return new MonoGameColor(r,g,b,a);
         }
 
         public NinePatch newNinePatch(Texture texture, int left, int right, int top, int bottom)
@@ -73,82 +92,98 @@ namespace monogame
 
         public Pixmap newPixmap(int width, int height, PixmapFormat format)
         {
-            throw new NotImplementedException();
-        }
-
-        public Pixmap newPixmap(byte[] encodedData, int offset, int len)
-        {
-            throw new NotImplementedException();
+            return new MonoGamePixmap(width, height, format);
         }
 
         public Pixmap newPixmap(FileHandle file)
         {
-            throw new NotImplementedException();
+            var texture = newTexture(file);
+            var pixmap = new MonoGamePixmap(texture.getWidth(), texture.getHeight());
+            texture.draw(pixmap, 0, 0);
+            return pixmap;
         }
 
         public Sprite newSprite(TextureRegion texture)
         {
-            throw new NotImplementedException();
+            return new MonoGameSprite(texture);
         }
 
         public Sprite newSprite(Texture texture)
         {
-            throw new NotImplementedException();
+            return new MonoGameSprite(texture);
         }
 
         public Sprite newSprite(Texture texture, int width, int height)
         {
-            throw new NotImplementedException();
+            return new MonoGameSprite(texture, width, height);
         }
 
         public Sprite newSprite(Texture texture, int x, int y, int width, int height)
         {
-            throw new NotImplementedException();
+            return new MonoGameSprite(texture, x, y, width, height);
         }
 
         public Sprite newSprite(TextureRegion texture, int width, int height)
         {
-            throw new NotImplementedException();
+            return new MonoGameSprite(texture, width, height);
         }
 
         public Sprite newSprite(TextureRegion texture, int x, int y, int width, int height)
         {
-            throw new NotImplementedException();
+            return new MonoGameSprite(texture, x, y, width, height);
         }
 
         public Sprite newSprite(Sprite s)
         {
-            throw new NotImplementedException();
+            Sprite sprite = new MonoGameSprite();
+            sprite.set(s);
+            return sprite;
         }
 
         public Texture newTexture(FileHandle fileHandle)
         {
-            throw new NotImplementedException();
+            Texture2D texture;
+
+            using (var fileStream = new FileStream(((MonoGameFileHandle) fileHandle).fullPath(), FileMode.Open))
+            {
+                texture = Texture2D.FromStream(_gameInstance.GraphicsDevice, fileStream);
+            }
+            return new MonoGameTexture(texture);
         }
 
-        public Texture newTexture(FileHandle fileHandle, bool useMipMaps)
+        public Texture newTexture(FileHandle fileHandle, PixmapFormat format)
         {
-            throw new NotImplementedException();
-        }
-
-        public Texture newTexture(FileHandle fileHandle, PixmapFormat format, bool useMipMaps)
-        {
-            throw new NotImplementedException();
+            var pixmap = newPixmap(fileHandle);
+            return newTexture(pixmap, pixmap.getFormat());
         }
 
         public Texture newTexture(Pixmap pixmap)
         {
-            throw new NotImplementedException();
+            return newTexture(pixmap, pixmap.getFormat());
         }
 
-        public Texture newTexture(Pixmap pixmap, bool useMipMaps)
+        public Texture newTexture(Pixmap pixmap, PixmapFormat format)
         {
-            throw new NotImplementedException();
-        }
+            var rawPixmap = pixmap.getPixels();
 
-        public Texture newTexture(Pixmap pixmap, PixmapFormat format, bool useMipMaps)
-        {
-            throw new NotImplementedException();
+            SurfaceFormat destFormat;
+
+            if (format == PixmapFormat.ALPHA)
+            {
+                destFormat = SurfaceFormat.Alpha8;
+            }
+            else if (format == PixmapFormat.RGBA8888)
+            {
+                destFormat = SurfaceFormat.ColorSRgb;
+            }
+            else
+            {
+                throw new ArgumentException("format not supported");
+            }
+            var texture = new Texture2D(_gameInstance.GraphicsDevice, pixmap.getWidth(), pixmap.getHeight(), false, destFormat);
+            texture.SetData(rawPixmap);
+
+            return new MonoGameTexture(texture);
         }
 
         public TextureAtlas newTextureAtlas(FileHandle packFile)
@@ -173,32 +208,32 @@ namespace monogame
 
         public TextureRegion newTextureRegion(Texture texture)
         {
-            throw new NotImplementedException();
+            return new MonoGameTextureRegion(texture);
         }
 
         public TextureRegion newTextureRegion(TextureRegion texture, int x, int y, int width, int height)
         {
-            throw new NotImplementedException();
+            return new MonoGameTextureRegion(texture, x, y, width, height);
         }
 
         public TextureRegion newTextureRegion(Texture texture, int width, int height)
         {
-            throw new NotImplementedException();
+            return new MonoGameTextureRegion(texture, width, height);
         }
 
         public TextureRegion newTextureRegion(Texture texture, int x, int y, int width, int height)
         {
-            throw new NotImplementedException();
+            return new MonoGameTextureRegion(texture, x, y, width, height);
         }
 
         public TextureRegion newTextureRegion(TextureRegion texture)
         {
-            throw new NotImplementedException();
+            return new MonoGameTextureRegion(texture);
         }
 
         public TextureRegion newTextureRegion(TextureRegion texture, int width, int height)
         {
-            throw new NotImplementedException();
+            return new MonoGameTextureRegion(texture, width, height);
         }
     }
 }
