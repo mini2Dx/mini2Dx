@@ -17,8 +17,6 @@ package org.mini2Dx.core.graphics;
 
 import org.mini2Dx.gdx.utils.Disposable;
 
-import java.nio.ByteBuffer;
-
 public interface Pixmap extends Disposable {
 
 	/**
@@ -155,14 +153,14 @@ public interface Pixmap extends Disposable {
 	public int getPixel(int x, int y);
 
 	/**
-	 * Returns the direct ByteBuffer holding the pixel data. For the format Alpha each value is encoded as a byte. For the format
+	 * Creates a new byte array holding the pixel data. For the format Alpha each value is encoded as a byte. For the format
 	 * LuminanceAlpha the luminance is the first byte and the alpha is the second byte of the pixel. For the formats RGB888 and
 	 * RGBA8888 the color components are stored in a single byte each in the order red, green, blue (alpha). For the formats RGB565
 	 * and RGBA4444 the pixel colors are stored in shorts in machine dependent order.
 	 *
-	 * @return the direct {@link ByteBuffer} holding the pixel data.
+	 * @return A new byte array holding the pixel data.
 	 */
-	public ByteBuffer getPixels();
+	public byte [] getPixels();
 
 	/**
 	 * @return The width of the Pixmap in pixels.
