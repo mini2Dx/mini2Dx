@@ -16,6 +16,7 @@
 
 using Microsoft.Xna.Framework.Graphics;
 using org.mini2Dx.core.graphics;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace monogame.Graphics
 {
@@ -35,7 +36,16 @@ namespace monogame.Graphics
 
         public void draw(Pixmap pixmap, int x, int y)
         {
+            var rawTextureData = new Color[getWidth() * getHeight()];
+            texture2D.GetData(rawTextureData);
             
+            for (var textureX = 0; textureX < getWidth(); textureX++)
+            {
+                for (var textureY = 0; textureY < getHeight(); textureY++)
+                {
+                    pixmap.drawPixel(x + textureX, y + textureY, new MonoGameColor(rawTextureData[textureX + textureY * getWidth()]));
+                }
+            }
         }
 
         public int getHeight()

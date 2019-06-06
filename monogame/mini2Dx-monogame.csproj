@@ -48,8 +48,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Files\MonoGameFileHandle.cs" />
+    <Compile Include="Graphics\MonoGameColor.cs" />
     <Compile Include="Graphics\MonoGamePixmap.cs" />
+    <Compile Include="Graphics\MonoGameSprite.cs" />
     <Compile Include="Graphics\MonoGameTexture.cs" />
+    <Compile Include="Graphics\MonoGameTextureRegion.cs" />
     <Compile Include="MonoGameAudio.cs" />
     <Compile Include="MonoGameFiles.cs" />
     <Compile Include="MonoGameGraphics.cs" />
