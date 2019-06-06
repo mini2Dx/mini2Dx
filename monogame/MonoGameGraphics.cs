@@ -315,11 +315,6 @@ namespace monogame
             throw new System.NotImplementedException();
         }
 
-        public object getProjectionMatrix()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public bool isWindowReady()
         {
             throw new System.NotImplementedException();
@@ -365,7 +360,7 @@ namespace monogame
             throw new System.NotImplementedException();
         }
 
-        Matrix4 Graphics.getProjectionMatrix()
+        public Matrix4 getProjectionMatrix()
         {
             throw new System.NotImplementedException();
         }
@@ -396,11 +391,6 @@ namespace monogame
         }
 
         public void setFont(GameFont font)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void setShaderProgram(Shader s)
         {
             throw new System.NotImplementedException();
         }
