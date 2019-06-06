@@ -9,12 +9,12 @@ namespace monogame
 {
     class MonoGameFiles : org.mini2Dx.core.Files
     {
-        public FileHandle external(string str)
+        public FileHandle external(string path)
         {
             throw new NotImplementedException();
         }
 
-        public FileHandle @internal(string str)
+        public FileHandle @internal(string path)
         {
             throw new NotImplementedException();
         }
@@ -29,7 +29,7 @@ namespace monogame
             throw new NotImplementedException();
         }
 
-        public FileHandle local(string str)
+        public FileHandle local(string path)
         {
             throw new NotImplementedException();
         }
