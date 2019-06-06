@@ -32,6 +32,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IKVM.OpenJDK.Core, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
+      <HintPath>..\_tools\ikvm\bin\IKVM.OpenJDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
+      <HintPath>..\_tools\ikvm\bin\IKVM.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="mini2Dx-core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\core\build\libs\mini2Dx-core.dll</HintPath>
     </Reference>
@@ -41,12 +47,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Files\MonoGameFileHandle.cs" />
+    <Compile Include="Graphics\MonoGamePixmap.cs" />
+    <Compile Include="Graphics\MonoGameTexture.cs" />
     <Compile Include="MonoGameAudio.cs" />
     <Compile Include="MonoGameFiles.cs" />
     <Compile Include="MonoGameGraphics.cs" />
     <Compile Include="MonoGameGraphicsUtils.cs" />
     <Compile Include="MonoGameInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\MonoGameInputStream.cs" />
+    <Compile Include="Util\MonoGameOutputStream.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.Portable">

@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.IO.IsolatedStorage;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -27,7 +29,8 @@ namespace uats_monogame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            IsolatedStorageFile isolatedStorageFile = IsolatedStorageFile.GetUserStoreForDomain();
+            Console.WriteLine(isolatedStorageFile.AvailableFreeSpace);
             base.Initialize();
         }
 
