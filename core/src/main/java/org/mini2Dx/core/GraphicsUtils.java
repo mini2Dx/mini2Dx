@@ -30,8 +30,6 @@ public interface GraphicsUtils {
 
 	public Pixmap newPixmap(int width, int height, PixmapFormat format);
 
-	public Pixmap newPixmap(byte[] encodedData, int offset, int len);
-
 	public Pixmap newPixmap(FileHandle file);
 
 	public Texture newTexture(FileHandle file);
