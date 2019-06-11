@@ -36,15 +36,11 @@ public interface GraphicsUtils {
 
 	public Texture newTexture(FileHandle file);
 
-	public Texture newTexture(FileHandle file, boolean useMipMaps);
-
-	public Texture newTexture(FileHandle file, PixmapFormat format, boolean useMipMaps);
+	public Texture newTexture(FileHandle file, PixmapFormat format);
 
 	public Texture newTexture(Pixmap pixmap);
 
-	public Texture newTexture(Pixmap pixmap, boolean useMipMaps);
-
-	public Texture newTexture(Pixmap pixmap, PixmapFormat format, boolean useMipMaps);
+	public Texture newTexture(Pixmap pixmap, PixmapFormat format);
 
 	public TextureRegion newTextureRegion(Texture texture);
 
