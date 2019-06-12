@@ -221,7 +221,7 @@ namespace monogame.Graphics
 
         public static byte getRAsByte(UInt32 rgba8888)
         {
-            return (byte) (rgba8888 << 24);
+            return (byte) (rgba8888 >> 24);
         }
 
         public byte getGAsByte()
@@ -231,7 +231,7 @@ namespace monogame.Graphics
 
         public static byte getGAsByte(UInt32 rgba8888)
         {
-            return (byte) (rgba8888 << 16 & 0xff);
+            return (byte) (rgba8888 >> 16 & 0xff);
         }
 
         public byte getBAsByte()
@@ -241,7 +241,7 @@ namespace monogame.Graphics
 
         public static byte getBAsByte(UInt32 rgba8888)
         {
-            return (byte) (rgba8888 << 8 & 0xff);
+            return (byte) (rgba8888 >> 8 & 0xff);
         }
 
         public byte getAAsByte()
@@ -258,6 +258,11 @@ namespace monogame.Graphics
         {
             return new Microsoft.Xna.Framework.Color(_color.PackedValue);
         }
+        
+        public static Microsoft.Xna.Framework.Color toMonoGameColor(UInt32 rgba8888)
+        {
+            return new Microsoft.Xna.Framework.Color(getRAsByte(rgba8888), getGAsByte(rgba8888), getBAsByte(rgba8888), getAAsByte(rgba8888));
+        }
 
         private static byte floatToByte(float f)
         {
@@ -271,24 +276,46 @@ namespace monogame.Graphics
 
         public UInt32 toRGB888()
         {
-            return (UInt32) (getRAsByte() >> 16 | getGAsByte() >> 8 | getBAsByte());
+            return (UInt32) (getRAsByte() << 16 | getGAsByte() << 8 | getBAsByte());
         }
 
         public static UInt32 toRGB888(UInt32 rgba8888)
         {
-            return rgba8888 << 8;
+            return rgba8888 >> 8;
         }
 
         public UInt32 toRGBA8888()
         {
-            return toRGB888() >> 8 | getAAsByte();
+            return toRGB888() << 8 | getAAsByte();
+        }
+
+        public static UInt32 toRGBA8888(byte r, byte g, byte b, byte a)
+        {
+            return (uint) (r << 24 | g << 16 | b << 8 | a);
+        }
+
+        public static UInt32 toRGBA8888(Microsoft.Xna.Framework.Color color)
+        {
+            return (uint) (color.R << 24 | color.G << 16 | color.B << 8 | color.A);
         }
 
         public static UInt16 toLuminanceAlpha(UInt32 rgba8888)
         {
             //luminance is defined as the average of the largest and the smallest color components
             var luminance = Math.Max(Math.Max(getRAsByte(rgba8888), getGAsByte(rgba8888)), getBAsByte(rgba8888));
-            return (UInt16) (luminance >> 8 | getAAsByte(rgba8888));
+            return (UInt16) (luminance << 8 | getAAsByte(rgba8888));
+        }
+
+        public static UInt32 rgbaToArgb(UInt32 rgba8888)
+        {
+            var alpha = rgba8888 & 0xff;
+            return (rgba8888 >> 8) | (alpha << 24);
+        }
+
+        public static UInt32 argbToRgba(UInt32 argb8888)
+        {
+            var alpha = (argb8888 & 0xff000000) >> 24;
+            return (argb8888 << 8) | alpha;
         }
 
         public UInt16 toLuminanceAlpha()
@@ -298,7 +325,7 @@ namespace monogame.Graphics
 
         public static UInt16 toRGB565(UInt32 rgba8888)
         {
-            return (UInt16) (((getRAsByte(rgba8888) & 0xf8) >> 8) | ((getGAsByte(rgba8888) & 0xfc) >> 3) | ((getBAsByte(rgba8888) & 0xf8) << 3));
+            return (UInt16) (((getRAsByte(rgba8888) & 0xf8) << 8) | ((getGAsByte(rgba8888) & 0xfc) << 3) | ((getBAsByte(rgba8888) & 0xf8) >> 3));
         }
 
         public UInt16 toRGB565()
@@ -308,7 +335,7 @@ namespace monogame.Graphics
 
         public static UInt16 toRGBA4444(UInt32 rgba8888)
         {
-            return (UInt16)(((getRAsByte(rgba8888) & 0xf0) >> 8) | ((getGAsByte(rgba8888) & 0xf0) >> 4) | (getBAsByte(rgba8888) & 0xf0) | ((getAAsByte(rgba8888) & 0xf0) << 4));
+            return (UInt16)(((getRAsByte(rgba8888) & 0xf0) << 8) | ((getGAsByte(rgba8888) & 0xf0) << 4) | (getBAsByte(rgba8888) & 0xf0) | ((getAAsByte(rgba8888) & 0xf0) >> 4));
         }
 
         public UInt16 toRGBA4444()

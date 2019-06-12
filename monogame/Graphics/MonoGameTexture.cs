@@ -14,9 +14,9 @@
  * limitations under the License.
  ******************************************************************************/
 
+using System;
 using Microsoft.Xna.Framework.Graphics;
 using org.mini2Dx.core.graphics;
-using Color = Microsoft.Xna.Framework.Color;
 
 namespace monogame.Graphics
 {
@@ -36,16 +36,16 @@ namespace monogame.Graphics
 
         public void draw(Pixmap pixmap, int x, int y)
         {
-            var rawTextureData = new Color[getWidth() * getHeight()];
-            texture2D.GetData(rawTextureData);
-            
-            for (var textureX = 0; textureX < getWidth(); textureX++)
+            var rawTexture = new UInt32[texture2D.Width * texture2D.Height];
+            texture2D.GetData(rawTexture);
+            for (var pixmapX = 0; pixmapX < pixmap.getWidth(); pixmapX++)
             {
-                for (var textureY = 0; textureY < getHeight(); textureY++)
+                for (var pixmapY = 0; pixmapY < pixmap.getHeight(); pixmapY++)
                 {
-                    pixmap.drawPixel(x + textureX, y + textureY, new MonoGameColor(rawTextureData[textureX + textureY * getWidth()]));
+                    rawTexture[x + pixmapX + (y + pixmapY) * texture2D.Width] = (uint) pixmap.getPixel(pixmapX, pixmapY);
                 }
             }
+            texture2D.SetData(rawTexture);
         }
 
         public int getHeight()

@@ -59,6 +59,7 @@
     <Compile Include="MonoGameGraphicsUtils.cs" />
     <Compile Include="MonoGameInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\MonoGameMathsUtil.cs" />
     <Compile Include="Util\MonoGameInputStream.cs" />
     <Compile Include="Util\MonoGameOutputStream.cs" />
   </ItemGroup>
