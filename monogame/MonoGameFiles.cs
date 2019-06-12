@@ -15,6 +15,7 @@
  ******************************************************************************/
 using System;
 using System.IO;
+using Microsoft.Xna.Framework.Content;
 using monogame.Files;
 using org.mini2Dx.core.files;
 
@@ -22,7 +23,13 @@ namespace monogame
 {
     public class MonoGameFiles : org.mini2Dx.core.Files
     {
-        public static readonly string InternalFilePrefix = "Content" + Path.DirectorySeparatorChar;
+        private readonly string _internalFilePrefix;
+
+        public MonoGameFiles(ContentManager contentManager)
+        {
+            _internalFilePrefix = contentManager.RootDirectory + Path.DirectorySeparatorChar;
+        }
+        
         public FileHandle external(string path)
         {
             throw new NotImplementedException();
@@ -30,7 +37,7 @@ namespace monogame
 
         public FileHandle @internal(string path)
         {
-            return new MonoGameFileHandle(InternalFilePrefix + path, FileType.INTERNAL);
+            return new MonoGameFileHandle(_internalFilePrefix + path, FileType.INTERNAL).setInternalFilePrefix(_internalFilePrefix);
         }
 
         public bool isExternalStorageAvailable()

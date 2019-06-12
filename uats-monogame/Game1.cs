@@ -1,8 +1,11 @@
 ﻿using System;
-using System.IO.IsolatedStorage;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using monogame;
+using monogame.Graphics;
+using org.mini2Dx.core.graphics;
+using Color = Microsoft.Xna.Framework.Color;
+using Texture = org.mini2Dx.core.graphics.Texture;
 
 namespace uats_monogame
 {
@@ -12,12 +15,19 @@ namespace uats_monogame
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        
+        private MonoGameGraphics mDxGraphics;
+        private MonoGameGraphicsUtils graphicsUtils;
+        private MonoGameFiles files;
+        private Texture sampleTexture;
+        private TextureRegion sampleRegion;
+        private TextureRegion sampleRegion2;
+        private Sprite sampleSprite;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            IsMouseVisible = true;
         }
 
         /// <summary>
@@ -28,9 +38,6 @@ namespace uats_monogame
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-            IsolatedStorageFile isolatedStorageFile = IsolatedStorageFile.GetUserStoreForDomain();
-            Console.WriteLine(isolatedStorageFile.AvailableFreeSpace);
             base.Initialize();
         }
 
@@ -41,9 +48,17 @@ namespace uats_monogame
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
+            mDxGraphics = new MonoGameGraphics(GraphicsDevice);
+            graphicsUtils = new MonoGameGraphicsUtils(GraphicsDevice);
+            files = new MonoGameFiles(Content);
+            sampleTexture = graphicsUtils.newTexture(files.@internal("mini2Dx.png"));
+            sampleRegion = graphicsUtils.newTextureRegion(sampleTexture);
+            sampleRegion2 = graphicsUtils.newTextureRegion(sampleTexture).split(16,17)[1][1];
+            sampleRegion2.flip(false, true);
+            sampleSprite = graphicsUtils.newSprite(sampleTexture);
+            mDxGraphics.setColor(new MonoGameColor(255, 255, 255, 255));
+            
+            sampleSprite.setOriginCenter();
         }
 
         /// <summary>
@@ -52,7 +67,6 @@ namespace uats_monogame
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
         }
 
         /// <summary>
@@ -65,21 +79,33 @@ namespace uats_monogame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
 
+        //private int i = 0;
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
-
+            mDxGraphics.setColor(new MonoGameColor(Color.White));
+            mDxGraphics.preRender(GraphicsDevice.Viewport.Bounds.Width, GraphicsDevice.Viewport.Bounds.Height);
+            mDxGraphics.drawRect(mDxGraphics.getWindowWidth()/8f, mDxGraphics.getWindowHeight()/8f, 3 * mDxGraphics.getWindowWidth()/4f, 3 * mDxGraphics.getWindowHeight()/4f);
+            mDxGraphics.fillRect(400, 300, 32, 32);
+            mDxGraphics.drawCircle(200, 200, 40);
+            mDxGraphics.fillCircle(300, 300, 20);
+            mDxGraphics.setColor(new MonoGameColor(Color.Fuchsia));
+            mDxGraphics.drawLineSegment(100, 100, 260, 340);
+            mDxGraphics.fillTriangle(250, 74, 222, 108, 314, 147);
+            mDxGraphics.drawTriangle(150, 74, 122, 108, 214, 147);
+            mDxGraphics.drawTexture(sampleTexture, 200, 100);
+            mDxGraphics.drawTextureRegion(sampleRegion, 500, 300);
+            mDxGraphics.drawTextureRegion(sampleRegion2, 600, 150, 100, 100);
+            sampleSprite.setOriginBasedPosition(mDxGraphics.getWindowWidth() / 2f, mDxGraphics.getWindowHeight() / 2f);
+            mDxGraphics.drawSprite(sampleSprite);
+            mDxGraphics.postRender();
+            Console.WriteLine("FPS: {0}", 1.0/gameTime.ElapsedGameTime.TotalSeconds);
             base.Draw(gameTime);
         }
     }

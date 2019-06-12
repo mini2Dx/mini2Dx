@@ -15,7 +15,11 @@
  ******************************************************************************/
 
 using System;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using org.mini2Dx.core.graphics;
+using Color = Microsoft.Xna.Framework.Color;
+using Texture = org.mini2Dx.core.graphics.Texture;
 
 namespace monogame.Graphics
 {
@@ -275,15 +279,81 @@ namespace monogame.Graphics
             }
         }
 
+        public Texture2D toTexture2D(GraphicsDevice graphicsDevice)
+        {
+            var dstTexture = new Texture2D(graphicsDevice, _regionWidth, _regionHeight, false, SurfaceFormat.Color);
+            var srcTexture = ((MonoGameTexture) _texture).texture2D;
+            
+            Rectangle boundingRect = new Rectangle(getRegionX(), getRegionY(), _regionWidth, _regionHeight);
+            if (isFlipX())
+            {
+                boundingRect.X -= _regionWidth;
+            }
+
+            if (isFlipY())
+            {
+                boundingRect.Y -= _regionHeight;
+            }
+            
+            var rawSrcTextureData = new uint[_regionWidth * _regionHeight]; //4 because in RGBA8888 each pixel is 4 bytes
+            var rawSrcTextureColor = new Color[_regionWidth * _regionHeight]; //4 because in RGBA8888 each pixel is 4 bytes
+            srcTexture.GetData(0, boundingRect, rawSrcTextureData, 0, rawSrcTextureData.Length);
+            srcTexture.GetData(0, boundingRect, rawSrcTextureColor, 0, rawSrcTextureData.Length);
+
+            if (srcTexture.Format == SurfaceFormat.ColorSRgb)
+            {
+                for (int i = 0; i < rawSrcTextureData.Length; i++)
+                {
+                    var alpha = rawSrcTextureData[i] & 0xff;
+                    rawSrcTextureData[i] = (rawSrcTextureData[i] >> 8) | (alpha << 24);
+                }
+            }
+
+            dstTexture.SetData(rawSrcTextureData);
+            return dstTexture;
+        }
+
         public Pixmap toPixmap()
         {
-            Pixmap texturePixmap = new MonoGamePixmap(_regionWidth, _regionHeight);
+            var pixmap = new MonoGamePixmap(_regionWidth, _regionHeight);
+
+            var texture2d = ((MonoGameTexture) _texture).texture2D;
+            var rawTextureRegionData = new Color[_regionWidth * _regionHeight];
+
+            Rectangle boundingRect = new Rectangle(getRegionX(), getRegionY(), _regionWidth, _regionHeight);
             
-            _texture.draw(texturePixmap, 0, 0);
+            bool flipX = isFlipX();
+            bool flipY = isFlipY();
             
-            Pixmap pixmap = new MonoGamePixmap(_regionWidth, _regionHeight);
+            if (flipX)
+            {
+                boundingRect.X -= _regionWidth;
+            }
+
+            if (flipY)
+            {
+                boundingRect.Y -= _regionHeight;
+            }
             
-            pixmap.drawPixmap(texturePixmap, 0, 0, pixmap.getWidth(), pixmap.getHeight(), getRegionX(), getRegionY(), getRegionWidth(), getRegionHeight());
+            texture2d.GetData(0, boundingRect, rawTextureRegionData, 0, _regionWidth * _regionHeight);
+            for (var x = 0; x < _regionWidth; x++)
+            {
+                for (var y = 0; y < _regionHeight; y++)
+                {
+                    var actualX = x;
+                    var actualY = y;
+                    if (flipX)
+                    {
+                        actualX = _regionWidth - x;
+                    }
+                    
+                    if (flipY)
+                    {
+                        actualY = _regionHeight - y;
+                    }
+                    pixmap.drawPixel(actualX, actualY, MonoGameColor.toRGBA8888(rawTextureRegionData[x + y * _regionWidth]));
+                }
+            }
             
             return pixmap;
         }

@@ -40,8 +40,6 @@ namespace monogame.Graphics
             srcY, srcWidth, srcHeight)
         {
             setBounds(srcX, srcY, srcWidth, srcHeight);
-            
-            flip(false, true);
         }
 
         public MonoGameSprite(TextureRegion region) : this(region, region.getRegionWidth(), region.getRegionHeight()){}
@@ -59,6 +57,7 @@ namespace monogame.Graphics
             setBounds(s.getX(), s.getY(), s.getWidth(), s.getHeight());
             setOrigin(s.getOriginX(), s.getOriginY());
             _90degRotation = ((MonoGameSprite) s)._90degRotation;
+            setRotation(s.getRotation());
             setScale(s.getScaleX(), s.getScaleY());
         }
 
@@ -124,13 +123,18 @@ namespace monogame.Graphics
 
         public void setOriginCenter()
         {
-            _originX = _x + _width / 2;
-            _originY = _y + _height / 2;
+            _originX = _width / 2;
+            _originY = _height / 2;
         }
 
         public float getRotation()
         {
             return _rotation;
+        }
+
+        public float getTotalRotation()
+        {
+            return _rotation + _90degRotation;
         }
 
         public void setRotation(float degrees)

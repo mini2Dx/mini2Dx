@@ -31,6 +31,7 @@ namespace monogame.Files
         private readonly FileInfo _fileInfo;
         private DirectoryInfo _directoryInfo;
         private bool _isDirectory;
+        private string _internalFilePrefix;
         
         public MonoGameFileHandle(string path, FileType fileType)
         {
@@ -46,6 +47,12 @@ namespace monogame.Files
             }
         }
 
+        public MonoGameFileHandle setInternalFilePrefix(string internalFilePrefix)
+        {
+            _internalFilePrefix = internalFilePrefix;
+            return this;
+        }
+
         public string fullPath()
         {
             return (isDirectory() ? (object) _directoryInfo : _fileInfo).ToString();
@@ -53,7 +60,7 @@ namespace monogame.Files
         
         public string path()
         {
-            return _fileType == FileType.INTERNAL ? fullPath().Remove(0, MonoGameFiles.InternalFilePrefix.Length) : fullPath();
+            return _fileType == FileType.INTERNAL ? fullPath().Remove(0, _internalFilePrefix.Length) : fullPath();
         }
 
         public string normalize()

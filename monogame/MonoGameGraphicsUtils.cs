@@ -26,18 +26,13 @@ using Texture = org.mini2Dx.core.graphics.Texture;
 
 namespace monogame
 {
-    class MonoGameGraphicsUtils : org.mini2Dx.core.GraphicsUtils
+    public class MonoGameGraphicsUtils : org.mini2Dx.core.GraphicsUtils
     {
-        private readonly Game _gameInstance;
+        private readonly GraphicsDevice _graphicsDevice;
 
-        public MonoGameGraphicsUtils()
+        public MonoGameGraphicsUtils(GraphicsDevice graphicsDevice)
         {
-            
-        }
-
-        public MonoGameGraphicsUtils(Game game)
-        {
-            _gameInstance = game;
+            _graphicsDevice = graphicsDevice;
         }
         
         public Color newColor(float r, float g, float b, float a)
@@ -97,9 +92,25 @@ namespace monogame
 
         public Pixmap newPixmap(FileHandle file)
         {
-            var texture = newTexture(file);
-            var pixmap = new MonoGamePixmap(texture.getWidth(), texture.getHeight());
-            texture.draw(pixmap, 0, 0);
+            Texture2D texture;
+
+            using (var fileStream = new FileStream(((MonoGameFileHandle) file).fullPath(), FileMode.Open))
+            {
+                texture = Texture2D.FromStream(_graphicsDevice, fileStream);
+            }
+            var rawTextureData = new UInt32[texture.Width * texture.Height];
+            texture.GetData(rawTextureData);
+            
+            var pixmap = new MonoGamePixmap(texture.Width, texture.Height);
+
+            for (int x = 0; x < texture.Width; x++)
+            {
+                for (int y = 0; y < texture.Height; y++)
+                {
+                    pixmap.drawPixel(x, y, MonoGameColor.argbToRgba(rawTextureData[x + y * texture.Width]));
+                }
+            }
+            
             return pixmap;
         }
 
@@ -146,7 +157,7 @@ namespace monogame
 
             using (var fileStream = new FileStream(((MonoGameFileHandle) fileHandle).fullPath(), FileMode.Open))
             {
-                texture = Texture2D.FromStream(_gameInstance.GraphicsDevice, fileStream);
+                texture = Texture2D.FromStream(_graphicsDevice, fileStream);
             }
             return new MonoGameTexture(texture);
         }
@@ -180,7 +191,7 @@ namespace monogame
             {
                 throw new ArgumentException("format not supported");
             }
-            var texture = new Texture2D(_gameInstance.GraphicsDevice, pixmap.getWidth(), pixmap.getHeight(), false, destFormat);
+            var texture = new Texture2D(_graphicsDevice, pixmap.getWidth(), pixmap.getHeight(), false, destFormat);
             texture.SetData(rawPixmap);
 
             return new MonoGameTexture(texture);
