@@ -1,6 +1,9 @@
 [2.0.0-SNAPSHOT]
 ...In development...
 
+[1.9.4]
+- Fixed for ArrayOutOfBoundsException in GridUiNavigation (thanks Dan Allen)
+
 [1.9.3]
 - Fixed crash on Android when playing sounds (thanks Dan Allen)
 - Fixed entities being scheduled for interpolate/render after being removed during update
