@@ -1,9 +1,25 @@
-﻿using System;
+﻿/*******************************************************************************
+ * Copyright 2019 Viridian Software Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using monogame;
 using monogame.Graphics;
 using org.mini2Dx.core.graphics;
+using org.mini2Dx.gdx;
 using Color = Microsoft.Xna.Framework.Color;
 using Texture = org.mini2Dx.core.graphics.Texture;
 
@@ -18,6 +34,7 @@ namespace uats_monogame
         private MonoGameGraphics mDxGraphics;
         private MonoGameGraphicsUtils graphicsUtils;
         private MonoGameFiles files;
+        private MonoGameInput input;
         private Texture sampleTexture;
         private TextureRegion sampleRegion;
         private TextureRegion sampleRegion2;
@@ -28,8 +45,60 @@ namespace uats_monogame
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            input = new MonoGameInput();
         }
 
+        private class UATInputProcessor : InputProcessor
+        {
+            public bool keyDown(int keycode)
+            {
+                Console.WriteLine("keyDown({0})", keycode);
+                return false;
+            }
+
+            public bool keyUp(int keycode)
+            {
+                Console.WriteLine("keyUp({0})", keycode);
+                return false;
+            }
+
+            public bool keyTyped(char character)
+            {
+                Console.WriteLine("keyTyped({0})", character);
+                return false;
+            }
+
+            public bool touchDown(int screenX, int screenY, int pointer, int button)
+            {
+                Console.WriteLine("touchDown({0}, {1}, {2}, {3})", screenX, screenY, pointer, button);
+                return false;
+            }
+
+            public bool touchUp(int screenX, int screenY, int pointer, int button)
+            {
+                Console.WriteLine("touchUp({0}, {1}, {2}, {3})", screenX, screenY, pointer, button);
+                return false;
+            }
+
+            public bool touchDragged(int screenX, int screenY, int pointer)
+            {
+                Console.WriteLine("touchDragged({0}, {1}, {2})", screenX, screenY, pointer);
+                return false;
+            }
+
+            public bool mouseMoved(int screenX, int screenY)
+            {
+                Console.WriteLine("mouseMoved({0}, {1})", screenX, screenY);
+                return false;
+            }
+
+            public bool scrolled(int amount)
+            {
+                Console.WriteLine("scrolled({0})", amount);
+                return false;
+            }
+        }
+        
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
@@ -38,6 +107,7 @@ namespace uats_monogame
         /// </summary>
         protected override void Initialize()
         {
+            input.setInputProcessor(new UATInputProcessor());
             base.Initialize();
         }
 
@@ -79,6 +149,7 @@ namespace uats_monogame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            input.update();
             base.Update(gameTime);
         }
         
@@ -104,7 +175,7 @@ namespace uats_monogame
             sampleSprite.setOriginBasedPosition(mDxGraphics.getWindowWidth() / 2f, mDxGraphics.getWindowHeight() / 2f);
             mDxGraphics.drawSprite(sampleSprite);
             mDxGraphics.postRender();
-            Console.WriteLine("FPS: {0}", 1.0/gameTime.ElapsedGameTime.TotalSeconds);
+            //Console.WriteLine("FPS: {0}", 1.0/gameTime.ElapsedGameTime.TotalSeconds);
             base.Draw(gameTime);
         }
     }
