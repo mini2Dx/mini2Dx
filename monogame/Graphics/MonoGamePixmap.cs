@@ -20,7 +20,7 @@ namespace monogame.Graphics
 {
     class MonoGamePixmap : org.mini2Dx.core.graphics.Pixmap
     {
-        private readonly UInt32[,] _pixmap;
+        private UInt32[,] _pixmap;
         private MonoGameColor _setColor;
         private PixmapBlending _blending;
         private PixmapFilter _filter;
@@ -51,9 +51,10 @@ namespace monogame.Graphics
             {
                 return;
             }
+            var color = _setColor.toRGBA8888();
             for (float angle = 0; angle < 2 * Math.PI; angle += 0.001f)
             {
-                drawPixel((int) (radius * Math.Sin(angle) + x), (int) (radius * Math.Cos(angle) + y));
+                drawPixel((int) (radius * Math.Sin(angle) + x), (int) (radius * Math.Cos(angle) + y), color);
             }
         }
 
@@ -79,9 +80,10 @@ namespace monogame.Graphics
                 dx2 = 0;
             }
             var numerator = width >> 1 ;
+            var color = _setColor.toRGBA8888();
             for (var i=0; i<=width; i++)
             {
-                drawPixel(x, y);
+                drawPixel(x, y, color);
                 numerator += height;
                 if (numerator >= width)
                 {
@@ -105,7 +107,6 @@ namespace monogame.Graphics
         public void drawPixel(int x, int y, Color color)
         {
             drawPixel(x, y, ((MonoGameColor) color).toRGBA8888());
-            
         }
 
         public void drawPixel(int x, int y, UInt32 color, bool blend = true)
@@ -223,17 +224,19 @@ namespace monogame.Graphics
 
         public void fill()
         {
+            var color = _setColor.toRGBA8888();
             for (int x = 0; x < getWidth(); x++)
             {
                 for (int y = 0; y < getHeight(); y++)
                 {
-                    drawPixel(x, y);
+                    drawPixel(x, y, color, false);
                 }
             }
         }
 
         public void fillCircle(int x, int y, int radius)
         {
+            var color = _setColor.toRGBA8888();
             for (int circleX = x - radius; circleX < x + radius; circleX++)
             {
                 
@@ -241,7 +244,7 @@ namespace monogame.Graphics
                 {
                     if (Math.Pow(circleX - x, 2) + Math.Pow(circleY - y, 2) <= Math.Pow(radius, 2))
                     {
-                        drawPixel(circleX, circleY);
+                        drawPixel(circleX, circleY, color);
                     }
                 }
             }
@@ -296,6 +299,7 @@ namespace monogame.Graphics
             }
 
             var triangleHeight = y3 - y1;
+            var color = _setColor.toRGBA8888();
             for (var i = 0; i < triangleHeight; i++)
             {
                 var secondHalf = i > y2 - y1 || y2 == y1;
@@ -313,7 +317,7 @@ namespace monogame.Graphics
 
                 for (var j = (int) aX; j <= bX; j++)
                 {
-                    drawPixel(j, y1 + i);
+                    drawPixel(j, y1 + i, color);
                 }
             }
         }
@@ -440,6 +444,11 @@ namespace monogame.Graphics
         public void setFilter(PixmapFilter filter)
         {
             _filter = filter;
+        }
+
+        public void clear()
+        {
+            _pixmap = new UInt32[_width, _height];
         }
     }
 }

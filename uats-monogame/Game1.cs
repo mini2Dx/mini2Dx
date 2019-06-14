@@ -57,7 +57,7 @@ namespace uats_monogame
             sampleRegion2.flip(false, true);
             sampleSprite = graphicsUtils.newSprite(sampleTexture);
             mDxGraphics.setColor(new MonoGameColor(255, 255, 255, 255));
-            
+            mDxGraphics.setBackgroundColor(new MonoGameColor(Color.Blue));
             sampleSprite.setOriginCenter();
         }
 
@@ -81,8 +81,7 @@ namespace uats_monogame
 
             base.Update(gameTime);
         }
-
-        //private int i = 0;
+        
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
