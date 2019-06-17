@@ -70,19 +70,6 @@ public interface Music extends Disposable {
 	 * @return A value between 0.0 and 1.0 where 0.0 is silent and 1.0 is maximum volume.
 	 */
 	public float getVolume ();
-	
-	/**
-	 * Sets the panning and volume of the music
-	 * @param pan The panning where -1.0 is full left, 1.0 is full right and 0.0 is center.
-	 * @param volume A value between 0.0 and 1.0 where 0.0 is silent and 1.0 is maximum volume.
-	 */
-	public void setPan (float pan, float volume);
-
-	/**
-	 * Sets the playback position
-	 * @param seconds The position in seconds
-	 */
-	public void setPosition (float seconds);
 
 	/**
 	 * Returns the playback position
