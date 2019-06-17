@@ -45,13 +45,13 @@ namespace uats_monogame
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
         }
 
         private class UATInputProcessor : InputProcessor
         {
             public static Music music;
             public static Sound sound;
+            public static Vector2 mousePosition = Vector2.Zero;
 
             public bool keyDown(int keycode)
             {
@@ -117,6 +117,8 @@ namespace uats_monogame
 
             public bool mouseMoved(int screenX, int screenY)
             {
+                mousePosition.X = screenX;
+                mousePosition.Y = screenY;
                 Console.WriteLine("mouseMoved({0}, {1})", screenX, screenY);
                 return false;
             }
@@ -230,8 +232,13 @@ namespace uats_monogame
             Mdx.graphicsContext.drawTextureRegion(sampleRegion2, 600, 150, 100, 100);
             sampleSprite.setOriginBasedPosition(windowWidth / 2f, windowHeight / 2f);
             Mdx.graphicsContext.drawSprite(sampleSprite);
+            Mdx.graphicsContext.setColor(new MonoGameColor(Color.Green));
+            Mdx.graphicsContext.fillTriangle(UATInputProcessor.mousePosition.X, UATInputProcessor.mousePosition.Y,
+                UATInputProcessor.mousePosition.X + 10, UATInputProcessor.mousePosition.Y + 20,
+                UATInputProcessor.mousePosition.X, UATInputProcessor.mousePosition.Y + 20);
+            
             Mdx.graphicsContext.postRender();
-            //Console.WriteLine("FPS: {0}", 1.0/gameTime.ElapsedGameTime.TotalSeconds);
+            Console.WriteLine("FPS: {0}", 1.0/gameTime.ElapsedGameTime.TotalSeconds);
             base.Draw(gameTime);
         }
     }
