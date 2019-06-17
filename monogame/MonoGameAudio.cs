@@ -14,41 +14,80 @@
  * limitations under the License.
  ******************************************************************************/
 using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
+using monogame.Audio;
+using monogame.Util;
 using org.mini2Dx.core.audio;
 using org.mini2Dx.core.files;
 
 namespace monogame
 {
-    class MonoGameAudio : org.mini2Dx.core.Audio
+    public class MonoGameAudio : org.mini2Dx.core.Audio
     {
+        private static readonly LinkedList<MusicCompletionListener> _musicCompletionListeners;
+        private static readonly LinkedList<SoundCompletionListener> _soundCompletionListeners;
+
+        static MonoGameAudio()
+        {
+            _musicCompletionListeners = new LinkedList<MusicCompletionListener>();
+            _soundCompletionListeners = new LinkedList<SoundCompletionListener>();
+            MediaPlayer.MediaStateChanged += MonoGameMusic.MediaPlayerOnMediaStateChanged;
+            MonoGameMusic.musicCompletionListeners = _musicCompletionListeners;
+        }
+
         public Music newMusic(FileHandle fileHandle)
         {
-            throw new NotImplementedException();
+            return new MonoGameMusic(fileHandle);
         }
 
         public void addMusicCompletionListener(MusicCompletionListener completionListener)
         {
-            throw new NotImplementedException();
+            _musicCompletionListeners.AddLast(completionListener);
         }
 
         public void removeMusicCompletionListener(MusicCompletionListener completionListener)
         {
-            throw new NotImplementedException();
+            _musicCompletionListeners.Remove(completionListener);
         }
 
         public void addSoundCompletionListener(SoundCompletionListener completionListener)
         {
-            throw new NotImplementedException();
+            _soundCompletionListeners.AddLast(completionListener);
         }
 
         public void removeSoundCompletionListener(SoundCompletionListener completionListener)
         {
-            throw new NotImplementedException();
+            _soundCompletionListeners.Remove(completionListener);
         }
 
         public Sound newSound(FileHandle fileHandle)
         {
-            throw new NotImplementedException();
+            return new MonoGameSound(fileHandle);
+        }
+
+        public static void soundCompleted(long id)
+        {
+            var node = _soundCompletionListeners.First;
+            while (node != null)
+            {
+                node.Value.onSoundCompleted(id);
+                node = node.Next;
+            }
+        }
+
+        public void update()
+        {
+            for (int i = 0; i < MonoGameSound.instances.Count; i++)
+            {
+                var currentSound = MonoGameSound.instances[i];
+                if (currentSound != null && currentSound.State == SoundState.Stopped)
+                {
+                    soundCompleted(i);
+                    MonoGameSound.dispose(i);
+                }
+            }
         }
     }
 }
