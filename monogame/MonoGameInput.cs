@@ -169,6 +169,10 @@ namespace monogame
             {
                 return (char) (pressedKey - Keys.A + 'a');
             }
+            if (pressedKey >= Keys.D0 && pressedKey <= Keys.D9)
+            {
+                return (char) (pressedKey - Keys.D0 + '0');
+            }
 
             switch (pressedKey)
             {
@@ -252,6 +256,10 @@ namespace monogame
             if (pressedKey >= Keys.NumPad0 && pressedKey <= Keys.NumPad9)
             {
                 return pressedKey - Keys.NumPad0 + Input.Keys.NUMPAD_0;
+            }
+            if (pressedKey >= Keys.D0 && pressedKey <= Keys.D9)
+            {
+                return pressedKey - Keys.D0 + Input.Keys.NUM_0;
             }
             
             switch (pressedKey)
