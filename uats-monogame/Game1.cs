@@ -18,9 +18,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using monogame;
 using monogame.Graphics;
+using org.mini2Dx.core;
+using org.mini2Dx.core.audio;
 using org.mini2Dx.core.graphics;
 using org.mini2Dx.gdx;
 using Color = Microsoft.Xna.Framework.Color;
+using Input = org.mini2Dx.gdx.Input;
 using Texture = org.mini2Dx.core.graphics.Texture;
 
 namespace uats_monogame
@@ -31,25 +34,25 @@ namespace uats_monogame
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
-        private MonoGameGraphics mDxGraphics;
-        private MonoGameGraphicsUtils graphicsUtils;
-        private MonoGameFiles files;
-        private MonoGameInput input;
         private Texture sampleTexture;
         private TextureRegion sampleRegion;
         private TextureRegion sampleRegion2;
         private Sprite sampleSprite;
+        private Music music;
+        private Sound sound;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            input = new MonoGameInput();
         }
 
         private class UATInputProcessor : InputProcessor
         {
+            public static Music music;
+            public static Sound sound;
+
             public bool keyDown(int keycode)
             {
                 Console.WriteLine("keyDown({0})", keycode);
@@ -70,6 +73,32 @@ namespace uats_monogame
 
             public bool touchDown(int screenX, int screenY, int pointer, int button)
             {
+                switch (button)
+                {
+                    case Input.Buttons.LEFT:
+                    {
+                        if (music.isPlaying())
+                        {
+                            music.pause();
+                        }
+                        else
+                        {
+                            music.play();
+                        }
+                        Console.WriteLine("isPlaying: {0}", music.isPlaying());
+                        break;
+                    }
+
+                    case Input.Buttons.RIGHT:
+                        music.setLooping(!music.isLooping());
+                        Console.WriteLine("isLooping: {0}", music.isLooping());
+                        break;
+                    
+                    case Input.Buttons.MIDDLE:
+                        sound.play();
+                        break;
+                }
+
                 Console.WriteLine("touchDown({0}, {1}, {2}, {3})", screenX, screenY, pointer, button);
                 return false;
             }
@@ -98,6 +127,19 @@ namespace uats_monogame
                 return false;
             }
         }
+
+        private class AudioCompletionListener : SoundCompletionListener, MusicCompletionListener
+        {
+            public void onSoundCompleted(long l)
+            {
+                Console.WriteLine("onSoundCompleted({0})", l);
+            }
+
+            public void onMusicCompleted(Music m)
+            {
+                Console.WriteLine("onMusicCompleted({0})", m);
+            }
+        }
         
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -107,7 +149,9 @@ namespace uats_monogame
         /// </summary>
         protected override void Initialize()
         {
-            input.setInputProcessor(new UATInputProcessor());
+            Mdx.input = new MonoGameInput();
+            Mdx.files = new MonoGameFiles(Content);
+            Mdx.input.setInputProcessor(new UATInputProcessor());
             base.Initialize();
         }
 
@@ -117,18 +161,26 @@ namespace uats_monogame
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            mDxGraphics = new MonoGameGraphics(GraphicsDevice);
-            graphicsUtils = new MonoGameGraphicsUtils(GraphicsDevice);
-            files = new MonoGameFiles(Content);
-            sampleTexture = graphicsUtils.newTexture(files.@internal("mini2Dx.png"));
-            sampleRegion = graphicsUtils.newTextureRegion(sampleTexture);
-            sampleRegion2 = graphicsUtils.newTextureRegion(sampleTexture).split(16,17)[1][1];
+            Mdx.graphicsContext = new MonoGameGraphics(GraphicsDevice);
+            Mdx.graphics = new MonoGameGraphicsUtils(GraphicsDevice);
+            Mdx.audio = new MonoGameAudio();
+
+            sampleTexture = Mdx.graphics.newTexture(Mdx.files.@internal("mini2Dx.png"));
+            sampleRegion = Mdx.graphics.newTextureRegion(sampleTexture);
+            sampleRegion2 = Mdx.graphics.newTextureRegion(sampleTexture).split(16,17)[1][1];
             sampleRegion2.flip(false, true);
-            sampleSprite = graphicsUtils.newSprite(sampleTexture);
-            mDxGraphics.setColor(new MonoGameColor(255, 255, 255, 255));
-            mDxGraphics.setBackgroundColor(new MonoGameColor(Color.Blue));
+            sampleSprite = Mdx.graphics.newSprite(sampleTexture);
+            Mdx.graphicsContext.setColor(new MonoGameColor(255, 255, 255, 255));
+            Mdx.graphicsContext.setBackgroundColor(new MonoGameColor(Color.Blue));
             sampleSprite.setOriginCenter();
+            music = Mdx.audio.newMusic(Mdx.files.@internal("music.ogg"));
+            UATInputProcessor.music = music;
+
+            sound = Mdx.audio.newSound(Mdx.files.@internal("sound.wav"));
+            UATInputProcessor.sound = sound;
+            
+            Mdx.audio.addMusicCompletionListener(new AudioCompletionListener());
+            Mdx.audio.addSoundCompletionListener(new AudioCompletionListener());
         }
 
         /// <summary>
@@ -149,7 +201,8 @@ namespace uats_monogame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            input.update();
+            ((MonoGameInput)Mdx.input).update();
+            ((MonoGameAudio)Mdx.audio).update();
             base.Update(gameTime);
         }
         
@@ -159,22 +212,25 @@ namespace uats_monogame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            mDxGraphics.setColor(new MonoGameColor(Color.White));
-            mDxGraphics.preRender(GraphicsDevice.Viewport.Bounds.Width, GraphicsDevice.Viewport.Bounds.Height);
-            mDxGraphics.drawRect(mDxGraphics.getWindowWidth()/8f, mDxGraphics.getWindowHeight()/8f, 3 * mDxGraphics.getWindowWidth()/4f, 3 * mDxGraphics.getWindowHeight()/4f);
-            mDxGraphics.fillRect(400, 300, 32, 32);
-            mDxGraphics.drawCircle(200, 200, 40);
-            mDxGraphics.fillCircle(300, 300, 20);
-            mDxGraphics.setColor(new MonoGameColor(Color.Fuchsia));
-            mDxGraphics.drawLineSegment(100, 100, 260, 340);
-            mDxGraphics.fillTriangle(250, 74, 222, 108, 314, 147);
-            mDxGraphics.drawTriangle(150, 74, 122, 108, 214, 147);
-            mDxGraphics.drawTexture(sampleTexture, 200, 100);
-            mDxGraphics.drawTextureRegion(sampleRegion, 500, 300);
-            mDxGraphics.drawTextureRegion(sampleRegion2, 600, 150, 100, 100);
-            sampleSprite.setOriginBasedPosition(mDxGraphics.getWindowWidth() / 2f, mDxGraphics.getWindowHeight() / 2f);
-            mDxGraphics.drawSprite(sampleSprite);
-            mDxGraphics.postRender();
+            Mdx.graphicsContext.preRender(GraphicsDevice.Viewport.Bounds.Width, GraphicsDevice.Viewport.Bounds.Height);
+            Mdx.graphicsContext.setColor(new MonoGameColor(Color.White));
+            
+            var windowWidth = Mdx.graphicsContext.getWindowWidth();
+            var windowHeight = Mdx.graphicsContext.getWindowHeight();
+            Mdx.graphicsContext.drawRect(windowWidth/8f, windowHeight/8f, 3 * windowWidth/4f, 3 * windowHeight/4f);
+            Mdx.graphicsContext.fillRect(400, 300, 32, 32);
+            Mdx.graphicsContext.drawCircle(200, 200, 40);
+            Mdx.graphicsContext.fillCircle(300, 300, 20);
+            Mdx.graphicsContext.setColor(new MonoGameColor(Color.Fuchsia));
+            Mdx.graphicsContext.drawLineSegment(100, 100, 260, 340);
+            Mdx.graphicsContext.fillTriangle(250, 74, 222, 108, 314, 147);
+            Mdx.graphicsContext.drawTriangle(150, 74, 122, 108, 214, 147);
+            Mdx.graphicsContext.drawTexture(sampleTexture, 200, 100);
+            Mdx.graphicsContext.drawTextureRegion(sampleRegion, 500, 300);
+            Mdx.graphicsContext.drawTextureRegion(sampleRegion2, 600, 150, 100, 100);
+            sampleSprite.setOriginBasedPosition(windowWidth / 2f, windowHeight / 2f);
+            Mdx.graphicsContext.drawSprite(sampleSprite);
+            Mdx.graphicsContext.postRender();
             //Console.WriteLine("FPS: {0}", 1.0/gameTime.ElapsedGameTime.TotalSeconds);
             base.Draw(gameTime);
         }
