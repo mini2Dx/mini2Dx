@@ -171,7 +171,11 @@ namespace monogame
 
         public void fillPolygon(float[] vertices, short[] triangles)
         {
-            throw new System.NotImplementedException();
+            for (int i = 0; i < triangles.Length - 2; i+=3)
+            {
+                fillTriangle(vertices[triangles[i] * 2], vertices[triangles[i] * 2 + 1], vertices[triangles[i + 1] * 2],
+                             vertices[triangles[i + 1] * 2 + 1], vertices[triangles[i + 2] * 2], vertices[triangles[i + 2] * 2 + 1]);
+            }
         }
 
         public void drawString(string text, float x, float y)
