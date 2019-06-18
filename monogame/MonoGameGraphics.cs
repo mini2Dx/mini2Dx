@@ -14,6 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using monogame.Graphics;
@@ -33,14 +34,16 @@ namespace monogame
     public class MonoGameGraphics : org.mini2Dx.core.Graphics
     {
         private readonly SpriteBatch _spriteBatch;
-        private Pixmap _pixmap;
         private readonly GraphicsDevice _graphicsDevice;
         private readonly GraphicsUtils _graphicsUtils;
         private Color _setColor = new MonoGameColor(255,255,255,255);
         private Microsoft.Xna.Framework.Color _backgroundColor = Microsoft.Xna.Framework.Color.Black;
         private Microsoft.Xna.Framework.Color _tint = Microsoft.Xna.Framework.Color.White;
         private float _rotation;
-        private bool _isPixmapReady;
+        private int _gameWidth, _gameHeight;
+
+        private MonoGameShapeRenderer _shapeRenderer;
+        
         private static readonly BlendState _blendState = new BlendState
         {
             AlphaSourceBlend = Blend.One,
@@ -49,7 +52,7 @@ namespace monogame
             ColorDestinationBlend = Blend.InverseSourceAlpha
         };
 
-        private Vector2 _translateVector, _scaleVector, _rotationVector;
+        private Vector2 _translation, _scale, _rotationCenter;
         private bool _isFlushing;
 
         public MonoGameGraphics(GraphicsDevice graphicsDevice)
@@ -57,18 +60,10 @@ namespace monogame
             _spriteBatch = new SpriteBatch(graphicsDevice);
             _graphicsDevice = graphicsDevice;
             _graphicsUtils = new MonoGameGraphicsUtils(graphicsDevice);
-            _pixmap = _graphicsUtils.newPixmap(1, 1, PixmapFormat.RGBA8888);
-            _translateVector = Vector2.Zero;
-            _scaleVector = Vector2.One;
-            _rotationVector = Vector2.Zero;
-        }
-
-        private static Texture2D pixmapToTexture2D(Pixmap pixmap, GraphicsDevice graphicsDevice)
-        {
-            var texture = new Texture2D(graphicsDevice, pixmap.getWidth(), pixmap.getHeight(), false, SurfaceFormat.Color);
-            var pixMapPixels = ((MonoGamePixmap) pixmap).toRawPixelsARGB();
-            texture.SetData(pixMapPixels, 0, pixMapPixels.Length);
-            return texture;
+            _translation = Vector2.Zero;
+            _scale = Vector2.One;
+            _rotationCenter = Vector2.Zero;
+            _shapeRenderer = new MonoGameShapeRenderer(graphicsDevice, MonoGameColor.toArgb(_setColor), _spriteBatch, _rotationCenter, _translation, _scale, _tint);
         }
         
         public void preRender(int gameWidth, int gameHeight)
@@ -77,87 +72,60 @@ namespace monogame
             {
                 _graphicsDevice.Clear(_backgroundColor);
             }
-            _isPixmapReady = false;
-            _spriteBatch.Begin(SpriteSortMode.FrontToBack, _blendState, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationVector + _translateVector) * _scaleVector, 0)));
-            if (_pixmap.getWidth() != gameWidth || _pixmap.getHeight() != gameHeight)
-            {
-                _pixmap = _graphicsUtils.newPixmap(gameWidth, gameHeight, PixmapFormat.RGBA8888);
-            }
-        }
 
-        private void setupPixmap()
-        {
-            if (!_isPixmapReady)
-            {
-                _isPixmapReady = true;
-                ((MonoGamePixmap) _pixmap).clear();
-            }
+            _gameWidth = gameWidth;
+            _gameHeight = gameHeight;
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack, _blendState, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationCenter + _translation) * _scale, 0)));
         }
 
         public void postRender()
         {
-            if (_isPixmapReady)
-            {
-                _spriteBatch.Draw(pixmapToTexture2D(_pixmap, _graphicsDevice),
-                    (_translateVector - _rotationVector) * _scaleVector, null, _tint, 0f, Vector2.Zero, _scaleVector,
-                    SpriteEffects.None, 0f);
-            }
             _spriteBatch.End();
         }
 
         public void drawLineSegment(float x1, float y1, float x2, float y2)
         {
-            setupPixmap();
-            _pixmap.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
+            _shapeRenderer.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
         }
 
         public void drawRect(float x, float y, float width, float height)
         {
-            setupPixmap();
-            _pixmap.drawRectangle((int) x, (int) y, (int) width, (int) height);
+            _shapeRenderer.drawRect((int) x, (int) y, (int) width, (int) height);
         }
 
         public void fillRect(float x, float y, float width, float height)
         {
-            setupPixmap();
-            _pixmap.fillRectangle((int) x, (int) y, (int) width, (int) height);
+            _shapeRenderer.fillRect((int) x, (int) y, (int) width, (int) height);
         }
 
         public void drawCircle(float centerX, float centerY, int radius)
         {
-            setupPixmap();
-            _pixmap.drawCircle((int) centerX, (int) centerY, radius);
+            _shapeRenderer.drawCircle((int) centerX, (int) centerY, radius);
         }
 
         public void drawCircle(float centerX, float centerY, float radius)
         {
-            setupPixmap();
-            _pixmap.drawCircle((int) centerX, (int) centerY, (int) radius);
+            drawCircle(centerX, centerY, (int)radius);
         }
 
         public void fillCircle(float centerX, float centerY, int radius)
         {
-            setupPixmap();
-            _pixmap.fillCircle((int) centerX, (int) centerY, radius);
+            _shapeRenderer.fillCircle((int) centerX, (int) centerY, radius);
         }
 
         public void fillCircle(float centerX, float centerY, float radius)
         {
-            setupPixmap();
-            _pixmap.fillCircle((int) centerX, (int) centerY, (int) radius);
+            fillCircle(centerX, centerY, (int) radius);
         }
 
         public void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3)
         {
-            drawLineSegment(x1, y1, x2, y2);
-            drawLineSegment(x2, y2, x3, y3);
-            drawLineSegment(x3, y3, x1, y1);
+            _shapeRenderer.drawTriangle((int) x1, (int) y1, (int) x2, (int) y2, (int) x3, (int) y3);
         }
 
         public void fillTriangle(float x1, float y1, float x2, float y2, float x3, float y3)
         {
-            setupPixmap();
-            _pixmap.fillTriangle((int) x1, (int) y1, (int) x2, (int) y2, (int) x3, (int) y3);
+            _shapeRenderer.fillTriangle((int) x1, (int) y1, (int) x2, (int) y2, (int) x3, (int) y3);
         }
 
         public void drawPolygon(float[] vertices)
@@ -210,9 +178,9 @@ namespace monogame
 
         public void drawTexture(Texture texture, float x, float y, float width, float height, bool flipY)
         {
-            _spriteBatch.Draw(((MonoGameTexture)texture).texture2D, (new Vector2(x, y) + _translateVector - _rotationVector) * _scaleVector, null, _tint, 0,
-                Vector2.Zero, new Vector2(width / texture.getWidth(), height / texture.getHeight()) * _scaleVector,
-                flipY ? SpriteEffects.FlipVertically : SpriteEffects.None, 1f);
+            _spriteBatch.Draw(((MonoGameTexture)texture).texture2D, (new Vector2(x, y) + _translation - _rotationCenter) * _scale, null, _tint, 0,
+                Vector2.Zero, new Vector2(width / texture.getWidth(), height / texture.getHeight()) * _scale,
+                flipY ? SpriteEffects.FlipVertically : SpriteEffects.None, 0f);
         }
 
         public void drawTextureRegion(TextureRegion textureRegion, float x, float y)
@@ -228,10 +196,10 @@ namespace monogame
         public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height, float rotation)
         {
             _spriteBatch.Draw(((MonoGameTextureRegion) textureRegion).toTexture2D(_graphicsDevice),
-                (new Vector2(x, y) + _translateVector - _rotationVector) * _scaleVector, null, _tint, rotation, Vector2.Zero,
+                (new Vector2(x, y) + _translation - _rotationCenter) * _scale, null, _tint, rotation, Vector2.Zero,
                 new Vector2(width / textureRegion.getRegionWidth(), height / textureRegion.getRegionHeight()) *
-                _scaleVector, (textureRegion.isFlipX() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
-                (textureRegion.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 1f);
+                _scale, (textureRegion.isFlipX() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
+                (textureRegion.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
         }
 
         public void drawShape(Shape shape)
@@ -252,11 +220,13 @@ namespace monogame
         public void drawSprite(Sprite sprite, float x, float y)
         {
             var origin = new Vector2(sprite.getOriginX(), sprite.getOriginY());
-            _spriteBatch.Draw(((MonoGameSprite) sprite).toTexture2D(_graphicsDevice), (new Vector2(x, y) + _translateVector + origin - _rotationVector) * _scaleVector, null, ((MonoGameColor)sprite.getTint()).toMonoGameColor(),
+            _spriteBatch.Draw(((MonoGameSprite) sprite).toTexture2D(_graphicsDevice), 
+                (new Vector2(x, y) + _translation + origin - _rotationCenter) * _scale, null,
+                ((MonoGameColor) sprite.getTint()).toMonoGameColor(),
                 MonoGameMathsUtil.degreeToRadian(((MonoGameSprite) sprite).getTotalRotation()), origin, 
-                (new Vector2(sprite.getScaleX(), sprite.getScaleY())) * _scaleVector,
+                (new Vector2(sprite.getScaleX(), sprite.getScaleY())) * _scale,
                 (sprite.isFlipX() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
-                (sprite.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 1f);
+                (sprite.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
         }
 
         public void drawSpriteCache(SpriteCache spriteCache, int cacheId)
@@ -282,8 +252,9 @@ namespace monogame
         public void rotate(float degrees, float x, float y)
         {
             _rotation = (_rotation + degrees) % 360;
-            _rotationVector.X = x;
-            _rotationVector.Y = y;
+            _rotationCenter.X = x;
+            _rotationCenter.Y = y;
+            _shapeRenderer.setRotationCenter(_rotationCenter);
         }
 
         public void setRotation(float degrees, float x, float y)
@@ -294,31 +265,36 @@ namespace monogame
 
         public void scale(float scaleX, float scaleY)
         {
-            _scaleVector.X += scaleX;
-            _scaleVector.Y += scaleY;
+            _scale.X += scaleX;
+            _scale.Y += scaleY;
+            _shapeRenderer.setScale(_scale);
         }
 
         public void setScale(float scaleX, float scaleY)
         {
-            _scaleVector.X = scaleX;
-            _scaleVector.Y = scaleY;
+            _scale.X = scaleX;
+            _scale.Y = scaleY;
+            _shapeRenderer.setScale(_scale);
         }
 
         public void clearScaling()
         {
             setScale(1, 1);
+            _shapeRenderer.setScale(_scale);
         }
 
         public void translate(float translateX, float translateY)
         {
-            _translateVector.X += translateX;
-            _translateVector.Y += translateY;
+            _translation.X += translateX;
+            _translation.Y += translateY;
+            _shapeRenderer.setTranslation(_translation);
         }
 
         public void setTranslation(float translateX, float translateY)
         {
-            _translateVector.X = translateX;
-            _translateVector.Y = translateY;
+            _translation.X = translateX;
+            _translation.Y = translateY;
+            _shapeRenderer.setTranslation(_translation);
         }
 
         public void setClip(float x, float y, float width, float height)
@@ -332,6 +308,7 @@ namespace monogame
             _tint.G = tint.getGAsByte();
             _tint.B = tint.getBAsByte();
             _tint.A = tint.getAAsByte();
+            _shapeRenderer.setTint(_tint);
         }
 
 
@@ -367,7 +344,7 @@ namespace monogame
         {
             _isFlushing = true;
             postRender();
-            preRender(_pixmap.getWidth(), _pixmap.getHeight());
+            preRender(_gameWidth, _gameHeight);
             _isFlushing = false;
         }
 
@@ -388,8 +365,8 @@ namespace monogame
 
         public void setColor(Color color)
         {
-            _pixmap.setColor(color);
             _setColor = color;
+            _shapeRenderer.setColor(MonoGameColor.toArgb(_setColor));
         }
 
         public Color getBackgroundColor()
@@ -409,22 +386,22 @@ namespace monogame
 
         public float getScaleX()
         {
-            throw new System.NotImplementedException();
+            return _scale.X;
         }
 
         public float getScaleY()
         {
-            throw new System.NotImplementedException();
+            return _scale.Y;
         }
 
         public float getTranslationX()
         {
-            return _translateVector.X;
+            return _translation.X;
         }
 
         public float getTranslationY()
         {
-            return _translateVector.Y;
+            return _translation.Y;
         }
 
         public float getRotation()
@@ -434,12 +411,12 @@ namespace monogame
 
         public float getRotationX()
         {
-            return _rotationVector.X;
+            return _rotationCenter.X;
         }
 
         public float getRotationY()
         {
-            return _rotationVector.Y;
+            return _rotationCenter.Y;
         }
 
         public bool isWindowReady()
@@ -449,12 +426,12 @@ namespace monogame
 
         public int getWindowWidth()
         {
-            return _pixmap.getWidth();
+            return _gameWidth;
         }
 
         public int getWindowHeight()
         {
-            return _pixmap.getHeight();
+            return _gameHeight;
         }
         
         public int getWindowSafeX()

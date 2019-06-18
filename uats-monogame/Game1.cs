@@ -40,7 +40,8 @@ namespace uats_monogame
         private Sprite sampleSprite;
         private Music music;
         private Sound sound;
-
+        private Vector2 mousePosition;
+        
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -49,12 +50,20 @@ namespace uats_monogame
 
         private class UATInputProcessor : InputProcessor
         {
-            public static Music music;
-            public static Sound sound;
-            public static Vector2 mousePosition = Vector2.Zero;
+            private readonly Game1 game;
+
+            public UATInputProcessor(Game1 game)
+            {
+                this.game = game;
+            }
 
             public bool keyDown(int keycode)
             {
+                if (keycode == Input.Keys.ESCAPE)
+                {
+                    Console.WriteLine("Exiting...");
+                    game.Exit();
+                }
                 Console.WriteLine("keyDown({0})", keycode);
                 return false;
             }
@@ -77,25 +86,25 @@ namespace uats_monogame
                 {
                     case Input.Buttons.LEFT:
                     {
-                        if (music.isPlaying())
+                        if (game.music.isPlaying())
                         {
-                            music.pause();
+                            game.music.pause();
                         }
                         else
                         {
-                            music.play();
+                            game.music.play();
                         }
-                        Console.WriteLine("isPlaying: {0}", music.isPlaying());
+                        Console.WriteLine("isPlaying: {0}", game.music.isPlaying());
                         break;
                     }
 
                     case Input.Buttons.RIGHT:
-                        music.setLooping(!music.isLooping());
-                        Console.WriteLine("isLooping: {0}", music.isLooping());
+                        game.music.setLooping(!game.music.isLooping());
+                        Console.WriteLine("isLooping: {0}", game.music.isLooping());
                         break;
                     
                     case Input.Buttons.MIDDLE:
-                        sound.play();
+                        game.sound.play();
                         break;
                 }
 
@@ -117,8 +126,8 @@ namespace uats_monogame
 
             public bool mouseMoved(int screenX, int screenY)
             {
-                mousePosition.X = screenX;
-                mousePosition.Y = screenY;
+                game.mousePosition.X = screenX;
+                game.mousePosition.Y = screenY;
                 Console.WriteLine("mouseMoved({0}, {1})", screenX, screenY);
                 return false;
             }
@@ -153,7 +162,7 @@ namespace uats_monogame
         {
             Mdx.input = new MonoGameInput();
             Mdx.files = new MonoGameFiles(Content);
-            Mdx.input.setInputProcessor(new UATInputProcessor());
+            Mdx.input.setInputProcessor(new UATInputProcessor(this));
             base.Initialize();
         }
 
@@ -176,10 +185,7 @@ namespace uats_monogame
             Mdx.graphicsContext.setBackgroundColor(new MonoGameColor(Color.Blue));
             sampleSprite.setOriginCenter();
             music = Mdx.audio.newMusic(Mdx.files.@internal("music.ogg"));
-            UATInputProcessor.music = music;
-
             sound = Mdx.audio.newSound(Mdx.files.@internal("sound.wav"));
-            UATInputProcessor.sound = sound;
             
             Mdx.audio.addMusicCompletionListener(new AudioCompletionListener());
             Mdx.audio.addSoundCompletionListener(new AudioCompletionListener());
@@ -200,9 +206,6 @@ namespace uats_monogame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
             ((MonoGameInput)Mdx.input).update();
             ((MonoGameAudio)Mdx.audio).update();
             base.Update(gameTime);
@@ -233,9 +236,8 @@ namespace uats_monogame
             sampleSprite.setOriginBasedPosition(windowWidth / 2f, windowHeight / 2f);
             Mdx.graphicsContext.drawSprite(sampleSprite);
             Mdx.graphicsContext.setColor(new MonoGameColor(Color.Green));
-            Mdx.graphicsContext.fillTriangle(UATInputProcessor.mousePosition.X, UATInputProcessor.mousePosition.Y,
-                UATInputProcessor.mousePosition.X + 10, UATInputProcessor.mousePosition.Y + 20,
-                UATInputProcessor.mousePosition.X, UATInputProcessor.mousePosition.Y + 20);
+            Mdx.graphicsContext.fillTriangle(mousePosition.X, mousePosition.Y, mousePosition.X + 10,
+                mousePosition.Y + 20, mousePosition.X, mousePosition.Y + 20);
             
             Mdx.graphicsContext.postRender();
             Console.WriteLine("FPS: {0}", 1.0/gameTime.ElapsedGameTime.TotalSeconds);
