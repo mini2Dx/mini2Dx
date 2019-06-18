@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2019 See AUTHORS file
+ * Copyright 2019 Viridian Software Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core;
+package org.mini2Dx.core.input;
 
-import org.mini2Dx.core.input.GamePad;
-import org.mini2Dx.gdx.InputProcessor;
-import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.gdx.math.Vector3;
 
-public interface Input {
-    /**
-     * Sets the {@link InputProcessor} for handling mouse/keyboard/touch events
-     * @param inputProcessor The {@link InputProcessor} to use
-     */
-    public void setInputProcessor(InputProcessor inputProcessor);
+/**
+ * Event listener interface for {@link GamePad}
+ */
+public interface GamePadListener {
 
-    /**
-     * Returns the list of known {@link GamePad}s. If a {@link GamePad} disconnects/unplugs it will remain in this array.
-     * @return An empty {@link Array} if no {@link GamePad}s are present.
-     */
-    public Array<GamePad> getGamePads();
+	public void onConnect(GamePad gamePad);
+
+	public void onDisconnect(GamePad gamePad);
+
+	public void onButtonDown(GamePad gamePad, int buttonCode);
+
+	public void onButtonUp(GamePad gamePad, int buttonCode);
+
+	public void onPovChanged(GamePad gamePad, int povCode, PovState povState);
+
+	public void onAxisChanged(GamePad gamePad, int axisCode, float axisValue);
+
+	public void onAccelerometerChanged(GamePad gamePad, int accelerometerCode, Vector3 value);
 }

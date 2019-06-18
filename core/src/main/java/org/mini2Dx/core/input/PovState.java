@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2019 See AUTHORS file
+ * Copyright 2019 Viridian Software Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core;
+package org.mini2Dx.core.input;
 
-import org.mini2Dx.core.input.GamePad;
-import org.mini2Dx.gdx.InputProcessor;
-import org.mini2Dx.gdx.utils.Array;
-
-public interface Input {
-    /**
-     * Sets the {@link InputProcessor} for handling mouse/keyboard/touch events
-     * @param inputProcessor The {@link InputProcessor} to use
-     */
-    public void setInputProcessor(InputProcessor inputProcessor);
-
-    /**
-     * Returns the list of known {@link GamePad}s. If a {@link GamePad} disconnects/unplugs it will remain in this array.
-     * @return An empty {@link Array} if no {@link GamePad}s are present.
-     */
-    public Array<GamePad> getGamePads();
+public enum PovState {
+	CENTER,
+	NORTH,
+	SOUTH,
+	EAST,
+	WEST,
+	NORTH_EAST,
+	SOUTH_EAST,
+	NORTH_WEST,
+	SOUTH_WEST
 }
