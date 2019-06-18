@@ -52,4 +52,10 @@ public interface FrameBuffer extends Disposable {
 	 * @return The height in pixels
 	 */
 	public int getHeight();
+
+	/**
+	 * Returns the texture containing this frame buffer's data.
+	 * @return The texture containing this frame buffer's data.
+	 */
+	public Texture getTexture();
 }

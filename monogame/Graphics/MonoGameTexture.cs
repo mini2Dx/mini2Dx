@@ -22,7 +22,7 @@ namespace monogame.Graphics
 {
     class MonoGameTexture : org.mini2Dx.core.graphics.Texture
     {
-        public readonly Texture2D texture2D;
+        internal Texture2D texture2D;
 
         public MonoGameTexture(Texture2D texture2D)
         {
