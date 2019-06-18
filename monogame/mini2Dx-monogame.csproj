@@ -51,6 +51,7 @@
     <Compile Include="Audio\MonoGameSound.cs" />
     <Compile Include="Files\MonoGameFileHandle.cs" />
     <Compile Include="Graphics\MonoGameColor.cs" />
+    <Compile Include="Graphics\MonoGameFrameBuffer.cs" />
     <Compile Include="Graphics\MonoGamePixmap.cs" />
     <Compile Include="Graphics\MonoGameShapeRenderer.cs" />
     <Compile Include="Graphics\MonoGameSprite.cs" />

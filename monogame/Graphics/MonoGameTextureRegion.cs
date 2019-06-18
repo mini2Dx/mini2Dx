@@ -295,17 +295,14 @@ namespace monogame.Graphics
                 boundingRect.Y -= _regionHeight;
             }
             
-            var rawSrcTextureData = new uint[_regionWidth * _regionHeight]; //4 because in RGBA8888 each pixel is 4 bytes
-            var rawSrcTextureColor = new Color[_regionWidth * _regionHeight]; //4 because in RGBA8888 each pixel is 4 bytes
+            var rawSrcTextureData = new uint[_regionWidth * _regionHeight];
             srcTexture.GetData(0, boundingRect, rawSrcTextureData, 0, rawSrcTextureData.Length);
-            srcTexture.GetData(0, boundingRect, rawSrcTextureColor, 0, rawSrcTextureData.Length);
 
             if (srcTexture.Format == SurfaceFormat.ColorSRgb)
             {
                 for (int i = 0; i < rawSrcTextureData.Length; i++)
                 {
-                    var alpha = rawSrcTextureData[i] & 0xff;
-                    rawSrcTextureData[i] = (rawSrcTextureData[i] >> 8) | (alpha << 24);
+                    rawSrcTextureData[i] = MonoGameColor.rgbaToArgb(rawSrcTextureData[i]);
                 }
             }
 

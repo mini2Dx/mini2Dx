@@ -14,12 +14,10 @@
  * limitations under the License.
  ******************************************************************************/
 
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using monogame.Graphics;
 using monogame.Util;
-using org.mini2Dx.core;
 using org.mini2Dx.core.font;
 using org.mini2Dx.core.geom;
 using org.mini2Dx.core.graphics;
@@ -35,12 +33,11 @@ namespace monogame
     {
         private readonly SpriteBatch _spriteBatch;
         private readonly GraphicsDevice _graphicsDevice;
-        private readonly GraphicsUtils _graphicsUtils;
         private Color _setColor = new MonoGameColor(255,255,255,255);
-        private Microsoft.Xna.Framework.Color _backgroundColor = Microsoft.Xna.Framework.Color.Black;
+        internal Microsoft.Xna.Framework.Color _backgroundColor = Microsoft.Xna.Framework.Color.Black;
         private Microsoft.Xna.Framework.Color _tint = Microsoft.Xna.Framework.Color.White;
         private float _rotation;
-        private int _gameWidth, _gameHeight;
+        internal int _gameWidth, _gameHeight;
 
         private MonoGameShapeRenderer _shapeRenderer;
         
@@ -59,23 +56,38 @@ namespace monogame
         {
             _spriteBatch = new SpriteBatch(graphicsDevice);
             _graphicsDevice = graphicsDevice;
-            _graphicsUtils = new MonoGameGraphicsUtils(graphicsDevice);
             _translation = Vector2.Zero;
             _scale = Vector2.One;
             _rotationCenter = Vector2.Zero;
             _shapeRenderer = new MonoGameShapeRenderer(graphicsDevice, MonoGameColor.toArgb(_setColor), _spriteBatch, _rotationCenter, _translation, _scale, _tint);
         }
+
+        internal void beginSpriteBatch()
+        {
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack, _blendState, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationCenter + _translation) * _scale, 0)));
+        }
+
+        internal void endSpriteBatch()
+        {
+            _spriteBatch.End();
+        }
+
+        internal void clearGraphicsDevice(Microsoft.Xna.Framework.Color color)
+        {
+            _graphicsDevice.Clear(color);
+        }
+        
         
         public void preRender(int gameWidth, int gameHeight)
         {
             if (!_isFlushing)
             {
-                _graphicsDevice.Clear(_backgroundColor);
+                clearGraphicsDevice(_backgroundColor);
             }
 
             _gameWidth = gameWidth;
             _gameHeight = gameHeight;
-            _spriteBatch.Begin(SpriteSortMode.FrontToBack, _blendState, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationCenter + _translation) * _scale, 0)));
+            beginSpriteBatch();
         }
 
         public void postRender()
@@ -421,47 +433,47 @@ namespace monogame
 
         public bool isWindowReady()
         {
-            return getWindowHeight() != 0;
+            return _gameHeight != 0;
         }
 
         public int getWindowWidth()
         {
-            return _gameWidth;
+            return _graphicsDevice.PresentationParameters.BackBufferWidth;
         }
 
         public int getWindowHeight()
         {
-            return _gameHeight;
+            return _graphicsDevice.PresentationParameters.BackBufferHeight;
         }
         
         public int getWindowSafeX()
         {
-            throw new System.NotImplementedException();
+            return _graphicsDevice.Viewport.TitleSafeArea.X;
         }
 
         public int getWindowSafeY()
         {
-            throw new System.NotImplementedException();
+            return _graphicsDevice.Viewport.TitleSafeArea.Y;
         }
 
         public int getWindowSafeWidth()
         {
-            throw new System.NotImplementedException();
+            return _graphicsDevice.Viewport.TitleSafeArea.Width;
         }
 
         public int getWindowSafeHeight()
         {
-            throw new System.NotImplementedException();
+            return _graphicsDevice.Viewport.TitleSafeArea.Height;
         }
 
         public float getViewportWidth()
         {
-            throw new System.NotImplementedException();
+            return _gameWidth;
         }
 
         public float getViewportHeight()
         {
-            throw new System.NotImplementedException();
+            return _gameHeight;
         }
 
         public Matrix4 getProjectionMatrix()

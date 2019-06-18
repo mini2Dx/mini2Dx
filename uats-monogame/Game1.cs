@@ -216,12 +216,12 @@ namespace uats_monogame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            Mdx.graphicsContext.preRender(GraphicsDevice.Viewport.Bounds.Width, GraphicsDevice.Viewport.Bounds.Height);
+            Mdx.graphicsContext.preRender(Mdx.graphicsContext.getWindowWidth(), Mdx.graphicsContext.getWindowHeight());
             Mdx.graphicsContext.setColor(new MonoGameColor(Color.White));
             
-            var windowWidth = Mdx.graphicsContext.getWindowWidth();
-            var windowHeight = Mdx.graphicsContext.getWindowHeight();
-            Mdx.graphicsContext.drawRect(windowWidth/8f, windowHeight/8f, 3 * windowWidth/4f, 3 * windowHeight/4f);
+            var gameWidth = Mdx.graphicsContext.getViewportWidth();
+            var gameHeight = Mdx.graphicsContext.getViewportHeight();
+            Mdx.graphicsContext.drawRect(gameWidth/8f, gameHeight/8f, 3 * gameWidth/4f, 3 * gameHeight/4f);
             Mdx.graphicsContext.fillRect(400, 300, 32, 32);
             Mdx.graphicsContext.drawCircle(200, 200, 40);
             Mdx.graphicsContext.fillCircle(300, 300, 20);
@@ -232,7 +232,7 @@ namespace uats_monogame
             Mdx.graphicsContext.drawTexture(sampleTexture, 200, 100);
             Mdx.graphicsContext.drawTextureRegion(sampleRegion, 500, 300);
             Mdx.graphicsContext.drawTextureRegion(sampleRegion2, 600, 150, 100, 100);
-            sampleSprite.setOriginBasedPosition(windowWidth / 2f, windowHeight / 2f);
+            sampleSprite.setOriginBasedPosition(gameWidth / 2f, gameHeight / 2f);
             Mdx.graphicsContext.drawSprite(sampleSprite);
             Mdx.graphicsContext.setColor(new MonoGameColor(Color.Green));
             Mdx.graphicsContext.fillTriangle(mousePosition.X, mousePosition.Y, mousePosition.X + 10,
