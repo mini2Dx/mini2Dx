@@ -294,6 +294,11 @@ namespace monogame.Graphics
             return (uint) (r << 24 | g << 16 | b << 8 | a);
         }
 
+        public static UInt32 toARGB8888(byte r, byte g, byte b, byte a)
+        {
+            return (uint) (a << 24 | r << 16 | g << 8 | b);
+        }
+
         public static UInt32 toRGBA8888(Microsoft.Xna.Framework.Color color)
         {
             return (uint) (color.R << 24 | color.G << 16 | color.B << 8 | color.A);
@@ -385,6 +390,11 @@ namespace monogame.Graphics
         public byte toIntensity()
         {
             return toIntensity(toRGBA8888());
+        }
+
+        public static uint toArgb(Color color)
+        {
+            return toARGB8888(color.getRAsByte(), color.getGAsByte(), color.getBAsByte(), color.getAAsByte());
         }
     }
 }
