@@ -45,16 +45,40 @@ namespace monogame.Graphics
             
         }
 
-        public void drawCircle(int x, int y, int radius)
+        public void drawCircle(int centerX, int centerY, int radius)
         {
             if (radius <= 0)
             {
                 return;
             }
             var color = _setColor.toRGBA8888();
-            for (float angle = 0; angle < 2 * Math.PI; angle += 0.001f)
-            {
-                drawPixel((int) (radius * Math.Sin(angle) + x), (int) (radius * Math.Cos(angle) + y), color);
+            int radiusSquared = radius * radius;
+            
+            drawPixel(centerX, centerY + radius, color);
+            drawPixel(centerX, centerY - radius, color);
+            drawPixel(centerX + radius, centerY, color);
+            drawPixel(centerX - radius, centerY, color);
+
+            var x = 1;
+            var y = (int) (Math.Sqrt(radiusSquared - 1) + 0.5);
+            
+            while (x < y) {
+                drawPixel(centerX + x, centerY + y, color);
+                drawPixel(centerX + x, centerY - y, color);
+                drawPixel(centerX - x, centerY + y, color);
+                drawPixel(centerX - x, centerY - y, color);
+                drawPixel(centerX + y, centerY + x, color);
+                drawPixel(centerX + y, centerY - x, color);
+                drawPixel(centerX - y, centerY + x, color);
+                drawPixel(centerX - y, centerY - x, color);
+                x += 1;
+                y = (int) (Math.Sqrt(radiusSquared - x*x) + 0.5);
+            }
+            if (x == y) {
+                drawPixel(centerX + x, centerY + y, color);
+                drawPixel(centerX + x, centerY - y, color);
+                drawPixel(centerX - x, centerY + y, color);
+                drawPixel(centerX - x, centerY - y, color);
             }
         }
 
@@ -216,10 +240,17 @@ namespace monogame.Graphics
 
         public void drawRectangle(int x, int y, int width, int height)
         {
-            drawLine(x, y, x + width, y);
-            drawLine(x, y, x, y + height);
-            drawLine(x + width, y, x + width, y + height);
-            drawLine(x, y + height, x + width, y + height);
+            for (int i = 0; i <  width; i++)
+            {
+                drawPixel(x + i, y);
+                drawPixel(x + i, y + height);
+            }
+            
+            for (int i = 0; i <  height; i++)
+            {
+                drawPixel(x, y + i);
+                drawPixel(x + width, y + i);
+            }
         }
 
         public void fill()
@@ -252,9 +283,13 @@ namespace monogame.Graphics
 
         public void fillRectangle(int x, int y, int width, int height)
         {
-            for (var i = 0; i < height; i++)
+            var color = _setColor.toRGBA8888();
+            for (int newX = x; x < x + width; x++)
             {
-                drawLine(x, y + i,  x+ width, y + i);
+                for (int newY = y; y < y + height; y++)
+                {
+                    drawPixel(newX, newY, color);
+                }
             }
         }
 
