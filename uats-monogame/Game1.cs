@@ -15,7 +15,6 @@
  ******************************************************************************/
 using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using monogame;
 using monogame.Graphics;
 using org.mini2Dx.core;
