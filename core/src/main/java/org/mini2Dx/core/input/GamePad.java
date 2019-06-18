@@ -18,7 +18,7 @@ package org.mini2Dx.core.input;
 import org.mini2Dx.gdx.math.Vector3;
 
 /**
- * Common interface for gamepads/controllers
+ * Common interface for gamepads/controllers/joysticks/etc.
  */
 public interface GamePad {
 	/**

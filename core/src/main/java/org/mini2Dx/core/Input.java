@@ -16,6 +16,12 @@
 package org.mini2Dx.core;
 
 import org.mini2Dx.core.input.GamePad;
+import org.mini2Dx.core.input.nswitch.SwitchDualJoyConGamePad;
+import org.mini2Dx.core.input.nswitch.SwitchJoyConLGamePad;
+import org.mini2Dx.core.input.nswitch.SwitchJoyConRGamePad;
+import org.mini2Dx.core.input.ps4.PS4GamePad;
+import org.mini2Dx.core.input.xbox360.Xbox360GamePad;
+import org.mini2Dx.core.input.xboxOne.XboxOneGamePad;
 import org.mini2Dx.gdx.InputProcessor;
 import org.mini2Dx.gdx.utils.Array;
 
@@ -27,8 +33,51 @@ public interface Input {
     public void setInputProcessor(InputProcessor inputProcessor);
 
     /**
-     * Returns the list of known {@link GamePad}s. If a {@link GamePad} disconnects/unplugs it will remain in this array.
+     * Returns the list of known {@link GamePad}s connected to the device.
+     * If a {@link GamePad} disconnects/unplugs it will remain in this array.
      * @return An empty {@link Array} if no {@link GamePad}s are present.
      */
     public Array<GamePad> getGamePads();
+
+    /**
+     * Wraps a {@link GamePad} as a {@link PS4GamePad}
+     * @param gamePad The underlying {@link GamePad} instance
+     * @return A new instance of {@link PS4GamePad}
+     */
+    public PS4GamePad newPS4GamePad(GamePad gamePad);
+
+    /**
+     * Wraps a {@link GamePad} as a {@link SwitchDualJoyConGamePad}
+     * @param gamePad The underlying {@link GamePad} instance
+     * @return A new instance of {@link SwitchDualJoyConGamePad}
+     */
+    public SwitchDualJoyConGamePad newSwitchDualJoyConGamePad(GamePad gamePad);
+
+    /**
+     * Wraps a {@link GamePad} as a {@link SwitchJoyConLGamePad}
+     * @param gamePad The underlying {@link GamePad} instance
+     * @return A new instance of {@link SwitchJoyConLGamePad}
+     */
+    public SwitchJoyConLGamePad newSwitchJoyConLGamePad(GamePad gamePad);
+
+    /**
+     * Wraps a {@link GamePad} as a {@link SwitchJoyConRGamePad}
+     * @param gamePad The underlying {@link GamePad} instance
+     * @return A new instance of {@link SwitchJoyConRGamePad}
+     */
+    public SwitchJoyConRGamePad newSwitchJoyConRGamePad(GamePad gamePad);
+
+    /**
+     * Wraps a {@link GamePad} as a {@link XboxOneGamePad}
+     * @param gamePad The underlying {@link GamePad} instance
+     * @return A new instance of {@link XboxOneGamePad}
+     */
+    public XboxOneGamePad newXboxOneGamePad(GamePad gamePad);
+
+    /**
+     * Wraps a {@link GamePad} as a {@link Xbox360GamePad}
+     * @param gamePad The underlying {@link GamePad} instance
+     * @return A new instance of {@link Xbox360GamePad}
+     */
+    public Xbox360GamePad newXbox360GamePad(GamePad gamePad);
 }
