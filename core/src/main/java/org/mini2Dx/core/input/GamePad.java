@@ -109,6 +109,12 @@ public interface GamePad {
 	public PovState getPov (int povCode);
 
 	/**
+	 * Returns if this gamepad has accelerometer functionality
+	 * @return True if supported
+	 */
+	public boolean isAccelerometerSupported();
+
+	/**
 	 * Returns the current accelerometer value
 	 * @param accelerometerCode The accelerometer code (Note: these may vary per platform)
 	 * @return The acceleromter value on 3 axis in m/s^2

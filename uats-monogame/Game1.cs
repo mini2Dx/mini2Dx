@@ -20,8 +20,11 @@ using monogame.Graphics;
 using org.mini2Dx.core;
 using org.mini2Dx.core.audio;
 using org.mini2Dx.core.graphics;
+using org.mini2Dx.core.input.button;
+using org.mini2Dx.core.input.xbox360;
 using org.mini2Dx.gdx;
 using Color = Microsoft.Xna.Framework.Color;
+using GamePad = org.mini2Dx.core.input.GamePad;
 using Input = org.mini2Dx.gdx.Input;
 using Texture = org.mini2Dx.core.graphics.Texture;
 
@@ -47,7 +50,7 @@ namespace uats_monogame
             Content.RootDirectory = "Content";
         }
 
-        private class UATInputProcessor : InputProcessor
+        private class UATInputProcessor : InputProcessor, Xbox360GamePadListener
         {
             private readonly Game1 game;
 
@@ -136,6 +139,64 @@ namespace uats_monogame
                 Console.WriteLine("scrolled({0})", amount);
                 return false;
             }
+
+            public void connected(Xbox360GamePad xgp)
+            {
+                Console.WriteLine("connected({0})", xgp);
+            }
+
+            public void disconnected(Xbox360GamePad xgp)
+            {
+                Console.WriteLine("disconnected({0})", xgp);
+            }
+
+            public bool buttonDown(Xbox360GamePad xgp, Xbox360Button xb)
+            {
+                Console.WriteLine("buttonDown({0}, {1})", xgp, xb);
+                return false;
+            }
+
+            public bool buttonUp(Xbox360GamePad xgp, Xbox360Button xb)
+            {
+                Console.WriteLine("buttonUp({0}, {1})", xgp, xb);
+                return false;
+            }
+
+            public bool leftTriggerMoved(Xbox360GamePad xgp, float f)
+            {
+                Console.WriteLine("leftTriggerMoved({0}, {1})", xgp, f);
+                return false;
+            }
+
+            public bool rightTriggerMoved(Xbox360GamePad xgp, float f)
+            {
+                Console.WriteLine("rightTriggerMoved({0}, {1})", xgp, f);
+                return false;
+            }
+
+            public bool leftStickXMoved(Xbox360GamePad xgp, float f)
+            {
+                Console.WriteLine("leftStickXMoved({0}, {1})", xgp, f);
+                return false;
+            }
+
+            public bool leftStickYMoved(Xbox360GamePad xgp, float f)
+            {
+                Console.WriteLine("leftStickYMoved({0}, {1})", xgp, f);
+                return false;
+            }
+
+            public bool rightStickXMoved(Xbox360GamePad xgp, float f)
+            {
+                Console.WriteLine("rightStickXMoved({0}, {1})", xgp, f);
+                return false;
+            }
+
+            public bool rightStickYMoved(Xbox360GamePad xgp, float f)
+            {
+                Console.WriteLine("rightStickYMoved({0}, {1})", xgp, f);
+                return false;
+            }
         }
 
         private class AudioCompletionListener : SoundCompletionListener, MusicCompletionListener
@@ -188,6 +249,8 @@ namespace uats_monogame
             
             Mdx.audio.addMusicCompletionListener(new AudioCompletionListener());
             Mdx.audio.addSoundCompletionListener(new AudioCompletionListener());
+            
+            Mdx.input.newXbox360GamePad((GamePad)Mdx.input.getGamePads().get(0)).addListener(new UATInputProcessor(this));
         }
 
         /// <summary>
@@ -239,7 +302,7 @@ namespace uats_monogame
                 mousePosition.Y + 20, mousePosition.X, mousePosition.Y + 20);
             
             Mdx.graphicsContext.postRender();
-            Console.WriteLine("FPS: {0}", 1.0/gameTime.ElapsedGameTime.TotalSeconds);
+            //Console.WriteLine("FPS: {0}", 1.0/gameTime.ElapsedGameTime.TotalSeconds);
             base.Draw(gameTime);
         }
     }
