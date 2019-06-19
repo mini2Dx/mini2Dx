@@ -15,7 +15,16 @@
  ******************************************************************************/
 using System;
 using Microsoft.Xna.Framework.Input;
+using monogame.Input;
+using monogame.Input.Xbox360;
+using org.mini2Dx.core.input.nswitch;
+using org.mini2Dx.core.input.ps4;
+using org.mini2Dx.core.input.xbox360;
+using org.mini2Dx.core.input.xboxOne;
 using org.mini2Dx.gdx;
+using Array = org.mini2Dx.gdx.utils.Array;
+using GamePad = org.mini2Dx.core.input.GamePad;
+using Math = System.Math;
 
 namespace monogame
 {
@@ -25,11 +34,19 @@ namespace monogame
         
         private MouseState _previousMouseState;
         private Keys[] _previousPressedKeys;
+        private MonoGameGamePad[] _gamePads;
+        private readonly Array _gamePadsArray;
         
         public MonoGameInput()
         {
             _previousMouseState = Mouse.GetState();
             _previousPressedKeys = new Keys[0];
+            _gamePads = new MonoGameGamePad[Microsoft.Xna.Framework.Input.GamePad.MaximumGamePadCount];
+            for (var i = 0; i < _gamePads.Length; i++)
+            {
+                _gamePads[i] = new MonoGameGamePad(i);
+            }
+            _gamePadsArray = Array.with(_gamePads);
         }
         
         public void setInputProcessor(InputProcessor inputProcessor)
@@ -37,15 +54,60 @@ namespace monogame
             _inputProcessor = inputProcessor;
         }
 
+        public Array getGamePads()
+        {
+            return _gamePadsArray;
+        }
+
+        public PS4GamePad newPS4GamePad(GamePad gamePad)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SwitchDualJoyConGamePad newSwitchDualJoyConGamePad(GamePad gamePad)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SwitchJoyConLGamePad newSwitchJoyConLGamePad(GamePad gamePad)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SwitchJoyConRGamePad newSwitchJoyConRGamePad(GamePad gamePad)
+        {
+            throw new NotImplementedException();
+        }
+
+        public XboxOneGamePad newXboxOneGamePad(GamePad gamePad)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Xbox360GamePad newXbox360GamePad(GamePad gamePad)
+        {
+            return new MonoGameXbox360GamePad(gamePad);
+        }
+
         public void update()
         {
-            if (_inputProcessor == null)
+            updateControllerInput();
+            if (_inputProcessor != null)
             {
-                return;
+                updateMouseInput();
+                updateKeyboardInput();
             }
-            
-            updateMouseInput();
-            updateKeyboardInput();
+        }
+
+        private void updateControllerInput()
+        {
+            for (int i = 0; i < _gamePads.Length; i++)
+            {
+                if (_gamePads[i].wasConnected() || _gamePads[i].isConnected())
+                {
+                    _gamePads[i].update();
+                }
+            }
         }
 
         private static bool isAnyMouseButtonPressed(MouseState state)
@@ -81,11 +143,11 @@ namespace monogame
             {
                 if (currentState.LeftButton == ButtonState.Pressed)
                 {
-                    _inputProcessor.touchDown(currentState.X, currentState.Y, 0, Input.Buttons.LEFT);
+                    _inputProcessor.touchDown(currentState.X, currentState.Y, 0, org.mini2Dx.gdx.Input.Buttons.LEFT);
                 }
                 else
                 {
-                    _inputProcessor.touchUp(currentState.X, currentState.Y, 0, Input.Buttons.LEFT);
+                    _inputProcessor.touchUp(currentState.X, currentState.Y, 0, org.mini2Dx.gdx.Input.Buttons.LEFT);
                 }
             }
 
@@ -93,11 +155,11 @@ namespace monogame
             {
                 if (currentState.MiddleButton == ButtonState.Pressed)
                 {
-                    _inputProcessor.touchDown(currentState.X, currentState.Y, 0, Input.Buttons.MIDDLE);
+                    _inputProcessor.touchDown(currentState.X, currentState.Y, 0, org.mini2Dx.gdx.Input.Buttons.MIDDLE);
                 }
                 else
                 {
-                    _inputProcessor.touchUp(currentState.X, currentState.Y, 0, Input.Buttons.MIDDLE);
+                    _inputProcessor.touchUp(currentState.X, currentState.Y, 0, org.mini2Dx.gdx.Input.Buttons.MIDDLE);
                 }
             }
 
@@ -105,11 +167,11 @@ namespace monogame
             {
                 if (currentState.RightButton == ButtonState.Pressed)
                 {
-                    _inputProcessor.touchDown(currentState.X, currentState.Y, 0, Input.Buttons.RIGHT);
+                    _inputProcessor.touchDown(currentState.X, currentState.Y, 0, org.mini2Dx.gdx.Input.Buttons.RIGHT);
                 }
                 else
                 {
-                    _inputProcessor.touchUp(currentState.X, currentState.Y, 0, Input.Buttons.RIGHT);
+                    _inputProcessor.touchUp(currentState.X, currentState.Y, 0, org.mini2Dx.gdx.Input.Buttons.RIGHT);
                 }
             }
 
@@ -245,105 +307,105 @@ namespace monogame
         {
             if (pressedKey >= Keys.A && pressedKey <= Keys.Z)
             {
-                return pressedKey - Keys.A + Input.Keys.A;
+                return pressedKey - Keys.A + org.mini2Dx.gdx.Input.Keys.A;
             }
             
             if (pressedKey >= Keys.F1 && pressedKey <= Keys.F12)
             {
-                return pressedKey - Keys.F1 + Input.Keys.F1;
+                return pressedKey - Keys.F1 + org.mini2Dx.gdx.Input.Keys.F1;
             }
 
             if (pressedKey >= Keys.NumPad0 && pressedKey <= Keys.NumPad9)
             {
-                return pressedKey - Keys.NumPad0 + Input.Keys.NUMPAD_0;
+                return pressedKey - Keys.NumPad0 + org.mini2Dx.gdx.Input.Keys.NUMPAD_0;
             }
             if (pressedKey >= Keys.D0 && pressedKey <= Keys.D9)
             {
-                return pressedKey - Keys.D0 + Input.Keys.NUM_0;
+                return pressedKey - Keys.D0 + org.mini2Dx.gdx.Input.Keys.NUM_0;
             }
             
             switch (pressedKey)
             {
                 case Keys.Back:
-                    return Input.Keys.BACK;
+                    return org.mini2Dx.gdx.Input.Keys.BACK;
                 case Keys.Tab:
-                    return Input.Keys.TAB;
+                    return org.mini2Dx.gdx.Input.Keys.TAB;
                 case Keys.Enter:
-                    return Input.Keys.ENTER;
+                    return org.mini2Dx.gdx.Input.Keys.ENTER;
                 case Keys.Escape:
-                    return Input.Keys.ESCAPE;
+                    return org.mini2Dx.gdx.Input.Keys.ESCAPE;
                 case Keys.Space:
-                    return Input.Keys.ESCAPE;
+                    return org.mini2Dx.gdx.Input.Keys.ESCAPE;
                 case Keys.PageUp:
-                    return Input.Keys.PAGE_UP;
+                    return org.mini2Dx.gdx.Input.Keys.PAGE_UP;
                 case Keys.PageDown:
-                    return Input.Keys.PAGE_DOWN;
+                    return org.mini2Dx.gdx.Input.Keys.PAGE_DOWN;
                 case Keys.End:
-                    return Input.Keys.END;
+                    return org.mini2Dx.gdx.Input.Keys.END;
                 case Keys.Home:
-                    return Input.Keys.HOME;
+                    return org.mini2Dx.gdx.Input.Keys.HOME;
                 case Keys.Left:
-                    return Input.Keys.LEFT;
+                    return org.mini2Dx.gdx.Input.Keys.LEFT;
                 case Keys.Up:
-                    return Input.Keys.UP;
+                    return org.mini2Dx.gdx.Input.Keys.UP;
                 case Keys.Right:
-                    return Input.Keys.RIGHT;
+                    return org.mini2Dx.gdx.Input.Keys.RIGHT;
                 case Keys.Down:
-                    return Input.Keys.DOWN;
+                    return org.mini2Dx.gdx.Input.Keys.DOWN;
                 case Keys.Select:
-                    return Input.Keys.BUTTON_SELECT;
+                    return org.mini2Dx.gdx.Input.Keys.BUTTON_SELECT;
                 case Keys.Insert:
-                    return Input.Keys.INSERT;
+                    return org.mini2Dx.gdx.Input.Keys.INSERT;
                 case Keys.Delete:
-                    return Input.Keys.DEL;
+                    return org.mini2Dx.gdx.Input.Keys.DEL;
                 case Keys.Multiply:
-                    return Input.Keys.NUM;
+                    return org.mini2Dx.gdx.Input.Keys.NUM;
                 case Keys.Add:
-                    return Input.Keys.PLUS;
+                    return org.mini2Dx.gdx.Input.Keys.PLUS;
                 case Keys.Subtract:
-                    return Input.Keys.MINUS;
+                    return org.mini2Dx.gdx.Input.Keys.MINUS;
                 case Keys.Divide:
-                    return Input.Keys.SLASH;
+                    return org.mini2Dx.gdx.Input.Keys.SLASH;
                 case Keys.LeftShift:
-                    return Input.Keys.SHIFT_LEFT;
+                    return org.mini2Dx.gdx.Input.Keys.SHIFT_LEFT;
                 case Keys.RightShift:
-                    return Input.Keys.SHIFT_RIGHT;
+                    return org.mini2Dx.gdx.Input.Keys.SHIFT_RIGHT;
                 case Keys.LeftControl:
-                    return Input.Keys.CONTROL_LEFT;
+                    return org.mini2Dx.gdx.Input.Keys.CONTROL_LEFT;
                 case Keys.RightControl:
-                    return Input.Keys.CONTROL_RIGHT;
+                    return org.mini2Dx.gdx.Input.Keys.CONTROL_RIGHT;
                 case Keys.LeftAlt:
-                    return Input.Keys.ALT_LEFT;
+                    return org.mini2Dx.gdx.Input.Keys.ALT_LEFT;
                 case Keys.RightAlt:
-                    return Input.Keys.ALT_RIGHT;
+                    return org.mini2Dx.gdx.Input.Keys.ALT_RIGHT;
                 case Keys.BrowserBack:
-                    return Input.Keys.BACK;
+                    return org.mini2Dx.gdx.Input.Keys.BACK;
                 case Keys.VolumeMute:
-                    return Input.Keys.MUTE;
+                    return org.mini2Dx.gdx.Input.Keys.MUTE;
                 case Keys.VolumeDown:
-                    return Input.Keys.VOLUME_DOWN;
+                    return org.mini2Dx.gdx.Input.Keys.VOLUME_DOWN;
                 case Keys.VolumeUp:
-                    return Input.Keys.VOLUME_UP;
+                    return org.mini2Dx.gdx.Input.Keys.VOLUME_UP;
                 case Keys.MediaNextTrack:
-                    return Input.Keys.MEDIA_NEXT;
+                    return org.mini2Dx.gdx.Input.Keys.MEDIA_NEXT;
                 case Keys.MediaPreviousTrack:
-                    return Input.Keys.MEDIA_PREVIOUS;
+                    return org.mini2Dx.gdx.Input.Keys.MEDIA_PREVIOUS;
                 case Keys.MediaStop:
-                    return Input.Keys.MEDIA_STOP;
+                    return org.mini2Dx.gdx.Input.Keys.MEDIA_STOP;
                 case Keys.MediaPlayPause:
-                    return Input.Keys.MEDIA_PLAY_PAUSE;
+                    return org.mini2Dx.gdx.Input.Keys.MEDIA_PLAY_PAUSE;
                 case Keys.OemSemicolon:
-                    return Input.Keys.SEMICOLON;
+                    return org.mini2Dx.gdx.Input.Keys.SEMICOLON;
                 case Keys.OemPlus:
-                    return Input.Keys.PLUS;
+                    return org.mini2Dx.gdx.Input.Keys.PLUS;
                 case Keys.OemComma:
-                    return Input.Keys.COMMA;
+                    return org.mini2Dx.gdx.Input.Keys.COMMA;
                 case Keys.OemMinus:
-                    return Input.Keys.MINUS;
+                    return org.mini2Dx.gdx.Input.Keys.MINUS;
                 case Keys.OemPeriod:
-                    return Input.Keys.PERIOD;
+                    return org.mini2Dx.gdx.Input.Keys.PERIOD;
                 case Keys.OemBackslash:
-                    return Input.Keys.BACKSLASH;
+                    return org.mini2Dx.gdx.Input.Keys.BACKSLASH;
                 default:
                     return 0;
             }

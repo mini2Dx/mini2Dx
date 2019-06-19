@@ -16,13 +16,60 @@
 package org.mini2Dx.core.input;
 
 public enum PovState {
-	CENTER,
-	NORTH,
-	SOUTH,
-	EAST,
-	WEST,
-	NORTH_EAST,
-	SOUTH_EAST,
-	NORTH_WEST,
-	SOUTH_WEST
+	CENTER{
+		@Override
+		public boolean isPressed(PovState state){
+			return state == CENTER;
+		}
+	},
+	NORTH{
+		@Override
+		public boolean isPressed(PovState state){
+			return state == NORTH;
+		}
+	},
+	SOUTH{
+		@Override
+		public boolean isPressed(PovState state){
+			return state == SOUTH;
+		}
+	},
+	EAST{
+		@Override
+		public boolean isPressed(PovState state){
+			return state == EAST;
+		}
+	},
+	WEST{
+		@Override
+		public boolean isPressed(PovState state){
+			return state == WEST;
+		}
+	},
+	NORTH_EAST{
+		@Override
+		public boolean isPressed(PovState state){
+			return state == NORTH || state == EAST;
+		}
+	},
+	SOUTH_EAST{
+		@Override
+		public boolean isPressed(PovState state){
+			return state == SOUTH || state == EAST;
+		}
+	},
+	NORTH_WEST{
+		@Override
+		public boolean isPressed(PovState state){
+			return state == NORTH || state == WEST;
+		}
+	},
+	SOUTH_WEST{
+		@Override
+		public boolean isPressed(PovState state){
+			return state == SOUTH || state == WEST;
+		}
+	};
+
+	public abstract boolean isPressed(PovState state);
 }

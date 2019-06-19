@@ -57,6 +57,8 @@
     <Compile Include="Graphics\MonoGameSprite.cs" />
     <Compile Include="Graphics\MonoGameTexture.cs" />
     <Compile Include="Graphics\MonoGameTextureRegion.cs" />
+    <Compile Include="Input\MonoGameGamePad.cs" />
+    <Compile Include="Input\Xbox360\MonoGameXbox360GamePad.cs" />
     <Compile Include="MonoGameAudio.cs" />
     <Compile Include="MonoGameFiles.cs" />
     <Compile Include="MonoGameGraphics.cs" />
