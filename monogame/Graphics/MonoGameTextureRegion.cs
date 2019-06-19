@@ -279,37 +279,6 @@ namespace monogame.Graphics
             }
         }
 
-        public Texture2D toTexture2D(GraphicsDevice graphicsDevice)
-        {
-            var dstTexture = new Texture2D(graphicsDevice, _regionWidth, _regionHeight, false, SurfaceFormat.Color);
-            var srcTexture = ((MonoGameTexture) _texture).texture2D;
-            
-            Rectangle boundingRect = new Rectangle(getRegionX(), getRegionY(), _regionWidth, _regionHeight);
-            if (isFlipX())
-            {
-                boundingRect.X -= _regionWidth;
-            }
-
-            if (isFlipY())
-            {
-                boundingRect.Y -= _regionHeight;
-            }
-            
-            var rawSrcTextureData = new uint[_regionWidth * _regionHeight];
-            srcTexture.GetData(0, boundingRect, rawSrcTextureData, 0, rawSrcTextureData.Length);
-
-            if (srcTexture.Format == SurfaceFormat.ColorSRgb)
-            {
-                for (int i = 0; i < rawSrcTextureData.Length; i++)
-                {
-                    rawSrcTextureData[i] = MonoGameColor.rgbaToArgb(rawSrcTextureData[i]);
-                }
-            }
-
-            dstTexture.SetData(rawSrcTextureData);
-            return dstTexture;
-        }
-
         public Pixmap toPixmap()
         {
             var pixmap = new MonoGamePixmap(_regionWidth, _regionHeight);

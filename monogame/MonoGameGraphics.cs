@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * Copyright 2019 Viridian Software Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ using org.mini2Dx.core.geom;
 using org.mini2Dx.core.graphics;
 using org.mini2Dx.gdx.math;
 using Color = org.mini2Dx.core.graphics.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Texture = org.mini2Dx.core.graphics.Texture;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
@@ -207,11 +208,21 @@ namespace monogame
 
         public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height, float rotation)
         {
-            _spriteBatch.Draw(((MonoGameTextureRegion) textureRegion).toTexture2D(_graphicsDevice),
-                (new Vector2(x, y) + _translation - _rotationCenter) * _scale, null, _tint, rotation, Vector2.Zero,
+            var sourceRectangle = new Rectangle(textureRegion.getRegionX(), textureRegion.getRegionY(), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+            if (textureRegion.isFlipX())
+            {
+                sourceRectangle.X -= sourceRectangle.Width;
+            }
+
+            if (textureRegion.isFlipY())
+            {
+                sourceRectangle.Y -= sourceRectangle.Height;
+            }
+            _spriteBatch.Draw(((MonoGameTexture) textureRegion.getTexture()).texture2D,
+                (new Vector2(x, y) + _translation - _rotationCenter) * _scale, sourceRectangle, _tint, rotation, Vector2.Zero,
                 new Vector2(width / textureRegion.getRegionWidth(), height / textureRegion.getRegionHeight()) *
                 _scale, (textureRegion.isFlipX() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
-                (textureRegion.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
+                        (textureRegion.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
         }
 
         public void drawShape(Shape shape)
@@ -230,13 +241,23 @@ namespace monogame
         }
 
         public void drawSprite(Sprite sprite, float x, float y)
-        {
+        {            
+            var sourceRectangle = new Rectangle(sprite.getRegionX(), sprite.getRegionY(), sprite.getRegionWidth(), sprite.getRegionHeight());
+            if (sprite.isFlipX())
+            {
+                sourceRectangle.X -= sourceRectangle.Width;
+            }
+
+            if (sprite.isFlipY())
+            {
+                sourceRectangle.Y -= sourceRectangle.Height;
+            }
             var origin = new Vector2(sprite.getOriginX(), sprite.getOriginY());
-            _spriteBatch.Draw(((MonoGameSprite) sprite).toTexture2D(_graphicsDevice), 
-                (new Vector2(x, y) + _translation + origin - _rotationCenter) * _scale, null,
+            _spriteBatch.Draw(((MonoGameTexture) sprite.getTexture()).texture2D, 
+                (new Vector2(x, y) + _translation + origin - _rotationCenter) * _scale, sourceRectangle,
                 ((MonoGameColor) sprite.getTint()).toMonoGameColor(),
                 MonoGameMathsUtil.degreeToRadian(((MonoGameSprite) sprite).getTotalRotation()), origin, 
-                (new Vector2(sprite.getScaleX(), sprite.getScaleY())) * _scale,
+                new Vector2(sprite.getScaleX(), sprite.getScaleY()) * _scale,
                 (sprite.isFlipX() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
                 (sprite.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
         }
