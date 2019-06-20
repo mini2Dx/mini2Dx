@@ -26,6 +26,7 @@ namespace monogame.Graphics
         private Vector2 _rotationCenter, _translation, _scale;
         private Color _tint;
         private readonly SpriteBatch _spriteBatch;
+        private static Rectangle rect = new Rectangle();
 
         public MonoGameShapeRenderer(GraphicsDevice graphicsDevice, uint colorARGB8888, SpriteBatch spriteBatch, Vector2 rotationCenter, Vector2 translation, Vector2 scale, Color tint)
         {
@@ -139,18 +140,23 @@ namespace monogame.Graphics
         public void drawRect(int x, int y, int width, int height)
         {
             var texture = newTexture2D(width, height);
-            var textureData = new uint[width * height];
-            for (int i = 0; i < width; i++)
+            var textureData = new uint[Math.Max(width, height)];
+            for (int i = 0; i < textureData.Length; i++)
             {
                 textureData[i] = _color;
-                textureData[textureData.Length - 1 - i] = _color;
             }
-            for (int i = 1; i < height; i++)
-            {
-                textureData[width * i] = _color;
-                textureData[textureData.Length - 1 - width * i] = _color;
-            }
-            texture.SetData(textureData);
+            rect.Height = 1;
+            rect.Width = width - 1;
+            texture.SetData(0, rect, textureData, 0, width - 1);
+            rect.Y = height - 1;
+            texture.SetData(0, rect, textureData, 0, width - 1);
+            rect.Height = height - 1;
+            rect.Width = 1;
+            rect.Y = 0;
+            texture.SetData(0, rect, textureData, 0, height - 1);
+            rect.X = width - 1;
+            texture.SetData(0, rect, textureData, 0, height - 1);
+            rect.X = 0;
             draw(texture, new Vector2(x, y));
         }
 
