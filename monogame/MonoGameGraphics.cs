@@ -1,4 +1,4 @@
-/*******************************************************************************
+﻿/*******************************************************************************
  * Copyright 2019 Viridian Software Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,6 +39,8 @@ namespace monogame
         private Microsoft.Xna.Framework.Color _tint = Microsoft.Xna.Framework.Color.White;
         private float _rotation;
         internal int _gameWidth, _gameHeight;
+        private Vector2 _translation, _scale, _rotationCenter;
+        private bool _isFlushing;
 
         private MonoGameShapeRenderer _shapeRenderer;
         
@@ -49,9 +51,6 @@ namespace monogame
             ColorSourceBlend = Blend.One,
             ColorDestinationBlend = Blend.InverseSourceAlpha
         };
-
-        private Vector2 _translation, _scale, _rotationCenter;
-        private bool _isFlushing;
 
         public MonoGameGraphics(GraphicsDevice graphicsDevice)
         {
@@ -65,7 +64,7 @@ namespace monogame
 
         internal void beginSpriteBatch()
         {
-            _spriteBatch.Begin(SpriteSortMode.FrontToBack, _blendState, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationCenter + _translation) * _scale, 0)));
+            _spriteBatch.Begin(SpriteSortMode.Deferred, _blendState, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationCenter + _translation) * _scale, 0)));
         }
 
         internal void endSpriteBatch()
@@ -274,7 +273,7 @@ namespace monogame
 
         public void drawNinePatch(NinePatch ninePatch, float x, float y, float width, float height)
         {
-            throw new System.NotImplementedException();
+            ninePatch.render(this, x, y, width, height);
         }
 
         public void drawTilingDrawable(TilingDrawable tilingDrawable, float x, float y, float width, float height)
