@@ -119,6 +119,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\background.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\mini2Dx.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
