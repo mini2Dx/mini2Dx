@@ -125,6 +125,9 @@
     <Content Include="Content\music.ogg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\ninepatch.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\sound.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

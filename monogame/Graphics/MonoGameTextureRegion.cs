@@ -38,21 +38,18 @@ namespace monogame.Graphics
         {
             _texture = texture ?? throw new java.lang.IllegalArgumentException();
             setRegion(0, 0, texture.getWidth(), texture.getHeight());
-            flip(false, true);
         }
 
         public MonoGameTextureRegion(Texture texture, int x, int y, int width, int height)
         {
             _texture = texture ?? throw new java.lang.IllegalArgumentException();
             setRegion(x, y, width, height);
-            flip(false, true);
         }
 
         public MonoGameTextureRegion(Texture texture, float u, float v, float u2, float v2)
         {
             _texture = texture;
             setRegion(u, v, u2, v2);
-            flip(false, true);
         }
 
         public MonoGameTextureRegion(TextureRegion region)
@@ -63,7 +60,6 @@ namespace monogame.Graphics
         public MonoGameTextureRegion(TextureRegion region, int x, int y, int width, int height)
         {
             setRegion(region, x, y, width, height);
-            flip(false, true);
         }
 
         public MonoGameTextureRegion(TextureRegion region, int width, int height) : this(region, 0, 0, width, height) {}
@@ -184,9 +180,7 @@ namespace monogame.Graphics
 
         public int getRegionY()
         {
-            setFlipY(!isFlipY());
             var result = (int) Math.Round(_v * _texture.getHeight());
-            setFlipY(!isFlipY());
             return result;
         }
 
@@ -256,7 +250,7 @@ namespace monogame.Graphics
 
         public bool isFlipY()
         {
-            return !(_v > _v2);
+            return _v > _v2;
         }
 
         public void setFlipY(bool b)

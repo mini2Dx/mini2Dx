@@ -57,17 +57,17 @@ namespace monogame
 
         public NinePatch newNinePatch(Texture texture, int left, int right, int top, int bottom)
         {
-            throw new NotImplementedException();
+            return newNinePatch(new MonoGameTextureRegion(texture), left, right, top, bottom);
         }
 
         public NinePatch newNinePatch(TextureRegion region, int left, int right, int top, int bottom)
         {
-            throw new NotImplementedException();
+            return new MonoGameNinePatch(region, left, right, top, bottom);
         }
 
         public FrameBuffer newFrameBuffer(int width, int height)
         {
-            throw new NotImplementedException();
+            return new MonoGameFrameBuffer(_graphicsDevice, width, height);
         }
 
         public ParticleEffect newParticleEffect()

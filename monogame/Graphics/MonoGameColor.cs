@@ -47,7 +47,7 @@ namespace monogame.Graphics
         
         public Color copy()
         {
-            return new MonoGameColor(_color.PackedValue);
+            return new MonoGameColor(new Microsoft.Xna.Framework.Color(_color.PackedValue));
         }
 
         public Color set(Color c)
@@ -106,28 +106,28 @@ namespace monogame.Graphics
 
         public Color multiply(Color c)
         {
-            _color.R *= c.getRAsByte();
-            _color.G *= c.getGAsByte();
-            _color.B *= c.getBAsByte();
-            _color.A *= c.getAAsByte();
+            _color.R = (byte) (_color.R * c.getRAsFloat());
+            _color.G = (byte) (_color.G * c.getGAsFloat());
+            _color.B = (byte) (_color.B * c.getBAsFloat());
+            _color.A = (byte) (_color.A * c.getAAsFloat());
             return this;
         }
 
         public Color multiply(float r, float g, float b, float a)
         {
-            _color.R *= floatToByte(r);
-            _color.G *= floatToByte(g);
-            _color.B *= floatToByte(b);
-            _color.A *= floatToByte(a);
+            _color.R = (byte) (_color.R * r);
+            _color.G = (byte) (_color.G * g);
+            _color.B = (byte) (_color.B * b);
+            _color.A = (byte) (_color.A * a);
             return this;
         }
 
         public Color multiply(byte r, byte g, byte b, byte a)
         {
-            _color.R *= r;
-            _color.G *= g;
-            _color.B *= b;
-            _color.A *= a;
+            _color.R = (byte) (_color.R * byteToFloat(r));
+            _color.G = (byte) (_color.G * byteToFloat(g));
+            _color.B = (byte) (_color.B * byteToFloat(b));
+            _color.A = (byte) (_color.A * byteToFloat(a) );
             return this;
         }
 

@@ -39,6 +39,7 @@ namespace uats_monogame
         private Texture sampleTexture;
         private TextureRegion sampleRegion;
         private TextureRegion sampleRegion2;
+        private NinePatch sampleNinePatch;
         private Sprite sampleSprite;
         private Music music;
         private Sound sound;
@@ -241,6 +242,7 @@ namespace uats_monogame
             sampleRegion2 = Mdx.graphics.newTextureRegion(sampleTexture).split(16,17)[1][1];
             sampleRegion2.flip(false, true);
             sampleSprite = Mdx.graphics.newSprite(sampleTexture);
+            sampleNinePatch = Mdx.graphics.newNinePatch(Mdx.graphics.newTexture(Mdx.files.@internal("ninepatch.png")), 6, 6, 6, 6);
             Mdx.graphicsContext.setColor(new MonoGameColor(255, 255, 255, 255));
             Mdx.graphicsContext.setBackgroundColor(new MonoGameColor(Color.Blue));
             sampleSprite.setOriginCenter();
@@ -295,9 +297,10 @@ namespace uats_monogame
             Mdx.graphicsContext.drawTexture(sampleTexture, 200, 100);
             Mdx.graphicsContext.drawTextureRegion(sampleRegion, 500, 300);
             Mdx.graphicsContext.drawTextureRegion(sampleRegion2, 600, 150, 100, 100);
-            sampleSprite.setOriginBasedPosition(gameWidth / 2f, gameHeight / 2f);
+            sampleSprite.setOriginBasedPosition(gameWidth / 2, gameHeight / 2);
             Mdx.graphicsContext.drawSprite(sampleSprite);
             Mdx.graphicsContext.setColor(new MonoGameColor(Color.Green));
+            Mdx.graphicsContext.drawNinePatch(sampleNinePatch, 150, 300, 100, 100);
             Mdx.graphicsContext.fillTriangle(mousePosition.X, mousePosition.Y, mousePosition.X + 10,
                 mousePosition.Y + 20, mousePosition.X, mousePosition.Y + 20);
             
