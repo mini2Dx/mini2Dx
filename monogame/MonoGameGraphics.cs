@@ -278,7 +278,7 @@ namespace monogame
 
         public void drawTilingDrawable(TilingDrawable tilingDrawable, float x, float y, float width, float height)
         {
-            throw new System.NotImplementedException();
+            tilingDrawable.draw(this, x, y, width, height);
         }
 
         public void rotate(float degrees, float x, float y)

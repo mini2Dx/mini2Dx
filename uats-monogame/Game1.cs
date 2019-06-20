@@ -40,6 +40,7 @@ namespace uats_monogame
         private TextureRegion sampleRegion;
         private TextureRegion sampleRegion2;
         private NinePatch sampleNinePatch;
+        private TilingDrawable sampleTilingDrawable;
         private Sprite sampleSprite;
         private Music music;
         private Sound sound;
@@ -243,6 +244,7 @@ namespace uats_monogame
             sampleRegion2.flip(false, true);
             sampleSprite = Mdx.graphics.newSprite(sampleTexture);
             sampleNinePatch = Mdx.graphics.newNinePatch(Mdx.graphics.newTexture(Mdx.files.@internal("ninepatch.png")), 6, 6, 6, 6);
+            sampleTilingDrawable = new MonoGameTilingDrawable(Mdx.graphics.newTexture(Mdx.files.@internal("background.png")));
             Mdx.graphicsContext.setColor(new MonoGameColor(255, 255, 255, 255));
             Mdx.graphicsContext.setBackgroundColor(new MonoGameColor(Color.Blue));
             sampleSprite.setOriginCenter();
@@ -286,6 +288,9 @@ namespace uats_monogame
             
             var gameWidth = Mdx.graphicsContext.getViewportWidth();
             var gameHeight = Mdx.graphicsContext.getViewportHeight();
+            Mdx.graphicsContext.setTint(new MonoGameColor(32, 32, 32, 255));
+            Mdx.graphicsContext.drawTilingDrawable(sampleTilingDrawable, gameWidth/8f, gameHeight/8f, 3 * gameWidth/4f, 3 * gameHeight/4f);
+            Mdx.graphicsContext.setTint(new MonoGameColor(Color.White));
             Mdx.graphicsContext.drawRect(gameWidth/8f, gameHeight/8f, 3 * gameWidth/4f, 3 * gameHeight/4f);
             Mdx.graphicsContext.fillRect(400, 300, 32, 32);
             Mdx.graphicsContext.drawCircle(200, 200, 40);
