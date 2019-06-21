@@ -51,6 +51,19 @@ namespace monogame.Graphics
             setFlip(region.isFlipX(), region.isFlipY());
         }
         
+        public MonoGameSprite(TextureAtlasRegion region) : this(region, region.getRegionWidth(), region.getRegionHeight()) {}
+
+        public MonoGameSprite(TextureAtlasRegion region, int width, int height) : this(region, 0, 0, width, height) {}
+        
+        public MonoGameSprite(TextureAtlasRegion region, int x, int y, int width, int height) : base(region, x, y,
+            width, height)
+        {
+            if (region.getRotatedPackedHeight() != region.getRegionHeight())
+            {
+                rotate90(false);
+            }
+        }
+        
         public void set(Sprite s)
         {
             setRegion(s);

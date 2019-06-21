@@ -57,6 +57,8 @@
     <Compile Include="Graphics\MonoGameShapeRenderer.cs" />
     <Compile Include="Graphics\MonoGameSprite.cs" />
     <Compile Include="Graphics\MonoGameTexture.cs" />
+    <Compile Include="Graphics\MonoGameTextureAtlas.cs" />
+    <Compile Include="Graphics\MonoGameTextureAtlasRegion.cs" />
     <Compile Include="Graphics\MonoGameTextureRegion.cs" />
     <Compile Include="Graphics\MonoGameTilingDrawable.cs" />
     <Compile Include="Input\MonoGameGamePad.cs" />
