@@ -37,3 +37,4 @@ uats-android/assets/texture-region-uat.png
 .vs/
 *.csproj.user
 _tools/__MACOSX/
+obj/

@@ -19,6 +19,7 @@ using System.IO;
 using System.Text;
 using java.io;
 using monogame.Util;
+using org.mini2Dx.core;
 using org.mini2Dx.core.files;
 using File = System.IO.File;
 using IOException = java.io.IOException;
@@ -36,7 +37,7 @@ namespace monogame.Files
         public MonoGameFileHandle(string path, FileType fileType)
         {
             _fileType = fileType;
-            _isDirectory = (File.GetAttributes(path) & FileAttributes.Directory) != 0;
+            _isDirectory = (File.Exists(path) || Directory.Exists(path)) && (File.GetAttributes(path) & FileAttributes.Directory) != 0;
             if (_isDirectory)
             {
                 _directoryInfo = new DirectoryInfo(path);
@@ -51,6 +52,16 @@ namespace monogame.Files
         {
             _internalFilePrefix = internalFilePrefix;
             return this;
+        }
+
+        internal T loadFromContentManager<T>()
+        {
+            if (_fileType != FileType.INTERNAL)
+            {
+                throw new NotSupportedException("You can load from contentManager only INTERNAL files");
+            }
+
+            return ((MonoGameFiles) Mdx.files)._contentManager.Load<T>(nameWithoutExtension());
         }
 
         public string fullPath()
@@ -80,12 +91,22 @@ namespace monogame.Files
 
         public string nameWithoutExtension()
         {
-            return _isDirectory ? _directoryInfo.Name : name().Substring(0, name().LastIndexOf('.'));
+            var dotIndex = name().LastIndexOf('.');
+            if (dotIndex == -1 && !_isDirectory)
+            {
+                return name();
+            }
+            return _isDirectory ? _directoryInfo.Name : name().Substring(0, dotIndex);
         }
 
         public string pathWithoutExtension()
         {
-            return _isDirectory ? _directoryInfo.ToString() : path().Substring(0, path().LastIndexOf('.'));
+            var dotIndex = path().LastIndexOf('.');
+            if (dotIndex == -1 && !_isDirectory)
+            {
+                return path();
+            }
+            return _isDirectory ? _directoryInfo.ToString() : path().Substring(0, dotIndex);
         }
 
         public FileType type()
@@ -294,7 +315,7 @@ namespace monogame.Files
             var childDirs = _directoryInfo.GetDirectories();
 
             //Not using foreach or LINQ query because they could be as much as 10x slower.
-            
+
             // ReSharper disable once ForCanBeConvertedToForeach
             // ReSharper disable once LoopCanBeConvertedToQuery
             for (var i = 0; i < childFiles.Length; i++)
@@ -318,6 +339,28 @@ namespace monogame.Files
             }
 
             return matchingChilds.ToArray();
+        }
+
+        internal MonoGameFileHandle firstMatchingChildFile(string prefix)
+        {
+            if (!_isDirectory )
+                return null;
+            var childFiles = _directoryInfo.GetFiles();
+
+            //Not using foreach or LINQ query because they could be as much as 10x slower.
+
+            // ReSharper disable once ForCanBeConvertedToForeach
+            // ReSharper disable once LoopCanBeConvertedToQuery
+            for (var i = 0; i < childFiles.Length; i++)
+            {
+                var child = childFiles[i];
+                if (child.Name.StartsWith(prefix))
+                {
+                    return new MonoGameFileHandle(child.FullName, _fileType);
+                }
+            }
+
+            return null;
         }
 
         public bool isDirectory()

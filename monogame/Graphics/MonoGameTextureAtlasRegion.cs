@@ -24,7 +24,7 @@ namespace monogame.Graphics
         
         public MonoGameTextureAtlasRegion(Texture texture, int x, int y, int width, int height, bool rotated) : base(texture, x, y, width, height)
         {
-            _rotated = _rotated;
+            _rotated = rotated;
         }
         
         public float getRotatedPackedWidth()

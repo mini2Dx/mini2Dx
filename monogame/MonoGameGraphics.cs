@@ -16,8 +16,10 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using monogame.Font;
 using monogame.Graphics;
 using monogame.Util;
+using org.mini2Dx.core;
 using org.mini2Dx.core.font;
 using org.mini2Dx.core.geom;
 using org.mini2Dx.core.graphics;
@@ -32,18 +34,20 @@ namespace monogame
 {
     public class MonoGameGraphics : org.mini2Dx.core.Graphics
     {
-        private readonly SpriteBatch _spriteBatch;
+        internal readonly SpriteBatch _spriteBatch;
         private readonly GraphicsDevice _graphicsDevice;
         private Color _setColor = new MonoGameColor(255,255,255,255);
         internal Microsoft.Xna.Framework.Color _backgroundColor = Microsoft.Xna.Framework.Color.Black;
-        private Microsoft.Xna.Framework.Color _tint = Microsoft.Xna.Framework.Color.White;
+        internal Microsoft.Xna.Framework.Color _tint = Microsoft.Xna.Framework.Color.White;
         private float _rotation;
         internal int _gameWidth, _gameHeight;
-        private Vector2 _translation, _scale, _rotationCenter;
+        internal Vector2 _translation, _scale, _rotationCenter;
         private Effect _currentShader;
         private org.mini2Dx.core.geom.Rectangle _clipRectangle;
         private RasterizerState _rasterizerState;
         private bool _beginSpriteBatchCalled;
+        private GameFont _font;
+        private long _frameId;
 
         private MonoGameShapeRenderer _shapeRenderer;
         
@@ -66,6 +70,7 @@ namespace monogame
             _shapeRenderer = new MonoGameShapeRenderer(graphicsDevice, MonoGameColor.toArgb(_setColor), _spriteBatch, _rotationCenter, _translation, _scale, _tint);
             _rasterizerState = new RasterizerState(){ScissorTestEnable = false};
             _graphicsDevice.ScissorRectangle = new Rectangle();
+            _font = Mdx.fonts.defaultFont();
         }
 
         internal void beginSpriteBatch()
@@ -91,6 +96,7 @@ namespace monogame
             _graphicsDevice.Clear(_backgroundColor);
             _gameWidth = gameWidth;
             _gameHeight = gameHeight;
+            _frameId++;
             beginSpriteBatch();
         }
 
@@ -164,17 +170,17 @@ namespace monogame
 
         public void drawString(string text, float x, float y)
         {
-            throw new System.NotImplementedException();
+            _font.draw(this, text, x, y);
         }
 
         public void drawString(string text, float x, float y, float targetWidth)
         {
-            throw new System.NotImplementedException();
+            _font.draw(this, text, x, y, targetWidth);
         }
 
         public void drawString(string text, float x, float y, float targetWidth, int horizontalAlign)
         {
-            throw new System.NotImplementedException();
+            _font.draw(this, text, x, y, targetWidth, horizontalAlign, true);
         }
 
         public void drawTexture(Texture texture, float x, float y)
@@ -557,7 +563,7 @@ namespace monogame
 
         public void setFont(GameFont font)
         {
-            throw new System.NotImplementedException();
+            _font = font;
         }
 
         public Shader getShader()
@@ -567,7 +573,7 @@ namespace monogame
 
         public GameFont getFont()
         {
-            throw new System.NotImplementedException();
+            return _font;
         }
 
         public void setShader(Shader shader)
@@ -587,7 +593,7 @@ namespace monogame
 
         public long getFrameId()
         {
-            throw new System.NotImplementedException();
+            return _frameId;
         }
     }
 }
