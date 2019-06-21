@@ -43,6 +43,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="Content\arial24_0.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\grayscaleShader.fx" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
@@ -112,6 +115,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="app.manifest" />
+    <Content Include="Content\arial24.fnt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\monogame\mini2Dx-monogame.csproj">

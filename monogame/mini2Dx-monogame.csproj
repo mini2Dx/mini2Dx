@@ -51,6 +51,8 @@
     <Compile Include="Audio\MonoGameMusic.cs" />
     <Compile Include="Audio\MonoGameSound.cs" />
     <Compile Include="Files\MonoGameFileHandle.cs" />
+    <Compile Include="Font\MonoGameGameFont.cs" />
+    <Compile Include="Font\MonoGameFontGlyphLayout.cs" />
     <Compile Include="Graphics\MonoGameColor.cs" />
     <Compile Include="Graphics\MonoGameFrameBuffer.cs" />
     <Compile Include="Graphics\MonoGameNinePatch.cs" />
@@ -67,6 +69,7 @@
     <Compile Include="Input\Xbox360\MonoGameXbox360GamePad.cs" />
     <Compile Include="MonoGameAudio.cs" />
     <Compile Include="MonoGameFiles.cs" />
+    <Compile Include="MonoGameFonts.cs" />
     <Compile Include="MonoGameGraphics.cs" />
     <Compile Include="MonoGameGraphicsUtils.cs" />
     <Compile Include="MonoGameInput.cs" />
@@ -79,6 +82,9 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.Portable">
       <Version>3.7.1.189</Version>
+    </PackageReference>
+    <PackageReference Include="SpriteFontPlus.MonoGame">
+      <Version>0.6.5.20</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

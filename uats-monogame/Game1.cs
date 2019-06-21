@@ -22,6 +22,7 @@ using org.mini2Dx.core.audio;
 using org.mini2Dx.core.graphics;
 using org.mini2Dx.core.input.button;
 using org.mini2Dx.core.input.xbox360;
+using org.mini2Dx.core.util;
 using org.mini2Dx.gdx;
 using Color = Microsoft.Xna.Framework.Color;
 using GamePad = org.mini2Dx.core.input.GamePad;
@@ -256,6 +257,7 @@ namespace uats_monogame
         {
             Mdx.input = new MonoGameInput();
             Mdx.files = new MonoGameFiles(Content);
+            Mdx.fonts = new MonoGameFonts();
             Mdx.input.setInputProcessor(new UATInputProcessor(this));
             base.Initialize();
         }
@@ -291,6 +293,7 @@ namespace uats_monogame
             Mdx.input.newXbox360GamePad((GamePad)Mdx.input.getGamePads().get(0)).addListener(new UATInputProcessor(this));
 
             sampleShader = new MonoGameShader("grayscaleShader");
+            Mdx.graphicsContext.setFont(Mdx.fonts.newBitmapFont(Mdx.files.@internal("arial24.fnt")));
         }
 
         /// <summary>
@@ -348,7 +351,12 @@ namespace uats_monogame
             Mdx.graphicsContext.drawNinePatch(sampleNinePatch, 150, 300, 100, 100);
             Mdx.graphicsContext.fillTriangle(mousePosition.X, mousePosition.Y, mousePosition.X + 10,
                 mousePosition.Y + 20, mousePosition.X, mousePosition.Y + 20);
-            
+            Mdx.graphicsContext.drawRect(400, 65, 100, 100);
+            Mdx.graphicsContext.drawString("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400,65, 100, Align.LEFT);
+            Mdx.graphicsContext.drawRect(500, 65, 100, 100);
+            Mdx.graphicsContext.drawString("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 65, 100, Align.CENTER);
+            Mdx.graphicsContext.drawRect(600, 65, 100, 100);
+            Mdx.graphicsContext.drawString("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 65, 100, Align.RIGHT);
             Mdx.graphicsContext.postRender();
             //Console.WriteLine("FPS: {0}", 1.0/gameTime.ElapsedGameTime.TotalSeconds);
             base.Draw(gameTime);

@@ -13,15 +13,16 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin defaultShader.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:defaultShader.fx
-
 #begin grayscaleShader.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:grayscaleShader.fx
+
+#begin myFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:myFont.spritefont;defaultFont.spritefont
 

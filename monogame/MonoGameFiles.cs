@@ -25,6 +25,7 @@ namespace monogame
     {
         private readonly string _internalFilePrefix;
         internal readonly ContentManager _contentManager;
+
         public MonoGameFiles(ContentManager contentManager)
         {
             _internalFilePrefix = contentManager.RootDirectory + Path.DirectorySeparatorChar;

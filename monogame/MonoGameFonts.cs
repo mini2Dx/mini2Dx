@@ -13,32 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-using System;
-using System.Diagnostics;
-using Exception = java.lang.Exception;
+
+using monogame.Files;
+using monogame.Font;
+using org.mini2Dx.core;
+using org.mini2Dx.core.files;
+using org.mini2Dx.core.font;
 
 namespace monogame
 {
-    class MonoGameLogger : org.mini2Dx.core.Logger
+    public class MonoGameFonts : org.mini2Dx.core.Fonts
     {
-        public void debug(string tag, string msg)
+        public override GameFont defaultFont()
         {
-            Debug.WriteLine($"D/[{tag}] {msg}");
+            return newPlatformFont((MonoGameFileHandle)Mdx.files.@internal("defaultFont"));
         }
 
-        public void error(string tag, string msg, Exception e)
+        public override GameFont newPlatformFont(FileHandle fh)
         {
-            Console.Error.WriteLine($"D/[{tag}] {msg}\n{e.StackTrace}");
+            var font = new MonoGameGameFont((MonoGameFileHandle) fh);
+            font.loadInternal();
+            return font;
         }
 
-        public void error(string tag, string msg)
+        public override GameFont newBitmapFont(FileHandle fh)
         {
-            Console.Error.WriteLine($"E/[{tag}] {msg}");
-        }
-
-        public void info(string tag, string msg)
-        {
-            Console.WriteLine($"I/[{tag}] {msg}");
+            return new MonoGameGameFont((MonoGameFileHandle) fh, ((MonoGameFileHandle)fh.parent()).firstMatchingChildFile(fh.nameWithoutExtension() + "_"));
         }
     }
 }
