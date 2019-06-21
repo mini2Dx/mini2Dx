@@ -199,22 +199,22 @@ namespace monogame
 
         public TextureAtlas newTextureAtlas(FileHandle packFile)
         {
-            throw new NotImplementedException();
+            return newTextureAtlas(packFile, false);
         }
 
         public TextureAtlas newTextureAtlas(FileHandle packFile, bool flip)
         {
-            throw new NotImplementedException();
+            return newTextureAtlas(packFile, packFile.parent(), flip);
         }
 
         public TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir)
         {
-            throw new NotImplementedException();
+            return newTextureAtlas(packFile, imagesDir, false);
         }
 
         public TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir, bool flip)
         {
-            throw new NotImplementedException();
+            return new MonoGameTextureAtlas(packFile, imagesDir, flip);
         }
 
         public TextureRegion newTextureRegion(Texture texture)

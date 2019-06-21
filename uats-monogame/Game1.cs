@@ -41,6 +41,8 @@ namespace uats_monogame
         private TextureRegion sampleRegion2;
         private NinePatch sampleNinePatch;
         private TilingDrawable sampleTilingDrawable;
+        private TextureAtlas sampleAtlas;
+        private TextureRegion sampleAtlasRegion;
         private Sprite sampleSprite;
         private Music music;
         private Sound sound;
@@ -244,6 +246,8 @@ namespace uats_monogame
             sampleRegion2.flip(false, true);
             sampleSprite = Mdx.graphics.newSprite(sampleTexture);
             sampleNinePatch = Mdx.graphics.newNinePatch(Mdx.graphics.newTexture(Mdx.files.@internal("ninepatch.png")), 6, 6, 6, 6);
+            sampleAtlas = Mdx.graphics.newTextureAtlas(Mdx.files.@internal("pack.atlas"));
+            sampleAtlasRegion = sampleAtlas.findRegion("tileGreen", 47);
             sampleTilingDrawable = new MonoGameTilingDrawable(Mdx.graphics.newTexture(Mdx.files.@internal("background.png")));
             Mdx.graphicsContext.setColor(new MonoGameColor(255, 255, 255, 255));
             Mdx.graphicsContext.setBackgroundColor(new MonoGameColor(Color.Blue));
@@ -301,6 +305,7 @@ namespace uats_monogame
             Mdx.graphicsContext.drawTriangle(150, 74, 122, 108, 214, 147);
             Mdx.graphicsContext.drawTexture(sampleTexture, 200, 100);
             Mdx.graphicsContext.drawTextureRegion(sampleRegion, 500, 300);
+            Mdx.graphicsContext.drawTextureRegion(sampleAtlasRegion, 400, 200);
             Mdx.graphicsContext.drawTextureRegion(sampleRegion2, 600, 150, 100, 100);
             sampleSprite.setOriginBasedPosition(gameWidth / 2, gameHeight / 2);
             Mdx.graphicsContext.drawSprite(sampleSprite);

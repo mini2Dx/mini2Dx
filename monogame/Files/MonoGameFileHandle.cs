@@ -143,6 +143,11 @@ namespace monogame.Files
             return File.ReadAllText(fullPath(), Encoding.GetEncoding(encoding));
         }
 
+        public string[] readAllLines()
+        {
+            return File.ReadAllLines(fullPath());
+        }
+        
         public byte[] readBytes()
         {
             if (_isDirectory)
