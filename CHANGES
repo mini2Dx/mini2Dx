@@ -1,6 +1,9 @@
 [2.0.0-SNAPSHOT]
 ...In development...
 
+[1.9.6]
+- Fixed crash when Tiled object templates have no properties
+
 [1.9.5]
 - Added UiContainer setting to passthrough mouse movements to subsequent input handlers
 - Fixed duplicate Y value correction on flipped Tiled object templates that reference tiles
