@@ -218,4 +218,11 @@ public interface Color {
 	 * @return A value between 0 and 255
 	 */
 	public byte getAAsByte();
+
+	/**
+	 * Returns if this {@link Color} is the same as another {@link Color}
+	 * @param color The {@link Color} to compare to
+	 * @return True if same RGBA
+	 */
+	public boolean equals(Color color);
 }

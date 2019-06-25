@@ -797,4 +797,10 @@ public interface Graphics {
      * @return
      */
     public float getViewportHeight();
+
+    /**
+     * Returns the frame number
+     * @return
+     */
+    public long getFrameId();
 }

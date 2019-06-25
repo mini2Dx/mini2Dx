@@ -166,7 +166,7 @@ configure(docProjects()) {
 			from javadoc
 		}
 
-		if(project.name.contains("core")) {
+		if(project.name.contains("core") || project.name.contains("tiled")) {
 			task fatJar(type: Jar) {
 				archiveClassifier = 'fat'
 				from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
@@ -249,7 +249,8 @@ project(":" + rootProject.name + "-core") {
     dependencies {
 		compile "org.mini2Dx:gdx-math:$gdxVersion"
 		compile "org.mini2Dx:gdx-input:$gdxVersion"
-        
+		compile "org.mini2Dx:gdx-xml:$gdxVersion"
+
 		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
@@ -285,6 +286,32 @@ project(":" + rootProject.name + "-core") {
 				fileTree(dir: it)
 			})
 		}
+	}
+
+	build.dependsOn ikvm
+}
+
+project(":" + rootProject.name + "-tiled") {
+	description = "mini2Dx Tiled support library"
+
+	apply plugin: "me.champeau.gradle.jmh"
+	apply plugin: "ikvm"
+
+	dependencies {
+		compile project(":" + rootProject.name + "-core")
+
+		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+		testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+		testCompile "net.jodah:concurrentunit:$concurrentUnitVersion"
+	}
+
+	ikvm {
+		ikvmHome = ikvmDir
+		debug = false
+		generateDoc = true
+		jars = project.files(project.fatJar.archivePath)
 	}
 
 	build.dependsOn ikvm
