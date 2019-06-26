@@ -43,7 +43,7 @@ public class EquilateralTriangle extends RegularPolygon {
     }
 
     @Override
-    public void release() {
+    public void dispose() {
         if(geometry == null) {
             return;
         }

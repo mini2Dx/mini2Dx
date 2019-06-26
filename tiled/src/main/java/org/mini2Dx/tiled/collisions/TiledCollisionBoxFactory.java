@@ -11,7 +11,7 @@
  */
 package org.mini2Dx.tiled.collisions;
 
-import org.mini2Dx.core.engine.geom.CollisionBox;
+import org.mini2Dx.core.collision.CollisionBox;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.TiledObject;

@@ -12,9 +12,8 @@
 package org.mini2Dx.tiled;
 
 import org.junit.Test;
+import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.tiled.exception.TiledException;
-
-import com.badlogic.gdx.files.FileHandle;
 
 import junit.framework.Assert;
 
@@ -34,9 +33,9 @@ public class SharedParserTiledMapTest {
 		FileHandle isometricFile = new FileHandle(Thread.currentThread()
 				.getContextClassLoader().getResource("isometric.tmx").getFile());
 		
-		TiledMap orthogonalTiledMap = new TiledMap(parser, orthogonalFile, false, false);
-		TiledMap orthogonalTsxTiledMap = new TiledMap(parser, orthogonalTsxFile, false, false);
-		TiledMap isometricTiledMap = new TiledMap(parser, isometricFile, false, false);
+		TiledMap orthogonalTiledMap = new TiledMap(parser, orthogonalFile, false);
+		TiledMap orthogonalTsxTiledMap = new TiledMap(parser, orthogonalTsxFile, false);
+		TiledMap isometricTiledMap = new TiledMap(parser, isometricFile, false);
 		
 		Assert.assertEquals(Orientation.ORTHOGONAL, orthogonalTiledMap.getOrientation());
 		Assert.assertEquals(Orientation.ISOMETRIC, isometricTiledMap.getOrientation());

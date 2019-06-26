@@ -11,10 +11,10 @@
  */
 package org.mini2Dx.tiled;
 
-import com.badlogic.gdx.files.FileHandle;
 import junit.framework.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.tiled.exception.TiledException;
 
 public class TiledObjectTemplateTest {
@@ -24,7 +24,7 @@ public class TiledObjectTemplateTest {
 	public static void loadMap() throws TiledException {
 		FileHandle file = new FileHandle(Thread.currentThread()
 				.getContextClassLoader().getResource("orthogonal_tsx.tmx").getFile());
-		tiledMap = new TiledMap(file, false, false);
+		tiledMap = new TiledMap(file, false);
 	}
 
 	@Test

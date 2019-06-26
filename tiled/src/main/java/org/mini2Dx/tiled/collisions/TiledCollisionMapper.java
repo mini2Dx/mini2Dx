@@ -11,10 +11,10 @@
  */
 package org.mini2Dx.tiled.collisions;
 
-import com.badlogic.gdx.utils.Array;
-import org.mini2Dx.core.collisions.QuadTree;
-import org.mini2Dx.core.engine.Positionable;
+import org.mini2Dx.core.collision.QuadTree;
 import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.core.geom.Positionable;
+import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.tiled.TileLayer;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.TiledObject;

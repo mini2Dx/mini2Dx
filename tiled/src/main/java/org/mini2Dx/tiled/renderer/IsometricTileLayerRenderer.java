@@ -22,14 +22,12 @@ import org.mini2Dx.tiled.Tileset;
  */
 public class IsometricTileLayerRenderer implements TileLayerRenderer {
 	private TiledMapRenderArea mapClip, tmpClip;
-	
-	private final boolean cacheLayers;
+
 	private final TiledMap tiledMap;
 	private final float halfTileWidth, halfTileHeight;
 
-	public IsometricTileLayerRenderer(TiledMap tiledMap, boolean cacheLayers) {
+	public IsometricTileLayerRenderer(TiledMap tiledMap) {
 		super();
-		this.cacheLayers = cacheLayers;
 		this.tiledMap = tiledMap;
 		
 		this.halfTileWidth = tiledMap.getTileWidth() / 2f;
@@ -39,8 +37,6 @@ public class IsometricTileLayerRenderer implements TileLayerRenderer {
 	@Override
 	public void drawLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX, int startTileY,
 						  int widthInTiles, int heightInTiles) {
-		
-		//TODO: Support cached layers through SpriteCache
 		renderLayer(g, layer, renderX, renderY, startTileX,
 				startTileY, widthInTiles, heightInTiles);
 	}

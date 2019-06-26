@@ -18,15 +18,23 @@ package org.mini2Dx.core.geom;
 
 import org.mini2Dx.core.Geometry;
 import org.mini2Dx.core.Graphics;
+import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
+import org.mini2Dx.gdx.utils.Array;
 
 /**
  * Base class for shapes
  */
-public abstract class Shape {
+public abstract class Shape implements Sizeable {
 	private static final Vector2 TMP_VECTOR = new Vector2();
 
+	private static final Vector2 TMP_SOURCE_VECTOR = new Vector2();
+	private static final Vector2 TMP_TARGET_VECTOR = new Vector2();
+
 	protected final Geometry geometry;
+
+	private Array<PositionChangeListener> positionChangeListeners;
+	private Array<SizeChangeListener> sizeChangeListeners;
 
 	/**
 	 * Constructor for shapes not belonging to the {@link Geometry} pool
@@ -48,7 +56,7 @@ public abstract class Shape {
 	/**
 	 * Releases this {@link Shape} back to the {@link Geometry} pool (if it was created from the pool)
 	 */
-	public abstract void release();
+	public abstract void dispose();
 
 	/**
 	 * Returns an exact copy of this {@link Shape}
@@ -56,35 +64,6 @@ public abstract class Shape {
 	 * @return A copy (new) instance of this {@link Shape}
 	 */
 	public abstract Shape copy();
-
-	/**
-	 * Returns if a set of coordinates are contained inside this {@link Shape}
-	 * 
-	 * @param x
-	 *            The x coordinate to check
-	 * @param y
-	 *            The y coordinate to check
-	 * @return True if this {@link Shape} contains the specified coordinates
-	 */
-	public abstract boolean contains(float x, float y);
-
-	/**
-	 * Returns if a {@link Vector2} is contained inside this {@link Shape}
-	 * 
-	 * @param vector2
-	 *            The {@link Vector2} to check
-	 * @return True if this {@link Shape} contains the specified {@link Vector2}
-	 */
-	public abstract boolean contains(Vector2 vector2);
-
-	/**
-	 * Returns if a {@link Shape} is contained inside this {@link Shape}
-	 * 
-	 * @param shape
-	 *            The {@link Shape} to check
-	 * @return True if this {@link Shape} contains the specified {@link Shape}
-	 */
-	public abstract boolean contains(Shape shape);
 
 	/**
 	 * Returns if this {@link Shape} intersects the specified
@@ -99,59 +78,13 @@ public abstract class Shape {
 	}
 
 	/**
-	 * Returns if this {@link Shape} intersects a line segment
-	 * 
-	 * @param pointA
-	 *            The first point in the line segment
-	 * @param pointB
-	 *            The second point in the line segment
-	 * @return True if this {@link Shape} intersects the line segment
-	 */
-	public abstract boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB);
-
-	/**
-	 * Returns if this {@link Shape} intersects a line segment
-	 * 
-	 * @param x1
-	 *            The x coordinate of the first point
-	 * @param y1
-	 *            The y coordinate of the first point
-	 * @param x2
-	 *            The x coordinate of the second point
-	 * @param y2
-	 *            The y coordinate of the second point
-	 * @return True if this {@link Shape} intersects the line segment
-	 */
-	public abstract boolean intersectsLineSegment(float x1, float y1, float x2, float y2);
-
-	/**
-	 * Returns if this {@link Shape} intersects another {@link Shape}
-	 * 
-	 * @param shape
-	 *            The {@link Shape} to check
-	 * @return True if this {@link Shape} intersects the specified {@link Shape}
-	 */
-	public abstract boolean intersects(Shape shape);
-
-	/**
-	 * Returns the distance from this {@link Shape} to a set of coordinates
-	 * 
-	 * @param x
-	 *            The x coordinate
-	 * @param y
-	 *            The y coordinate
+	 * Returns the distance from this {@link Shape} to a {@link Positionable}
+	 *
+	 * @param positionable The {@link Positionable} to get the distance to
 	 * @return The distance
 	 */
-	public abstract float getDistanceTo(float x, float y);
-	
-	/**
-	 * Returns the distance from this {@link Shape} to a {@link Point}
-	 * 
-	 * @param point The {@link Point} to get the distance to
-	 * @return The distance
-	 */
-	public float getDistanceTo(Point point) {
-		return getDistanceTo(point.getX(), point.getY());
+	public float getDistanceTo(Positionable positionable) {
+		return getDistanceTo(positionable.getX(), positionable.getY());
 	}
 	
 	/**
@@ -162,7 +95,7 @@ public abstract class Shape {
 	public void add(float x, float y) {
 		TMP_VECTOR.set(getX(), getY());
 		TMP_VECTOR.add(x, y);
-		set(TMP_VECTOR.x, TMP_VECTOR.y);
+		setXY(TMP_VECTOR.x, TMP_VECTOR.y);
 	}
 	
 	/**
@@ -173,7 +106,7 @@ public abstract class Shape {
 	public void subtract(float x, float y) {
 		TMP_VECTOR.set(getX(), getY());
 		TMP_VECTOR.sub(x, y);
-		set(TMP_VECTOR.x, TMP_VECTOR.y);
+		setXY(TMP_VECTOR.x, TMP_VECTOR.y);
 	}
 
 	/**
@@ -253,128 +186,6 @@ public abstract class Shape {
 	public abstract void fill(Graphics g);
 
 	/**
-	 * Returns the x coordinate of this object
-	 * 
-	 * @return 0 by default
-	 */
-	public abstract float getX();
-
-	/**
-	 * Returns the y coordinate of this object
-	 * 
-	 * @return 0 by default
-	 */
-	public abstract float getY();
-
-	/**
-	 * Returns the center x coordinate of this object. Note for {@link Circle}
-	 * this is the same as x.
-	 * 
-	 * @return 0 by default
-	 */
-	public abstract float getCenterX();
-
-	/**
-	 * Returns the center y coordinate of this object. Note for {@link Circle}
-	 * this is the same as y.
-	 * 
-	 * @return 0 by default
-	 */
-	public abstract float getCenterY();
-	
-	/**
-	 * Sets the center x,y coordinate of this object
-	 * @param x The x coordinate of the shape's center
-	 * @param y The y coordinate of the shape's center
-	 */
-	public abstract void setCenter(float x, float y);
-	
-	/**
-	 * Sets the center x coordinate
-	 * @param x The x coordinate of the shape's center
-	 */
-	public abstract void setCenterX(float x);
-	
-	/**
-	 * Sets the center y coordianate
-	 * @param y The y coordinate of the shape's center
-	 */
-	public abstract void setCenterY(float y);
-
-	/**
-	 * Sets the x coordinate of this object
-	 * 
-	 * @param x
-	 *            The x coordinate
-	 */
-	public abstract void setX(float x);
-
-	/**
-	 * Sets the y coordinate of this object
-	 * 
-	 * @param y
-	 *            The y coordinate
-	 */
-	public abstract void setY(float y);
-
-	/**
-	 * Sets the x and y coordinate of this object
-	 * 
-	 * @param x
-	 *            The x coordinate
-	 * @param y
-	 *            The y coordinate
-	 */
-	public abstract void set(float x, float y);
-
-	/**
-	 * Sets the radius of this shape. For {@link Polygon} shapes, this will
-	 * stretch in/out the shape from its center. Note that {@link Polygon}s must
-	 * be equilateral.
-	 * 
-	 * @param radius
-	 *            The radius in pixels
-	 */
-	public abstract void setRadius(float radius);
-	
-	/**
-	 * Scales the radius of this shape. For {@link Polygon} shapes, this will
-	 * stretch in/out the shape from its center. Note that {@link Polygon}s must
-	 * be equilateral.
-	 * 
-	 * @param scale The amount to scale by (e.g. 2.0 = double the size)
-	 */
-	public abstract void scale(float scale);
-
-	/**
-	 * Returns the left-most x coordinate
-	 * 
-	 * @return
-	 */
-	public abstract float getMinX();
-
-	/**
-	 * Returns the top-most y coordinate
-	 * 
-	 * @return
-	 */
-	public abstract float getMinY();
-
-	/**
-	 * Returns the right-most x coordinate
-	 * 
-	 * @return
-	 */
-	public abstract float getMaxX();
-
-	/**
-	 * Returns the bottom-most y coordinate
-	 * 
-	 * @return
-	 */
-	public abstract float getMaxY();
-
-	/**
 	 * Translates the x and y coordinate of this object
 	 * 
 	 * @param translateX
@@ -412,6 +223,104 @@ public abstract class Shape {
 	 * @return Null if this {@link Shape} is a {@link Circle}
 	 */
 	public abstract Polygon getPolygon();
+
+	@Override
+	public void moveTowards(float x, float y, float speed) {
+		TMP_SOURCE_VECTOR.set(getX(), getY());
+		TMP_TARGET_VECTOR.set(x, y);
+		Vector2 direction = TMP_TARGET_VECTOR.sub(TMP_SOURCE_VECTOR).nor();
+
+		float xComponent = speed * MathUtils.cosDeg(direction.angle());
+		float yComponent = speed * MathUtils.sinDeg(direction.angle());
+		TMP_SOURCE_VECTOR.add(xComponent, yComponent);
+
+		setXY(TMP_SOURCE_VECTOR.x, TMP_SOURCE_VECTOR.y);
+	}
+
+	@Override
+	public void moveTowards(Positionable positionable, float speed) {
+		moveTowards(positionable.getX(), positionable.getY(), speed);
+	}
+
+	/**
+	 * @see Positionable#addPostionChangeListener(PositionChangeListener)
+	 */
+	@Override
+	public <T extends Positionable> void addPostionChangeListener(
+			PositionChangeListener<T> listener) {
+		if (positionChangeListeners == null) {
+			positionChangeListeners = new Array<PositionChangeListener>(true,1);
+		}
+		positionChangeListeners.add(listener);
+	}
+
+	/**
+	 * @see Positionable#removePositionChangeListener(PositionChangeListener)
+	 */
+	@Override
+	public <T extends Positionable> void removePositionChangeListener(
+			PositionChangeListener<T> listener) {
+		if (positionChangeListeners == null) {
+			return;
+		}
+		positionChangeListeners.removeValue(listener, false);
+	}
+
+	protected void notifyPositionChangeListeners() {
+		if (positionChangeListeners == null) {
+			return;
+		}
+		for (int i = positionChangeListeners.size - 1; i >= 0; i--) {
+			if(i >= positionChangeListeners.size) {
+				i = positionChangeListeners.size - 1;
+			}
+			PositionChangeListener listener = positionChangeListeners.get(i);
+			listener.positionChanged(this);
+		}
+	}
+
+	protected void clearPositionChangeListeners() {
+		if (positionChangeListeners == null) {
+			return;
+		}
+		positionChangeListeners.clear();
+	}
+
+	@Override
+	public <T extends Sizeable> void addSizeChangeListener(SizeChangeListener<T> listener) {
+		if (sizeChangeListeners == null) {
+			sizeChangeListeners = new Array<SizeChangeListener>(true,1);
+		}
+		sizeChangeListeners.add(listener);
+	}
+
+	@Override
+	public <T extends Sizeable> void removeSizeChangeListener(SizeChangeListener<T> listener) {
+		if (sizeChangeListeners == null) {
+			return;
+		}
+		sizeChangeListeners.removeValue(listener, false);
+	}
+
+	protected void notifySizeChangeListeners() {
+		if (sizeChangeListeners == null) {
+			return;
+		}
+		for (int i = sizeChangeListeners.size - 1; i >= 0; i--) {
+			if(i >= sizeChangeListeners.size) {
+				i = sizeChangeListeners.size - 1;
+			}
+			SizeChangeListener listener = sizeChangeListeners.get(i);
+			listener.sizeChanged(this);
+		}
+	}
+
+	protected void clearSizeChangeListeners() {
+		if (sizeChangeListeners == null) {
+			return;
+		}
+		sizeChangeListeners.clear();
+	}
 
 	@Override
 	public int hashCode() {

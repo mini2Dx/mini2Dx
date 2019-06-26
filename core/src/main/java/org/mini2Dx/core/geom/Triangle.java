@@ -49,6 +49,7 @@ public class Triangle extends Shape {
 	public Triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
 		super();
 		polygon = new Polygon(new float[] { x1, y1, x2, y2, x3, y3 });
+		initProxyListeners();
 	}
 	
 	/**
@@ -58,6 +59,7 @@ public class Triangle extends Shape {
 	public Triangle(Triangle triangle) {
 		super();
 		polygon = (Polygon) triangle.polygon.copy();
+		initProxyListeners();
 	}
 
 	/**
@@ -73,10 +75,29 @@ public class Triangle extends Shape {
 	public Triangle(Geometry geometry, float x1, float y1, float x2, float y2, float x3, float y3) {
 		super(geometry);
 		polygon = new Polygon(new float[] { x1, y1, x2, y2, x3, y3 });
+		initProxyListeners();
+	}
+
+	private void initProxyListeners() {
+		polygon.addPostionChangeListener(new PositionChangeListener<Positionable>() {
+			@Override
+			public void positionChanged(Positionable moved) {
+				Triangle.this.notifyPositionChangeListeners();
+			}
+		});
+		polygon.addSizeChangeListener(new SizeChangeListener<Sizeable>() {
+			@Override
+			public void sizeChanged(Sizeable changed) {
+				Triangle.this.notifySizeChangeListeners();
+			}
+		});
 	}
 
 	@Override
-	public void release() {
+	public void dispose() {
+		clearPositionChangeListeners();
+		clearSizeChangeListeners();
+
 		if(geometry == null) {
 			return;
 		}
@@ -99,12 +120,12 @@ public class Triangle extends Shape {
 	}
 	
 	@Override
-	public boolean contains(Shape shape) {
+	public boolean contains(Sizeable shape) {
 		return polygon.contains(shape);
 	}
 
 	@Override
-	public boolean intersects(Shape shape) {
+	public boolean intersects(Sizeable shape) {
 		return polygon.intersects(shape);
 	}
 	
@@ -121,6 +142,16 @@ public class Triangle extends Shape {
 	@Override
 	public boolean intersectsLineSegment(float x1, float y1, float x2, float y2) {
 		return polygon.intersectsLineSegment(x1, y1, x2, y2);
+	}
+
+	@Override
+	public float getWidth() {
+		return polygon.getWidth();
+	}
+
+	@Override
+	public float getHeight() {
+		return polygon.getHeight();
 	}
 
 	/**
@@ -211,7 +242,7 @@ public class Triangle extends Shape {
 	
 	@Override
 	public void setX(float x) {
-		polygon.set(x, polygon.getY());
+		polygon.setXY(x, polygon.getY());
 	}
 	
 	@Override
@@ -221,12 +252,12 @@ public class Triangle extends Shape {
 
 	@Override
 	public void setY(float y) {
-		polygon.set(polygon.getX(), y);
+		polygon.setXY(polygon.getX(), y);
 	}
 
 	@Override
-	public void set(float x, float y) {
-		polygon.set(x, y);
+	public void setXY(float x, float y) {
+		polygon.setXY(x, y);
 	}
 
 	public void setPosition(float x1, float y1, float x2, float y2, float x3, float y3) {

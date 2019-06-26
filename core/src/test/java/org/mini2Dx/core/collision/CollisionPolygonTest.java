@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 See AUTHORS file
+ * Copyright (c) 2016 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -9,27 +9,55 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.tiled.collisions;
+package org.mini2Dx.core.collision;
 
-import org.mini2Dx.core.collision.CollisionPoint;
-import org.mini2Dx.tiled.Tile;
-import org.mini2Dx.tiled.TiledMap;
-import org.mini2Dx.tiled.TiledObject;
+import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mini2Dx.core.geom.PositionChangeListener;
+import org.mini2Dx.core.geom.SizeChangeListener;
+import org.mini2Dx.gdx.math.Vector2;
 
 /**
- * A default implementation of {@link TiledCollisionFactory} that creates
- * {@link CollisionPoint} instances
+ * Unit tests for {@link CollisionPolygon}
  */
-public class TiledCollisionPointFactory implements TiledCollisionFactory<CollisionPoint> {
-
-	@Override
-	public CollisionPoint createCollision(TiledMap map, Tile tile, float x, float y, float width, float height) {
-		return new CollisionPoint(x, y);
+public class CollisionPolygonTest implements PositionChangeListener<CollisionPolygon>, SizeChangeListener<CollisionPolygon> {
+	private CollisionPolygon polygon1, polygon2;
+	private int positionNotificationReceived, sizeNotificationReceived;
+	
+	@Before
+	public void setup() {
+		positionNotificationReceived = 0;
+		sizeNotificationReceived = 0;
+		
+		polygon1 = new CollisionPolygon(new float [] { 0f, 0f,
+				10f, 0f,
+				10f, 10f,
+				0f, 10f
+				});
+	}
+	
+	@Test
+	public void testSet() {
+		polygon1.addPostionChangeListener(this);
+		polygon1.setXY(10f, 10f);
+		Assert.assertEquals(1, positionNotificationReceived);
+	}
+	
+	@Test
+	public void testAddPoint() {
+		polygon1.addPostionChangeListener(this);
+		polygon1.addPoint(new Vector2(-5f, 5f));
+		Assert.assertEquals(1, positionNotificationReceived);
 	}
 
 	@Override
-	public CollisionPoint createCollision(TiledMap map, TiledObject tiledObject) {
-		return new CollisionPoint(tiledObject.getX(), tiledObject.getY());
+	public void positionChanged(CollisionPolygon moved) {
+		positionNotificationReceived++;
 	}
-
+	
+	@Override
+	public void sizeChanged(CollisionPolygon changed) {
+		sizeNotificationReceived++;
+	}
 }

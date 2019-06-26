@@ -49,7 +49,7 @@ public class TiledMap {
 	 *             Thrown if there were issues with the loaded map
 	 */
 	public TiledMap(FileHandle fileHandle) {
-		this(fileHandle, true, false);
+		this(fileHandle, true);
 	}
 
 	/**
@@ -59,12 +59,11 @@ public class TiledMap {
 	 *            A {@link FileHandle} to a .tmx file
 	 * @param loadTilesetTextures
 	 *            True if the tileset images should be loaded
-	 * @param cacheLayers True if the tile layers should be cached during rendering
 	 * @throws TiledException
 	 *             Thrown if there were issues with the loaded map
 	 */
-	public TiledMap(FileHandle fileHandle, boolean loadTilesetTextures, boolean cacheLayers) {
-		this(new TiledParser(), fileHandle, loadTilesetTextures, cacheLayers);
+	public TiledMap(FileHandle fileHandle, boolean loadTilesetTextures) {
+		this(new TiledParser(), fileHandle, loadTilesetTextures);
 	}
 
 	/**
@@ -79,11 +78,11 @@ public class TiledMap {
 	 * @throws TiledException
 	 *             Thrown if there were issues with the loaded map
 	 */
-	public TiledMap(TiledParser parser, FileHandle fileHandle, boolean loadTilesetTextures, boolean cacheLayers) {
-		this(new TiledMapData(parser, fileHandle), loadTilesetTextures, cacheLayers);
+	public TiledMap(TiledParser parser, FileHandle fileHandle, boolean loadTilesetTextures) {
+		this(new TiledMapData(parser, fileHandle), loadTilesetTextures);
 	}
 
-	public TiledMap(TiledMapData tiledMapData, boolean loadTilesetTextures, boolean cacheLayers) {
+	public TiledMap(TiledMapData tiledMapData, boolean loadTilesetTextures) {
 		super();
 		this.tiledMapData = tiledMapData;
 
@@ -93,16 +92,16 @@ public class TiledMap {
 
 		switch (tiledMapData.getOrientation()) {
 		case ORTHOGONAL:
-			tileLayerRenderer = new OrthogonalTileLayerRenderer(this, cacheLayers);
+			tileLayerRenderer = new OrthogonalTileLayerRenderer(this);
 			break;
 		case ISOMETRIC:
-			tileLayerRenderer = new IsometricTileLayerRenderer(this, cacheLayers);
+			tileLayerRenderer = new IsometricTileLayerRenderer(this);
 			break;
 		case ISOMETRIC_STAGGERED:
 			// TODO: Add renderer for isometric maps
 			break;
 		case HEXAGONAL:
-			tileLayerRenderer = new HexagonalTileLayerRenderer(this, cacheLayers);
+			tileLayerRenderer = new HexagonalTileLayerRenderer(this);
 			break;
 		case UNKNOWN:
 		default:

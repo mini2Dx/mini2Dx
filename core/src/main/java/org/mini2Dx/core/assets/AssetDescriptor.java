@@ -19,8 +19,7 @@ import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
 
-public class AssetDescriptor<T> implements Disposable {
-	private final Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
+public class AssetDescriptor<T> {
 	private final String filePath;
 	private final Class<T> clazz;
 
@@ -40,20 +39,11 @@ public class AssetDescriptor<T> implements Disposable {
 		return clazz;
 	}
 
-	public Array<AssetDescriptor> getDependencies() {
-		return dependencies;
-	}
-
 	public FileHandle getResolvedFileHandle() {
 		return resolvedFileHandle;
 	}
 
 	public void setResolvedFileHandle(FileHandle resolvedFileHandle) {
 		this.resolvedFileHandle = resolvedFileHandle;
-	}
-
-	@Override
-	public void dispose() {
-		dependencies.clear();
 	}
 }

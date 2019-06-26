@@ -9,27 +9,16 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.tiled.collisions;
-
-import org.mini2Dx.core.collision.CollisionPoint;
-import org.mini2Dx.tiled.Tile;
-import org.mini2Dx.tiled.TiledMap;
-import org.mini2Dx.tiled.TiledObject;
+package org.mini2Dx.core.collision;
 
 /**
- * A default implementation of {@link TiledCollisionFactory} that creates
- * {@link CollisionPoint} instances
+ * Throws when a Quad's merge watermark value is invalid
  */
-public class TiledCollisionPointFactory implements TiledCollisionFactory<CollisionPoint> {
+public class QuadWatermarkException extends RuntimeException {
+	private static final long serialVersionUID = 3266210496163675808L;
 
-	@Override
-	public CollisionPoint createCollision(TiledMap map, Tile tile, float x, float y, float width, float height) {
-		return new CollisionPoint(x, y);
+	public QuadWatermarkException(int elementsPerQuad, int mergeWatermark) {
+		super("Quad merge watermark must be lower than element limit. [Elements per quad: " + elementsPerQuad
+				+ "][Merge watermark: " + mergeWatermark + "]");
 	}
-
-	@Override
-	public CollisionPoint createCollision(TiledMap map, TiledObject tiledObject) {
-		return new CollisionPoint(tiledObject.getX(), tiledObject.getY());
-	}
-
 }

@@ -17,15 +17,22 @@ package org.mini2Dx.core.geom;
 
 import org.mini2Dx.core.Geometry;
 import org.mini2Dx.gdx.math.MathUtils;
+import org.mini2Dx.gdx.math.Matrix3;
 import org.mini2Dx.gdx.math.Vector2;
+import org.mini2Dx.gdx.utils.Array;
 
 /**
  * Extends {@link Vector2} with additional functionality
  */
-public class Point extends Vector2 {
+public class Point extends Vector2 implements Positionable {
     private static final long serialVersionUID = 3773673953486445831L;
 
+    private static final Vector2 TMP_SOURCE_VECTOR = new Vector2();
+    private static final Vector2 TMP_TARGET_VECTOR = new Vector2();
+
     private final Geometry geometry;
+
+    private Array<PositionChangeListener> positionChangeListeners;
 
     /**
      * Constructs a new {@link Point} belonging to the {@link Geometry} pool
@@ -66,19 +73,84 @@ public class Point extends Vector2 {
     /**
      * Releases this {@link Point} back to the {@link Geometry} pool (if it was created from the pool)
      */
-    public void release() {
+    public void dispose() {
+        clearPositionChangeListeners();
+
         if(geometry == null) {
             return;
         }
         geometry.release(this);
     }
 
-    public float getDistanceTo(Point point) {
-        return this.dst(point.getX(), point.getY());
-    }
-
     public float getDistanceTo(float x, float y) {
         return this.dst(x, y);
+    }
+
+    @Override
+    public float getDistanceTo(Positionable positionable) {
+        return this.dst(positionable.getX(), positionable.getY());
+    }
+
+    @Override
+    public void moveTowards(float x, float y, float speed) {
+        TMP_SOURCE_VECTOR.set(getX(), getY());
+        TMP_TARGET_VECTOR.set(x, y);
+        Vector2 direction = TMP_TARGET_VECTOR.sub(TMP_SOURCE_VECTOR).nor();
+
+        float xComponent = speed * MathUtils.cosDeg(direction.angle());
+        float yComponent = speed * MathUtils.sinDeg(direction.angle());
+        TMP_SOURCE_VECTOR.add(xComponent, yComponent);
+
+        set(TMP_SOURCE_VECTOR.x, TMP_SOURCE_VECTOR.y);
+    }
+
+    @Override
+    public void moveTowards(Positionable positionable, float speed) {
+        moveTowards(positionable.getX(), positionable.getY(), speed);
+    }
+
+    /**
+     * @see Positionable#addPostionChangeListener(PositionChangeListener)
+     */
+    @Override
+    public <T extends Positionable> void addPostionChangeListener(
+            PositionChangeListener<T> listener) {
+        if (positionChangeListeners == null) {
+            positionChangeListeners = new Array<PositionChangeListener>(true,1);
+        }
+        positionChangeListeners.add(listener);
+    }
+
+    /**
+     * @see Positionable#removePositionChangeListener(PositionChangeListener)
+     */
+    @Override
+    public <T extends Positionable> void removePositionChangeListener(
+            PositionChangeListener<T> listener) {
+        if (positionChangeListeners == null) {
+            return;
+        }
+        positionChangeListeners.removeValue(listener, false);
+    }
+
+    protected void notifyPositionChangeListeners() {
+        if (positionChangeListeners == null) {
+            return;
+        }
+        for (int i = positionChangeListeners.size - 1; i >= 0; i--) {
+            if(i >= positionChangeListeners.size) {
+                i = positionChangeListeners.size - 1;
+            }
+            PositionChangeListener listener = positionChangeListeners.get(i);
+            listener.positionChanged(this);
+        }
+    }
+
+    protected void clearPositionChangeListeners() {
+        if (positionChangeListeners == null) {
+            return;
+        }
+        positionChangeListeners.clear();
     }
 
     /**
@@ -196,6 +268,77 @@ public class Point extends Vector2 {
 
     public void setY(float y) {
         set(this.x, y);
+    }
+
+    @Override
+    public void setXY(float x, float y) {
+        set(x, y);
+    }
+
+    @Override
+    public Vector2 set(float x, float y) {
+        if(MathUtils.isEqual(this.x, x) && MathUtils.isEqual(this.y, y)) {
+            return this;
+        }
+        super.set(x, y);
+        notifyPositionChangeListeners();
+        return this;
+    }
+
+    @Override
+    public Vector2 add(float x, float y) {
+        super.add(x, y);
+        notifyPositionChangeListeners();
+        return this;
+    }
+
+    @Override
+    public Vector2 sub(float x, float y) {
+        super.sub(x, y);
+        notifyPositionChangeListeners();
+        return this;
+    }
+
+    @Override
+    public Vector2 mul(Matrix3 mat) {
+        super.mul(mat);
+        notifyPositionChangeListeners();
+        return this;
+    }
+
+    @Override
+    public Vector2 mulAdd(Vector2 vec, float scalar) {
+        super.mulAdd(vec, scalar);
+        notifyPositionChangeListeners();
+        return this;
+    }
+
+    @Override
+    public Vector2 mulAdd(Vector2 vec, Vector2 mulVec) {
+        super.mulAdd(vec, mulVec);
+        notifyPositionChangeListeners();
+        return this;
+    }
+
+    @Override
+    public Vector2 scl(Vector2 v) {
+        super.scl(v);
+        notifyPositionChangeListeners();
+        return this;
+    }
+
+    @Override
+    public Vector2 scl(float scalar) {
+        super.scl(scalar);
+        notifyPositionChangeListeners();
+        return this;
+    }
+
+    @Override
+    public Vector2 scl(float x, float y) {
+        super.scl(x, y);
+        notifyPositionChangeListeners();
+        return this;
     }
 
     @Override

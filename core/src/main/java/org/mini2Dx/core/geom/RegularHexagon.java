@@ -44,7 +44,10 @@ public class RegularHexagon extends RegularPolygon {
     }
 
     @Override
-    public void release() {
+    public void dispose() {
+        clearPositionChangeListeners();
+        clearSizeChangeListeners();
+
         if(geometry == null) {
             return;
         }

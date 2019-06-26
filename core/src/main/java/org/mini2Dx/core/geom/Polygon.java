@@ -92,7 +92,10 @@ public class Polygon extends Shape {
 	}
 
 	@Override
-	public void release() {
+	public void dispose() {
+		clearPositionChangeListeners();
+		clearSizeChangeListeners();
+
 		if(geometry == null) {
 			return;
 		}
@@ -140,6 +143,7 @@ public class Polygon extends Shape {
 			}
 			this.vertices = currentVertices;
 			setDirty();
+			notifyPositionChangeListeners();
 		}
 		return this;
 	}
@@ -197,7 +201,7 @@ public class Polygon extends Shape {
 	}
 
 	@Override
-	public boolean contains(Shape shape) {
+	public boolean contains(Sizeable shape) {
 		if (shape.isCircle()) {
 			Rectangle circleBox = ((Circle) shape).getBoundingBox();
 			return contains(circleBox.getPolygon());
@@ -210,7 +214,7 @@ public class Polygon extends Shape {
 	}
 
 	@Override
-	public boolean intersects(Shape shape) {
+	public boolean intersects(Sizeable shape) {
 		if (shape.isCircle()) {
 			return intersects((Circle) shape);
 		}
@@ -353,6 +357,18 @@ public class Polygon extends Shape {
 	}
 
 	@Override
+	public float getWidth() {
+		minMaxDirtyCheck();
+		return maxX - minX;
+	}
+
+	@Override
+	public float getHeight() {
+		minMaxDirtyCheck();
+		return maxY - minY;
+	}
+
+	@Override
 	public float getDistanceTo(float x, float y) {
 		float result = org.mini2Dx.gdx.math.Intersector.distanceSegmentPoint(vertices[vertices.length - 2],
 				vertices[vertices.length - 1], vertices[0], vertices[1], x, y);
@@ -388,6 +404,8 @@ public class Polygon extends Shape {
 
 		clearTotalSidesCache();
 		setDirty();
+		notifyPositionChangeListeners();
+		notifySizeChangeListeners();
 	}
 
 	/**
@@ -413,6 +431,8 @@ public class Polygon extends Shape {
 
 		setDirty();
 		clearTotalSidesCache();
+		notifyPositionChangeListeners();
+		notifySizeChangeListeners();
 	}
 
 	/**
@@ -491,10 +511,22 @@ public class Polygon extends Shape {
 		if(!changed) {
 			return;
 		}
+		final float previousX = getX();
+		final float previousY = getY();
+		final float previousWidth = getWidth();
+		final float previousHeight = getHeight();
+
 		this.vertices = vertices;
 
 		clearTotalSidesCache();
 		setDirty();
+
+		if(!MathUtils.isEqual(previousX, getX()) || !MathUtils.isEqual(previousY, getY())) {
+			notifyPositionChangeListeners();
+		}
+		if(!MathUtils.isEqual(previousWidth, getWidth()) || !MathUtils.isEqual(previousHeight, getHeight())) {
+			notifySizeChangeListeners();
+		}
 	}
 
 	public void setVertices(Vector2[] vertices) {
@@ -502,7 +534,12 @@ public class Polygon extends Shape {
 			setVertices(toVertices(vertices));
 			return;
 		}
-		
+
+		final float previousX = getX();
+		final float previousY = getY();
+		final float previousWidth = getWidth();
+		final float previousHeight = getHeight();
+
 		boolean changed = false;
 		for(int i = 0; i < vertices.length; i++) {
 			int index = i * 2;
@@ -518,6 +555,13 @@ public class Polygon extends Shape {
 		}
 		clearTotalSidesCache();
 		setDirty();
+
+		if(!MathUtils.isEqual(previousX, getX()) || !MathUtils.isEqual(previousY, getY())) {
+			notifyPositionChangeListeners();
+		}
+		if(!MathUtils.isEqual(previousWidth, getWidth()) || !MathUtils.isEqual(previousHeight, getHeight())) {
+			notifySizeChangeListeners();
+		}
 	}
 
 	@Override
@@ -561,6 +605,7 @@ public class Polygon extends Shape {
 			vertices[i + 1] = (sin * (x - centerX) + cos * (y - centerY) + centerY);
 		}
 		setDirty();
+		notifyPositionChangeListeners();
 	}
 
 	/**
@@ -721,7 +766,7 @@ public class Polygon extends Shape {
 
 	@Override
 	public void setX(float x) {
-		if (x == getX()) {
+		if (MathUtils.isEqual(x, getX())) {
 			return;
 		}
 
@@ -731,11 +776,12 @@ public class Polygon extends Shape {
 			vertices[i] += xDiff;
 		}
 		setDirty();
+		notifyPositionChangeListeners();
 	}
 
 	@Override
 	public void setY(float y) {
-		if (y == getY()) {
+		if (MathUtils.isEqual(y, getY())) {
 			return;
 		}
 
@@ -745,11 +791,12 @@ public class Polygon extends Shape {
 			vertices[i] += yDiff;
 		}
 		setDirty();
+		notifyPositionChangeListeners();
 	}
 
 	@Override
-	public void set(float x, float y) {
-		if (x == getX() && y == getY()) {
+	public void setXY(float x, float y) {
+		if (MathUtils.isEqual(x,getX()) && MathUtils.isEqual(y, getY())) {
 			return;
 		}
 
@@ -761,6 +808,7 @@ public class Polygon extends Shape {
 			vertices[i + 1] += yDiff;
 		}
 		setDirty();
+		notifyPositionChangeListeners();
 	}
 	
 	@Override
@@ -787,6 +835,7 @@ public class Polygon extends Shape {
 		
 		setDirty();
 		centroidDirty = false;
+		notifySizeChangeListeners();
 	}
 
 	public void set(Polygon polygon) {
@@ -794,15 +843,21 @@ public class Polygon extends Shape {
 		this.rotation = polygon.rotation;
 		clearTotalSidesCache();
 		setDirty();
+		notifyPositionChangeListeners();
+		notifySizeChangeListeners();
 	}
 
 	@Override
 	public void translate(float translateX, float translateY) {
+		if(MathUtils.isZero(translateX) && MathUtils.isZero(translateY)) {
+			return;
+		}
 		for (int i = 0; i < vertices.length; i += 2) {
 			vertices[i] += translateX;
 			vertices[i + 1] += translateY;
 		}
 		setDirty();
+		notifyPositionChangeListeners();
 	}
 
 	@Override

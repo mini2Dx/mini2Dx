@@ -16,6 +16,7 @@
 package org.mini2Dx.core.game;
 
 import org.mini2Dx.core.Graphics;
+import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.utils.Array;
 
 /**
@@ -36,6 +37,10 @@ public abstract class GameContainer {
      */
     public abstract void initialise();
 
+    public void preUpdate() {
+        InterpolationTracker.preUpdate();
+    }
+
     /**
      * Update the game
      * @param delta The time in seconds since the last update
@@ -46,7 +51,9 @@ public abstract class GameContainer {
      * Interpolate the game state
      * @param alpha The alpha value to use during interpolation
      */
-    public abstract void interpolate(float alpha);
+    public void interpolate(float alpha) {
+        InterpolationTracker.interpolate(alpha);
+    }
 
     /**
      * Render the game

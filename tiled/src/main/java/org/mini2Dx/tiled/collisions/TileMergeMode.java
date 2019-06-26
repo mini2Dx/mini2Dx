@@ -11,7 +11,7 @@
  */
 package org.mini2Dx.tiled.collisions;
 
-import org.mini2Dx.core.engine.Positionable;
+import org.mini2Dx.core.geom.Positionable;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.TileLayer;
 import org.mini2Dx.tiled.TiledMap;
@@ -26,8 +26,8 @@ public enum TileMergeMode {
 	Y_THEN_X {
 		@Override
 		public <T extends Positionable> T merge(TiledCollisionFactory<T> collisionFactory,
-												TiledCollisionMerger collisionMerger, int startX, int startY, int maxColumns, int maxRows,
-												byte[][] collisions, TileLayer layer, TiledMap tiledMap) {
+		                                        TiledCollisionMerger collisionMerger, int startX, int startY, int maxColumns, int maxRows,
+		                                        byte[][] collisions, TileLayer layer, TiledMap tiledMap) {
 			Tile startTile = tiledMap.getTile(layer.getTileId(startX, startY));
 
 			int maxXTiles = 0;

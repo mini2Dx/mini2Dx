@@ -55,7 +55,7 @@ public class CircleTest {
 		Assert.assertEquals(false, circle1.intersects(circle2));
 		Assert.assertEquals(false, circle2.intersects(circle1));
 
-		circle2.set(5f, 0f);
+		circle2.setXY(5f, 0f);
 		Assert.assertEquals(true, circle1.intersects(circle2));
 		Assert.assertEquals(true, circle2.intersects(circle1));
 	}
@@ -71,7 +71,7 @@ public class CircleTest {
 
 	@Test
 	public void testSetCenter() {
-		circle1.set(20f, 25f);
+		circle1.setXY(20f, 25f);
 
 		Assert.assertEquals(20f, circle1.getX());
 		Assert.assertEquals(25f, circle1.getY());

@@ -74,7 +74,7 @@ public class TiledMapLoader extends AsynchronousAssetLoader<TiledMap, TiledMapPa
 
 	private TiledMap loadNextTiledMap(String fileName, FileHandle file, TiledMapParameter parameter) {
 		if(nextTiledMap == null) {
-			nextTiledMap = new TiledMap(getTiledMapData(fileName, file), false, parameter.cacheLayers);
+			nextTiledMap = new TiledMap(getTiledMapData(fileName, file), false);
 		}
 		return nextTiledMap;
 	}

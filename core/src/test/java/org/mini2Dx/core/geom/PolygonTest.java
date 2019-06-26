@@ -221,7 +221,7 @@ public class PolygonTest {
 				new Point(20f, 10f),
 				new Point(10f, 10f),
 		});
-		polygon.set(100f, 100f);
+		polygon.setXY(100f, 100f);
 		polygon.rotate(90f);
 		
 		Assert.assertEquals(100, MathUtils.round(polygon.getX(0)));
@@ -354,7 +354,7 @@ public class PolygonTest {
 				new Point(20f, 20f),
 				new Point(10f, 20f)
 			});
-		polygon.set(100f, 100f);
+		polygon.setXY(100f, 100f);
 		
 		Assert.assertEquals(100, MathUtils.round(polygon.getX(0)));
 		Assert.assertEquals(100, MathUtils.round(polygon.getY(0)));
@@ -512,7 +512,7 @@ public class PolygonTest {
 				new Point(10f, 10f),
 				new Point(0f, 10f)
 			});
-		polygon.set(100f, 100f);
+		polygon.setXY(100f, 100f);
 		polygon.translate(100f, 50f);
 		
 		Assert.assertEquals(200, MathUtils.round(polygon.getX(0)));
@@ -540,7 +540,7 @@ public class PolygonTest {
 				new Point(0f, 10f)
 			});
 		polygon.translate(100f, 100f);
-		polygon.set(0f, 0f);
+		polygon.setXY(0f, 0f);
 		
 		Assert.assertEquals(0, MathUtils.round(polygon.getX(0)));
 		Assert.assertEquals(0, MathUtils.round(polygon.getY(0)));

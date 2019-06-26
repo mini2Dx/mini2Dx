@@ -38,6 +38,7 @@ public class RegularPolygon extends Shape {
 		this.rotationSymmetry = rotationSymmetry;
 		this.totalSides = totalSides;
 		setRadius(1f);
+		initProxyListeners();
 	}
 
 	/**
@@ -60,6 +61,7 @@ public class RegularPolygon extends Shape {
 		this.rotationSymmetry = rotationSymmetry;
 		this.totalSides = totalSides;
 		setRadius(radius);
+		initProxyListeners();
 	}
 	
 	/**
@@ -72,10 +74,28 @@ public class RegularPolygon extends Shape {
 		this.rotationSymmetry = regularPolygon.rotationSymmetry;
 		this.totalSides = regularPolygon.totalSides;
 		setRadius(regularPolygon.getRadius());
+		initProxyListeners();
+	}
+
+	private void initProxyListeners() {
+		polygon.addPostionChangeListener(new PositionChangeListener<Positionable>() {
+			@Override
+			public void positionChanged(Positionable moved) {
+				RegularPolygon.this.notifyPositionChangeListeners();
+			}
+		});
+		polygon.addSizeChangeListener(new SizeChangeListener<Sizeable>() {
+			@Override
+			public void sizeChanged(Sizeable changed) {
+				RegularPolygon.this.notifySizeChangeListeners();
+			}
+		});
 	}
 
 	@Override
-	public void release() {
+	public void dispose() {
+		clearPositionChangeListeners();
+		clearSizeChangeListeners();
 	}
 	
 	@Override
@@ -127,12 +147,12 @@ public class RegularPolygon extends Shape {
 	}
 	
 	@Override
-	public boolean contains(Shape shape) {
+	public boolean contains(Sizeable shape) {
 		return polygon.contains(shape);
 	}
 
 	@Override
-	public boolean intersects(Shape shape) {
+	public boolean intersects(Sizeable shape) {
 		return polygon.intersects(shape);
 	}
 
@@ -149,6 +169,16 @@ public class RegularPolygon extends Shape {
 	@Override
 	public boolean intersectsLineSegment(float x1, float y1, float x2, float y2) {
 		return polygon.intersectsLineSegment(x1, y1, x2, y2);
+	}
+
+	@Override
+	public float getWidth() {
+		return radius * 2f;
+	}
+
+	@Override
+	public float getHeight() {
+		return radius * 2f;
 	}
 
 	@Override
@@ -244,7 +274,7 @@ public class RegularPolygon extends Shape {
 	 *            The center Y coordinate
 	 */
 	@Override
-	public void set(float centerX, float centerY) {
+	public void setXY(float centerX, float centerY) {
 		float diffX = centerX - this.center.getX();
 		float diffY = centerY - this.center.getY();
 		polygon.translate(diffX, diffY);
@@ -254,7 +284,7 @@ public class RegularPolygon extends Shape {
 	
 	@Override
 	public void translate(float translateX, float translateY) {
-		set(getX() + translateX, getY() + translateY);
+		setXY(getX() + translateX, getY() + translateY);
 	}
 
 	/**

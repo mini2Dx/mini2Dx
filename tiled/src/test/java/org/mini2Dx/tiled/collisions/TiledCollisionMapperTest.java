@@ -11,23 +11,19 @@
  */
 package org.mini2Dx.tiled.collisions;
 
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Array;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mini2Dx.core.collisions.PointQuadTree;
-import org.mini2Dx.core.collisions.QuadTree;
-import org.mini2Dx.core.collisions.RegionQuadTree;
-import org.mini2Dx.core.engine.geom.CollisionBox;
+import org.mini2Dx.core.collision.CollisionBox;
+import org.mini2Dx.core.collision.PointQuadTree;
+import org.mini2Dx.core.collision.QuadTree;
+import org.mini2Dx.core.collision.RegionQuadTree;
 import org.mini2Dx.core.geom.Rectangle;
+import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.collisions.merger.AllCollisionMerger;
 import org.mini2Dx.tiled.exception.TiledException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Unit tests for {@link TiledCollisionMapper}
@@ -41,7 +37,7 @@ public class TiledCollisionMapperTest {
 	public static void loadMap() throws TiledException {
 		FileHandle file = new FileHandle(
 				Thread.currentThread().getContextClassLoader().getResource("orthogonal.tmx").getFile());
-		tiledMap = new TiledMap(file, false, false);
+		tiledMap = new TiledMap(file, false);
 	}
 
 	@Before

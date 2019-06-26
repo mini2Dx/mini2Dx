@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.core.geom;
 
+import com.sun.glass.ui.Size;
 import org.mini2Dx.core.Geometry;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.gdx.math.Vector2;
@@ -50,6 +51,7 @@ public class Rectangle extends Shape {
 		this.width = 1f;
 		this.height = 1f;
 		polygon = new Polygon(determineVertices(0f, 0f, width, height));
+		initProxyListeners();
 	}
 
 	/**
@@ -69,6 +71,7 @@ public class Rectangle extends Shape {
 		this.width = width;
 		this.height = height;
 		polygon = new Polygon(determineVertices(x, y, width, height));
+		initProxyListeners();
 	}
 	
 	/**
@@ -80,10 +83,29 @@ public class Rectangle extends Shape {
 		this.width = rectangle.getWidth();
 		this.height = rectangle.getHeight();
 		this.polygon = (Polygon) rectangle.polygon.copy();
+		initProxyListeners();
+	}
+
+	private void initProxyListeners() {
+		polygon.addPostionChangeListener(new PositionChangeListener<Positionable>() {
+			@Override
+			public void positionChanged(Positionable moved) {
+				Rectangle.this.notifyPositionChangeListeners();
+			}
+		});
+		polygon.addSizeChangeListener(new SizeChangeListener<Sizeable>() {
+			@Override
+			public void sizeChanged(Sizeable changed) {
+				Rectangle.this.notifySizeChangeListeners();
+			}
+		});
 	}
 
 	@Override
-	public void release() {
+	public void dispose() {
+		clearPositionChangeListeners();
+		clearSizeChangeListeners();
+
 		if(geometry == null) {
 			return;
 		}
@@ -114,7 +136,7 @@ public class Rectangle extends Shape {
 	}
 	
 	@Override
-	public boolean contains(Shape shape) {
+	public boolean contains(Sizeable shape) {
 		return polygon.contains(shape);
 	}
 	
@@ -127,7 +149,7 @@ public class Rectangle extends Shape {
 	}
 
 	@Override
-	public boolean intersects(Shape shape) {
+	public boolean intersects(Sizeable shape) {
 		return polygon.intersects(shape);
 	}
 
@@ -242,10 +264,6 @@ public class Rectangle extends Shape {
 		return this;
 	}
 	
-	public float getDistanceTo(Point point) {
-	    return getDistanceTo(point.getX(), point.getY());
-	}
-	
 	public float getDistanceTo(float x, float y) {
 	    return polygon.getDistanceTo(x, y);
 	}
@@ -298,12 +316,12 @@ public class Rectangle extends Shape {
 		setRotation(rectangle.getRotation());
 	}
 	
-	public void set(float x, float y) {
-		polygon.set(x, y);
+	public void setXY(float x, float y) {
+		polygon.setXY(x, y);
 	}
 	
-	public void set(Vector2 position) {
-		polygon.set(position.x, position.y);
+	public void setXY(Vector2 position) {
+		polygon.setXY(position.x, position.y);
 	}
 	
 	@Override

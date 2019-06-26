@@ -76,7 +76,10 @@ public class Circle extends Shape {
 	}
 
 	@Override
-	public void release() {
+	public void dispose() {
+		clearPositionChangeListeners();
+		clearSizeChangeListeners();
+
 		if(geometry == null) {
 			return;
 		}
@@ -93,6 +96,8 @@ public class Circle extends Shape {
 		circle.x = (circle.x * inverseAlpha) + (target.getX() * alpha);
 		circle.y = (circle.y * inverseAlpha) + (target.getY() * alpha);
 		circle.radius = (circle.radius * inverseAlpha) + (target.getRadius() * alpha);
+		notifyPositionChangeListeners();
+		notifySizeChangeListeners();
 		setDirty();
 		return this;
 	}
@@ -124,7 +129,7 @@ public class Circle extends Shape {
 	}
 	
 	@Override
-	public boolean contains(Shape shape) {
+	public boolean contains(Sizeable shape) {
 		if(shape.isCircle()) {
 			return contains((Circle) shape);
 		}
@@ -172,7 +177,7 @@ public class Circle extends Shape {
 	}
 
 	@Override
-	public boolean intersects(Shape shape) {
+	public boolean intersects(Sizeable shape) {
 		if(shape.isCircle()) {
 			return intersects((Circle) shape);
 		}
@@ -192,7 +197,17 @@ public class Circle extends Shape {
 		CENTER_TMP.set(circle.x, circle.y);
 		return org.mini2Dx.gdx.math.Intersector.intersectSegmentCircle(TMP_VECTOR1, TMP_VECTOR2, CENTER_TMP, circle.radius * circle.radius);
 	}
-	
+
+	@Override
+	public float getWidth() {
+		return getRadius() * 2f;
+	}
+
+	@Override
+	public float getHeight() {
+		return getRadius() * 2f;
+	}
+
 	/**
 	 * Returns if the specified {@link Rectangle} intersects this {@link Circle}
 	 * 
@@ -211,15 +226,6 @@ public class Circle extends Shape {
 	 */
 	public boolean intersects(Circle circle) {
 		return Vector2.dst(this.circle.x, this.circle.y, circle.getX(), circle.getY()) <= this.circle.radius + circle.getRadius();
-	}
-
-	/**
-	 * Returns the distance from the edge of this {@link Circle} to a point
-	 * @param point The point
-	 * @return The distance to the point
-	 */
-	public float getDistanceTo(Vector2 point) {
-		return getDistanceTo(point.x, point.y);
 	}
 	
 	/**
@@ -271,7 +277,7 @@ public class Circle extends Shape {
 	}
 	
 	public void set(Circle circle) {
-		set(circle.getX(), circle.getY());
+		setXY(circle.getX(), circle.getY());
 		setRadius(circle.getRadius());
 	}
 
@@ -287,14 +293,12 @@ public class Circle extends Shape {
 	
 	@Override
 	public void setX(float x) {
-		circle.x = x;
-		setDirty();
+		setCenterX(x);
 	}
 	
 	@Override
 	public void setY(float y) {
-		circle.y = y;
-		setDirty();
+		setCenterY(y);
 	}
 
 	@Override
@@ -309,28 +313,39 @@ public class Circle extends Shape {
 	
 	@Override
 	public void setCenter(float x, float y) {
-		circle.x = x;
-		circle.y = y;
-		setDirty();
+		setXY(x, y);
 	}
 
 	@Override
 	public void setCenterX(float x) {
+		if(MathUtils.isEqual(circle.x, x)) {
+			return;
+		}
 		circle.x = x;
 		setDirty();
+		notifyPositionChangeListeners();
 	}
 
 	@Override
 	public void setCenterY(float y) {
+		if(MathUtils.isEqual(circle.y, y)) {
+			return;
+		}
 		circle.y = y;
 		setDirty();
+		notifyPositionChangeListeners();
 	}
 	
 	@Override
-	public void set(float x, float y) {
+	public void setXY(float x, float y) {
+		if(MathUtils.isEqual(circle.x, x) && MathUtils.isEqual(circle.y, y)) {
+			return;
+		}
+
 		circle.x = x;
 		circle.y = y;
 		setDirty();
+		notifyPositionChangeListeners();
 	}
 	
 	@Override
@@ -358,21 +373,28 @@ public class Circle extends Shape {
 	}
 
 	public void setRadius(float radius) {
+		if(MathUtils.isEqual(circle.radius, radius)) {
+			return;
+		}
 		circle.radius = radius;
 		setDirty();
+		notifySizeChangeListeners();
 	}
 	
 	@Override
 	public void scale(float scale) {
-		circle.setRadius(circle.radius * scale);
-		setDirty();
+		setRadius(circle.radius * scale);
 	}
 
 	@Override
 	public void translate(float translateX, float translateY) {
+		if(MathUtils.isZero(translateX) && MathUtils.isZero(translateY)) {
+			return;
+		}
 		circle.x += translateX;
 		circle.y += translateY;
 		setDirty();
+		notifyPositionChangeListeners();
 	}
 	
 	private void setDirty() {
