@@ -13,39 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.assets;
+package org.mini2Dx.core.assets.loader;
 
-import org.mini2Dx.core.files.FileHandle;
+import org.mini2Dx.core.assets.AssetLoader;
+import org.mini2Dx.core.font.GameFont;
 
-public class AssetDescriptor<T extends AssetParameters> {
-	private final String filePath;
-	private final T parameters;
-
-	private FileHandle resolvedFileHandle;
-
-	public AssetDescriptor(String filePath) {
-		this(filePath, null);
-	}
-
-	public AssetDescriptor(String filePath, T parameters) {
-		super();
-		this.filePath = filePath;
-		this.parameters = parameters;
-	}
-
-	public String getFilePath() {
-		return filePath;
-	}
-
-	public T getParameters() {
-		return parameters;
-	}
-
-	public FileHandle getResolvedFileHandle() {
-		return resolvedFileHandle;
-	}
-
-	public void setResolvedFileHandle(FileHandle resolvedFileHandle) {
-		this.resolvedFileHandle = resolvedFileHandle;
-	}
+public class BitmapGameFontLoader implements AssetLoader<GameFont> {
 }
