@@ -32,7 +32,7 @@ public class Point extends Vector2 implements Positionable {
 
     private final Geometry geometry;
 
-    private Array<PositionChangeListener> positionChangeListeners;
+    protected Array<PositionChangeListener> positionChangeListeners;
 
     /**
      * Constructs a new {@link Point} belonging to the {@link Geometry} pool

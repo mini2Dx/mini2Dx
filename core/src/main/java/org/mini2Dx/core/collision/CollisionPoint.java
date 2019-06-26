@@ -18,8 +18,13 @@ package org.mini2Dx.core.collision;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.PositionChangeListener;
+import org.mini2Dx.core.geom.Positionable;
+import org.mini2Dx.core.geom.Shape;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.MathUtils;
+import org.mini2Dx.gdx.utils.Array;
+
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * An implementation of {@link Point} that allows for interpolation. Game
@@ -28,6 +33,7 @@ import org.mini2Dx.gdx.math.MathUtils;
  */
 public class CollisionPoint extends Point implements CollisionObject, PositionChangeListener<CollisionPoint> {
 	private final int id;
+	private final ReentrantReadWriteLock positionChangeListenerLock;
 
 	private final Point previousPosition;
 	private final Point renderPosition;
@@ -50,6 +56,8 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 	public CollisionPoint(int id, float x, float y) {
 		super(x, y);
 		this.id = id;
+
+		positionChangeListenerLock = new ReentrantReadWriteLock();
 		addPostionChangeListener(this);
 
 		InterpolationTracker.register(this);
@@ -127,5 +135,32 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 			return;
 		}
 		interpolateRequired = true;
+	}
+
+	@Override
+	public <T extends Positionable> void addPostionChangeListener(
+			PositionChangeListener<T> listener) {
+		positionChangeListenerLock.writeLock().lock();
+		if (positionChangeListeners == null) {
+			positionChangeListeners = new Array<PositionChangeListener>(true,1);
+		}
+		positionChangeListeners.add(listener);
+		positionChangeListenerLock.writeLock().unlock();
+	}
+
+	@Override
+	public <T extends Positionable> void removePositionChangeListener(
+			PositionChangeListener<T> listener) {
+		Shape.removePositionListener(positionChangeListenerLock, positionChangeListeners, listener);
+	}
+
+	@Override
+	protected void notifyPositionChangeListeners() {
+		Shape.notifyPositionListeners(positionChangeListenerLock, positionChangeListeners, this);
+	}
+
+	@Override
+	protected void clearPositionChangeListeners() {
+		Shape.clearPositionListeners(positionChangeListenerLock, positionChangeListeners);
 	}
 }

@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.mini2Dx.core.geom;
 
-import com.sun.glass.ui.Size;
 import org.mini2Dx.core.Geometry;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.gdx.math.Vector2;

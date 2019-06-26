@@ -22,6 +22,8 @@ import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
 import org.mini2Dx.gdx.utils.Array;
 
+import java.util.concurrent.locks.ReadWriteLock;
+
 /**
  * Base class for shapes
  */
@@ -33,8 +35,8 @@ public abstract class Shape implements Sizeable {
 
 	protected final Geometry geometry;
 
-	private Array<PositionChangeListener> positionChangeListeners;
-	private Array<SizeChangeListener> sizeChangeListeners;
+	protected Array<PositionChangeListener> positionChangeListeners;
+	protected Array<SizeChangeListener> sizeChangeListeners;
 
 	/**
 	 * Constructor for shapes not belonging to the {@link Geometry} pool
@@ -260,30 +262,7 @@ public abstract class Shape implements Sizeable {
 	@Override
 	public <T extends Positionable> void removePositionChangeListener(
 			PositionChangeListener<T> listener) {
-		if (positionChangeListeners == null) {
-			return;
-		}
-		positionChangeListeners.removeValue(listener, false);
-	}
-
-	protected void notifyPositionChangeListeners() {
-		if (positionChangeListeners == null) {
-			return;
-		}
-		for (int i = positionChangeListeners.size - 1; i >= 0; i--) {
-			if(i >= positionChangeListeners.size) {
-				i = positionChangeListeners.size - 1;
-			}
-			PositionChangeListener listener = positionChangeListeners.get(i);
-			listener.positionChanged(this);
-		}
-	}
-
-	protected void clearPositionChangeListeners() {
-		if (positionChangeListeners == null) {
-			return;
-		}
-		positionChangeListeners.clear();
+		removePositionListener(positionChangeListeners, listener);
 	}
 
 	@Override
@@ -296,13 +275,117 @@ public abstract class Shape implements Sizeable {
 
 	@Override
 	public <T extends Sizeable> void removeSizeChangeListener(SizeChangeListener<T> listener) {
+		removeSizeListener(sizeChangeListeners, listener);
+	}
+
+	protected void notifyPositionChangeListeners() {
+		notifyPositionListeners(positionChangeListeners, this);
+	}
+
+	protected void clearPositionChangeListeners() {
+		clearPositionListeners(positionChangeListeners);
+	}
+
+	protected void notifySizeChangeListeners() {
+		notifySizeListeners(sizeChangeListeners, this);
+	}
+
+	protected void clearSizeChangeListeners() {
+		clearSizeListeners(sizeChangeListeners);
+	}
+
+	public static <T extends Positionable> void removePositionListener(Array<PositionChangeListener> positionChangeListeners, PositionChangeListener listener) {
+		if (positionChangeListeners == null) {
+			return;
+		}
+		positionChangeListeners.removeValue(listener, false);
+	}
+
+	public static <T extends Positionable> void removePositionListener(ReadWriteLock lock, Array<PositionChangeListener> positionChangeListeners, PositionChangeListener listener) {
+		lock.readLock().lock();
+		if (positionChangeListeners == null) {
+			lock.readLock().unlock();
+			return;
+		}
+		lock.readLock().unlock();
+
+		lock.writeLock().lock();
+		positionChangeListeners.removeValue(listener, false);
+		lock.writeLock().unlock();
+	}
+
+	public static <T extends Positionable> void notifyPositionListeners(Array<PositionChangeListener> positionChangeListeners, T notifier) {
+		if (positionChangeListeners == null) {
+			return;
+		}
+		for (int i = positionChangeListeners.size - 1; i >= 0; i--) {
+			if(i >= positionChangeListeners.size) {
+				i = positionChangeListeners.size - 1;
+			}
+			PositionChangeListener<T> listener = positionChangeListeners.get(i);
+			listener.positionChanged(notifier);
+		}
+	}
+
+	public static <T extends Positionable> void notifyPositionListeners(ReadWriteLock lock, Array<PositionChangeListener> positionChangeListeners, T notifier) {
+		lock.readLock().lock();
+		if (positionChangeListeners == null) {
+			lock.readLock().unlock();
+			return;
+		}
+		for (int i = positionChangeListeners.size - 1; i >= 0; i--) {
+			if(i >= positionChangeListeners.size) {
+				i = positionChangeListeners.size - 1;
+			}
+			PositionChangeListener listener = positionChangeListeners.get(i);
+			lock.readLock().unlock();
+			listener.positionChanged(notifier);
+			lock.readLock().lock();
+		}
+		lock.readLock().unlock();
+	}
+
+	public static <T extends Positionable> void clearPositionListeners(Array<PositionChangeListener> positionChangeListeners) {
+		if (positionChangeListeners == null) {
+			return;
+		}
+		positionChangeListeners.clear();
+	}
+
+	public static <T extends Positionable> void clearPositionListeners(ReadWriteLock lock, Array<PositionChangeListener> positionChangeListeners) {
+		lock.readLock().lock();
+		if (positionChangeListeners == null) {
+			lock.readLock().unlock();
+			return;
+		}
+		lock.readLock().unlock();
+
+		lock.writeLock().lock();
+		positionChangeListeners.clear();
+		lock.writeLock().unlock();
+	}
+
+	public static <T extends Sizeable> void removeSizeListener(Array<SizeChangeListener> sizeChangeListeners, SizeChangeListener listener) {
 		if (sizeChangeListeners == null) {
 			return;
 		}
 		sizeChangeListeners.removeValue(listener, false);
 	}
 
-	protected void notifySizeChangeListeners() {
+	public static <T extends Sizeable> void removeSizeListener(ReadWriteLock lock, Array<SizeChangeListener> sizeChangeListeners, SizeChangeListener listener) {
+		lock.readLock().lock();
+		if (sizeChangeListeners == null) {
+			lock.readLock().unlock();
+			return;
+		}
+		lock.readLock().unlock();
+
+		lock.writeLock().lock();
+		sizeChangeListeners.removeValue(listener, false);
+		lock.writeLock().unlock();
+	}
+
+	public static <T extends Sizeable> void notifySizeListeners(Array<SizeChangeListener> sizeChangeListeners, T notifier) {
 		if (sizeChangeListeners == null) {
 			return;
 		}
@@ -310,16 +393,47 @@ public abstract class Shape implements Sizeable {
 			if(i >= sizeChangeListeners.size) {
 				i = sizeChangeListeners.size - 1;
 			}
-			SizeChangeListener listener = sizeChangeListeners.get(i);
-			listener.sizeChanged(this);
+			SizeChangeListener<T> listener = sizeChangeListeners.get(i);
+			listener.sizeChanged(notifier);
 		}
 	}
 
-	protected void clearSizeChangeListeners() {
+	public static <T extends Sizeable> void notifySizeListeners(ReadWriteLock lock, Array<SizeChangeListener> sizeChangeListeners, T notifier) {
+		lock.readLock().lock();
+		if (sizeChangeListeners == null) {
+			lock.readLock().unlock();
+			return;
+		}
+		for (int i = sizeChangeListeners.size - 1; i >= 0; i--) {
+			if(i >= sizeChangeListeners.size) {
+				i = sizeChangeListeners.size - 1;
+			}
+			SizeChangeListener listener = sizeChangeListeners.get(i);
+			lock.readLock().unlock();
+			listener.sizeChanged(notifier);
+			lock.readLock().lock();
+		}
+		lock.readLock().unlock();
+	}
+
+	public static <T extends Sizeable> void clearSizeListeners(Array<SizeChangeListener> sizeChangeListeners) {
 		if (sizeChangeListeners == null) {
 			return;
 		}
 		sizeChangeListeners.clear();
+	}
+
+	public static <T extends Sizeable> void clearSizeListeners(ReadWriteLock lock, Array<SizeChangeListener> sizeChangeListeners) {
+		lock.readLock().lock();
+		if (sizeChangeListeners == null) {
+			lock.readLock().unlock();
+			return;
+		}
+		lock.readLock().unlock();
+
+		lock.writeLock().lock();
+		sizeChangeListeners.clear();
+		lock.writeLock().unlock();
 	}
 
 	@Override

@@ -17,13 +17,13 @@ package org.mini2Dx.core.collision;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.MdxException;
-import org.mini2Dx.core.geom.Polygon;
-import org.mini2Dx.core.geom.PositionChangeListener;
-import org.mini2Dx.core.geom.Rectangle;
-import org.mini2Dx.core.geom.SizeChangeListener;
+import org.mini2Dx.core.geom.*;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
+import org.mini2Dx.gdx.utils.Array;
+
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * An implementation of {@link Polygon} that allows for interpolation. Game
@@ -34,6 +34,8 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 		PositionChangeListener<CollisionPolygon>, SizeChangeListener<CollisionPolygon> {
 
 	private final int id;
+	private final ReentrantReadWriteLock positionChangeListenerLock;
+	private final ReentrantReadWriteLock sizeChangeListenerLock;
 
 	private final Polygon previousPolygon;
 	private final Polygon renderPolygon;
@@ -52,6 +54,9 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 	public CollisionPolygon(int id, float[] vertices) {
 		super(vertices);
 		this.id = id;
+
+		positionChangeListenerLock = new ReentrantReadWriteLock();
+		sizeChangeListenerLock = new ReentrantReadWriteLock();
 		addPostionChangeListener(this);
 		addSizeChangeListener(this);
 
@@ -62,6 +67,9 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 	public CollisionPolygon(int id, Vector2[] vectors) {
 		super(vectors);
 		this.id = id;
+
+		positionChangeListenerLock = new ReentrantReadWriteLock();
+		sizeChangeListenerLock = new ReentrantReadWriteLock();
 		addPostionChangeListener(this);
 		addSizeChangeListener(this);
 
@@ -179,5 +187,57 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 			return;
 		}
 		interpolateRequired = true;
+	}
+
+	@Override
+	public <T extends Positionable> void addPostionChangeListener(
+			PositionChangeListener<T> listener) {
+		positionChangeListenerLock.writeLock().lock();
+		if (positionChangeListeners == null) {
+			positionChangeListeners = new Array<PositionChangeListener>(true, 1);
+		}
+		positionChangeListeners.add(listener);
+		positionChangeListenerLock.writeLock().unlock();
+	}
+
+	@Override
+	public <T extends Positionable> void removePositionChangeListener(
+			PositionChangeListener<T> listener) {
+		removePositionListener(positionChangeListenerLock, positionChangeListeners, listener);
+	}
+
+	@Override
+	public <T extends Sizeable> void addSizeChangeListener(SizeChangeListener<T> listener) {
+		sizeChangeListenerLock.writeLock().lock();
+		if (sizeChangeListeners == null) {
+			sizeChangeListeners = new Array<SizeChangeListener>(true,1);
+		}
+		sizeChangeListeners.add(listener);
+		sizeChangeListenerLock.writeLock().unlock();
+	}
+
+	@Override
+	public <T extends Sizeable> void removeSizeChangeListener(SizeChangeListener<T> listener) {
+		removeSizeListener(sizeChangeListenerLock, sizeChangeListeners, listener);
+	}
+
+	@Override
+	protected void notifyPositionChangeListeners() {
+		notifyPositionListeners(positionChangeListenerLock, positionChangeListeners, this);
+	}
+
+	@Override
+	protected void clearPositionChangeListeners() {
+		clearPositionListeners(positionChangeListenerLock, positionChangeListeners);
+	}
+
+	@Override
+	protected void notifySizeChangeListeners() {
+		notifySizeListeners(sizeChangeListenerLock, sizeChangeListeners, this);
+	}
+
+	@Override
+	protected void clearSizeChangeListeners() {
+		clearSizeListeners(sizeChangeListenerLock, sizeChangeListeners);
 	}
 }

@@ -13,7 +13,10 @@ package org.mini2Dx.core.collision;
 
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.geom.*;
+import org.mini2Dx.core.geom.LineSegment;
+import org.mini2Dx.core.geom.Point;
+import org.mini2Dx.core.geom.Rectangle;
+import org.mini2Dx.core.geom.Shape;
 import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.gdx.utils.Array;
 

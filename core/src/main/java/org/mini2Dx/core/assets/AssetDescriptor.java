@@ -16,8 +16,6 @@
 package org.mini2Dx.core.assets;
 
 import org.mini2Dx.core.files.FileHandle;
-import org.mini2Dx.gdx.utils.Array;
-import org.mini2Dx.gdx.utils.Disposable;
 
 public class AssetDescriptor<T> {
 	private final String filePath;
