@@ -15,6 +15,7 @@ import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Shape;
+import org.mini2Dx.core.geom.Sizeable;
 import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.gdx.utils.Array;
 
@@ -24,7 +25,7 @@ import org.mini2Dx.gdx.utils.Array;
  * @see <a href="http://en.wikipedia.org/wiki/Quadtree#The_region_quadtree">
  *      Wikipedia: Region Quad Tree</a>
  */
-public class ConcurrentRegionQuadTree<T extends CollisionArea> extends ConcurrentPointQuadTree<T> {
+public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPointQuadTree<T> {
 	private static final long serialVersionUID = 2344163859287984782L;
 
 	/**

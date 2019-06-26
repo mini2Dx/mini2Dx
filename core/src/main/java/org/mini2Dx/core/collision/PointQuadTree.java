@@ -13,10 +13,7 @@ package org.mini2Dx.core.collision;
 
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.geom.LineSegment;
-import org.mini2Dx.core.geom.Point;
-import org.mini2Dx.core.geom.Rectangle;
-import org.mini2Dx.core.geom.Shape;
+import org.mini2Dx.core.geom.*;
 import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.gdx.utils.Array;
 
@@ -26,7 +23,7 @@ import org.mini2Dx.gdx.utils.Array;
  * @see <a href="http://en.wikipedia.org/wiki/Quadtree#Point_quadtree">
  *      Wikipedia: Point Quad Tree</a>
  */
-public class PointQuadTree<T extends CollisionObject> extends Rectangle implements QuadTree<T> {
+public class PointQuadTree<T extends Positionable> extends Rectangle implements QuadTree<T> {
 	public static final float DEFAULT_MINIMUM_QUAD_SIZE = 8f;
 	public static Color QUAD_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(1f, 0f, 0f, 0.5f) : null;
 	public static Color ELEMENT_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(0f, 0f, 1f, 0.5f) : null;
