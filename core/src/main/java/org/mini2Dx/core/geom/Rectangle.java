@@ -149,19 +149,7 @@ public class Rectangle extends Shape {
 	 * @return True if the {@link Rectangle}s intersect
 	 */
 	public boolean intersects(Rectangle rectangle) {
-		boolean xAxisOverlaps = true;
-		boolean yAxisOverlaps = true;
-
-		if (polygon.getMaxX() < rectangle.getMinX())
-			xAxisOverlaps = false;
-		if (rectangle.getMaxX() < polygon.getMinX())
-			xAxisOverlaps = false;
-		if (polygon.getMaxY() < rectangle.getMinY())
-			yAxisOverlaps = false;
-		if (rectangle.getMaxY() < polygon.getMinY())
-			yAxisOverlaps = false;
-
-		return xAxisOverlaps && yAxisOverlaps;
+		return polygon.intersects(rectangle);
 	}
 
 	public boolean intersects(float x, float y, float width, float height) {

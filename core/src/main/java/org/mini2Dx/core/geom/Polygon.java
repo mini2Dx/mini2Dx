@@ -227,7 +227,9 @@ public class Polygon extends Shape {
 	public boolean intersects(Polygon polygon) {
 		minMaxDirtyCheck();
 		polygon.minMaxDirtyCheck();
-		if (isRectangle && polygon.isRectangle) {
+		if (isRectangle && polygon.isRectangle &&
+				MathUtils.round(rotation % 90f) == 0f &&
+				MathUtils.round(polygon.rotation % 90f) == 0f) {
 			boolean xAxisOverlaps = true;
 			boolean yAxisOverlaps = true;
 
