@@ -15,8 +15,11 @@
  ******************************************************************************/
 package org.mini2Dx.core.assets;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.loader.*;
+import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.files.FileHandleResolver;
+import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
 import org.mini2Dx.gdx.utils.ObjectMap;
 import org.mini2Dx.gdx.utils.Queue;
@@ -36,12 +39,16 @@ import org.mini2Dx.gdx.utils.Queue;
  * </p>
  */
 public class AssetManager implements Disposable {
+	private static final String LOGGING_TAG = AssetManager.class.getSimpleName();
+
 	private final FileHandleResolver fileHandleResolver;
 
 	private final ObjectMap<String, AssetLoader> assetLoadersByFileSuffix = new ObjectMap<String, AssetLoader>();
 	private final ObjectMap<String, AssetLoader> assetLoadersByDirectoryPattern = new ObjectMap<String, AssetLoader>();
 
-	private final Queue<AssetDescriptor> loadingQueue = new Queue<AssetDescriptor>();
+	private final Array<AssetDescriptor> loadingQueue = new Array<AssetDescriptor>();
+
+	private boolean prioritiseFileSuffixes = true;
 
 	public AssetManager(FileHandleResolver fileHandleResolver) {
 		this(fileHandleResolver, true);
@@ -82,7 +89,7 @@ public class AssetManager implements Disposable {
 		}
 	}
 
-	public <T> T get(String filePath, Class<T> clazz) {
+	public <T> T get(String filePath) {
 		return null;
 	}
 
@@ -95,7 +102,15 @@ public class AssetManager implements Disposable {
 	}
 
 	public void load(AssetDescriptor assetDescriptor) {
+		for(int i = 0; i < loadingQueue.size; i++) {
+			final AssetDescriptor queuedDescriptor = loadingQueue.get(i);
+			if(queuedDescriptor.getFilePath().equals(assetDescriptor.getFilePath())) {
+				Mdx.log.debug(LOGGING_TAG, assetDescriptor.getFilePath() + " is already queued for loading");
+				return;
+			}
+		}
 
+		loadingQueue.add(assetDescriptor);
 	}
 
 	public void unload(String filePath) {
@@ -106,8 +121,68 @@ public class AssetManager implements Disposable {
 		return false;
 	}
 
+	/**
+	 * Sets the {@link AssetLoader} to use for a specific directory pattern
+	 * @param pattern The directory pattern, e.g. music/ , textures/ , etc.
+	 * @param assetLoader The {@link AssetLoader} to use
+	 */
+	public void setAssetLoadersByDirectoryPattern(String pattern, AssetLoader assetLoader) {
+		if(pattern == null) {
+			return;
+		}
+		assetLoadersByDirectoryPattern.put(pattern, assetLoader);
+	}
+
+	/**
+	 * Sets the {@link AssetLoader} to use for a specific file pattern
+	 * @param fileSuffix The file suffix, e.g. .png , .jpg , etc.
+	 * @param assetLoader The {@link AssetLoader} to use
+	 */
+	public void setAssetLoadersByFileSuffix(String fileSuffix, AssetLoader assetLoader) {
+		if(fileSuffix == null) {
+			return;
+		}
+		if(fileSuffix.startsWith("*")) {
+			fileSuffix = fileSuffix.substring(1);
+		}
+		if(fileSuffix.contains("/")) {
+			throw new MdxException("File suffix cannot contain directory - " + fileSuffix);
+		}
+		assetLoadersByFileSuffix.put(fileSuffix, assetLoader);
+	}
+
+	/**
+	 * Clears all {@link AssetLoader}s so that new ones can be set
+	 */
+	public void clearAssetLoaders() {
+		clearAssetLoadersByDirectoryPattern();
+		clearAssetLoadersByFileSuffix();
+	}
+
+	/**
+	 * Clears all {@link AssetLoader}s for directory patterns so that new ones can be set
+	 */
+	public void clearAssetLoadersByDirectoryPattern() {
+		assetLoadersByDirectoryPattern.clear();
+	}
+
+	/**
+	 * Clears all {@link AssetLoader}s for file suffixes so that new ones can be set
+	 */
+	public void clearAssetLoadersByFileSuffix() {
+		assetLoadersByFileSuffix.clear();
+	}
+
+	/**
+	 * Sets if file suffix {@link AssetLoader}s should be checked first
+	 * @param prioritiseFileSuffixes False if directory pattern {@link AssetLoader}s should be checked first
+	 */
+	public void setPrioritiseFileSuffixes(boolean prioritiseFileSuffixes) {
+		this.prioritiseFileSuffixes = prioritiseFileSuffixes;
+	}
+
 	@Override
 	public void dispose() {
-
+		loadingQueue.clear();
 	}
 }
