@@ -10,6 +10,7 @@
 
 [1.9.4]
 - Fixed for ArrayOutOfBoundsException in GridUiNavigation (thanks Dan Allen)
+- Fixed .intersects() incorrectly returning true for rotated rectangles (thanks Stephen Kelly-Hannon)
 
 [1.9.3]
 - Fixed crash on Android when playing sounds (thanks Dan Allen)
