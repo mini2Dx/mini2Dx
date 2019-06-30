@@ -12,6 +12,7 @@
 package org.mini2Dx.tiled;
 
 import org.junit.Test;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.tiled.exception.TiledException;
 
@@ -26,11 +27,11 @@ public class SharedParserTiledMapTest {
 	public void testSharedParser() throws TiledException  {
 		TiledParser parser = new TiledParser();
 		
-		FileHandle orthogonalFile = new FileHandle(Thread.currentThread()
+		FileHandle orthogonalFile = Mdx.files.internal(Thread.currentThread()
 				.getContextClassLoader().getResource("orthogonal.tmx").getFile());
-		FileHandle orthogonalTsxFile = new FileHandle(Thread.currentThread()
+		FileHandle orthogonalTsxFile = Mdx.files.internal(Thread.currentThread()
 				.getContextClassLoader().getResource("orthogonal_tsx.tmx").getFile());
-		FileHandle isometricFile = new FileHandle(Thread.currentThread()
+		FileHandle isometricFile = Mdx.files.internal(Thread.currentThread()
 				.getContextClassLoader().getResource("isometric.tmx").getFile());
 		
 		TiledMap orthogonalTiledMap = new TiledMap(parser, orthogonalFile, false);

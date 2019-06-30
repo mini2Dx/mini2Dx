@@ -17,19 +17,21 @@ package org.mini2Dx.core.assets;
 
 import org.mini2Dx.core.files.FileHandle;
 
-public class AssetDescriptor<T extends AssetParameters> {
+public class AssetDescriptor<T> {
 	private final String filePath;
-	private final T parameters;
+	private final Class<T> clazz;
+	private final AssetProperties<T> parameters;
 
 	private FileHandle resolvedFileHandle;
 
-	public AssetDescriptor(String filePath) {
-		this(filePath, null);
+	public AssetDescriptor(String filePath, Class<T> clazz) {
+		this(filePath, clazz, null);
 	}
 
-	public AssetDescriptor(String filePath, T parameters) {
+	public AssetDescriptor(String filePath, Class<T> clazz, AssetProperties parameters) {
 		super();
 		this.filePath = filePath;
+		this.clazz = clazz;
 		this.parameters = parameters;
 	}
 
@@ -37,7 +39,11 @@ public class AssetDescriptor<T extends AssetParameters> {
 		return filePath;
 	}
 
-	public T getParameters() {
+	public Class<T> getClazz() {
+		return clazz;
+	}
+
+	public AssetProperties<T> getParameters() {
 		return parameters;
 	}
 

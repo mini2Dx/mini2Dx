@@ -25,7 +25,7 @@ import java.util.concurrent.Callable;
 public interface TaskExecutor extends Disposable {
 
 	/**
-	 * Updates {@link FrameTask} instances each frame.
+	 * Updates {@link FrameSpreadTask} instances each frame.
 	 * Note: This is called by mini2Dx and should not be called manually.
 	 * @param delta The game delta time
 	 */
@@ -38,6 +38,13 @@ public interface TaskExecutor extends Disposable {
 	public void execute(Runnable runnable);
 
 	/**
+	 * Submits a {@link Runnable} instance to be executed on a separate thread
+	 * @param runnable The task to run on a separate thread
+	 * @return A {@link AsyncFuture} instance that can be checked for task completion
+	 */
+	public AsyncFuture submit(Runnable runnable);
+
+	/**
 	 * Submits a {@link Callable} instance to be executed on a separate thread
 	 * @param callable The task to run on a separate thread
 	 * @param <T> The return type
@@ -46,13 +53,13 @@ public interface TaskExecutor extends Disposable {
 	public <T> AsyncResult<T> submit(Callable<T> callable);
 
 	/**
-	 * Submits a {@link FrameTask} to be completed over several frames
-	 * @param task The {@link FrameTask} to execute
+	 * Submits a {@link FrameSpreadTask} to be completed over several frames
+	 * @param task The {@link FrameSpreadTask} to execute
 	 */
-	public void submit(FrameTask task);
+	public void submit(FrameSpreadTask task);
 
 	/**
-	 * Sets the maximum number of {@link FrameTask} instances to update per frame
+	 * Sets the maximum number of {@link FrameSpreadTask} instances to update per frame
 	 * @param max The maximum number greater than 0
 	 */
 	public void setMaxFrameTasksPerFrame(int max);

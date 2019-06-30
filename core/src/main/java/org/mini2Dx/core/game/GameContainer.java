@@ -43,7 +43,7 @@ public abstract class GameContainer {
      * @param delta The time in seconds since the last update
      */
     public void preUpdate(float delta) {
-        Mdx.exec.update(delta);
+        Mdx.executor.update(delta);
         InterpolationTracker.preUpdate();
     }
 

@@ -247,8 +247,9 @@ project(":" + rootProject.name + "-core") {
 	apply plugin: "ikvm"
 
     dependencies {
-		compile "org.mini2Dx:gdx-math:$gdxVersion"
+		compile "org.mini2Dx:gdx-compression:$gdxVersion"
 		compile "org.mini2Dx:gdx-input:$gdxVersion"
+		compile "org.mini2Dx:gdx-math:$gdxVersion"
 		compile "org.mini2Dx:gdx-xml:$gdxVersion"
 
 		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"

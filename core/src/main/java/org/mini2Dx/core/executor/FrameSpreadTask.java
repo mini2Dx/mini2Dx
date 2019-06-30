@@ -16,14 +16,13 @@
 package org.mini2Dx.core.executor;
 
 /**
- * An asynchronous result
- * @param <T> The result type
+ * Interface for tasks that can execute partially over each frame
  */
-public interface AsyncResult<T> extends AsyncFuture {
+public interface FrameSpreadTask {
 
 	/**
-	 * Returns the result object
-	 * @return Null if no result is available
+	 * Called each frame on the game thread to progress the task further
+	 * @return True if the task has completed
 	 */
-	public T getResult();
+	public boolean updateTask();
 }

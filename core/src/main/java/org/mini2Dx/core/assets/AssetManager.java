@@ -17,12 +17,19 @@ package org.mini2Dx.core.assets;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.loader.*;
+import org.mini2Dx.core.audio.Music;
+import org.mini2Dx.core.audio.Sound;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.files.FileHandleResolver;
+import org.mini2Dx.core.graphics.Pixmap;
+import org.mini2Dx.core.graphics.Shader;
+import org.mini2Dx.core.graphics.Texture;
+import org.mini2Dx.core.graphics.TextureAtlas;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
 import org.mini2Dx.gdx.utils.ObjectMap;
-import org.mini2Dx.gdx.utils.Queue;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -40,15 +47,18 @@ import org.mini2Dx.gdx.utils.Queue;
  */
 public class AssetManager implements Disposable {
 	private static final String LOGGING_TAG = AssetManager.class.getSimpleName();
+	/**
+	 * The time limit for loading operations per frame. Defaults to 8ms (half a frame @ 60FPS)
+	 */
+	public static long UPDATE_TIMEBOX_MILLIS = 8;
 
 	private final FileHandleResolver fileHandleResolver;
 
-	private final ObjectMap<String, AssetLoader> assetLoadersByFileSuffix = new ObjectMap<String, AssetLoader>();
-	private final ObjectMap<String, AssetLoader> assetLoadersByDirectoryPattern = new ObjectMap<String, AssetLoader>();
+	private final ObjectMap<Class, AssetLoader> assetLoaders = new ObjectMap<Class, AssetLoader>();
+	private final ObjectMap<String, ReferenceCountedObject> assets = new ObjectMap<String, ReferenceCountedObject>();
 
-	private final Array<AssetDescriptor> loadingQueue = new Array<AssetDescriptor>();
-
-	private boolean prioritiseFileSuffixes = true;
+	private final Array<AssetDescriptor> loadingQueue = new Array<AssetDescriptor>(false, 32);
+	private final Array<AssetLoadingTask> loadingTasks = new Array<AssetLoadingTask>(false, 32);
 
 	public AssetManager(FileHandleResolver fileHandleResolver) {
 		this(fileHandleResolver, true);
@@ -58,131 +68,116 @@ public class AssetManager implements Disposable {
 		this.fileHandleResolver = fileHandleResolver;
 
 		if(initDefaultLoaders) {
-			final BitmapGameFontLoader bitmapGameFontLoader = new BitmapGameFontLoader();
-			final MonospaceGameFontLoader monospaceGameFontLoader = new MonospaceGameFontLoader();
-			final MusicLoader musicLoader = new MusicLoader();
-			final ShaderLoader shaderLoader = new ShaderLoader();
-			final SoundLoader soundLoader = new SoundLoader();
-			final TextureLoader textureLoader = new TextureLoader();
-			final TextureAtlasLoader textureAtlasLoader = new TextureAtlasLoader();
-
-			assetLoadersByFileSuffix.put(".jpg", textureLoader);
-			assetLoadersByFileSuffix.put(".png", textureLoader);
-			assetLoadersByFileSuffix.put(".atlas", textureAtlasLoader);
-
-			assetLoadersByDirectoryPattern.put("mfonts/", monospaceGameFontLoader);
-			assetLoadersByDirectoryPattern.put("mfont/", monospaceGameFontLoader);
-
-			assetLoadersByDirectoryPattern.put("bfonts/", bitmapGameFontLoader);
-			assetLoadersByDirectoryPattern.put("bfont/", bitmapGameFontLoader);
-
-			assetLoadersByDirectoryPattern.put("music/", musicLoader);
-			assetLoadersByDirectoryPattern.put("musics/", musicLoader);
-			assetLoadersByDirectoryPattern.put("tracks/", musicLoader);
-
-			assetLoadersByDirectoryPattern.put("shaders/", shaderLoader);
-			assetLoadersByDirectoryPattern.put("shader/", shaderLoader);
-
-			assetLoadersByDirectoryPattern.put("sfx/", soundLoader);
-			assetLoadersByDirectoryPattern.put("sound/", soundLoader);
-			assetLoadersByDirectoryPattern.put("sounds/", soundLoader);
+			assetLoaders.put(Music.class, new MusicLoader());
+			assetLoaders.put(Pixmap.class, new PixmapLoader());
+			assetLoaders.put(Shader.class, new ShaderLoader());
+			assetLoaders.put(Sound.class, new SoundLoader());
+			assetLoaders.put(Texture.class, new TextureLoader());
+			assetLoaders.put(TextureAtlas.class, new TextureAtlasLoader());
 		}
 	}
 
-	public <T> T get(String filePath) {
-		return null;
+	public <T> T get(String filePath, Class<T> clazz) {
+		if(!assets.containsKey(filePath)) {
+			throw new MdxException(filePath + " not yet loaded");
+		}
+ 		return assets.get(filePath).getObject(clazz);
 	}
 
-	public void load(String filePath) {
-		load(new AssetDescriptor(filePath));
+	public boolean isLoaded(String filePath) {
+		return assets.containsKey(filePath);
 	}
 
-	public void load(String filePath, AssetParameters assetParameters) {
-		load(new AssetDescriptor(filePath, assetParameters));
+	public <T> void load(String filePath, Class<T> clazz) {
+		load(new AssetDescriptor(filePath, clazz));
+	}
+
+	public <T> void load(String filePath, Class<T> clazz, AssetProperties assetProperties) {
+		load(new AssetDescriptor(filePath, clazz, assetProperties));
 	}
 
 	public void load(AssetDescriptor assetDescriptor) {
+		if(assets.containsKey(assetDescriptor.getFilePath())) {
+			return;
+		}
+		if(!assetLoaders.containsKey(assetDescriptor.getClazz())) {
+			throw new MdxException("No asset loader configured for " + assetDescriptor.getClazz().getName());
+		}
+
 		for(int i = 0; i < loadingQueue.size; i++) {
 			final AssetDescriptor queuedDescriptor = loadingQueue.get(i);
-			if(queuedDescriptor.getFilePath().equals(assetDescriptor.getFilePath())) {
-				Mdx.log.debug(LOGGING_TAG, assetDescriptor.getFilePath() + " is already queued for loading");
-				return;
+			if(!queuedDescriptor.getFilePath().equals(assetDescriptor.getFilePath())) {
+				continue;
 			}
+			if(!assetDescriptor.getClazz().equals(queuedDescriptor.getClazz())) {
+				throw new MdxException(assetDescriptor.getFilePath() + " already queued but with a different class type (queued: " +
+						queuedDescriptor.getClazz().getName() + ", attempting: " + assetDescriptor.getClazz().getName() + ")");
+			}
+			Mdx.log.debug(LOGGING_TAG, assetDescriptor.getFilePath() + " is already queued for loading");
+			return;
 		}
 
 		loadingQueue.add(assetDescriptor);
 	}
 
 	public void unload(String filePath) {
-
+		assets.remove(filePath);
 	}
 
 	public boolean update() {
-		return false;
+		final long startTime = System.nanoTime();
+
+		while(loadingQueue.size > 0) {
+			final AssetDescriptor assetDescriptor = loadingQueue.removeIndex(0);
+			assetDescriptor.setResolvedFileHandle(fileHandleResolver.resolve(assetDescriptor.getFilePath()));
+			final AssetLoader assetLoader = assetLoaders.get(assetDescriptor.getClazz());
+			loadingTasks.add(new AssetLoadingTask(assetLoader, assetDescriptor));
+		}
+		if(System.nanoTime() - startTime >= TimeUnit.MILLISECONDS.toNanos(UPDATE_TIMEBOX_MILLIS)) {
+			return false;
+		}
+
+		//Sort loading tasks so that tasks with less dependencies (more likely to be depended on) are processed first
+		loadingTasks.sort();
+
+		if(System.nanoTime() - startTime >= TimeUnit.MILLISECONDS.toNanos(UPDATE_TIMEBOX_MILLIS)) {
+			return false;
+		}
+
+		for(int i = loadingTasks.size - 1; i >= 0; i--) {
+			if(loadingTasks.get(i).update(this)) {
+				loadingTasks.removeIndex(i);
+			}
+			if(System.nanoTime() - startTime >= TimeUnit.MILLISECONDS.toNanos(UPDATE_TIMEBOX_MILLIS)) {
+				return false;
+			}
+		}
+		return loadingTasks.size == 0 && loadingQueue.size == 0;
 	}
 
 	/**
-	 * Sets the {@link AssetLoader} to use for a specific directory pattern
-	 * @param pattern The directory pattern, e.g. music/ , textures/ , etc.
-	 * @param assetLoader The {@link AssetLoader} to use
+	 * Sets the {@link AssetLoader} to use for a specific class
+	 * @param clazz The class to use the loader for
+	 * @param assetLoader The {@link AssetLoader}
+	 * @param <T> The class type
 	 */
-	public void setAssetLoadersByDirectoryPattern(String pattern, AssetLoader assetLoader) {
-		if(pattern == null) {
-			return;
-		}
-		assetLoadersByDirectoryPattern.put(pattern, assetLoader);
-	}
-
-	/**
-	 * Sets the {@link AssetLoader} to use for a specific file pattern
-	 * @param fileSuffix The file suffix, e.g. .png , .jpg , etc.
-	 * @param assetLoader The {@link AssetLoader} to use
-	 */
-	public void setAssetLoadersByFileSuffix(String fileSuffix, AssetLoader assetLoader) {
-		if(fileSuffix == null) {
-			return;
-		}
-		if(fileSuffix.startsWith("*")) {
-			fileSuffix = fileSuffix.substring(1);
-		}
-		if(fileSuffix.contains("/")) {
-			throw new MdxException("File suffix cannot contain directory - " + fileSuffix);
-		}
-		assetLoadersByFileSuffix.put(fileSuffix, assetLoader);
+	public <T> void setAssetLoader(Class<T> clazz, AssetLoader<T> assetLoader) {
+		assetLoaders.put(clazz, assetLoader);
 	}
 
 	/**
 	 * Clears all {@link AssetLoader}s so that new ones can be set
 	 */
 	public void clearAssetLoaders() {
-		clearAssetLoadersByDirectoryPattern();
-		clearAssetLoadersByFileSuffix();
-	}
-
-	/**
-	 * Clears all {@link AssetLoader}s for directory patterns so that new ones can be set
-	 */
-	public void clearAssetLoadersByDirectoryPattern() {
-		assetLoadersByDirectoryPattern.clear();
-	}
-
-	/**
-	 * Clears all {@link AssetLoader}s for file suffixes so that new ones can be set
-	 */
-	public void clearAssetLoadersByFileSuffix() {
-		assetLoadersByFileSuffix.clear();
-	}
-
-	/**
-	 * Sets if file suffix {@link AssetLoader}s should be checked first
-	 * @param prioritiseFileSuffixes False if directory pattern {@link AssetLoader}s should be checked first
-	 */
-	public void setPrioritiseFileSuffixes(boolean prioritiseFileSuffixes) {
-		this.prioritiseFileSuffixes = prioritiseFileSuffixes;
+		assetLoaders.clear();
 	}
 
 	@Override
 	public void dispose() {
 		loadingQueue.clear();
+	}
+
+	ObjectMap<String, ReferenceCountedObject> getAssets() {
+		return assets;
 	}
 }

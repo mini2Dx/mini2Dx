@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.assets.loader;
+package org.mini2Dx.core.assets;
 
-import org.mini2Dx.core.assets.AssetLoader;
-import org.mini2Dx.core.font.GameFont;
+import org.mini2Dx.gdx.utils.ObjectMap;
 
-public class MonospaceGameFontLoader implements AssetLoader<GameFont> {
+public interface AssetProperties<T> {
+
 }

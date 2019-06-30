@@ -15,10 +15,12 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.collision.CollisionBox;
 import org.mini2Dx.core.collision.PointQuadTree;
 import org.mini2Dx.core.collision.QuadTree;
 import org.mini2Dx.core.collision.RegionQuadTree;
+import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.tiled.TiledMap;
@@ -35,7 +37,7 @@ public class TiledCollisionMapperTest {
 
 	@BeforeClass
 	public static void loadMap() throws TiledException {
-		FileHandle file = new FileHandle(
+		FileHandle file = Mdx.files.internal(
 				Thread.currentThread().getContextClassLoader().getResource("orthogonal.tmx").getFile());
 		tiledMap = new TiledMap(file, false);
 	}

@@ -15,8 +15,19 @@
  ******************************************************************************/
 package org.mini2Dx.core.assets.loader;
 
-import org.mini2Dx.core.assets.AssetLoader;
+import org.mini2Dx.core.assets.*;
+import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.Shader;
+import org.mini2Dx.gdx.utils.Array;
 
 public class ShaderLoader implements AssetLoader<Shader> {
+	@Override
+	public Shader loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+		return null;
+	}
+
+	@Override
+	public Array<AssetDescriptor> getDependencies(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+		return null;
+	}
 }

@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.assets;
+package org.mini2Dx.core.executor;
 
-public interface AssetParameters {
+public interface AsyncFuture {
+	/**
+	 * Returns if the asynchronous task has finished executing
+	 * @return False if the task is still queued or executing
+	 */
+	public boolean isFinished();
 }

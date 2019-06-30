@@ -15,5 +15,9 @@
  ******************************************************************************/
 package org.mini2Dx.core.assets;
 
+import org.mini2Dx.core.files.FileHandle;
+
 public interface AsyncAssetLoader<T> extends AssetLoader<T> {
+
+	public void loadOnAsyncThread(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache);
 }

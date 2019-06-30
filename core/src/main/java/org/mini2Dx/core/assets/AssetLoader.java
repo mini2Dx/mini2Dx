@@ -15,5 +15,12 @@
  ******************************************************************************/
 package org.mini2Dx.core.assets;
 
+import org.mini2Dx.core.files.FileHandle;
+import org.mini2Dx.gdx.utils.Array;
+
 public interface AssetLoader<T> {
+
+	public T loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache);
+
+	public Array<AssetDescriptor> getDependencies(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache);
 }

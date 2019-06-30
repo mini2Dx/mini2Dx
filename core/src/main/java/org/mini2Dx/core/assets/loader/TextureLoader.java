@@ -15,8 +15,20 @@
  ******************************************************************************/
 package org.mini2Dx.core.assets.loader;
 
-import org.mini2Dx.core.assets.AssetLoader;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.assets.*;
+import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.Texture;
+import org.mini2Dx.gdx.utils.Array;
 
 public class TextureLoader implements AssetLoader<Texture> {
+	@Override
+	public Texture loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+		return Mdx.graphics.newTexture(assetDescriptor.getResolvedFileHandle());
+	}
+
+	@Override
+	public Array<AssetDescriptor> getDependencies(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+		return null;
+	}
 }

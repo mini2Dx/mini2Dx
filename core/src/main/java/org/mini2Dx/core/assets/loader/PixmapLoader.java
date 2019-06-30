@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.executor;
+package org.mini2Dx.core.assets.loader;
 
-/**
- * Interface for tasks that can execute partially over each frame
- */
-public interface FrameTask {
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.assets.*;
+import org.mini2Dx.core.files.FileHandle;
+import org.mini2Dx.core.graphics.Pixmap;
+import org.mini2Dx.gdx.utils.Array;
 
-	/**
-	 * Called each frame on the game thread to progress the task further
-	 * @param delta The delta frame time
-	 * @return True if the task has completed
-	 */
-	public boolean update(float delta);
+public class PixmapLoader implements AssetLoader<Pixmap> {
+
+	@Override
+	public Pixmap loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+		return Mdx.graphics.newPixmap(assetDescriptor.getResolvedFileHandle());
+	}
+
+	@Override
+	public Array<AssetDescriptor> getDependencies(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+		return null;
+	}
 }

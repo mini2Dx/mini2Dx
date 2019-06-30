@@ -15,8 +15,34 @@
  ******************************************************************************/
 package org.mini2Dx.core.assets.loader;
 
-import org.mini2Dx.core.assets.AssetLoader;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.assets.*;
 import org.mini2Dx.core.audio.Sound;
+import org.mini2Dx.core.files.FileHandle;
+import org.mini2Dx.gdx.utils.Array;
 
-public class SoundLoader implements AssetLoader<Sound> {
+import java.io.IOException;
+
+public class SoundLoader implements AsyncAssetLoader<Sound> {
+	private static final String LOGGING_TAG = SoundLoader.class.getSimpleName();
+	private static final String CACHE_SOUND_KEY = "sound";
+
+	@Override
+	public Sound loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+		return asyncLoadingCache.getCache(CACHE_SOUND_KEY, Sound.class);
+	}
+
+	@Override
+	public void loadOnAsyncThread(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+		try {
+			asyncLoadingCache.setCache(CACHE_SOUND_KEY, Mdx.audio.newSound(assetDescriptor.getResolvedFileHandle()));
+		} catch (IOException e) {
+			Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public Array<AssetDescriptor> getDependencies(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+		return null;
+	}
 }

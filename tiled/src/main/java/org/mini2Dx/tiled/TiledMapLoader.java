@@ -11,92 +11,54 @@
  */
 package org.mini2Dx.tiled;
 
-import org.mini2Dx.core.assets.AssetDescriptor;
-import org.mini2Dx.core.assets.AssetManager;
+import org.mini2Dx.core.assets.*;
 import org.mini2Dx.core.files.FileHandle;
-import org.mini2Dx.core.files.FileHandleResolver;
 import org.mini2Dx.gdx.utils.Array;
-import org.mini2Dx.gdx.utils.ObjectMap;
-import org.mini2Dx.tiled.TiledMapLoader.TiledMapParameter;
-
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * An {@link AssetLoader} implementation for loading {@link TiledMap} instances
  */
-public class TiledMapLoader extends AsynchronousAssetLoader<TiledMap, TiledMapParameter> {
-	private static final TiledMapParameter DEFAULT_PARAMETERS = new TiledMapParameter();
+public class TiledMapLoader implements AsyncAssetLoader<TiledMap> {
+	private static final String LOGGING_TAG = TiledMapLoader.class.getSimpleName();
 
-	private final ReadWriteLock lock = new ReentrantReadWriteLock();
-	private final ObjectMap<String, TiledMapData> tiledMapData = new ObjectMap<String, TiledMapData>();
+	private static final String CACHE_TILED_MAP_DATA = "tiledMapData";
+	private static final String CACHE_TILED_MAP = "tiledMap";
+
 	private final TiledParser tiledParser = new TiledParser();
-	
-	private TiledMap nextTiledMap;
-	
-	public TiledMapLoader(FileHandleResolver resolver) {
-		super(resolver);
+
+
+	@Override
+	public TiledMap loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+		final TiledMap result = asyncLoadingCache.getCache(CACHE_TILED_MAP, TiledMap.class);
+		final TiledAssetProperties tiledAssetProperties = (TiledAssetProperties) assetDescriptor.getParameters();
+		if(tiledAssetProperties != null && tiledAssetProperties.loadTilesets) {
+			result.loadTilesetTextures(assetManager);
+		}
+		return result;
 	}
 
 	@Override
-	public void loadAsync(AssetManager manager, String fileName, FileHandle file, TiledMapParameter parameter) {
-		if(parameter == null) {
-			parameter = DEFAULT_PARAMETERS;
+	public Array<AssetDescriptor> getDependencies(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+		final TiledMapData tiledMapData;
+		if(!asyncLoadingCache.containsCache(CACHE_TILED_MAP_DATA)) {
+			tiledMapData = new TiledMapData(tiledParser, assetDescriptor.getResolvedFileHandle());
+			asyncLoadingCache.setCache(CACHE_TILED_MAP_DATA, tiledMapData);
+		} else {
+			tiledMapData = asyncLoadingCache.getCache(CACHE_TILED_MAP_DATA, TiledMapData.class);
 		}
-		if(parameter.cacheLayers) {
-			nextTiledMap = null;
+		return tiledMapData.getDependencies();
+	}
+
+	@Override
+	public void loadOnAsyncThread(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+		if(asyncLoadingCache.containsCache(CACHE_TILED_MAP)) {
 			return;
 		}
-		loadNextTiledMap(fileName, file, parameter);
+		asyncLoadingCache.setCache(CACHE_TILED_MAP, new TiledMap(
+				asyncLoadingCache.getCache(CACHE_TILED_MAP_DATA, TiledMapData.class), false));
 	}
 
-	@Override
-	public TiledMap loadSync(AssetManager manager, String fileName, FileHandle file, TiledMapParameter parameter) {
-		if(parameter == null) {
-			parameter = DEFAULT_PARAMETERS;
-		}
-		final TiledMap result = loadNextTiledMap(fileName, file, parameter);
-		result.loadTilesetTextures(manager);
-		this.nextTiledMap = null;
-		return result;
-	}
-
-	@Override
-	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, TiledMapParameter parameter) {
-		if(parameter == null) {
-			parameter = DEFAULT_PARAMETERS;
-		}
-		if(!parameter.loadTilesets) {
-			return null;
-		}
-		return getTiledMapData(fileName, file).getDependencies();
-	}
-
-	private TiledMap loadNextTiledMap(String fileName, FileHandle file, TiledMapParameter parameter) {
-		if(nextTiledMap == null) {
-			nextTiledMap = new TiledMap(getTiledMapData(fileName, file), false);
-		}
-		return nextTiledMap;
-	}
-	
-	private TiledMapData getTiledMapData(String fileName, FileHandle file) {
-		lock.readLock().lock();
-		final TiledMapData result;
-		if(!tiledMapData.containsKey(fileName)) {
-			lock.readLock().unlock();
-			lock.writeLock().lock();
-			result = new TiledMapData(tiledParser, file);
-			tiledMapData.put(fileName, result);
-			lock.writeLock().unlock();
-		} else {
-			result = tiledMapData.get(fileName);
-			lock.readLock().unlock();
-		}
-		return result;
-	}
-	
-	static public class TiledMapParameter extends AssetLoaderParameters<TiledMap> {
-		public boolean loadTilesets = true;
-		public boolean cacheLayers = false;
+	static class TiledAssetProperties implements AssetProperties<TiledMap> {
+		boolean loadTilesets = true;
 	}
 }

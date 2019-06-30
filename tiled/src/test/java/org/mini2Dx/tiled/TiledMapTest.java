@@ -15,6 +15,7 @@ import junit.framework.Assert;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.geom.Polygon;
 import org.mini2Dx.tiled.exception.TiledException;
@@ -27,7 +28,7 @@ public class TiledMapTest {
 
 	@BeforeClass
 	public static void loadMap() throws TiledException {
-		FileHandle file = new FileHandle(Thread.currentThread()
+		FileHandle file = Mdx.files.internal(Thread.currentThread()
 				.getContextClassLoader().getResource("orthogonal.tmx").getFile());
 		tiledMap = new TiledMap(file, false);
 	}

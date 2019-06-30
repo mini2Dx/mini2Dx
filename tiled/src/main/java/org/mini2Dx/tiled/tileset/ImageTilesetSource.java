@@ -96,7 +96,7 @@ public class ImageTilesetSource extends TilesetSource {
 	@Override
 	public Array<AssetDescriptor> getDependencies(FileHandle tmxPath) {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
-		dependencies.add(new AssetDescriptor(tilesetImagePath));
+		dependencies.add(new AssetDescriptor(tilesetImagePath, Pixmap.class));
 		return dependencies;
 	}
 
