@@ -71,6 +71,10 @@ public class AssetManager implements Disposable {
 
 			assetLoadersByDirectoryPattern.put("music/", musicLoader);
 			assetLoadersByDirectoryPattern.put("musics/", musicLoader);
+			assetLoadersByDirectoryPattern.put("tracks/", musicLoader);
+
+			assetLoadersByDirectoryPattern.put("shaders/", shaderLoader);
+			assetLoadersByDirectoryPattern.put("shader/", shaderLoader);
 
 			assetLoadersByDirectoryPattern.put("sfx/", soundLoader);
 			assetLoadersByDirectoryPattern.put("sound/", soundLoader);

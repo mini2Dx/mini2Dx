@@ -396,5 +396,30 @@ namespace monogame.Graphics
         {
             return toARGB8888(color.getRAsByte(), color.getGAsByte(), color.getBAsByte(), color.getAAsByte());
         }
+
+        public bool equals(Color c)
+        {
+            if(c is MonoGameColor)
+            {
+                return _color.Equals((c as MonoGameColor)._color);
+            }
+            if(getRAsByte() != c.getRAsByte())
+            {
+                return false;
+            }
+            if (getGAsByte() != c.getGAsByte())
+            {
+                return false;
+            }
+            if (getBAsByte() != c.getBAsByte())
+            {
+                return false;
+            }
+            if (getAAsByte() != c.getAAsByte())
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

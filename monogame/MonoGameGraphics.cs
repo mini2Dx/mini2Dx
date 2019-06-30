@@ -550,5 +550,10 @@ namespace monogame
         {
             throw new System.NotImplementedException();
         }
+
+        public long getFrameId()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

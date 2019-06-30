@@ -16,6 +16,7 @@
 package org.mini2Dx.core.game;
 
 import org.mini2Dx.core.Graphics;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.utils.Array;
 
@@ -37,7 +38,12 @@ public abstract class GameContainer {
      */
     public abstract void initialise();
 
-    public void preUpdate() {
+    /**
+     * Called by mini2Dx pre-update
+     * @param delta The time in seconds since the last update
+     */
+    public void preUpdate(float delta) {
+        Mdx.exec.update(delta);
         InterpolationTracker.preUpdate();
     }
 
