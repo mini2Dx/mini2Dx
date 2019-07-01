@@ -36,11 +36,11 @@ public class TiledMapTest {
 		Mdx.files = new LibgdxFiles();
 		Mdx.graphics = new LibgdxGraphicsUtils();
 
-		FileHandle file = Mdx.files.internal(Thread.currentThread()
-				.getContextClassLoader().getResource("orthogonal.tmx").getFile().replaceAll(" ", "\\ "));
+		FileHandle file = Mdx.files.internal(Thread.currentThread().getContextClassLoader()
+				.getResource("orthogonal.tmx").getFile().replaceAll("%20", " "));
 		tiledMap = new TiledMap(file, false);
 	}
-	
+
 	@Test
 	public void testGetBackgroundColor() {
 		Assert.assertNotNull(tiledMap.getBackgroundColor());
@@ -50,17 +50,17 @@ public class TiledMapTest {
 	public void testGetMapProperty() {
 		Assert.assertEquals("SUCCESS", tiledMap.getProperty("testMapProperty"));
 	}
-	
+
 	@Test
 	public void testGetLayerProperty() {
 		Assert.assertEquals("SUCCESS", tiledMap.getTileLayer("Collisions").getProperty("testLayerProperty"));
 	}
-	
+
 	@Test
 	public void testGetTilesetProperty() {
 		Assert.assertEquals("SUCCESS", tiledMap.getTilesets().get(0).getProperty("testTilesetProperty"));
 	}
-	
+
 	@Test
 	public void testGetTileProperty() {
 		Assert.assertEquals("SUCCESS", tiledMap.getTilesets().get(0).getTile(0, 0).getProperty("testTileProperty"));
@@ -86,8 +86,7 @@ public class TiledMapTest {
 		Assert.assertEquals(32, tiledMap.getTileWidth());
 
 		for (int i = 0; i < tiledMap.getTilesets().size; i++) {
-			Assert.assertEquals(32, tiledMap.getTilesets().get(i)
-					.getTileWidth());
+			Assert.assertEquals(32, tiledMap.getTilesets().get(i).getTileWidth());
 		}
 	}
 
@@ -96,8 +95,7 @@ public class TiledMapTest {
 		Assert.assertEquals(32, tiledMap.getTileHeight());
 
 		for (int i = 0; i < tiledMap.getTilesets().size; i++) {
-			Assert.assertEquals(32, tiledMap.getTilesets().get(i)
-					.getTileHeight());
+			Assert.assertEquals(32, tiledMap.getTilesets().get(i).getTileHeight());
 		}
 	}
 
@@ -110,10 +108,10 @@ public class TiledMapTest {
 	public void testGetTileLayers() {
 		Assert.assertEquals(true, tiledMap.getTileLayer("Ground") != null);
 		Assert.assertEquals(0, tiledMap.getTileLayer("Ground").getIndex());
-		
+
 		Assert.assertEquals(true, tiledMap.getTileLayer("Collisions") != null);
 		Assert.assertEquals(3, tiledMap.getTileLayer("Collisions").getIndex());
-		
+
 		Assert.assertEquals(true, tiledMap.getTileLayer("Higher") != null);
 		Assert.assertEquals(6, tiledMap.getTileLayer("Higher").getIndex());
 	}
@@ -166,9 +164,9 @@ public class TiledMapTest {
 		Assert.assertEquals("Objects", group.getName());
 		Assert.assertEquals(3, group.getObjects().size);
 
-		for(int i = 0; i < group.getObjects().size; i++) {
+		for (int i = 0; i < group.getObjects().size; i++) {
 			TiledObject obj = group.getObjects().get(i);
-			switch(obj.getName()) {
+			switch (obj.getName()) {
 			case "test1":
 				Assert.assertEquals(true, obj.containsProperty("testProperty"));
 				Assert.assertEquals("SUCCESS", obj.getProperty("testProperty"));
@@ -207,7 +205,7 @@ public class TiledMapTest {
 		TiledObjectGroup group = tiledMap.getObjectGroup("Objects");
 		Assert.assertEquals(4, group.getIndex());
 		Assert.assertEquals(group.getIndex(), tiledMap.getLayerIndex(group.getName()));
-		
+
 		TileLayer tileLayer = tiledMap.getTileLayer("Higher");
 		Assert.assertEquals(6, tileLayer.getIndex());
 	}

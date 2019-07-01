@@ -42,6 +42,9 @@ namespace monogame
         private Vector2 _translation, _scale, _rotationCenter;
         private bool _isFlushing;
         private MonoGameShader _currentShader = new MonoGameShader("defaultShader");
+        private org.mini2Dx.core.geom.Rectangle _clipRectangle;
+        private RasterizerState _rasterizerState;
+        private bool _beginSpriteBatchCalled;
 
         private MonoGameShapeRenderer _shapeRenderer;
         
@@ -61,16 +64,20 @@ namespace monogame
             _scale = Vector2.One;
             _rotationCenter = Vector2.Zero;
             _shapeRenderer = new MonoGameShapeRenderer(graphicsDevice, MonoGameColor.toArgb(_setColor), _spriteBatch, _rotationCenter, _translation, _scale, _tint);
+            _graphicsDevice.ScissorRectangle = new Rectangle();
+            _rasterizerState = new RasterizerState(){ScissorTestEnable = false};
         }
 
         internal void beginSpriteBatch()
         {
-            _spriteBatch.Begin(SpriteSortMode.Deferred, _blendState, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationCenter + _translation) * _scale, 0)), effect: _currentShader.shader);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, _blendState, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationCenter + _translation) * _scale, 0)), effect: _currentShader.shader, rasterizerState: _rasterizerState);
+            _beginSpriteBatchCalled = true;
         }
 
         internal void endSpriteBatch()
         {
             _spriteBatch.End();
+            _beginSpriteBatchCalled = false;
         }
 
         internal void clearGraphicsDevice(Microsoft.Xna.Framework.Color color)
@@ -93,7 +100,7 @@ namespace monogame
 
         public void postRender()
         {
-            _spriteBatch.End();
+            endSpriteBatch();
         }
 
         public void drawLineSegment(float x1, float y1, float x2, float y2)
@@ -504,22 +511,46 @@ namespace monogame
 
         public void setClip(org.mini2Dx.core.geom.Rectangle clip)
         {
-            throw new System.NotImplementedException();
+            _rasterizerState = new RasterizerState(){ScissorTestEnable = true};
+            _clipRectangle = clip;
+            var rect = _graphicsDevice.ScissorRectangle;
+            rect.X = (int) clip.getX();
+            rect.Y = (int) clip.getY();
+            rect.Width = (int) clip.getWidth();
+            rect.Height = (int) clip.getHeight();
+            _graphicsDevice.ScissorRectangle = rect;
+            if (_beginSpriteBatchCalled)
+            {
+                endSpriteBatch();
+                beginSpriteBatch();
+            }
         }
 
         public org.mini2Dx.core.geom.Rectangle removeClip()
         {
-            throw new System.NotImplementedException();
+            _rasterizerState = new RasterizerState() { ScissorTestEnable = false };
+
+            if (_beginSpriteBatchCalled)
+            {
+                endSpriteBatch();
+                beginSpriteBatch();
+            }
+
+            var clip = _clipRectangle;
+            _clipRectangle = null;
+            return clip;
         }
 
         public org.mini2Dx.core.geom.Rectangle peekClip()
         {
-            throw new System.NotImplementedException();
+            return _clipRectangle;
         }
 
         public void peekClip(org.mini2Dx.core.geom.Rectangle rectangle)
         {
-            throw new System.NotImplementedException();
+            rectangle.setXY(_clipRectangle.getX(), _clipRectangle.getY());
+            rectangle.setHeight(_clipRectangle.getHeight());
+            rectangle.setWidth(_clipRectangle.getWidth());
         }
 
         public void drawFontCache(GameFontCache gameFontCache)

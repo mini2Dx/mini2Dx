@@ -23,32 +23,33 @@ import org.mini2Dx.tiled.exception.TiledException;
 import junit.framework.Assert;
 
 /**
- * Unit tests for {@link TiledMap} instances sharing the same {@link TiledParser}
+ * Unit tests for {@link TiledMap} instances sharing the same
+ * {@link TiledParser}
  */
 public class SharedParserTiledMapTest {
-	
+
 	@Test
-	public void testSharedParser() throws TiledException  {
+	public void testSharedParser() throws TiledException {
 		Gdx.files = new LwjglFiles();
 		Mdx.files = new LibgdxFiles();
 		Mdx.graphics = new LibgdxGraphicsUtils();
 
 		TiledParser parser = new TiledParser();
-		
-		FileHandle orthogonalFile = Mdx.files.internal(Thread.currentThread()
-				.getContextClassLoader().getResource("orthogonal.tmx").getFile().replaceAll(" ", "\\ "));
-		FileHandle orthogonalTsxFile = Mdx.files.internal(Thread.currentThread()
-				.getContextClassLoader().getResource("orthogonal_tsx.tmx").getFile().replaceAll(" ", "\\ "));
-		FileHandle isometricFile = Mdx.files.internal(Thread.currentThread()
-				.getContextClassLoader().getResource("isometric.tmx").getFile().replaceAll(" ", "\\ "));
-		
+
+		FileHandle orthogonalFile = Mdx.files.internal(Thread.currentThread().getContextClassLoader()
+				.getResource("orthogonal.tmx").getFile().replaceAll("%20", " "));
+		FileHandle orthogonalTsxFile = Mdx.files.internal(Thread.currentThread().getContextClassLoader()
+				.getResource("orthogonal_tsx.tmx").getFile().replaceAll("%20", " "));
+		FileHandle isometricFile = Mdx.files.internal(Thread.currentThread().getContextClassLoader()
+				.getResource("isometric.tmx").getFile().replaceAll("%20", " "));
+
 		TiledMap orthogonalTiledMap = new TiledMap(parser, orthogonalFile, false);
 		TiledMap orthogonalTsxTiledMap = new TiledMap(parser, orthogonalTsxFile, false);
 		TiledMap isometricTiledMap = new TiledMap(parser, isometricFile, false);
-		
+
 		Assert.assertEquals(Orientation.ORTHOGONAL, orthogonalTiledMap.getOrientation());
 		Assert.assertEquals(Orientation.ISOMETRIC, isometricTiledMap.getOrientation());
-		
+
 		Assert.assertEquals(Orientation.ORTHOGONAL, orthogonalTsxTiledMap.getOrientation());
 		Assert.assertEquals(1, orthogonalTsxTiledMap.getTilesets().size);
 	}

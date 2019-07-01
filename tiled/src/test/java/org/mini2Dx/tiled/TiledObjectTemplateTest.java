@@ -31,13 +31,13 @@ public class TiledObjectTemplateTest {
 		Mdx.files = new LibgdxFiles();
 		Mdx.graphics = new LibgdxGraphicsUtils();
 
-		FileHandle file = Mdx.files.internal(Thread.currentThread()
-				.getContextClassLoader().getResource("orthogonal_tsx.tmx").getFile().replaceAll(" ", "\\ "));
+		FileHandle file = Mdx.files.internal(Thread.currentThread().getContextClassLoader()
+				.getResource("orthogonal_tsx.tmx").getFile().replaceAll("%20", " "));
 		tiledMap = new TiledMap(file, false);
 	}
 
 	@Test
-	public void testTiledObjectTemplate() throws TiledException  {
+	public void testTiledObjectTemplate() throws TiledException {
 		final String objectGroupName = "Objects";
 		final String propertyName = "testProperty";
 
