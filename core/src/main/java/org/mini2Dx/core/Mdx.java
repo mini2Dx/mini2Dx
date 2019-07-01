@@ -17,7 +17,6 @@ package org.mini2Dx.core;
 
 import org.mini2Dx.core.serialization.JsonSerializer;
 import org.mini2Dx.core.serialization.XmlSerializer;
-import org.mini2Dx.core.executor.TaskExecutor;
 
 /**
  * Mini2Dx environment class<br>

@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.executor;
+package org.mini2Dx.core;
 
+import org.mini2Dx.core.executor.AsyncFuture;
+import org.mini2Dx.core.executor.AsyncResult;
+import org.mini2Dx.core.executor.FrameSpreadTask;
 import org.mini2Dx.gdx.utils.Disposable;
 
 import java.util.concurrent.Callable;

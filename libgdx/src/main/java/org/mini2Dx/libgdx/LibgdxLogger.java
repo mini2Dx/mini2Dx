@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.files;
+package org.mini2Dx.libgdx;
 
-public enum FileType {
-	/**
-	 * Desktop: Jar asset directory<br>
-	 * Android: Asset directory<br>
-	 * iOS:<br>
-	 * Console: ROM resource<br>
-	 */
-	INTERNAL,
-	/**
-	 * Desktop: Anywhere on filesystem<br>
-	 * Android: Asset directory (due to sandboxing)<br>
-	 * iOS:<br>
-	 * Console: Player storage<br>
-	 */
-	EXTERNAL,
-	/**
-	 * Desktop: Folder relative to executing JAR<br>
-	 * Android: Private app files directory<br>
-	 * iOS:<br>
-	 * Console: Game data directory<br>
-	 */
-	LOCAL
+import com.badlogic.gdx.Gdx;
+import org.mini2Dx.core.Logger;
+
+public class LibgdxLogger implements Logger {
+	@Override
+	public void info(String tag, String message) {
+		Gdx.app.log(tag, message);
+	}
+
+	@Override
+	public void debug(String tag, String message) {
+		Gdx.app.debug(tag, message);
+	}
+
+	@Override
+	public void error(String tag, String message) {
+		Gdx.app.error(tag, message);
+	}
+
+	@Override
+	public void error(String tag, String message, Exception e) {
+		Gdx.app.error(tag, message, e);
+	}
 }

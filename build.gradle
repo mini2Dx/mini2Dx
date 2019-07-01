@@ -292,6 +292,42 @@ project(":" + rootProject.name + "-core") {
 	build.dependsOn ikvm
 }
 
+project(":" + rootProject.name + "-libgdx") {
+	description = "mini2Dx LibGDX library"
+	
+	dependencies {
+		compile project(":" + rootProject.name + "-core")
+		compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+
+		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+		testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+		testCompile "net.jodah:concurrentunit:$concurrentUnitVersion"
+	}
+}
+
+project(":" + rootProject.name + "-desktop") {
+	description = "mini2Dx desktop runtime"
+	
+	dependencies {
+		compile project(":" + rootProject.name + "-libgdx")
+		compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
+
+		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+		testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+		testCompile "net.jodah:concurrentunit:$concurrentUnitVersion"
+	}
+}
+
 project(":" + rootProject.name + "-tiled") {
 	description = "mini2Dx Tiled support library"
 
@@ -319,6 +355,7 @@ project(":" + rootProject.name + "-tiled") {
 }
 
 project(":" + rootProject.name + "-monogame") {
+	description = "mini2Dx MonoGame runtime"
 
 	if (Os.isFamily(Os.FAMILY_WINDOWS)) {
 		task msbuild(type:Exec, dependsOn: project(":" + rootProject.name + "-core").ikvm) {
