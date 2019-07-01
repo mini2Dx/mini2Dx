@@ -28,6 +28,11 @@ namespace monogame.Graphics
         {
             shader = ((MonoGameFiles) Mdx.files)._contentManager.Load<Effect>(name);
         }
+
+        public MonoGameShader(Effect effect)
+        {
+            shader = effect;
+        }
         
         public void dispose()
         {

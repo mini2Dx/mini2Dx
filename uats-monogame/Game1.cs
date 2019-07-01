@@ -337,7 +337,10 @@ namespace uats_monogame
             Mdx.graphicsContext.drawTriangle(150, 74, 122, 108, 214, 147);
             Mdx.graphicsContext.drawTexture(sampleTexture, 200, 100);
             Mdx.graphicsContext.drawTextureRegion(sampleRegion, 500, 300);
+            var prevShader = Mdx.graphicsContext.getShader();
+            Mdx.graphicsContext.setShader(sampleShader);
             Mdx.graphicsContext.drawTextureRegion(sampleAtlasRegion, 400, 200);
+            Mdx.graphicsContext.setShader(prevShader);
             Mdx.graphicsContext.drawTextureRegion(sampleRegion2, 600, 150, 100, 100);
             sampleSprite.setOriginBasedPosition(gameWidth / 2, gameHeight / 2);
             Mdx.graphicsContext.drawSprite(sampleSprite);
