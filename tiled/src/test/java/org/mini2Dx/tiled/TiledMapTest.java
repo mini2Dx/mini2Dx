@@ -37,7 +37,7 @@ public class TiledMapTest {
 		Mdx.graphics = new LibgdxGraphicsUtils();
 
 		FileHandle file = Mdx.files.internal(Thread.currentThread()
-				.getContextClassLoader().getResource("orthogonal.tmx").getFile());
+				.getContextClassLoader().getResource("orthogonal.tmx").getFile().replaceAll(" ", "\\ "));
 		tiledMap = new TiledMap(file, false);
 	}
 	

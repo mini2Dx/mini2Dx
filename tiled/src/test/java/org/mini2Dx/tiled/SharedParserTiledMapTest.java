@@ -36,11 +36,11 @@ public class SharedParserTiledMapTest {
 		TiledParser parser = new TiledParser();
 		
 		FileHandle orthogonalFile = Mdx.files.internal(Thread.currentThread()
-				.getContextClassLoader().getResource("orthogonal.tmx").getFile());
+				.getContextClassLoader().getResource("orthogonal.tmx").getFile().replaceAll(" ", "\\ "));
 		FileHandle orthogonalTsxFile = Mdx.files.internal(Thread.currentThread()
-				.getContextClassLoader().getResource("orthogonal_tsx.tmx").getFile());
+				.getContextClassLoader().getResource("orthogonal_tsx.tmx").getFile().replaceAll(" ", "\\ "));
 		FileHandle isometricFile = Mdx.files.internal(Thread.currentThread()
-				.getContextClassLoader().getResource("isometric.tmx").getFile());
+				.getContextClassLoader().getResource("isometric.tmx").getFile().replaceAll(" ", "\\ "));
 		
 		TiledMap orthogonalTiledMap = new TiledMap(parser, orthogonalFile, false);
 		TiledMap orthogonalTsxTiledMap = new TiledMap(parser, orthogonalTsxFile, false);

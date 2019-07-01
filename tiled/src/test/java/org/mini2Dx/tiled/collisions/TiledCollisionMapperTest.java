@@ -46,7 +46,7 @@ public class TiledCollisionMapperTest {
 		Mdx.graphics = new LibgdxGraphicsUtils();
 
 		FileHandle file = Mdx.files.internal(
-				Thread.currentThread().getContextClassLoader().getResource("orthogonal.tmx").getFile());
+				Thread.currentThread().getContextClassLoader().getResource("orthogonal.tmx").getFile().replaceAll(" ", "\\ "));
 		tiledMap = new TiledMap(file, false);
 	}
 

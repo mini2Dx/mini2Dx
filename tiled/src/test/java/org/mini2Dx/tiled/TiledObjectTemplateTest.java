@@ -32,7 +32,7 @@ public class TiledObjectTemplateTest {
 		Mdx.graphics = new LibgdxGraphicsUtils();
 
 		FileHandle file = Mdx.files.internal(Thread.currentThread()
-				.getContextClassLoader().getResource("orthogonal_tsx.tmx").getFile());
+				.getContextClassLoader().getResource("orthogonal_tsx.tmx").getFile().replaceAll(" ", "\\ "));
 		tiledMap = new TiledMap(file, false);
 	}
 
