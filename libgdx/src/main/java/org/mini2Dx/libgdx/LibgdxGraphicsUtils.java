@@ -18,26 +18,27 @@ package org.mini2Dx.libgdx;
 import org.mini2Dx.core.GraphicsUtils;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.*;
+import org.mini2Dx.libgdx.graphics.LibgdxColor;
 
 public class LibgdxGraphicsUtils implements GraphicsUtils {
 	@Override
 	public Color newColor(int rgba8888) {
-		return null;
+		return new LibgdxColor(rgba8888);
 	}
 
 	@Override
 	public Color newColor(int r, int g, int b, int a) {
-		return null;
+		return new LibgdxColor(r, g, b, a);
 	}
 
 	@Override
 	public Color newColor(float r, float g, float b, float a) {
-		return null;
+		return new LibgdxColor(r, g, b, a);
 	}
 
 	@Override
 	public Color newColor(byte r, byte g, byte b, byte a) {
-		return null;
+		return new LibgdxColor(r, g, b, a);
 	}
 
 	@Override
