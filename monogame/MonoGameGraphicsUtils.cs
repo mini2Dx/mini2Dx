@@ -34,7 +34,13 @@ namespace monogame
         {
             _graphicsDevice = graphicsDevice;
         }
-        
+
+        public Texture newTexture(byte[] barr)
+        {
+            var texture = Texture2D.FromStream(_graphicsDevice, new MemoryStream(barr));
+            return new MonoGameTexture(texture);
+        }
+
         public Color newColor(float r, float g, float b, float a)
         {
             return new MonoGameColor(r,g,b,a);
