@@ -3,6 +3,7 @@ out/
 _tools/ikvm/
 monogame/obj/
 uats-monogame/obj/
+uats-monogame/Content/obj/
 packages/
 .DS_Store
 .classpath

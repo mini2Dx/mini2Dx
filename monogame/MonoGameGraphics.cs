@@ -41,6 +41,7 @@ namespace monogame
         internal int _gameWidth, _gameHeight;
         private Vector2 _translation, _scale, _rotationCenter;
         private bool _isFlushing;
+        private MonoGameShader _currentShader = new MonoGameShader("defaultShader");
 
         private MonoGameShapeRenderer _shapeRenderer;
         
@@ -64,7 +65,7 @@ namespace monogame
 
         internal void beginSpriteBatch()
         {
-            _spriteBatch.Begin(SpriteSortMode.Deferred, _blendState, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationCenter + _translation) * _scale, 0)));
+            _spriteBatch.Begin(SpriteSortMode.Deferred, _blendState, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationCenter + _translation) * _scale, 0)), effect: _currentShader.shader);
         }
 
         internal void endSpriteBatch()
@@ -533,7 +534,7 @@ namespace monogame
 
         public Shader getShader()
         {
-            throw new System.NotImplementedException();
+            return _currentShader;
         }
 
         public GameFont getFont()
@@ -543,12 +544,12 @@ namespace monogame
 
         public void setShader(Shader shader)
         {
-            throw new System.NotImplementedException();
+            _currentShader = (MonoGameShader) shader;
         }
 
         public void clearShader()
         {
-            throw new System.NotImplementedException();
+            _currentShader = new MonoGameShader("defaultShader");
         }
 
         public long getFrameId()

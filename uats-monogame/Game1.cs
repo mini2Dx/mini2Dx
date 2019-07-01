@@ -46,6 +46,7 @@ namespace uats_monogame
         private Sprite sampleSprite;
         private Music music;
         private Sound sound;
+        internal Shader sampleShader;
         private Vector2 mousePosition;
         
         public Game1()
@@ -57,6 +58,7 @@ namespace uats_monogame
         private class UATInputProcessor : InputProcessor, Xbox360GamePadListener
         {
             private readonly Game1 game;
+            private bool isShaderApplied;
 
             public UATInputProcessor(Game1 game)
             {
@@ -69,6 +71,19 @@ namespace uats_monogame
                 {
                     Console.WriteLine("Exiting...");
                     game.Exit();
+                }
+                else if (keycode == Input.Keys.S)
+                {
+                    if (isShaderApplied)
+                    {
+                        Mdx.graphicsContext.clearShader();
+                    }
+                    else
+                    {
+                        Mdx.graphicsContext.setShader(game.sampleShader);
+                    }
+
+                    isShaderApplied = !isShaderApplied;
                 }
                 Console.WriteLine("keyDown({0})", keycode);
                 return false;
@@ -259,6 +274,8 @@ namespace uats_monogame
             Mdx.audio.addSoundCompletionListener(new AudioCompletionListener());
             
             Mdx.input.newXbox360GamePad((GamePad)Mdx.input.getGamePads().get(0)).addListener(new UATInputProcessor(this));
+
+            sampleShader = new MonoGameShader("grayscaleShader");
         }
 
         /// <summary>
