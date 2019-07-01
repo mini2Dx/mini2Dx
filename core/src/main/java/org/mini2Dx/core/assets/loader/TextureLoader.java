@@ -21,10 +21,24 @@ import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.Texture;
 import org.mini2Dx.gdx.utils.Array;
 
-public class TextureLoader implements AssetLoader<Texture> {
+import java.io.IOException;
+
+public class TextureLoader implements AsyncAssetLoader<Texture> {
+	private static final String LOGGING_TAG = TextureLoader.class.getSimpleName();
+	private static final String CACHE_TEXTURE_DATA_KEY = "textureData";
+
 	@Override
 	public Texture loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
-		return Mdx.graphics.newTexture(assetDescriptor.getResolvedFileHandle());
+		return Mdx.graphics.newTexture(asyncLoadingCache.getCache(CACHE_TEXTURE_DATA_KEY, byte[].class));
+	}
+
+	@Override
+	public void loadOnAsyncThread(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+		try {
+			asyncLoadingCache.setCache(CACHE_TEXTURE_DATA_KEY, assetDescriptor.getResolvedFileHandle().readBytes());
+		} catch (IOException e) {
+			Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
+		}
 	}
 
 	@Override
