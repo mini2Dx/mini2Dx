@@ -20,10 +20,6 @@ import org.mini2Dx.gdx.utils.ObjectMap;
 public class AsyncLoadingCache {
 	private final ObjectMap<String, Object> cache = new ObjectMap<String, Object>(7);
 
-	public String getCache(String cacheKey) {
-		return getCache(cacheKey, String.class, null);
-	}
-
 	public <T> T getCache(String cacheKey, Class<T> clazz) {
 		return (T) cache.get(cacheKey);
 	}

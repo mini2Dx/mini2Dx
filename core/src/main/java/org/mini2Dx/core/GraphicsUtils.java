@@ -40,6 +40,8 @@ public interface GraphicsUtils {
 
 	public Texture newTexture(Pixmap pixmap, PixmapFormat format);
 
+	public Texture newTexture(byte [] fileData);
+
 	public TextureRegion newTextureRegion(Texture texture);
 
 	public TextureRegion newTextureRegion(Texture texture, int width, int height);
