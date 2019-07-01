@@ -11,9 +11,13 @@
  */
 package org.mini2Dx.tiled;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import org.junit.Test;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.files.FileHandle;
+import org.mini2Dx.libgdx.LibgdxFiles;
+import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
 import org.mini2Dx.tiled.exception.TiledException;
 
 import junit.framework.Assert;
@@ -25,6 +29,10 @@ public class SharedParserTiledMapTest {
 	
 	@Test
 	public void testSharedParser() throws TiledException  {
+		Gdx.files = new LwjglFiles();
+		Mdx.files = new LibgdxFiles();
+		Mdx.graphics = new LibgdxGraphicsUtils();
+
 		TiledParser parser = new TiledParser();
 		
 		FileHandle orthogonalFile = Mdx.files.internal(Thread.currentThread()

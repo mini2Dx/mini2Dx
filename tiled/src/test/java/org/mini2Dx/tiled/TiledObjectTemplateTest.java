@@ -11,11 +11,15 @@
  */
 package org.mini2Dx.tiled;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import junit.framework.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.files.FileHandle;
+import org.mini2Dx.libgdx.LibgdxFiles;
+import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
 import org.mini2Dx.tiled.exception.TiledException;
 
 public class TiledObjectTemplateTest {
@@ -23,6 +27,10 @@ public class TiledObjectTemplateTest {
 
 	@BeforeClass
 	public static void loadMap() throws TiledException {
+		Gdx.files = new LwjglFiles();
+		Mdx.files = new LibgdxFiles();
+		Mdx.graphics = new LibgdxGraphicsUtils();
+
 		FileHandle file = Mdx.files.internal(Thread.currentThread()
 				.getContextClassLoader().getResource("orthogonal_tsx.tmx").getFile());
 		tiledMap = new TiledMap(file, false);

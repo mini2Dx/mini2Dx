@@ -301,7 +301,6 @@ project(":" + rootProject.name + "-libgdx") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
 
-		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
 		testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
@@ -337,6 +336,7 @@ project(":" + rootProject.name + "-tiled") {
 	dependencies {
 		compile project(":" + rootProject.name + "-core")
 
+		testCompile project(":" + rootProject.name + "-desktop")
 		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
 		testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
