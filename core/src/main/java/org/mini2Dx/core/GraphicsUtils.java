@@ -16,6 +16,7 @@
 package org.mini2Dx.core;
 
 import org.mini2Dx.core.files.FileHandle;
+import org.mini2Dx.core.font.GameFont;
 import org.mini2Dx.core.graphics.*;
 
 public interface GraphicsUtils {
@@ -88,6 +89,8 @@ public interface GraphicsUtils {
 	public NinePatch newNinePatch(Texture texture, int left, int right, int top, int bottom);
 
 	public NinePatch newNinePatch(TextureRegion region, int left, int right, int top, int bottom);
+
+	public TilingDrawable newTilingDrawable(TextureRegion textureRegion);
 
 	public FrameBuffer newFrameBuffer(int width, int height);
 }

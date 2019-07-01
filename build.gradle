@@ -75,7 +75,7 @@ subprojects {
 }
 
 def docProjects() {
-	subprojects.findAll { !it.name.contains('uat') }
+	subprojects.findAll { !it.name.contains('uat') && !it.name.contains('monogame') }
 }
 
 def projectVersion = '2.0.0-SNAPSHOT';
@@ -166,22 +166,9 @@ configure(docProjects()) {
 			from javadoc
 		}
 
-		if(project.name.contains("core") || project.name.contains("tiled")) {
-			task fatJar(type: Jar) {
-				archiveClassifier = 'fat'
-				from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-				with jar
-			}
-
-			artifacts {
-				archives javadocJar, sourcesJar, testJar, fatJar
-				testOutput testJar
-			}
-		} else {
-			artifacts {
-				archives javadocJar, sourcesJar, testJar
-				testOutput testJar
-			}
+		artifacts {
+			archives javadocJar, sourcesJar, testJar
+			testOutput testJar
 		}
 
 		checkstyle {
@@ -244,7 +231,6 @@ project(":" + rootProject.name + "-core") {
     
     apply plugin: "me.champeau.gradle.jmh"
     apply plugin: "jacoco"
-	apply plugin: "ikvm"
 
     dependencies {
 		compile "org.mini2Dx:gdx-compression:$gdxVersion"
@@ -258,13 +244,6 @@ project(":" + rootProject.name + "-core") {
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
 		testCompile "net.jodah:concurrentunit:$concurrentUnitVersion"
     }
-
-	ikvm {
-		ikvmHome = ikvmDir
-		debug = false
-		generateDoc = true
-		jars = project.files(project.fatJar.archivePath)
-	}
 	
 	jmh {
 		timeUnit = 'ns'
@@ -288,8 +267,6 @@ project(":" + rootProject.name + "-core") {
 			})
 		}
 	}
-
-	build.dependsOn ikvm
 }
 
 project(":" + rootProject.name + "-libgdx") {
@@ -331,7 +308,6 @@ project(":" + rootProject.name + "-tiled") {
 	description = "mini2Dx Tiled support library"
 
 	apply plugin: "me.champeau.gradle.jmh"
-	apply plugin: "ikvm"
 
 	dependencies {
 		compile project(":" + rootProject.name + "-core")
@@ -343,12 +319,67 @@ project(":" + rootProject.name + "-tiled") {
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
 		testCompile "net.jodah:concurrentunit:$concurrentUnitVersion"
 	}
+}
+
+project(":" + rootProject.name + "-ui") {
+	description = "mini2Dx UI library"
+
+	apply plugin: "me.champeau.gradle.jmh"
+
+	dependencies {
+		compile project(":" + rootProject.name + "-core")
+
+		testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+		testCompile project(":" + rootProject.name + "-desktop")
+
+		//jmh project(":" + rootProject.name + "-headless")
+	}
+
+	task packDefaultUiTheme {
+		TexturePacker.process("$projectDir/default-mdx-theme", "$projectDir/src/main/resources", "default-mdx-theme")
+	}
+
+	jmh {
+		timeUnit = 'ns'
+		threads = Runtime.getRuntime().availableProcessors()
+		warmupIterations = 10
+		iterations = 10
+		fork = Runtime.getRuntime().availableProcessors()
+		jvmArgsPrepend = '-Xmx1024m'
+	}
+}
+
+project(":" + rootProject.name + "-all") {
+	description = "All mini2Dx core libraries packed into a single jar"
+
+	apply plugin: "ikvm"
+
+	dependencies {
+		compile project(":" + rootProject.name + "-core")
+		compile project(":" + rootProject.name + "-tiled")
+		compile project(":" + rootProject.name + "-ui")
+	}
+
+	javadoc {
+		failOnError = false
+		title = 'mini2Dx'
+		source docProjects().collect {p -> p.name.contains("android") ? p.android.sourceSets.main.java.srcDirs : p.sourceSets.main.allJava }
+		classpath = files(docProjects().collect {p -> p.name.contains("android") ? p.configurations.compile : p.sourceSets.main.compileClasspath})
+	}
+
+	jar {
+		from {
+			configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+		}
+	}
 
 	ikvm {
 		ikvmHome = ikvmDir
 		debug = false
-		generateDoc = true
-		jars = project.files(project.fatJar.archivePath)
+		generateDoc = false
+		jars = project.files(project.jar.archivePath)
 	}
 
 	build.dependsOn ikvm
@@ -358,13 +389,12 @@ project(":" + rootProject.name + "-monogame") {
 	description = "mini2Dx MonoGame runtime"
 
 	if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-		task msbuild(type:Exec, dependsOn: project(":" + rootProject.name + "-core").ikvm) {
+		task build(type:Exec, dependsOn: project(":" + rootProject.name + "-all").ikvm) {
 			commandLine 'cmd', '/c', 'msbuild.exe', '../mini2Dx.sln'
 		}
 	} else {
-		task msbuild(type:Exec, dependsOn: project(":" + rootProject.name + "-core").ikvm) {
+		task build(type:Exec, dependsOn: project(":" + rootProject.name + "-all").ikvm) {
 			commandLine 'msbuild', '../mini2Dx.sln'
 		}
 	}
-	build.dependsOn msbuild
 }

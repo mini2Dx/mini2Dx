@@ -32,14 +32,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IKVM.OpenJDK.Core, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
+    <Reference Include="IKVM.OpenJDK.Core">
       <HintPath>..\_tools\ikvm\bin\IKVM.OpenJDK.Core.dll</HintPath>
     </Reference>
-    <Reference Include="IKVM.Runtime, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
+    <Reference Include="IKVM.Runtime">
       <HintPath>..\_tools\ikvm\bin\IKVM.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="mini2Dx-core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\core\build\libs\mini2Dx-core.dll</HintPath>
+    <Reference Include="mini2Dx-all">
+      <HintPath>..\all\build\libs\mini2Dx-all.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

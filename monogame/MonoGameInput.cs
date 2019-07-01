@@ -410,5 +410,20 @@ namespace monogame
                     return 0;
             }
         }
+
+        public void setOnScreenKeyboardVisible(bool b)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int getX()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int getY()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

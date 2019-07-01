@@ -206,6 +206,11 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 	}
 
 	@Override
+	public TilingDrawable newTilingDrawable(TextureRegion textureRegion) {
+		return null;
+	}
+
+	@Override
 	public FrameBuffer newFrameBuffer(int width, int height) {
 		return null;
 	}

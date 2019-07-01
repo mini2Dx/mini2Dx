@@ -421,5 +421,45 @@ namespace monogame.Graphics
             }
             return true;
         }
+
+        public void setA(float f)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void setR(float f)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void setG(float f)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void setB(float f)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void setR(byte b)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void setG(byte b)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void setB(byte b)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void setA(byte b)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

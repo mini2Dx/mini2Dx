@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.libgdx;
 
+import com.badlogic.gdx.Gdx;
 import org.mini2Dx.core.Input;
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.nswitch.SwitchDualJoyConGamePad;
@@ -30,6 +31,11 @@ public class LibgdxInput implements Input {
 	@Override
 	public void setInputProcessor(InputProcessor inputProcessor) {
 
+	}
+
+	@Override
+	public void setOnScreenKeyboardVisible(boolean visible) {
+		Gdx.input.setOnscreenKeyboardVisible(visible);
 	}
 
 	@Override
@@ -65,5 +71,15 @@ public class LibgdxInput implements Input {
 	@Override
 	public Xbox360GamePad newXbox360GamePad(GamePad gamePad) {
 		return null;
+	}
+
+	@Override
+	public int getX() {
+		return Gdx.input.getX();
+	}
+
+	@Override
+	public int getY() {
+		return Gdx.input.getY();
 	}
 }

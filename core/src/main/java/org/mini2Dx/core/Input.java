@@ -33,6 +33,12 @@ public interface Input {
     public void setInputProcessor(InputProcessor inputProcessor);
 
     /**
+     * Sets on mobile and consoles of the on-screen keyboard should appear
+     * @param visible True if the keyboard should appear
+     */
+    public void setOnScreenKeyboardVisible(boolean visible);
+
+    /**
      * Returns the list of known {@link GamePad}s connected to the device.
      * If a {@link GamePad} disconnects/unplugs it will remain in this array.
      * @return An empty {@link Array} if no {@link GamePad}s are present.
@@ -80,4 +86,16 @@ public interface Input {
      * @return A new instance of {@link Xbox360GamePad}
      */
     public Xbox360GamePad newXbox360GamePad(GamePad gamePad);
+
+    /**
+     * Returns the mouse/touch screen X coordinate
+     * @return The x coordinate
+     */
+    public int getX();
+
+    /**
+     * Returns the mouse/touch screen Y coordinate
+     * @return The y coordinate
+     */
+    public int getY();
 }

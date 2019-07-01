@@ -173,6 +173,46 @@ public class LibgdxColor implements Color {
 	}
 
 	@Override
+	public void setR(float r) {
+		color.r = r;
+	}
+
+	@Override
+	public void setG(float g) {
+		color.g = g;
+	}
+
+	@Override
+	public void setB(float b) {
+		color.b = b;
+	}
+
+	@Override
+	public void setA(float a) {
+		color.a = a;
+	}
+
+	@Override
+	public void setR(byte r) {
+		color.r = r / 255f;
+	}
+
+	@Override
+	public void setG(byte g) {
+		color.g = g / 255f;
+	}
+
+	@Override
+	public void setB(byte b) {
+		color.b = b / 255f;
+	}
+
+	@Override
+	public void setA(byte a) {
+		color.a = a / 255f;
+	}
+
+	@Override
 	public boolean equals(Color color) {
 		if(color instanceof LibgdxColor) {
 			LibgdxColor gdxColor = (LibgdxColor) color;

@@ -252,5 +252,10 @@ namespace monogame
         {
             return new MonoGameTextureRegion(texture, width, height);
         }
+
+        public TilingDrawable newTilingDrawable(TextureRegion tr)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

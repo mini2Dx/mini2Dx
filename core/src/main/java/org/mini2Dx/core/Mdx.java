@@ -45,6 +45,11 @@ public class Mdx {
     public static Files files;
 
     /**
+     * {@link Fonts} API
+     */
+    public static Fonts fonts;
+
+    /**
      * This game's unique identifier for app stores
      */
     public static String gameIdentifier;

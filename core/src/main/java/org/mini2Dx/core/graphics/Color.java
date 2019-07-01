@@ -220,6 +220,38 @@ public interface Color {
 	public byte getAAsByte();
 
 	/**
+	 * Sets the red component
+	 * @param r A value between 0f and 1f
+	 */
+	public void setR(float r);
+
+	/**
+	 * Sets the green component
+	 * @param g A value between 0f and 1f
+	 */
+	public void setG(float g);
+
+	/**
+	 * Sets the blue component
+	 * @param b A value between 0f and 1f
+	 */
+	public void setB(float b);
+
+	/**
+	 * Sets the alpha component
+	 * @param a A value between 0f and 1f
+	 */
+	public void setA(float a);
+
+	public void setR(byte r);
+
+	public void setG(byte g);
+
+	public void setB(byte b);
+
+	public void setA(byte a);
+
+	/**
 	 * Returns if this {@link Color} is the same as another {@link Color}
 	 * @param color The {@link Color} to compare to
 	 * @return True if same RGBA

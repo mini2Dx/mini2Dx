@@ -16,10 +16,32 @@
 package org.mini2Dx.core.font;
 
 import org.mini2Dx.core.Graphics;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.assets.AssetManager;
+import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.core.util.Align;
 
 public interface GameFont {
+
+	/**
+	 * Loads the {@link GameFont} using {@link org.mini2Dx.core.Files#internal(String)}
+	 * @return True on success
+	 */
+	public boolean loadInternal();
+
+	/**
+	 * Loads the {@link GameFont} using {@link org.mini2Dx.core.Files#external(String)}
+	 * @return True on success
+	 */
+	public boolean loadExternal();
+
+	/**
+	 * Loads the {@link GameFont} via the {@link AssetManager}
+	 * @param assetManager The {@link AssetManager} to use
+	 * @return True on success
+	 */
+	public boolean load(AssetManager assetManager);
 
 	/**
 	 * Draws text to the {@link Graphics} context using this font

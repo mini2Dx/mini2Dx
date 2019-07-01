@@ -11,7 +11,7 @@
  */
 package org.mini2Dx.core.collision;
 
-import com.badlogic.gdx.math.MathUtils;
+import org.mini2Dx.gdx.math.MathUtils;
 import junit.framework.Assert;
 import net.jodah.concurrentunit.Waiter;
 import org.junit.Before;
