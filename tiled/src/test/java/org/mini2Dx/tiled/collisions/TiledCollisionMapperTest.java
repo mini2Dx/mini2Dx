@@ -45,8 +45,8 @@ public class TiledCollisionMapperTest {
 		Mdx.files = new LibgdxFiles();
 		Mdx.graphics = new LibgdxGraphicsUtils();
 
-		FileHandle file = Mdx.files.internal(
-				Thread.currentThread().getContextClassLoader().getResource("orthogonal.tmx").getFile().replaceAll(" ", "\\ "));
+		FileHandle file = Mdx.files.internal(Thread.currentThread().getContextClassLoader()
+				.getResource("orthogonal.tmx").getFile().replaceAll("%20", " "));
 		tiledMap = new TiledMap(file, false);
 	}
 
@@ -205,7 +205,7 @@ public class TiledCollisionMapperTest {
 			}
 		}
 	}
-	
+
 	@Test
 	public void testMapAndMergeEmptySpacesByLayer() {
 		int collisionLayerIndex = tiledMap.getLayerIndex("Collisions");

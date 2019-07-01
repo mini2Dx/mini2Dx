@@ -26,6 +26,7 @@ using org.mini2Dx.gdx;
 using Color = Microsoft.Xna.Framework.Color;
 using GamePad = org.mini2Dx.core.input.GamePad;
 using Input = org.mini2Dx.gdx.Input;
+using Rectangle = org.mini2Dx.core.geom.Rectangle;
 using Texture = org.mini2Dx.core.graphics.Texture;
 
 namespace uats_monogame
@@ -46,7 +47,8 @@ namespace uats_monogame
         private Sprite sampleSprite;
         private Music music;
         private Sound sound;
-        internal Shader sampleShader;
+        private Shader sampleShader;
+        private Rectangle sampleClipRectangle = new Rectangle(100, 200, 250, 150);
         private Vector2 mousePosition;
         
         public Game1()
@@ -59,7 +61,7 @@ namespace uats_monogame
         {
             private readonly Game1 game;
             private bool isShaderApplied;
-
+            private bool isClipApplied;
             public UATInputProcessor(Game1 game)
             {
                 this.game = game;
@@ -84,6 +86,19 @@ namespace uats_monogame
                     }
 
                     isShaderApplied = !isShaderApplied;
+                }
+                else if (keycode == Input.Keys.C)
+                {
+                    if (isClipApplied)
+                    {
+                        Mdx.graphicsContext.removeClip();
+                    }
+                    else
+                    {
+                        Mdx.graphicsContext.setClip(game.sampleClipRectangle);
+                    }
+
+                    isClipApplied = !isClipApplied;
                 }
                 Console.WriteLine("keyDown({0})", keycode);
                 return false;

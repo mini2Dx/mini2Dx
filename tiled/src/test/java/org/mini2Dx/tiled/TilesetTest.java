@@ -20,13 +20,13 @@ import org.mini2Dx.tiled.tileset.ImageTilesetSource;
  */
 public class TilesetTest {
 	private Tileset tileset;
-	
+
 	@Test
 	public void testGetTileId() {
 		tileset = new Tileset(1, new ImageTilesetSource(128, 128, 32, 32, 0, 0));
 		Assert.assertEquals(1, tileset.getTileId(0, 0));
 		Assert.assertEquals(5, tileset.getTileId(0, 1));
-		
+
 		tileset = new Tileset(1, new ImageTilesetSource(1936, 1052, 32, 32, 2, 0));
 		Assert.assertEquals(1, tileset.getTileId(0, 0));
 		Assert.assertEquals(343, tileset.getTileId(0, 6));
@@ -69,7 +69,7 @@ public class TilesetTest {
 		Assert.assertEquals(0, tileset.getTileX(28));
 		Assert.assertEquals(0, tileset.getTileX(31));
 		Assert.assertEquals(1, tileset.getTileX(32));
-		
+
 		tileset = new Tileset(1, new ImageTilesetSource(1936, 1052, 32, 32, 2, 0));
 		Assert.assertEquals(0, tileset.getTileX(343));
 		Assert.assertEquals(2, tileset.getTileX(345));
@@ -112,7 +112,7 @@ public class TilesetTest {
 		tileset = new Tileset(28, new ImageTilesetSource(128, 128, 32, 32, 4, 0));
 		Assert.assertEquals(0, tileset.getTileY(28));
 		Assert.assertEquals(1, tileset.getTileY(32));
-		
+
 		tileset = new Tileset(1, new ImageTilesetSource(1936, 1052, 32, 32, 2, 0));
 		Assert.assertEquals(6, tileset.getTileY(345));
 		Assert.assertEquals(4, tileset.getTileY(234));
