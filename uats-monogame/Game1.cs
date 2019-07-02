@@ -15,10 +15,12 @@
  ******************************************************************************/
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using monogame;
 using monogame.Graphics;
 using org.mini2Dx.core;
 using org.mini2Dx.core.audio;
+using org.mini2Dx.core.font;
 using org.mini2Dx.core.graphics;
 using org.mini2Dx.core.input.button;
 using org.mini2Dx.core.input.xbox360;
@@ -51,10 +53,15 @@ namespace uats_monogame
         private Shader sampleShader;
         private Rectangle sampleClipRectangle = new Rectangle(100, 200, 250, 150);
         private Vector2 mousePosition;
+        private GameFontCache sampleFontCache;
         
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreparingDeviceSettings += (object s, PreparingDeviceSettingsEventArgs args) =>
+            {
+                args.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
+            };
             Content.RootDirectory = "Content";
         }
 
@@ -63,6 +70,7 @@ namespace uats_monogame
             private readonly Game1 game;
             private bool isShaderApplied;
             private bool isClipApplied;
+            private bool isAlphaChanged;
             public UATInputProcessor(Game1 game)
             {
                 this.game = game;
@@ -100,6 +108,57 @@ namespace uats_monogame
                     }
 
                     isClipApplied = !isClipApplied;
+                }
+                else if (keycode == Input.Keys.Z)
+                {
+                    game.sampleFontCache.clear();
+                }
+                else if (keycode == Input.Keys.NUM_1)
+                {
+                    game.sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400, 165, 100, Align.LEFT, true);
+                }
+                else if (keycode == Input.Keys.NUM_2)
+                {
+                    game.sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 165, 100, Align.CENTER, true);
+                }
+                else if (keycode == Input.Keys.NUM_3)
+                {
+                    game.sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 165, 100, Align.RIGHT, true);
+                }
+                else if (keycode == Input.Keys.NUM_4)
+                {
+                    if (((MonoGameColor)game.sampleFontCache.getColor()).toMonoGameColor() == Color.White)
+                    {
+                        game.sampleFontCache.setColor(new MonoGameColor(Color.Blue));
+                    }
+                    else
+                    {
+                        game.sampleFontCache.setColor(new MonoGameColor(Color.White));
+                    }
+                }
+                else if (keycode == Input.Keys.NUM_5)
+                {
+                    if (((MonoGameColor)game.sampleFontCache.getColor()).toMonoGameColor() == Color.White)
+                    {
+                        game.sampleFontCache.setAllColors(new MonoGameColor(Color.Blue));
+                    }
+                    else
+                    {
+                        game.sampleFontCache.setAllColors(new MonoGameColor(Color.White));
+                    }
+                }
+                else if (keycode == Input.Keys.NUM_6)
+                {
+                    if (isAlphaChanged)
+                    {
+                        game.sampleFontCache.setAllAlphas(1);
+                    }
+                    else
+                    {
+                        game.sampleFontCache.setAllAlphas(0.2f);
+                    }
+
+                    isAlphaChanged = !isAlphaChanged;
                 }
                 Console.WriteLine("keyDown({0})", keycode);
                 return false;
@@ -294,6 +353,10 @@ namespace uats_monogame
 
             sampleShader = new MonoGameShader("grayscaleShader");
             Mdx.graphicsContext.setFont(Mdx.fonts.newBitmapFont(Mdx.files.@internal("arial24.fnt")));
+            sampleFontCache = Mdx.graphicsContext.getFont().newCache();
+            sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400, 165, 100, Align.LEFT, true);
+            sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 165, 100, Align.CENTER, true);
+            sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 165, 100, Align.RIGHT, true);
         }
 
         /// <summary>
@@ -352,11 +415,15 @@ namespace uats_monogame
             Mdx.graphicsContext.fillTriangle(mousePosition.X, mousePosition.Y, mousePosition.X + 10,
                 mousePosition.Y + 20, mousePosition.X, mousePosition.Y + 20);
             Mdx.graphicsContext.drawRect(400, 65, 100, 100);
-            Mdx.graphicsContext.drawString("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400,65, 100, Align.LEFT);
             Mdx.graphicsContext.drawRect(500, 65, 100, 100);
-            Mdx.graphicsContext.drawString("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 65, 100, Align.CENTER);
             Mdx.graphicsContext.drawRect(600, 65, 100, 100);
+            Mdx.graphicsContext.drawString("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400,65, 100, Align.LEFT);
+            Mdx.graphicsContext.drawString("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 65, 100, Align.CENTER);
             Mdx.graphicsContext.drawString("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 65, 100, Align.RIGHT);
+            Mdx.graphicsContext.drawRect(400, 165, 100, 100);
+            Mdx.graphicsContext.drawRect(500, 165, 100, 100);
+            Mdx.graphicsContext.drawRect(600, 165, 100, 100);
+            Mdx.graphicsContext.drawFontCache(sampleFontCache);
             Mdx.graphicsContext.postRender();
             //Console.WriteLine("FPS: {0}", 1.0/gameTime.ElapsedGameTime.TotalSeconds);
             base.Draw(gameTime);
