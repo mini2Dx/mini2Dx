@@ -13,6 +13,8 @@ package org.mini2Dx.ui.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.Platform;
 import org.mini2Dx.core.assets.AssetManager;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -37,6 +39,8 @@ public class DeferredRunnableTest {
 
     @Before
     public void setUp() {
+        Mdx.platform = Platform.WINDOWS;
+
         mockery.setImposteriser(ClassImposteriser.INSTANCE);
 
         assetManager = mockery.mock(AssetManager.class);

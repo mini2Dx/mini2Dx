@@ -20,6 +20,8 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.Platform;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.input.GamePadType;
@@ -49,6 +51,8 @@ public class UiContainerTest implements UiContainerListener {
 	
 	@Before
 	public void setUp() {
+		Mdx.platform = Platform.WINDOWS;
+
 		mockery.setImposteriser(ClassImposteriser.INSTANCE);
 		
 		gameContainer = mockery.mock(GameContainer.class);
