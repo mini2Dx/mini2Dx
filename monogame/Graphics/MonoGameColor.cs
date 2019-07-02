@@ -424,42 +424,42 @@ namespace monogame.Graphics
 
         public void setA(float f)
         {
-            throw new NotImplementedException();
+            _color.A = (byte) (f * 255);
         }
 
         public void setR(float f)
         {
-            throw new NotImplementedException();
+            _color.R = (byte)(f * 255);
         }
 
         public void setG(float f)
         {
-            throw new NotImplementedException();
+            _color.G = (byte)(f * 255);
         }
 
         public void setB(float f)
         {
-            throw new NotImplementedException();
+            _color.B = (byte)(f * 255);
         }
 
         public void setR(byte b)
         {
-            throw new NotImplementedException();
+            _color.R = b;
         }
 
         public void setG(byte b)
         {
-            throw new NotImplementedException();
+            _color.G = b;
         }
 
         public void setB(byte b)
         {
-            throw new NotImplementedException();
+            _color.B = b;
         }
 
         public void setA(byte b)
         {
-            throw new NotImplementedException();
+            _color.A = b;
         }
     }
 }

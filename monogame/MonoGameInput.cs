@@ -14,9 +14,12 @@
  * limitations under the License.
  ******************************************************************************/
 using System;
+using System.Runtime.Remoting.Messaging;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using monogame.Input;
 using monogame.Input.Xbox360;
+using org.mini2Dx.core;
 using org.mini2Dx.core.input.nswitch;
 using org.mini2Dx.core.input.ps4;
 using org.mini2Dx.core.input.xbox360;
@@ -411,19 +414,37 @@ namespace monogame
             }
         }
 
+        private IAsyncResult _lastKeyboardIar;
         public void setOnScreenKeyboardVisible(bool b)
         {
-            throw new NotImplementedException();
+            if (Mdx.platform.isDesktop())
+            {
+                return;
+            }
+            if (b)
+            {
+                _lastKeyboardIar = Microsoft.Xna.Framework.GamerServices.Guide.BeginShowKeyboardInput(PlayerIndex.One, "Insert text: ", "",
+                    "", null, null);
+            }
+            else
+            {
+                Microsoft.Xna.Framework.GamerServices.Guide.EndShowKeyboardInput(_lastKeyboardIar);
+            }
+        }
+
+        private static void doNothing()
+        {
+
         }
 
         public int getX()
         {
-            throw new NotImplementedException();
+            return _previousMouseState.X;
         }
 
         public int getY()
         {
-            throw new NotImplementedException();
+            return _previousMouseState.Y;
         }
     }
 }
