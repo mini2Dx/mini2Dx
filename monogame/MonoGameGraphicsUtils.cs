@@ -255,7 +255,7 @@ namespace monogame
 
         public TilingDrawable newTilingDrawable(TextureRegion tr)
         {
-            throw new NotImplementedException();
+            return new MonoGameTilingDrawable(tr);
         }
     }
 }
