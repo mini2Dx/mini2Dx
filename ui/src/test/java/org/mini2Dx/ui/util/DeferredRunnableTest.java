@@ -13,16 +13,13 @@ package org.mini2Dx.ui.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import org.junit.*;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.Platform;
 import org.mini2Dx.core.assets.AssetManager;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.mini2Dx.ui.ScreenSizeScaleMode;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.dummy.DummyUiElement;
@@ -30,6 +27,7 @@ import org.mini2Dx.ui.render.UiContainerRenderTree;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@Ignore
 public class DeferredRunnableTest {
     private final Mockery mockery = new Mockery();
 
