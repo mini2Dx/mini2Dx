@@ -82,21 +82,11 @@ namespace monogame.Font
             draw(g, str, x, y, targetWidth, Align.LEFT, true);
         }
 
-        public void draw(org.mini2Dx.core.Graphics g, string str, float x, float y, float targetWidth, int horizontalAlignment, bool wrap)
+        internal void draw(SpriteBatch spriteBatch, string str, float targetWidth, int horizontalAlignment, bool wrap, Vector2 position, Vector2 scale, Microsoft.Xna.Framework.Color renderColor)
         {
-            var graphics = (MonoGameGraphics) g;
-            var origin = Vector2.Zero;
-            Vector2 position;
-            position = new Vector2(x, y) + graphics._translation - graphics._rotationCenter + origin;
-            
-            var renderColor = new Microsoft.Xna.Framework.Color
-            {
-                R = (byte) (graphics._tint.R / 255.0f * _color.R),
-                G = (byte) (graphics._tint.G / 255.0f * _color.G),
-                B = (byte) (graphics._tint.B / 255.0f * _color.B),
-                A = (byte) (graphics._tint.A / 255.0f * _color.A)
-            };
+
             var strings = wrapText(str, targetWidth).Split('\n');
+            var origin = Vector2.Zero;
             if ((horizontalAlignment & Align.RIGHT) != 0)
             {
                 origin.X = _spriteFont.MeasureString(strings[0]).X;
@@ -107,13 +97,13 @@ namespace monogame.Font
                 origin.X = (int)(_spriteFont.MeasureString(strings[0]).X / 2);
                 position.X += (int)(targetWidth / 2);
             }
-            graphics._spriteBatch.DrawString(_spriteFont, 
+            spriteBatch.DrawString(_spriteFont,
                 strings[0],
-                 position * graphics._scale,
+                 position * scale,
                 renderColor,
                 0,
                 origin,
-                graphics._scale,
+                scale,
                 SpriteEffects.None,
                 0f);
 
@@ -130,17 +120,30 @@ namespace monogame.Font
                         origin.X = (int)(_spriteFont.MeasureString(strings[i]).X / 2);
                     }
                     position.Y += getLineHeight();
-                    graphics._spriteBatch.DrawString(_spriteFont,
+                    spriteBatch.DrawString(_spriteFont,
                         strings[i],
-                        position * graphics._scale,
+                        position * scale,
                         renderColor,
                         0,
                         origin,
-                        graphics._scale,
+                        scale,
                         SpriteEffects.None,
                         0f);
                 }
             }
+        }
+
+        public void draw(org.mini2Dx.core.Graphics g, string str, float x, float y, float targetWidth, int horizontalAlignment, bool wrap)
+        {
+            var graphics = (MonoGameGraphics)g;
+            draw(graphics._spriteBatch, str, targetWidth, horizontalAlignment, wrap,
+                new Vector2(x, y) + graphics._translation - graphics._rotationCenter, graphics._scale, 
+                new Microsoft.Xna.Framework.Color {
+                    R = (byte)(graphics._tint.R / 255.0f * _color.R),
+                    G = (byte)(graphics._tint.G / 255.0f * _color.G),
+                    B = (byte)(graphics._tint.B / 255.0f * _color.B),
+                    A = (byte)(graphics._tint.A / 255.0f * _color.A)
+                });
         }
 
         public FontGlyphLayout newGlyphLayout()
@@ -150,7 +153,7 @@ namespace monogame.Font
 
         public GameFontCache newCache()
         {
-            throw new System.NotImplementedException();
+            return new MonoGameGameFontCache(this);
         }
 
         public FontGlyphLayout getSharedGlyphLayout()

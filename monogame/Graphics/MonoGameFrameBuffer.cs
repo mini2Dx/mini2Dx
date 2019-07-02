@@ -60,11 +60,13 @@ namespace monogame.Graphics
         public void bind()
         {
             _graphicsDevice.SetRenderTarget(_renderTarget);
+            ((MonoGameGraphics)Mdx.graphicsContext)._currentRenderTarget = _renderTarget;
         }
 
         public void unbind()
         {
             _graphicsDevice.SetRenderTarget(null);
+            ((MonoGameGraphics)Mdx.graphicsContext)._currentRenderTarget = null;
         }
 
         public int getWidth()

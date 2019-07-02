@@ -35,7 +35,7 @@ namespace monogame
     public class MonoGameGraphics : org.mini2Dx.core.Graphics
     {
         internal readonly SpriteBatch _spriteBatch;
-        private readonly GraphicsDevice _graphicsDevice;
+        internal readonly GraphicsDevice _graphicsDevice;
         private Color _setColor = new MonoGameColor(255,255,255,255);
         internal Microsoft.Xna.Framework.Color _backgroundColor = Microsoft.Xna.Framework.Color.Black;
         internal Microsoft.Xna.Framework.Color _tint = Microsoft.Xna.Framework.Color.White;
@@ -48,10 +48,11 @@ namespace monogame
         private bool _beginSpriteBatchCalled;
         private GameFont _font;
         private long _frameId;
+        internal RenderTarget2D _currentRenderTarget;
 
         private MonoGameShapeRenderer _shapeRenderer;
         
-        private static readonly BlendState _blendState = new BlendState
+        internal static readonly BlendState _blendState = new BlendState
         {
             AlphaSourceBlend = Blend.One,
             AlphaDestinationBlend = Blend.Zero,
@@ -558,7 +559,7 @@ namespace monogame
 
         public void drawFontCache(GameFontCache gameFontCache)
         {
-            throw new System.NotImplementedException();
+            gameFontCache.draw(this);
         }
 
         public void setFont(GameFont font)
