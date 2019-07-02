@@ -52,8 +52,8 @@
     <Reference Include="IKVM.OpenJDK.Core, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
       <HintPath>..\_tools\ikvm\bin\IKVM.OpenJDK.Core.dll</HintPath>
     </Reference>
-    <Reference Include="mini2Dx-core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\core\build\libs\mini2Dx-core.dll</HintPath>
+    <Reference Include="mini2Dx-all">
+      <HintPath>..\all\build\libs\mini2Dx-all.dll</HintPath>
     </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\MonoGame.Framework.dll</HintPath>
