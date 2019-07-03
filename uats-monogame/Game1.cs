@@ -337,7 +337,7 @@ namespace uats_monogame
             sampleRegion2.flip(false, true);
             sampleSprite = Mdx.graphics.newSprite(sampleTexture);
             sampleNinePatch = Mdx.graphics.newNinePatch(Mdx.graphics.newTexture(Mdx.files.@internal("ninepatch.png")), 6, 6, 6, 6);
-            sampleAtlas = Mdx.graphics.newTextureAtlas(Mdx.files.@internal("pack.atlas"));
+            sampleAtlas = Mdx.graphics.newTextureAtlas(Mdx.files.@internal("packfile.atlas"));
             sampleAtlasRegion = sampleAtlas.findRegion("tileGreen", 47);
             sampleTilingDrawable = new MonoGameTilingDrawable(Mdx.graphics.newTexture(Mdx.files.@internal("background.png")));
             Mdx.graphicsContext.setColor(new MonoGameColor(255, 255, 255, 255));

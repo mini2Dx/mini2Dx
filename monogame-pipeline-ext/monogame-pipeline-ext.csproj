@@ -40,8 +40,8 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContentImporter1.cs" />
-    <Compile Include="ContentProcessor1.cs" />
+    <Compile Include="TextFileContentImporter.cs" />
+    <Compile Include="TextFileContentProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

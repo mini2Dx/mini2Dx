@@ -100,10 +100,8 @@ namespace monogame
         {
             Texture2D texture;
 
-            using (var fileStream = new FileStream(((MonoGameFileHandle) file).fullPath(), FileMode.Open))
-            {
-                texture = Texture2D.FromStream(_graphicsDevice, fileStream);
-            }
+            texture = ((MonoGameFileHandle) file).loadFromContentManager<Texture2D>();
+
             var rawTextureData = new UInt32[texture.Width * texture.Height];
             texture.GetData(rawTextureData);
             
@@ -159,12 +157,7 @@ namespace monogame
 
         public Texture newTexture(FileHandle fileHandle)
         {
-            Texture2D texture;
-
-            using (var fileStream = new FileStream(((MonoGameFileHandle) fileHandle).fullPath(), FileMode.Open))
-            {
-                texture = Texture2D.FromStream(_graphicsDevice, fileStream);
-            }
+            var texture = ((MonoGameFileHandle)fileHandle).loadFromContentManager<Texture2D>();
             return new MonoGameTexture(texture);
         }
 
