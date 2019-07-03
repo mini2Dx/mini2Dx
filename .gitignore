@@ -2,6 +2,7 @@ target/
 out/
 _tools/ikvm/
 monogame/obj/
+monogame-pipeline-ext/obj/
 uats-monogame/obj/
 uats-monogame/Content/obj/
 packages/
