@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mini2Dx-monogame", "monogam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mini2Dx-uats-monogame", "uats-monogame\mini2Dx-uats-monogame.csproj", "{88B2D0A9-DDEC-4A47-AB72-1277CF7CE223}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "monogame-pipeline-ext", "monogame-pipeline-ext\monogame-pipeline-ext.csproj", "{6F98E109-6222-4843-B89A-22CDAE2FE514}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{88B2D0A9-DDEC-4A47-AB72-1277CF7CE223}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88B2D0A9-DDEC-4A47-AB72-1277CF7CE223}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88B2D0A9-DDEC-4A47-AB72-1277CF7CE223}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
