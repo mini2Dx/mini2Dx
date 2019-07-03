@@ -24,12 +24,12 @@ namespace monogame
     public class MonoGameFiles : org.mini2Dx.core.Files
     {
         private readonly string _internalFilePrefix;
-        internal readonly ContentManager _contentManager;
+        internal readonly MonoGameContentManager _contentManager;
 
         public MonoGameFiles(ContentManager contentManager)
         {
             _internalFilePrefix = contentManager.RootDirectory + Path.DirectorySeparatorChar;
-            _contentManager = contentManager;
+            _contentManager = new MonoGameContentManager(contentManager.ServiceProvider, contentManager.RootDirectory);
         }
         
         public FileHandle external(string path)

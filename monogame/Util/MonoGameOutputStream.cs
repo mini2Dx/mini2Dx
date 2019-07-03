@@ -31,6 +31,11 @@ namespace monogame.Util
             var fileInfo = new FileInfo(fileHandle.fullPath());
             _stream = append ? fileInfo.Open(FileMode.Append, FileAccess.Write) : fileInfo.Create();
         }
+
+        public MonoGameOutputStream(Stream stream)
+        {
+            _stream = stream;
+        }
         
         public override void write(int b)
         {

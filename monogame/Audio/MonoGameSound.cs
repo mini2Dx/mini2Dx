@@ -36,10 +36,7 @@ namespace monogame.Audio
 
         public MonoGameSound(FileHandle fileHandle)
         {
-            using (var fileStream = new FileStream(((MonoGameFileHandle) fileHandle).fullPath(), FileMode.Open))
-            {
-                _sound = SoundEffect.FromStream(fileStream);
-            }
+            _sound = ((MonoGameFileHandle) fileHandle).loadFromContentManager<SoundEffect>();
             _thisInstancesId = new List<long>();
         }
         

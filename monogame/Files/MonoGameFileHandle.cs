@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using java.io;
 using monogame.Util;
 using org.mini2Dx.core;
 using org.mini2Dx.core.files;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using File = System.IO.File;
 using IOException = java.io.IOException;
 
@@ -116,6 +116,10 @@ namespace monogame.Files
 
         public InputStream read()
         {
+            if (_fileType == FileType.INTERNAL)
+            {
+                return new MonoGameInputStream(((MonoGameFiles)Mdx.files)._contentManager.OpenStream(path()));
+            }
             return new MonoGameInputStream(this);
         }
 
@@ -151,6 +155,11 @@ namespace monogame.Files
                 throw new IOException("Can't read from a directory");
             }
 
+            if (_fileType == FileType.INTERNAL)
+            {
+                return loadFromContentManager<String>();
+            }
+
             return File.ReadAllText(fullPath());
         }
 
@@ -161,12 +170,17 @@ namespace monogame.Files
                 throw new IOException("Can't read from a directory");
             }
 
+            if (_fileType == FileType.INTERNAL)
+            {
+                return readString();
+            }
+
             return File.ReadAllText(fullPath(), Encoding.GetEncoding(encoding));
         }
 
         public string[] readAllLines()
         {
-            return File.ReadAllLines(fullPath());
+            return readString().Replace("\r\n", "\n").Split('\n');
         }
         
         public byte[] readBytes()
@@ -176,10 +190,17 @@ namespace monogame.Files
                 throw new IOException("Can't read from a directory");
             }
 
+            if (_fileType == FileType.INTERNAL)
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    ((MonoGameFiles)Mdx.files)._contentManager.OpenStream(path()).CopyTo(ms);
+                    return ms.ToArray();
+                }
+            }
+
             var fileBytes = new byte[_fileInfo.Length];
-
             readBytes(fileBytes, 0, (int) _fileInfo.Length);
-
             return fileBytes;
         }
 
@@ -191,20 +212,28 @@ namespace monogame.Files
             }
 
             var readBytesNumber = 0;
-            using (var byteStream = _fileInfo.OpenRead())
+            Stream byteStream;
+            if (_fileType == FileType.INTERNAL)
             {
-                for (var i = offset; i < offset + size; i++)
-                {
-                    var readByte = byteStream.ReadByte();
-                    if (readByte == -1)
-                    {
-                        break;
-                    }
-
-                    fileBytes[i] = (byte) readByte;
-                    readBytesNumber++;
-                }
+                byteStream = ((MonoGameFiles) Mdx.files)._contentManager.OpenStream(path());
             }
+            else
+            {
+                byteStream = _fileInfo.OpenRead();
+            }
+
+            for (var i = offset; i < offset + size; i++)
+            {
+                var readByte = byteStream.ReadByte();
+                if (readByte == -1)
+                {
+                    break;
+                }
+
+                fileBytes[i] = (byte) readByte;
+                readBytesNumber++;
+            }
+            
 
             return readBytesNumber;
         }

@@ -17,13 +17,12 @@ namespace monogame_pipeline_ext
     /// TODO: change the ContentProcessor attribute to specify the correct
     /// display name for this processor.
     /// </summary>
-    [ContentProcessor(DisplayName = "monogame_pipeline_ext.ContentProcessor1")]
-    public class ContentProcessor1 : ContentProcessor<TInput, TOutput>
+    [ContentProcessor(DisplayName = "Text File Processor - mini2Dx")]
+    public class TextFileContentProcessor : ContentProcessor<TInput, TOutput>
     {
         public override TOutput Process(TInput input, ContentProcessorContext context)
         {
-            // TODO: process the input object, and return the modified data.
-            throw new NotImplementedException();
+            return input;
         }
     }
 }

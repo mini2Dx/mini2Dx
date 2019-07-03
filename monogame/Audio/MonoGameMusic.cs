@@ -33,7 +33,7 @@ namespace monogame.Audio
         public MonoGameMusic(FileHandle fileHandle)
         {
             _songId = ++_songNum;
-            _song = Song.FromUri(fileHandle.name(), new Uri(((MonoGameFileHandle)fileHandle).fullPath(), UriKind.Relative));
+            _song = ((MonoGameFileHandle)fileHandle).loadFromContentManager<Song>();
         }
         
         public void dispose()

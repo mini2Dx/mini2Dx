@@ -36,6 +36,11 @@ namespace monogame.Util
             var fileInfo = new FileInfo(fileHandle.fullPath());
             _stream = fileInfo.OpenRead();
         }
+
+        public MonoGameInputStream(Stream stream)
+        {
+            _stream = stream;
+        }
         
         public override int read()
         {

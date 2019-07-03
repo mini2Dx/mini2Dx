@@ -20,14 +20,13 @@ namespace monogame_pipeline_ext
     /// extension, display name, and default processor for this importer.
     /// </summary>
 
-    [ContentImporter(".xyz", DisplayName = "XYZ Importer", DefaultProcessor = "ContentProcessor1")]
-    public class ContentImporter1 : ContentImporter<TInput>
+    [ContentImporter(".txt", DisplayName = "Text File Importer - mini2Dx", DefaultProcessor = "TextFileContentProcessor")]
+    public class TextFileContentImporter : ContentImporter<TInput>
     {
 
         public override TInput Import(string filename, ContentImporterContext context)
         {
-            // TODO: process the input object, and return the modified data.
-            throw new NotImplementedException();
+            return File.ReadAllText(filename);
         }
 
     }

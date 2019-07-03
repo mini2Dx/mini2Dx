@@ -29,7 +29,7 @@ namespace monogame.Graphics
         public MonoGameFrameBuffer(GraphicsDevice graphicsDevice, int width, int height)
         {
             _graphicsDevice = graphicsDevice;
-            _renderTarget = new RenderTarget2D(graphicsDevice, width, height, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            _renderTarget = new RenderTarget2D(graphicsDevice, width, height, false, SurfaceFormat.Color, DepthFormat.Depth24, 0, RenderTargetUsage.PreserveContents);
             texture = new MonoGameTexture(null);
         }
         
