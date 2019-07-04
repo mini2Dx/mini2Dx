@@ -1,5 +1,11 @@
 [2.0.0-SNAPSHOT]
 ...In development...
+- De-coupled LibGDX to allow for other runtime implementations
+- Added MonoGame runtime for consoles
+- Added task executor API to use platform-specific thread implementations
+- Added (optional) object pooling for geometry classes
+- Added new GamePad API with improved controller/feature support (rumble, player index, etc.)
+- Simplified geometry class hierarchy
 
 [1.9.7]
 - Added overridable onMouseMoved, onMouseDown, onMouseUp events to CustomUiElement
