@@ -461,5 +461,45 @@ namespace monogame.Graphics
         {
             _color.A = b;
         }
+
+        public float rf()
+        {
+            return getRAsFloat();
+        }
+
+        public float gf()
+        {
+            return getGAsFloat();
+        }
+
+        public float bf()
+        {
+            return getBAsFloat();
+        }
+
+        public float af()
+        {
+            return getAAsFloat();
+        }
+
+        public float rb()
+        {
+            return getRAsByte();
+        }
+
+        public float gb()
+        {
+            return getGAsByte();
+        }
+
+        public float bb()
+        {
+            return getBAsByte();
+        }
+
+        public float ab()
+        {
+            return getAAsByte();
+        }
     }
 }

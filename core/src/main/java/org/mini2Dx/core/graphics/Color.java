@@ -257,4 +257,44 @@ public interface Color {
 	 * @return True if same RGBA
 	 */
 	public boolean equals(Color color);
+
+	/**
+	 * @see #getRAsFloat()
+	 */
+	public float rf();
+
+	/**
+	 * @see #getGAsFloat()
+	 */
+	public float gf();
+
+	/**
+	 * @see #getBAsFloat()
+	 */
+	public float bf();
+
+	/**
+	 * @see #getAAsFloat()
+	 */
+	public float af();
+
+	/**
+	 * @see #getRAsByte()
+	 */
+	public float rb();
+
+	/**
+	 * @see #getGAsByte()
+	 */
+	public float gb();
+
+	/**
+	 * @see #getBAsByte()
+	 */
+	public float bb();
+
+	/**
+	 * @see #getAAsByte()
+	 */
+	public float ab();
 }

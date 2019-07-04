@@ -19,10 +19,7 @@ import org.mini2Dx.core.GraphicsUtils;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.*;
 import org.mini2Dx.libgdx.files.LibgdxFileHandle;
-import org.mini2Dx.libgdx.graphics.LibgdxColor;
-import org.mini2Dx.libgdx.graphics.LibgdxPixmap;
-import org.mini2Dx.libgdx.graphics.LibgdxTexture;
-import org.mini2Dx.libgdx.graphics.LibgdxTextureRegion;
+import org.mini2Dx.libgdx.graphics.*;
 
 public class LibgdxGraphicsUtils implements GraphicsUtils {
 	@Override
@@ -105,19 +102,19 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 	}
 
 	@Override
-	public TextureRegion newTextureRegion(TextureRegion texture) {
-		final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) texture;
+	public TextureRegion newTextureRegion(TextureRegion textureRegion) {
+		final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) textureRegion;
 		return new LibgdxTextureRegion(gdxTextureRegion);
 	}
 
 	@Override
-	public TextureRegion newTextureRegion(TextureRegion texture, int width, int height) {
-		return newTextureRegion(texture, texture.getRegionX(), texture.getRegionY(), width, height);
+	public TextureRegion newTextureRegion(TextureRegion textureRegion, int width, int height) {
+		return newTextureRegion(textureRegion, textureRegion.getRegionX(), textureRegion.getRegionY(), width, height);
 	}
 
 	@Override
-	public TextureRegion newTextureRegion(TextureRegion texture, int x, int y, int width, int height) {
-		final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) texture;
+	public TextureRegion newTextureRegion(TextureRegion textureRegion, int x, int y, int width, int height) {
+		final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) textureRegion;
 		return new LibgdxTextureRegion(new com.badlogic.gdx.graphics.g2d.TextureRegion(gdxTextureRegion.textureRegion, x, y, width, height));
 	}
 
@@ -140,23 +137,23 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 	}
 
 	@Override
-	public Sprite newSprite(TextureRegion texture) {
-		return null;
+	public Sprite newSprite(TextureRegion textureRegion) {
+		return new LibgdxSprite(textureRegion);
 	}
 
 	@Override
-	public Sprite newSprite(TextureRegion texture, int width, int height) {
-		return null;
+	public Sprite newSprite(TextureRegion textureRegion, int width, int height) {
+		return new LibgdxSprite(textureRegion, 0, 0, width, height);
 	}
 
 	@Override
-	public Sprite newSprite(TextureRegion texture, int x, int y, int width, int height) {
-		return null;
+	public Sprite newSprite(TextureRegion textureRegion, int x, int y, int width, int height) {
+		return new LibgdxSprite(textureRegion, x, y, width, height);
 	}
 
 	@Override
 	public Sprite newSprite(Sprite sprite) {
-		return null;
+		return new LibgdxSprite(sprite);
 	}
 
 	@Override

@@ -49,11 +49,11 @@ public interface GraphicsUtils {
 
 	public TextureRegion newTextureRegion(Texture texture, int x, int y, int width, int height);
 
-	public TextureRegion newTextureRegion(TextureRegion texture);
+	public TextureRegion newTextureRegion(TextureRegion textureRegion);
 
-	public TextureRegion newTextureRegion(TextureRegion texture, int width, int height);
+	public TextureRegion newTextureRegion(TextureRegion textureRegion, int width, int height);
 
-	public TextureRegion newTextureRegion(TextureRegion texture, int x, int y, int width, int height);
+	public TextureRegion newTextureRegion(TextureRegion textureRegion, int x, int y, int width, int height);
 
 	public Sprite newSprite(Texture texture);
 
@@ -61,11 +61,11 @@ public interface GraphicsUtils {
 
 	public Sprite newSprite(Texture texture, int x, int y, int width, int height);
 
-	public Sprite newSprite(TextureRegion texture);
+	public Sprite newSprite(TextureRegion textureRegion);
 
-	public Sprite newSprite(TextureRegion texture, int width, int height);
+	public Sprite newSprite(TextureRegion textureRegion, int width, int height);
 
-	public Sprite newSprite(TextureRegion texture, int x, int y, int width, int height);
+	public Sprite newSprite(TextureRegion textureRegion, int x, int y, int width, int height);
 
 	public Sprite newSprite(Sprite sprite);
 

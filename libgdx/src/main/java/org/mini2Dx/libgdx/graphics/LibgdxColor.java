@@ -19,7 +19,7 @@ import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.gdx.math.MathUtils;
 
 public class LibgdxColor implements Color {
-	public final com.badlogic.gdx.graphics.Color color;
+	public com.badlogic.gdx.graphics.Color color;
 
 	public LibgdxColor(int rgba8888) {
 		this(new com.badlogic.gdx.graphics.Color(rgba8888));
@@ -231,5 +231,45 @@ public class LibgdxColor implements Color {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public float rf() {
+		return getRAsFloat();
+	}
+
+	@Override
+	public float gf() {
+		return getGAsFloat();
+	}
+
+	@Override
+	public float bf() {
+		return getBAsFloat();
+	}
+
+	@Override
+	public float af() {
+		return getAAsFloat();
+	}
+
+	@Override
+	public float rb() {
+		return getRAsByte();
+	}
+
+	@Override
+	public float gb() {
+		return getGAsByte();
+	}
+
+	@Override
+	public float bb() {
+		return getBAsByte();
+	}
+
+	@Override
+	public float ab() {
+		return getAAsByte();
 	}
 }
