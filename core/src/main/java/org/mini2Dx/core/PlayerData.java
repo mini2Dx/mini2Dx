@@ -58,13 +58,6 @@ public abstract class PlayerData {
     protected abstract void ensureDataDirectoryExists();
 
     /**
-     * Returns a {@link FileHandle} of a file or directory in the player data location
-     * @param filepath The path to the file. This will be resolved as a path within the player data location.
-     * @return A {@link FileHandle} instance for file or directory
-     */
-    public abstract FileHandle getFileHandle(String... filepath);
-
-    /**
      * Wipes all data within the game data location
      *
      * @throws PlayerDataException
@@ -72,6 +65,15 @@ public abstract class PlayerData {
      *             data could not be wiped
      */
     public abstract void wipe() throws PlayerDataException;
+
+    /**
+     * Returns a {@link FileHandle} of a file or directory in the player data location
+     * @param filepath The path to the file. This will be resolved as a path within the player data location.
+     * @return A {@link FileHandle} instance for file or directory
+     */
+    public FileHandle getFileHandle(String... filepath){
+        return resolve(filepath);
+    };
 
     /**
      * Converts XML from a file into an object. Note the object must use the
