@@ -289,7 +289,7 @@ project(":" + rootProject.name + "-libgdx") {
 	}
 }
 
-project(":" + rootProject.name + "-desktop") {
+project(":" + rootProject.name + "-libgdx-desktop") {
 	description = "mini2Dx desktop runtime"
 	
 	dependencies {
@@ -316,7 +316,7 @@ project(":" + rootProject.name + "-tiled") {
 	dependencies {
 		compile project(":" + rootProject.name + "-core")
 
-		testCompile project(":" + rootProject.name + "-desktop")
+		testCompile project(":" + rootProject.name + "-libgdx-desktop")
 		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
 		testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
@@ -336,7 +336,7 @@ project(":" + rootProject.name + "-ui") {
 		testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
-		testCompile project(":" + rootProject.name + "-desktop")
+		testCompile project(":" + rootProject.name + "-libgdx-desktop")
 
 		//jmh project(":" + rootProject.name + "-headless")
 	}

@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.mini2Dx.libgdx;
 
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.font.GameFont;
 import org.mini2Dx.core.font.GameFontCache;
@@ -22,8 +25,14 @@ import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.geom.Shape;
 import org.mini2Dx.core.graphics.*;
 import org.mini2Dx.gdx.math.Matrix4;
+import org.mini2Dx.libgdx.game.GameWrapper;
 
 public class LibgdxGraphics implements Graphics {
+
+	public LibgdxGraphics(GameWrapper gameWrapper, SpriteBatch spriteBatch, PolygonSpriteBatch polygonSpriteBatch, ShapeRenderer shapeRenderer) {
+		super();
+	}
+
 	@Override
 	public void preRender(int gameWidth, int gameHeight) {
 

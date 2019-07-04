@@ -32,6 +32,7 @@ import java.io.IOException;
 
 public class LibgdxAudio implements Audio {
 	private final Array<MusicCompletionListener> musicCompletionListeners = new Array<MusicCompletionListener>();
+	private final Array<SoundCompletionListener> soundCompletionListeners = new Array<SoundCompletionListener>();
 
 	@Override
 	public Sound newSound(FileHandle fileHandle) throws IOException {
@@ -57,17 +58,23 @@ public class LibgdxAudio implements Audio {
 
 	@Override
 	public void addSoundCompletionListener(SoundCompletionListener completionListener) {
-		throw new NotYetImplementedException();
+		soundCompletionListeners.add(completionListener);
 	}
 
 	@Override
 	public void removeSoundCompletionListener(SoundCompletionListener completionListener) {
-		throw new NotYetImplementedException();
+		soundCompletionListeners.removeValue(completionListener, false);
 	}
 
 	public void notifyMusicCompletionListeners(Music music) {
 		for(int i = musicCompletionListeners.size - 1; i >= 0; i--) {
 			musicCompletionListeners.get(i).onMusicCompleted(music);
+		}
+	}
+
+	public void notifySoundCompletionListeners(long soundId) {
+		for(int i = soundCompletionListeners.size - 1; i >= 0; i--) {
+			soundCompletionListeners.get(i).onSoundCompleted(soundId);
 		}
 	}
 }
