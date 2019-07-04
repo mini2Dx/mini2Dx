@@ -33,7 +33,7 @@ namespace monogame.Util
                 throw new IOException();
             }
 
-            var fileInfo = new FileInfo(fileHandle.fullPath());
+            var fileInfo = new FileInfo(fileHandle.pathWithPrefix());
             _stream = fileInfo.OpenRead();
         }
 

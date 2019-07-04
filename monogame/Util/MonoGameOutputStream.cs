@@ -28,7 +28,7 @@ namespace monogame.Util
         public MonoGameOutputStream(MonoGameFileHandle fileHandle, bool append)
         {
             if (!fileHandle.exists() || fileHandle.isDirectory()) throw new IOException();
-            var fileInfo = new FileInfo(fileHandle.fullPath());
+            var fileInfo = new FileInfo(fileHandle.pathWithPrefix());
             _stream = append ? fileInfo.Open(FileMode.Append, FileAccess.Write) : fileInfo.Create();
         }
 

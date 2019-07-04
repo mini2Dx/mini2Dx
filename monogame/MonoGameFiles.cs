@@ -17,35 +17,43 @@ using System;
 using System.IO;
 using Microsoft.Xna.Framework.Content;
 using monogame.Files;
+using org.mini2Dx.core;
 using org.mini2Dx.core.files;
 
 namespace monogame
 {
     public class MonoGameFiles : org.mini2Dx.core.Files
     {
-        private readonly string _internalFilePrefix;
+        private readonly string _internalFilePrefix, _externalFilePrefix = Mdx.gameIdentifier + Path.DirectorySeparatorChar;
         internal readonly MonoGameContentManager _contentManager;
 
         public MonoGameFiles(ContentManager contentManager)
         {
             _internalFilePrefix = contentManager.RootDirectory + Path.DirectorySeparatorChar;
-            MonoGameFileHandle.setInternalFilePrefix(_internalFilePrefix);
+            if (Mdx.platform.isDesktop())
+            {
+                _externalFilePrefix = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + Path.DirectorySeparatorChar + _externalFilePrefix;
+            }
+            else
+            {
+                throw new NotSupportedException("Files aren't yet supported on this platform");
+            }
             _contentManager = new MonoGameContentManager(contentManager.ServiceProvider, contentManager.RootDirectory);
         }
 
         public FileHandle @internal(string path)
         {
-            return new MonoGameFileHandle(_internalFilePrefix + path, FileType.INTERNAL);
+            return new MonoGameFileHandle(_internalFilePrefix, path, FileType.INTERNAL);
         }
 
         public bool isExternalStorageAvailable()
         {
-            return false;
+            return true;
         }
 
         public FileHandle external(string path)
         {
-            throw new NotImplementedException();
+            return new MonoGameFileHandle(_externalFilePrefix, path, FileType.EXTERNAL);
         }
 
         public bool isLocalStorageAvailable()

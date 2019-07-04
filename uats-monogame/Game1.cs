@@ -317,11 +317,29 @@ namespace uats_monogame
         /// </summary>
         protected override void Initialize()
         {
+            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            {
+                Mdx.platform = Platform.LINUX;
+            }
+            else if (Environment.OSVersion.Platform == PlatformID.MacOSX)
+            {
+                Mdx.platform = Platform.MAC;
+            }
+            else if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                Mdx.platform = Platform.WINDOWS;
+            }
+            else
+            {
+                throw new PlatformNotSupportedException();
+            }
             Mdx.input = new MonoGameInput();
             Mdx.files = new MonoGameFiles(Content);
             Mdx.fonts = new MonoGameFonts();
             Mdx.executor = new MonoGameTaskExecutor();
             Mdx.log = new MonoGameLogger();
+            Mdx.playerData = new MonoGamePlayerData();
+
             Mdx.input.setInputProcessor(new UATInputProcessor(this));
             base.Initialize();
         }

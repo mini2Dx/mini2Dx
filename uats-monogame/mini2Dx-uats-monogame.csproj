@@ -53,6 +53,9 @@
     <Reference Include="IKVM.OpenJDK.Core, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
       <HintPath>..\_tools\ikvm\bin\IKVM.OpenJDK.Core.dll</HintPath>
     </Reference>
+    <Reference Include="IKVM.Runtime, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
+      <HintPath>..\_tools\ikvm\bin\IKVM.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="mini2Dx-all">
       <HintPath>..\all\build\libs\mini2Dx-all.dll</HintPath>
     </Reference>
