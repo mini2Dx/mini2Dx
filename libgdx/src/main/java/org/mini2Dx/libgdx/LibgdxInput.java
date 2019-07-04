@@ -16,6 +16,9 @@
 package org.mini2Dx.libgdx;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.controllers.AdvancedController;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
 import org.mini2Dx.core.Input;
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.nswitch.SwitchDualJoyConGamePad;
@@ -26,11 +29,67 @@ import org.mini2Dx.core.input.xbox360.Xbox360GamePad;
 import org.mini2Dx.core.input.xboxOne.XboxOneGamePad;
 import org.mini2Dx.gdx.InputProcessor;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.gdx.utils.ObjectMap;
+import org.mini2Dx.libgdx.input.LibgdxAdvancedGamePad;
+import org.mini2Dx.libgdx.input.LibgdxGamePad;
+import org.mini2Dx.libgdx.input.LibgdxInputProcessor;
 
 public class LibgdxInput implements Input {
+	private final Array<GamePad> gamePads = new Array<GamePad>();
+	private final ObjectMap<String, LibgdxGamePad> gamePadsById = new ObjectMap<String, LibgdxGamePad>();
+
+	private LibgdxInputProcessor gdxInputProcessor = null;
+
+	public void updateGamePads() {
+		final boolean firstRun = gamePads.size == 0;
+
+		for(int i = 0; i < Controllers.getControllers().size; i++) {
+			final Controller controller = Controllers.getControllers().get(i);
+
+			final LibgdxGamePad gamePad;
+
+			if(firstRun) {
+				if(controller instanceof AdvancedController) {
+					final AdvancedController advancedController = (AdvancedController) controller;
+					gamePad = new LibgdxAdvancedGamePad(advancedController);
+				} else {
+					gamePad = new LibgdxGamePad(controller);
+				}
+			} else {
+				if(controller instanceof AdvancedController) {
+					final AdvancedController advancedController = (AdvancedController) controller;
+					final String instanceId = advancedController.getUniqueId() != null ? advancedController.getUniqueId() : advancedController.getName();
+
+					if(gamePadsById.containsKey(instanceId)) {
+						gamePad = gamePadsById.get(instanceId);
+					} else {
+						gamePad = new LibgdxGamePad(controller);
+					}
+				} else {
+					if(gamePadsById.containsKey(controller.getName())) {
+						gamePad = gamePadsById.get(controller.getName());
+					} else {
+						gamePad = new LibgdxGamePad(controller);
+					}
+				}
+			}
+
+			if(!gamePadsById.containsKey(gamePad.getInstanceId())) {
+				gamePads.add(gamePad);
+				gamePadsById.put(gamePad.getInstanceId(), gamePad);
+				gamePad.init();
+			}
+		}
+	}
+
 	@Override
 	public void setInputProcessor(InputProcessor inputProcessor) {
-
+		if(gdxInputProcessor == null) {
+			gdxInputProcessor = new LibgdxInputProcessor(inputProcessor);
+			Gdx.input.setInputProcessor(gdxInputProcessor);
+		} else {
+			gdxInputProcessor.setInputProcessor(inputProcessor);
+		}
 	}
 
 	@Override
@@ -40,7 +99,10 @@ public class LibgdxInput implements Input {
 
 	@Override
 	public Array<GamePad> getGamePads() {
-		return null;
+		if(gamePads.size == 0) {
+			updateGamePads();
+		}
+		return gamePads;
 	}
 
 	@Override

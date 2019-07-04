@@ -370,5 +370,10 @@ namespace monogame.Input
 
             _prevStatus = currentStatus;
         }
+
+        public string getInstanceId()
+        {
+            return GamePad.GetCapabilities(_playerIndex).DisplayName + "#" + _playerIndex;
+        }
     }
 }

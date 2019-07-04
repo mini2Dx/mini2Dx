@@ -4,7 +4,7 @@
 - Added MonoGame runtime for consoles
 - Added task executor API to use platform-specific thread implementations
 - Added (optional) object pooling for geometry classes
-- Added new GamePad API with improved controller/feature support (rumble, player index, etc.)
+- Added new GamePad API with improved controller/feature support (third-party controllers, rumble, player index, etc.)
 - Simplified geometry class hierarchy
 
 [1.9.7]

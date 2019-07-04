@@ -28,6 +28,15 @@ public interface GamePad {
 	public GamePadType getGamePadType();
 
 	/**
+	 * Returns the ID for this {@link GamePad}.
+	 * When supported by the driver, if multiple gamepads are connected each will have a unique instance id.
+	 * Otherwise, this will fallback for to the name of the device returned by the driver.
+	 * If a gamepad is unplugged and reconnected, it will have the same ID.
+	 * @return The unique ID when possible, otherwise the generic ID
+	 */
+	public String getInstanceId();
+
+	/**
 	 * Returns if this {@link GamePad} is connected
 	 * @return False if it has been disconnected/unplugged
 	 */

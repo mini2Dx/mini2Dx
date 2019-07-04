@@ -25,8 +25,10 @@ import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
 
 public abstract class PS4GamePad implements GamePadListener, Disposable {
-	public static final String WINDOWS_ID = "Wireless Controller".toLowerCase();
-	public static final String MAC_ID = "Sony Interactive Entertainment Wireless Controller".toLowerCase();
+	public static final String [] ID = new String [] {
+		"Sony DualShock 4".toLowerCase(),
+		"PS4".toLowerCase()
+	};
 
 	private final Array<PS4GamePadListener> listeners = new Array<PS4GamePadListener>(true, 2, PS4GamePadListener.class);
 	private final GamePad gamePad;

@@ -25,7 +25,10 @@ import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
 
 public abstract class XboxOneGamePad implements GamePadListener, Disposable {
-	public static final String ID = "xbox one";
+	public static final String [] ID = new String [] {
+			"Xbox One".toLowerCase(),
+			"X-Box One".toLowerCase()
+	};
 
 	private final Array<XboxOneGamePadListener> listeners = new Array<XboxOneGamePadListener>(true, 2, XboxOneGamePadListener.class);
 	private final GamePad gamePad;
