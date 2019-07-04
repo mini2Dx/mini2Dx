@@ -133,7 +133,7 @@ namespace monogame.Graphics
             drawPixel(x, y, ((MonoGameColor) color).toRGBA8888());
         }
 
-        public void drawPixel(int x, int y, UInt32 color, bool blend = true)
+        public void drawPixel(int x, int y, UInt32 color, bool blend = false)
         {
             var colorAlpha = MonoGameColor.getAAsByte(color);
             if (x < getWidth() && y < getHeight() && x >= 0 && y >= 0 && colorAlpha > 0)

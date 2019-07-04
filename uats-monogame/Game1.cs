@@ -14,6 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using monogame;
@@ -26,6 +27,7 @@ using org.mini2Dx.core.input.button;
 using org.mini2Dx.core.input.xbox360;
 using org.mini2Dx.core.util;
 using org.mini2Dx.gdx;
+using org.mini2Dx.tiled;
 using Color = Microsoft.Xna.Framework.Color;
 using GamePad = org.mini2Dx.core.input.GamePad;
 using Input = org.mini2Dx.gdx.Input;
@@ -54,6 +56,7 @@ namespace uats_monogame
         private Rectangle sampleClipRectangle = new Rectangle(100, 200, 250, 150);
         private Vector2 mousePosition;
         private GameFontCache sampleFontCache;
+        private TiledMap sampleMap;
         
         public Game1()
         {
@@ -317,6 +320,8 @@ namespace uats_monogame
             Mdx.input = new MonoGameInput();
             Mdx.files = new MonoGameFiles(Content);
             Mdx.fonts = new MonoGameFonts();
+            Mdx.executor = new MonoGameTaskExecutor();
+            Mdx.log = new MonoGameLogger();
             Mdx.input.setInputProcessor(new UATInputProcessor(this));
             base.Initialize();
         }
@@ -357,6 +362,7 @@ namespace uats_monogame
             sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400, 165, 100, Align.LEFT, true);
             sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 165, 100, Align.CENTER, true);
             sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 165, 100, Align.RIGHT, true);
+            sampleMap = new TiledMap(Mdx.files.@internal("orthogonal_no_cache.tmx"));
         }
 
         /// <summary>
@@ -378,7 +384,18 @@ namespace uats_monogame
             ((MonoGameAudio)Mdx.audio).update();
             base.Update(gameTime);
         }
-        
+
+        private void testTiledDrawing(int x, int y)
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+            for (int i = 0; i < 10000; i++)
+            {
+                sampleMap.draw(Mdx.graphicsContext, x, y);
+            }
+            sw.Stop();
+            Console.WriteLine("It took {0} ms", sw.ElapsedMilliseconds);
+        }
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -424,6 +441,7 @@ namespace uats_monogame
             Mdx.graphicsContext.drawRect(500, 165, 100, 100);
             Mdx.graphicsContext.drawRect(600, 165, 100, 100);
             Mdx.graphicsContext.drawFontCache(sampleFontCache);
+            sampleMap.draw(Mdx.graphicsContext, (int) (gameWidth / 2), (int) (gameHeight / 4));
             Mdx.graphicsContext.postRender();
             //Console.WriteLine("FPS: {0}", 1.0/gameTime.ElapsedGameTime.TotalSeconds);
             base.Draw(gameTime);

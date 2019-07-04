@@ -32,7 +32,7 @@ namespace monogame.Files
         private readonly FileInfo _fileInfo;
         private DirectoryInfo _directoryInfo;
         private bool _isDirectory;
-        private string _internalFilePrefix;
+        private static string _internalFilePrefix;
         
         public MonoGameFileHandle(string path, FileType fileType)
         {
@@ -48,10 +48,9 @@ namespace monogame.Files
             }
         }
 
-        public MonoGameFileHandle setInternalFilePrefix(string internalFilePrefix)
+        internal static void setInternalFilePrefix(string internalFilePrefix)
         {
             _internalFilePrefix = internalFilePrefix;
-            return this;
         }
 
         internal T loadFromContentManager<T>()
@@ -76,7 +75,8 @@ namespace monogame.Files
 
         public string normalize()
         {
-            throw new NotImplementedException(); //You can't normalize a path in C#, see dotnet/corefx#30701 and dotnet/corefx#4208.
+            //throw new NotImplementedException(); //You can't normalize a path in C#, see dotnet/corefx#30701 and dotnet/corefx#4208.
+            return path();
         }
 
         public string name()
@@ -118,7 +118,7 @@ namespace monogame.Files
         {
             if (_fileType == FileType.INTERNAL)
             {
-                return new MonoGameInputStream(((MonoGameFiles)Mdx.files)._contentManager.OpenStream(path()));
+                return new MonoGameInputStream(((MonoGameFiles)Mdx.files)._contentManager.OpenStream(pathWithoutExtension()));
             }
             return new MonoGameInputStream(this);
         }
@@ -157,7 +157,7 @@ namespace monogame.Files
 
             if (_fileType == FileType.INTERNAL)
             {
-                return loadFromContentManager<String>();
+                return new StreamReader(((MonoGameFiles)Mdx.files)._contentManager.OpenStream(pathWithoutExtension())).ReadToEnd();
             }
 
             return File.ReadAllText(fullPath());
@@ -194,7 +194,7 @@ namespace monogame.Files
             {
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    ((MonoGameFiles)Mdx.files)._contentManager.OpenStream(path()).CopyTo(ms);
+                    ((MonoGameFiles)Mdx.files)._contentManager.OpenStream(pathWithoutExtension()).CopyTo(ms);
                     return ms.ToArray();
                 }
             }
@@ -215,7 +215,7 @@ namespace monogame.Files
             Stream byteStream;
             if (_fileType == FileType.INTERNAL)
             {
-                byteStream = ((MonoGameFiles) Mdx.files)._contentManager.OpenStream(path());
+                byteStream = ((MonoGameFiles) Mdx.files)._contentManager.OpenStream(pathWithoutExtension());
             }
             else
             {
@@ -409,7 +409,16 @@ namespace monogame.Files
 
         public FileHandle parent()
         {
-            return new MonoGameFileHandle((_isDirectory ? _directoryInfo.Parent : _fileInfo.Directory).ToString(), _fileType);
+            string path = ".";
+            if (this.path().Contains("\\") || this.path().Contains("/"))
+            {
+                path = (_isDirectory ? _directoryInfo.Parent : _fileInfo.Directory).ToString();
+            }
+            else if (_fileType == FileType.INTERNAL)
+            {
+                path = _internalFilePrefix;
+            }
+            return new MonoGameFileHandle(path, _fileType);
         }
 
         public void mkdirs()

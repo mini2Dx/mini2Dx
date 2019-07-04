@@ -16,26 +16,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Content;
 
 namespace monogame.Files
 {
-    class MonoGameContentManager : ContentManager
+    public class mini2DxFileContent
     {
-        public MonoGameContentManager(IServiceProvider serviceProvider) : base(serviceProvider)
-        {
-        }
-
-        public MonoGameContentManager(IServiceProvider serviceProvider, string rootDirectory) : base(serviceProvider, rootDirectory)
-        {
-        }
-
-        public Dictionary<string, object> LoadedAssets => base.LoadedAssets;
-
-        public Stream OpenStream(string assetName)
-        {
-            return new MemoryStream(Load<mini2DxFileContent>(assetName).content);
-        }
+        public byte[] content;
     }
 }

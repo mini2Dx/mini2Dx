@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>monogame_pipeline_ext</RootNamespace>
     <AssemblyName>monogame-pipeline-ext</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -40,12 +40,21 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TextFileContentImporter.cs" />
-    <Compile Include="TextFileContentProcessor.cs" />
+    <Compile Include="mini2DxContentImporter.cs" />
+    <Compile Include="mini2DxContentProcessor.cs" />
+    <Compile Include="mini2DxFileWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\monogame\mini2Dx-monogame.csproj">
+      <Project>{ac3ae86c-55ad-4f1e-97e8-12e6389137ad}</Project>
+      <Name>mini2Dx-monogame</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

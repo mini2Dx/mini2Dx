@@ -16,26 +16,31 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using Microsoft.Xna.Framework.Content;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Content.Pipeline;
+using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
+using monogame.Files;
 
-namespace monogame.Files
+namespace monogame_pipeline_ext
 {
-    class MonoGameContentManager : ContentManager
+    [ContentTypeWriter]
+    class mini2DxFileWriter : ContentTypeWriter<mini2DxFileContent>
     {
-        public MonoGameContentManager(IServiceProvider serviceProvider) : base(serviceProvider)
+        public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
+            return typeof(mini2DxFileReader).AssemblyQualifiedName;
         }
 
-        public MonoGameContentManager(IServiceProvider serviceProvider, string rootDirectory) : base(serviceProvider, rootDirectory)
+        public override string GetRuntimeType(TargetPlatform targetPlatform)
         {
+            return typeof(mini2DxFileContent).AssemblyQualifiedName;
         }
 
-        public Dictionary<string, object> LoadedAssets => base.LoadedAssets;
-
-        public Stream OpenStream(string assetName)
+        protected override void Write(ContentWriter output, mini2DxFileContent value)
         {
-            return new MemoryStream(Load<mini2DxFileContent>(assetName).content);
+            output.Write(value.content);
         }
     }
 }

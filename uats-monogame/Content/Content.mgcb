@@ -15,8 +15,8 @@
 #---------------------------------- Content ---------------------------------#
 
 #begin arial24.fnt
-/importer:TextFileContentImporter
-/processor:TextFileContentProcessor
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
 /build:arial24.fnt
 
 #begin arial24_0.png
@@ -48,6 +48,67 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:grayscaleShader.fx
+
+#begin hex_x_tileset1.tsx
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:hex_x_tileset1.tsx
+
+#begin hex_y_tileset1.tsx
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:hex_y_tileset1.tsx
+
+#begin hexagonal_x.tmx
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:hexagonal_x.tmx
+
+#begin hexagonal_x_tileset.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:hexagonal_x_tileset.png
+
+#begin hexagonal_y.tmx
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:hexagonal_y.tmx
+
+#begin hexagonal_y_tileset.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:hexagonal_y_tileset.png
+
+#begin isometric.tmx
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:isometric.tmx
+
+#begin isometric_tileset.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:isometric_tileset.png
 
 #begin mini2Dx.png
 /importer:TextureImporter
@@ -86,6 +147,43 @@
 /processorParam:TextureFormat=Color
 /build:ninepatch.png
 
+#begin object.tx
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:object.tx
+
+#begin ortho_tileset1.tsx
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:ortho_tileset1.tsx
+
+#begin orthogonal.tmx
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:orthogonal.tmx
+
+#begin orthogonal_no_cache.tmx
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:orthogonal_no_cache.tmx
+
+#begin orthogonal_tileset.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:orthogonal_tileset.png
+
+#begin orthogonal_tsx.tmx
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:orthogonal_tsx.tmx
+
 #begin pack.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -123,8 +221,8 @@
 /build:pack3.png
 
 #begin packfile.atlas
-/importer:TextFileContentImporter
-/processor:TextFileContentProcessor
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
 /build:packfile.atlas
 
 #begin sound.wav
@@ -134,7 +232,7 @@
 /build:sound.wav
 
 #begin text.txt
-/importer:TextFileContentImporter
-/processor:TextFileContentProcessor
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
 /build:text.txt
 

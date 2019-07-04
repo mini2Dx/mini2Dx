@@ -152,12 +152,12 @@ namespace monogame.Graphics
 
         public void setRotation(float degrees)
         {
-            _rotation = degrees;
+            _rotation = degrees % 360;
         }
 
         public void rotate(float degrees)
         {
-            _rotation += degrees;
+            setRotation(getRotation() + degrees);
         }
 
         public void rotate90(bool clockwise)

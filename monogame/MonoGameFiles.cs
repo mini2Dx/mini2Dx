@@ -29,22 +29,23 @@ namespace monogame
         public MonoGameFiles(ContentManager contentManager)
         {
             _internalFilePrefix = contentManager.RootDirectory + Path.DirectorySeparatorChar;
+            MonoGameFileHandle.setInternalFilePrefix(_internalFilePrefix);
             _contentManager = new MonoGameContentManager(contentManager.ServiceProvider, contentManager.RootDirectory);
-        }
-        
-        public FileHandle external(string path)
-        {
-            throw new NotImplementedException();
         }
 
         public FileHandle @internal(string path)
         {
-            return new MonoGameFileHandle(_internalFilePrefix + path, FileType.INTERNAL).setInternalFilePrefix(_internalFilePrefix);
+            return new MonoGameFileHandle(_internalFilePrefix + path, FileType.INTERNAL);
         }
 
         public bool isExternalStorageAvailable()
         {
             return false;
+        }
+
+        public FileHandle external(string path)
+        {
+            throw new NotImplementedException();
         }
 
         public bool isLocalStorageAvailable()
