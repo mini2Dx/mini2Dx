@@ -43,7 +43,8 @@ public interface PlayerData {
     public FileHandle getFileHandle(String... filepath);
 
     /**
-     * Reads the contents of a file in the player data location via a {@link DataInputStream}
+     * Reads the contents of a file in the player data location via a {@link DataInputStream}.
+     * Note: Ensure that {@link DataInputStream#close()} is called when finished reading.
      *
      * @param filepath
      *            The path to the file. This will be resolved as a path
@@ -55,7 +56,8 @@ public interface PlayerData {
     public DataInputStream readBytes(String... filepath) throws PlayerDataException;
 
     /**
-     * Writes contents to a file in the player data location
+     * Writes contents to a file in the player data location.
+     * Note: Ensure that {@link DataOutputStream#close()} is called when finished writing.
      *
      * @param filepath
      *            The path to the file. This will be resolved as a path
