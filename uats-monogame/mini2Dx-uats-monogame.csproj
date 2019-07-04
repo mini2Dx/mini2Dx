@@ -114,8 +114,13 @@
     </None>
     <None Include="app.manifest" />
     <Content Include="Content\arial24.fnt" />
+    <None Include="Content\isometric.tmx" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\monogame-pipeline-ext\monogame-pipeline-ext.csproj">
+      <Project>{6f98e109-6222-4843-b89a-22cdae2fe514}</Project>
+      <Name>monogame-pipeline-ext</Name>
+    </ProjectReference>
     <ProjectReference Include="..\monogame\mini2Dx-monogame.csproj">
       <Project>{ac3ae86c-55ad-4f1e-97e8-12e6389137ad}</Project>
       <Name>mini2Dx-monogame</Name>
@@ -124,6 +129,7 @@
   <ItemGroup>
     <Content Include="Content\background.png" />
     <Content Include="Content\defaultShader.fx" />
+    <None Include="Content\isometric_tileset.png" />
     <Content Include="Content\mini2Dx.png" />
     <Content Include="Content\music.ogg" />
     <Content Include="Content\ninepatch.png" />

@@ -229,7 +229,7 @@ namespace monogame
                 sourceRectangle.Y -= sourceRectangle.Height;
             }
             _spriteBatch.Draw(((MonoGameTexture) textureRegion.getTexture()).texture2D,
-                (new Vector2(x, y) + _translation - _rotationCenter) * _scale, sourceRectangle, _tint, rotation, Vector2.Zero,
+                (new Vector2(x, y) + _translation - _rotationCenter) * _scale, sourceRectangle, _tint, rotation, Vector2.Zero, 
                 new Vector2(width / textureRegion.getRegionWidth(), height / textureRegion.getRegionHeight()) *
                 _scale, (textureRegion.isFlipX() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
                         (textureRegion.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);

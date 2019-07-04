@@ -19,7 +19,7 @@ using Exception = java.lang.Exception;
 
 namespace monogame
 {
-    class MonoGameLogger : org.mini2Dx.core.Logger
+    public class MonoGameLogger : org.mini2Dx.core.Logger
     {
         public void debug(string tag, string msg)
         {

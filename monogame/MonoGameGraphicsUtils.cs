@@ -48,7 +48,7 @@ namespace monogame
 
         public Color newColor(int rgba8888)
         {
-            return new MonoGameColor((uint) rgba8888);
+            return new MonoGameColor(MonoGameColor.toMonoGameColor((uint) rgba8888));
         }
 
         public Color newColor(int r, int g, int b, int a)
@@ -174,23 +174,9 @@ namespace monogame
 
         public Texture newTexture(Pixmap pixmap, PixmapFormat format)
         {
-            var rawPixmap = pixmap.getPixels();
+            var rawPixmap = ((MonoGamePixmap)pixmap).toRawPixelsARGB();
 
-            SurfaceFormat destFormat;
-
-            if (format == PixmapFormat.ALPHA)
-            {
-                destFormat = SurfaceFormat.Alpha8;
-            }
-            else if (format == PixmapFormat.RGBA8888)
-            {
-                destFormat = SurfaceFormat.ColorSRgb;
-            }
-            else
-            {
-                throw new ArgumentException("format not supported");
-            }
-            var texture = new Texture2D(_graphicsDevice, pixmap.getWidth(), pixmap.getHeight(), false, destFormat);
+            var texture = new Texture2D(_graphicsDevice, pixmap.getWidth(), pixmap.getHeight(), false, SurfaceFormat.Color);
             texture.SetData(rawPixmap);
 
             return new MonoGameTexture(texture);
