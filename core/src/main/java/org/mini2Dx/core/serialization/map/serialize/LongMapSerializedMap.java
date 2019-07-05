@@ -13,36 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.libgdx;
+package org.mini2Dx.core.serialization.map.serialize;
 
-import com.badlogic.gdx.Gdx;
-import org.mini2Dx.core.Files;
-import org.mini2Dx.core.files.FileHandle;
-import org.mini2Dx.libgdx.files.LibgdxFileHandle;
+import org.mini2Dx.core.util.LongArrayIterable;
+import org.mini2Dx.gdx.utils.LongArray;
+import org.mini2Dx.gdx.utils.LongMap;
 
-public class LibgdxFiles implements Files {
-	@Override
-	public FileHandle internal(String path) {
-		return new LibgdxFileHandle(Gdx.files.internal(path));
+/**
+ * Utility class used during JSON/XML serialization
+ */
+public class LongMapSerializedMap extends SerializedMap<LongMap> {
+	private static final LongArray KEYS_TMP = new LongArray(1);
+
+	public LongMapSerializedMap(LongMap map) {
+		super(map);
+		KEYS_TMP.clear();
+		KEYS_TMP.addAll(map.keys().toArray());
 	}
 
 	@Override
-	public FileHandle external(String path) {
-		return new LibgdxFileHandle(Gdx.files.absolute(path));
+	public Object get(Object key) {
+		return map.get((int) key);
 	}
 
 	@Override
-	public FileHandle local(String path) {
-		return new LibgdxFileHandle(Gdx.files.local(path));
+	public int getSize() {
+		return map.size;
 	}
 
 	@Override
-	public boolean isExternalStorageAvailable() {
-		return Gdx.files.isExternalStorageAvailable();
-	}
-
-	@Override
-	public boolean isLocalStorageAvailable() {
-		return Gdx.files.isLocalStorageAvailable();
+	public Iterable keys() {
+		return new LongArrayIterable(KEYS_TMP) ;
 	}
 }

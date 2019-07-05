@@ -13,36 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.libgdx;
+package org.mini2Dx.core.serialization.collection;
 
-import com.badlogic.gdx.Gdx;
-import org.mini2Dx.core.Files;
-import org.mini2Dx.core.files.FileHandle;
-import org.mini2Dx.libgdx.files.LibgdxFileHandle;
+import java.util.Collection;
 
-public class LibgdxFiles implements Files {
-	@Override
-	public FileHandle internal(String path) {
-		return new LibgdxFileHandle(Gdx.files.internal(path));
+/**
+ * Utility class used during JSON/XML serialization
+ */
+public class CollectionSerializedCollection extends SerializedCollection<Collection> {
+	private Object [] values;
+
+	public CollectionSerializedCollection(Collection collection) {
+		super(collection);
+		values = collection.toArray();
 	}
 
 	@Override
-	public FileHandle external(String path) {
-		return new LibgdxFileHandle(Gdx.files.absolute(path));
+	public Object get(int index) {
+		return values[index];
 	}
 
 	@Override
-	public FileHandle local(String path) {
-		return new LibgdxFileHandle(Gdx.files.local(path));
+	public int getLength() {
+		return collection.size();
 	}
 
 	@Override
-	public boolean isExternalStorageAvailable() {
-		return Gdx.files.isExternalStorageAvailable();
-	}
-
-	@Override
-	public boolean isLocalStorageAvailable() {
-		return Gdx.files.isLocalStorageAvailable();
+	public void dispose() {
+		values = null;
 	}
 }

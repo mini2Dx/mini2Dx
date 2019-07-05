@@ -13,28 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.files;
+package org.mini2Dx.core.reflect;
 
-public enum FileType {
+public interface Annotation {
 	/**
-	 * Desktop: Jar asset directory<br>
-	 * Android: Asset directory<br>
-	 * iOS:<br>
-	 * Console: ROM resource<br>
+	 * Returns the underlying {@link java.lang.annotation.Annotation} value
+	 * @param annotationType The annotation class
+	 * @param <T> The annotation type
+	 * @return The {@link java.lang.annotation.Annotation} value
 	 */
-	INTERNAL,
+	public <T extends java.lang.annotation.Annotation> T getAnnotation (Class<T> annotationType);
+
 	/**
-	 * Desktop: Absolute path on filesystem<br>
-	 * Android: Path relative to the root of the SD card<br>
-	 * iOS:<br>
-	 * Console: Player storage<br>
+	 * Returns the {@link java.lang.annotation.Annotation} class for this annotation
+	 * @return The {@link java.lang.annotation.Annotation} class implementation
 	 */
-	EXTERNAL,
-	/**
-	 * Desktop: Folder relative to executing JAR<br>
-	 * Android: Private app files directory<br>
-	 * iOS:<br>
-	 * Console: Game data directory<br>
-	 */
-	LOCAL
+	public Class<? extends java.lang.annotation.Annotation> getAnnotationType();
 }

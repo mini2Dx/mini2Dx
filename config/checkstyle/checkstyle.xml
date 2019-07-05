@@ -4,11 +4,11 @@
     <property name="charset" value="UTF-8"/>
     <property name="severity" value="error"/>
     <module name="BeforeExecutionExclusionFileFilter">
-        <property name="fileNamePattern" value="[Ss]erialized(Collection|Map).java$"/>
+        <property name="fileNamePattern" value="(Jvm.+|[Ss]erialized(Collection|Map)|XmlSerializer).java$"/>
     </module>
     <module name="TreeWalker">
         <module name="IllegalImport">
-            <property name="illegalClasses" value="java.util.List, java.util.Set, java.util.Map, java.util.ArrayList, java.util.HashSet, java.util.LinkedHashMap, java.util.LinkedHashSet, java.util.LinkedList"/>
+            <property name="illegalClasses" value="java.util.List, java.util.Set, java.util.Map, java.util.ArrayList, java.util.HashSet, java.util.LinkedHashMap, java.util.LinkedHashSet, java.util.LinkedList, java.lang.reflect.Method, java.lang.reflect.Field, java.lang.reflect.Constructor"/>
         </module>
     </module>
 </module>

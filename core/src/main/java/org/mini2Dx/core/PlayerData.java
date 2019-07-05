@@ -55,7 +55,7 @@ public abstract class PlayerData {
     /**
      * Internal method for setting up the save data directory (if required)
      */
-    protected abstract void ensureDataDirectoryExists();
+    protected abstract void ensureDataDirectoryExists() throws IOException;
 
     /**
      * Wipes all data within the game data location

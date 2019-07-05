@@ -20,10 +20,9 @@ import com.badlogic.gdx.backends.lwjgl.audio.Mini2DxOpenALAudio;
 import com.badlogic.gdx.utils.*;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
-import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.desktop.DesktopGameWrapper;
 import org.mini2Dx.desktop.DesktopMini2DxConfig;
+import org.mini2Dx.libgdx.desktop.DesktopGameWrapper;
 import org.mini2Dx.libgdx.game.ApplicationListener;
 
 import java.awt.*;

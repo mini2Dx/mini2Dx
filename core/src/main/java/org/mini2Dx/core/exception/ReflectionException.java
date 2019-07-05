@@ -13,28 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.files;
+package org.mini2Dx.core.exception;
 
-public enum FileType {
-	/**
-	 * Desktop: Jar asset directory<br>
-	 * Android: Asset directory<br>
-	 * iOS:<br>
-	 * Console: ROM resource<br>
-	 */
-	INTERNAL,
-	/**
-	 * Desktop: Absolute path on filesystem<br>
-	 * Android: Path relative to the root of the SD card<br>
-	 * iOS:<br>
-	 * Console: Player storage<br>
-	 */
-	EXTERNAL,
-	/**
-	 * Desktop: Folder relative to executing JAR<br>
-	 * Android: Private app files directory<br>
-	 * iOS:<br>
-	 * Console: Game data directory<br>
-	 */
-	LOCAL
+public class ReflectionException extends MdxException {
+
+	public ReflectionException(String message) {
+		super(message);
+	}
+
+	public ReflectionException(String message, Throwable throwable) {
+		super(message, throwable);
+	}
 }

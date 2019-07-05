@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.core.di.injection;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.di.annotation.Autowired;
 import org.mini2Dx.core.di.annotation.PostInject;
 import org.mini2Dx.core.di.bean.Bean;
@@ -22,17 +23,20 @@ import org.mini2Dx.core.di.bean.PrototypeBean;
 import org.mini2Dx.core.di.bean.SingletonBean;
 import org.mini2Dx.core.exception.NoSuchBeanException;
 import org.mini2Dx.core.exception.PostInjectException;
+import org.mini2Dx.core.exception.ReflectionException;
+import org.mini2Dx.core.reflect.Annotation;
+import org.mini2Dx.core.reflect.Field;
+import org.mini2Dx.core.reflect.Method;
 import org.mini2Dx.gdx.utils.OrderedMap;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.concurrent.ExecutorService;
 
 /**
  * Injects beans into each other
  */
 public class BeanInjector {
+	private static final String LOGGING_TAG = BeanInjector.class.getSimpleName();
+
 	private OrderedMap<String, Object> singletons;
 	private OrderedMap<String, Object> prototypes;
 	private OrderedMap<String, NoSuchBeanException> exceptions;
@@ -52,8 +56,8 @@ public class BeanInjector {
 			Object object = prototypes.get(key);
 			try {
 				invokePostInject(object);
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
+			} catch (ReflectionException e) {
+				Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
 			}
 		}
 
@@ -61,8 +65,8 @@ public class BeanInjector {
 			Object object = singletons.get(key);
 			try {
 				invokePostInject(object);
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
+			} catch (ReflectionException e) {
+				Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
 			}
 		}
 
@@ -91,9 +95,8 @@ public class BeanInjector {
 		return result;
 	}
 
-	private void invokePostInject(Object object)
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		for (Method method : object.getClass().getMethods()) {
+	private void invokePostInject(Object object) throws IllegalArgumentException {
+		for (Method method : Mdx.reflect.getMethods(object.getClass())) {
 			if (!method.isAnnotationPresent(PostInject.class)) {
 				continue;
 			}
@@ -146,13 +149,15 @@ public class BeanInjector {
 			throws NoSuchBeanException, IllegalArgumentException, IllegalAccessException {
 		Class<?> currentClass = object.getClass();
 		while (!currentClass.equals(Object.class)) {
-			for (Field field : currentClass.getDeclaredFields()) {
-				field.setAccessible(true);
-
-				Autowired autowireAnnotaiton = field.getAnnotation(Autowired.class);
+			for (Field field : Mdx.reflect.getDeclaredFields(currentClass)) {
+				final Annotation annotation = field.getDeclaredAnnotation(Autowired.class);
+				if (annotation == null) {
+					continue;
+				}
+				Autowired autowireAnnotaiton = annotation.getAnnotation(Autowired.class);
 				Object value = field.get(object);
 
-				if (autowireAnnotaiton == null) {
+				if(autowireAnnotaiton == null) {
 					continue;
 				}
 				if (value != null) {
@@ -174,13 +179,16 @@ public class BeanInjector {
 			throws NoSuchBeanException, IllegalArgumentException, IllegalAccessException {
 		Class<?> currentClass = object.getClass();
 		while (!currentClass.equals(Object.class)) {
-			for (Field field : currentClass.getDeclaredFields()) {
-				field.setAccessible(true);
-				Autowired autowireAnnotaiton = field.getAnnotation(Autowired.class);
+			for (Field field : Mdx.reflect.getDeclaredFields(currentClass)) {
+				final Annotation annotation = field.getDeclaredAnnotation(Autowired.class);
+				if (annotation == null) {
+					continue;
+				}
 
-				Object value = field.get(object);
+				final Autowired autowireAnnotaiton = annotation.getAnnotation(Autowired.class);
+				final Object value = field.get(object);
 
-				if (autowireAnnotaiton == null) {
+				if(autowireAnnotaiton == null) {
 					continue;
 				}
 				if (value != null) {

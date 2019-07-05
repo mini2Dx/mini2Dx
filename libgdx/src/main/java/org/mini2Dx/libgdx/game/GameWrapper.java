@@ -16,8 +16,12 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import org.mini2Dx.core.Graphics;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.Platform;
 import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.libgdx.LibgdxGraphics;
+import org.mini2Dx.core.reflect.jvm.JvmReflection;
+import org.mini2Dx.libgdx.*;
+import org.mini2Dx.natives.OsInformation;
 
 /**
  * An abstract implementation of {@link Game} for launching mini2Dx games
@@ -48,7 +52,17 @@ public abstract class GameWrapper implements ApplicationListener {
 	@Override
 	public void create() {
 		initialise(gameIdentifier);
-		gameContainer.start(createGraphicsContext());
+
+		Mdx.audio = new LibgdxAudio();
+		Mdx.files = new LibgdxFiles();
+		Mdx.graphics = new LibgdxGraphicsUtils();
+		Mdx.graphicsContext = createGraphicsContext();
+		Mdx.input = new LibgdxInput();
+		Mdx.log = new LibgdxLogger();
+		Mdx.platform = getPlatform();
+		Mdx.reflect = new JvmReflection();
+
+		gameContainer.start(Mdx.graphicsContext);
 	}
 
 	@Override
@@ -106,6 +120,7 @@ public abstract class GameWrapper implements ApplicationListener {
 			return;
 		}
 		gameContainer.dispose();
+		Mdx.executor.dispose();
 	}
 
 	/**
@@ -113,4 +128,21 @@ public abstract class GameWrapper implements ApplicationListener {
 	 * @return False at startup, true once the window/game is visible to the user
 	 */
 	public abstract boolean isGameWindowReady();
+
+	public Platform getPlatform() {
+		switch(OsInformation.getOs()) {
+		case WINDOWS:
+			return Platform.WINDOWS;
+		case MAC:
+			return Platform.MAC;
+		case ANDROID:
+			return Platform.ANDROID;
+		case IOS:
+			return Platform.IOS;
+		default:
+		case UNKNOWN:
+		case UNIX:
+			return Platform.LINUX;
+		}
+	}
 }

@@ -13,36 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.libgdx;
+package org.mini2Dx.core.reflect.jvm;
 
-import com.badlogic.gdx.Gdx;
-import org.mini2Dx.core.Files;
-import org.mini2Dx.core.files.FileHandle;
-import org.mini2Dx.libgdx.files.LibgdxFileHandle;
+import org.mini2Dx.core.reflect.Annotation;
 
-public class LibgdxFiles implements Files {
-	@Override
-	public FileHandle internal(String path) {
-		return new LibgdxFileHandle(Gdx.files.internal(path));
+/**
+ * Implementation of {@link Annotation} where JVM-based reflection is supported
+ */
+public class JvmAnnotation implements Annotation {
+	public final java.lang.annotation.Annotation annotation;
+
+	public JvmAnnotation(java.lang.annotation.Annotation annotation) {
+		this.annotation = annotation;
 	}
 
 	@Override
-	public FileHandle external(String path) {
-		return new LibgdxFileHandle(Gdx.files.absolute(path));
+	public <T extends java.lang.annotation.Annotation> T getAnnotation(Class<T> annotationType) {
+		if (annotation.annotationType().equals(annotationType)) {
+			return (T) annotation;
+		}
+		return null;
 	}
 
 	@Override
-	public FileHandle local(String path) {
-		return new LibgdxFileHandle(Gdx.files.local(path));
-	}
-
-	@Override
-	public boolean isExternalStorageAvailable() {
-		return Gdx.files.isExternalStorageAvailable();
-	}
-
-	@Override
-	public boolean isLocalStorageAvailable() {
-		return Gdx.files.isLocalStorageAvailable();
+	public Class<? extends java.lang.annotation.Annotation> getAnnotationType() {
+		return annotation.annotationType();
 	}
 }

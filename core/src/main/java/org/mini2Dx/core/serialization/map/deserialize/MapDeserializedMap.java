@@ -13,36 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.libgdx;
+package org.mini2Dx.core.serialization.map.deserialize;
 
-import com.badlogic.gdx.Gdx;
-import org.mini2Dx.core.Files;
-import org.mini2Dx.core.files.FileHandle;
-import org.mini2Dx.libgdx.files.LibgdxFileHandle;
+import org.mini2Dx.core.exception.ReflectionException;
+import org.mini2Dx.core.reflect.Field;
 
-public class LibgdxFiles implements Files {
-	@Override
-	public FileHandle internal(String path) {
-		return new LibgdxFileHandle(Gdx.files.internal(path));
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Utility class used during JSON/XML deserialization
+ */
+public class MapDeserializedMap extends DeserializedMap<Map> {
+
+	public MapDeserializedMap(Field field, Class<?> fieldClass, Object object) throws ReflectionException {
+		super(field, fieldClass, object);
 	}
 
 	@Override
-	public FileHandle external(String path) {
-		return new LibgdxFileHandle(Gdx.files.absolute(path));
+	public Class<? extends Map> getFallbackImplementation() {
+		return HashMap.class;
 	}
 
 	@Override
-	public FileHandle local(String path) {
-		return new LibgdxFileHandle(Gdx.files.local(path));
+	public Class<?> getKeyClass() {
+		return field.getElementType(0);
 	}
 
 	@Override
-	public boolean isExternalStorageAvailable() {
-		return Gdx.files.isExternalStorageAvailable();
+	public Class<?> getValueClass() {
+		return field.getElementType(1);
 	}
 
 	@Override
-	public boolean isLocalStorageAvailable() {
-		return Gdx.files.isLocalStorageAvailable();
+	public void put(Object key, Object value) {
+		map.put(key, value);
 	}
 }

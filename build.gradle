@@ -146,8 +146,8 @@ configure(docProjects()) {
 		apply plugin: "java"
 		apply plugin: "checkstyle"
 		
-		sourceCompatibility = 1.7
-		targetCompatibility = 1.7
+		sourceCompatibility = 1.8
+		targetCompatibility = 1.8
 		
 		configurations {
 			testOutput.extendsFrom (testCompile)
@@ -281,6 +281,7 @@ project(":" + rootProject.name + "-libgdx") {
 		compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 		compile "de.golfgl.gdxcontrollerutils:gdx-controllers-advanced:$gdxAdvancedControllersVersion"
+		compile "org.mini2Dx:natives-loader:$nativesLoaderVersion"
 
 		testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"

@@ -95,6 +95,11 @@ public class Mdx {
     public static PlayerData playerData;
 
     /**
+     * API for reflection
+     */
+    public static Reflection reflect;
+
+    /**
      * XML serialization API
      */
     public static XmlSerializer xml;
