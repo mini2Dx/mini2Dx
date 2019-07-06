@@ -39,8 +39,9 @@ import org.mini2Dx.libgdx.graphics.*;
 public class LibgdxGraphics implements Graphics {
 	private static final String LOGGING_TAG = LibgdxGraphics.class.getSimpleName();
 
+	public final SpriteBatch spriteBatch;
+
 	private final GameWrapper gameWrapper;
-	private final SpriteBatch spriteBatch;
 	private final ShapeTextureCache colorTextureCache;
 	private final ShapeRenderer shapeRenderer;
 	private final PolygonSpriteBatch polygonSpriteBatch;

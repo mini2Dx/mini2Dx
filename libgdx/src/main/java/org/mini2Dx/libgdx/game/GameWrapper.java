@@ -55,6 +55,7 @@ public abstract class GameWrapper implements ApplicationListener {
 
 		Mdx.audio = new LibgdxAudio();
 		Mdx.files = new LibgdxFiles();
+		Mdx.fonts = new LibgdxFonts();
 		Mdx.graphics = new LibgdxGraphicsUtils();
 		Mdx.graphicsContext = createGraphicsContext();
 		Mdx.input = new LibgdxInput();
