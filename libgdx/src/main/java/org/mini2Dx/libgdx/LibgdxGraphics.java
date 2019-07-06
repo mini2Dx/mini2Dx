@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.font.GameFont;
@@ -395,17 +396,27 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public void drawString(String text, float x, float y) {
-
+		if (font == null) {
+			return;
+		}
+		beginRendering();
+		font.setColor(color);
+		font.draw(this, text, x, y);
 	}
 
 	@Override
 	public void drawString(String text, float x, float y, float targetWidth) {
-
+		drawString(text, x, y, targetWidth, Align.left);
 	}
 
 	@Override
 	public void drawString(String text, float x, float y, float targetWidth, int horizontalAlign) {
-
+		if (font == null) {
+			return;
+		}
+		beginRendering();
+		font.setColor(color);
+		font.draw(this, text, x, y, targetWidth, horizontalAlign, true);
 	}
 
 	@Override
