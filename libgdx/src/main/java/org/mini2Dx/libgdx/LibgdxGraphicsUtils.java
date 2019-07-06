@@ -209,6 +209,6 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 
 	@Override
 	public FrameBuffer newFrameBuffer(int width, int height) {
-		return null;
+		return new LibgdxFrameBuffer(width, height);
 	}
 }
