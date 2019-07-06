@@ -111,7 +111,16 @@ public class XmlSerializer {
      * @throws SerializationException Thrown when the object is invalid
      */
     public <T> void toXml(T object, Writer writer) throws SerializationException {
-
+        try {
+            XmlWriter xmlWriter = new XmlWriter(writer);
+            writeObject(null, object, "data", xmlWriter);
+            writer.flush();
+            writer.close();
+        } catch (SerializationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new SerializationException(e.getMessage(), e);
+        }
     }
 
     private <T> void writeObject(Field fieldDefinition, T object, String tagName, XmlWriter xmlWriter) throws SerializationException {
@@ -247,7 +256,6 @@ public class XmlSerializer {
             throws SerializationException {
         try {
             if (isPrimitive(objClass) || objClass.equals(String.class)) {
-                element.getText();
                 return parsePrimitive(element.getText(), objClass);
             }
             if (Mdx.reflect.isEnum(objClass)) {
@@ -266,7 +274,7 @@ public class XmlSerializer {
                 if (Mdx.reflect.isArray(fieldClass)) {
                     int arraySize = child.getIntAttribute("length", 0);
                     setArrayField(child, currentField, fieldClass, result, arraySize);
-                    break;
+                    continue;
                 }
                 if (Mdx.reflect.isEnum(fieldClass)) {
                     setEnumField(currentField, fieldClass, result, child.getText());
@@ -335,12 +343,13 @@ public class XmlSerializer {
         return clazz;
     }
 
-    private <T> T construct(XmlReader.Element element, Class<?> clazz) throws SerializationException, IllegalArgumentException {
+    private <T> T construct(final XmlReader.Element element, Class<?> clazz) throws SerializationException, IllegalArgumentException {
         Constructor[] constructors = Mdx.reflect.getConstructors(clazz);
         // Single constructor with no args
         if (constructors.length == 1 && constructors[0].getParameterAnnotations().length == 0) {
             return (T) constructors[0].newInstance();
         }
+        final int attributesCountModifier = element.getAttributes() != null && element.getAttributes().containsKey("class") ? 1 : 0;
 
         Constructor bestMatchedConstructor = null;
         Array<ConstructorArg> detectedAnnotations = new Array<ConstructorArg>(1);
@@ -361,8 +370,12 @@ public class XmlSerializer {
                     if (!annotations[k].getAnnotationType().isAssignableFrom(ConstructorArg.class)) {
                         continue;
                     }
-                    ConstructorArg constructorArg = (ConstructorArg) annotations[k];
-                    if (!element.getAttributes().containsKey(constructorArg.name())) {
+                    Annotation annotation = annotations[k];
+                    if(annotation == null) {
+                        continue;
+                    }
+                    ConstructorArg constructorArg = (ConstructorArg) annotation.getAnnotation(ConstructorArg.class);
+                    if (element.getAttributes() == null || !element.getAttributes().containsKey(constructorArg.name())) {
                         continue;
                     }
                     detectedAnnotations.add(constructorArg);
@@ -376,7 +389,7 @@ public class XmlSerializer {
             if (!allAnnotated) {
                 continue;
             }
-            if (detectedAnnotations.size == element.getAttributes().size - 1) {
+            if (detectedAnnotations.size == element.getAttributes().size - attributesCountModifier) {
                 //Found exact match
                 bestMatchedConstructor = constructors[i];
                 break;
