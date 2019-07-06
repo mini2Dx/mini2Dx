@@ -51,9 +51,11 @@ public abstract class GameWrapper implements ApplicationListener {
 
 	@Override
 	public void create() {
+		Mdx.gameIdentifier = gameIdentifier;
 		initialise(gameIdentifier);
 
 		Mdx.audio = new LibgdxAudio();
+		Mdx.executor = new LibgdxTaskExecutor(Math.max(2, Runtime.getRuntime().availableProcessors()));
 		Mdx.files = new LibgdxFiles();
 		Mdx.fonts = new LibgdxFonts();
 		Mdx.graphics = new LibgdxGraphicsUtils();

@@ -102,5 +102,5 @@ public class Mdx {
     /**
      * XML serialization API
      */
-    public static XmlSerializer xml;
+    public static final XmlSerializer xml = new XmlSerializer();
 }

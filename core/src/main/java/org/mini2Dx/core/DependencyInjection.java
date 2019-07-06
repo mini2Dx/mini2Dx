@@ -34,14 +34,13 @@ public class DependencyInjection {
     private final OrderedMap<String, Object> presetSingletons = new OrderedMap<String, Object>();
     private final OrderedMap<String, Object> presetPrototypes = new OrderedMap<String, Object>();
 
-    private final BeanUtils beanUtils;
+    private final BeanUtils beanUtils = new BeanUtils();
     private final ComponentScanner componentScanner;
 
     private OrderedMap<String, Bean> beans;
     private ExecutorService prototypeService;
 
-    public DependencyInjection(BeanUtils beanUtils, ComponentScanner componentScanner) {
-        this.beanUtils = beanUtils;
+    public DependencyInjection(ComponentScanner componentScanner) {
         this.componentScanner = componentScanner;
     }
 

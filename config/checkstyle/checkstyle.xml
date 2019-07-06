@@ -4,7 +4,7 @@
     <property name="charset" value="UTF-8"/>
     <property name="severity" value="error"/>
     <module name="BeforeExecutionExclusionFileFilter">
-        <property name="fileNamePattern" value="(Jvm.+|[Ss]erialized(Collection|Map)|XmlSerializer).java$"/>
+        <property name="fileNamePattern" value="(Jvm.+|[Ss]erialized(Collection|Map)|XmlSerializer|DesktopComponentScanner).java$"/>
     </module>
     <module name="TreeWalker">
         <module name="IllegalImport">
