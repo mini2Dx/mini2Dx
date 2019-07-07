@@ -85,8 +85,8 @@ public class LibgdxGraphics implements Graphics {
 		tint = defaultTint;
 
 		lineHeight = 1;
-		//color = Color.WHITE;
-		//backgroundColor = Color.BLACK;
+		color = new LibgdxColor(1f, 1f, 1f, 1f);
+		backgroundColor = new LibgdxColor(0f, 0f, 0f, 1f);
 		colorTextureCache = new ShapeTextureCache();
 
 		translationX = 0;
@@ -126,6 +126,11 @@ public class LibgdxGraphics implements Graphics {
 		resetTransformations();
 		clearShader();
 		clearBlendFunction();
+	}
+
+	@Override
+	public void clearContext() {
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 	}
 
 	/**

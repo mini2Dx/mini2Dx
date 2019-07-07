@@ -386,7 +386,7 @@ namespace monogame
 
         public int getLineHeight()
         {
-            throw new System.NotImplementedException();
+            return MathUtils.round(_font.getLineHeight());
         }
 
         public void setLineHeight(int lineHeight)

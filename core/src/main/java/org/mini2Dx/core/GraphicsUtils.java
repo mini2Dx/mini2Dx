@@ -92,5 +92,7 @@ public interface GraphicsUtils {
 
 	public TilingDrawable newTilingDrawable(TextureRegion textureRegion);
 
+	public Shader newShader(FileHandle vertexShader, FileHandle fragmentShader);
+
 	public FrameBuffer newFrameBuffer(int width, int height);
 }

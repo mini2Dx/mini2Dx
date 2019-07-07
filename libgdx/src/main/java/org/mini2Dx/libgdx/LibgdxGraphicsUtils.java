@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.libgdx;
 
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import org.mini2Dx.core.GraphicsUtils;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.*;
@@ -205,6 +206,13 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 	@Override
 	public TilingDrawable newTilingDrawable(TextureRegion textureRegion) {
 		return null;
+	}
+
+	@Override
+	public Shader newShader(FileHandle vertexShader, FileHandle fragmentShader) {
+		final LibgdxFileHandle vShader = (LibgdxFileHandle) vertexShader;
+		final LibgdxFileHandle fShader = (LibgdxFileHandle) fragmentShader;
+		return new LibgdxShader(new ShaderProgram(vShader.fileHandle, fShader.fileHandle));
 	}
 
 	@Override

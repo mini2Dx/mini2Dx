@@ -43,6 +43,11 @@ public interface Graphics {
     public void postRender();
 
     /**
+     * Clears the graphics context (e.g. glClear on OpenGL platforms)
+     */
+    public void clearContext();
+
+    /**
      * Renders a line segment to the window in the current {@link Color} with
      * the set line height
      *

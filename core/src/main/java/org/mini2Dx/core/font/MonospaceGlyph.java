@@ -27,7 +27,7 @@ public class MonospaceGlyph {
 	public float y;
 	public char glyphChar;
 	public TextureRegion textureRegion;
-	public final Color color = Mdx.graphics.newColor(255,255,255, 255);
+	public final Color color = Mdx.graphics.newColor(0f,0f,0f, 1f);
 
 	private MonospaceGlyph() {
 		super();

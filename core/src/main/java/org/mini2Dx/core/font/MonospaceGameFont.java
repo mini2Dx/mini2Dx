@@ -39,7 +39,7 @@ public class MonospaceGameFont implements GameFont {
 	private final FontParameters fontParameters;
 	private TextureRegion [][] characterTextures;
 	private int charactersPerRow, charactersPerColumn;
-	private Color color = Mdx.graphics.newColor(0, 0, 0, 0);
+	private Color color = Mdx.graphics.newColor(0f, 0f, 0f, 1f);
 
 	public MonospaceGameFont(FontParameters fontParameters) {
 		super();
