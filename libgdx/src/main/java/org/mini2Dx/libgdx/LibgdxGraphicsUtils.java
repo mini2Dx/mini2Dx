@@ -15,8 +15,10 @@
  ******************************************************************************/
 package org.mini2Dx.libgdx;
 
+import com.badlogic.gdx.graphics.LibgdxTextureRegionWrapper;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import org.mini2Dx.core.GraphicsUtils;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.*;
 import org.mini2Dx.libgdx.files.LibgdxFileHandle;
@@ -87,19 +89,19 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 	@Override
 	public TextureRegion newTextureRegion(Texture texture) {
 		final LibgdxTexture gdxTexture = (LibgdxTexture) texture;
-		return new LibgdxTextureRegion(new com.badlogic.gdx.graphics.g2d.TextureRegion(gdxTexture));
+		return new LibgdxTextureRegion(new LibgdxTextureRegionWrapper(gdxTexture));
 	}
 
 	@Override
 	public TextureRegion newTextureRegion(Texture texture, int width, int height) {
 		final LibgdxTexture gdxTexture = (LibgdxTexture) texture;
-		return new LibgdxTextureRegion(new com.badlogic.gdx.graphics.g2d.TextureRegion(gdxTexture, width, height));
+		return new LibgdxTextureRegion(new LibgdxTextureRegionWrapper(gdxTexture, width, height));
 	}
 
 	@Override
 	public TextureRegion newTextureRegion(Texture texture, int x, int y, int width, int height) {
 		final LibgdxTexture gdxTexture = (LibgdxTexture) texture;
-		return new LibgdxTextureRegion(new com.badlogic.gdx.graphics.g2d.TextureRegion(gdxTexture, x, y, width, height));
+		return new LibgdxTextureRegion(new LibgdxTextureRegionWrapper(gdxTexture, x, y, width, height));
 	}
 
 	@Override
@@ -116,7 +118,7 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 	@Override
 	public TextureRegion newTextureRegion(TextureRegion textureRegion, int x, int y, int width, int height) {
 		final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) textureRegion;
-		return new LibgdxTextureRegion(new com.badlogic.gdx.graphics.g2d.TextureRegion(gdxTextureRegion.textureRegion, x, y, width, height));
+		return new LibgdxTextureRegion(gdxTextureRegion, x, y, width, height);
 	}
 
 	@Override
@@ -209,9 +211,9 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 	}
 
 	@Override
-	public Shader newShader(FileHandle vertexShader, FileHandle fragmentShader) {
-		final LibgdxFileHandle vShader = (LibgdxFileHandle) vertexShader;
-		final LibgdxFileHandle fShader = (LibgdxFileHandle) fragmentShader;
+	public Shader newShader(String path) {
+		final LibgdxFileHandle vShader = (LibgdxFileHandle) Mdx.files.internal(path + ".vert.glsl");
+		final LibgdxFileHandle fShader = (LibgdxFileHandle) Mdx.files.internal(path + ".frag.glsl");
 		return new LibgdxShader(new ShaderProgram(vShader.fileHandle, fShader.fileHandle));
 	}
 

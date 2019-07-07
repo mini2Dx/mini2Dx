@@ -30,8 +30,8 @@ public class ShaderOperation implements RenderOperation {
 	protected final Shader shader;
 	private Shader previousShader;
 	
-	public ShaderOperation(FileHandle vertexShader, FileHandle fragmentShader) {
-		this(Mdx.graphics.newShader(vertexShader, fragmentShader));
+	public ShaderOperation(String shaderPath) {
+		this(Mdx.graphics.newShader(shaderPath));
 	}
 	
 	public ShaderOperation(Shader shader) {

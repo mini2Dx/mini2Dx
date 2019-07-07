@@ -42,7 +42,7 @@ namespace monogame.Graphics
         {
             ((MonoGameGraphics)Mdx.graphicsContext).endSpriteBatch();
             bind();
-            ((MonoGameGraphics)Mdx.graphicsContext).clearGraphicsDevice(((MonoGameGraphics)Mdx.graphicsContext)._backgroundColor);
+            Mdx.graphicsContext.clearContext();
             ((MonoGameGraphics)Mdx.graphicsContext)._gameWidth = _renderTarget.Width;
             ((MonoGameGraphics)Mdx.graphicsContext)._gameHeight = _renderTarget.Height;
             ((MonoGameGraphics)Mdx.graphicsContext).beginSpriteBatch();

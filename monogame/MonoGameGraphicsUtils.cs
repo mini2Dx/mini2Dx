@@ -236,5 +236,10 @@ namespace monogame
         {
             return new MonoGameTilingDrawable(tr);
         }
+
+        public Shader newShader(String path)
+        {
+            return new MonoGameShader(path);
+        }
     }
 }

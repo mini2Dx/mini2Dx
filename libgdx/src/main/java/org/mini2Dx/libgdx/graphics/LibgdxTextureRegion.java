@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.libgdx.graphics;
 
+import com.badlogic.gdx.graphics.LibgdxTextureRegionWrapper;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.graphics.Pixmap;
 import org.mini2Dx.core.graphics.PixmapFormat;
@@ -22,15 +23,19 @@ import org.mini2Dx.core.graphics.Texture;
 import org.mini2Dx.core.graphics.TextureRegion;
 
 public class LibgdxTextureRegion implements TextureRegion {
-	public final com.badlogic.gdx.graphics.g2d.TextureRegion textureRegion;
+	public final LibgdxTextureRegionWrapper textureRegion;
 
-	public LibgdxTextureRegion(com.badlogic.gdx.graphics.g2d.TextureRegion textureRegion) {
+	public LibgdxTextureRegion(LibgdxTextureRegionWrapper textureRegion) {
 		this.textureRegion = textureRegion;
 		setFlip(false, false);
 	}
 
 	public LibgdxTextureRegion(LibgdxTextureRegion textureRegion) {
-		this.textureRegion = new com.badlogic.gdx.graphics.g2d.TextureRegion(textureRegion.textureRegion);
+		this.textureRegion = new LibgdxTextureRegionWrapper(textureRegion.textureRegion);
+	}
+
+	public LibgdxTextureRegion(LibgdxTextureRegion textureRegion, int x, int y, int width, int height) {
+		this.textureRegion = new LibgdxTextureRegionWrapper(textureRegion.textureRegion, x, y, width, height);
 	}
 
 	@Override
@@ -124,10 +129,7 @@ public class LibgdxTextureRegion implements TextureRegion {
 
 	@Override
 	public int getRegionY() {
-		setFlipY(!isFlipY());
-		int result = textureRegion.getRegionY();
-		setFlipY(!isFlipY());
-		return result;
+		return textureRegion.getRegionY();
 	}
 
 	@Override
@@ -173,23 +175,17 @@ public class LibgdxTextureRegion implements TextureRegion {
 
 	@Override
 	public void setFlipX(boolean flipX) {
-		if(flipX == isFlipX()) {
-			return;
-		}
-		flip(true, false);
+		textureRegion.setFlipX(flipX);
 	}
 
 	@Override
 	public boolean isFlipY() {
-		return !textureRegion.isFlipY();
+		return textureRegion.isFlipY();
 	}
 
 	@Override
 	public void setFlipY(boolean flipY) {
-		if(flipY == isFlipY()) {
-			return;
-		}
-		flip(false, true);
+		textureRegion.setFlipY(flipY);
 	}
 
 	@Override

@@ -92,7 +92,16 @@ public interface GraphicsUtils {
 
 	public TilingDrawable newTilingDrawable(TextureRegion textureRegion);
 
-	public Shader newShader(FileHandle vertexShader, FileHandle fragmentShader);
+	/**
+	 * Loads a shader at the specified path. Note: only provide the shader name, e.g. for the following files<br>
+	 * <i>path/myshader.frag.glsl</i><br>
+	 * <i>path/myshader.vert.glsl</i><br>
+	 * <i>path/myshader.fx</i><br>
+	 * you would pass in <i>path/myshader</i> as the path
+	 * @param path The shader path
+	 * @return The platform-specific implementation of {@link Shader}
+	 */
+	public Shader newShader(String path);
 
 	public FrameBuffer newFrameBuffer(int width, int height);
 }

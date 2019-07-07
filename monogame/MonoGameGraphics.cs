@@ -85,12 +85,6 @@ namespace monogame
             _spriteBatch.End();
             _beginSpriteBatchCalled = false;
         }
-
-        internal void clearGraphicsDevice(Microsoft.Xna.Framework.Color color)
-        {
-            _graphicsDevice.Clear(color);
-        }
-        
         
         public void preRender(int gameWidth, int gameHeight)
         {
@@ -104,6 +98,11 @@ namespace monogame
         public void postRender()
         {
             endSpriteBatch();
+        }
+
+        public void clearContext()
+        {
+            _graphicsDevice.Clear(_backgroundColor);
         }
 
         public void drawLineSegment(float x1, float y1, float x2, float y2)

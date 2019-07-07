@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.ui.listener;
+package org.mini2Dx.core.graphics;
 
-import org.mini2Dx.ui.element.Hoverable;
+public enum TextureFilter {
+	/**
+	 * Fetch four nearest texels that best maps to the pixel on screen
+	 */
+	LINEAR,
+	/**
+	 * Fetch the nearest texel that best maps to the pixel on screen
+	 */
+	PIXEL,
 
-/**
- * Common interface for listening to mouse hover events
- */
-public interface HoverListener {
-	/**
-	 * Called when the mouse begins hovering a {@link Hoverable}
-	 * @param source The {@link Hoverable} that the mouse began hovering
-	 */
-	public void onHoverBegin(Hoverable source);
-	
-	/**
-	 * Called when the mouse finishes hovering a {@link Hoverable}
-	 * @param source The {@link Hoverable} that the mouse finished hovering
-	 */
-	public void onHoverEnd(Hoverable source);
+	LINEAR_MIP_POINT,
+
 }
