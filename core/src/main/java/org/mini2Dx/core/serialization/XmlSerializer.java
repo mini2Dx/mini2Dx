@@ -338,7 +338,7 @@ public class XmlSerializer {
             if(classValue == null) {
                 throw new SerializationException("No class field found for deserializing " + clazz.getName());
             }
-            clazz = Class.forName(classValue);
+            clazz = Mdx.reflect.forName(classValue);
         }
         return clazz;
     }
@@ -407,7 +407,7 @@ public class XmlSerializer {
             return (T) Mdx.reflect.newInstance(clazz);
         }
 
-        Object[] constructorParameters = new Object[detectedAnnotations.size];
+        final Object[] constructorParameters = new Object[detectedAnnotations.size];
         for (int i = 0; i < detectedAnnotations.size; i++) {
             ConstructorArg constructorArg = detectedAnnotations.get(i);
             constructorParameters[i] = parsePrimitive(element.getAttributes().get(constructorArg.name()), constructorArg.clazz());
@@ -455,7 +455,7 @@ public class XmlSerializer {
     private <T> void setArrayField(XmlReader.Element element, Field field, Class<?> fieldClass, T object, int size)
             throws SerializationException {
         try {
-            Class<?> arrayType = fieldClass.getComponentType();
+            Class<?> arrayType = Mdx.reflect.arrayComponentType(fieldClass);
             Array list = new Array();
 
             for(XmlReader.Element value : element.getChildrenByName("value")) {

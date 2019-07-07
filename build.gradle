@@ -239,6 +239,7 @@ project(":" + rootProject.name + "-core") {
     dependencies {
 		compile "org.mini2Dx:gdx-compression:$gdxVersion"
 		compile "org.mini2Dx:gdx-input:$gdxVersion"
+		compile "org.mini2Dx:gdx-json:$gdxVersion"
 		compile "org.mini2Dx:gdx-math:$gdxVersion"
 		compile "org.mini2Dx:gdx-xml:$gdxVersion"
 

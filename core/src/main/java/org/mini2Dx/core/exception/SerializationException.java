@@ -30,6 +30,6 @@ public class SerializationException extends Exception {
 	}
 	
 	public SerializationException(String message, Exception e) {
-		super(e);
+		super(e.getMessage(), e);
 	}
 }
