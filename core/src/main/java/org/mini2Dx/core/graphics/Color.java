@@ -19,7 +19,6 @@ package org.mini2Dx.core.graphics;
  * Common interface for platform native Color representations
  */
 public interface Color {
-
 	/**
 	 * Creates a new {@link Color} with the same R,G,B and A components as this {@link Color}
 	 * @return A new {@link Color} instance

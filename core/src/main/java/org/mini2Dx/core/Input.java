@@ -98,4 +98,17 @@ public interface Input {
      * @return The y coordinate
      */
     public int getY();
+
+    /**
+     * Returns if a keyboard key was just pressed (down, then released)
+     * @param key The keyboard keycode
+     * @return True if the key was just pressed (down, then released)
+     */
+    public boolean isKeyJustPressed(int key);
+
+    /**
+     * Returns if the the screen was just touched or the mouse was just clicked
+     * @return True if the screen was touched or mouse button pressed down then released
+     */
+    public boolean justTouched();
 }

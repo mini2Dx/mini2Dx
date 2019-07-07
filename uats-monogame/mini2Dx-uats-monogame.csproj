@@ -59,6 +59,9 @@
     <Reference Include="mini2Dx-all">
       <HintPath>..\all\build\libs\mini2Dx-all.dll</HintPath>
     </Reference>
+    <Reference Include="mini2Dx-uats">
+      <HintPath>..\uats\build\libs\mini2Dx-uats.dll</HintPath>
+    </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\MonoGame.Framework.dll</HintPath>
     </Reference>

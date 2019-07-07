@@ -58,7 +58,7 @@ public class TiledMapLoader implements AsyncAssetLoader<TiledMap> {
 				asyncLoadingCache.getCache(CACHE_TILED_MAP_DATA, TiledMapData.class), false));
 	}
 
-	static class TiledAssetProperties implements AssetProperties<TiledMap> {
-		boolean loadTilesets = true;
+	public static class TiledAssetProperties implements AssetProperties<TiledMap> {
+		public boolean loadTilesets = true;
 	}
 }

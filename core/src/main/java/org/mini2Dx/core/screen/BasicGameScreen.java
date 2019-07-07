@@ -16,11 +16,15 @@
 package org.mini2Dx.core.screen;
 
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.game.GameContainer;
 
 /**
  * A basic implementation of {@link GameScreen} for quick setup
  */
 public abstract class BasicGameScreen implements GameScreen {
+
+	@Override
+	public void interpolate(GameContainer gc, float alpha) {}
 
 	@Override
 	public void onResize(int width, int height) {

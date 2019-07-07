@@ -221,4 +221,9 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 	public FrameBuffer newFrameBuffer(int width, int height) {
 		return new LibgdxFrameBuffer(width, height);
 	}
+
+	@Override
+	public CustomCursor newCustomCursor(Pixmap upPixmap, Pixmap downPixmap, int xHotspot, int yHotspot) {
+		return null;
+	}
 }

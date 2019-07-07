@@ -144,4 +144,14 @@ public class LibgdxInput implements Input {
 	public int getY() {
 		return Gdx.input.getY();
 	}
+
+	@Override
+	public boolean isKeyJustPressed(int key) {
+		return Gdx.input.isKeyJustPressed(key);
+	}
+
+	@Override
+	public boolean justTouched() {
+		return Gdx.input.justTouched();
+	}
 }

@@ -241,5 +241,10 @@ namespace monogame
         {
             return new MonoGameShader(path);
         }
+
+        public CustomCursor newCustomCursor(Pixmap p1, Pixmap p2, int i1, int i2)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

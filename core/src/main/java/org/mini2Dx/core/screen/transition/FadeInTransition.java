@@ -20,7 +20,7 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.Transition;
-import org.mini2Dx.core.util.ColorUtils;
+import org.mini2Dx.core.graphics.Colors;
 
 /**
  * Implements a fade in transition
@@ -37,7 +37,7 @@ public class FadeInTransition implements Transition {
 	 * Default constructor - fade from black in 0.5 seconds
 	 */
 	public FadeInTransition() {
-		this(ColorUtils.rgbToColor("1,1,1"));
+		this(Colors.rgbToColor("1,1,1"));
 	}
 
 	/**

@@ -35,7 +35,7 @@ public interface GameScreen {
 	 * @param delta The time in seconds since the last update
 	 */
 	public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta);
-	
+
 	/**
 	 * Interpolate between the previous and current state
 	 * @param alpha The interpolation alpha value

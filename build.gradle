@@ -372,8 +372,8 @@ project(":" + rootProject.name + "-all") {
 	javadoc {
 		failOnError = false
 		title = 'mini2Dx'
-		source docProjects().collect {p -> p.name.contains("android") ? p.android.sourceSets.main.java.srcDirs : p.sourceSets.main.allJava }
-		classpath = files(docProjects().collect {p -> p.name.contains("android") ? p.configurations.compile : p.sourceSets.main.compileClasspath})
+		source docProjects().collect { p -> p.name.contains("android") ? p.android.sourceSets.main.java.srcDirs : p.sourceSets.main.allJava }
+		classpath = files(docProjects().collect { p -> p.name.contains("android") ? p.configurations.compile : p.sourceSets.main.compileClasspath })
 	}
 
 	jar {
@@ -389,18 +389,62 @@ project(":" + rootProject.name + "-all") {
 		jars = project.files(project.jar.archivePath)
 	}
 
-	build.dependsOn ikvm
+}
+
+project(":" + rootProject.name + "-uats") {
+	description = "mini2Dx UATs library"
+	version = projectVersion
+
+	apply plugin: "ikvm"
+
+	dependencies {
+		compile project(":" + rootProject.name + "-all")
+	}
+	
+	task copyUatResources(type: Copy) {
+		from '../uats/src/main/resources', '../tiled/src/test/resources', '../ui/src/main/resources'
+		into '../uats-desktop/assets'
+	}
+
+	jar {
+		from {
+			configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+		}
+	}
+
+	ikvm {
+		ikvmHome = ikvmDir
+		debug = false
+		generateDoc = false
+		jars = project.files(project.jar.archivePath)
+	}
+
+	processResources.dependsOn copyUatResources
+	build.dependsOn ikvm, project(":" + rootProject.name + "-all").ikvm
+}
+
+project(":" + rootProject.name + "-uats-desktop") {
+	description = "mini2Dx desktop UATs launcher"
+	
+    apply plugin: "java"
+	apply plugin: "application"
+
+    dependencies {
+        compile project(":" + rootProject.name + "-uats")
+        compile project(":" + rootProject.name + "-libgdx-desktop")
+		compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+    }
 }
 
 project(":" + rootProject.name + "-monogame") {
 	description = "mini2Dx MonoGame runtime"
 
 	if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-		task build(type:Exec, dependsOn: project(":" + rootProject.name + "-all").ikvm) {
+		task build(type:Exec, dependsOn: project(":" + rootProject.name + "-uats").build) {
 			commandLine 'cmd', '/c', 'msbuild.exe', '../mini2Dx.sln'
 		}
 	} else {
-		task build(type:Exec, dependsOn: project(":" + rootProject.name + "-all").ikvm) {
+		task build(type:Exec, dependsOn: project(":" + rootProject.name + "-uats").build) {
 			commandLine 'msbuild', '../mini2Dx.sln'
 		}
 	}

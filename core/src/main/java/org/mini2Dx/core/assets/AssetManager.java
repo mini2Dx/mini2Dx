@@ -155,6 +155,12 @@ public class AssetManager implements Disposable {
 		return loadingTasks.size == 0 && loadingQueue.size == 0;
 	}
 
+	public void finishLoading() {
+		while(!update()) {
+
+		}
+	}
+
 	/**
 	 * Sets the {@link AssetLoader} to use for a specific class
 	 * @param clazz The class to use the loader for

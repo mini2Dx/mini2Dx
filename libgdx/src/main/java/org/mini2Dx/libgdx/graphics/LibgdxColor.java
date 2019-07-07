@@ -26,7 +26,7 @@ public class LibgdxColor implements Color {
 	}
 
 	public LibgdxColor(int r, int g, int b, int a) {
-		this(new com.badlogic.gdx.graphics.Color(r, g, b, a));
+		this(new com.badlogic.gdx.graphics.Color(r / 255f, g / 255f, b / 255f, a / 255f));
 	}
 
 	public LibgdxColor(float r, float g, float b, float a) {

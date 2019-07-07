@@ -38,10 +38,10 @@
     <Reference Include="IKVM.Runtime">
       <HintPath>..\_tools\ikvm\bin\IKVM.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="mini2Dx-all">
+    <Reference Include="mini2Dx-all, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\all\build\libs\mini2Dx-all.dll</HintPath>
     </Reference>
-    <Reference Include="MonoGame.Framework.Net, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />

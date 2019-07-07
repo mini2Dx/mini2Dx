@@ -421,15 +421,15 @@ namespace monogame
             {
                 return;
             }
-            if (b)
-            {
-                _lastKeyboardIar = Microsoft.Xna.Framework.GamerServices.Guide.BeginShowKeyboardInput(PlayerIndex.One, "Insert text: ", "",
-                    "", null, null);
-            }
-            else
-            {
-                Microsoft.Xna.Framework.GamerServices.Guide.EndShowKeyboardInput(_lastKeyboardIar);
-            }
+            //if (b)
+            //{
+            //    _lastKeyboardIar = Microsoft.Xna.Framework.GamerServices.Guide.BeginShowKeyboardInput(PlayerIndex.One, "Insert text: ", "",
+            //        "", null, null);
+            //}
+            //else
+            //{
+            //    Microsoft.Xna.Framework.GamerServices.Guide.EndShowKeyboardInput(_lastKeyboardIar);
+            //}
         }
 
         private static void doNothing()
@@ -445,6 +445,16 @@ namespace monogame
         public int getY()
         {
             return _previousMouseState.Y;
+        }
+
+        public bool isKeyJustPressed(int i)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool justTouched()
+        {
+            throw new NotImplementedException();
         }
     }
 }

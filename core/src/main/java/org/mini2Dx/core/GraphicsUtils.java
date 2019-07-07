@@ -104,4 +104,13 @@ public interface GraphicsUtils {
 	public Shader newShader(String path);
 
 	public FrameBuffer newFrameBuffer(int width, int height);
+
+	/**
+	 * Creates a new custom mouse cursor. This class must be set as the {@link org.mini2Dx.gdx.InputProcessor} or added to a {@link org.mini2Dx.gdx.InputMultiplexer}.
+	 * @param upPixmap The image to use in the mouse button up state
+	 * @param downPixmap The image to use in the mouse button down state
+	 * @param xHotspot The x location of the hotspot pixel within the cursor image (origin top-left corner)
+	 * @param yHotspot The y location of the hotspot pixel within the cursor image (origin top-left corner)
+	 */
+	public CustomCursor newCustomCursor(Pixmap upPixmap, Pixmap downPixmap, int xHotspot, int yHotspot);
 }

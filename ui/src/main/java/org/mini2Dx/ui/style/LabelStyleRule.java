@@ -21,7 +21,7 @@ import org.mini2Dx.core.files.FileHandleResolver;
 import org.mini2Dx.core.font.GameFont;
 import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.core.serialization.annotation.Field;
-import org.mini2Dx.core.util.ColorUtils;
+import org.mini2Dx.core.graphics.Colors;
 import org.mini2Dx.ui.element.Label;
 
 /**
@@ -53,7 +53,7 @@ public class LabelStyleRule extends ParentStyleRule {
 		
 		super.prepareAssets(theme, fileHandleResolver, assetManager);
 		if(textColor != null) {
-			color = ColorUtils.rgbToColor(textColor);
+			color = Colors.rgbToColor(textColor);
 		}
 
 		uiFont = theme.getFont(font);
