@@ -21,7 +21,7 @@ package org.mini2Dx.ui;
 public enum InputSource {
 	KEYBOARD_MOUSE("keyboardmouse"),
 	TOUCHSCREEN("touchscreen"),
-	CONTROLLER("controller");
+	CONTROLLER("gamepad");
 	
 	private final String friendlyString;
 	
@@ -39,7 +39,7 @@ public enum InputSource {
 			return InputSource.TOUCHSCREEN;
 		case "keyboardmouse":
 			return InputSource.KEYBOARD_MOUSE;
-		case "controller":
+		case "gamepad":
 			return InputSource.CONTROLLER;
 		}
 		return null;

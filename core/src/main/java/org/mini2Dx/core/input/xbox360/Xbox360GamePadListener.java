@@ -20,18 +20,18 @@ import org.mini2Dx.core.input.deadzone.DeadZone;
 
 public interface Xbox360GamePadListener {
 	/**
-	 * Called when a controller connects
+	 * Called when a gamepad connects
 	 *
 	 * @param gamePad
-	 *            The controller that this event came from
+	 *            The gamepad that this event came from
 	 */
 	public void connected(Xbox360GamePad gamePad);
 
 	/**
-	 * Called when a controller disconnects
+	 * Called when a gamepad disconnects
 	 *
 	 * @param gamePad
-	 *            The controller that this event came from
+	 *            The gamepad that this event came from
 	 */
 	public void disconnected(Xbox360GamePad gamePad);
 
@@ -50,7 +50,7 @@ public interface Xbox360GamePadListener {
 	 * Called when a button is released
 	 *
 	 * @param gamePad
-	 *            The controller that this event came from
+	 *            The gamepad that this event came from
 	 * @param button
 	 *            The button that was released
 	 * @return True if this event should not propagate to other listeners
@@ -61,7 +61,7 @@ public interface Xbox360GamePadListener {
 	 * Called when the left trigger is moved
 	 *
 	 * @param gamePad
-	 *            The controller that this event came from
+	 *            The gamepad that this event came from
 	 * @param value
 	 *            ~0f when released, ~1f when pressed
 	 * @return True if this event should not propagate to other listeners
@@ -72,7 +72,7 @@ public interface Xbox360GamePadListener {
 	 * Called when the right trigger is moved
 	 *
 	 * @param gamePad
-	 *            The controller that this event came from
+	 *            The gamepad that this event came from
 	 * @param value
 	 *            ~0f when released, ~1f when pressed
 	 * @return True if this event should not propagate to other listeners
@@ -83,11 +83,11 @@ public interface Xbox360GamePadListener {
 	 * Called when left stick moves along its X axis
 	 *
 	 * @param gamePad
-	 *            The controller that this event came from
+	 *            The gamepad that this event came from
 	 * @param value
 	 *            ~-1f at left, ~0f at center, ~1f at right (values may never be
 	 *            accurate due to dead zones, apply a {@link DeadZone} to the
-	 *            controller instance to correct this)
+	 *            gamepad instance to correct this)
 	 * @return True if this event should not propagate to other listeners
 	 */
 	public boolean leftStickXMoved(Xbox360GamePad gamePad, float value);
@@ -96,11 +96,11 @@ public interface Xbox360GamePadListener {
 	 * Called when left stick moves along its Y axis
 	 *
 	 * @param gamePad
-	 *            The controller that this event came from
+	 *            The gamepad that this event came from
 	 * @param value
 	 *            ~-1f at top, ~0f at center, ~1f at bottom (values may never be
 	 *            accurate due to dead zones, apply a {@link DeadZone} to the
-	 *            controller instance to correct this)
+	 *            gamepad instance to correct this)
 	 * @return True if this event should not propagate to other listeners
 	 */
 	public boolean leftStickYMoved(Xbox360GamePad gamePad, float value);
@@ -109,11 +109,11 @@ public interface Xbox360GamePadListener {
 	 * Called when right stick moves along its X axis
 	 *
 	 * @param gamePad
-	 *            The controller that this event came from
+	 *            The gamepad that this event came from
 	 * @param value
 	 *            ~-1f at left, ~0f at center, ~1f at right (values may never be
 	 *            accurate due to dead zones, apply a {@link DeadZone} to the
-	 *            controller instance to correct this)
+	 *            gamepad instance to correct this)
 	 * @return True if this event should not propagate to other listeners
 	 */
 	public boolean rightStickXMoved(Xbox360GamePad gamePad, float value);
@@ -122,11 +122,11 @@ public interface Xbox360GamePadListener {
 	 * Called when left stick moves along its Y axis
 	 *
 	 * @param gamePad
-	 *            The controller that this event came from
+	 *            The gamepad that this event came from
 	 * @param value
 	 *            ~-1f at top, ~0f at center, ~1f at bottom (values may never be
 	 *            accurate due to dead zones, apply a {@link DeadZone} to the
-	 *            controller instance to correct this)
+	 *            gamepad instance to correct this)
 	 * @return True if this event should not propagate to other listeners
 	 */
 	public boolean rightStickYMoved(Xbox360GamePad gamePad, float value);

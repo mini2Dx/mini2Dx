@@ -47,12 +47,6 @@ public class RenderLayer implements Comparable<RenderLayer> {
 		}
 	}
 	
-	public void interpolate(float alpha) {
-		for (int i = 0; i < children.size; i++) {
-			children.get(i).interpolate(alpha);
-		}
-	}
-	
 	public void render(Graphics g) {
 		for (int i = 0; i < children.size; i++) {
 			children.get(i).render(g);

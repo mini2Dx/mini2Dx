@@ -80,7 +80,6 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 					parent.getInnerY() + relativeY, getPreferredOuterWidth(),
 					getPreferredOuterHeight());
 		}
-		outerArea.preUpdate();
 
 		boolean visible = isScheduledToRender();
 		if (effects.size == 0) {
@@ -111,13 +110,6 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		initialUpdateOccurred = true;
 
 		element.syncWithUpdate(rootNode);
-	}
-
-	public void interpolate(float alpha) {
-		if (!initialLayoutOccurred) {
-			return;
-		}
-		outerArea.interpolate(alpha);
 	}
 
 	public void render(Graphics g) {

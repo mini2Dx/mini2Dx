@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016 See AUTHORS file
+ * Copyright (c) 2017 See AUTHORS file
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -9,23 +9,24 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.ui.controller;
+package org.mini2Dx.ui.gamepad;
 
 import org.mini2Dx.core.input.GamePadType;
-import org.mini2Dx.core.input.button.XboxOneButton;
-import org.mini2Dx.core.input.xboxOne.XboxOneGamePad;
-import org.mini2Dx.core.input.xboxOne.XboxOneGamePadAdapter;
+import org.mini2Dx.core.input.button.PS4Button;
+import org.mini2Dx.core.input.ps4.PS4GamePad;
+import org.mini2Dx.core.input.ps4.PS4GamePadAdapter;
 import org.mini2Dx.gdx.Input.Keys;
 import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.UiContainer;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+
 /**
- * {@link XboxOneGamePad} implementation of {@link GamePadUiInput}
+ * {@link PS4GamePad} implementation of {@link GamePadUiInput}
  */
-public class XboxOneUiInput extends XboxOneGamePadAdapter implements GamePadUiInput<XboxOneButton> {
-	private static final String ID_PREFIX = XboxOneUiInput.class.getSimpleName() + "-";
+public class PS4UiInput extends PS4GamePadAdapter implements GamePadUiInput<PS4Button> {
+	private static final String ID_PREFIX = PS4UiInput.class.getSimpleName() + "-";
 	private static final AtomicInteger ID_GENERATOR = new AtomicInteger();
 	
 	private final String id;
@@ -35,7 +36,7 @@ public class XboxOneUiInput extends XboxOneGamePadAdapter implements GamePadUiIn
 	private float stickRepeatTimer = 0.25f;
 	private float stickThreshold = 0.25f;
 	private boolean enabled = true;
-	private XboxOneButton actionButton = XboxOneButton.A;
+	private PS4Button actionButton = PS4Button.CROSS;
 	
 	/* Internal fields */
 	private float leftTimer = stickRepeatTimer;
@@ -45,7 +46,7 @@ public class XboxOneUiInput extends XboxOneGamePadAdapter implements GamePadUiIn
 	private boolean left, right, up, down;
 	private boolean navigateWithDPad;
 	
-	public XboxOneUiInput(UiContainer uiContainer) {
+	public PS4UiInput(UiContainer uiContainer) {
 		super();
 		this.id = ID_PREFIX + ID_GENERATOR.incrementAndGet();
 		
@@ -111,9 +112,9 @@ public class XboxOneUiInput extends XboxOneGamePadAdapter implements GamePadUiIn
 			downTimer = stickRepeatTimer;
 		}
 	}
-
+	
 	@Override
-	public boolean leftStickXMoved(XboxOneGamePad controller, float value) {
+	public boolean leftStickXMoved(PS4GamePad controller, float value) {
 		if(value < -stickThreshold) {
 			left = true;
 			right = false;
@@ -126,14 +127,14 @@ public class XboxOneUiInput extends XboxOneGamePadAdapter implements GamePadUiIn
 		}
 		if(enabled) {
 			uiContainer.setLastInputSource(InputSource.CONTROLLER);
-			uiContainer.setLastGamePadType(GamePadType.XBOX_ONE);
+			uiContainer.setLastGamePadType(GamePadType.PS4);
 			return uiContainer.getActiveNavigation() != null;
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean leftStickYMoved(XboxOneGamePad controller, float value) {
+	public boolean leftStickYMoved(PS4GamePad controller, float value) {
 		if(value < -stickThreshold) {
 			up = true;
 			down = false;
@@ -146,22 +147,22 @@ public class XboxOneUiInput extends XboxOneGamePadAdapter implements GamePadUiIn
 		}
 		if(enabled) {
 			uiContainer.setLastInputSource(InputSource.CONTROLLER);
-			uiContainer.setLastGamePadType(GamePadType.XBOX_ONE);
+			uiContainer.setLastGamePadType(GamePadType.PS4);
 			return uiContainer.getActiveNavigation() != null;
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean buttonDown(XboxOneGamePad controller, XboxOneButton button) {
+	public boolean buttonDown(PS4GamePad controller, PS4Button button) {
 		if(!enabled) {
 			return false;
 		}
 		uiContainer.setLastInputSource(InputSource.CONTROLLER);
-		uiContainer.setLastGamePadType(GamePadType.XBOX_ONE);
+		uiContainer.setLastGamePadType(GamePadType.PS4);
 
 		if(navigateWithDPad) {
-			switch(button) {
+			switch (button) {
 			case UP:
 				return uiContainer.keyDown(Keys.UP);
 			case DOWN:
@@ -172,19 +173,20 @@ public class XboxOneUiInput extends XboxOneGamePadAdapter implements GamePadUiIn
 				return uiContainer.keyDown(Keys.RIGHT);
 			}
 		}
+
 		return uiContainer.buttonDown(this, button);
 	}
 	
 	@Override
-	public boolean buttonUp(XboxOneGamePad controller, XboxOneButton button) {
+	public boolean buttonUp(PS4GamePad controller, PS4Button button) {
 		if(!enabled) {
 			return false;
 		}
 		uiContainer.setLastInputSource(InputSource.CONTROLLER);
-		uiContainer.setLastGamePadType(GamePadType.XBOX_ONE);
+		uiContainer.setLastGamePadType(GamePadType.PS4);
 
 		if(navigateWithDPad) {
-			switch(button) {
+			switch (button) {
 			case UP:
 				return uiContainer.keyUp(Keys.UP);
 			case DOWN:
@@ -195,9 +197,10 @@ public class XboxOneUiInput extends XboxOneGamePadAdapter implements GamePadUiIn
 				return uiContainer.keyUp(Keys.RIGHT);
 			}
 		}
+
 		return uiContainer.buttonUp(this, button);
 	}
-
+	
 	@Override
 	public boolean isEnabled() {
 		return enabled;
@@ -246,12 +249,12 @@ public class XboxOneUiInput extends XboxOneGamePadAdapter implements GamePadUiIn
 	}
 
 	@Override
-	public XboxOneButton getActionButton() {
+	public PS4Button getActionButton() {
 		return actionButton;
 	}
 
 	@Override
-	public void setActionButton(XboxOneButton actionButton) {
+	public void setActionButton(PS4Button actionButton) {
 		if(actionButton == null) {
 			return;
 		}
@@ -284,7 +287,7 @@ public class XboxOneUiInput extends XboxOneGamePadAdapter implements GamePadUiIn
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		XboxOneUiInput other = (XboxOneUiInput) obj;
+		PS4UiInput other = (PS4UiInput) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

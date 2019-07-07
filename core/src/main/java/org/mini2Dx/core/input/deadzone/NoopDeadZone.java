@@ -18,7 +18,7 @@ package org.mini2Dx.core.input.deadzone;
 import org.mini2Dx.gdx.math.Vector2;
 
 /**
- * A {@link DeadZone} implementation that returns the raw controller values
+ * A {@link DeadZone} implementation that returns the raw gamepad values
  */
 public class NoopDeadZone implements DeadZone {
 	private final Vector2 rawValues = new Vector2(0f, 0f);

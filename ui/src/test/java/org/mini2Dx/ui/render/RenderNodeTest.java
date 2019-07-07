@@ -18,6 +18,7 @@ package org.mini2Dx.ui.render;
 import org.junit.Ignore;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.Platform;
+import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.utils.Array;
 import junit.framework.Assert;
 import org.jmock.Expectations;
@@ -36,7 +37,6 @@ import org.mini2Dx.ui.layout.LayoutState;
 /**
  * Unit tests for {@link RenderNode}
  */
-@Ignore
 public class RenderNodeTest {
 	private static final int PARENT_WIDTH = 400;
 	private static final int PARENT_HEIGHT = 300;
@@ -90,13 +90,15 @@ public class RenderNodeTest {
 
 		configureParentWidth();
 
+		InterpolationTracker.preUpdate();
 		parentRenderNode.layout(layoutState);
 		parentRenderNode.update(null, 0.1f);
-		parentRenderNode.interpolate(1f);
+		InterpolationTracker.interpolate(1f);
 
 		Assert.assertEquals(false, renderNode.isDirty());
 		Assert.assertEquals(false, parentRenderNode.isDirty());
 
+		InterpolationTracker.preUpdate();
 		renderNode.setDirty();
 		Assert.assertEquals(true, renderNode.isDirty());
 		uiElement.setXY(50f, 75f);
@@ -105,7 +107,7 @@ public class RenderNodeTest {
 
 		parentRenderNode.layout(layoutState);
 		parentRenderNode.update(null, 0.1f);
-		parentRenderNode.interpolate(1f);
+		InterpolationTracker.interpolate(1f);
 
 		Assert.assertEquals(false, renderNode.isDirty());
 		Assert.assertEquals(false, parentRenderNode.isDirty());
@@ -124,7 +126,8 @@ public class RenderNodeTest {
 		});
 
 		configureParentWidth();
-		
+
+		InterpolationTracker.preUpdate();
 		parentRenderNode.getStyle().setMarginLeft(4);
 		parentRenderNode.getStyle().setMarginTop(8);
 		parentRenderNode.getStyle().setMarginRight(7);
@@ -138,7 +141,7 @@ public class RenderNodeTest {
 		Assert.assertEquals(false, parentRenderNode.isDirty());
 
 		parentRenderNode.update(null, 0.1f);
-		parentRenderNode.interpolate(1f);
+		InterpolationTracker.interpolate(1f);
 		
 		Assert.assertEquals(0, parentRenderNode.getOuterRenderX());
 		Assert.assertEquals(0, parentRenderNode.getOuterRenderY());
@@ -163,7 +166,8 @@ public class RenderNodeTest {
 		});
 
 		configureParentWidth();
-		
+
+		InterpolationTracker.preUpdate();
 		parentRenderNode.getStyle().setPaddingLeft(4);
 		parentRenderNode.getStyle().setPaddingTop(8);
 		parentRenderNode.getStyle().setPaddingRight(3);
@@ -172,7 +176,7 @@ public class RenderNodeTest {
 		renderNode.setDirty();
 		parentRenderNode.layout(layoutState);
 		parentRenderNode.update(null, 0.1f);
-		parentRenderNode.interpolate(1f);
+		InterpolationTracker.interpolate(1f);
 		
 		Assert.assertEquals(0, parentRenderNode.getOuterRenderX());
 		Assert.assertEquals(0, parentRenderNode.getOuterRenderY());
@@ -213,7 +217,7 @@ public class RenderNodeTest {
 		renderNode.setDirty();
 		parentRenderNode.layout(layoutState);
 		parentRenderNode.update(null, 0.1f);
-		parentRenderNode.interpolate(1f);
+		InterpolationTracker.interpolate(1f);
 		
 		Assert.assertEquals(0, parentRenderNode.getOuterRenderX());
 		Assert.assertEquals(0, parentRenderNode.getOuterRenderY());
@@ -239,7 +243,8 @@ public class RenderNodeTest {
 		});
 
 		configureParentWidth();
-		
+
+		InterpolationTracker.preUpdate();
 		parentRenderNode.getStyle().setPadding(8);
 		parentRenderNode.getStyle().setMargin(4);
 		
@@ -256,7 +261,7 @@ public class RenderNodeTest {
 		renderNode.setDirty();
 		parentRenderNode.layout(layoutState);
 		parentRenderNode.update(null, 0.1f);
-		parentRenderNode.interpolate(1f);
+		InterpolationTracker.interpolate(1f);
 		
 		Assert.assertEquals(12, renderNode.getOuterRenderX());
 		Assert.assertEquals(12, renderNode.getOuterRenderY());

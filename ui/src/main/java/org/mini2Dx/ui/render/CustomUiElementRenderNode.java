@@ -37,12 +37,6 @@ public class CustomUiElementRenderNode extends RenderNode<CustomUiElement, Style
 	}
 
 	@Override
-	public void interpolate(float alpha) {
-		super.interpolate(alpha);
-		element.interpolate(alpha);
-	}
-
-	@Override
 	protected void renderElement(Graphics g) {
 		element.render(g, this);
 	}

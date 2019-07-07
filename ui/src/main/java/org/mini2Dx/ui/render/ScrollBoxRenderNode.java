@@ -63,11 +63,6 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 
 	@Override
 	public void update(UiContainerRenderTree uiContainer, float delta) {
-		scrollTrack.preUpdate();
-		scrollThumb.preUpdate();
-		topScrollButton.preUpdate();
-		bottomScrollButton.preUpdate();
-
 		super.update(uiContainer, delta);
 
 		switch (topScrollButtonState) {
@@ -95,15 +90,6 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 			scrollTranslationY = MathUtils.round(scrollThumbPosition * contentHeight);
 		}
  	}
-
-	@Override
-	public void interpolate(float alpha) {
-		super.interpolate(alpha);
-		scrollTrack.interpolate(alpha);
-		scrollThumb.interpolate(alpha);
-		topScrollButton.interpolate(alpha);
-		bottomScrollButton.interpolate(alpha);
-	}
 
 	protected void renderBackground(Graphics g) {
 		switch(getState()) {

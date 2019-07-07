@@ -67,12 +67,12 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 				case 1:
 					throw new MdxException("Invalid flex value '" + rule[i] + "'. Perhaps you forgot a size prefix, e.g. xs-");
 				case 2:
-					// e.g. xs-12, hidden-controller, visible-touchscreen,
+					// e.g. xs-12, hidden-gamepad, visible-touchscreen,
 					// hidden-keyboardmouse
 					storeSizeRule(true, widthRules, ruleDetails);
 					break;
 				case 3:
-					// e.g. xs-offset-12, hidden-controller-ps4
+					// e.g. xs-offset-12, hidden-gamepad-ps4
 					storeOffsetRule(true, offsetXRules, ruleDetails);
 					break;
 				}
@@ -90,12 +90,12 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 					case 1:
 						throw new MdxException("Invalid flex value '" + rule[i] + "'. Perhaps you forgot a size prefix, e.g. xs-");
 					case 2:
-						// e.g. xs-12, hidden-controller, visible-touchscreen,
+						// e.g. xs-12, hidden-gamepad, visible-touchscreen,
 						// hidden-keyboardmouse
 						storeSizeRule(true, widthRules, ruleDetails);
 						break;
 					case 3:
-						// e.g. xs-offset-12, hidden-controller-ps4
+						// e.g. xs-offset-12, hidden-gamepad-ps4
 						storeOffsetRule(true, offsetXRules, ruleDetails);
 						break;
 					}
@@ -110,12 +110,12 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 					case 1:
 						throw new MdxException("Invalid flex value '" + rule[i] + "'. Perhaps you forgot a size prefix, e.g. xs-");
 					case 2:
-						// e.g. xs-12, hidden-controller, visible-touchscreen,
+						// e.g. xs-12, hidden-gamepad, visible-touchscreen,
 						// hidden-keyboardmouse
 						storeSizeRule(false, heightRules, ruleDetails);
 						break;
 					case 3:
-						// e.g. xs-offset-12, hidden-controller-ps4
+						// e.g. xs-offset-12, hidden-gamepad-ps4
 						storeOffsetRule(false, offsetYRules, ruleDetails);
 						break;
 					}

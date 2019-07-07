@@ -68,18 +68,6 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 		}
 	}
 
-	@Override
-	public void interpolate(float alpha) {
-		super.interpolate(alpha);
-		final IntMap.Keys keys = layers.ascendingKeys();
-		keys.reset();
-		while(keys.hasNext) {
-			final int layerIndex = keys.next();
-			final RenderLayer layer = layers.get(layerIndex);
-			layer.interpolate(alpha);
-		}
-	}
-
 	protected void renderBackground(Graphics g) {
 		switch(getState()) {
 		case NORMAL:

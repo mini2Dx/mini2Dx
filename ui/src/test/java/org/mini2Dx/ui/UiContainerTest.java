@@ -69,7 +69,7 @@ public class UiContainerTest implements UiContainerListener {
 		});
 		
 		uiContainer = new UiContainer(gameContainer, assetManager);
-		uiContainer.addListener(this);
+		uiContainer.addUiContainerListener(this);
 		uiContainer.setNavigationMode(NavigationMode.POINTER_ONLY);
 	}
 	
@@ -93,7 +93,7 @@ public class UiContainerTest implements UiContainerListener {
 	
 		Assert.assertEquals(true, listenerEvents.isEmpty());
 		uiContainer.update(1f);
-		Assert.assertEquals(true, listenerEvents.contains("controllerTypeChanged"));
+		Assert.assertEquals(true, listenerEvents.contains("gamePadTypeChanged"));
 	}
 	
 	@Test
@@ -194,16 +194,6 @@ public class UiContainerTest implements UiContainerListener {
 	}
 
 	@Override
-	public void preInterpolate(UiContainer container, float alpha) {
-		listenerEvents.add("preInterpolate");
-	}
-
-	@Override
-	public void postInterpolate(UiContainer container, float alpha) {
-		listenerEvents.add("postInterpolate");
-	}
-
-	@Override
 	public void preRender(UiContainer container, Graphics g) {
 		listenerEvents.add("preRender");
 	}
@@ -219,9 +209,9 @@ public class UiContainerTest implements UiContainerListener {
 	}
 
 	@Override
-	public void controllerTypeChanged(UiContainer container, GamePadType oldGamePadType,
-									  GamePadType newGamePadType) {
-		listenerEvents.add("controllerTypeChanged");
+	public void gamePadTypeChanged(UiContainer container, GamePadType oldGamePadType,
+	                               GamePadType newGamePadType) {
+		listenerEvents.add("gamePadTypeChanged");
 	}
 
 	@Override

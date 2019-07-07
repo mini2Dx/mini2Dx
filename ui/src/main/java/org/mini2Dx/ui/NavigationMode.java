@@ -13,11 +13,11 @@ package org.mini2Dx.ui;
 
 public enum NavigationMode {
 	/**
-	 * UI Navigation can only use buttons (i.e. keyboard or controller)
+	 * UI Navigation can only use buttons (i.e. keyboard or gamepad)
 	 */
 	BUTTON_ONLY,
 	/**
-	 * UI Navigation can use buttons (i.e. keyboard or controller) or pointers (i.e. mouse or touch input)
+	 * UI Navigation can use buttons (i.e. keyboard or gamepad) or pointers (i.e. mouse or touch input)
 	 */
 	BUTTON_OR_POINTER,
 	/**

@@ -65,16 +65,6 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 		}
 	}
 
-	@Override
-	public void interpolate(float alpha) {
-		super.interpolate(alpha);
-		if (element.getTextAnimation() == null) {
-			nullAnimation.interpolate(fontCache, element.getText(), alpha);
-		} else {
-			element.getTextAnimation().interpolate(fontCache, element.getText(), alpha);
-		}
-	}
-
 	protected void renderBackground(Graphics g) {
 		switch(getState()) {
 		case NORMAL:

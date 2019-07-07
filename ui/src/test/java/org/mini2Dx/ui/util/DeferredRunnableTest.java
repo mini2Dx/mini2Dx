@@ -27,7 +27,6 @@ import org.mini2Dx.ui.render.UiContainerRenderTree;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@Ignore
 public class DeferredRunnableTest {
     private final Mockery mockery = new Mockery();
 
@@ -74,8 +73,6 @@ public class DeferredRunnableTest {
     public void testDeferredUntilUpdateRunnableProcessOrder() {
         mockery.checking(new Expectations() {
             {
-                atLeast(1).of(graphics).getDeltaTime();
-                will(returnValue(0.16f));
                 atLeast(1).of(uiContainer).getZIndex();
                 will(returnValue(0));
                 atLeast(1).of(uiContainer).getWidth();
@@ -138,8 +135,6 @@ public class DeferredRunnableTest {
     public void testDeferredUntilLayoutRunnableProcessOrder() {
         mockery.checking(new Expectations() {
             {
-                atLeast(1).of(graphics).getDeltaTime();
-                will(returnValue(0.16f));
                 atLeast(1).of(uiContainer).getZIndex();
                 will(returnValue(0));
                 atLeast(1).of(uiContainer).getWidth();

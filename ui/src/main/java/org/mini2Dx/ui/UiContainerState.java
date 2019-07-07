@@ -4,6 +4,5 @@ public enum UiContainerState {
 	NOOP,
 	LAYOUT,
 	UPDATE,
-	INTERPOLATE,
 	RENDER
 }

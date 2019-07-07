@@ -48,7 +48,6 @@ public class PixelLayoutUtils {
 			deferShrinkToContentsUntilUpdate(parentUiElement, recursive, callback);
 			return;
 		case NOOP:
-		case INTERPOLATE:
 		case RENDER:
 			break;
 		}
@@ -309,7 +308,6 @@ public class PixelLayoutUtils {
 			});
 			break;
 		case NOOP:
-		case INTERPOLATE:
 		case RENDER:
 			final float x,y;
 			switch (verticalAlignment) {
@@ -385,7 +383,6 @@ public class PixelLayoutUtils {
 			});
 			break;
 		case NOOP:
-		case INTERPOLATE:
 		case RENDER:
 			final float x, y;
 			switch (verticalAlignment) {

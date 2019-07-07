@@ -22,7 +22,7 @@ import org.mini2Dx.ui.render.ActionableRenderNode;
 
 /**
  * Common interface for {@link UiElement}s that can be navigated by keyboard or
- * controller
+ * gamepad
  */
 public interface Navigatable {
 	/**
@@ -83,7 +83,7 @@ public interface Navigatable {
 	public void clearHotkeys();
 	
 	/**
-	 * Unmaps all controller hotkeys
+	 * Unmaps all gamepad hotkeys
 	 */
 	public void clearGamePadHotkeys();
 	

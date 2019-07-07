@@ -11,18 +11,25 @@
  */
 package org.mini2Dx.ui.element;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.exception.SerializationException;
+import org.mini2Dx.core.reflect.jvm.JvmReflection;
+import org.mini2Dx.core.serialization.XmlSerializer;
+import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
 
 /**
  * Unit and integration tests for {@link Div}
  */
-@Ignore
 public class DivTest {
+
 	@Before
 	public void setUp() {
-		//Mdx.xml = new DesktopXmlSerializer();
+		Mdx.graphics = new LibgdxGraphicsUtils();
+		Mdx.reflect = new JvmReflection();
 	}
 
 	@Test
@@ -34,26 +41,26 @@ public class DivTest {
 		div.add(new Label());
 		div.add(new TextButton("button-1"));
 		
-//		try {
-//			String xml = Mdx.xml.toXml(div);
-//			System.out.println(xml);
-//			Div result = Mdx.xml.fromXml(xml, Div.class);
-//
-//			Assert.assertEquals(div.getId(), result.getId());
-//			Assert.assertEquals(div.getZIndex(), result.getZIndex());
-//			Assert.assertEquals(10f, result.getX(), 0.01f);
-//			Assert.assertEquals(100f, result.getY(), 0.01f);
-//			Assert.assertEquals(1000f, result.getWidth(), 0.01f);
-//			Assert.assertEquals(10000f, result.getHeight(), 0.01f);
-//			Assert.assertEquals(div.isOverflowClipped(), result.isOverflowClipped());
-//			Assert.assertEquals(div.children.size, result.children.size);
-//			for(int i = 0; i < div.children.size; i++) {
-//				Assert.assertEquals(div.children.get(i).getId(), result.children.get(i).getId());
-//			}
-//		} catch (SerializationException e) {
-//			e.printStackTrace();
-//			Assert.fail(e.getMessage());
-//		}
+		try {
+			String xml = Mdx.xml.toXml(div);
+			System.out.println(xml);
+			Div result = Mdx.xml.fromXml(xml, Div.class);
+
+			Assert.assertEquals(div.getId(), result.getId());
+			Assert.assertEquals(div.getZIndex(), result.getZIndex());
+			Assert.assertEquals(10f, result.getX(), 0.01f);
+			Assert.assertEquals(100f, result.getY(), 0.01f);
+			Assert.assertEquals(1000f, result.getWidth(), 0.01f);
+			Assert.assertEquals(10000f, result.getHeight(), 0.01f);
+			Assert.assertEquals(div.isOverflowClipped(), result.isOverflowClipped());
+			Assert.assertEquals(div.children.size, result.children.size);
+			for(int i = 0; i < div.children.size; i++) {
+				Assert.assertEquals(div.children.get(i).getId(), result.children.get(i).getId());
+			}
+		} catch (SerializationException e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
 	}
 
 	@Test

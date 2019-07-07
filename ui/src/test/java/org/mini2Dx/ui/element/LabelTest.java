@@ -16,17 +16,19 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.reflect.jvm.JvmReflection;
+import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
 import org.mini2Dx.ui.animation.TypingTextAnimation;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
 
 /**
  * Unit and integration tests for {@link Label}
  */
-@Ignore
 public class LabelTest {
 	@Before
 	public void setUp() {
-		//Mdx.xml = new DesktopXmlSerializer();
+		Mdx.graphics = new LibgdxGraphicsUtils();
+		Mdx.reflect = new JvmReflection();
 	}
 
 	@Test

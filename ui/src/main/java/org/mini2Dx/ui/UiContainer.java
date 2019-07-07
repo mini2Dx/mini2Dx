@@ -28,17 +28,18 @@ import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.IntArray;
 import org.mini2Dx.gdx.utils.IntSet;
 import org.mini2Dx.gdx.utils.ObjectSet;
-import org.mini2Dx.ui.controller.GamePadUiInput;
+import org.mini2Dx.ui.gamepad.GamePadUiInput;
 import org.mini2Dx.ui.element.*;
 import org.mini2Dx.ui.event.EventTrigger;
-import org.mini2Dx.ui.event.params.GamePadEventTriggerParams;
 import org.mini2Dx.ui.event.params.EventTriggerParamsPool;
+import org.mini2Dx.ui.event.params.GamePadEventTriggerParams;
 import org.mini2Dx.ui.event.params.KeyboardEventTriggerParams;
 import org.mini2Dx.ui.event.params.MouseEventTriggerParams;
 import org.mini2Dx.ui.layout.PixelLayoutUtils;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.ScreenSizeListener;
 import org.mini2Dx.ui.listener.UiContainerListener;
+import org.mini2Dx.ui.listener.UiInputSourceListener;
 import org.mini2Dx.ui.navigation.UiNavigation;
 import org.mini2Dx.ui.render.*;
 import org.mini2Dx.ui.style.StyleRule;
@@ -48,9 +49,8 @@ import org.mini2Dx.ui.util.IdAllocator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * The container for all UI elements. {@link #update(float)},
- * {@link #interpolate(float)} and {@link #render(Graphics)} must be called by
- * your {@link GameContainer}
+ * The container for all UI elements. {@link #update(float)} and
+ * {@link #render(Graphics)} must be called by your {@link GameContainer}
  */
 public class UiContainer extends ParentUiElement implements InputProcessor {
 	private static final String LOGGING_TAG = UiContainer.class.getSimpleName();
@@ -60,7 +60,9 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	private static UiContainerState STATE = UiContainerState.NOOP;
 
 	private final Array<GamePadUiInput<?>> controllerInputs = new Array<GamePadUiInput<?>>(true,1, GamePadUiInput.class);
-	private final Array<UiContainerListener> listeners = new Array<UiContainerListener>(true,1, UiContainerListener.class);
+
+	private final Array<UiInputSourceListener> inputSourceListeners = new Array<UiInputSourceListener>(true,1, UiContainerListener.class);
+	private final Array<UiContainerListener> containerListeners = new Array<UiContainerListener>(true,1, UiContainerListener.class);
 
 	private final IntSet receivedKeyDowns = new IntSet();
 	private final ObjectSet<String> receivedButtonDowns = new ObjectSet<String>();
@@ -195,23 +197,6 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		renderTree.processUpdateDeferred();
 
 		PixelLayoutUtils.update(delta);
-	}
-
-	/**
-	 * Interpolates all {@link UiElement}s
-	 * 
-	 * @param alpha
-	 *            The interpolation alpha
-	 */
-	public void interpolate(float alpha) {
-		if (!isThemeApplied()) {
-			return;
-		}
-		STATE = UiContainerState.INTERPOLATE;
-		notifyPreInterpolate(alpha);
-		renderTree.interpolate(alpha);
-		notifyPostInterpolate(alpha);
-		STATE = UiContainerState.NOOP;
 	}
 
 	/**
@@ -997,7 +982,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	}
 
 	/**
-	 * Returns if this {@link UiContainer} can be navigated by keyboard/controller
+	 * Returns if this {@link UiContainer} can be navigated by keyboard/gamepad
 	 * @return True by default
 	 */
 	public boolean keyNavigationAllowed() {
@@ -1084,8 +1069,9 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 * @param listener
 	 *            The {@link UiContainerListener} to be notified of events
 	 */
-	public void addListener(UiContainerListener listener) {
-		listeners.add(listener);
+	public void addUiContainerListener(UiContainerListener listener) {
+		containerListeners.add(listener);
+		inputSourceListeners.add(listener);
 		addScreenSizeListener(listener);
 	}
 
@@ -1095,62 +1081,71 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 * @param listener
 	 *            The {@link UiContainerListener} to stop receiving events
 	 */
-	public void removeListener(UiContainerListener listener) {
-		listeners.removeValue(listener, false);
+	public void removeUiContainerListener(UiContainerListener listener) {
+		containerListeners.removeValue(listener, false);
+		inputSourceListeners.removeValue(listener, false);
 		removeScreenSizeListener(listener);
 	}
 
+	/**
+	 * Adds a {@link UiInputSourceListener} to this {@link UiContainer}
+	 *
+	 * @param listener
+	 *            The {@link UiInputSourceListener} to be notified of events
+	 */
+	public void addInputSourceListener(UiInputSourceListener listener) {
+		inputSourceListeners.add(listener);
+	}
+
+	/**
+	 * Removes a {@link UiInputSourceListener} from this {@link UiContainer}
+	 *
+	 * @param listener
+	 *            The {@link UiInputSourceListener} to stop receiving events
+	 */
+	public void removeUiContainerListener(UiInputSourceListener listener) {
+		inputSourceListeners.removeValue(listener, false);
+	}
+
 	private void notifyPreUpdate(float delta) {
-		for (int i = listeners.size - 1; i >= 0; i--) {
-			listeners.get(i).preUpdate(this, delta);
+		for (int i = containerListeners.size - 1; i >= 0; i--) {
+			containerListeners.get(i).preUpdate(this, delta);
 		}
 	}
 
 	private void notifyPostUpdate(float delta) {
-		for (int i = listeners.size - 1; i >= 0; i--) {
-			listeners.get(i).postUpdate(this, delta);
-		}
-	}
-
-	private void notifyPreInterpolate(float alpha) {
-		for (int i = listeners.size - 1; i >= 0; i--) {
-			listeners.get(i).preInterpolate(this, alpha);
-		}
-	}
-
-	private void notifyPostInterpolate(float alpha) {
-		for (int i = listeners.size - 1; i >= 0; i--) {
-			listeners.get(i).postInterpolate(this, alpha);
+		for (int i = containerListeners.size - 1; i >= 0; i--) {
+			containerListeners.get(i).postUpdate(this, delta);
 		}
 	}
 
 	private void notifyPreRender(Graphics g) {
-		for (int i = listeners.size - 1; i >= 0; i--) {
-			listeners.get(i).preRender(this, g);
+		for (int i = containerListeners.size - 1; i >= 0; i--) {
+			containerListeners.get(i).preRender(this, g);
 		}
 	}
 
 	private void notifyPostRender(Graphics g) {
-		for (int i = listeners.size - 1; i >= 0; i--) {
-			listeners.get(i).postRender(this, g);
+		for (int i = containerListeners.size - 1; i >= 0; i--) {
+			containerListeners.get(i).postRender(this, g);
 		}
 	}
 
 	private void notifyInputSourceChange(InputSource oldSource, InputSource newSource) {
-		for (int i = listeners.size - 1; i >= 0; i--) {
-			listeners.get(i).inputSourceChanged(this, oldSource, newSource);
+		for (int i = inputSourceListeners.size - 1; i >= 0; i--) {
+			inputSourceListeners.get(i).inputSourceChanged(this, oldSource, newSource);
 		}
 	}
 
 	private void notifyGamePadTypeChange(GamePadType oldGamePadType, GamePadType newGamePadType) {
-		for (int i = listeners.size - 1; i >= 0; i--) {
-			listeners.get(i).controllerTypeChanged(this, oldGamePadType, newGamePadType);
+		for (int i = inputSourceListeners.size - 1; i >= 0; i--) {
+			inputSourceListeners.get(i).gamePadTypeChanged(this, oldGamePadType, newGamePadType);
 		}
 	}
 
 	private void notifyElementActivated(ActionableRenderNode actionable) {
-		for (int i = listeners.size - 1; i >= 0; i--) {
-			listeners.get(i).onElementAction(this, actionable.getElement());
+		for (int i = containerListeners.size - 1; i >= 0; i--) {
+			containerListeners.get(i).onElementAction(this, actionable.getElement());
 		}
 	}
 

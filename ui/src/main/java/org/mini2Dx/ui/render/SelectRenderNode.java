@@ -77,18 +77,9 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 
 	@Override
 	public void update(UiContainerRenderTree uiContainer, float delta) {
-		leftButton.preUpdate();
-		rightButton.preUpdate();
 		super.update(uiContainer, delta);
 		leftButton.setXY(getContentRenderX(), getContentRenderY());
 		rightButton.setXY(getContentRenderX() + getContentRenderWidth() - rightButton.getWidth(), getContentRenderY());
-	}
-
-	@Override
-	public void interpolate(float alpha) {
-		super.interpolate(alpha);
-		leftButton.interpolate(alpha);
-		rightButton.interpolate(alpha);
 	}
 
 	@Override

@@ -1,21 +1,24 @@
-/**
- * Copyright (c) 2016 See AUTHORS file
- * All rights reserved.
+/*******************************************************************************
+ * Copyright 2019 See AUTHORS file
  *
- * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
- * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-package org.mini2Dx.ui.controller;
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+package org.mini2Dx.ui.gamepad;
 
-import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.input.GamePadType;
-import org.mini2Dx.core.input.button.Xbox360Button;
-import org.mini2Dx.core.input.xbox360.Xbox360GamePad;
-import org.mini2Dx.core.input.xbox360.Xbox360GamePadAdapter;
+import org.mini2Dx.core.input.button.XboxOneButton;
+import org.mini2Dx.core.input.xboxOne.XboxOneGamePad;
+import org.mini2Dx.core.input.xboxOne.XboxOneGamePadAdapter;
 import org.mini2Dx.gdx.Input.Keys;
 import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.UiContainer;
@@ -23,11 +26,10 @@ import org.mini2Dx.ui.UiContainer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * {@link Xbox360GamePad} implementation of {@link GamePadUiInput}
+ * {@link XboxOneGamePad} implementation of {@link GamePadUiInput}
  */
-public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiInput<Xbox360Button> {
-	private static final String LOGGING_TAG = Xbox360UiInput.class.getSimpleName();
-	private static final String ID_PREFIX = Xbox360UiInput.class.getSimpleName() + "-";
+public class XboxOneUiInput extends XboxOneGamePadAdapter implements GamePadUiInput<XboxOneButton> {
+	private static final String ID_PREFIX = XboxOneUiInput.class.getSimpleName() + "-";
 	private static final AtomicInteger ID_GENERATOR = new AtomicInteger();
 	
 	private final String id;
@@ -37,8 +39,7 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 	private float stickRepeatTimer = 0.25f;
 	private float stickThreshold = 0.25f;
 	private boolean enabled = true;
-	private Xbox360Button actionButton = Xbox360Button.A;
-	private boolean debug = false;
+	private XboxOneButton actionButton = XboxOneButton.A;
 	
 	/* Internal fields */
 	private float leftTimer = stickRepeatTimer;
@@ -47,25 +48,13 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 	private float downTimer = stickRepeatTimer;
 	private boolean left, right, up, down;
 	private boolean navigateWithDPad;
-
-	public Xbox360UiInput(UiContainer uiContainer) {
+	
+	public XboxOneUiInput(UiContainer uiContainer) {
 		super();
 		this.id = ID_PREFIX + ID_GENERATOR.incrementAndGet();
 		
 		this.uiContainer = uiContainer;
 		this.uiContainer.addGamePadInput(this);
-	}
-	
-	private void debugLog(String message) {
-		if(!debug) {
-			return;
-		}
-		Mdx.log.info(LOGGING_TAG, message);
-		
-		if(uiContainer.getActiveNavigation() == null) {
-			return;
-		}
-		Mdx.log.info(LOGGING_TAG, message + " " + uiContainer.getActiveNavigation().getNavigation().getCursor());
 	}
 	
 	@Override
@@ -78,7 +67,6 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 			if(leftTimer == stickRepeatTimer) {
 				uiContainer.keyDown(Keys.LEFT);
 				uiContainer.keyUp(Keys.LEFT);
-				debugLog("Navigate left");
 			}
 			leftTimer -= delta;
 			if(leftTimer <= 0f) {
@@ -92,7 +80,6 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 			if(rightTimer == stickRepeatTimer) {
 				uiContainer.keyDown(Keys.RIGHT);
 				uiContainer.keyUp(Keys.RIGHT);
-				debugLog("Navigate right");
 			}
 			rightTimer -= delta;
 			if(rightTimer <= 0f) {
@@ -106,7 +93,6 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 			if(upTimer == stickRepeatTimer) {
 				uiContainer.keyDown(Keys.UP);
 				uiContainer.keyUp(Keys.UP);
-				debugLog("Navigate up");
 			}
 			upTimer -= delta;
 			if(upTimer <= 0f) {
@@ -120,7 +106,6 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 			if(downTimer == stickRepeatTimer) {
 				uiContainer.keyDown(Keys.DOWN);
 				uiContainer.keyUp(Keys.DOWN);
-				debugLog("Navigate down");
 			}
 			downTimer -= delta;
 			if(downTimer <= 0f) {
@@ -132,7 +117,7 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 	}
 
 	@Override
-	public boolean leftStickXMoved(Xbox360GamePad controller, float value) {
+	public boolean leftStickXMoved(XboxOneGamePad controller, float value) {
 		if(value < -stickThreshold) {
 			left = true;
 			right = false;
@@ -145,14 +130,14 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 		}
 		if(enabled) {
 			uiContainer.setLastInputSource(InputSource.CONTROLLER);
-			uiContainer.setLastGamePadType(GamePadType.XBOX_360);
+			uiContainer.setLastGamePadType(GamePadType.XBOX_ONE);
 			return uiContainer.getActiveNavigation() != null;
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean leftStickYMoved(Xbox360GamePad controller, float value) {
+	public boolean leftStickYMoved(XboxOneGamePad controller, float value) {
 		if(value < -stickThreshold) {
 			up = true;
 			down = false;
@@ -165,19 +150,19 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 		}
 		if(enabled) {
 			uiContainer.setLastInputSource(InputSource.CONTROLLER);
-			uiContainer.setLastGamePadType(GamePadType.XBOX_360);
+			uiContainer.setLastGamePadType(GamePadType.XBOX_ONE);
 			return uiContainer.getActiveNavigation() != null;
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean buttonDown(Xbox360GamePad controller, Xbox360Button button) {
+	public boolean buttonDown(XboxOneGamePad controller, XboxOneButton button) {
 		if(!enabled) {
 			return false;
 		}
 		uiContainer.setLastInputSource(InputSource.CONTROLLER);
-		uiContainer.setLastGamePadType(GamePadType.XBOX_360);
+		uiContainer.setLastGamePadType(GamePadType.XBOX_ONE);
 
 		if(navigateWithDPad) {
 			switch(button) {
@@ -191,19 +176,16 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 				return uiContainer.keyDown(Keys.RIGHT);
 			}
 		}
-
-		boolean result = uiContainer.buttonDown(this, button);
-		debugLog(button.name() + " " + result);
-		return result;
+		return uiContainer.buttonDown(this, button);
 	}
 	
 	@Override
-	public boolean buttonUp(Xbox360GamePad controller, Xbox360Button button) {
+	public boolean buttonUp(XboxOneGamePad controller, XboxOneButton button) {
 		if(!enabled) {
 			return false;
 		}
 		uiContainer.setLastInputSource(InputSource.CONTROLLER);
-		uiContainer.setLastGamePadType(GamePadType.XBOX_360);
+		uiContainer.setLastGamePadType(GamePadType.XBOX_ONE);
 
 		if(navigateWithDPad) {
 			switch(button) {
@@ -217,10 +199,7 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 				return uiContainer.keyUp(Keys.RIGHT);
 			}
 		}
-
-		boolean result = uiContainer.buttonUp(this, button);
-		debugLog(button.name() + " " + result);
-		return result;
+		return uiContainer.buttonUp(this, button);
 	}
 
 	@Override
@@ -270,17 +249,13 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 		this.navigateWithDPad = navigateWithDPad;
 	}
 
-	public void setDebug(boolean debug) {
-		this.debug = debug;
-	}
-
 	@Override
-	public Xbox360Button getActionButton() {
+	public XboxOneButton getActionButton() {
 		return actionButton;
 	}
 
 	@Override
-	public void setActionButton(Xbox360Button actionButton) {
+	public void setActionButton(XboxOneButton actionButton) {
 		if(actionButton == null) {
 			return;
 		}
@@ -313,7 +288,7 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Xbox360UiInput other = (Xbox360UiInput) obj;
+		XboxOneUiInput other = (XboxOneUiInput) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

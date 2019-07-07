@@ -256,7 +256,7 @@ public class Slider extends UiElement implements Actionable {
 	}
 
 	/**
-	 * Returns the amount to change the value by on each keyboard/controller
+	 * Returns the amount to change the value by on each keyboard/gamepad
 	 * event
 	 * 
 	 * @return 0.1 by default
@@ -266,7 +266,7 @@ public class Slider extends UiElement implements Actionable {
 	}
 
 	/**
-	 * Sets the amount to change the value by on each keyboard/controller event
+	 * Sets the amount to change the value by on each keyboard/gamepad event
 	 * 
 	 * @param valueStep
 	 *            A non-zero value
@@ -279,7 +279,7 @@ public class Slider extends UiElement implements Actionable {
 	}
 
 	/**
-	 * Returns if the value should change when a keyboard/controller event
+	 * Returns if the value should change when a keyboard/gamepad event
 	 * begins and change the value until the event ends.
 	 * 
 	 * @return False by default
@@ -289,7 +289,7 @@ public class Slider extends UiElement implements Actionable {
 	}
 
 	/**
-	 * Sets if the value should change when a keyboard/controller event
+	 * Sets if the value should change when a keyboard/gamepad event
 	 * begins and change the value until the event ends.
 	 * 
 	 * @param changedOnBeginEvent False to only change on the end event

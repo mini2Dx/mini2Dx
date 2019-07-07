@@ -19,12 +19,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.reflect.jvm.JvmReflection;
+import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
 import org.mini2Dx.ui.render.UiContainerRenderTree;
 
 /**
  * Unit and integration tests for {@link TabView}
  */
-@Ignore
 public class TabViewTest {
 	private final Mockery mockery = new Mockery();
 
@@ -32,11 +33,12 @@ public class TabViewTest {
 
 	@Before
 	public void setUp() {
+		Mdx.graphics = new LibgdxGraphicsUtils();
+		Mdx.reflect = new JvmReflection();
+
 		mockery.setImposteriser(ClassImposteriser.INSTANCE);
 
 		uiContainerRenderTree = mockery.mock(UiContainerRenderTree.class);
-
-		//Mdx.xml = new DesktopXmlSerializer();
 	}
 
 	@After
