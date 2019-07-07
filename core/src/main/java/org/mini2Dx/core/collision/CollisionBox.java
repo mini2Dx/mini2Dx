@@ -97,6 +97,7 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 		super.set(x, y, width, height);
 		previousRectangle.set(x, y, width, height);
 		renderRectangle.set(previousRectangle);
+		storeRenderCoordinates();
 		interpolateRequired = false;
 	}
 
