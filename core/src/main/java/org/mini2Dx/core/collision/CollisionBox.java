@@ -101,6 +101,36 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 		interpolateRequired = false;
 	}
 
+	/**
+	 * Sets the current width to the specified width and force updates the
+	 * rendering bounds to match
+	 *
+	 * @param width
+	 *            The width to set
+	 */
+	public void forceToWidth(float width) {
+		super.setWidth(width);
+		previousRectangle.set(this);
+		renderRectangle.set(this);
+		storeRenderCoordinates();
+		notifySizeChangeListeners();
+	}
+
+	/**
+	 * Sets the current height to the specified height and force updates the
+	 * rendering bounds to match
+	 *
+	 * @param height
+	 *            The height to set
+	 */
+	public void forceToHeight(float height) {
+		super.setHeight(height);
+		previousRectangle.set(this);
+		renderRectangle.set(this);
+		storeRenderCoordinates();
+		notifySizeChangeListeners();
+	}
+
 	@Override
 	public int getRenderWidth() {
 		return renderWidth;
