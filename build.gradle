@@ -406,12 +406,6 @@ project(":" + rootProject.name + "-uats") {
 		into '../uats-desktop/assets'
 	}
 
-	jar {
-		from {
-			configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-		}
-	}
-
 	ikvm {
 		ikvmHome = ikvmDir
 		debug = false
