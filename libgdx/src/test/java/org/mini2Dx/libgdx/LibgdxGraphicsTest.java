@@ -16,6 +16,7 @@
 package org.mini2Dx.libgdx;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.LibgdxSpriteBatchWrapper;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -38,7 +39,7 @@ public class LibgdxGraphicsTest {
 	private Mockery mockery;
 	
 	private GameWrapper gameWrapper;
-	private SpriteBatch spriteBatch;
+	private LibgdxSpriteBatchWrapper spriteBatch;
 	private PolygonSpriteBatch polygonSpriteBatch;
 	private ShapeRenderer shapeRenderer;
 	private GameFont gameFont;
@@ -54,7 +55,7 @@ public class LibgdxGraphicsTest {
 		fonts = mockery.mock(Fonts.class);
 		gameFont = mockery.mock(GameFont.class);
 		gameWrapper = mockery.mock(GameWrapper.class);
-		spriteBatch = mockery.mock(SpriteBatch.class);
+		spriteBatch = mockery.mock(LibgdxSpriteBatchWrapper.class);
 		polygonSpriteBatch = mockery.mock(PolygonSpriteBatch.class);
 		shapeRenderer = mockery.mock(ShapeRenderer.class);
 		gdxGraphics = mockery.mock(com.badlogic.gdx.Graphics.class);

@@ -18,13 +18,24 @@ using org.mini2Dx.core.graphics;
 
 namespace monogame.Graphics
 {
-    public class MonoGameTextureAtlasRegion : MonoGameTextureRegion, org.mini2Dx.core.graphics.TextureAtlasRegion
+    public class MonoGameTextureAtlasRegion : MonoGameTextureRegion, org.mini2Dx.core.graphics.TextureAtlasRegion, System.IComparable<MonoGameTextureAtlasRegion>
     {
+        public string name;
+        public bool rotate;
+        public int x, y;
+        public int width, height;
+        public int originalWidth, originalHeight;
+        public int offsetX, offsetY;
+        public int index;
         private bool _rotated;
         
         public MonoGameTextureAtlasRegion(Texture texture, int x, int y, int width, int height, bool rotated) : base(texture, x, y, width, height)
         {
             _rotated = rotated;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
         }
         
         public float getRotatedPackedWidth()
@@ -49,6 +60,56 @@ namespace monogame.Graphics
             {
                 return getRegionHeight();
             }
+        }
+
+        public string getName()
+        {
+            return name;
+        }
+
+        public int getIndex()
+        {
+            return index;
+        }
+
+        public float getPackedWidth()
+        {
+            return width;
+        }
+
+        public float getPackedHeight()
+        {
+            return height;
+        }
+
+        public float getOriginalWidth()
+        {
+            return originalWidth;
+        }
+
+        public float getOriginalHeight()
+        {
+            return originalHeight;
+        }
+
+        public float getOffsetX()
+        {
+            return offsetX;
+        }
+
+        public float getOffsetY()
+        {
+            return offsetY;
+        }
+
+        public int CompareTo(MonoGameTextureAtlasRegion other)
+        {
+            int nameCompare = name.CompareTo(other.name);
+            if(nameCompare == 0)
+            {
+                return index.CompareTo(other.index);
+            }
+            return nameCompare;
         }
     }
 }

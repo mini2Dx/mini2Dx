@@ -24,25 +24,9 @@ using Array = org.mini2Dx.gdx.utils.Array;
 
 namespace monogame.Graphics
 {
-    class MonoGameTextureAtlasImage : IComparable<MonoGameTextureAtlasImage>
-    {
-        public string name;
-        public bool rotate;
-        public int x, y;
-        public int width, height;
-        public int originX, originY;
-        public int offsetX, offsetY;
-        public int index;
-        public MonoGameTextureAtlasRegion textureRegion;
-        public int CompareTo(MonoGameTextureAtlasImage other)
-        {
-            return index.CompareTo(other.index);
-        }
-    }
-    
     public class MonoGameTextureAtlas : org.mini2Dx.core.graphics.TextureAtlas
     {
-        Dictionary<string, Dictionary<int, MonoGameTextureAtlasImage>> _atlasImages = new Dictionary<string, Dictionary<int, MonoGameTextureAtlasImage>>(); 
+        Array _atlasImages = new Array(); 
         
         public MonoGameTextureAtlas(FileHandle atlasFile, FileHandle imagesDir, bool flip)
         {
@@ -55,28 +39,28 @@ namespace monogame.Graphics
                 i += 5; //skip size, format, filter and repeat;
                 while (i < lines.Length && lines[i] != string.Empty)
                 {
-                    var image = new MonoGameTextureAtlasImage();
-                    image.name = lines[i];
-                    image.rotate = bool.Parse(lines[i + 1].Split(':')[1]);
+                    int index, x, y, width, height, originalWidth, originalHeight, offsetX, offsetY;
+                    string name = lines[i];
+                    bool rotate = bool.Parse(lines[i + 1].Split(':')[1]);
 
-                    if (image.rotate)
+                    if (rotate)
                     {
                         throw new NotSupportedException("Rotated atlas aren't supported yet!");
                     }
                     
-                    readTuple(lines[i + 2], out image.x, out image.y);
-                    readTuple(lines[i + 3], out image.width, out image.height);
-                    readTuple(lines[i + 4], out image.originX, out image.originY);
-                    readTuple(lines[i + 5], out image.offsetX, out image.offsetY);
-                    image.index = int.Parse(lines[i + 6].Split(':')[1]);
+                    readTuple(lines[i + 2], out x, out y);
+                    readTuple(lines[i + 3], out width, out height);
+                    readTuple(lines[i + 4], out originalWidth, out originalHeight);
+                    readTuple(lines[i + 5], out offsetX, out offsetY);
+                    index = int.Parse(lines[i + 6].Split(':')[1]);
 
-                    image.textureRegion = new MonoGameTextureAtlasRegion(packTexture, image.x, image.y, image.width, image.height, image.rotate);
-                    
-                    if (!_atlasImages.ContainsKey(image.name))
-                    {
-                        _atlasImages[image.name] = new Dictionary<int, MonoGameTextureAtlasImage>();
-                    }
-                    _atlasImages[image.name][image.index] = image;
+                    var image = new MonoGameTextureAtlasRegion(packTexture, x, y, width, height, rotate);
+                    image.originalWidth = originalWidth;
+                    image.originalHeight = originalHeight;
+                    image.offsetX = offsetX;
+                    image.offsetY = offsetY;
+
+                    _atlasImages.add(image);
                     
                     i += 7;
                 }
@@ -94,44 +78,57 @@ namespace monogame.Graphics
         
         public void dispose()
         {
-            
+            _atlasImages.clear();
         }
 
         public Array getRegions()
         {
-            var regions = new List<MonoGameTextureAtlasRegion>();
-            foreach (var imageName in _atlasImages.Values)
-            {
-                foreach (var image in imageName.Values)
-                {
-                    regions.Add(image.textureRegion);
-                }
-            }
-            
-            return Array.with(regions.ToArray());
+            return _atlasImages;
         }
 
         public TextureAtlasRegion findRegion(string str)
         {
-            return findRegion(str, _atlasImages[str].Keys.GetEnumerator().Current);
+            for(int i = 0; i < _atlasImages.size; i++)
+            {
+                TextureAtlasRegion textureAtlasRegion = _atlasImages.get(i) as TextureAtlasRegion;
+                if (textureAtlasRegion.getName().Equals(str))
+                {
+                    return textureAtlasRegion;
+                }
+            }
+            return null;
         }
 
-        public TextureAtlasRegion findRegion(string str, int i)
+        public TextureAtlasRegion findRegion(string str, int index)
         {
-            return _atlasImages[str][i].textureRegion;
+            for (int i = 0; i < _atlasImages.size; i++)
+            {
+                TextureAtlasRegion textureAtlasRegion = _atlasImages.get(i) as TextureAtlasRegion;
+                if (!textureAtlasRegion.getName().Equals(str))
+                {
+                    continue;
+                }
+                if (textureAtlasRegion.getIndex() != index)
+                {
+                    continue;
+                }
+                return textureAtlasRegion;
+            }
+            return null;
         }
 
         public Array findRegions(string str)
         {
-            var images = new MonoGameTextureAtlasImage[_atlasImages[str].Count];
-            _atlasImages[str].Values.CopyTo(images, 0);
-            System.Array.Sort(images);
-            var regions = new MonoGameTextureAtlasRegion[images.Length];
-            for (var i = 0; i < images.Length; i++)
+            Array result = new Array();
+            for (int i = 0; i < _atlasImages.size; i++)
             {
-                regions[i] = images[i].textureRegion;
+                TextureAtlasRegion textureAtlasRegion = _atlasImages.get(i) as TextureAtlasRegion;
+                if (textureAtlasRegion.getName().Equals(str))
+                {
+                    result.add(textureAtlasRegion);
+                }
             }
-            return Array.with(regions);
+            return result;
         }
     }
 }

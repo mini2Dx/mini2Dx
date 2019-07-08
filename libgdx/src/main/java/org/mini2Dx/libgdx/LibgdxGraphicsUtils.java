@@ -166,22 +166,22 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 
 	@Override
 	public TextureAtlas newTextureAtlas(FileHandle packFile) {
-		return null;
+		return newTextureAtlas(packFile, false);
 	}
 
 	@Override
 	public TextureAtlas newTextureAtlas(FileHandle packFile, boolean flip) {
-		return null;
+		return newTextureAtlas(packFile, packFile.parent(), flip);
 	}
 
 	@Override
 	public TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir) {
-		return null;
+		return newTextureAtlas(packFile, imagesDir, false);
 	}
 
 	@Override
 	public TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir, boolean flip) {
-		return null;
+		return new LibgdxTextureAtlas(packFile, imagesDir, flip);
 	}
 
 	@Override

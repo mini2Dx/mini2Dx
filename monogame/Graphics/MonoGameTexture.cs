@@ -85,5 +85,11 @@ namespace monogame.Graphics
         {
             _vMode = mode;
         }
+
+        public void setAddressMode(TextureAddressMode uMode, TextureAddressMode vMode)
+        {
+            _uMode = uMode;
+            _vMode = vMode;
+        }
     }
 }

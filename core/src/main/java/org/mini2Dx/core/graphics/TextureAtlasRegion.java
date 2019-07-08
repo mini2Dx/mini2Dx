@@ -16,6 +16,58 @@
 package org.mini2Dx.core.graphics;
 
 public interface TextureAtlasRegion extends TextureRegion {
+	/**
+	 * Returns the name (path) of the region up to the first underscore (underscores are special instructions to packer)
+	 * @return
+	 */
+	public String getName();
+
+	/**
+	 * The number at the end of the original filename
+	 * @return -1 if none
+	 */
+	public int getIndex();
+
+	/**
+	 * Width of the image after whitespace was removed for packing
+	 * @return
+	 */
+	public float getPackedWidth();
+
+	/**
+	 * Height of the image after whitespace was removed for packing
+	 * @return
+	 */
+	public float getPackedHeight();
+
+	/**
+	 * Width of the image before whitespace was removed for packing
+	 * @return
+	 */
+	public float getOriginalWidth();
+
+	/**
+	 * Height of the image before whitespace was removed for packing
+	 * @return
+	 */
+	public float getOriginalHeight();
+
+	/**
+	 * Offset from the left of the original image to the left of the packed image after whitespace was removed for packing
+	 * @return
+	 */
+	public float getOffsetX();
+
+	/**
+	 * Offset from the top of the original image to the top of the packed image after whitespace was removed for packing
+	 * @return
+	 */
+	public float getOffsetY();
+
+	/**
+	 * Returns the packed width considering the rotate value, if it is true then it returns the packedHeight, otherwise it
+	 * returns the packedWidth.
+	 */
 	public float getRotatedPackedWidth();
 
 	/**

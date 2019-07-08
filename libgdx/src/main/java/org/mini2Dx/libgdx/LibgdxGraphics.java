@@ -18,6 +18,7 @@ package org.mini2Dx.libgdx;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.LibgdxSpriteBatchWrapper;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -40,7 +41,7 @@ import org.mini2Dx.libgdx.graphics.*;
 public class LibgdxGraphics implements Graphics {
 	private static final String LOGGING_TAG = LibgdxGraphics.class.getSimpleName();
 
-	public final SpriteBatch spriteBatch;
+	public final LibgdxSpriteBatchWrapper spriteBatch;
 
 	private final GameWrapper gameWrapper;
 	private final ShapeTextureCache colorTextureCache;
@@ -68,7 +69,7 @@ public class LibgdxGraphics implements Graphics {
 	//3 edge polygon by default, expanded as needed during rendering
 	private float [] polygonRenderData = new float[15];
 
-	public LibgdxGraphics(GameWrapper gameWrapper, SpriteBatch spriteBatch, PolygonSpriteBatch polygonSpriteBatch, ShapeRenderer shapeRenderer) {
+	public LibgdxGraphics(GameWrapper gameWrapper, LibgdxSpriteBatchWrapper spriteBatch, PolygonSpriteBatch polygonSpriteBatch, ShapeRenderer shapeRenderer) {
 		super();
 		this.gameWrapper = gameWrapper;
 		this.spriteBatch = spriteBatch;
@@ -442,7 +443,8 @@ public class LibgdxGraphics implements Graphics {
 	@Override
 	public void drawTexture(Texture texture, float x, float y, float width, float height, boolean flipY) {
 		beginRendering();
-		spriteBatch.draw((LibgdxTexture) texture, x, y, 0, 0, width, height, 1f, 1f, 0, 0, 0, texture.getWidth(), texture.getHeight(),
+		final LibgdxTexture gdxTexture = (LibgdxTexture) texture;
+		spriteBatch.draw(gdxTexture, x, y, 0, 0, width, height, 1f, 1f, 0, 0, 0, texture.getWidth(), texture.getHeight(),
 				false, flipY);
 	}
 
@@ -477,7 +479,6 @@ public class LibgdxGraphics implements Graphics {
 	@Override
 	public void drawSprite(Sprite sprite) {
 		final LibgdxSprite gdxSprite = (LibgdxSprite) sprite;
-
 		beginRendering();
 		gdxSprite.sprite.draw(spriteBatch);
 	}
@@ -512,7 +513,7 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public void drawNinePatch(NinePatch ninePatch, float x, float y, float width, float height) {
-
+		ninePatch.render(this, x, y, width, height);
 	}
 
 	@Override
@@ -629,7 +630,6 @@ public class LibgdxGraphics implements Graphics {
 	public void flush() {
 		spriteBatch.flush();
 	}
-
 
 	@Override
 	public void setFont(GameFont font) {
@@ -816,22 +816,22 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public TextureFilter getMinFilter() {
-		return null;
+		return spriteBatch.getMinFilter();
 	}
 
 	@Override
 	public void setMinFilter(TextureFilter filter) {
-
+		spriteBatch.setMinFilter(filter);
 	}
 
 	@Override
 	public TextureFilter getMagFilter() {
-		return null;
+		return spriteBatch.getMagFilter();
 	}
 
 	@Override
 	public void setMagFilter(TextureFilter filter) {
-
+		spriteBatch.setMagFilter(filter);
 	}
 
 	@Override

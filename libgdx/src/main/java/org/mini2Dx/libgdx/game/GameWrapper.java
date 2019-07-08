@@ -16,6 +16,7 @@
 package org.mini2Dx.libgdx.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.g2d.LibgdxSpriteBatchWrapper;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -46,7 +47,7 @@ public abstract class GameWrapper implements ApplicationListener {
 	public abstract void initialise(String gameIdentifier);
 
 	protected Graphics createGraphicsContext() {
-		SpriteBatch spriteBatch = new SpriteBatch();
+		LibgdxSpriteBatchWrapper spriteBatch = new LibgdxSpriteBatchWrapper();
 		PolygonSpriteBatch polygonSpriteBatch = new PolygonSpriteBatch();
 		ShapeRenderer shapeRenderer = new ShapeRenderer();
 

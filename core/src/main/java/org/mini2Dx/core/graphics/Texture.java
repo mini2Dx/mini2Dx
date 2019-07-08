@@ -68,4 +68,11 @@ public interface Texture extends Disposable {
 	 * @param mode the new V addressing mode for this texture
 	 */
 	public void setVAddressMode(TextureAddressMode mode);
+
+	/**
+	 * Sets the texture addressing mode for this texture
+	 * @param u The new U addressing mode for this texture
+	 * @param v The new V addressing mode for this texture
+	 */
+	public void setAddressMode(TextureAddressMode u, TextureAddressMode v);
 }
