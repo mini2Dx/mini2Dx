@@ -46,6 +46,7 @@
     <Content Include="Content\arial24_0.png" />
     <Content Include="Content\grayscaleShader.fx" />
     <Compile Include="Game1.cs" />
+    <Compile Include="MonoGameUAT.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
