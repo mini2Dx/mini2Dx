@@ -15,15 +15,19 @@
  ******************************************************************************/
 package org.mini2Dx.core.assets.loader;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.*;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.TextureAtlas;
 import org.mini2Dx.gdx.utils.Array;
 
+import java.io.IOException;
+
 public class TextureAtlasLoader implements AsyncAssetLoader<TextureAtlas> {
+	private static final String CACHE_TEXTUREATLAS_KEY = "sound";
 	@Override
 	public TextureAtlas loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
-		return null;
+		return Mdx.graphics.newTextureAtlas(assetDescriptor.getResolvedFileHandle());
 	}
 
 	@Override
@@ -33,6 +37,6 @@ public class TextureAtlasLoader implements AsyncAssetLoader<TextureAtlas> {
 
 	@Override
 	public void loadOnAsyncThread(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
-
+		asyncLoadingCache.setCache(CACHE_TEXTUREATLAS_KEY, Mdx.graphics.newTextureAtlas(assetDescriptor.getResolvedFileHandle()));
 	}
 }
