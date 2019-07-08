@@ -29,6 +29,8 @@ public interface GraphicsUtils {
 
 	public Color newColor(byte r, byte g, byte b, byte a);
 
+	public Color newColor(Color color);
+
 	public Pixmap newPixmap(int width, int height, PixmapFormat format);
 
 	public Pixmap newPixmap(FileHandle file);

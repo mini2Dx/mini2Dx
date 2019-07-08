@@ -61,6 +61,11 @@ namespace monogame
             return new MonoGameColor(r,g,b,a);
         }
 
+        public Color newColor(Color color)
+        {
+            return new MonoGameColor(color.rb(), color.gb(), color.bb(), color.ab());
+        }
+
         public NinePatch newNinePatch(Texture texture, int left, int right, int top, int bottom)
         {
             return newNinePatch(new MonoGameTextureRegion(texture), left, right, top, bottom);

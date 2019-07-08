@@ -46,6 +46,11 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 	}
 
 	@Override
+	public Color newColor(Color color) {
+		return new LibgdxColor(color.rf(), color.gf(), color.bf(), color.af());
+	}
+
+	@Override
 	public Pixmap newPixmap(int width, int height, PixmapFormat format) {
 		return new LibgdxPixmap(new com.badlogic.gdx.graphics.Pixmap(width, height, LibgdxPixmap.toGdxPixmapFormat(format)));
 	}
@@ -124,19 +129,19 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 	@Override
 	public Sprite newSprite(Texture texture) {
 		final LibgdxTexture gdxTexture = (LibgdxTexture) texture;
-		return null;
+		return new LibgdxSprite(gdxTexture);
 	}
 
 	@Override
 	public Sprite newSprite(Texture texture, int width, int height) {
 		final LibgdxTexture gdxTexture = (LibgdxTexture) texture;
-		return null;
+		return new LibgdxSprite(gdxTexture, width, height);
 	}
 
 	@Override
 	public Sprite newSprite(Texture texture, int x, int y, int width, int height) {
 		final LibgdxTexture gdxTexture = (LibgdxTexture) texture;
-		return null;
+		return new LibgdxSprite(gdxTexture, x, y, width, height);
 	}
 
 	@Override
@@ -197,12 +202,13 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 	@Override
 	public NinePatch newNinePatch(Texture texture, int left, int right, int top, int bottom) {
 		final LibgdxTexture gdxTexture = (LibgdxTexture) texture;
-		return null;
+		return new LibgdxNinePatch(gdxTexture, left, right, top, bottom);
 	}
 
 	@Override
 	public NinePatch newNinePatch(TextureRegion region, int left, int right, int top, int bottom) {
-		return null;
+		final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) region;
+		return new LibgdxNinePatch(gdxTextureRegion, left, right, top, bottom);
 	}
 
 	@Override
@@ -224,6 +230,6 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 
 	@Override
 	public CustomCursor newCustomCursor(Pixmap upPixmap, Pixmap downPixmap, int xHotspot, int yHotspot) {
-		return null;
+		return new LibgdxCustomCursor(upPixmap, downPixmap, xHotspot, yHotspot);
 	}
 }
