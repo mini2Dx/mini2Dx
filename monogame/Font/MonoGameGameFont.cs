@@ -51,6 +51,25 @@ namespace monogame.Font
             _capHeight = _spriteFont.MeasureString("A").Y;
         }
 
+        public MonoGameGameFont(MonoGameFileHandle ttfFileHandle, int size)
+        {
+            _fontName = ttfFileHandle.nameWithoutExtension();
+            _spriteFont = TtfFontBaker.Bake(ttfFileHandle.readBytes(),
+                size,
+                1024,
+                1024,
+                new[]
+                {
+                    CharacterRange.BasicLatin,
+                    CharacterRange.Latin1Supplement,
+                    CharacterRange.LatinExtendedA,
+                    CharacterRange.Cyrillic
+                }
+            ).CreateSpriteFont(((MonoGameGraphics)Mdx.graphicsContext)._graphicsDevice);
+            _sharedFontGlyphLayout = newGlyphLayout();
+            _capHeight = _spriteFont.MeasureString("A").Y;
+        }
+
         public bool load(AssetManager am)
         {
             return false;
@@ -73,7 +92,7 @@ namespace monogame.Font
         public void draw(org.mini2Dx.core.Graphics g, string str, float x, float y)
         {
             _sharedFontGlyphLayout.setText(str);
-            draw(g, str, x, y, _sharedFontGlyphLayout.getWidth() + 1);
+            draw(g, str, x, y, _sharedFontGlyphLayout.getWidth());
             _sharedFontGlyphLayout.reset();
         }
 
@@ -85,7 +104,7 @@ namespace monogame.Font
         internal void draw(SpriteBatch spriteBatch, string str, float targetWidth, int horizontalAlignment, bool wrap, Vector2 position, Vector2 scale, Microsoft.Xna.Framework.Color renderColor)
         {
 
-            var strings = wrapText(str, targetWidth).Split('\n');
+            var strings = wrapText(str, targetWidth + 1).Split('\n');
             var origin = Vector2.Zero;
             if ((horizontalAlignment & Align.RIGHT) != 0)
             {

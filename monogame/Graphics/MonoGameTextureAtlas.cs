@@ -43,18 +43,13 @@ namespace monogame.Graphics
                     string name = lines[i];
                     bool rotate = bool.Parse(lines[i + 1].Split(':')[1]);
 
-                    if (rotate)
-                    {
-                        throw new NotSupportedException("Rotated atlas aren't supported yet!");
-                    }
-                    
                     readTuple(lines[i + 2], out x, out y);
                     readTuple(lines[i + 3], out width, out height);
                     readTuple(lines[i + 4], out originalWidth, out originalHeight);
                     readTuple(lines[i + 5], out offsetX, out offsetY);
                     index = int.Parse(lines[i + 6].Split(':')[1]);
 
-                    var image = new MonoGameTextureAtlasRegion(packTexture, x, y, width, height, rotate);
+                    var image = new MonoGameTextureAtlasRegion(packTexture, name, index, x, y, width, height, rotate);
                     image.originalWidth = originalWidth;
                     image.originalHeight = originalHeight;
                     image.offsetX = offsetX;

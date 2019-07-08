@@ -39,3 +39,4 @@ uats-android/assets/texture-region-uat.png
 *.csproj.user
 _tools/__MACOSX/
 obj/
+*.sln.DotSettings.user

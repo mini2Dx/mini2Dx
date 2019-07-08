@@ -434,12 +434,12 @@ namespace monogame
 
         public bool isKeyJustPressed(int i)
         {
-            throw new NotImplementedException();
+            return false; //TODO
         }
 
         public bool justTouched()
         {
-            throw new NotImplementedException();
+            return false; //TODO
         }
     }
 }

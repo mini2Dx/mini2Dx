@@ -17,7 +17,7 @@
 #begin arial24.fnt
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
-/build:arial24.fnt
+/build:arial24.fnt;arial24.fnt.fnt
 
 #begin arial24_0.png
 /importer:TextureImporter
@@ -29,7 +29,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:arial24_0.png
+/build:arial24_0.png;arial24_0.png.png
 
 #begin background.png
 /importer:TextureImporter
@@ -41,28 +41,35 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:background.png
+/build:background.png;background.png.png
+
+#begin defaultFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:defaultFont.spritefont;defaultFont.spritefont.spritefont
 
 #begin grayscaleShader.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:grayscaleShader.fx
+/build:grayscaleShader.fx;grayscaleShader.fx.fx
 
 #begin hex_x_tileset1.tsx
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
-/build:hex_x_tileset1.tsx
+/build:hex_x_tileset1.tsx;hex_x_tileset1.tsx.tsx
 
 #begin hex_y_tileset1.tsx
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
-/build:hex_y_tileset1.tsx
+/build:hex_y_tileset1.tsx;hex_y_tileset1.tsx.tsx
 
 #begin hexagonal_x.tmx
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
-/build:hexagonal_x.tmx
+/build:hexagonal_x.tmx;hexagonal_x.tmx.tmx
 
 #begin hexagonal_x_tileset.png
 /importer:TextureImporter
@@ -74,12 +81,12 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:hexagonal_x_tileset.png
+/build:hexagonal_x_tileset.png;hexagonal_x_tileset.png.png
 
 #begin hexagonal_y.tmx
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
-/build:hexagonal_y.tmx
+/build:hexagonal_y.tmx;hexagonal_y.tmx.tmx
 
 #begin hexagonal_y_tileset.png
 /importer:TextureImporter
@@ -91,12 +98,12 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:hexagonal_y_tileset.png
+/build:hexagonal_y_tileset.png;hexagonal_y_tileset.png.png
 
 #begin isometric.tmx
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
-/build:isometric.tmx
+/build:isometric.tmx;isometric.tmx.tmx
 
 #begin isometric_tileset.png
 /importer:TextureImporter
@@ -108,7 +115,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:isometric_tileset.png
+/build:isometric_tileset.png;isometric_tileset.png.png
 
 #begin mini2Dx.png
 /importer:TextureImporter
@@ -120,13 +127,13 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:mini2Dx.png
+/build:mini2Dx.png;mini2Dx.png.png
 
 #begin music.ogg
 /importer:OggImporter
 /processor:SongProcessor
 /processorParam:Quality=Best
-/build:music.ogg
+/build:music.ogg;music.ogg.ogg
 
 #begin ninepatch.png
 /importer:TextureImporter
@@ -138,27 +145,27 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:ninepatch.png
+/build:ninepatch.png;ninepatch.png.png
 
 #begin object.tx
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
-/build:object.tx
+/build:object.tx;object.tx.tx
 
 #begin ortho_tileset1.tsx
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
-/build:ortho_tileset1.tsx
+/build:ortho_tileset1.tsx;ortho_tileset1.tsx.tsx
 
 #begin orthogonal.tmx
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
-/build:orthogonal.tmx
+/build:orthogonal.tmx;orthogonal.tmx.tmx
 
 #begin orthogonal_no_cache.tmx
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
-/build:orthogonal_no_cache.tmx
+/build:orthogonal_no_cache.tmx;orthogonal_no_cache.tmx.tmx
 
 #begin orthogonal_tileset.png
 /importer:TextureImporter
@@ -170,12 +177,12 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:orthogonal_tileset.png
+/build:orthogonal_tileset.png;orthogonal_tileset.png.png
 
 #begin orthogonal_tsx.tmx
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
-/build:orthogonal_tsx.tmx
+/build:orthogonal_tsx.tmx;orthogonal_tsx.tmx.tmx
 
 #begin pack.png
 /importer:TextureImporter
@@ -187,7 +194,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:pack.png
+/build:pack.png;pack.png.png
 
 #begin pack2.png
 /importer:TextureImporter
@@ -199,7 +206,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:pack2.png
+/build:pack2.png;pack2.png.png
 
 #begin pack3.png
 /importer:TextureImporter
@@ -211,27 +218,21 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:pack3.png
+/build:pack3.png;pack3.png.png
 
 #begin packfile.atlas
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
-/build:packfile.atlas
+/build:packfile.atlas;packfile.atlas.atlas
 
 #begin sound.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:sound.wav
+/build:sound.wav;sound.wav.wav
 
 #begin text.txt
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
-/build:text.txt
-
-#begin myFont.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:TextureFormat=Compressed
-/build:myFont.spritefont
+/build:text.txt;text.txt.txt
 

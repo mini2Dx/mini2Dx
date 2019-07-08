@@ -26,7 +26,7 @@ namespace monogame
     {
         public override GameFont defaultFont()
         {
-            return newPlatformFont((MonoGameFileHandle)Mdx.files.@internal("defaultFont"));
+            return newPlatformFont((MonoGameFileHandle)Mdx.files.@internal("defaultFont.spritefont"));
         }
 
         public override GameFont newPlatformFont(FileHandle fh)
@@ -39,6 +39,11 @@ namespace monogame
         public override GameFont newBitmapFont(FileHandle fh)
         {
             return new MonoGameGameFont((MonoGameFileHandle) fh, ((MonoGameFileHandle)fh.parent()).firstMatchingChildFile(fh.nameWithoutExtension() + "_"));
+        }
+
+        public override GameFont newTrueTypeFont(FileHandle fh)
+        {
+            return new MonoGameGameFont((MonoGameFileHandle) fh, 12);
         }
     }
 }

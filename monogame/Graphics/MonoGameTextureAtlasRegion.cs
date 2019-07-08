@@ -27,20 +27,21 @@ namespace monogame.Graphics
         public int originalWidth, originalHeight;
         public int offsetX, offsetY;
         public int index;
-        private bool _rotated;
         
-        public MonoGameTextureAtlasRegion(Texture texture, int x, int y, int width, int height, bool rotated) : base(texture, x, y, width, height)
+        public MonoGameTextureAtlasRegion(Texture texture, string name, int index, int x, int y, int width, int height, bool rotate) : base(texture, x, y, width, height)
         {
-            _rotated = rotated;
+            this.name = name;
+            this.index = index;
             this.x = x;
             this.y = y;
             this.width = width;
             this.height = height;
+            this.rotate = rotate;
         }
         
         public float getRotatedPackedWidth()
         {
-            if (_rotated)
+            if (rotate)
             {
                 return getRegionHeight();
             }
@@ -52,7 +53,7 @@ namespace monogame.Graphics
 
         public float getRotatedPackedHeight()
         {
-            if (_rotated)
+            if (rotate)
             {
                 return getRegionWidth();
             }

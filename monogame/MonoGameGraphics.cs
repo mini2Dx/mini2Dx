@@ -431,8 +431,8 @@ namespace monogame
 
         public void scale(float scaleX, float scaleY)
         {
-            _scale.X += scaleX;
-            _scale.Y += scaleY;
+            _scale.X *= scaleX;
+            _scale.Y *= scaleY;
             _shapeRenderer.setScale(_scale);
         }
 
@@ -479,6 +479,7 @@ namespace monogame
             _tint.G = 255;
             _tint.B = 255;
             _tint.A = 255;
+            _shapeRenderer.setTint(_tint);
         }
 
         public void enableBlending()
@@ -498,7 +499,7 @@ namespace monogame
 
         public void clearBlendFunction()
         {
-            throw new System.NotImplementedException();
+            //TODO
         }
 
         public void flush()
@@ -509,12 +510,12 @@ namespace monogame
 
         public int getLineHeight()
         {
-            return MathUtils.round(_font.getLineHeight());
+            return 0;
         }
 
         public void setLineHeight(int lineHeight)
         {
-            throw new System.NotImplementedException();
+            //TODO
         }
 
         public Color getColor()

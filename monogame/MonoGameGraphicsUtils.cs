@@ -105,7 +105,7 @@ namespace monogame
         {
             Texture2D texture;
 
-            texture = ((MonoGameFileHandle) file).loadFromContentManager<Texture2D>();
+            texture = ((MonoGameTexture)newTexture(file)).texture2D;
 
             var rawTextureData = new UInt32[texture.Width * texture.Height];
             texture.GetData(rawTextureData);
@@ -162,8 +162,14 @@ namespace monogame
 
         public Texture newTexture(FileHandle fileHandle)
         {
-            var texture = ((MonoGameFileHandle)fileHandle).loadFromContentManager<Texture2D>();
-            return new MonoGameTexture(texture);
+            try
+            {
+                return new MonoGameTexture(((MonoGameFileHandle) fileHandle).loadFromContentManager<Texture2D>());
+            }
+            catch (Exception)
+            {
+                return newTexture(fileHandle.readBytes());
+            }
         }
 
         public Texture newTexture(FileHandle fileHandle, PixmapFormat format)
@@ -249,7 +255,7 @@ namespace monogame
 
         public CustomCursor newCustomCursor(Pixmap p1, Pixmap p2, int i1, int i2)
         {
-            throw new NotImplementedException();
+            return new MonoGameCustomCursor(p1, p2, i1, i2);
         }
     }
 }
