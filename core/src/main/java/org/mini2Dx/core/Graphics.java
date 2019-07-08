@@ -808,4 +808,32 @@ public interface Graphics {
      * @return
      */
     public long getFrameId();
+
+    /**
+     * Returns the current min texture filter.
+     *
+     * @return The current min texture filter.
+     */
+    public TextureFilter getMinFilter();
+
+    /**
+     * Sets the texture min filter that will be used for all the subsequent texture drawing operations
+     *
+     * @param filter The min filter to be set.
+     */
+    public void setMinFilter(TextureFilter filter);
+
+    /**
+     * Returns the current mag texture filter.
+     *
+     * @return The current mag texture filter.
+     */
+    public TextureFilter getMagFilter();
+
+    /**
+     * Sets the texture mag filter that will be used for all the subsequent texture drawing operations
+     *
+     * @param filter The mag filter to be set.
+     */
+    public void setMagFilter(TextureFilter filter);
 }

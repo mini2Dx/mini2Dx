@@ -815,6 +815,26 @@ public class LibgdxGraphics implements Graphics {
 	}
 
 	@Override
+	public TextureFilter getMinFilter() {
+		return null;
+	}
+
+	@Override
+	public void setMinFilter(TextureFilter filter) {
+
+	}
+
+	@Override
+	public TextureFilter getMagFilter() {
+		return null;
+	}
+
+	@Override
+	public void setMagFilter(TextureFilter filter) {
+
+	}
+
+	@Override
 	public float getRotation() {
 		return rotation;
 	}

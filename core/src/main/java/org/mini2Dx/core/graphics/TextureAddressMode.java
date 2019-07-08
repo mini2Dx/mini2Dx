@@ -15,18 +15,8 @@
  ******************************************************************************/
 package org.mini2Dx.core.graphics;
 
-public enum TextureFilter {
-	/**
-	 * Fetch four nearest texels that best maps to the pixel on screen
-	 */
-	LINEAR,
-	/**
-	 * Fetch the nearest texel that best maps to the pixel on screen
-	 */
-	PIXEL,
-
-	LINEAR_MIP_POINT,
-
-	PIXEL_MIP_LINEAR
-
+public enum TextureAddressMode {
+    CLAMP,
+    MIRROR,
+    WRAP
 }
