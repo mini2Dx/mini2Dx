@@ -25,6 +25,8 @@ import org.mini2Dx.gdx.utils.Disposable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AssetLoadingTask<T> implements Runnable, Comparable<AssetLoadingTask>, Disposable {
+	private static final String LOGGING_TAG = AssetLoadingTask.class.getSimpleName();
+
 	private final AssetLoader<T> assetLoader;
 	private final AssetDescriptor<T> assetDescriptor;
 
@@ -90,8 +92,12 @@ public class AssetLoadingTask<T> implements Runnable, Comparable<AssetLoadingTas
 
 	@Override
 	public void run() {
-		AsyncAssetLoader<T> asyncAssetLoader = (AsyncAssetLoader) assetLoader;
-		asyncAssetLoader.loadOnAsyncThread(assetDescriptor, asyncLoadingCache);
+		try {
+			AsyncAssetLoader<T> asyncAssetLoader = (AsyncAssetLoader) assetLoader;
+			asyncAssetLoader.loadOnAsyncThread(assetDescriptor, asyncLoadingCache);
+		} catch (Exception e) {
+			Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
+		}
 	}
 
 	@Override

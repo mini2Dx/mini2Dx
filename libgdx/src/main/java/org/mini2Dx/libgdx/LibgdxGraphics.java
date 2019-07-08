@@ -513,6 +513,8 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public void drawNinePatch(NinePatch ninePatch, float x, float y, float width, float height) {
+		beginRendering();
+
 		ninePatch.render(this, x, y, width, height);
 	}
 

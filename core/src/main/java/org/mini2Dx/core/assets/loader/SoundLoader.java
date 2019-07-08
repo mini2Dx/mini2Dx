@@ -38,6 +38,8 @@ public class SoundLoader implements AsyncAssetLoader<Sound> {
 			asyncLoadingCache.setCache(CACHE_SOUND_KEY, Mdx.audio.newSound(assetDescriptor.getResolvedFileHandle()));
 		} catch (IOException e) {
 			Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
+		} catch (Exception e) {
+			Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
 		}
 	}
 

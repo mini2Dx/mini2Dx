@@ -23,8 +23,8 @@ import org.mini2Dx.gdx.utils.Array;
 
 import java.io.IOException;
 
-public class TextureAtlasLoader implements AsyncAssetLoader<TextureAtlas> {
-	private static final String CACHE_TEXTUREATLAS_KEY = "sound";
+public class TextureAtlasLoader implements AssetLoader<TextureAtlas> {
+
 	@Override
 	public TextureAtlas loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
 		return Mdx.graphics.newTextureAtlas(assetDescriptor.getResolvedFileHandle());
@@ -33,10 +33,5 @@ public class TextureAtlasLoader implements AsyncAssetLoader<TextureAtlas> {
 	@Override
 	public Array<AssetDescriptor> getDependencies(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
 		return null;
-	}
-
-	@Override
-	public void loadOnAsyncThread(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
-		asyncLoadingCache.setCache(CACHE_TEXTUREATLAS_KEY, Mdx.graphics.newTextureAtlas(assetDescriptor.getResolvedFileHandle()));
 	}
 }

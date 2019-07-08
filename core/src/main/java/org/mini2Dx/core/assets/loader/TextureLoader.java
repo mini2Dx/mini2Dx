@@ -38,6 +38,8 @@ public class TextureLoader implements AsyncAssetLoader<Texture> {
 			asyncLoadingCache.setCache(CACHE_TEXTURE_DATA_KEY, assetDescriptor.getResolvedFileHandle().readBytes());
 		} catch (IOException e) {
 			Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
+		} catch (Exception e) {
+			Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
 		}
 	}
 

@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.libgdx.graphics;
 
+import com.badlogic.gdx.graphics.g2d.LibgdxTextureAtlasWrapper;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.TextureAtlas;
 import org.mini2Dx.core.graphics.TextureAtlasRegion;
@@ -22,19 +23,19 @@ import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.libgdx.files.LibgdxFileHandle;
 
 public class LibgdxTextureAtlas implements TextureAtlas {
-	public com.badlogic.gdx.graphics.g2d.TextureAtlas textureAtlas;
+	public LibgdxTextureAtlasWrapper textureAtlas;
 	public Array<TextureAtlasRegion> regions;
 
 	public LibgdxTextureAtlas(FileHandle packFile, FileHandle imagesDir, boolean flip) {
 		final LibgdxFileHandle gdxPackFile = (LibgdxFileHandle) packFile;
 		final LibgdxFileHandle gdxImagesDir = (LibgdxFileHandle) imagesDir;
-		this.textureAtlas = new com.badlogic.gdx.graphics.g2d.TextureAtlas(gdxPackFile.fileHandle, gdxImagesDir.fileHandle, flip);
+		this.textureAtlas = new LibgdxTextureAtlasWrapper(gdxPackFile.fileHandle, gdxImagesDir.fileHandle, flip);
 	}
 
 	@Override
 	public Array<TextureAtlasRegion> getRegions() {
 		if(regions == null) {
-			final com.badlogic.gdx.utils.Array<com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion> atlasRegions = textureAtlas.getRegions();
+			final com.badlogic.gdx.utils.Array<LibgdxTextureAtlasWrapper.AtlasRegion> atlasRegions = textureAtlas.getRegions();
 			regions = new Array<TextureAtlasRegion>(true, atlasRegions.size + 1);
 			for(int i = 0; i < atlasRegions.size; i++) {
 				regions.add(new LibgdxTextureAtlasRegion(atlasRegions.get(i)));

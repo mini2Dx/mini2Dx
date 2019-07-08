@@ -16,13 +16,14 @@
 package org.mini2Dx.libgdx.graphics;
 
 import com.badlogic.gdx.graphics.LibgdxTextureRegionWrapper;
+import com.badlogic.gdx.graphics.g2d.LibgdxTextureAtlasWrapper;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import org.mini2Dx.core.graphics.TextureAtlasRegion;
 
 public class LibgdxTextureAtlasRegion extends LibgdxTextureRegion implements TextureAtlasRegion {
-	public final TextureAtlas.AtlasRegion atlasRegion;
+	public final LibgdxTextureAtlasWrapper.AtlasRegion atlasRegion;
 
-	public LibgdxTextureAtlasRegion(TextureAtlas.AtlasRegion atlasRegion) {
+	public LibgdxTextureAtlasRegion(LibgdxTextureAtlasWrapper.AtlasRegion atlasRegion) {
 		super(new LibgdxTextureRegionWrapper(atlasRegion));
 		this.atlasRegion = atlasRegion;
 	}

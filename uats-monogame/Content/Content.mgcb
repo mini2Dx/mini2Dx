@@ -128,13 +128,6 @@
 /processorParam:Quality=Best
 /build:music.ogg
 
-#begin myFont.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:myFont.spritefont;defaultFont.spritefont
-
 #begin ninepatch.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -235,4 +228,10 @@
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
 /build:text.txt
+
+#begin myFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:myFont.spritefont
 
