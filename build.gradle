@@ -16,7 +16,7 @@ buildscript {
 		classpath 'me.champeau.gradle:jmh-gradle-plugin:0.4.8'
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.9.0'
 		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.8'
-		classpath "org.mini2Dx:gradle-ikvm-plugin:2.10.0"
+		classpath "org.mini2Dx:gradle-ikvm-plugin:2.10.1-SNAPSHOT"
     }
 }
 
@@ -389,6 +389,7 @@ project(":" + rootProject.name + "-all") {
 		jars = project.files(project.jar.archivePath)
 	}
 
+	build.dependsOn ikvm
 }
 
 project(":" + rootProject.name + "-uats") {
@@ -397,10 +398,6 @@ project(":" + rootProject.name + "-uats") {
 
 	apply plugin: "ikvm"
 
-	dependencies {
-		compile project(":" + rootProject.name + "-all")
-	}
-	
 	task copyUatResources(type: Copy) {
 		from '../uats/src/main/resources', '../tiled/src/test/resources', '../ui/src/main/resources'
 		into '../uats-desktop/assets'
@@ -411,10 +408,16 @@ project(":" + rootProject.name + "-uats") {
 		debug = false
 		generateDoc = false
 		jars = project.files(project.jar.archivePath)
+		dllReferences = [project.file("../all/build/libs/mini2Dx-all.dll").absolutePath]
+	}
+
+	dependencies {
+		compile project(":" + rootProject.name + "-all")
 	}
 
 	processResources.dependsOn copyUatResources
-	build.dependsOn ikvm, project(":" + rootProject.name + "-all").ikvm
+    ikvm.dependsOn project(":" + rootProject.name + "-all").build
+	build.dependsOn ikvm
 }
 
 project(":" + rootProject.name + "-uats-desktop") {
