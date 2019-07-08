@@ -59,6 +59,12 @@ public class LibgdxBitmapFont implements GameFont {
 		tmpColor = new LibgdxColor(bitmapFont.getColor());
 	}
 
+	public LibgdxBitmapFont(com.badlogic.gdx.graphics.g2d.BitmapFont bitmapFont) {
+		this.bitmapFont = bitmapFont;
+		sharedGlyphLayout = (BitmapFontGlyphLayout) newGlyphLayout();
+		tmpColor = new LibgdxColor(bitmapFont.getColor());
+	}
+
 	@Override
 	public boolean loadInternal() {
 		return true;

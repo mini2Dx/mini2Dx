@@ -56,6 +56,7 @@ public abstract class GameWrapper implements ApplicationListener {
 
 	@Override
 	public void create() {
+		Mdx.platform = getPlatform();
 		Mdx.gameIdentifier = gameIdentifier;
 		initialise(gameIdentifier);
 
@@ -67,7 +68,6 @@ public abstract class GameWrapper implements ApplicationListener {
 		Mdx.graphicsContext = createGraphicsContext();
 		Mdx.input = new LibgdxInput();
 		Mdx.log = new LibgdxLogger();
-		Mdx.platform = getPlatform();
 		Mdx.reflect = new JvmReflection();
 
 		gameContainer.start(Mdx.graphicsContext);

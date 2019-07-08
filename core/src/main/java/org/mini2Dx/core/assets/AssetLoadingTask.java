@@ -41,7 +41,7 @@ public class AssetLoadingTask<T> implements Runnable, Comparable<AssetLoadingTas
 		this.assetLoader = assetLoader;
 		this.assetDescriptor = assetDescriptor;
 
-		if(assetDescriptor instanceof AsyncAssetLoader) {
+		if(assetLoader instanceof AsyncAssetLoader) {
 			asyncLoadingCache = new AsyncLoadingCache();
 		} else {
 			asyncCompleted = true;

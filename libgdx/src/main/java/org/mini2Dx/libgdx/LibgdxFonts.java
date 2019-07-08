@@ -15,9 +15,11 @@
  ******************************************************************************/
 package org.mini2Dx.libgdx;
 
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import org.mini2Dx.core.Fonts;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.font.GameFont;
+import org.mini2Dx.libgdx.files.LibgdxFileHandle;
 import org.mini2Dx.libgdx.font.LibgdxBitmapFont;
 
 public class LibgdxFonts extends Fonts {
@@ -33,6 +35,15 @@ public class LibgdxFonts extends Fonts {
 
 	@Override
 	public GameFont newPlatformFont(FileHandle fileHandle) {
+		if(fileHandle.path().endsWith(".ttf")) {
+			final LibgdxFileHandle gdxFileHandle = (LibgdxFileHandle) fileHandle;
+			FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+			fontParameter.size = 12;
+			fontParameter.flip = true;
+			fontParameter.kerning = true;
+			FreeTypeFontGenerator freeTypeFontGenerator = new FreeTypeFontGenerator(gdxFileHandle.fileHandle);
+			return new LibgdxBitmapFont(freeTypeFontGenerator.generateFont(fontParameter));
+		}
 		return new LibgdxBitmapFont(fileHandle);
 	}
 
