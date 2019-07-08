@@ -44,4 +44,28 @@ public interface Texture extends Disposable {
 	 * @return
 	 */
 	public boolean isManaged ();
+
+	/**
+	 * Returns the U addressing mode for this texture.
+	 * @return The U addressing mode for this texture.
+	 */
+	public TextureAddressMode getUAddressMode();
+
+	/**
+	 * Sets the U addressing mode for this texture.
+	 * @param mode the new U addressing mode for this texture
+	 */
+	public void setUAddressMode(TextureAddressMode mode);
+
+	/**
+	 * Returns the V addressing mode for this texture.
+	 * @return The V addressing mode for this texture.
+	 */
+	public TextureAddressMode getVAddressMode();
+
+	/**
+	 * Sets the V addressing mode for this texture.
+	 * @param mode the new V addressing mode for this texture
+	 */
+	public void setVAddressMode(TextureAddressMode mode);
 }

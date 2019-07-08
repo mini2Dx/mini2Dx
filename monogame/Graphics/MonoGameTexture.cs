@@ -15,14 +15,17 @@
  ******************************************************************************/
 
 using System;
+using java.lang;
 using Microsoft.Xna.Framework.Graphics;
 using org.mini2Dx.core.graphics;
+using TextureAddressMode = org.mini2Dx.core.graphics.TextureAddressMode;
 
 namespace monogame.Graphics
 {
     class MonoGameTexture : org.mini2Dx.core.graphics.Texture
     {
         internal Texture2D texture2D;
+        private TextureAddressMode _uMode = TextureAddressMode.CLAMP, _vMode = TextureAddressMode.CLAMP;
 
         public MonoGameTexture(Texture2D texture2D)
         {
@@ -61,6 +64,26 @@ namespace monogame.Graphics
         public bool isManaged()
         {
             return true;
+        }
+
+        public TextureAddressMode getUAddressMode()
+        {
+            return _uMode;
+        }
+
+        public void setUAddressMode(TextureAddressMode mode)
+        {
+            _uMode = mode;
+        }
+        
+        public TextureAddressMode getVAddressMode()
+        {
+            return _vMode;
+        }
+        
+        public void setVAddressMode(TextureAddressMode mode)
+        {
+            _vMode = mode;
         }
     }
 }
