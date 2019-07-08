@@ -58,6 +58,7 @@
     <Compile Include="Font\MonoGameFontGlyphLayout.cs" />
     <Compile Include="Font\MonoGameGameFontCache.cs" />
     <Compile Include="Graphics\MonoGameColor.cs" />
+    <Compile Include="Graphics\MonoGameCustomCursor.cs" />
     <Compile Include="Graphics\MonoGameFrameBuffer.cs" />
     <Compile Include="Graphics\MonoGameNinePatch.cs" />
     <Compile Include="Graphics\MonoGamePixmap.cs" />

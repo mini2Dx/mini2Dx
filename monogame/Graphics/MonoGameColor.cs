@@ -424,22 +424,22 @@ namespace monogame.Graphics
 
         public void setA(float f)
         {
-            _color.A = (byte) (f * 255);
+            _color.A = (byte) (Math.Min(1, Math.Max(0, f)) * 255);
         }
 
         public void setR(float f)
         {
-            _color.R = (byte)(f * 255);
+            _color.R = (byte)(Math.Min(1, Math.Max(0, f)) * 255);
         }
 
         public void setG(float f)
         {
-            _color.G = (byte)(f * 255);
+            _color.G = (byte)(Math.Min(1, Math.Max(0, f)) * 255);
         }
 
         public void setB(float f)
         {
-            _color.B = (byte)(f * 255);
+            _color.B = (byte)(Math.Min(1, Math.Max(0, f)) * 255);
         }
 
         public void setR(byte b)

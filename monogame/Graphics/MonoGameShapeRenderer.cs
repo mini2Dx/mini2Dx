@@ -244,6 +244,11 @@ namespace monogame.Graphics
             var yMin = Math.Min(y1, Math.Min(y2, y3));
             var xMax = Math.Max(x1, Math.Max(x2, x3));
             var yMax = Math.Max(y1, Math.Max(y2, y3));
+            if (xMax - xMin == 0 || yMax - yMin == 0)
+            {
+                return;
+            }
+
             var texture = newTexture2D(xMax - xMin, yMax - yMin);
             var textureData = new uint[texture.Width * texture.Height];
             

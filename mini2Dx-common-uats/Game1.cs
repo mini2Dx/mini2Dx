@@ -19,10 +19,12 @@ using Microsoft.Xna.Framework.Graphics;
 using monogame;
 using org.mini2Dx.core;
 using org.mini2Dx.core.game;
+using org.mini2Dx.core.reflect.jvm;
+using org.mini2Dx.core.serialization;
 using org.mini2Dx.uats.util;
 
-namespace uats_monogame
-{
+namespace mini2Dx_common_uats
+ {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
@@ -32,7 +34,7 @@ namespace uats_monogame
         private GameContainer game;
         private const float targetFPS = 60;
         private const float targetTimeStep = 1 / targetFPS;
-        
+
         public Game1()
         {
             IsFixedTimeStep = false;
@@ -42,7 +44,7 @@ namespace uats_monogame
                 args.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
             };
             Content.RootDirectory = "Content";
-            game = new MonoGameUAT();
+            game = new UATApplication();
         }
 
         /// <summary>
@@ -75,6 +77,7 @@ namespace uats_monogame
             Mdx.executor = new MonoGameTaskExecutor();
             Mdx.log = new MonoGameLogger();
             Mdx.playerData = new MonoGamePlayerData();
+            Mdx.reflect = new JvmReflection();
             base.Initialize();
         }
 
@@ -87,7 +90,7 @@ namespace uats_monogame
             Mdx.graphicsContext = new MonoGameGraphics(GraphicsDevice);
             Mdx.graphics = new MonoGameGraphicsUtils(GraphicsDevice);
             Mdx.audio = new MonoGameAudio();
-            game.initialise();
+            game.start(Mdx.graphicsContext);
         }
 
         /// <summary>
@@ -107,11 +110,11 @@ namespace uats_monogame
         {
             var maximumDelta = 1f / targetFPS;
             var accumulator = 0f;
-            var delta = (float) gameTime.ElapsedGameTime.TotalSeconds;
+            var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (delta > maximumDelta)
             {
-                delta = maximumDelta;  
+                delta = maximumDelta;
             }
 
             accumulator += delta;
@@ -124,7 +127,7 @@ namespace uats_monogame
                 accumulator -= targetTimeStep;
             }
             game.interpolate(accumulator / targetTimeStep);
-            
+
             base.Update(gameTime);
         }
 

@@ -46,6 +46,13 @@ public abstract class Fonts {
 	public abstract GameFont newBitmapFont(FileHandle fntFileHandle);
 
 	/**
+	 * Loads a new TrueType font
+	 * @param fileHandle A .ttf file
+	 * @return A new {@link GameFont} instance
+	 */
+	public abstract GameFont newTrueTypeFont(FileHandle fileHandle);
+
+	/**
 	 * Creates a new {@link MonospaceGameFont} instance. {@link GameFont#load(AssetManager)},
 	 * {@link GameFont#loadInternal()} or {@link GameFont#loadExternal()} must be called afterwards.
 	 * @param fontParameters The {@link org.mini2Dx.core.font.MonospaceGameFont.FontParameters}

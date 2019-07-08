@@ -65,7 +65,7 @@ public class UiFont {
 		}
 
 		if(path.endsWith(".ttf")) {
-			gameFont = Mdx.fonts.newPlatformFont(fileHandleResolver.resolve(path));
+			gameFont = Mdx.fonts.newTrueTypeFont(fileHandleResolver.resolve(path));
 		} else if(path.endsWith(".fnt")) {
 			gameFont = Mdx.fonts.newBitmapFont(fileHandleResolver.resolve(path));
 		} else if(path.endsWith(".xml")) {

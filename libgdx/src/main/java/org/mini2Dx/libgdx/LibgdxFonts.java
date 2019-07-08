@@ -48,6 +48,11 @@ public class LibgdxFonts extends Fonts {
 	}
 
 	@Override
+	public GameFont newTrueTypeFont(FileHandle fileHandle) {
+		return newPlatformFont(fileHandle);
+	}
+
+	@Override
 	public GameFont newBitmapFont(FileHandle fntFileHandle) {
 		return new LibgdxBitmapFont(fntFileHandle);
 	}

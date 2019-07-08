@@ -216,7 +216,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		notifyPreRender(g);
 		switch (visibility) {
 		case HIDDEN:
-			return;
+
 		case NO_RENDER:
 			return;
 		default:

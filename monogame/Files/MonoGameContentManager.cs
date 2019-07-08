@@ -15,7 +15,6 @@
  ******************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework.Content;
 
@@ -23,15 +22,9 @@ namespace monogame.Files
 {
     class MonoGameContentManager : ContentManager
     {
-        public MonoGameContentManager(IServiceProvider serviceProvider) : base(serviceProvider)
-        {
-        }
-
         public MonoGameContentManager(IServiceProvider serviceProvider, string rootDirectory) : base(serviceProvider, rootDirectory)
         {
         }
-
-        public new Dictionary<string, object> LoadedAssets => base.LoadedAssets;
 
         public new Stream OpenStream(string assetName)
         {
