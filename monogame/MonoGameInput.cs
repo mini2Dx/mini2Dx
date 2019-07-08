@@ -413,28 +413,13 @@ namespace monogame
                     return 0;
             }
         }
-
-        private IAsyncResult _lastKeyboardIar;
+        
         public void setOnScreenKeyboardVisible(bool b)
         {
             if (Mdx.platform.isDesktop())
             {
                 return;
             }
-            //if (b)
-            //{
-            //    _lastKeyboardIar = Microsoft.Xna.Framework.GamerServices.Guide.BeginShowKeyboardInput(PlayerIndex.One, "Insert text: ", "",
-            //        "", null, null);
-            //}
-            //else
-            //{
-            //    Microsoft.Xna.Framework.GamerServices.Guide.EndShowKeyboardInput(_lastKeyboardIar);
-            //}
-        }
-
-        private static void doNothing()
-        {
-
         }
 
         public int getX()

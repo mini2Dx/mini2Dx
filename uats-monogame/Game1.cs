@@ -403,17 +403,6 @@ namespace uats_monogame
             base.Update(gameTime);
         }
 
-        private void testTiledDrawing(int x, int y)
-        {
-            Stopwatch sw = Stopwatch.StartNew();
-            for (int i = 0; i < 10000; i++)
-            {
-                sampleMap.draw(Mdx.graphicsContext, x, y);
-            }
-            sw.Stop();
-            Console.WriteLine("It took {0} ms", sw.ElapsedMilliseconds);
-        }
-
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -459,7 +448,7 @@ namespace uats_monogame
             Mdx.graphicsContext.drawRect(500, 165, 100, 100);
             Mdx.graphicsContext.drawRect(600, 165, 100, 100);
             Mdx.graphicsContext.drawFontCache(sampleFontCache);
-            sampleMap.draw(Mdx.graphicsContext, (int) (gameWidth / 2), (int) (gameHeight / 4));
+            //sampleMap.draw(Mdx.graphicsContext, (int) (gameWidth / 2), (int) (gameHeight / 4));
             Mdx.graphicsContext.postRender();
             //Console.WriteLine("FPS: {0}", 1.0/gameTime.ElapsedGameTime.TotalSeconds);
             base.Draw(gameTime);

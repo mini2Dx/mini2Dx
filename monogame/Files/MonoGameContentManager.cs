@@ -31,9 +31,9 @@ namespace monogame.Files
         {
         }
 
-        public Dictionary<string, object> LoadedAssets => base.LoadedAssets;
+        public new Dictionary<string, object> LoadedAssets => base.LoadedAssets;
 
-        public Stream OpenStream(string assetName)
+        public new Stream OpenStream(string assetName)
         {
             return new MemoryStream(Load<mini2DxFileContent>(assetName).content);
         }

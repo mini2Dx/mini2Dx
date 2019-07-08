@@ -27,6 +27,7 @@ using org.mini2Dx.gdx.math;
 using Color = org.mini2Dx.core.graphics.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Texture = org.mini2Dx.core.graphics.Texture;
+using TextureFilter = org.mini2Dx.core.graphics.TextureFilter;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
@@ -37,7 +38,7 @@ namespace monogame
         internal readonly SpriteBatch _spriteBatch;
         internal readonly GraphicsDevice _graphicsDevice;
         private Color _setColor = new MonoGameColor(255,255,255,255);
-        internal Microsoft.Xna.Framework.Color _backgroundColor = Microsoft.Xna.Framework.Color.Black;
+        private Microsoft.Xna.Framework.Color _backgroundColor = Microsoft.Xna.Framework.Color.Black;
         internal Microsoft.Xna.Framework.Color _tint = Microsoft.Xna.Framework.Color.White;
         private float _rotation;
         internal int _gameWidth, _gameHeight;
@@ -45,14 +46,17 @@ namespace monogame
         private Effect _currentShader;
         private org.mini2Dx.core.geom.Rectangle _clipRectangle;
         private RasterizerState _rasterizerState;
+        private SamplerState _samplerState = new SamplerState();
+        private TextureFilter _currentMinFilter = TextureFilter.PIXEL;
+        private TextureFilter _currentMagFilter = TextureFilter.PIXEL;
         private bool _beginSpriteBatchCalled;
         private GameFont _font;
         private long _frameId;
         internal RenderTarget2D _currentRenderTarget;
 
-        private MonoGameShapeRenderer _shapeRenderer;
-        
-        internal static readonly BlendState _blendState = new BlendState
+        private readonly MonoGameShapeRenderer _shapeRenderer;
+
+        private static readonly BlendState _blendState = new BlendState
         {
             AlphaSourceBlend = Blend.One,
             AlphaDestinationBlend = Blend.Zero,
@@ -72,11 +76,73 @@ namespace monogame
             _rasterizerState = new RasterizerState(){ScissorTestEnable = false};
             _graphicsDevice.ScissorRectangle = new Rectangle();
             _font = Mdx.fonts.defaultFont();
+            updateFilter();
+        }
+
+        private void updateFilter()
+        {
+            var newSamplerState = new SamplerState
+            {
+                AddressU = _samplerState.AddressU,
+                AddressV = _samplerState.AddressV
+            };
+
+            if (_currentMinFilter == TextureFilter.LINEAR || _currentMinFilter == TextureFilter.LINEAR_MIP_POINT)
+            {
+                if (_currentMagFilter == TextureFilter.LINEAR || _currentMagFilter == TextureFilter.LINEAR_MIP_POINT)
+                {
+                    if (_currentMinFilter == TextureFilter.LINEAR || _currentMagFilter == TextureFilter.LINEAR)
+                    {
+                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.Linear;
+                    }
+                    else
+                    {
+                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.LinearMipPoint;
+                    }
+                }
+                else
+                {
+                    if (_currentMinFilter == TextureFilter.LINEAR || _currentMagFilter == TextureFilter.PIXEL)
+                    {
+                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.MinLinearMagPointMipLinear;
+                    }
+                    else
+                    {
+                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.MinLinearMagPointMipPoint;
+                    }
+                }
+            }
+            else
+            {
+                if (_currentMagFilter == TextureFilter.LINEAR || _currentMagFilter == TextureFilter.LINEAR_MIP_POINT)
+                {
+                    if (_currentMinFilter == TextureFilter.PIXEL || _currentMagFilter == TextureFilter.LINEAR)
+                    {
+                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.MinPointMagLinearMipLinear;
+                    }
+                    else
+                    {
+                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.MinPointMagLinearMipPoint;
+                    }
+                }
+                else
+                {
+                    if (_currentMinFilter == TextureFilter.PIXEL || _currentMagFilter == TextureFilter.PIXEL)
+                    {
+                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.PointMipLinear;
+                    }
+                    else
+                    {
+                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.Point;
+                    }
+                }
+            }
+            _samplerState = newSamplerState;
         }
 
         internal void beginSpriteBatch()
         {
-            _spriteBatch.Begin(SpriteSortMode.Deferred, _blendState, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationCenter + _translation) * _scale, 0)), effect: _currentShader, rasterizerState: _rasterizerState);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, _blendState, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationCenter + _translation) * _scale, 0)), effect: _currentShader, rasterizerState: _rasterizerState, samplerState: _samplerState);
             _beginSpriteBatchCalled = true;
         }
 
@@ -487,6 +553,44 @@ namespace monogame
         public int getWindowSafeHeight()
         {
             return _graphicsDevice.Viewport.TitleSafeArea.Height;
+        }
+
+        public TextureFilter getMinFilter()
+        {
+            return _currentMinFilter;
+        }
+
+        public void setMinFilter(TextureFilter tf)
+        {
+            if (tf != _currentMinFilter)
+            {
+                _currentMinFilter = tf;
+                updateFilter();
+                if (_beginSpriteBatchCalled)
+                {
+                    endSpriteBatch();
+                    beginSpriteBatch();
+                }
+            }
+        }
+
+        public TextureFilter getMagFilter()
+        {
+            return _currentMagFilter;
+        }
+
+        public void setMagFilter(TextureFilter tf)
+        {
+            if (tf != _currentMagFilter)
+            {
+                _currentMagFilter = tf;
+                updateFilter();
+                if (_beginSpriteBatchCalled)
+                {
+                    endSpriteBatch();
+                    beginSpriteBatch();
+                }
+            }
         }
 
         public float getViewportWidth()
