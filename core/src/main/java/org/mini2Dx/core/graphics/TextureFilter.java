@@ -25,8 +25,14 @@ public enum TextureFilter {
 	 */
 	PIXEL,
 
+	/**
+	 * Same as LINEAR, but samples the nearest mip map.
+	 */
 	LINEAR_MIP_POINT,
 
+	/**
+	 * Same as PIXEL, but samples linearly between mip maps.
+	 */
 	PIXEL_MIP_LINEAR
 
 }

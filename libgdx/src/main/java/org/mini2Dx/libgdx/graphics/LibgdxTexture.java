@@ -19,6 +19,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.TextureData;
 import org.mini2Dx.core.graphics.Pixmap;
 import org.mini2Dx.core.graphics.Texture;
+import org.mini2Dx.core.graphics.TextureAddressMode;
 
 public class LibgdxTexture extends com.badlogic.gdx.graphics.Texture implements Texture {
 
@@ -66,5 +67,25 @@ public class LibgdxTexture extends com.badlogic.gdx.graphics.Texture implements 
 	public void draw(Pixmap pixmap, int x, int y) {
 		final LibgdxPixmap gdxPixmap = (LibgdxPixmap) pixmap;
 		draw(gdxPixmap.pixmap, x, y);
+	}
+
+	@Override
+	public TextureAddressMode getUAddressMode() {
+		return null;
+	}
+
+	@Override
+	public void setUAddressMode(TextureAddressMode mode) {
+
+	}
+
+	@Override
+	public TextureAddressMode getVAddressMode() {
+		return null;
+	}
+
+	@Override
+	public void setVAddressMode(TextureAddressMode mode) {
+
 	}
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using monogame.Font;
@@ -27,6 +28,7 @@ using org.mini2Dx.gdx.math;
 using Color = org.mini2Dx.core.graphics.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Texture = org.mini2Dx.core.graphics.Texture;
+using TextureAddressMode = org.mini2Dx.core.graphics.TextureAddressMode;
 using TextureFilter = org.mini2Dx.core.graphics.TextureFilter;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
@@ -49,6 +51,8 @@ namespace monogame
         private SamplerState _samplerState = new SamplerState();
         private TextureFilter _currentMinFilter = TextureFilter.PIXEL;
         private TextureFilter _currentMagFilter = TextureFilter.PIXEL;
+        private TextureAddressMode _currentUMode = TextureAddressMode.CLAMP;
+        private TextureAddressMode _currentVMode = TextureAddressMode.CLAMP;
         private bool _beginSpriteBatchCalled;
         private GameFont _font;
         private long _frameId;
@@ -77,6 +81,42 @@ namespace monogame
             _graphicsDevice.ScissorRectangle = new Rectangle();
             _font = Mdx.fonts.defaultFont();
             updateFilter();
+        }
+
+        private Microsoft.Xna.Framework.Graphics.TextureAddressMode convertTextureAddressMode(TextureAddressMode mode)
+        {
+            if (mode == TextureAddressMode.CLAMP)
+            {
+                return Microsoft.Xna.Framework.Graphics.TextureAddressMode.Clamp;
+            }
+            else if (mode == TextureAddressMode.MIRROR)
+            {
+                return Microsoft.Xna.Framework.Graphics.TextureAddressMode.Mirror;
+            }
+            else if (mode == TextureAddressMode.WRAP)
+            {
+                return Microsoft.Xna.Framework.Graphics.TextureAddressMode.Wrap;
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        private void updateAddressMode()
+        {
+            _samplerState = new SamplerState
+            {
+                Filter = _samplerState.Filter,
+                AddressU = convertTextureAddressMode(_currentUMode),
+                AddressV = convertTextureAddressMode(_currentVMode)
+            };
+
+            if (_beginSpriteBatchCalled)
+            {
+                endSpriteBatch();
+                beginSpriteBatch();
+            }
         }
 
         private void updateFilter()
@@ -138,6 +178,12 @@ namespace monogame
                 }
             }
             _samplerState = newSamplerState;
+
+            if (_beginSpriteBatchCalled)
+            {
+                endSpriteBatch();
+                beginSpriteBatch();
+            }
         }
 
         internal void beginSpriteBatch()
@@ -266,6 +312,12 @@ namespace monogame
 
         public void drawTexture(Texture texture, float x, float y, float width, float height, bool flipY)
         {
+            if (texture.getUAddressMode() != _currentUMode || texture.getVAddressMode() != _currentVMode)
+            {
+                _currentUMode = texture.getUAddressMode();
+                _currentVMode = texture.getVAddressMode();
+                updateAddressMode();
+            }
             _spriteBatch.Draw(((MonoGameTexture)texture).texture2D, (new Vector2(x, y) + _translation - _rotationCenter) * _scale, null, _tint, 0,
                 Vector2.Zero, new Vector2(width / texture.getWidth(), height / texture.getHeight()) * _scale,
                 flipY ? SpriteEffects.FlipVertically : SpriteEffects.None, 0f);
@@ -283,6 +335,12 @@ namespace monogame
 
         public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height, float rotation)
         {
+            if (textureRegion.getTexture().getUAddressMode() != _currentUMode || textureRegion.getTexture().getVAddressMode() != _currentVMode)
+            {
+                _currentUMode = textureRegion.getTexture().getUAddressMode();
+                _currentVMode = textureRegion.getTexture().getVAddressMode();
+                updateAddressMode();
+            }
             var sourceRectangle = new Rectangle(textureRegion.getRegionX(), textureRegion.getRegionY(), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
             if (textureRegion.isFlipX())
             {
@@ -566,11 +624,6 @@ namespace monogame
             {
                 _currentMinFilter = tf;
                 updateFilter();
-                if (_beginSpriteBatchCalled)
-                {
-                    endSpriteBatch();
-                    beginSpriteBatch();
-                }
             }
         }
 
@@ -585,11 +638,6 @@ namespace monogame
             {
                 _currentMagFilter = tf;
                 updateFilter();
-                if (_beginSpriteBatchCalled)
-                {
-                    endSpriteBatch();
-                    beginSpriteBatch();
-                }
             }
         }
 
