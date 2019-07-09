@@ -510,7 +510,7 @@ namespace monogame
 
         public int getLineHeight()
         {
-            return 0;
+            return 1; //TODO
         }
 
         public void setLineHeight(int lineHeight)
