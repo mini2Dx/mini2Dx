@@ -24,20 +24,28 @@ namespace monogame.Graphics
     public class MonoGameNinePatch : org.mini2Dx.core.graphics.NinePatch
     {
         private readonly TextureRegion _textureRegion;
+        private readonly MonoGameTextureRegion _ninePatchRegion;
+        private readonly int _textureRegionX;
+        private readonly int _textureRegionY;
         private Color _setColor = new MonoGameColor(Microsoft.Xna.Framework.Color.White);
-        private float _leftWidth, _rightWidth, _topHeight, _bottomHeight, _middleWidth, _middleHeight;
         private float _padLeft = -1, _padRight = -1, _padTop = -1, _padBottom = -1;
-        private MonoGameTextureRegion _ninePatchRegion;
-
+        private float _leftWidth, _rightWidth, _topHeight, _bottomHeight, _middleWidth, _middleHeight;
+        private float _rightX, _bottomY;
+ 
         public MonoGameNinePatch(TextureRegion texture, int left, int right, int top, int bottom)
         {
             _textureRegion = texture;
             _topHeight = top;
             _leftWidth = left;
-            _middleWidth = _textureRegion.getRegionWidth() - right;
+            _middleWidth = _textureRegion.getRegionWidth() - right - left;
             _rightWidth = right;
             _middleHeight = _textureRegion.getRegionHeight() - top - bottom;
             _bottomHeight = bottom;
+            _ninePatchRegion = new MonoGameTextureRegion(_textureRegion);
+            _textureRegionX = _textureRegion.getRegionX();
+            _textureRegionY = _textureRegion.getRegionY();
+            _rightX = _textureRegion.getRegionWidth() - right;
+            _bottomY = _textureRegion.getRegionHeight() - bottom;
         }
 
         private static void draw(org.mini2Dx.core.Graphics g, TextureRegion ninePatchRegion, float dstX, float dstY, float dstWidth, float dstHeight)
@@ -50,37 +58,37 @@ namespace monogame.Graphics
             
             var newTint = _setColor.copy().multiply(g.getTint());
             var oldTint = g.getTint();
+            var middleWidth = (int) (width - _leftWidth - _rightWidth);
+            var middleHeight = (int) (height - _topHeight - _bottomHeight);
             g.setTint(newTint);
             
-            _ninePatchRegion = new MonoGameTextureRegion(_textureRegion);
-            
-            _ninePatchRegion.setRegionX(0);
-            _ninePatchRegion.setRegionY(0);
+            _ninePatchRegion.setRegionX(_textureRegionX);
+            _ninePatchRegion.setRegionY(_textureRegionY);
             _ninePatchRegion.setRegionWidth((int) _leftWidth);
             _ninePatchRegion.setRegionHeight((int) _topHeight);
             draw(g, _ninePatchRegion, x, y, _leftWidth, _topHeight);
-            _ninePatchRegion.setRegionX((int) _leftWidth);
-            _ninePatchRegion.setRegionWidth((int) (_textureRegion.getRegionWidth() - _leftWidth - _rightWidth));
-            draw(g, _ninePatchRegion, x + _leftWidth, y, width - _leftWidth - _rightWidth, _topHeight);
-            _ninePatchRegion.setRegionX((int) (_textureRegion.getRegionWidth() - _rightWidth));
+            _ninePatchRegion.setRegionX(_textureRegionX + (int) _leftWidth);
+            _ninePatchRegion.setRegionWidth((int) _middleWidth);
+            draw(g, _ninePatchRegion, x + _leftWidth, y, middleWidth, _topHeight);
+            _ninePatchRegion.setRegionX(_textureRegionX + (int) _rightX);
             _ninePatchRegion.setRegionWidth((int) _rightWidth);
             draw(g, _ninePatchRegion, x + width - _rightWidth, y, _rightWidth, _topHeight);
-            _ninePatchRegion.setRegionY((int) _topHeight);
-            _ninePatchRegion.setRegionHeight((int) (_textureRegion.getRegionHeight() - _topHeight - _bottomHeight));
-            draw(g, _ninePatchRegion, x + width - _rightWidth, y + _topHeight, _rightWidth, height - _topHeight - _bottomHeight);
-            _ninePatchRegion.setRegionX((int) _leftWidth);
-            _ninePatchRegion.setRegionWidth((int) (_textureRegion.getRegionWidth() - _leftWidth - _rightWidth));
-            draw(g, _ninePatchRegion, x + _leftWidth, y + _topHeight, width - _leftWidth - _rightWidth, height - _topHeight - _bottomHeight);
-            _ninePatchRegion.setRegionX(0);
+            _ninePatchRegion.setRegionY(_textureRegionY + (int) _topHeight);
+            _ninePatchRegion.setRegionHeight((int) _middleHeight);
+            draw(g, _ninePatchRegion, x + width - _rightWidth, y + _topHeight, _rightWidth, middleHeight);
+            _ninePatchRegion.setRegionX(_textureRegionX + (int) _leftWidth);
+            _ninePatchRegion.setRegionWidth((int) _middleWidth);
+            draw(g, _ninePatchRegion, x + _leftWidth, y + _topHeight, middleWidth, middleHeight);
+            _ninePatchRegion.setRegionX(_textureRegionX);
             _ninePatchRegion.setRegionWidth((int) _leftWidth);
-            draw(g, _ninePatchRegion, x, y + _topHeight, _leftWidth, height - _topHeight - _bottomHeight);
-            _ninePatchRegion.setRegionY((int) (_textureRegion.getRegionHeight() - _bottomHeight));
+            draw(g, _ninePatchRegion, x, y + _topHeight, _leftWidth, middleHeight);
+            _ninePatchRegion.setRegionY(_textureRegionY + (int) _bottomY);
             _ninePatchRegion.setRegionHeight((int) _bottomHeight);
             draw(g, _ninePatchRegion, x, y + height - _bottomHeight, _leftWidth, _bottomHeight);
-            _ninePatchRegion.setRegionX((int) _leftWidth);
-            _ninePatchRegion.setRegionWidth((int) (_textureRegion.getRegionWidth() - _leftWidth - _rightWidth));
-            draw(g, _ninePatchRegion, x + _leftWidth, y + height - _bottomHeight, width - _leftWidth - _rightWidth, _bottomHeight);
-            _ninePatchRegion.setRegionX((int) (_textureRegion.getRegionWidth() - _rightWidth));
+            _ninePatchRegion.setRegionX(_textureRegionX + (int) _leftWidth);
+            _ninePatchRegion.setRegionWidth((int) _middleWidth);
+            draw(g, _ninePatchRegion, x + _leftWidth, y + height - _bottomHeight, middleWidth, _bottomHeight);
+            _ninePatchRegion.setRegionX(_textureRegionX + (int) _rightX);
             _ninePatchRegion.setRegionWidth((int) _rightWidth);
             draw(g, _ninePatchRegion, x + width - _rightWidth, y + height - _bottomHeight, _rightWidth, _bottomHeight);
             g.setTint(oldTint);

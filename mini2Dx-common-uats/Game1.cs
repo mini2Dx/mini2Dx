@@ -44,6 +44,8 @@ namespace mini2Dx_common_uats
                 args.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
             };
             Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 720;
             game = new UATApplication();
         }
 
