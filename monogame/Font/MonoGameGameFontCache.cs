@@ -44,7 +44,7 @@ namespace monogame.Font
         private MonoGameTexture _gameFontCache;
         private SpriteBatch _spriteBatch;
         private Vector2 _position = Vector2.Zero;
-        private Microsoft.Xna.Framework.Color _setColor = Microsoft.Xna.Framework.Color.White;
+        private Microsoft.Xna.Framework.Color _setColor = Microsoft.Xna.Framework.Color.Black;
         private LinkedList<MonoGameGameFontCacheDrawingOperation> _previousDrawingOperations = new LinkedList<MonoGameGameFontCacheDrawingOperation>();
 
         internal MonoGameGameFontCache(GameFont font)
