@@ -33,6 +33,9 @@ namespace uats_monogame
         private const float targetFPS = 60;
         private const float targetTimeStep = 1 / targetFPS;
         
+        private const float _updateMaximumDelta = targetTimeStep;
+        private float _timeAccumulator;
+        
         public Game1()
         {
             IsFixedTimeStep = false;
@@ -87,7 +90,7 @@ namespace uats_monogame
             Mdx.graphicsContext = new MonoGameGraphics(GraphicsDevice);
             Mdx.graphics = new MonoGameGraphicsUtils(GraphicsDevice);
             Mdx.audio = new MonoGameAudio();
-            game.initialise();
+            game.start(Mdx.graphicsContext);
         }
 
         /// <summary>
@@ -105,25 +108,23 @@ namespace uats_monogame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            var maximumDelta = 1f / targetFPS;
-            var accumulator = 0f;
-            var delta = (float) gameTime.ElapsedGameTime.TotalSeconds;
+            float delta = (float) gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (delta > maximumDelta)
+            if (delta > _updateMaximumDelta)
             {
-                delta = maximumDelta;  
+                delta = _updateMaximumDelta;  
             }
 
-            accumulator += delta;
+            _timeAccumulator += delta;
 
-            while (accumulator >= targetTimeStep)
+            while (_timeAccumulator >= targetTimeStep)
             {
                 ((MonoGameInput)Mdx.input).update();
                 ((MonoGameAudio)Mdx.audio).update();
                 game.update(targetTimeStep);
-                accumulator -= targetTimeStep;
+                _timeAccumulator -= targetTimeStep;
             }
-            game.interpolate(accumulator / targetTimeStep);
+            game.interpolate(_timeAccumulator / targetTimeStep);
             
             base.Update(gameTime);
         }
