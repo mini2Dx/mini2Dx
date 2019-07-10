@@ -35,6 +35,10 @@ public class InterpolationTracker {
 		}
 	}
 
+	public static synchronized boolean isRegistered(Interpolatable interpolatable) {
+		return INTERPOLATABLES.contains(interpolatable);
+	}
+
 	public static synchronized void register(Interpolatable interpolatable) {
 		INTERPOLATABLES.add(interpolatable);
 	}

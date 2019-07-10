@@ -44,6 +44,7 @@ public abstract class ScreenBasedGame extends GameContainer {
 	
 	@Override
 	public void interpolate(float alpha) {
+		super.interpolate(alpha);
 		screenManager.interpolate(this, alpha);
 	}
 
