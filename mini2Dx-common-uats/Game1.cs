@@ -34,9 +34,13 @@ namespace mini2Dx_common_uats
         private GameContainer game;
         private const float targetFPS = 60;
         private const float targetTimeStep = 1 / targetFPS;
+        
+        private const float _updateMaximumDelta = targetTimeStep;
+        private float _timeAccumulator;
 
         public Game1()
         {
+            IsMouseVisible = true;
             IsFixedTimeStep = false;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreparingDeviceSettings += (object s, PreparingDeviceSettingsEventArgs args) =>
@@ -110,26 +114,24 @@ namespace mini2Dx_common_uats
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            var maximumDelta = 1f / targetFPS;
-            var accumulator = 0f;
-            var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float delta = (float) gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (delta > maximumDelta)
+            if (delta > _updateMaximumDelta)
             {
-                delta = maximumDelta;
+                delta = _updateMaximumDelta;  
             }
 
-            accumulator += delta;
-
-            while (accumulator >= targetTimeStep)
+            _timeAccumulator += delta;
+            
+            while (_timeAccumulator >= targetTimeStep)
             {
                 ((MonoGameInput)Mdx.input).update();
                 ((MonoGameAudio)Mdx.audio).update();
                 game.update(targetTimeStep);
-                accumulator -= targetTimeStep;
+                _timeAccumulator -= targetTimeStep;
             }
-            game.interpolate(accumulator / targetTimeStep);
-
+            game.interpolate(_timeAccumulator / targetTimeStep);
+            
             base.Update(gameTime);
         }
 

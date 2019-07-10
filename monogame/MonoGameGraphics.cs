@@ -76,7 +76,7 @@ namespace monogame
             _scale = Vector2.One;
             _rotationCenter = Vector2.Zero;
             _clipRectangle = new org.mini2Dx.core.geom.Rectangle(0, 0, getWindowWidth(), getWindowHeight());
-            _shapeRenderer = new MonoGameShapeRenderer(graphicsDevice, MonoGameColor.toArgb(_setColor), _spriteBatch, _rotationCenter, _translation, _scale, _tint);
+            _shapeRenderer = new MonoGameShapeRenderer(graphicsDevice, (MonoGameColor) _setColor, _spriteBatch, _rotationCenter, _translation, _scale, _tint);
             _rasterizerState = new RasterizerState(){ScissorTestEnable = false};
             _graphicsDevice.ScissorRectangle = new Rectangle();
             _font = Mdx.fonts.defaultFont();
@@ -421,6 +421,7 @@ namespace monogame
             _rotationCenter.X = x;
             _rotationCenter.Y = y;
             _shapeRenderer.setRotationCenter(_rotationCenter);
+            flush();
         }
 
         public void setRotation(float degrees, float x, float y)
@@ -434,6 +435,7 @@ namespace monogame
             _scale.X *= scaleX;
             _scale.Y *= scaleY;
             _shapeRenderer.setScale(_scale);
+            flush();
         }
 
         public void setScale(float scaleX, float scaleY)
@@ -441,6 +443,7 @@ namespace monogame
             _scale.X = scaleX;
             _scale.Y = scaleY;
             _shapeRenderer.setScale(_scale);
+            flush();
         }
 
         public void clearScaling()
@@ -454,6 +457,7 @@ namespace monogame
             _translation.X += translateX;
             _translation.Y += translateY;
             _shapeRenderer.setTranslation(_translation);
+            flush();
         }
 
         public void setTranslation(float translateX, float translateY)
@@ -461,6 +465,7 @@ namespace monogame
             _translation.X = translateX;
             _translation.Y = translateY;
             _shapeRenderer.setTranslation(_translation);
+            flush();
         }
 
         public void setTint(Color tint)
@@ -526,7 +531,7 @@ namespace monogame
         public void setColor(Color color)
         {
             _setColor = color;
-            _shapeRenderer.setColor(MonoGameColor.toArgb(_setColor));
+            _shapeRenderer.setColor((MonoGameColor) _setColor);
         }
 
         public Color getBackgroundColor()

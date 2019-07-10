@@ -22,21 +22,30 @@ namespace monogame.Graphics
     public class MonoGameShapeRenderer
     {
         private GraphicsDevice _graphicsDevice;
-        private uint _color;
+        private uint color;
         private Vector2 _rotationCenter, _translation, _scale;
         private Color _tint;
         private readonly SpriteBatch _spriteBatch;
-        private static Rectangle rect = new Rectangle();
+        private static Vector2 _sharedPositionVector = Vector2.Zero;
+        private static Vector2 _sharedScaleVector = Vector2.One;
+        private static Texture2D _sharedTexture;
+        private MonoGameColor _color;
 
-        public MonoGameShapeRenderer(GraphicsDevice graphicsDevice, uint colorARGB8888, SpriteBatch spriteBatch, Vector2 rotationCenter, Vector2 translation, Vector2 scale, Color tint)
+        public MonoGameShapeRenderer(GraphicsDevice graphicsDevice, MonoGameColor color, SpriteBatch spriteBatch, Vector2 rotationCenter, Vector2 translation, Vector2 scale, Color tint)
         {
             _graphicsDevice = graphicsDevice;
-            _color = colorARGB8888;
+            setColor(color);
             _spriteBatch = spriteBatch;
             _rotationCenter = rotationCenter;
             _translation = translation;
             _scale = scale;
             _tint = tint;
+            if (_sharedTexture == null)
+            {
+                _sharedTexture = newTexture2D(1, 1);
+                _sharedTexture.SetData(new uint[]{0xffffffff});
+            }
+
         }
 
         public void setRotationCenter(Vector2 rotationCenter)
@@ -59,16 +68,28 @@ namespace monogame.Graphics
             _tint = tint;
         }
 
-        public void setColor(uint colorARGB8888)
+        public void setColor(MonoGameColor color)
         {
-            _color = colorARGB8888;
+            this.color = color.toRGBA8888();
+            _color = color;
         }
         
-        private void draw(Texture2D texture, Vector2 position)
+        private void draw(Texture2D texture, Vector2 position, Vector2 scale = default(Vector2), Color tintOverride = default(Color))
         {
+            if (scale == default(Vector2))
+            {
+                scale = Vector2.One;
+            }
+
+            var oldTint = _tint;
+            if (tintOverride != default(Color))
+            {
+                _tint = tintOverride;
+            }
             _spriteBatch.Draw(texture,
                 (position + _translation - _rotationCenter) * _scale, null, _tint, 0f, 
-                Vector2.Zero, _scale, SpriteEffects.None, 0f);
+                Vector2.Zero, _scale * scale, SpriteEffects.None, 0f);
+            _tint = oldTint;
         }
 
         private Texture2D newTexture2D(int width, int height)
@@ -78,6 +99,7 @@ namespace monogame.Graphics
 
         public void drawLine(int x, int y, int x2, int y2)
         {
+            var color = new Color(_tint.R * _color.rf(), _tint.G * _color.gf(), _tint.B * _color.bf(), _tint.A * _color.af());
             var minX = Math.Min(x, x2);
             var minY = Math.Min(y, y2);
 
@@ -97,9 +119,6 @@ namespace monogame.Graphics
             
             var width = Math.Abs(deltaX);
             var height = Math.Abs(deltaY);
-            
-            var texture = newTexture2D(width + 1, height + 1);
-            var textureData = new uint[texture.Width  * texture.Height];
 
             if (width <= height)
             {
@@ -111,7 +130,9 @@ namespace monogame.Graphics
             var numerator = width >> 1 ;
             for (var i=0; i<=width; i++)
             {
-                textureData[x + y * texture.Width] = _color;
+                _sharedPositionVector.X = minX + x;
+                _sharedPositionVector.Y = minY + y;
+                draw(_sharedTexture, _sharedPositionVector, tintOverride: color);
                 numerator += height;
                 if (numerator >= width)
                 {
@@ -125,9 +146,6 @@ namespace monogame.Graphics
                     y += dy2;
                 }
             }
-            
-            texture.SetData(textureData);
-            draw(texture, new Vector2(minX, minY));
         }
 
         public void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3)
@@ -139,107 +157,95 @@ namespace monogame.Graphics
 
         public void drawRect(int x, int y, int width, int height)
         {
-            var texture = newTexture2D(width, height);
-            var textureData = new uint[Math.Max(width, height)];
-            for (int i = 0; i < textureData.Length; i++)
-            {
-                textureData[i] = _color;
-            }
-            rect.Height = 1;
-            rect.Width = width - 1;
-            texture.SetData(0, rect, textureData, 0, width - 1);
-            rect.Y = height - 1;
-            texture.SetData(0, rect, textureData, 0, width - 1);
-            rect.Height = height - 1;
-            rect.Width = 1;
-            rect.Y = 0;
-            texture.SetData(0, rect, textureData, 0, height - 1);
-            rect.X = width - 1;
-            texture.SetData(0, rect, textureData, 0, height - 1);
-            rect.X = 0;
-            draw(texture, new Vector2(x, y));
+            var color = new Color(_tint.R * _color.rf(), _tint.G * _color.gf(), _tint.B * _color.bf(), _tint.A * _color.af());
+            _sharedPositionVector.X = x;
+            _sharedPositionVector.Y = y;
+            _sharedScaleVector.X = width;
+            _sharedScaleVector.Y = 1;
+            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, color);
+            _sharedPositionVector.Y += height;
+            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, color);
+            _sharedPositionVector.X = x;
+            _sharedPositionVector.Y = y;
+            _sharedScaleVector.X = 1;
+            _sharedScaleVector.Y = height;
+            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, color);
+            _sharedPositionVector.X += width;
+            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, color);
         }
 
         public void fillRect(int x, int y, int width, int height)
         {
-            var texture = newTexture2D(width, height);
-            var textureData = new uint[width * height];
-            
-            for (int i = 0; i < textureData.Length; i++)
-            {
-                textureData[i] = _color;
-            }
-            
-            texture.SetData(textureData);
-            draw(texture, new Vector2(x, y));
+            var color = new Color(_tint.R * _color.rf(), _tint.G * _color.gf(), _tint.B * _color.bf(), _tint.A * _color.af());
+            _sharedPositionVector.X = x;
+            _sharedPositionVector.Y = y;
+            _sharedScaleVector.X = width;
+            _sharedScaleVector.Y = height;
+            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, color);
         }
         
-        private static void putPixel(uint[] pixels, int width, int height, int pixX, int pixY, uint color)
+        private void putPixel(int pixX, int pixY, Color color)
         {
-            if (pixX >= 0 && pixX < width && pixY >= 0 && pixY < height)
-            {
-                pixels[pixX + width * pixY] = color;
-            }
+            _sharedPositionVector.X += pixX;
+            _sharedPositionVector.Y += pixY;
+            draw(_sharedTexture, _sharedPositionVector, tintOverride: color);
+            _sharedPositionVector.X -= pixX;
+            _sharedPositionVector.Y -= pixY;
         }
         
         public void drawCircle(int centerX, int centerY, int radius)
-            {
-            var texture = newTexture2D(radius * 2 + 1, radius * 2 + 1);
-            var textureData = new uint[texture.Width * texture.Height];
+        {
+            var color = new Color(_tint.R * _color.rf(), _tint.G * _color.gf(), _tint.B * _color.bf(), _tint.A * _color.af());
 
+            _sharedPositionVector.X = centerX;
+            _sharedPositionVector.Y = centerY;
             var radiusSquared = radius * radius;
-            putPixel(textureData, texture.Width, texture.Height, radius, radius + radius, _color);
-            putPixel(textureData, texture.Width, texture.Height, radius, radius - radius, _color);
-            putPixel(textureData, texture.Width, texture.Height, radius + radius, radius, _color);
-            putPixel(textureData, texture.Width, texture.Height, radius - radius, radius, _color);
+            putPixel(0, radius, color);
+            putPixel(0, -radius, color);
+            putPixel(radius, radius, color);
+            putPixel(-radius, radius, color);
             var x = 1;
             var y = (int) Math.Sqrt(radiusSquared - 1);
             while (x < y) {
-                putPixel(textureData, texture.Width, texture.Height, radius + x, radius + y, _color);
-                putPixel(textureData, texture.Width, texture.Height, radius + x, radius - y, _color);
-                putPixel(textureData, texture.Width, texture.Height, radius - x, radius + y, _color);
-                putPixel(textureData, texture.Width, texture.Height, radius - x, radius - y, _color);
-                putPixel(textureData, texture.Width, texture.Height, radius + y, radius + x, _color);
-                putPixel(textureData, texture.Width, texture.Height, radius + y, radius - x, _color);
-                putPixel(textureData, texture.Width, texture.Height, radius - y, radius + x, _color);
-                putPixel(textureData, texture.Width, texture.Height, radius - y, radius - x, _color);
+                putPixel(x, y, color);
+                putPixel(x, -y, color);
+                putPixel(-x, y, color);
+                putPixel(-x, -y, color);
+                putPixel(y, x, color);
+                putPixel(y, -x, color);
+                putPixel(-y, x, color);
+                putPixel(-y, -x, color);
                 x += 1;
                 y = (int) (Math.Sqrt(radiusSquared - x*x));
             }
             if (x == y) {
-                putPixel(textureData, texture.Width, texture.Height, radius + x, radius + y, _color);
-                putPixel(textureData, texture.Width, texture.Height, radius + x, radius - y, _color);
-                putPixel(textureData, texture.Width, texture.Height, radius - x, radius + y, _color);
-                putPixel(textureData, texture.Width, texture.Height, radius - x, radius - y, _color);
+                putPixel(x, y, color);
+                putPixel(x, -y, color);
+                putPixel(-x, y, color);
+                putPixel(-x, -y, color);
             }
-
-            texture.SetData(textureData);
-            draw(texture, new Vector2(centerX - radius, centerY - radius));
         }
 
         public void fillCircle(int centerX, int centerY, int radius)
         {
-            var texture = newTexture2D(radius * 2, radius * 2);
-            var textureData = new uint[texture.Width * texture.Height];
-            
-            for (int circleX = 0; circleX < radius * 2; circleX++)
+            var color = new Color(_tint.R * _color.rf(), _tint.G * _color.gf(), _tint.B * _color.bf(), _tint.A * _color.af());
+            _sharedPositionVector.X = centerX - radius;
+            _sharedPositionVector.Y = centerY - radius;
+            for (int circleX = 0; circleX < radius * 2; circleX++, _sharedPositionVector.X++)
             {
-             
-                for (int circleY = 0; circleY < radius * 2; circleY++)
+                for (int circleY = 0; circleY < radius * 2; circleY++, _sharedPositionVector.Y++)
                 {
                     if (Math.Pow(circleX - radius, 2) + Math.Pow(circleY - radius, 2) <= Math.Pow(radius, 2))
                     {
-                        textureData[circleX + texture.Width * circleY] = _color;
+                        draw(_sharedTexture, _sharedPositionVector, tintOverride: color);
                     }
                 }
             }
-
-            texture.SetData(textureData);
-            draw(texture, new Vector2(centerX - radius, centerY - radius));
         }
 
         public void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3)
         {
+            var color = new Color(_tint.R * _color.rf(), _tint.G * _color.gf(), _tint.B * _color.bf(), _tint.A * _color.af());
             var xMin = Math.Min(x1, Math.Min(x2, x3));
             var yMin = Math.Min(y1, Math.Min(y2, y3));
             var xMax = Math.Max(x1, Math.Max(x2, x3));
@@ -249,9 +255,6 @@ namespace monogame.Graphics
                 return;
             }
 
-            var texture = newTexture2D(xMax - xMin, yMax - yMin);
-            var textureData = new uint[texture.Width * texture.Height];
-            
             x1 -= xMin;
             x2 -= xMin;
             x3 -= xMin;
@@ -315,12 +318,11 @@ namespace monogame.Graphics
 
                 for (var j = (int) aX; j <= bX; j++)
                 {
-                    textureData[j + texture.Width * (y1 + i)] = _color;
+                    _sharedPositionVector.X = xMin + j;
+                    _sharedPositionVector.Y = yMin + y1 + i;
+                    draw(_sharedTexture, _sharedPositionVector, tintOverride: color);
                 }
             }
-            
-            texture.SetData(textureData);
-            draw(texture, new Vector2(xMin, yMin));
         }
     }
 }

@@ -34,7 +34,7 @@ namespace monogame.Font
         internal SpriteFont _spriteFont;
         private FontGlyphLayout _sharedFontGlyphLayout;
         private float _capHeight;
-        private Microsoft.Xna.Framework.Color _color = Microsoft.Xna.Framework.Color.White;
+        private Microsoft.Xna.Framework.Color _color = Microsoft.Xna.Framework.Color.Black;
         private string _fontName;
         private MonoGameFileHandle _fileHandle;
 

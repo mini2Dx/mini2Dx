@@ -13,6 +13,7 @@ namespace monogame.Graphics
         {
             upCursor = MouseCursor.FromTexture2D(((MonoGameTexture)Mdx.graphics.newTexture(upPixmap)).texture2D, xHotspot, yHotspot);
             downCursor = MouseCursor.FromTexture2D(((MonoGameTexture)Mdx.graphics.newTexture(downPixmap)).texture2D, xHotspot, yHotspot);
+            Mouse.SetCursor(upCursor);
         }
 
         public override bool keyDown(int obj0)
