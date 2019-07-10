@@ -30,7 +30,7 @@ namespace monogame.Graphics
         
         private Vector2 _rotationCenter, _translation, _scale;
         private Color _tint;
-        private MonoGameColor _color;
+        private Color _color;
         internal int LineHeight;
 
         public MonoGameShapeRenderer(GraphicsDevice graphicsDevice, MonoGameColor color, SpriteBatch spriteBatch, Vector2 rotationCenter, Vector2 translation, Vector2 scale, Color tint)
@@ -72,7 +72,7 @@ namespace monogame.Graphics
 
         public void setColor(MonoGameColor color)
         {
-            _color = color;
+            _color = color.toMonoGameColor();
         }
         
         private void draw(Texture2D texture, Vector2 position, Vector2 scale = default(Vector2), Color tintOverride = default(Color))
@@ -100,7 +100,6 @@ namespace monogame.Graphics
 
         public void drawLine(int x, int y, int x2, int y2)
         {
-            var color = new Color(_tint.R * _color.rf(), _tint.G * _color.gf(), _tint.B * _color.bf(), _tint.A * _color.af());
             var minX = Math.Min(x, x2);
             var minY = Math.Min(y, y2);
 
@@ -133,7 +132,7 @@ namespace monogame.Graphics
             {
                 _sharedPositionVector.X = minX + x;
                 _sharedPositionVector.Y = minY + y;
-                draw(_sharedTexture, _sharedPositionVector, tintOverride: color);
+                draw(_sharedTexture, _sharedPositionVector, tintOverride: _color);
                 numerator += height;
                 if (numerator >= width)
                 {
@@ -158,31 +157,29 @@ namespace monogame.Graphics
 
         public void drawRect(int x, int y, int width, int height)
         {
-            var color = new Color(_tint.R * _color.rf(), _tint.G * _color.gf(), _tint.B * _color.bf(), _tint.A * _color.af());
             _sharedPositionVector.X = x;
             _sharedPositionVector.Y = y;
             _sharedScaleVector.X = width;
             _sharedScaleVector.Y = 1;
-            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, color);
+            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, _color);
             _sharedPositionVector.Y += height;
-            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, color);
+            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, _color);
             _sharedPositionVector.X = x;
             _sharedPositionVector.Y = y;
             _sharedScaleVector.X = 1;
             _sharedScaleVector.Y = height;
-            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, color);
+            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, _color);
             _sharedPositionVector.X += width;
-            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, color);
+            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, _color);
         }
 
         public void fillRect(int x, int y, int width, int height)
         {
-            var color = new Color(_tint.R * _color.rf(), _tint.G * _color.gf(), _tint.B * _color.bf(), _tint.A * _color.af());
             _sharedPositionVector.X = x;
             _sharedPositionVector.Y = y;
             _sharedScaleVector.X = width;
             _sharedScaleVector.Y = height;
-            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, color);
+            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, _color);
         }
         
         private void putPixel(int pixX, int pixY, Color color)
@@ -196,40 +193,38 @@ namespace monogame.Graphics
         
         public void drawCircle(int centerX, int centerY, int radius)
         {
-            var color = new Color(_tint.R * _color.rf(), _tint.G * _color.gf(), _tint.B * _color.bf(), _tint.A * _color.af());
 
             _sharedPositionVector.X = centerX;
             _sharedPositionVector.Y = centerY;
             var radiusSquared = radius * radius;
-            putPixel(0, radius, color);
-            putPixel(0, -radius, color);
-            putPixel(radius, 0, color);
-            putPixel(-radius, 0, color);
+            putPixel(0, radius, _color);
+            putPixel(0, -radius, _color);
+            putPixel(radius, 0, _color);
+            putPixel(-radius, 0, _color);
             var x = 1;
             var y = (int) Math.Sqrt(radiusSquared - 1);
             while (x < y) {
-                putPixel(x, y, color);
-                putPixel(x, -y, color);
-                putPixel(-x, y, color);
-                putPixel(-x, -y, color);
-                putPixel(y, x, color);
-                putPixel(y, -x, color);
-                putPixel(-y, x, color);
-                putPixel(-y, -x, color);
+                putPixel(x, y, _color);
+                putPixel(x, -y, _color);
+                putPixel(-x, y, _color);
+                putPixel(-x, -y, _color);
+                putPixel(y, x, _color);
+                putPixel(y, -x, _color);
+                putPixel(-y, x, _color);
+                putPixel(-y, -x, _color);
                 x += 1;
                 y = (int) (Math.Sqrt(radiusSquared - x*x));
             }
             if (x == y) {
-                putPixel(x, y, color);
-                putPixel(x, -y, color);
-                putPixel(-x, y, color);
-                putPixel(-x, -y, color);
+                putPixel(x, y, _color);
+                putPixel(x, -y, _color);
+                putPixel(-x, y, _color);
+                putPixel(-x, -y, _color);
             }
         }
 
         public void fillCircle(int centerX, int centerY, int radius)
         {
-            var color = new Color(_tint.R * _color.rf(), _tint.G * _color.gf(), _tint.B * _color.bf(), _tint.A * _color.af());
             _sharedPositionVector.X = centerX - radius;
             _sharedPositionVector.Y = centerY - radius;
             for (int circleX = 0; circleX < radius * 2; circleX++)
@@ -238,7 +233,7 @@ namespace monogame.Graphics
                 {
                     if (Math.Pow(circleX - radius, 2) + Math.Pow(circleY - radius, 2) <= Math.Pow(radius, 2))
                     {
-                        draw(_sharedTexture, _sharedPositionVector, tintOverride: color);
+                        draw(_sharedTexture, _sharedPositionVector, tintOverride: _color);
                     }
                     _sharedPositionVector.Y = _sharedPositionVector.Y + 1;
                 }
@@ -250,7 +245,6 @@ namespace monogame.Graphics
 
         public void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3)
         {
-            var color = new Color(_tint.R * _color.rf(), _tint.G * _color.gf(), _tint.B * _color.bf(), _tint.A * _color.af());
             var xMin = Math.Min(x1, Math.Min(x2, x3));
             var yMin = Math.Min(y1, Math.Min(y2, y3));
             var xMax = Math.Max(x1, Math.Max(x2, x3));
@@ -325,7 +319,7 @@ namespace monogame.Graphics
                 {
                     _sharedPositionVector.X = xMin + j;
                     _sharedPositionVector.Y = yMin + y1 + i;
-                    draw(_sharedTexture, _sharedPositionVector, tintOverride: color);
+                    draw(_sharedTexture, _sharedPositionVector, tintOverride: _color);
                 }
             }
         }

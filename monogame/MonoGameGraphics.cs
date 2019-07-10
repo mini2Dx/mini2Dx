@@ -37,14 +37,7 @@ namespace monogame
 {
     public class MonoGameGraphics : org.mini2Dx.core.Graphics
     {
-
-        private static readonly BlendState _defaultBlending = new BlendState
-        {
-            AlphaSourceBlend = Blend.One,
-            AlphaDestinationBlend = Blend.SourceAlpha,
-            ColorSourceBlend = Blend.One,
-            ColorDestinationBlend = Blend.InverseSourceAlpha,
-        };
+        private static readonly BlendState _defaultBlending = BlendState.NonPremultiplied; 
         
         internal readonly SpriteBatch _spriteBatch;
         internal readonly GraphicsDevice _graphicsDevice;
@@ -152,6 +145,10 @@ namespace monogame
         public void postRender()
         {
             endSpriteBatch();
+            clearScaling();
+            clearShader();
+            setTranslation(0, 0);
+            setRotation(0, 0, 0);
         }
 
         public void clearContext()
@@ -320,12 +317,12 @@ namespace monogame
             var sourceRectangle = new Rectangle(sprite.getRegionX(), sprite.getRegionY(), sprite.getRegionWidth(), sprite.getRegionHeight());
             if (sprite.isFlipX())
             {
-                sourceRectangle.X -= sourceRectangle.Width;
+                sourceRectangle.X -= sourceRectangle.Width * 2;
             }
 
             if (sprite.isFlipY())
             {
-                sourceRectangle.Y -= sourceRectangle.Height;
+                sourceRectangle.Y -= sourceRectangle.Height * 2;
             }
             var origin = new Vector2(sprite.getOriginX(), sprite.getOriginY());
             _spriteBatch.Draw(((MonoGameTexture) sprite.getTexture()).texture2D, 

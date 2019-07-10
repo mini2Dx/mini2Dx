@@ -46,12 +46,6 @@ namespace monogame.Graphics
             setRegion(x, y, width, height);
         }
 
-        public MonoGameTextureRegion(Texture texture, float u, float v, float u2, float v2)
-        {
-            _texture = texture;
-            setRegion(u, v, u2, v2);
-        }
-
         public MonoGameTextureRegion(TextureRegion region)
         {
             setRegion(region);

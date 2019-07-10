@@ -40,6 +40,7 @@ namespace mini2Dx_common_uats
 
         public Game1()
         {
+            Window.AllowUserResizing = true;
             IsMouseVisible = true;
             IsFixedTimeStep = false;
             graphics = new GraphicsDeviceManager(this);
