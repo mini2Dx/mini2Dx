@@ -24,6 +24,7 @@ import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
 
+import java.util.Objects;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -162,5 +163,28 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 	@Override
 	protected void clearPositionChangeListeners() {
 		Shape.clearPositionListeners(positionChangeListenerLock, positionChangeListeners);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof CollisionPoint)) return false;
+		if (!super.equals(o)) return false;
+		CollisionPoint that = (CollisionPoint) o;
+		return id == that.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public String toString() {
+		return "CollisionPoint{" +
+				"id=" + id +
+				", x=" + x +
+				", y=" + y +
+				'}';
 	}
 }

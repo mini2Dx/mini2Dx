@@ -21,6 +21,7 @@ import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
 
+import java.util.Objects;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -231,5 +232,25 @@ public class CollisionCircle extends Circle implements CollisionArea,
 	@Override
 	protected void clearSizeChangeListeners() {
 		clearSizeListeners(sizeChangeListenerLock, sizeChangeListeners);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof CollisionCircle)) return false;
+		if (!super.equals(o)) return false;
+		CollisionCircle that = (CollisionCircle) o;
+		return id == that.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public String toString() {
+		return "CollisionCircle [id=" + id + ", x=" + getX() + ", y=" + getY() + ", radius="
+				+ getRadius() + ", renderCircle=" + renderCircle + "]";
 	}
 }

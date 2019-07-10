@@ -23,6 +23,7 @@ import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
 import org.mini2Dx.gdx.utils.Array;
 
+import java.util.Objects;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -239,5 +240,26 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 	@Override
 	protected void clearSizeChangeListeners() {
 		clearSizeListeners(sizeChangeListenerLock, sizeChangeListeners);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof CollisionPolygon)) return false;
+		if (!super.equals(o)) return false;
+		CollisionPolygon that = (CollisionPolygon) o;
+		return id == that.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public String toString() {
+		return "CollisionPolygon{" +
+				"id=" + id +
+				'}';
 	}
 }
