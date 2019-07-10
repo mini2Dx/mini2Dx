@@ -37,6 +37,15 @@ namespace monogame
 {
     public class MonoGameGraphics : org.mini2Dx.core.Graphics
     {
+
+        private static readonly BlendState _defaultBlending = new BlendState
+        {
+            AlphaSourceBlend = Blend.One,
+            AlphaDestinationBlend = Blend.SourceAlpha,
+            ColorSourceBlend = Blend.One,
+            ColorDestinationBlend = Blend.InverseSourceAlpha,
+        };
+        
         internal readonly SpriteBatch _spriteBatch;
         internal readonly GraphicsDevice _graphicsDevice;
         private Color _setColor = new MonoGameColor(255,255,255,255);
@@ -57,16 +66,10 @@ namespace monogame
         private GameFont _font;
         private long _frameId;
         internal RenderTarget2D _currentRenderTarget;
-
         private readonly MonoGameShapeRenderer _shapeRenderer;
-
-        private static readonly BlendState _blendState = new BlendState
-        {
-            AlphaSourceBlend = Blend.One,
-            AlphaDestinationBlend = Blend.Zero,
-            ColorSourceBlend = Blend.One,
-            ColorDestinationBlend = Blend.InverseSourceAlpha
-        };
+        private BlendState _currentBlending = _defaultBlending;
+        private Mini2DxBlendFunction _srcFunction = Mini2DxBlendFunction.SRC_ALPHA, _dstFunction = Mini2DxBlendFunction.ONE_MINUS_SRC_ALPHA;
+        private bool _isBlending;
 
         public MonoGameGraphics(GraphicsDevice graphicsDevice)
         {
@@ -83,39 +86,18 @@ namespace monogame
             updateFilter();
         }
 
-        private Microsoft.Xna.Framework.Graphics.TextureAddressMode convertTextureAddressMode(TextureAddressMode mode)
-        {
-            if (mode == TextureAddressMode.CLAMP)
-            {
-                return Microsoft.Xna.Framework.Graphics.TextureAddressMode.Clamp;
-            }
-            else if (mode == TextureAddressMode.MIRROR)
-            {
-                return Microsoft.Xna.Framework.Graphics.TextureAddressMode.Mirror;
-            }
-            else if (mode == TextureAddressMode.WRAP)
-            {
-                return Microsoft.Xna.Framework.Graphics.TextureAddressMode.Wrap;
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-        }
-
         private void updateAddressMode()
         {
             _samplerState = new SamplerState
             {
                 Filter = _samplerState.Filter,
-                AddressU = convertTextureAddressMode(_currentUMode),
-                AddressV = convertTextureAddressMode(_currentVMode)
+                AddressU = MonoGameGraphicsHelpers.convertTextureAddressMode(_currentUMode),
+                AddressV = MonoGameGraphicsHelpers.convertTextureAddressMode(_currentVMode)
             };
 
             if (_beginSpriteBatchCalled)
             {
-                endSpriteBatch();
-                beginSpriteBatch();
+                flush();
             }
         }
 
@@ -124,71 +106,31 @@ namespace monogame
             var newSamplerState = new SamplerState
             {
                 AddressU = _samplerState.AddressU,
-                AddressV = _samplerState.AddressV
+                AddressV = _samplerState.AddressV,
+                Filter = MonoGameGraphicsHelpers.convertTextureFilter(_currentMinFilter, _currentMagFilter)
             };
 
-            if (_currentMinFilter == TextureFilter.LINEAR || _currentMinFilter == TextureFilter.LINEAR_MIP_POINT)
-            {
-                if (_currentMagFilter == TextureFilter.LINEAR || _currentMagFilter == TextureFilter.LINEAR_MIP_POINT)
-                {
-                    if (_currentMinFilter == TextureFilter.LINEAR || _currentMagFilter == TextureFilter.LINEAR)
-                    {
-                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.Linear;
-                    }
-                    else
-                    {
-                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.LinearMipPoint;
-                    }
-                }
-                else
-                {
-                    if (_currentMinFilter == TextureFilter.LINEAR || _currentMagFilter == TextureFilter.PIXEL)
-                    {
-                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.MinLinearMagPointMipLinear;
-                    }
-                    else
-                    {
-                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.MinLinearMagPointMipPoint;
-                    }
-                }
-            }
-            else
-            {
-                if (_currentMagFilter == TextureFilter.LINEAR || _currentMagFilter == TextureFilter.LINEAR_MIP_POINT)
-                {
-                    if (_currentMinFilter == TextureFilter.PIXEL || _currentMagFilter == TextureFilter.LINEAR)
-                    {
-                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.MinPointMagLinearMipLinear;
-                    }
-                    else
-                    {
-                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.MinPointMagLinearMipPoint;
-                    }
-                }
-                else
-                {
-                    if (_currentMinFilter == TextureFilter.PIXEL || _currentMagFilter == TextureFilter.PIXEL)
-                    {
-                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.PointMipLinear;
-                    }
-                    else
-                    {
-                        newSamplerState.Filter = Microsoft.Xna.Framework.Graphics.TextureFilter.Point;
-                    }
-                }
-            }
             _samplerState = newSamplerState;
 
             if (_beginSpriteBatchCalled)
             {
-                endSpriteBatch();
-                beginSpriteBatch();
+                flush();
+            }
+        }
+
+        private void updateBlending()
+        {
+            _currentBlending = _isBlending ? MonoGameGraphicsHelpers.convertBlending(_srcFunction, _dstFunction) : _defaultBlending;
+
+            if (_beginSpriteBatchCalled)
+            {
+                flush();
             }
         }
 
         internal void beginSpriteBatch()
         {
-            _spriteBatch.Begin(SpriteSortMode.Deferred, _blendState, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationCenter + _translation) * _scale, 0)), effect: _currentShader, rasterizerState: _rasterizerState, samplerState: _samplerState);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, _currentBlending, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationCenter + _translation) * _scale, 0)), effect: _currentShader, rasterizerState: _rasterizerState, samplerState: _samplerState);
             _beginSpriteBatchCalled = true;
         }
 
@@ -449,7 +391,6 @@ namespace monogame
         public void clearScaling()
         {
             setScale(1, 1);
-            _shapeRenderer.setScale(_scale);
         }
 
         public void translate(float translateX, float translateY)
@@ -475,6 +416,7 @@ namespace monogame
             _tint.B = tint.getBAsByte();
             _tint.A = tint.getAAsByte();
             _shapeRenderer.setTint(_tint);
+            flush();
         }
 
 
@@ -485,42 +427,51 @@ namespace monogame
             _tint.B = 255;
             _tint.A = 255;
             _shapeRenderer.setTint(_tint);
+            flush();
         }
 
         public void enableBlending()
         {
-            throw new System.NotImplementedException();
+            _isBlending = true;
+            updateBlending();
         }
 
         public void disableBlending()
         {
-            throw new System.NotImplementedException();
+            _isBlending = false;
+            updateBlending();
         }
 
-        public void setBlendFunction(int srcFunc, int dstFunc)
+        public void setBlendFunction(Mini2DxBlendFunction srcFunc, Mini2DxBlendFunction dstFunc)
         {
-            throw new System.NotImplementedException();
+            _srcFunction = srcFunc;
+            _dstFunction = dstFunc;
+            updateBlending();
         }
 
         public void clearBlendFunction()
         {
-            //TODO
+            _currentBlending = _defaultBlending;
+            updateBlending();
         }
 
         public void flush()
         {
-            endSpriteBatch();
-            beginSpriteBatch();
+            if (_beginSpriteBatchCalled)
+            {
+                endSpriteBatch();
+                beginSpriteBatch();
+            }
         }
 
         public int getLineHeight()
         {
-            return 1; //TODO
+            return _shapeRenderer.LineHeight;
         }
 
         public void setLineHeight(int lineHeight)
         {
-            //TODO
+            _shapeRenderer.LineHeight = lineHeight;
         }
 
         public Color getColor()

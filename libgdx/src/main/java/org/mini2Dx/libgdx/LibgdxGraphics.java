@@ -619,8 +619,8 @@ public class LibgdxGraphics implements Graphics {
 	}
 
 	@Override
-	public void setBlendFunction(int srcFunc, int dstFunc) {
-		spriteBatch.setBlendFunction(srcFunc, dstFunc);
+	public void setBlendFunction(Mini2DxBlendFunction srcFunc, Mini2DxBlendFunction dstFunc) {
+		//spriteBatch.setBlendFunction(srcFunc, dstFunc); //TODO
 	}
 
 	@Override

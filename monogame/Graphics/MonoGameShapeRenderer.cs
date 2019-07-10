@@ -19,17 +19,19 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace monogame.Graphics
 {
-    public class MonoGameShapeRenderer
+    internal class MonoGameShapeRenderer
     {
-        private GraphicsDevice _graphicsDevice;
-        private uint color;
-        private Vector2 _rotationCenter, _translation, _scale;
-        private Color _tint;
-        private readonly SpriteBatch _spriteBatch;
         private static Vector2 _sharedPositionVector = Vector2.Zero;
         private static Vector2 _sharedScaleVector = Vector2.One;
         private static Texture2D _sharedTexture;
+        
+        private readonly SpriteBatch _spriteBatch;
+        private readonly GraphicsDevice _graphicsDevice;
+        
+        private Vector2 _rotationCenter, _translation, _scale;
+        private Color _tint;
         private MonoGameColor _color;
+        internal int LineHeight;
 
         public MonoGameShapeRenderer(GraphicsDevice graphicsDevice, MonoGameColor color, SpriteBatch spriteBatch, Vector2 rotationCenter, Vector2 translation, Vector2 scale, Color tint)
         {
@@ -43,7 +45,7 @@ namespace monogame.Graphics
             if (_sharedTexture == null)
             {
                 _sharedTexture = newTexture2D(1, 1);
-                _sharedTexture.SetData(new uint[]{0xffffffff});
+                _sharedTexture.SetData(new[]{0xffffffff});
             }
 
         }
@@ -70,7 +72,6 @@ namespace monogame.Graphics
 
         public void setColor(MonoGameColor color)
         {
-            this.color = color.toRGBA8888();
             _color = color;
         }
         
@@ -202,8 +203,8 @@ namespace monogame.Graphics
             var radiusSquared = radius * radius;
             putPixel(0, radius, color);
             putPixel(0, -radius, color);
-            putPixel(radius, radius, color);
-            putPixel(-radius, radius, color);
+            putPixel(radius, 0, color);
+            putPixel(-radius, 0, color);
             var x = 1;
             var y = (int) Math.Sqrt(radiusSquared - 1);
             while (x < y) {
@@ -231,15 +232,19 @@ namespace monogame.Graphics
             var color = new Color(_tint.R * _color.rf(), _tint.G * _color.gf(), _tint.B * _color.bf(), _tint.A * _color.af());
             _sharedPositionVector.X = centerX - radius;
             _sharedPositionVector.Y = centerY - radius;
-            for (int circleX = 0; circleX < radius * 2; circleX++, _sharedPositionVector.X++)
+            for (int circleX = 0; circleX < radius * 2; circleX++)
             {
-                for (int circleY = 0; circleY < radius * 2; circleY++, _sharedPositionVector.Y++)
+                for (int circleY = 0; circleY < radius * 2; circleY++)
                 {
                     if (Math.Pow(circleX - radius, 2) + Math.Pow(circleY - radius, 2) <= Math.Pow(radius, 2))
                     {
                         draw(_sharedTexture, _sharedPositionVector, tintOverride: color);
                     }
+                    _sharedPositionVector.Y = _sharedPositionVector.Y + 1;
                 }
+
+                _sharedPositionVector.Y = centerY - radius;
+                _sharedPositionVector.X = _sharedPositionVector.X + 1;
             }
         }
 

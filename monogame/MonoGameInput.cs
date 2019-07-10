@@ -44,8 +44,8 @@ namespace monogame
 
         public MonoGameInput()
         {
-            _previousMouseState = Mouse.GetState();
-            _previousPressedKeys = new Keys[0];
+            _currentMouseState = _previousMouseState = Mouse.GetState();
+            _currentPressedKeys = _previousPressedKeys = new Keys[0];
             _gamePads = new MonoGameGamePad[Microsoft.Xna.Framework.Input.GamePad.MaximumGamePadCount];
             for (var i = 0; i < _gamePads.Length; i++)
             {

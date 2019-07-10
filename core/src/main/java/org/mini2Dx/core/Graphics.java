@@ -556,7 +556,7 @@ public interface Graphics {
      * @param dstFunc
      *            Destination GL function
      */
-    public void setBlendFunction(int srcFunc, int dstFunc);
+    public void setBlendFunction(Mini2DxBlendFunction srcFunc, Mini2DxBlendFunction dstFunc);
 
     /**
      * Resets the blend function to its default

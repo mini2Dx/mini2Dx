@@ -317,7 +317,9 @@ namespace uats_monogame
 
             sampleShader = Mdx.graphics.newShader("grayscaleShader");
             Mdx.graphicsContext.setFont(Mdx.fonts.newBitmapFont(Mdx.files.@internal("arial24.fnt")));
+            Mdx.graphicsContext.getFont().setColor(Mdx.graphics.newColor(255, 255, 255, 255));
             sampleFontCache = Mdx.graphicsContext.getFont().newCache();
+            sampleFontCache.setColor(Mdx.graphics.newColor(255, 255, 255, 255));
             sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400, 165, 100, Align.LEFT, true);
             sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 165, 100, Align.CENTER, true);
             sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 165, 100, Align.RIGHT, true);

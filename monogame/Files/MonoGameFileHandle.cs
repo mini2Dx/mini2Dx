@@ -349,7 +349,12 @@ namespace monogame.Files
                 var child = childFiles[i];
                 if (child.Name.EndsWith(suffix))
                 {
-                    matchingChilds.Add(new MonoGameFileHandle(_prefix, child.ToString(), _fileType));
+                    var path = child.ToString();
+                    if (_fileType == FileType.INTERNAL)
+                    {
+                        path = path.Replace(".xnb", "");
+                    }
+                    matchingChilds.Add(new MonoGameFileHandle(_prefix, path, _fileType));
                 }
             }
 
@@ -383,7 +388,12 @@ namespace monogame.Files
                 if (child.Name.StartsWith(prefix))
                 {
                     var path = this.path();
-                    return new MonoGameFileHandle(_prefix, (path == string.Empty ? string.Empty : path + Path.DirectorySeparatorChar) + child.Name, _fileType);
+                    var fileName = child.Name;
+                    if (_fileType == FileType.INTERNAL)
+                    {
+                        fileName = fileName.Replace(".xnb", "");
+                    }
+                    return new MonoGameFileHandle(_prefix, (path == string.Empty ? string.Empty : path + Path.DirectorySeparatorChar) + fileName, _fileType);
                 }
             }
 
