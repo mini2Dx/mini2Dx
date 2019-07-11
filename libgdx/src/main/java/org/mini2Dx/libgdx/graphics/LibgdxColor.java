@@ -272,4 +272,39 @@ public class LibgdxColor implements Color {
 	public float ab() {
 		return getAAsByte();
 	}
+
+	@Override
+	public int argb8888() {
+		return com.badlogic.gdx.graphics.Color.argb8888(color);
+	}
+
+	@Override
+	public int rgba8888() {
+		return com.badlogic.gdx.graphics.Color.rgba8888(color);
+	}
+
+	@Override
+	public int rgba4444() {
+		return com.badlogic.gdx.graphics.Color.rgba4444(color);
+	}
+
+	@Override
+	public int rgb888() {
+		return com.badlogic.gdx.graphics.Color.rgb888(color);
+	}
+
+	@Override
+	public int rgb565() {
+		return com.badlogic.gdx.graphics.Color.rgb565(color);
+	}
+
+	@Override
+	public int bgr565() {
+		return ((int)(color.b * 31) << 11) | ((int)(color.g * 63) << 5) | (int)(color.r * 31);
+	}
+
+	@Override
+	public int bgra4444() {
+		return ((int)(color.b * 15) << 12) | ((int)(color.g * 15) << 8) | ((int)(color.r * 15) << 4) | (int)(color.a * 15);
+	}
 }

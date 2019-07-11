@@ -84,8 +84,7 @@ public class LibgdxPixmap implements Pixmap {
 
 	@Override
 	public void drawPixel(int x, int y, Color color) {
-		final LibgdxColor gdxColor = (LibgdxColor) color;
-		pixmap.drawPixel(x, y, gdxColor.color.toIntBits());
+		pixmap.drawPixel(x, y, color.rgba8888());
 	}
 
 	@Override

@@ -296,4 +296,39 @@ public interface Color {
 	 * @see #getAAsByte()
 	 */
 	public float ab();
+
+	/**
+	 * Returns the color value in ARGB8888 format
+	 */
+	public int argb8888();
+
+	/**
+	 * Returns the color value in RBGA8888 format
+	 */
+	public int rgba8888();
+
+	/**
+	 * Returns the color value in RGBA4444 format
+	 */
+	public int rgba4444();
+
+	/**
+	 * Returns the color value in RGB888 format
+	 */
+	public int rgb888();
+
+	/**
+	 * Returns the color value in RGB565 format
+	 */
+	public int rgb565();
+
+	/**
+	 * Returns the color value in BGR565 format
+	 */
+	public int bgr565();
+
+	/**
+	 * Returns the color value in BGR4444 format
+	 */
+	public int bgra4444();
 }

@@ -501,5 +501,40 @@ namespace monogame.Graphics
         {
             return getAAsByte();
         }
+
+        public int argb8888()
+        {
+            return ((_color.A << 24) | (_color.R << 16) | (_color.G << 8) | _color.B);
+        }
+
+        public int rgba8888()
+        {
+            return ((_color.R << 24) | (_color.G << 16) | (_color.B << 8) | _color.A);
+        }
+
+        public int rgba4444()
+        {
+            return ((int)(getRAsFloat() * 15) << 12) | ((int)(getGAsFloat() * 15) << 8) | ((int)(getBAsFloat() * 15) << 4) | (int)(getAAsFloat() * 15);
+        }
+
+        public int rgb888()
+        {
+            return ((_color.R << 16) | (_color.G << 8) | _color.B);
+        }
+
+        public int rgb565()
+        {
+            return ((int)(getRAsFloat() * 31) << 11) | ((int)(getGAsFloat() * 63) << 5) | (int)(getBAsFloat() * 31);
+        }
+
+        public int bgr565()
+        {
+            return ((int)(getBAsFloat() * 31) << 11) | ((int)(getGAsFloat() * 63) << 5) | (int)(getRAsFloat() * 31);
+        }
+
+        public int bgra4444()
+        {
+            return ((int)(getBAsFloat() * 15) << 12) | ((int)(getGAsFloat() * 15) << 8) | ((int)(getRAsFloat() * 15) << 4) | (int)(getAAsFloat() * 15);
+        }
     }
 }

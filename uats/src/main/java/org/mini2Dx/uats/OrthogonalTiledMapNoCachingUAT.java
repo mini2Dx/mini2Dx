@@ -26,6 +26,7 @@ import org.mini2Dx.core.screen.Transition;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import org.mini2Dx.core.graphics.Colors;
+import org.mini2Dx.gdx.Input;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.TiledMapLoader;
@@ -40,7 +41,8 @@ import org.mini2Dx.uats.util.UATSelectionScreen;
 public class OrthogonalTiledMapNoCachingUAT extends BasicGameScreen {
 	private final AssetManager assetManager;
 	
-	private TiledMap tiledMap;
+	private TiledMap tiledMap, tsxTiledmap;
+	private TiledMap renderMap;
 	
 	public OrthogonalTiledMapNoCachingUAT(AssetManager assetManager) {
     	super();
@@ -50,6 +52,7 @@ public class OrthogonalTiledMapNoCachingUAT extends BasicGameScreen {
 		loadMapParameter.loadTilesets = true;
 
 		assetManager.load("orthogonal_no_cache.tmx", TiledMap.class, loadMapParameter);
+		assetManager.load("orthogonal_tsx.tmx", TiledMap.class, loadMapParameter);
 	}
 
 	@Override
@@ -57,6 +60,8 @@ public class OrthogonalTiledMapNoCachingUAT extends BasicGameScreen {
 		assetManager.finishLoading();
 		try {
 			tiledMap = assetManager.get("orthogonal_no_cache.tmx", TiledMap.class);
+			tsxTiledmap = assetManager.get("orthogonal_tsx.tmx", TiledMap.class);
+			renderMap = tiledMap;
 		} catch (TiledException e) {
 			e.printStackTrace();
 		}
@@ -67,6 +72,13 @@ public class OrthogonalTiledMapNoCachingUAT extends BasicGameScreen {
 		if (Mdx.input.justTouched()) {
 			screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(),
 					new FadeInTransition());
+		}
+		if(Mdx.input.isKeyJustPressed(Input.Keys.Q)) {
+			if(renderMap.equals(tiledMap)) {
+				renderMap = tsxTiledmap;
+			} else {
+				renderMap = tiledMap;
+			}
 		}
 		tiledMap.update(delta);
 	}
@@ -89,41 +101,41 @@ public class OrthogonalTiledMapNoCachingUAT extends BasicGameScreen {
 	}
 
 	private void renderFullMapInTopLeftCorner(Graphics g) {
-		tiledMap.draw(g, 0, 0);
+		renderMap.draw(g, 0, 0);
 	}
 
 	private void renderFirstTilesetInTopRightCorner(Graphics g) {
-		tiledMap.getTilesets().get(0).drawTileset(g, tiledMap.getWidth() * tiledMap.getTileWidth() + 32, 0);
+		renderMap.getTilesets().get(0).drawTileset(g, renderMap.getWidth() * renderMap.getTileWidth() + 32, 0);
 	}
 
 	private void renderScaledAndRotatedMapInBottomRightCorner(Graphics g) {
 		g.scale(1.25f, 1.25f);
-		g.rotate(5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 1.5f);
+		g.rotate(5f, 0f, (renderMap.getHeight() * renderMap.getTileHeight()) * 1.5f);
 
 		// Render rotated map in bottom right corner
-		tiledMap.draw(g, tiledMap.getWidth() * tiledMap.getTileWidth(),
-				MathUtils.round((tiledMap.getHeight() * tiledMap.getTileHeight()) * 1.5f), 1, 1, 4, 8);
+		renderMap.draw(g, renderMap.getWidth() * renderMap.getTileWidth(),
+				MathUtils.round((renderMap.getHeight() * renderMap.getTileHeight()) * 1.5f), 1, 1, 4, 8);
 
-		g.rotate(-5f, 0f, (tiledMap.getHeight() * tiledMap.getTileHeight()) * 1.5f);
+		g.rotate(-5f, 0f, (renderMap.getHeight() * renderMap.getTileHeight()) * 1.5f);
 		g.scale(0.8f, 0.8f);
 	}
 
 	private void renderPartOfMapUnderTopLeftMap(Graphics g) {
-		tiledMap.draw(g, 32, tiledMap.getHeight() * tiledMap.getTileHeight(), 1, 1, 4, 8);
+		renderMap.draw(g, 32, renderMap.getHeight() * renderMap.getTileHeight(), 1, 1, 4, 8);
 	}
 
 	private void renderTranslatedFullMapInBottomLeftCorner(Graphics g) {
-		int mapWidthInPixels = tiledMap.getWidth() * tiledMap.getTileWidth();
+		int mapWidthInPixels = renderMap.getWidth() * renderMap.getTileWidth();
 		g.translate(mapWidthInPixels, 0);
-		tiledMap.draw(g, mapWidthInPixels,
-				(tiledMap.getHeight() * tiledMap.getTileHeight()) + (8 * tiledMap.getTileHeight()));
+		renderMap.draw(g, mapWidthInPixels,
+				(renderMap.getHeight() * renderMap.getTileHeight()) + (8 * renderMap.getTileHeight()));
 		g.translate(-mapWidthInPixels, 0);
 	}
 
 	private void renderScaledDownFullMap(Graphics g) {
 		g.setScale(0.55f, 0.55f);
-		tiledMap.draw(g, MathUtils.round(g.getWindowWidth() - ((tiledMap.getTileWidth() / 2) * tiledMap.getWidth())),
-				MathUtils.round(g.getWindowHeight() - ((tiledMap.getTileHeight() / 2) * tiledMap.getHeight())));
+		renderMap.draw(g, MathUtils.round(g.getWindowWidth() - ((renderMap.getTileWidth() / 2) * renderMap.getWidth())),
+				MathUtils.round(g.getWindowHeight() - ((renderMap.getTileHeight() / 2) * renderMap.getHeight())));
 		g.setScale(1f, 1f);
 	}
 
