@@ -7,6 +7,8 @@ import org.mini2Dx.ui.UiContainer;
 /**
  * Adapter class that implements {@link UiInputSourceListener}. All methods are
  * no-op and can be overridden individually.
+ *
+ * @author Caidan Williams
  */
 public class UiInputSourceListenerAdapter implements UiInputSourceListener {
     @Override
