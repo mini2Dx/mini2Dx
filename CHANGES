@@ -7,6 +7,9 @@
 - Added new GamePad API with improved controller/feature support (third-party controllers, rumble, player index, etc.)
 - Simplified geometry class hierarchy
 
+[1.9.8]
+- Added ActionListenerAdapter, HoverListenerAdapter, and UiInputSourceListenerAdapter
+
 [1.9.7]
 - Added overridable onMouseMoved, onMouseDown, onMouseUp events to CustomUiElement
 
