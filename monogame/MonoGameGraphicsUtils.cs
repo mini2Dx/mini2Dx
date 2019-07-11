@@ -164,11 +164,11 @@ namespace monogame
         {
             try
             {
-                return new MonoGameTexture(((MonoGameFileHandle) fileHandle).loadFromContentManager<Texture2D>());
+                return newTexture(fileHandle.readBytes());
             }
             catch (Exception)
             {
-                return newTexture(fileHandle.readBytes());
+                return new MonoGameTexture(((MonoGameFileHandle) fileHandle).loadFromContentManager<Texture2D>());
             }
         }
 

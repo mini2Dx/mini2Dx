@@ -153,8 +153,7 @@ namespace monogame
             return Matrix.CreateScale(_scale.X, _scale.Y, 1) * 
                    Matrix.CreateTranslation(-scaledRotationCenterX, -scaledRotationCenterY, 0) *
                    Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) *
-                   Matrix.CreateTranslation(scaledRotationCenterX, scaledRotationCenterY, 0) *
-                   Matrix.CreateTranslation(-scaledTranslationX, -scaledTranslationY, 0);
+                   Matrix.CreateTranslation(scaledRotationCenterX - scaledTranslationX, scaledRotationCenterY - scaledTranslationY, 0);
         }
 
         internal void endSpriteBatch()
@@ -312,15 +311,6 @@ namespace monogame
                 updateAddressMode();
             }
             var sourceRectangle = new Rectangle(textureRegion.getRegionX(), textureRegion.getRegionY(), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
-            if (textureRegion.isFlipX())
-            {
-                sourceRectangle.X -= sourceRectangle.Width;
-            }
-
-            if (textureRegion.isFlipY())
-            {
-                sourceRectangle.Y -= sourceRectangle.Height;
-            }
             _spriteBatch.Draw(((MonoGameTexture) textureRegion.getTexture()).texture2D,
                 new Vector2(x, y), sourceRectangle, _tint, rotation, Vector2.Zero, 
                 new Vector2(width / textureRegion.getRegionWidth(), height / textureRegion.getRegionHeight()),
@@ -344,17 +334,14 @@ namespace monogame
         }
 
         public void drawSprite(Sprite sprite, float x, float y)
-        {            
+        {        
+            if (sprite.getTexture().getUAddressMode() != _currentUMode || sprite.getTexture().getVAddressMode() != _currentVMode)
+            {
+                _currentUMode = sprite.getTexture().getUAddressMode();
+                _currentVMode = sprite.getTexture().getVAddressMode();
+                updateAddressMode();
+            }    
             var sourceRectangle = new Rectangle(sprite.getRegionX(), sprite.getRegionY(), sprite.getRegionWidth(), sprite.getRegionHeight());
-            if (sprite.isFlipX())
-            {
-                sourceRectangle.X -= sourceRectangle.Width * 2;
-            }
-
-            if (sprite.isFlipY())
-            {
-                sourceRectangle.Y -= sourceRectangle.Height * 2;
-            }
             var origin = new Vector2(sprite.getOriginX(), sprite.getOriginY());
             _spriteBatch.Draw(((MonoGameTexture) sprite.getTexture()).texture2D, 
                 new Vector2(x, y) + origin, sourceRectangle,
@@ -646,10 +633,10 @@ namespace monogame
             _rasterizerState = new RasterizerState() { ScissorTestEnable = true };
             _clipRectangle = clip;
             var rect = _graphicsDevice.ScissorRectangle;
-            rect.X = (int) (clip.getX() * _scale.X);
-            rect.Y = (int) (clip.getY() * _scale.Y);
-            rect.Width = (int) (clip.getWidth() * _scale.X);
-            rect.Height = (int) (clip.getHeight() * _scale.Y);
+            rect.X = (int) clip.getX();
+            rect.Y = (int) clip.getY();
+            rect.Width = (int) clip.getWidth();
+            rect.Height = (int) clip.getHeight();
             _graphicsDevice.ScissorRectangle = rect;
             if (_beginSpriteBatchCalled)
             {
