@@ -16,7 +16,6 @@
 
 using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using org.mini2Dx.core.graphics;
 using Color = Microsoft.Xna.Framework.Color;
 using Texture = org.mini2Dx.core.graphics.Texture;
@@ -33,7 +32,7 @@ namespace monogame.Graphics
         {
             
         }
-
+        
         public MonoGameTextureRegion(Texture texture)
         {
             _texture = texture ?? throw new java.lang.IllegalArgumentException();
@@ -164,7 +163,7 @@ namespace monogame.Graphics
 
         public int getRegionX()
         {
-            return (int) Math.Round(_u * _texture.getWidth());
+            return (int) Math.Round(Math.Min(_u, _u2) * _texture.getWidth());
         }
 
         public void setRegionX(int x)
@@ -174,7 +173,7 @@ namespace monogame.Graphics
 
         public int getRegionY()
         {
-            var result = (int) Math.Round(_v * _texture.getHeight());
+            var result = (int) Math.Round(Math.Min(_v, _v2) * _texture.getHeight());
             return result;
         }
 
