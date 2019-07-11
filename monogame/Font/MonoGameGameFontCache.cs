@@ -86,7 +86,7 @@ namespace monogame.Font
 
         private void addText(MonoGameGameFontCacheDrawingOperation operation)
         {
-            _gameFont.draw(_spriteBatch, operation.text, operation.targetWidth, operation.horizontalAlign, operation.wrap, new Vector2(operation.x, operation.y), Vector2.One, operation.color * operation.alpha);
+            _gameFont.draw(_spriteBatch, operation.text, operation.targetWidth, operation.horizontalAlign, operation.wrap, new Vector2(operation.x, operation.y), operation.color * operation.alpha);
         }
 
         public void addText(CharSequence str, float x, float y, float targetWidth, int horizontalAlign, bool wrap)

@@ -27,21 +27,15 @@ namespace monogame.Graphics
         
         private readonly SpriteBatch _spriteBatch;
         private readonly GraphicsDevice _graphicsDevice;
-        
-        private Vector2 _rotationCenter, _translation, _scale;
-        private Color _tint;
+
         private Color _color;
         internal int LineHeight;
 
-        public MonoGameShapeRenderer(GraphicsDevice graphicsDevice, MonoGameColor color, SpriteBatch spriteBatch, Vector2 rotationCenter, Vector2 translation, Vector2 scale, Color tint)
+        public MonoGameShapeRenderer(GraphicsDevice graphicsDevice, MonoGameColor color, SpriteBatch spriteBatch)
         {
             _graphicsDevice = graphicsDevice;
             setColor(color);
             _spriteBatch = spriteBatch;
-            _rotationCenter = rotationCenter;
-            _translation = translation;
-            _scale = scale;
-            _tint = tint;
             if (_sharedTexture == null)
             {
                 _sharedTexture = newTexture2D(1, 1);
@@ -50,47 +44,20 @@ namespace monogame.Graphics
 
         }
 
-        public void setRotationCenter(Vector2 rotationCenter)
-        {
-            _rotationCenter = rotationCenter;
-        }
-
-        public void setTranslation(Vector2 translation)
-        {
-            _translation = translation;
-        }
-
-        public void setScale(Vector2 scale)
-        {
-            _scale = scale;
-        }
-
-        public void setTint(Color tint)
-        {
-            _tint = tint;
-        }
-
         public void setColor(MonoGameColor color)
         {
             _color = color.toMonoGameColor();
         }
         
-        private void draw(Texture2D texture, Vector2 position, Vector2 scale = default(Vector2), Color tintOverride = default(Color))
+        private void draw(Texture2D texture, Vector2 position, Color color, Vector2 scale = default(Vector2))
         {
             if (scale == default(Vector2))
             {
                 scale = Vector2.One;
             }
-
-            var oldTint = _tint;
-            if (tintOverride != default(Color))
-            {
-                _tint = tintOverride;
-            }
             _spriteBatch.Draw(texture,
-                (position + _translation - _rotationCenter) * _scale, null, _tint, 0f, 
-                Vector2.Zero, _scale * scale, SpriteEffects.None, 0f);
-            _tint = oldTint;
+                position, null, color, 0f, 
+                Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
 
         private Texture2D newTexture2D(int width, int height)
@@ -132,7 +99,7 @@ namespace monogame.Graphics
             {
                 _sharedPositionVector.X = minX + x;
                 _sharedPositionVector.Y = minY + y;
-                draw(_sharedTexture, _sharedPositionVector, tintOverride: _color);
+                draw(_sharedTexture, _sharedPositionVector, color: _color);
                 numerator += height;
                 if (numerator >= width)
                 {
@@ -161,16 +128,16 @@ namespace monogame.Graphics
             _sharedPositionVector.Y = y;
             _sharedScaleVector.X = width;
             _sharedScaleVector.Y = 1;
-            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, _color);
+            draw(_sharedTexture, _sharedPositionVector, _color, _sharedScaleVector);
             _sharedPositionVector.Y += height;
-            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, _color);
+            draw(_sharedTexture, _sharedPositionVector, _color, _sharedScaleVector);
             _sharedPositionVector.X = x;
             _sharedPositionVector.Y = y;
             _sharedScaleVector.X = 1;
             _sharedScaleVector.Y = height;
-            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, _color);
+            draw(_sharedTexture, _sharedPositionVector, _color, _sharedScaleVector);
             _sharedPositionVector.X += width;
-            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, _color);
+            draw(_sharedTexture, _sharedPositionVector, _color, _sharedScaleVector);
         }
 
         public void fillRect(int x, int y, int width, int height)
@@ -179,14 +146,14 @@ namespace monogame.Graphics
             _sharedPositionVector.Y = y;
             _sharedScaleVector.X = width;
             _sharedScaleVector.Y = height;
-            draw(_sharedTexture, _sharedPositionVector, _sharedScaleVector, _color);
+            draw(_sharedTexture, _sharedPositionVector, _color, _sharedScaleVector);
         }
         
         private void putPixel(int pixX, int pixY, Color color)
         {
             _sharedPositionVector.X += pixX;
             _sharedPositionVector.Y += pixY;
-            draw(_sharedTexture, _sharedPositionVector, tintOverride: color);
+            draw(_sharedTexture, _sharedPositionVector, color: color);
             _sharedPositionVector.X -= pixX;
             _sharedPositionVector.Y -= pixY;
         }
@@ -233,7 +200,7 @@ namespace monogame.Graphics
                 {
                     if (Math.Pow(circleX - radius, 2) + Math.Pow(circleY - radius, 2) <= Math.Pow(radius, 2))
                     {
-                        draw(_sharedTexture, _sharedPositionVector, tintOverride: _color);
+                        draw(_sharedTexture, _sharedPositionVector, _color);
                     }
                     _sharedPositionVector.Y = _sharedPositionVector.Y + 1;
                 }
@@ -319,7 +286,7 @@ namespace monogame.Graphics
                 {
                     _sharedPositionVector.X = xMin + j;
                     _sharedPositionVector.Y = yMin + y1 + i;
-                    draw(_sharedTexture, _sharedPositionVector, tintOverride: _color);
+                    draw(_sharedTexture, _sharedPositionVector, _color);
                 }
             }
         }
