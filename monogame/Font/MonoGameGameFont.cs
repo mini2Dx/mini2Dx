@@ -101,7 +101,7 @@ namespace monogame.Font
             draw(g, str, x, y, targetWidth, Align.LEFT, true);
         }
 
-        internal void draw(SpriteBatch spriteBatch, string str, float targetWidth, int horizontalAlignment, bool wrap, Vector2 position, Vector2 scale, Microsoft.Xna.Framework.Color renderColor)
+        internal void draw(SpriteBatch spriteBatch, string str, float targetWidth, int horizontalAlignment, bool wrap, Vector2 position, Microsoft.Xna.Framework.Color renderColor)
         {
 
             var strings = wrapText(str, targetWidth + 1).Split('\n');
@@ -118,11 +118,11 @@ namespace monogame.Font
             }
             spriteBatch.DrawString(_spriteFont,
                 strings[0],
-                 position * scale,
+                 position,
                 renderColor,
                 0,
                 origin,
-                scale,
+                Vector2.One, 
                 SpriteEffects.None,
                 0f);
 
@@ -141,11 +141,11 @@ namespace monogame.Font
                     position.Y += getLineHeight();
                     spriteBatch.DrawString(_spriteFont,
                         strings[i],
-                        position * scale,
+                        position,
                         renderColor,
                         0,
                         origin,
-                        scale,
+                        Vector2.One, 
                         SpriteEffects.None,
                         0f);
                 }
@@ -156,7 +156,7 @@ namespace monogame.Font
         {
             var graphics = (MonoGameGraphics)g;
             draw(graphics._spriteBatch, str, targetWidth, horizontalAlignment, wrap,
-                new Vector2(x, y) + graphics._translation - graphics._rotationCenter, graphics._scale, 
+                new Vector2(x, y), 
                 new Microsoft.Xna.Framework.Color {
                     R = (byte)(graphics._tint.R / 255.0f * _color.R),
                     G = (byte)(graphics._tint.G / 255.0f * _color.G),

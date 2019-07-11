@@ -44,9 +44,7 @@ namespace monogame
         private Color _setColor = new MonoGameColor(255,255,255,255);
         private Microsoft.Xna.Framework.Color _backgroundColor = Microsoft.Xna.Framework.Color.Black;
         internal Microsoft.Xna.Framework.Color _tint = Microsoft.Xna.Framework.Color.White;
-        private float _rotation;
         internal int _gameWidth, _gameHeight;
-        internal Vector2 _translation, _scale, _rotationCenter;
         private Effect _currentShader;
         private org.mini2Dx.core.geom.Rectangle _clipRectangle;
         private RasterizerState _rasterizerState;
@@ -62,18 +60,36 @@ namespace monogame
         private readonly MonoGameShapeRenderer _shapeRenderer;
         private BlendState _currentBlending = _defaultBlending;
         private Mini2DxBlendFunction _srcFunction = Mini2DxBlendFunction.SRC_ALPHA, _dstFunction = Mini2DxBlendFunction.ONE_MINUS_SRC_ALPHA;
-        private bool _isBlending;
+        private bool _isBlending = true;
+        private Matrix _transformationMatrix;
+        private bool _isTransformationMatrixDirty = true;
+
+        private Vector2 _scale = Vector2.One;
+        private Vector2 _translation = Vector2.Zero;
+        private Vector2 _rotationCenter = Vector2.Zero;
+        private float _rotation;
+
+        private Matrix CurrentTransformationMatrix
+        {
+            get
+            {
+                if (_isTransformationMatrixDirty)
+                {
+                    _transformationMatrix = createTransformationMatrix();
+                    _isTransformationMatrixDirty = false;
+                }
+
+                return _transformationMatrix;
+            }
+        }
 
         public MonoGameGraphics(GraphicsDevice graphicsDevice)
         {
             _spriteBatch = new SpriteBatch(graphicsDevice);
             _graphicsDevice = graphicsDevice;
-            _translation = Vector2.Zero;
-            _scale = Vector2.One;
-            _rotationCenter = Vector2.Zero;
             _clipRectangle = new org.mini2Dx.core.geom.Rectangle(0, 0, getWindowWidth(), getWindowHeight());
-            _shapeRenderer = new MonoGameShapeRenderer(graphicsDevice, (MonoGameColor) _setColor, _spriteBatch, _rotationCenter, _translation, _scale, _tint);
-            _rasterizerState = new RasterizerState(){ScissorTestEnable = false};
+            _shapeRenderer = new MonoGameShapeRenderer(graphicsDevice, (MonoGameColor) _setColor, _spriteBatch);
+            _rasterizerState = new RasterizerState {ScissorTestEnable = false};
             _graphicsDevice.ScissorRectangle = new Rectangle();
             _font = Mdx.fonts.defaultFont();
             updateFilter();
@@ -114,17 +130,31 @@ namespace monogame
         private void updateBlending()
         {
             _currentBlending = _isBlending ? MonoGameGraphicsHelpers.convertBlending(_srcFunction, _dstFunction) : _defaultBlending;
-
-            if (_beginSpriteBatchCalled)
-            {
-                flush();
-            }
         }
 
         internal void beginSpriteBatch()
         {
-            _spriteBatch.Begin(SpriteSortMode.Deferred, _currentBlending, transformMatrix: Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) * Matrix.CreateTranslation(new Vector3((_rotationCenter + _translation) * _scale, 0)), effect: _currentShader, rasterizerState: _rasterizerState, samplerState: _samplerState);
+            _spriteBatch.Begin(
+                SpriteSortMode.Deferred, 
+                _currentBlending,
+                transformMatrix: CurrentTransformationMatrix,
+                effect: _currentShader,
+                rasterizerState: _rasterizerState,
+                samplerState: _samplerState);
             _beginSpriteBatchCalled = true;
+        }
+
+        private Matrix createTransformationMatrix()
+        {
+            var scaledRotationCenterX = _rotationCenter.X * _scale.X;
+            var scaledRotationCenterY = _rotationCenter.Y * _scale.Y;
+            var scaledTranslationX = _translation.X * _scale.X;
+            var scaledTranslationY = _translation.Y * _scale.Y;
+            return Matrix.CreateScale(_scale.X, _scale.Y, 1) * 
+                   Matrix.CreateTranslation(-scaledRotationCenterX, -scaledRotationCenterY, 0) *
+                   Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) *
+                   Matrix.CreateTranslation(scaledRotationCenterX, scaledRotationCenterY, 0) *
+                   Matrix.CreateTranslation(-scaledTranslationX, -scaledTranslationY, 0);
         }
 
         internal void endSpriteBatch()
@@ -149,6 +179,7 @@ namespace monogame
             clearShader();
             setTranslation(0, 0);
             setRotation(0, 0, 0);
+            _currentBlending = _defaultBlending;
         }
 
         public void clearContext()
@@ -257,8 +288,8 @@ namespace monogame
                 _currentVMode = texture.getVAddressMode();
                 updateAddressMode();
             }
-            _spriteBatch.Draw(((MonoGameTexture)texture).texture2D, (new Vector2(x, y) + _translation - _rotationCenter) * _scale, null, _tint, 0,
-                Vector2.Zero, new Vector2(width / texture.getWidth(), height / texture.getHeight()) * _scale,
+            _spriteBatch.Draw(((MonoGameTexture)texture).texture2D, new Vector2(x, y), null, _tint, 0,
+                Vector2.Zero, new Vector2(width / texture.getWidth(), height / texture.getHeight()),
                 flipY ? SpriteEffects.FlipVertically : SpriteEffects.None, 0f);
         }
 
@@ -291,9 +322,9 @@ namespace monogame
                 sourceRectangle.Y -= sourceRectangle.Height;
             }
             _spriteBatch.Draw(((MonoGameTexture) textureRegion.getTexture()).texture2D,
-                (new Vector2(x, y) + _translation - _rotationCenter) * _scale, sourceRectangle, _tint, rotation, Vector2.Zero, 
-                new Vector2(width / textureRegion.getRegionWidth(), height / textureRegion.getRegionHeight()) *
-                _scale, (textureRegion.isFlipX() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
+                new Vector2(x, y), sourceRectangle, _tint, rotation, Vector2.Zero, 
+                new Vector2(width / textureRegion.getRegionWidth(), height / textureRegion.getRegionHeight()),
+                (textureRegion.isFlipX() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
                         (textureRegion.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
         }
 
@@ -326,10 +357,10 @@ namespace monogame
             }
             var origin = new Vector2(sprite.getOriginX(), sprite.getOriginY());
             _spriteBatch.Draw(((MonoGameTexture) sprite.getTexture()).texture2D, 
-                (new Vector2(x, y) + _translation + origin - _rotationCenter) * _scale, sourceRectangle,
+                new Vector2(x, y) + origin, sourceRectangle,
                 ((MonoGameColor) sprite.getTint()).toMonoGameColor(),
                 MonoGameMathsUtil.degreeToRadian(((MonoGameSprite) sprite).getTotalRotation()), origin, 
-                new Vector2(sprite.getScaleX(), sprite.getScaleY()) * _scale,
+                new Vector2(sprite.getScaleX(), sprite.getScaleY()),
                 (sprite.isFlipX() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
                 (sprite.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
         }
@@ -356,24 +387,23 @@ namespace monogame
 
         public void rotate(float degrees, float x, float y)
         {
-            _rotation = (_rotation + degrees) % 360;
             _rotationCenter.X = x;
             _rotationCenter.Y = y;
-            _shapeRenderer.setRotationCenter(_rotationCenter);
+            _rotation = (_rotation + degrees) % 360;
+            _isTransformationMatrixDirty = true;
             flush();
         }
 
         public void setRotation(float degrees, float x, float y)
         {
-            _rotation = degrees;
-            rotate(0, x, y);
+            rotate(degrees - _rotation, x, y);
         }
 
         public void scale(float scaleX, float scaleY)
         {
             _scale.X *= scaleX;
             _scale.Y *= scaleY;
-            _shapeRenderer.setScale(_scale);
+            _isTransformationMatrixDirty = true;
             flush();
         }
 
@@ -381,7 +411,7 @@ namespace monogame
         {
             _scale.X = scaleX;
             _scale.Y = scaleY;
-            _shapeRenderer.setScale(_scale);
+            _isTransformationMatrixDirty = true;
             flush();
         }
 
@@ -394,7 +424,7 @@ namespace monogame
         {
             _translation.X += translateX;
             _translation.Y += translateY;
-            _shapeRenderer.setTranslation(_translation);
+            _isTransformationMatrixDirty = true;
             flush();
         }
 
@@ -402,7 +432,7 @@ namespace monogame
         {
             _translation.X = translateX;
             _translation.Y = translateY;
-            _shapeRenderer.setTranslation(_translation);
+            _isTransformationMatrixDirty = true;
             flush();
         }
 
@@ -412,8 +442,6 @@ namespace monogame
             _tint.G = tint.getGAsByte();
             _tint.B = tint.getBAsByte();
             _tint.A = tint.getAAsByte();
-            _shapeRenderer.setTint(_tint);
-            flush();
         }
 
 
@@ -423,20 +451,20 @@ namespace monogame
             _tint.G = 255;
             _tint.B = 255;
             _tint.A = 255;
-            _shapeRenderer.setTint(_tint);
-            flush();
         }
 
         public void enableBlending()
         {
             _isBlending = true;
             updateBlending();
+            flush();
         }
 
         public void disableBlending()
         {
             _isBlending = false;
             updateBlending();
+            flush();
         }
 
         public void setBlendFunction(Mini2DxBlendFunction srcFunc, Mini2DxBlendFunction dstFunc)
@@ -444,12 +472,14 @@ namespace monogame
             _srcFunction = srcFunc;
             _dstFunction = dstFunc;
             updateBlending();
+            flush();
         }
 
         public void clearBlendFunction()
         {
             _currentBlending = _defaultBlending;
             updateBlending();
+            flush();
         }
 
         public void flush()
@@ -480,6 +510,7 @@ namespace monogame
         {
             _setColor = color;
             _shapeRenderer.setColor((MonoGameColor) _setColor);
+            _font.setColor(color);
         }
 
         public Color getBackgroundColor()
@@ -607,7 +638,7 @@ namespace monogame
 
         public Matrix4 getProjectionMatrix()
         {
-            throw new System.NotImplementedException();
+            return new Matrix4(Matrix.ToFloatArray(CurrentTransformationMatrix));
         }
 
         public void setClip(org.mini2Dx.core.geom.Rectangle clip)
@@ -615,10 +646,10 @@ namespace monogame
             _rasterizerState = new RasterizerState() { ScissorTestEnable = true };
             _clipRectangle = clip;
             var rect = _graphicsDevice.ScissorRectangle;
-            rect.X = (int)clip.getX();
-            rect.Y = (int)clip.getY();
-            rect.Width = (int)clip.getWidth();
-            rect.Height = (int)clip.getHeight();
+            rect.X = (int) (clip.getX() * _scale.X);
+            rect.Y = (int) (clip.getY() * _scale.Y);
+            rect.Width = (int) (clip.getWidth() * _scale.X);
+            rect.Height = (int) (clip.getHeight() * _scale.Y);
             _graphicsDevice.ScissorRectangle = rect;
             if (_beginSpriteBatchCalled)
             {
@@ -643,7 +674,7 @@ namespace monogame
                 }
 
                 var oldClip = _clipRectangle;
-                _clipRectangle = new org.mini2Dx.core.geom.Rectangle(0, 0, getWindowWidth(), getWindowHeight());
+                _clipRectangle = new org.mini2Dx.core.geom.Rectangle(0, 0, getViewportWidth(), getViewportHeight());
                 return oldClip;
             }
 
