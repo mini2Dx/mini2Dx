@@ -620,7 +620,81 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public void setBlendFunction(Mini2DxBlendFunction srcFunc, Mini2DxBlendFunction dstFunc) {
-		//spriteBatch.setBlendFunction(srcFunc, dstFunc); //TODO
+		final int srcF, dstF;
+
+		switch(srcFunc) {
+		default:
+		case ZERO:
+			srcF = GL20.GL_ZERO;
+			break;
+		case ONE:
+			srcF = GL20.GL_ONE;
+			break;
+		case SRC_COLOR:
+			srcF = GL20.GL_SRC_COLOR;
+			break;
+		case ONE_MINUS_SRC_COLOR:
+			srcF = GL20.GL_ONE_MINUS_SRC_COLOR;
+			break;
+		case DST_COLOR:
+			srcF = GL20.GL_DST_COLOR;
+			break;
+		case ONE_MINUS_DST_COLOR:
+			srcF = GL20.GL_ONE_MINUS_DST_COLOR;
+			break;
+		case SRC_ALPHA:
+			srcF = GL20.GL_SRC_ALPHA;
+			break;
+		case ONE_MINUS_SRC_ALPHA:
+			srcF = GL20.GL_ONE_MINUS_SRC_ALPHA;
+			break;
+		case DST_ALPHA:
+			srcF = GL20.GL_DST_ALPHA;
+			break;
+		case ONE_MINUS_DST_ALPHA:
+			srcF = GL20.GL_ONE_MINUS_DST_ALPHA;
+			break;
+		case SRC_ALPHA_SATURATE:
+			srcF = GL20.GL_SRC_ALPHA_SATURATE;
+			break;
+		}
+		switch(dstFunc) {
+		default:
+		case ZERO:
+			dstF = GL20.GL_ZERO;
+			break;
+		case ONE:
+			dstF = GL20.GL_ONE;
+			break;
+		case SRC_COLOR:
+			dstF = GL20.GL_SRC_COLOR;
+			break;
+		case ONE_MINUS_SRC_COLOR:
+			dstF = GL20.GL_ONE_MINUS_SRC_COLOR;
+			break;
+		case DST_COLOR:
+			dstF = GL20.GL_DST_COLOR;
+			break;
+		case ONE_MINUS_DST_COLOR:
+			dstF = GL20.GL_ONE_MINUS_DST_COLOR;
+			break;
+		case SRC_ALPHA:
+			dstF = GL20.GL_SRC_ALPHA;
+			break;
+		case ONE_MINUS_SRC_ALPHA:
+			dstF = GL20.GL_ONE_MINUS_SRC_ALPHA;
+			break;
+		case DST_ALPHA:
+			dstF = GL20.GL_DST_ALPHA;
+			break;
+		case ONE_MINUS_DST_ALPHA:
+			dstF = GL20.GL_ONE_MINUS_DST_ALPHA;
+			break;
+		case SRC_ALPHA_SATURATE:
+			dstF = GL20.GL_SRC_ALPHA_SATURATE;
+			break;
+		}
+		spriteBatch.setBlendFunction(srcF, dstF);
 	}
 
 	@Override

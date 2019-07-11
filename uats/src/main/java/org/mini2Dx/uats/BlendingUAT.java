@@ -19,15 +19,12 @@ import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.core.graphics.Color;
-import org.mini2Dx.core.graphics.Sprite;
-import org.mini2Dx.core.graphics.Texture;
+import org.mini2Dx.core.graphics.*;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
-import org.mini2Dx.core.graphics.Colors;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATSelectionScreen;
@@ -73,13 +70,13 @@ public class BlendingUAT extends BasicGameScreen {
         g.setBackgroundColor(Mdx.graphics.newColor(0.01f, 0.01f, 0.01f, 1f));
         
         /* Render lights to alpha mask */
-        //g.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+        g.setBlendFunction(Mini2DxBlendFunction.SRC_ALPHA, Mini2DxBlendFunction.ONE);
         g.setColor(Mdx.graphics.newColor(0.8f, 0.8f, 0.8f, 1f));
         g.fillCircle(sprite.getWidth() / 2f, sprite.getHeight() / 2f, MathUtils.round(sprite.getWidth() / 6f));
         g.flush();
         
         /* Render the scene */
-        //g.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        g.setBlendFunction(Mini2DxBlendFunction.DST_COLOR, Mini2DxBlendFunction.ONE_MINUS_SRC_ALPHA);
         g.drawSprite(sprite);
         
         g.setColor(WHITE);
