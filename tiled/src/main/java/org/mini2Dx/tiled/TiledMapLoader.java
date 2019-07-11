@@ -31,7 +31,11 @@ public class TiledMapLoader implements AsyncAssetLoader<TiledMap> {
 	public TiledMap loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
 		final TiledMap result = asyncLoadingCache.getCache(CACHE_TILED_MAP, TiledMap.class);
 		final TiledAssetProperties tiledAssetProperties = (TiledAssetProperties) assetDescriptor.getParameters();
-		if(tiledAssetProperties != null && tiledAssetProperties.loadTilesets) {
+		if(tiledAssetProperties != null) {
+			if(tiledAssetProperties.loadTilesets) {
+				result.loadTilesetTextures(assetManager);
+			}
+		} else {
 			result.loadTilesetTextures(assetManager);
 		}
 		return result;
