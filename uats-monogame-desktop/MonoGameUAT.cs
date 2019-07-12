@@ -31,9 +31,9 @@ using Color = Microsoft.Xna.Framework.Color;
 using Input = org.mini2Dx.gdx.Input;
 using Rectangle = org.mini2Dx.core.geom.Rectangle;
 
-namespace uats_monogame
+namespace mini2Dx_common_uats
 {
-    class MonoGameUAT : org.mini2Dx.core.game.BasicGame
+    class MonoGameUAT : org.mini2Dx.core.game.BasicGame, IDisposable
     {
         private class UATInputProcessor : InputProcessor, Xbox360GamePadListener
         {
@@ -382,6 +382,11 @@ namespace uats_monogame
             g.drawRect(600, 165, 100, 100);
             g.drawFontCache(sampleFontCache);
             //sampleMap.draw(g, (int) (gameWidth / 2), (int) (gameHeight / 4));
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -21,24 +21,20 @@ using org.mini2Dx.core;
 using org.mini2Dx.core.game;
 using org.mini2Dx.core.reflect.jvm;
 using org.mini2Dx.core.serialization;
-using org.mini2Dx.uats.util;
 
-namespace mini2Dx_common_uats
- {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
-    public class Game1 : Game
+namespace monogame
+{
+    public class Mini2DxGame : Game
     {
         GraphicsDeviceManager graphics;
         private GameContainer game;
         private const float targetFPS = 60;
         private const float targetTimeStep = 1 / targetFPS;
-        
+
         private const float _updateMaximumDelta = targetTimeStep;
         private float _timeAccumulator;
 
-        public Game1()
+        public Mini2DxGame(GameContainer game)
         {
             Window.AllowUserResizing = true;
             IsMouseVisible = true;
@@ -51,7 +47,7 @@ namespace mini2Dx_common_uats
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 800;
             graphics.PreferredBackBufferHeight = 720;
-            game = new UATApplication();
+            this.game = game;
         }
 
         /// <summary>
@@ -115,15 +111,15 @@ namespace mini2Dx_common_uats
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            float delta = (float) gameTime.ElapsedGameTime.TotalSeconds;
+            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (delta > _updateMaximumDelta)
             {
-                delta = _updateMaximumDelta;  
+                delta = _updateMaximumDelta;
             }
 
             _timeAccumulator += delta;
-            
+
             while (_timeAccumulator >= targetTimeStep)
             {
                 ((MonoGameInput)Mdx.input).update();
@@ -132,7 +128,7 @@ namespace mini2Dx_common_uats
                 _timeAccumulator -= targetTimeStep;
             }
             game.interpolate(_timeAccumulator / targetTimeStep);
-            
+
             base.Update(gameTime);
         }
 

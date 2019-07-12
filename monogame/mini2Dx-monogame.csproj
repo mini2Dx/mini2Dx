@@ -72,6 +72,7 @@
     <Compile Include="Graphics\MonoGameTilingDrawable.cs" />
     <Compile Include="Input\MonoGameGamePad.cs" />
     <Compile Include="Input\Xbox360\MonoGameXbox360GamePad.cs" />
+    <Compile Include="Mini2DxGame.cs" />
     <Compile Include="MonoGameAudio.cs" />
     <Compile Include="MonoGameFiles.cs" />
     <Compile Include="MonoGameFonts.cs" />

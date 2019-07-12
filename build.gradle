@@ -17,6 +17,7 @@ buildscript {
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.9.0'
 		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.8'
 		classpath "org.mini2Dx:gradle-ikvm-plugin:2.10.1"
+		classpath "org.mini2Dx:gradle-mini2Dx-mgcb:1.0.0-SNAPSHOT"
     }
 }
 
@@ -416,11 +417,12 @@ project(":" + rootProject.name + "-uats") {
 	}
 
 	processResources.dependsOn copyUatResources
+	//mgcb.dependsOn processResources
     ikvm.dependsOn project(":" + rootProject.name + "-all").build
 	build.dependsOn ikvm
 }
 
-project(":" + rootProject.name + "-uats-desktop") {
+project(":" + rootProject.name + "-uats-libgdx-desktop") {
 	description = "mini2Dx desktop UATs launcher"
 	
     apply plugin: "java"

@@ -5,11 +5,9 @@ VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mini2Dx-monogame", "monogame\mini2Dx-monogame.csproj", "{AC3AE86C-55AD-4F1E-97E8-12E6389137AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mini2Dx-uats-monogame", "uats-monogame\mini2Dx-uats-monogame.csproj", "{88B2D0A9-DDEC-4A47-AB72-1277CF7CE223}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "monogame-pipeline-ext", "monogame-pipeline-ext\monogame-pipeline-ext.csproj", "{6F98E109-6222-4843-B89A-22CDAE2FE514}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mini2Dx-common-uats", "mini2Dx-common-uats\mini2Dx-common-uats.csproj", "{EC789EA9-7450-46D2-A4FB-08A5E9ABD902}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uats-monogame-desktop", "uats-monogame-desktop\uats-monogame-desktop.csproj", "{EC789EA9-7450-46D2-A4FB-08A5E9ABD902}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +19,6 @@ Global
 		{AC3AE86C-55AD-4F1E-97E8-12E6389137AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC3AE86C-55AD-4F1E-97E8-12E6389137AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC3AE86C-55AD-4F1E-97E8-12E6389137AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{88B2D0A9-DDEC-4A47-AB72-1277CF7CE223}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{88B2D0A9-DDEC-4A47-AB72-1277CF7CE223}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{88B2D0A9-DDEC-4A47-AB72-1277CF7CE223}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{88B2D0A9-DDEC-4A47-AB72-1277CF7CE223}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Release|Any CPU.ActiveCfg = Release|Any CPU
