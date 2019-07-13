@@ -398,10 +398,11 @@ project(":" + rootProject.name + "-uats") {
 	version = projectVersion
 
 	apply plugin: "ikvm"
+	apply plugin: "org.mini2Dx.mgcb"
 
 	task copyUatResources(type: Copy) {
 		from '../uats/src/main/resources', '../tiled/src/test/resources', '../ui/src/main/resources'
-		into '../uats-desktop/assets'
+		into '../uats-libgdx-desktop/assets'
 	}
 
 	ikvm {
@@ -415,11 +416,17 @@ project(":" + rootProject.name + "-uats") {
 	dependencies {
 		compile project(":" + rootProject.name + "-all")
 	}
+	
+	mgcb {
+		assetsDirectory = file('../uats-libgdx-desktop/assets')
+		projectDirectory = file('../uats-monogame-desktop/Content')
+		dlls = files('../monogame-pipeline-ext/bin/Debug/monogame-pipeline-ext.dll')
+	}
 
 	processResources.dependsOn copyUatResources
-	//mgcb.dependsOn processResources
+    generateMonoGameContent.dependsOn processResources
     ikvm.dependsOn project(":" + rootProject.name + "-all").build
-	build.dependsOn ikvm
+	build.dependsOn ikvm, generateMonoGameContent
 }
 
 project(":" + rootProject.name + "-uats-libgdx-desktop") {
