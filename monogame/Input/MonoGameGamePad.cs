@@ -18,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 using org.mini2Dx.core.input;
+using org.mini2Dx.core.input.ps4;
+using org.mini2Dx.core.input.xbox;
 using GamePad = Microsoft.Xna.Framework.Input.GamePad;
 using GamePadType = org.mini2Dx.core.input.GamePadType;
 using Vector3 = org.mini2Dx.gdx.math.Vector3;
@@ -102,13 +104,31 @@ namespace monogame.Input
 
         public GamePadType getGamePadType()
         {
-            switch (GamePad.GetCapabilities(_playerIndex).DisplayName)
+            string displayName = GamePad.GetCapabilities(_playerIndex).DisplayName;
+            if(displayName == null)
             {
-                case "X360 Controller":
-                    return GamePadType.XBOX_360;
-                default:
-                    return GamePadType.UNKNOWN;
+                displayName = "";
             }
+            else
+            {
+                displayName = displayName.ToLower();
+            }
+
+            for (int i = 0; i < PS4GamePad.ID.Length; i++)
+            {
+                if (displayName.Contains(PS4GamePad.ID[i]))
+                {
+                    return GamePadType.PS4;
+                }
+            }
+            for (int i = 0; i < XboxGamePad.ID.Length; i++)
+            {
+                if(displayName.Contains(XboxGamePad.ID[i]))
+                {
+                    return GamePadType.XBOX;
+                }
+            }
+            return GamePadType.UNKNOWN;
         }
 
         public bool wasConnected()
@@ -374,6 +394,11 @@ namespace monogame.Input
         public string getInstanceId()
         {
             return GamePad.GetCapabilities(_playerIndex).DisplayName + "#" + _playerIndex;
+        }
+
+        public string getModelInfo()
+        {
+            return GamePad.GetCapabilities(_playerIndex).DisplayName;
         }
     }
 }

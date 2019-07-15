@@ -24,8 +24,7 @@ import org.mini2Dx.core.input.GamePadListener;
 import org.mini2Dx.core.input.GamePadType;
 import org.mini2Dx.core.input.PovState;
 import org.mini2Dx.core.input.ps4.PS4GamePad;
-import org.mini2Dx.core.input.xbox360.Xbox360GamePad;
-import org.mini2Dx.core.input.xboxOne.XboxOneGamePad;
+import org.mini2Dx.core.input.xbox.XboxGamePad;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.IntFloatMap;
 import org.mini2Dx.gdx.utils.IntMap;
@@ -144,16 +143,10 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 	public GamePadType getGamePadType() {
 		if(gamePadType == null) {
 			final String name = controller.getName().toLowerCase();
-			for(int i = 0; i < XboxOneGamePad.ID.length; i++) {
-				if(name.contains(XboxOneGamePad.ID[i])) {
-					gamePadType = GamePadType.XBOX_ONE;
-					return GamePadType.XBOX_ONE;
-				}
-			}
-			for(int i = 0; i < Xbox360GamePad.ID.length; i++) {
-				if(name.contains(Xbox360GamePad.ID[i])) {
-					gamePadType = GamePadType.XBOX_360;
-					return GamePadType.XBOX_360;
+			for(int i = 0; i < XboxGamePad.ID.length; i++) {
+				if(name.contains(XboxGamePad.ID[i])) {
+					gamePadType = GamePadType.XBOX;
+					return GamePadType.XBOX;
 				}
 			}
 			for(int i = 0; i < PS4GamePad.ID.length; i++) {
@@ -169,6 +162,11 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 
 	@Override
 	public String getInstanceId() {
+		return controller.getName();
+	}
+
+	@Override
+	public String getModelInfo() {
 		return controller.getName();
 	}
 

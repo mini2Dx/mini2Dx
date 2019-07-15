@@ -25,14 +25,11 @@ import org.mini2Dx.core.input.nswitch.SwitchDualJoyConGamePad;
 import org.mini2Dx.core.input.nswitch.SwitchJoyConLGamePad;
 import org.mini2Dx.core.input.nswitch.SwitchJoyConRGamePad;
 import org.mini2Dx.core.input.ps4.PS4GamePad;
-import org.mini2Dx.core.input.xbox360.Xbox360GamePad;
-import org.mini2Dx.core.input.xboxOne.XboxOneGamePad;
+import org.mini2Dx.core.input.xbox.XboxGamePad;
 import org.mini2Dx.gdx.InputProcessor;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.ObjectMap;
-import org.mini2Dx.libgdx.input.LibgdxAdvancedGamePad;
-import org.mini2Dx.libgdx.input.LibgdxGamePad;
-import org.mini2Dx.libgdx.input.LibgdxInputProcessor;
+import org.mini2Dx.libgdx.input.*;
 
 public class LibgdxInput implements Input {
 	private final Array<GamePad> gamePads = new Array<GamePad>();
@@ -107,7 +104,7 @@ public class LibgdxInput implements Input {
 
 	@Override
 	public PS4GamePad newPS4GamePad(GamePad gamePad) {
-		return null;
+		return new LibgdxPS4GamePad(gamePad);
 	}
 
 	@Override
@@ -126,13 +123,8 @@ public class LibgdxInput implements Input {
 	}
 
 	@Override
-	public XboxOneGamePad newXboxOneGamePad(GamePad gamePad) {
-		return null;
-	}
-
-	@Override
-	public Xbox360GamePad newXbox360GamePad(GamePad gamePad) {
-		return null;
+	public XboxGamePad newXboxGamePad(GamePad gamePad) {
+		return new LibgdxXboxGamePad(gamePad);
 	}
 
 	@Override

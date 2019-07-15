@@ -22,11 +22,13 @@ import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
+import org.mini2Dx.core.screen.transition.FadeInTransition;
+import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import org.mini2Dx.uats.gamepad.GamePadDebugger;
 import org.mini2Dx.uats.gamepad.PS4GamePadDebugger;
-import org.mini2Dx.uats.gamepad.Xbox360GamePadDebugger;
-import org.mini2Dx.uats.gamepad.XboxOneGamePadDebugger;
+import org.mini2Dx.uats.gamepad.XboxGamePadDebugger;
 import org.mini2Dx.uats.util.ScreenIds;
+import org.mini2Dx.uats.util.UATSelectionScreen;
 
 /**
  * UAT for debugging {@link org.mini2Dx.core.input.GamePad}s
@@ -38,20 +40,11 @@ public class GamePadUAT extends BasicGameScreen {
 	public void initialise(GameContainer gc) {
 		for(GamePad gamePad : Mdx.input.getGamePads()) {
 			switch(gamePad.getGamePadType()) {
-			case XBOX_360:
-				Xbox360GamePadDebugger xbox360Debugger = new Xbox360GamePadDebugger();
+			case XBOX:
+				XboxGamePadDebugger xbox360Debugger = new XboxGamePadDebugger();
 				try {
-					Mdx.input.newXbox360GamePad(gamePad).addListener(xbox360Debugger);
+					Mdx.input.newXboxGamePad(gamePad).addListener(xbox360Debugger);
 					this.gamePadDebugger = xbox360Debugger;
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return;
-			case XBOX_ONE:
-				XboxOneGamePadDebugger xboxOneDebugger = new XboxOneGamePadDebugger();
-				try {
-					Mdx.input.newXboxOneGamePad(gamePad).addListener(xboxOneDebugger);
-					this.gamePadDebugger = xboxOneDebugger;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -80,6 +73,9 @@ public class GamePadUAT extends BasicGameScreen {
 
 	@Override
 	public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
+		if(Mdx.input.justTouched()) {
+			screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
+		}
 	}
 
 	@Override

@@ -20,8 +20,7 @@ import org.mini2Dx.core.input.nswitch.SwitchDualJoyConGamePad;
 import org.mini2Dx.core.input.nswitch.SwitchJoyConLGamePad;
 import org.mini2Dx.core.input.nswitch.SwitchJoyConRGamePad;
 import org.mini2Dx.core.input.ps4.PS4GamePad;
-import org.mini2Dx.core.input.xbox360.Xbox360GamePad;
-import org.mini2Dx.core.input.xboxOne.XboxOneGamePad;
+import org.mini2Dx.core.input.xbox.XboxGamePad;
 import org.mini2Dx.gdx.InputProcessor;
 import org.mini2Dx.gdx.utils.Array;
 
@@ -74,18 +73,11 @@ public interface Input {
     public SwitchJoyConRGamePad newSwitchJoyConRGamePad(GamePad gamePad);
 
     /**
-     * Wraps a {@link GamePad} as a {@link XboxOneGamePad}
+     * Wraps a {@link GamePad} as a {@link XboxGamePad}
      * @param gamePad The underlying {@link GamePad} instance
-     * @return A new instance of {@link XboxOneGamePad}
+     * @return A new instance of {@link XboxGamePad}
      */
-    public XboxOneGamePad newXboxOneGamePad(GamePad gamePad);
-
-    /**
-     * Wraps a {@link GamePad} as a {@link Xbox360GamePad}
-     * @param gamePad The underlying {@link GamePad} instance
-     * @return A new instance of {@link Xbox360GamePad}
-     */
-    public Xbox360GamePad newXbox360GamePad(GamePad gamePad);
+    public XboxGamePad newXboxGamePad(GamePad gamePad);
 
     /**
      * Returns the mouse/touch screen X coordinate

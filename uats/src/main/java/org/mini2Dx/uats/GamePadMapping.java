@@ -25,8 +25,13 @@ import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.graphics.Colors;
+import org.mini2Dx.core.screen.Transition;
+import org.mini2Dx.core.screen.transition.FadeInTransition;
+import org.mini2Dx.core.screen.transition.FadeOutTransition;
+import org.mini2Dx.gdx.Input;
 import org.mini2Dx.gdx.math.Vector3;
 import org.mini2Dx.uats.util.ScreenIds;
+import org.mini2Dx.uats.util.UATSelectionScreen;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,8 +41,9 @@ import java.util.Map;
  */
 public class GamePadMapping extends BasicGameScreen implements GamePadListener {
 	private static final String LOGGING_TAG = GamePadMapping.class.getSimpleName();
-	
-	private String controllerName = "";
+
+	private GamePad gamePad;
+	private String gamePadInstanceId = "", gamePadType = "", gamePadModel = "";
 	private Map<Integer, String> buttonMessages = new HashMap<Integer, String>();
 	private Map<Integer, String> axisMessages = new HashMap<Integer, String>();
 	private Map<Integer, String> povMessages = new HashMap<Integer, String>();
@@ -48,12 +54,25 @@ public class GamePadMapping extends BasicGameScreen implements GamePadListener {
 	@Override
 	public void initialise(GameContainer gc) {
 		for(GamePad gamePad : Mdx.input.getGamePads()) {
-			Mdx.log.info(LOGGING_TAG, "Detected: " + gamePad.getInstanceId());
+			Mdx.log.info(LOGGING_TAG, "Detected: " + gamePad.getInstanceId() + " " + gamePad.getGamePadType());
 		}
 	}
 
 	@Override
 	public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
+		if(Mdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+			screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
+		} else if(Mdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+			if(gamePad == null || !gamePad.isVibrateSupported()) {
+				return;
+			}
+			System.out.println(gamePad.isVibrating() + " " + gamePad.isVibrateSupported() + " " + gamePad.getVibrationStrength());
+			if(gamePad.isVibrating()) {
+				gamePad.stopVibration();
+			} else {
+				gamePad.startVibration(1f);
+			}
+		}
 	}
 
 	@Override
@@ -63,9 +82,18 @@ public class GamePadMapping extends BasicGameScreen implements GamePadListener {
 		
 		float y = 24f;
 		float x = 32f;
-		g.drawString("Controller Name: " + controllerName, 32f, y);
+		g.drawString("GamePad Instance ID: " + gamePadInstanceId, 32f, y);
 		y = incrementY(gc, y);
-		
+
+		g.drawString("GamePad Type: " + gamePadType, 32f, y);
+		y = incrementY(gc, y);
+
+		g.drawString("GamePad Model: " + gamePadModel, 32f, y);
+		y = incrementY(gc, y);
+
+		g.drawString("Vibrate Supported: " + (gamePad != null ? gamePad.isVibrateSupported() : false), 32f, y);
+		y = incrementY(gc, y);
+
 		for(int buttonCode : buttonMessages.keySet()) {
 			g.drawString("Button " + buttonCode + ": " + buttonMessages.get(buttonCode), x, y);
 			y = incrementY(gc, y);
@@ -102,7 +130,25 @@ public class GamePadMapping extends BasicGameScreen implements GamePadListener {
 			x = determineX(gc, x, y);
 		}
 	}
-	
+
+	@Override
+	public void preTransitionIn(Transition transitionIn) {
+		for(GamePad gamePad : Mdx.input.getGamePads()) {
+			gamePad.addListener(this);
+			this.gamePad = gamePad;
+			break;
+		}
+	}
+
+	@Override
+	public void preTransitionOut(Transition transitionOut) {
+		for(GamePad gamePad : Mdx.input.getGamePads()) {
+			gamePad.removeListener(this);
+			this.gamePad = gamePad;
+			break;
+		}
+	}
+
 	private float incrementY(GameContainer gc, float y) {
 		if(y >= gc.getHeight() - 48f) {
 			y = 24f;
@@ -124,41 +170,59 @@ public class GamePadMapping extends BasicGameScreen implements GamePadListener {
 
 	@Override
 	public void onConnect(GamePad gamePad) {
-		controllerName = gamePad.getInstanceId();
+		gamePadInstanceId = gamePad.getInstanceId();
+		gamePadType = gamePad.getGamePadType().toFriendlyString();
+		gamePadModel = gamePad.getModelInfo();
+		System.out.println("CONNECT");
 	}
 
 	@Override
 	public void onDisconnect(GamePad gamePad) {
-		controllerName = gamePad.getInstanceId();
+		gamePadInstanceId = gamePad.getInstanceId();
+		gamePadType = gamePad.getGamePadType().toFriendlyString();
+		gamePadModel = gamePad.getModelInfo();
+		System.out.println("DISCONNECT");
 	}
 
 	@Override
 	public void onButtonDown(GamePad gamePad, int buttonCode) {
-		controllerName = gamePad.getInstanceId();
+		this.gamePad = gamePad;
+
+		gamePadInstanceId = gamePad.getInstanceId();
+		gamePadType = gamePad.getGamePadType().toFriendlyString();
+		gamePadModel = gamePad.getModelInfo();
 		buttonMessages.put(buttonCode, "DOWN");
 	}
 
 	@Override
 	public void onButtonUp(GamePad gamePad, int buttonCode) {
-		controllerName = gamePad.getInstanceId();
+		gamePadInstanceId = gamePad.getInstanceId();
+		gamePadType = gamePad.getGamePadType().toFriendlyString();
+		gamePadModel = gamePad.getModelInfo();
 		buttonMessages.put(buttonCode, "UP");
 	}
 
 	@Override
 	public void onPovChanged(GamePad gamePad, int povCode, PovState povState) {
-		controllerName = gamePad.getInstanceId();
+		gamePadInstanceId = gamePad.getInstanceId();
+		gamePadType = gamePad.getGamePadType().toFriendlyString();
+		gamePadModel = gamePad.getModelInfo();
 		povMessages.put(povCode, povState.toString());
 	}
 
 	@Override
 	public void onAxisChanged(GamePad gamePad, int axisCode, float axisValue) {
-		controllerName = gamePad.getInstanceId();
+		gamePadInstanceId = gamePad.getInstanceId();
+		gamePadType = gamePad.getGamePadType().toFriendlyString();
+		gamePadModel = gamePad.getModelInfo();
 		axisMessages.put(axisCode, String.valueOf(axisValue));
 	}
 
 	@Override
 	public void onAccelerometerChanged(GamePad gamePad, int accelerometerCode, Vector3 value) {
-		controllerName = gamePad.getInstanceId();
+		gamePadInstanceId = gamePad.getInstanceId();
+		gamePadType = gamePad.getGamePadType().toFriendlyString();
+		gamePadModel = gamePad.getModelInfo();
 		accelerometerMessages.put(accelerometerCode, value.toString());
 	}
 }

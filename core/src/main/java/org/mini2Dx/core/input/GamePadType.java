@@ -21,8 +21,7 @@ public enum GamePadType {
 	SWITCH_JOYCON_L("switchJoyConL"),
 	SWITCH_JOYCON_R("switchJoyConR"),
 	PS4("ps4"),
-	XBOX_360("xbox360"),
-	XBOX_ONE("xboxone");
+	XBOX("xbox");
 
 	private final String friendlyString;
 

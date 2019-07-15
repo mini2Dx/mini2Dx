@@ -103,9 +103,9 @@
 
 #begin ../../uats-libgdx-desktop/assets/music/music.ogg
 /importer:OggImporter
-/processor:SoundEffectProcessor
+/processor:SongProcessor
 /processorParam:Quality=Best
-/build:../../uats-libgdx-desktop/assets/music/music.ogg;music.ogg.ogg
+/build:../../uats-libgdx-desktop/assets/music/music.ogg;music/music.ogg.ogg
 
 #begin ../../uats-libgdx-desktop/assets/object.tx
 /importer:mini2DxContentImporter
@@ -140,18 +140,18 @@
 #begin ../../uats-libgdx-desktop/assets/particles/particle.png
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
-/build:../../uats-libgdx-desktop/assets/particles/particle.png;particle.png.png
+/build:../../uats-libgdx-desktop/assets/particles/particle.png;particles/particle.png.png
 
 #begin ../../uats-libgdx-desktop/assets/repeatedNinePatch.png
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
 /build:../../uats-libgdx-desktop/assets/repeatedNinePatch.png;repeatedNinePatch.png.png
 
-#begin ../../uats-libgdx-desktop/assets/sound.ogg
+#begin ../../uats-libgdx-desktop/assets/sounds/sound.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:../../uats-libgdx-desktop/assets/sound.ogg;sound.ogg.ogg
+/build:../../uats-libgdx-desktop/assets/sounds/sound.ogg;sounds/sound.ogg.ogg
 
 #begin ../../uats-libgdx-desktop/assets/tank.png
 /importer:mini2DxContentImporter

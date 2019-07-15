@@ -23,16 +23,14 @@ import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.GamePadListener;
 import org.mini2Dx.core.input.deadzone.RadialDeadZone;
 import org.mini2Dx.core.input.ps4.PS4GamePad;
-import org.mini2Dx.core.input.xbox360.Xbox360GamePad;
-import org.mini2Dx.core.input.xboxOne.XboxOneGamePad;
+import org.mini2Dx.core.input.xbox.XboxGamePad;
 import org.mini2Dx.core.graphics.Colors;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.animation.TextAnimation;
 import org.mini2Dx.ui.element.*;
 import org.mini2Dx.ui.gamepad.GamePadUiInput;
 import org.mini2Dx.ui.gamepad.PS4UiInput;
-import org.mini2Dx.ui.gamepad.Xbox360UiInput;
-import org.mini2Dx.ui.gamepad.XboxOneUiInput;
+import org.mini2Dx.ui.gamepad.XboxUiInput;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.navigation.UiNavigation;
 
@@ -77,41 +75,23 @@ public class UiUtils {
 			MAPPED_CONTROLLER_INPUT.put(uiContainer.getId(), ps4UiInput);
 			Mdx.log.info(UiUtils.class.getSimpleName(), "Set up PS4 controller UI input");
 			return ps4UiInput;
-		case XBOX_360:
-			Xbox360GamePad xbox360GamePad = null;
+		case XBOX:
+			XboxGamePad xboxGamePad = null;
 			if(MAPPED_CONTROLLERS.containsKey(gamePad.getInstanceId())) {
-				xbox360GamePad = (Xbox360GamePad) MAPPED_CONTROLLERS.get(gamePad.getInstanceId());
+				xboxGamePad = (XboxGamePad) MAPPED_CONTROLLERS.get(gamePad.getInstanceId());
 			} else {
-				xbox360GamePad = Mdx.input.newXbox360GamePad(gamePad);
-				xbox360GamePad.setLeftStickDeadZone(new RadialDeadZone());
-				xbox360GamePad.setRightStickDeadZone(new RadialDeadZone());
-				MAPPED_CONTROLLERS.put(gamePad.getInstanceId(), xbox360GamePad);
+				xboxGamePad = Mdx.input.newXboxGamePad(gamePad);
+				xboxGamePad.setLeftStickDeadZone(new RadialDeadZone());
+				xboxGamePad.setRightStickDeadZone(new RadialDeadZone());
+				MAPPED_CONTROLLERS.put(gamePad.getInstanceId(), xboxGamePad);
 			}
-			Xbox360UiInput xbox360UiInput = new Xbox360UiInput(uiContainer);
+			XboxUiInput xbox360UiInput = new XboxUiInput(uiContainer);
 			xbox360UiInput.setNavigateWithDPad(true);
-			xbox360GamePad.addListener(xbox360UiInput);
+			xboxGamePad.addListener(xbox360UiInput);
 			
 			MAPPED_CONTROLLER_INPUT.put(uiContainer.getId(), xbox360UiInput);
 			Mdx.log.info(UiUtils.class.getSimpleName(), "Set up Xbox 360 controller UI input");
 			return xbox360UiInput;
-		case XBOX_ONE:
-			XboxOneGamePad xboxOneGamePad = null;
-			if(MAPPED_CONTROLLERS.containsKey(gamePad.getInstanceId())) {
-				xboxOneGamePad = (XboxOneGamePad) MAPPED_CONTROLLERS.get(gamePad.getInstanceId());
-			} else {
-				xboxOneGamePad = Mdx.input.newXboxOneGamePad(gamePad);
-				xboxOneGamePad.setLeftStickDeadZone(new RadialDeadZone());
-				xboxOneGamePad.setRightStickDeadZone(new RadialDeadZone());
-				MAPPED_CONTROLLERS.put(gamePad.getInstanceId(), xboxOneGamePad);
-			}
-			
-			XboxOneUiInput xboxOneUiInput = new XboxOneUiInput(uiContainer);
-			xboxOneUiInput.setNavigateWithDPad(true);
-			xboxOneGamePad.addListener(xboxOneUiInput);
-			
-			MAPPED_CONTROLLER_INPUT.put(uiContainer.getId(), xboxOneUiInput);
-			Mdx.log.info(UiUtils.class.getSimpleName(), "Set up Xbox One controller UI input");
-			return xboxOneUiInput;
 		case UNKNOWN:
 		default:
 			break;

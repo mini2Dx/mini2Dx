@@ -37,6 +37,12 @@ public interface GamePad {
 	public String getInstanceId();
 
 	/**
+	 * Returns the model information present by the hardware/driver (e.g. Xbox One Wireless Controller)
+	 * @return
+	 */
+	public String getModelInfo();
+
+	/**
 	 * Returns if this {@link GamePad} is connected
 	 * @return False if it has been disconnected/unplugged
 	 */

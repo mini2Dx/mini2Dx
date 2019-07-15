@@ -13,35 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.input.xbox360;
+package org.mini2Dx.core.input.xbox;
 
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.GamePadListener;
-import org.mini2Dx.core.input.button.Xbox360Button;
+import org.mini2Dx.core.input.button.XboxButton;
 import org.mini2Dx.core.input.deadzone.DeadZone;
 import org.mini2Dx.core.input.deadzone.NoopDeadZone;
 import org.mini2Dx.core.input.deadzone.RadialDeadZone;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
 
-public abstract class Xbox360GamePad implements GamePadListener, Disposable {
+public abstract class XboxGamePad implements GamePadListener, Disposable {
 	public static final String [] ID = new String [] {
 			"360".toLowerCase(),
-			"Xbox Wireless Controller".toLowerCase()
+			"Xbox".toLowerCase(),
+			"X-Box".toLowerCase(),
+			"X360".toLowerCase(),
+			"XInput".toLowerCase()
 	};
 
-	private final Array<Xbox360GamePadListener> listeners = new Array<Xbox360GamePadListener>(true, 2, Xbox360GamePadListener.class);
+	private final Array<XboxGamePadListener> listeners = new Array<XboxGamePadListener>(true, 2, XboxGamePadListener.class);
 	private final GamePad gamePad;
 
 	private DeadZone leftStickDeadZone, rightStickDeadZone;
 	private DeadZone leftTriggerDeadZone, rightTriggerDeadZone;
 	private boolean leftTrigger, rightTrigger;
 
-	public Xbox360GamePad(GamePad gamePad) {
+	public XboxGamePad(GamePad gamePad) {
 		this(gamePad, new NoopDeadZone(), new NoopDeadZone());
 	}
 
-	public Xbox360GamePad(GamePad gamePad, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) {
+	public XboxGamePad(GamePad gamePad, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) {
 		super();
 		this.gamePad = gamePad;
 		this.leftStickDeadZone = leftStickDeadZone;
@@ -53,21 +56,21 @@ public abstract class Xbox360GamePad implements GamePadListener, Disposable {
 	}
 
 	protected boolean notifyConnected() {
-		for(Xbox360GamePadListener listener : listeners) {
+		for(XboxGamePadListener listener : listeners) {
 			listener.connected(this);
 		}
 		return false;
 	}
 
 	protected boolean notifyDisconnected() {
-		for(Xbox360GamePadListener listener : listeners) {
+		for(XboxGamePadListener listener : listeners) {
 			listener.disconnected(this);
 		}
 		return false;
 	}
 
-	protected boolean notifyButtonDown(Xbox360Button button) {
-		for(Xbox360GamePadListener listener : listeners) {
+	protected boolean notifyButtonDown(XboxButton button) {
+		for(XboxGamePadListener listener : listeners) {
 			if(listener.buttonDown(this, button)) {
 				return true;
 			}
@@ -75,8 +78,8 @@ public abstract class Xbox360GamePad implements GamePadListener, Disposable {
 		return false;
 	}
 
-	protected boolean notifyButtonUp(Xbox360Button button) {
-		for(Xbox360GamePadListener listener : listeners) {
+	protected boolean notifyButtonUp(XboxButton button) {
+		for(XboxGamePadListener listener : listeners) {
 			if(listener.buttonUp(this, button)) {
 				return true;
 			}
@@ -87,13 +90,13 @@ public abstract class Xbox360GamePad implements GamePadListener, Disposable {
 	protected boolean notifyLeftTriggerMoved(float value) {
 		leftTriggerDeadZone.updateY(value);
 		if(leftTriggerDeadZone.getY() >= 0.5f && !leftTrigger) {
-			notifyButtonDown(Xbox360Button.LEFT_TRIGGER);
+			notifyButtonDown(XboxButton.LEFT_TRIGGER);
 			leftTrigger = true;
 		} else if(leftTriggerDeadZone.getY() < 0.5f && leftTrigger) {
-			notifyButtonUp(Xbox360Button.LEFT_TRIGGER);
+			notifyButtonUp(XboxButton.LEFT_TRIGGER);
 			leftTrigger = false;
 		}
-		for(Xbox360GamePadListener listener : listeners) {
+		for(XboxGamePadListener listener : listeners) {
 			if(listener.leftTriggerMoved(this, value)) {
 				return true;
 			}
@@ -104,13 +107,13 @@ public abstract class Xbox360GamePad implements GamePadListener, Disposable {
 	protected boolean notifyRightTriggerMoved(float value) {
 		rightTriggerDeadZone.updateY(value);
 		if(rightTriggerDeadZone.getY() >= 0.5f && !rightTrigger) {
-			notifyButtonDown(Xbox360Button.RIGHT_TRIGGER);
+			notifyButtonDown(XboxButton.RIGHT_TRIGGER);
 			rightTrigger = true;
 		} else if(rightTriggerDeadZone.getY() < 0.5f && rightTrigger) {
-			notifyButtonUp(Xbox360Button.RIGHT_TRIGGER);
+			notifyButtonUp(XboxButton.RIGHT_TRIGGER);
 			rightTrigger = false;
 		}
-		for(Xbox360GamePadListener listener : listeners) {
+		for(XboxGamePadListener listener : listeners) {
 			if(listener.rightTriggerMoved(this, value)) {
 				return true;
 			}
@@ -120,7 +123,7 @@ public abstract class Xbox360GamePad implements GamePadListener, Disposable {
 
 	protected boolean notifyLeftStickXMoved(float value) {
 		leftStickDeadZone.updateX(value);
-		for(Xbox360GamePadListener listener : listeners) {
+		for(XboxGamePadListener listener : listeners) {
 			if(listener.leftStickXMoved(this, leftStickDeadZone.getX())) {
 				return true;
 			}
@@ -130,7 +133,7 @@ public abstract class Xbox360GamePad implements GamePadListener, Disposable {
 
 	protected boolean notifyLeftStickYMoved(float value) {
 		leftStickDeadZone.updateY(value);
-		for(Xbox360GamePadListener listener : listeners) {
+		for(XboxGamePadListener listener : listeners) {
 			if(listener.leftStickYMoved(this, leftStickDeadZone.getY())) {
 				return true;
 			}
@@ -140,7 +143,7 @@ public abstract class Xbox360GamePad implements GamePadListener, Disposable {
 
 	protected boolean notifyRightStickXMoved(float value) {
 		rightStickDeadZone.updateX(value);
-		for(Xbox360GamePadListener listener : listeners) {
+		for(XboxGamePadListener listener : listeners) {
 			if(listener.rightStickXMoved(this, rightStickDeadZone.getX())) {
 				return true;
 			}
@@ -150,7 +153,7 @@ public abstract class Xbox360GamePad implements GamePadListener, Disposable {
 
 	protected boolean notifyRightStickYMoved(float value) {
 		rightStickDeadZone.updateY(value);
-		for(Xbox360GamePadListener listener : listeners) {
+		for(XboxGamePadListener listener : listeners) {
 			if(listener.rightStickYMoved(this, rightStickDeadZone.getY())) {
 				return true;
 			}
@@ -158,11 +161,11 @@ public abstract class Xbox360GamePad implements GamePadListener, Disposable {
 		return false;
 	}
 
-	public void addListener(Xbox360GamePadListener listener) {
+	public void addListener(XboxGamePadListener listener) {
 		listeners.add(listener);
 	}
 
-	public void removeListener(Xbox360GamePadListener listener) {
+	public void removeListener(XboxGamePadListener listener) {
 		listeners.removeValue(listener, false);
 	}
 

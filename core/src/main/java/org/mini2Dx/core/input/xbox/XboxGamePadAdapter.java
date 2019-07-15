@@ -13,58 +13,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.input.xboxOne;
+package org.mini2Dx.core.input.xbox;
 
-import org.mini2Dx.core.input.button.XboxOneButton;
+import org.mini2Dx.core.input.button.XboxButton;
 
-public class XboxOneGamePadAdapter implements XboxOneGamePadListener {
+public class XboxGamePadAdapter implements XboxGamePadListener {
 	@Override
-	public void connected(XboxOneGamePad gamePad) {
+	public void connected(XboxGamePad gamePad) {
+		
+	}
+
+	@Override
+	public void disconnected(XboxGamePad gamePad) {
 
 	}
 
 	@Override
-	public void disconnected(XboxOneGamePad gamePad) {
-
-	}
-
-	@Override
-	public boolean buttonDown(XboxOneGamePad gamePad, XboxOneButton button) {
+	public boolean buttonDown(XboxGamePad gamePad, XboxButton button) {
 		return false;
 	}
 
 	@Override
-	public boolean buttonUp(XboxOneGamePad gamePad, XboxOneButton button) {
+	public boolean buttonUp(XboxGamePad gamePad, XboxButton button) {
 		return false;
 	}
 
 	@Override
-	public boolean leftTriggerMoved(XboxOneGamePad gamePad, float value) {
+	public boolean leftTriggerMoved(XboxGamePad gamePad, float value) {
 		return false;
 	}
 
 	@Override
-	public boolean rightTriggerMoved(XboxOneGamePad gamePad, float value) {
+	public boolean rightTriggerMoved(XboxGamePad gamePad, float value) {
 		return false;
 	}
 
 	@Override
-	public boolean leftStickXMoved(XboxOneGamePad gamePad, float value) {
+	public boolean leftStickXMoved(XboxGamePad gamePad, float value) {
 		return false;
 	}
 
 	@Override
-	public boolean leftStickYMoved(XboxOneGamePad gamePad, float value) {
+	public boolean leftStickYMoved(XboxGamePad gamePad, float value) {
 		return false;
 	}
 
 	@Override
-	public boolean rightStickXMoved(XboxOneGamePad gamePad, float value) {
+	public boolean rightStickXMoved(XboxGamePad gamePad, float value) {
 		return false;
 	}
 
 	@Override
-	public boolean rightStickYMoved(XboxOneGamePad gamePad, float value) {
+	public boolean rightStickYMoved(XboxGamePad gamePad, float value) {
 		return false;
 	}
 }

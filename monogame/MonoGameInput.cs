@@ -18,12 +18,10 @@ using System.Runtime.Remoting.Messaging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using monogame.Input;
-using monogame.Input.Xbox360;
 using org.mini2Dx.core;
 using org.mini2Dx.core.input.nswitch;
 using org.mini2Dx.core.input.ps4;
-using org.mini2Dx.core.input.xbox360;
-using org.mini2Dx.core.input.xboxOne;
+using org.mini2Dx.core.input.xbox;
 using org.mini2Dx.gdx;
 using Array = org.mini2Dx.gdx.utils.Array;
 using GamePad = org.mini2Dx.core.input.GamePad;
@@ -66,7 +64,7 @@ namespace monogame
 
         public PS4GamePad newPS4GamePad(GamePad gamePad)
         {
-            throw new NotImplementedException();
+            return new MonoGamePS4GamePad(gamePad);
         }
 
         public SwitchDualJoyConGamePad newSwitchDualJoyConGamePad(GamePad gamePad)
@@ -84,14 +82,9 @@ namespace monogame
             throw new NotImplementedException();
         }
 
-        public XboxOneGamePad newXboxOneGamePad(GamePad gamePad)
+        public XboxGamePad newXboxGamePad(GamePad gamePad)
         {
-            throw new NotImplementedException();
-        }
-
-        public Xbox360GamePad newXbox360GamePad(GamePad gamePad)
-        {
-            return new MonoGameXbox360GamePad(gamePad);
+            return new MonoGameXboxGamePad(gamePad);
         }
 
         public void update()

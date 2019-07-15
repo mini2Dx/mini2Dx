@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.input.xbox360;
+package org.mini2Dx.core.input.xbox;
 
-import org.mini2Dx.core.input.button.Xbox360Button;
+import org.mini2Dx.core.input.button.XboxButton;
 import org.mini2Dx.core.input.deadzone.DeadZone;
 
-public interface Xbox360GamePadListener {
+public interface XboxGamePadListener {
 	/**
 	 * Called when a gamepad connects
 	 *
 	 * @param gamePad
 	 *            The gamepad that this event came from
 	 */
-	public void connected(Xbox360GamePad gamePad);
+	public void connected(XboxGamePad gamePad);
 
 	/**
 	 * Called when a gamepad disconnects
@@ -33,7 +33,7 @@ public interface Xbox360GamePadListener {
 	 * @param gamePad
 	 *            The gamepad that this event came from
 	 */
-	public void disconnected(Xbox360GamePad gamePad);
+	public void disconnected(XboxGamePad gamePad);
 
 	/**
 	 * Called when a button is pressed down
@@ -44,7 +44,7 @@ public interface Xbox360GamePadListener {
 	 *            The button that was pressed
 	 * @return True if this event should not propagate to other listeners
 	 */
-	public boolean buttonDown(Xbox360GamePad gamePad, Xbox360Button button);
+	public boolean buttonDown(XboxGamePad gamePad, XboxButton button);
 
 	/**
 	 * Called when a button is released
@@ -55,7 +55,7 @@ public interface Xbox360GamePadListener {
 	 *            The button that was released
 	 * @return True if this event should not propagate to other listeners
 	 */
-	public boolean buttonUp(Xbox360GamePad gamePad, Xbox360Button button);
+	public boolean buttonUp(XboxGamePad gamePad, XboxButton button);
 
 	/**
 	 * Called when the left trigger is moved
@@ -66,7 +66,7 @@ public interface Xbox360GamePadListener {
 	 *            ~0f when released, ~1f when pressed
 	 * @return True if this event should not propagate to other listeners
 	 */
-	public boolean leftTriggerMoved(Xbox360GamePad gamePad, float value);
+	public boolean leftTriggerMoved(XboxGamePad gamePad, float value);
 
 	/**
 	 * Called when the right trigger is moved
@@ -77,7 +77,7 @@ public interface Xbox360GamePadListener {
 	 *            ~0f when released, ~1f when pressed
 	 * @return True if this event should not propagate to other listeners
 	 */
-	public boolean rightTriggerMoved(Xbox360GamePad gamePad, float value);
+	public boolean rightTriggerMoved(XboxGamePad gamePad, float value);
 
 	/**
 	 * Called when left stick moves along its X axis
@@ -90,7 +90,7 @@ public interface Xbox360GamePadListener {
 	 *            gamepad instance to correct this)
 	 * @return True if this event should not propagate to other listeners
 	 */
-	public boolean leftStickXMoved(Xbox360GamePad gamePad, float value);
+	public boolean leftStickXMoved(XboxGamePad gamePad, float value);
 
 	/**
 	 * Called when left stick moves along its Y axis
@@ -103,7 +103,7 @@ public interface Xbox360GamePadListener {
 	 *            gamepad instance to correct this)
 	 * @return True if this event should not propagate to other listeners
 	 */
-	public boolean leftStickYMoved(Xbox360GamePad gamePad, float value);
+	public boolean leftStickYMoved(XboxGamePad gamePad, float value);
 
 	/**
 	 * Called when right stick moves along its X axis
@@ -116,7 +116,7 @@ public interface Xbox360GamePadListener {
 	 *            gamepad instance to correct this)
 	 * @return True if this event should not propagate to other listeners
 	 */
-	public boolean rightStickXMoved(Xbox360GamePad gamePad, float value);
+	public boolean rightStickXMoved(XboxGamePad gamePad, float value);
 
 	/**
 	 * Called when left stick moves along its Y axis
@@ -129,5 +129,5 @@ public interface Xbox360GamePadListener {
 	 *            gamepad instance to correct this)
 	 * @return True if this event should not propagate to other listeners
 	 */
-	public boolean rightStickYMoved(Xbox360GamePad gamePad, float value);
+	public boolean rightStickYMoved(XboxGamePad gamePad, float value);
 }

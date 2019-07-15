@@ -16,30 +16,30 @@
 package org.mini2Dx.uats.gamepad;
 
 import org.mini2Dx.core.Graphics;
-import org.mini2Dx.core.input.button.XboxOneButton;
-import org.mini2Dx.core.input.xboxOne.XboxOneGamePad;
-import org.mini2Dx.core.input.xboxOne.XboxOneGamePadListener;
+import org.mini2Dx.core.input.button.XboxButton;
+import org.mini2Dx.core.input.xbox.XboxGamePad;
+import org.mini2Dx.core.input.xbox.XboxGamePadListener;
 import org.mini2Dx.gdx.utils.ObjectMap;
 
 /**
- * Shows input from {@link org.mini2Dx.core.input.xboxOne.XboxOneGamePad}
+ * Shows input from {@link XboxGamePad}
  */
-public class XboxOneGamePadDebugger implements XboxOneGamePadListener, GamePadDebugger {
-	private ObjectMap<XboxOneButton, String> buttonMessages = new ObjectMap<XboxOneButton, String>();
+public class XboxGamePadDebugger implements XboxGamePadListener, GamePadDebugger {
+	private ObjectMap<XboxButton, String> buttonMessages = new ObjectMap<XboxButton, String>();
 	private float leftStickXAxis, leftStickYAxis;
 	private float rightStickXAxis, rightStickYAxis;
 	private float leftTrigger, rightTrigger;
 	private boolean connected = true;
 	
-	public XboxOneGamePadDebugger() {
-		for(XboxOneButton button : XboxOneButton.values()) {
+	public XboxGamePadDebugger() {
+		for(XboxButton button : XboxButton.values()) {
 			buttonMessages.put(button, "UP");
 		}
 	}
 
 	@Override
 	public void render(Graphics g) {
-		g.drawString("Xbox One Controller", 32f, 24f);
+		g.drawString("Xbox 360 Controller", 32f, 24f);
 		if(connected) {
 			g.drawString("Connected", 32f, 48f);
 		} else {
@@ -53,67 +53,68 @@ public class XboxOneGamePadDebugger implements XboxOneGamePadListener, GamePadDe
 		g.drawString("Right Trigger: " + rightTrigger, 32f, 192f);
 		
 		float y = 72f;
-		for(XboxOneButton button : buttonMessages.keys()) {
+		for(XboxButton button : buttonMessages.keys()) {
 			g.drawString(button.name() + ": " + buttonMessages.get(button), 256f, y);
 			y += 24f;
 		}
 	}
 
 	@Override
-	public void connected(XboxOneGamePad gamePad) {
+	public void connected(XboxGamePad gamePad) {
 		connected = true;
 	}
 
 	@Override
-	public void disconnected(XboxOneGamePad controller) {
+	public void disconnected(XboxGamePad controller) {
 		connected = false;
 	}
 
 	@Override
-	public boolean buttonDown(XboxOneGamePad controller, XboxOneButton button) {
+	public boolean buttonDown(XboxGamePad controller, XboxButton button) {
 		buttonMessages.put(button, "DOWN");
 		return false;
 	}
 
 	@Override
-	public boolean buttonUp(XboxOneGamePad controller, XboxOneButton button) {
+	public boolean buttonUp(XboxGamePad controller, XboxButton button) {
 		buttonMessages.put(button, "UP");
 		return false;
 	}
 
 	@Override
-	public boolean leftTriggerMoved(XboxOneGamePad controller, float value) {
+	public boolean leftTriggerMoved(XboxGamePad controller, float value) {
 		leftTrigger = value;
 		return false;
 	}
 
 	@Override
-	public boolean rightTriggerMoved(XboxOneGamePad controller, float value) {
+	public boolean rightTriggerMoved(XboxGamePad controller, float value) {
 		rightTrigger = value;
 		return false;
 	}
 
 	@Override
-	public boolean leftStickXMoved(XboxOneGamePad controller, float value) {
+	public boolean leftStickXMoved(XboxGamePad controller, float value) {
 		leftStickXAxis = value;
 		return false;
 	}
 
 	@Override
-	public boolean leftStickYMoved(XboxOneGamePad controller, float value) {
+	public boolean leftStickYMoved(XboxGamePad controller, float value) {
 		leftStickYAxis = value;
 		return false;
 	}
 
 	@Override
-	public boolean rightStickXMoved(XboxOneGamePad controller, float value) {
+	public boolean rightStickXMoved(XboxGamePad controller, float value) {
 		rightStickXAxis = value;
 		return false;
 	}
 
 	@Override
-	public boolean rightStickYMoved(XboxOneGamePad controller, float value) {
+	public boolean rightStickYMoved(XboxGamePad controller, float value) {
 		rightStickYAxis = value;
 		return false;
 	}
+
 }

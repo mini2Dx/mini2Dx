@@ -15,30 +15,28 @@
  ******************************************************************************/
 package org.mini2Dx.ui;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.badlogic.gdx.Input.Keys;
+import junit.framework.Assert;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.Platform;
+import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.input.GamePadType;
-import org.mini2Dx.core.input.button.XboxOneButton;
+import org.mini2Dx.core.input.button.XboxButton;
 import org.mini2Dx.ui.element.Container;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.listener.UiContainerListener;
 
-import com.badlogic.gdx.Input.Keys;
-import org.mini2Dx.core.assets.AssetManager;
-
-import junit.framework.Assert;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Unit tests for {@link UiContainer}
@@ -145,41 +143,41 @@ public class UiContainerTest implements UiContainerListener {
 	public void testBlocksButtonUpWhenButtonDownPreviouslyReceived() {
 		mockery.checking(new Expectations() {
 			{
-				exactly(2).of(container).hotkey(XboxOneButton.A);
+				exactly(2).of(container).hotkey(XboxButton.A);
 				will(returnValue(null));
 			}
 		});
 		
 		uiContainer.setActiveNavigation(container);
-		uiContainer.buttonDown(null, XboxOneButton.A);
-		Assert.assertEquals(true, uiContainer.buttonUp(null, XboxOneButton.A));
+		uiContainer.buttonDown(null, XboxButton.A);
+		Assert.assertEquals(true, uiContainer.buttonUp(null, XboxButton.A));
 	}
 	
 	@Test
 	public void testIgnoresButtonUpWhenNoActiveNavigation() {
-		uiContainer.buttonDown(null, XboxOneButton.A);
-		Assert.assertEquals(false, uiContainer.buttonUp(null, XboxOneButton.A));
+		uiContainer.buttonDown(null, XboxButton.A);
+		Assert.assertEquals(false, uiContainer.buttonUp(null, XboxButton.A));
 	}
 
 	@Test
 	public void testIgnoresButtonUpWhenButtonDownNotPreviouslyReceived() {
 		uiContainer.setActiveNavigation(container);
-		Assert.assertEquals(false, uiContainer.buttonUp(null, XboxOneButton.A));
+		Assert.assertEquals(false, uiContainer.buttonUp(null, XboxButton.A));
 	}
 	
 	@Test
 	public void testIgnoresRepeatedButtonUpEvents() {
 		mockery.checking(new Expectations() {
 			{
-				exactly(2).of(container).hotkey(XboxOneButton.A);
+				exactly(2).of(container).hotkey(XboxButton.A);
 				will(returnValue(null));
 			}
 		});
 		
 		uiContainer.setActiveNavigation(container);
-		uiContainer.buttonDown(null, XboxOneButton.A);
-		Assert.assertEquals(true, uiContainer.buttonUp(null, XboxOneButton.A));
-		Assert.assertEquals(false, uiContainer.buttonUp(null, XboxOneButton.A));
+		uiContainer.buttonDown(null, XboxButton.A);
+		Assert.assertEquals(true, uiContainer.buttonUp(null, XboxButton.A));
+		Assert.assertEquals(false, uiContainer.buttonUp(null, XboxButton.A));
 	}
 
 	@Override

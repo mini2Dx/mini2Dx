@@ -58,7 +58,7 @@ public class AudioUAT extends BasicGameScreen implements SoundCompletionListener
 	public void initialise(GameContainer gc) {
 		Mdx.audio.addSoundCompletionListener(this);
 		try {
-			sound = Mdx.audio.newSound(fileHandleResolver.resolve("sound.ogg"));
+			sound = Mdx.audio.newSound(fileHandleResolver.resolve("sounds/sound.ogg"));
 			music = Mdx.audio.newMusic(fileHandleResolver.resolve("music/music.ogg"));
 			music.setLooping(true);
 		} catch (IOException e) {

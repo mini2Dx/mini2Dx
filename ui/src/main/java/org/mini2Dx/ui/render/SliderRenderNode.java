@@ -180,7 +180,7 @@ public class SliderRenderNode extends RenderNode<Slider, SliderStyleRule> implem
 //				case "xboxOne-left":
 //					valueDeltaPerFrame = -element.getValueStep();
 //					break;
-//				case "xbox360-right":
+//				case "xbox-right":
 //				case "xboxOne-right":
 //					valueDeltaPerFrame = element.getValueStep();
 //					break;
@@ -191,11 +191,11 @@ public class SliderRenderNode extends RenderNode<Slider, SliderStyleRule> implem
 			if (element.isChangedOnBeginEvent()) {
 				GamePadEventTriggerParams controllerParams = (GamePadEventTriggerParams) eventTriggerParams;
 //				switch (controllerParams.getGamePadButton().getInternalName()) {
-//				case "xbox360-left":
+//				case "xbox-left":
 //				case "xboxOne-left":
 //					valueDeltaPerFrame = -element.getValueStep();
 //					break;
-//				case "xbox360-right":
+//				case "xbox-right":
 //				case "xboxOne-right":
 //					valueDeltaPerFrame = element.getValueStep();
 //					break;
@@ -216,11 +216,11 @@ public class SliderRenderNode extends RenderNode<Slider, SliderStyleRule> implem
 			if (!element.isChangedOnBeginEvent()) {
 				GamePadEventTriggerParams controllerParams = (GamePadEventTriggerParams) eventTriggerParams;
 //				switch (controllerParams.getGamePadButton().getInternalName()) {
-//				case "xbox360-left":
+//				case "xbox-left":
 //				case "xboxOne-left":
 //					element.setValue(element.getValue() - element.getValueStep());
 //					break;
-//				case "xbox360-right":
+//				case "xbox-right":
 //				case "xboxOne-right":
 //					element.setValue(element.getValue() + element.getValueStep());
 //					break;

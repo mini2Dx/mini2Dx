@@ -58,7 +58,7 @@ public class LibgdxAdvancedGamePad extends LibgdxGamePad {
 
 	@Override
 	public boolean isVibrating() {
-		return advancedController.isVibrating();
+		return advancedController.isVibrating() && vibrateStrength > 0f;
 	}
 
 	@Override

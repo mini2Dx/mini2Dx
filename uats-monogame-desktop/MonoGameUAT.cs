@@ -23,7 +23,7 @@ using org.mini2Dx.core.font;
 using org.mini2Dx.core.graphics;
 using org.mini2Dx.core.input;
 using org.mini2Dx.core.input.button;
-using org.mini2Dx.core.input.xbox360;
+using org.mini2Dx.core.input.xbox;
 using org.mini2Dx.core.util;
 using org.mini2Dx.gdx;
 using org.mini2Dx.tiled;
@@ -35,7 +35,7 @@ namespace mini2Dx_common_uats
 {
     class MonoGameUAT : org.mini2Dx.core.game.BasicGame, IDisposable
     {
-        private class UATInputProcessor : InputProcessor, Xbox360GamePadListener
+        private class UATInputProcessor : InputProcessor, XboxGamePadListener
         {
             private readonly MonoGameUAT game;
             private bool isShaderApplied;
@@ -204,59 +204,59 @@ namespace mini2Dx_common_uats
                 return false;
             }
 
-            public void connected(Xbox360GamePad xgp)
+            public void connected(XboxGamePad xgp)
             {
                 Console.WriteLine("connected({0})", xgp);
             }
 
-            public void disconnected(Xbox360GamePad xgp)
+            public void disconnected(XboxGamePad xgp)
             {
                 Console.WriteLine("disconnected({0})", xgp);
             }
 
-            public bool buttonDown(Xbox360GamePad xgp, Xbox360Button xb)
+            public bool buttonDown(XboxGamePad xgp, XboxButton xb)
             {
                 Console.WriteLine("buttonDown({0}, {1})", xgp, xb);
                 return false;
             }
 
-            public bool buttonUp(Xbox360GamePad xgp, Xbox360Button xb)
+            public bool buttonUp(XboxGamePad xgp, XboxButton xb)
             {
                 Console.WriteLine("buttonUp({0}, {1})", xgp, xb);
                 return false;
             }
 
-            public bool leftTriggerMoved(Xbox360GamePad xgp, float f)
+            public bool leftTriggerMoved(XboxGamePad xgp, float f)
             {
                 Console.WriteLine("leftTriggerMoved({0}, {1})", xgp, f);
                 return false;
             }
 
-            public bool rightTriggerMoved(Xbox360GamePad xgp, float f)
+            public bool rightTriggerMoved(XboxGamePad xgp, float f)
             {
                 Console.WriteLine("rightTriggerMoved({0}, {1})", xgp, f);
                 return false;
             }
 
-            public bool leftStickXMoved(Xbox360GamePad xgp, float f)
+            public bool leftStickXMoved(XboxGamePad xgp, float f)
             {
                 Console.WriteLine("leftStickXMoved({0}, {1})", xgp, f);
                 return false;
             }
 
-            public bool leftStickYMoved(Xbox360GamePad xgp, float f)
+            public bool leftStickYMoved(XboxGamePad xgp, float f)
             {
                 Console.WriteLine("leftStickYMoved({0}, {1})", xgp, f);
                 return false;
             }
 
-            public bool rightStickXMoved(Xbox360GamePad xgp, float f)
+            public bool rightStickXMoved(XboxGamePad xgp, float f)
             {
                 Console.WriteLine("rightStickXMoved({0}, {1})", xgp, f);
                 return false;
             }
 
-            public bool rightStickYMoved(Xbox360GamePad xgp, float f)
+            public bool rightStickYMoved(XboxGamePad xgp, float f)
             {
                 Console.WriteLine("rightStickYMoved({0}, {1})", xgp, f);
                 return false;
@@ -313,7 +313,7 @@ namespace mini2Dx_common_uats
             Mdx.audio.addMusicCompletionListener(new AudioCompletionListener());
             Mdx.audio.addSoundCompletionListener(new AudioCompletionListener());
 
-            Mdx.input.newXbox360GamePad((GamePad)Mdx.input.getGamePads().get(0)).addListener(new UATInputProcessor(this));
+            Mdx.input.newXboxGamePad((GamePad)Mdx.input.getGamePads().get(0)).addListener(new UATInputProcessor(this));
 
             sampleShader = Mdx.graphics.newShader("grayscaleShader");
             Mdx.graphicsContext.setFont(Mdx.fonts.newBitmapFont(Mdx.files.@internal("arial24.fnt")));

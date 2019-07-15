@@ -17,9 +17,9 @@ package org.mini2Dx.ui.gamepad;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.input.GamePadType;
-import org.mini2Dx.core.input.button.Xbox360Button;
-import org.mini2Dx.core.input.xbox360.Xbox360GamePad;
-import org.mini2Dx.core.input.xbox360.Xbox360GamePadAdapter;
+import org.mini2Dx.core.input.button.XboxButton;
+import org.mini2Dx.core.input.xbox.XboxGamePad;
+import org.mini2Dx.core.input.xbox.XboxGamePadAdapter;
 import org.mini2Dx.gdx.Input.Keys;
 import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.UiContainer;
@@ -27,11 +27,11 @@ import org.mini2Dx.ui.UiContainer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * {@link Xbox360GamePad} implementation of {@link GamePadUiInput}
+ * {@link XboxGamePad} implementation of {@link GamePadUiInput}
  */
-public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiInput<Xbox360Button> {
-	private static final String LOGGING_TAG = Xbox360UiInput.class.getSimpleName();
-	private static final String ID_PREFIX = Xbox360UiInput.class.getSimpleName() + "-";
+public class XboxUiInput extends XboxGamePadAdapter implements GamePadUiInput<XboxButton> {
+	private static final String LOGGING_TAG = XboxUiInput.class.getSimpleName();
+	private static final String ID_PREFIX = XboxUiInput.class.getSimpleName() + "-";
 	private static final AtomicInteger ID_GENERATOR = new AtomicInteger();
 	
 	private final String id;
@@ -41,7 +41,7 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 	private float stickRepeatTimer = 0.25f;
 	private float stickThreshold = 0.25f;
 	private boolean enabled = true;
-	private Xbox360Button actionButton = Xbox360Button.A;
+	private XboxButton actionButton = XboxButton.A;
 	private boolean debug = false;
 	
 	/* Internal fields */
@@ -52,7 +52,7 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 	private boolean left, right, up, down;
 	private boolean navigateWithDPad;
 
-	public Xbox360UiInput(UiContainer uiContainer) {
+	public XboxUiInput(UiContainer uiContainer) {
 		super();
 		this.id = ID_PREFIX + ID_GENERATOR.incrementAndGet();
 		
@@ -136,7 +136,7 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 	}
 
 	@Override
-	public boolean leftStickXMoved(Xbox360GamePad controller, float value) {
+	public boolean leftStickXMoved(XboxGamePad controller, float value) {
 		if(value < -stickThreshold) {
 			left = true;
 			right = false;
@@ -149,14 +149,14 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 		}
 		if(enabled) {
 			uiContainer.setLastInputSource(InputSource.CONTROLLER);
-			uiContainer.setLastGamePadType(GamePadType.XBOX_360);
+			uiContainer.setLastGamePadType(GamePadType.XBOX);
 			return uiContainer.getActiveNavigation() != null;
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean leftStickYMoved(Xbox360GamePad controller, float value) {
+	public boolean leftStickYMoved(XboxGamePad controller, float value) {
 		if(value < -stickThreshold) {
 			up = true;
 			down = false;
@@ -169,19 +169,19 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 		}
 		if(enabled) {
 			uiContainer.setLastInputSource(InputSource.CONTROLLER);
-			uiContainer.setLastGamePadType(GamePadType.XBOX_360);
+			uiContainer.setLastGamePadType(GamePadType.XBOX);
 			return uiContainer.getActiveNavigation() != null;
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean buttonDown(Xbox360GamePad controller, Xbox360Button button) {
+	public boolean buttonDown(XboxGamePad controller, XboxButton button) {
 		if(!enabled) {
 			return false;
 		}
 		uiContainer.setLastInputSource(InputSource.CONTROLLER);
-		uiContainer.setLastGamePadType(GamePadType.XBOX_360);
+		uiContainer.setLastGamePadType(GamePadType.XBOX);
 
 		if(navigateWithDPad) {
 			switch(button) {
@@ -202,12 +202,12 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 	}
 	
 	@Override
-	public boolean buttonUp(Xbox360GamePad controller, Xbox360Button button) {
+	public boolean buttonUp(XboxGamePad controller, XboxButton button) {
 		if(!enabled) {
 			return false;
 		}
 		uiContainer.setLastInputSource(InputSource.CONTROLLER);
-		uiContainer.setLastGamePadType(GamePadType.XBOX_360);
+		uiContainer.setLastGamePadType(GamePadType.XBOX);
 
 		if(navigateWithDPad) {
 			switch(button) {
@@ -279,12 +279,12 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 	}
 
 	@Override
-	public Xbox360Button getActionButton() {
+	public XboxButton getActionButton() {
 		return actionButton;
 	}
 
 	@Override
-	public void setActionButton(Xbox360Button actionButton) {
+	public void setActionButton(XboxButton actionButton) {
 		if(actionButton == null) {
 			return;
 		}
@@ -317,7 +317,7 @@ public class Xbox360UiInput extends Xbox360GamePadAdapter implements GamePadUiIn
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Xbox360UiInput other = (Xbox360UiInput) obj;
+		XboxUiInput other = (XboxUiInput) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

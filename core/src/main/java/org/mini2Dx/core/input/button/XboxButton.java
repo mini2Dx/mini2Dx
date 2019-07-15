@@ -15,42 +15,33 @@
  ******************************************************************************/
 package org.mini2Dx.core.input.button;
 
-public enum XboxOneButton implements GamePadButton {
-	UP("xboxOne-up"),
-	DOWN("xboxOne-down"),
-	LEFT("xboxOne-left"),
-	RIGHT("xboxOne-right"),
+public enum XboxButton implements GamePadButton {
+	UP("xbox-up"),
+	DOWN("xbox-down"),
+	LEFT("xbox-left"),
+	RIGHT("xbox-right"),
 
-	MENU("xboxOne-menu"),
-	VIEW("xboxOne-view"),
-	HOME("xboxOne-home"),
+	START("xbox-start"),
+	BACK("xbox-back"),
+	GUIDE("xbox-guide"),
 
-	LEFT_STICK("xboxOne-left-stick"),
-	RIGHT_STICK("xboxOne-right-stick"),
+	LEFT_STICK("xbox-left-stick"),
+	RIGHT_STICK("xbox-right-stick"),
 
-	LEFT_SHOULDER("xboxOne-left-shoulder"),
-	RIGHT_SHOULDER("xboxOne-right-shoulder"),
-	LEFT_TRIGGER("xboxOne-left-trigger"),
-	RIGHT_TRIGGER("xboxOne-right-trigger"),
+	LEFT_SHOULDER("xbox-left-shoulder"),
+	RIGHT_SHOULDER("xbox-right-shoulder"),
+	LEFT_TRIGGER("xbox-left-trigger"),
+	RIGHT_TRIGGER("xbox-right-trigger"),
 
-	A("xboxOne-a"),
-	B("xboxOne-b"),
-	X("xboxOne-x"),
-	Y("xboxOne-y");
+	A("xbox-a"),
+	B("xbox-b"),
+	X("xbox-x"),
+	Y("xbox-y");
 
 	private final String internalName;
 
-	XboxOneButton(String internalName) {
+	XboxButton(String internalName) {
 		this.internalName = internalName;
-	}
-
-	public static XboxOneButton fromInternalName(String value) {
-		for(XboxOneButton button : XboxOneButton.values()) {
-			if(button.getInternalName().equals(value)) {
-				return button;
-			}
-		}
-		return null;
 	}
 
 	@Override
@@ -61,5 +52,14 @@ public enum XboxOneButton implements GamePadButton {
 	@Override
 	public boolean equals(GamePadButton gamePadButton) {
 		return internalName.equals(gamePadButton.getInternalName());
+	}
+
+	public static XboxButton fromInternalName(String value) {
+		for(XboxButton button : XboxButton.values()) {
+			if(button.getInternalName().equals(value)) {
+				return button;
+			}
+		}
+		return null;
 	}
 }
