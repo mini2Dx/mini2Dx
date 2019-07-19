@@ -46,6 +46,20 @@ public class LibgdxFileHandle implements FileHandle {
 	}
 
 	@Override
+	public FileHandle normalizedHandle() {
+		switch(type())
+		{
+		default:
+		case INTERNAL:
+			return Mdx.files.internal(normalize());
+		case EXTERNAL:
+			return Mdx.files.external(normalize());
+		case LOCAL:
+			return Mdx.files.local(normalize());
+		}
+	}
+
+	@Override
 	public String name() {
 		return fileHandle.name();
 	}

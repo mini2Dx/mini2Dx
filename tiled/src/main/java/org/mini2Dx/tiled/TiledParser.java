@@ -624,7 +624,7 @@ public class TiledParser implements TiledParserNotifier {
 	}
 
 	private TiledObjectTemplate loadObjectTemplate(String path, FileHandle tmxFile) throws IOException {
-		final FileHandle txFile = tmxFile.sibling(path);
+		final FileHandle txFile = tmxFile.sibling(path).normalizedHandle();
 		Element root = xmlReader.parse(txFile.reader());
 		Element tilesetElement = root.getChildByName("tileset");
 		Element objectElement = root.getChildByName("object");

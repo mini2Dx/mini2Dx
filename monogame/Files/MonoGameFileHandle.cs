@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using File = System.IO.File;
 using IOException = java.io.IOException;
 
@@ -72,8 +73,32 @@ namespace monogame.Files
 
         public string normalize()
         {
-            //throw new NotImplementedException(); //You can't normalize a path in C#, see dotnet/corefx#30701 and dotnet/corefx#4208.
-            return path();
+            string path = this.path();
+            while (path.Contains(".."))
+            {
+                path = Regex.Replace(path, "[^\\/]+\\/\\.\\.\\/", "");
+            }
+            while (path.Contains("./"))
+            {
+                path = Regex.Replace(path, "\\.\\/", "");
+            }
+            return path;
+        }
+
+        public FileHandle normalizedHandle()
+        {
+            if(type().Equals(FileType.INTERNAL))
+            {
+                return Mdx.files.@internal(normalize());
+            }
+            else if (type().Equals(FileType.EXTERNAL))
+            {
+                return Mdx.files.external(normalize());
+            }
+            else
+            {
+                return Mdx.files.local(normalize());
+            }
         }
 
         public string name()

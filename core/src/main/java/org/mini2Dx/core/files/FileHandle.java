@@ -33,6 +33,12 @@ public interface FileHandle {
 	public String normalize();
 
 	/**
+	 * Returns this {@link FileHandle} resolved with a normalised path
+	 * @return
+	 */
+	public FileHandle normalizedHandle();
+
+	/**
 	 * @return the name of the file, without any parent paths.
 	 */
 	public String name();
