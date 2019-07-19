@@ -47,8 +47,8 @@ public class TsxTilesetSource extends TilesetSource {
 
 	public TsxTilesetSource(FileHandle tmxPath, String tsxPath) {
 		super();
-		final FileHandle tsxFileHandle = tmxPath.sibling(tsxPath);
-		this.tsxPath = tsxFileHandle.normalize();
+		final FileHandle tsxFileHandle = tmxPath.sibling(tsxPath).normalizedHandle();
+		this.tsxPath = tsxFileHandle.path();
 
 		if (!TILESETS.containsKey(this.tsxPath)) {
 			try {
