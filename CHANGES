@@ -1,6 +1,7 @@
 [2.0.0-SNAPSHOT]
 ...In development...
 - De-coupled LibGDX to allow for other runtime implementations
+- Interpolation is now automatically handled by framework
 - Added MonoGame runtime for consoles
 - Added task executor API to use platform-specific thread implementations
 - Added (optional) object pooling for geometry classes
