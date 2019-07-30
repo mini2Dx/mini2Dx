@@ -94,7 +94,7 @@
       <Version>3.7.1.189</Version>
     </PackageReference>
     <PackageReference Include="SpriteFontPlus.MonoGame">
-      <Version>0.6.5.20</Version>
+      <Version>0.7.0.22</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

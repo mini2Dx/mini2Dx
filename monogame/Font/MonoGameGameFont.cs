@@ -35,22 +35,30 @@ namespace monogame.Font
         private FontGlyphLayout _sharedFontGlyphLayout;
         private float _capHeight;
         private Microsoft.Xna.Framework.Color _color = Microsoft.Xna.Framework.Color.Black;
-        private MonoGameFileHandle _fileHandle;
+        private readonly MonoGameFileHandle _fileHandle;
+
+        private MonoGameGameFont()
+        {
+            
+        }
 
         public MonoGameGameFont(MonoGameFileHandle fileHandle)
         {
             _fileHandle = fileHandle;
         }
 
-        public MonoGameGameFont(MonoGameFileHandle fntFileHandle, MonoGameFileHandle textureFileHandle)
+        public static MonoGameGameFont loadBitmapFont(MonoGameFileHandle fntFileHandle)
         {
-            _spriteFont = BMFontLoader.LoadXml(fntFileHandle.readString(), ((MonoGameTexture)Mdx.graphics.newTexture(textureFileHandle)).texture2D);
-            _sharedFontGlyphLayout = newGlyphLayout();
-            _capHeight = _spriteFont.MeasureString("A").Y;
+            var font = new MonoGameGameFont();
+            font._spriteFont = BMFontLoader.LoadXml(fntFileHandle.readString(), textureFileName => ((MonoGameTexture)Mdx.graphics.newTexture(fntFileHandle.parent().child(textureFileName))).texture2D);
+            font._sharedFontGlyphLayout = font.newGlyphLayout();
+            font._capHeight = font._spriteFont.GetGlyphs()['A'].BoundsInTexture.Height;
+            return font;
         }
 
         public MonoGameGameFont(MonoGameFileHandle ttfFileHandle, int size)
         {
+            size++;
             _spriteFont = TtfFontBaker.Bake(ttfFileHandle.readBytes(),
                 size,
                 1024,
@@ -64,7 +72,7 @@ namespace monogame.Font
                 }
             ).CreateSpriteFont(((MonoGameGraphics)Mdx.graphicsContext)._graphicsDevice);
             _sharedFontGlyphLayout = newGlyphLayout();
-            _capHeight = size;
+            _capHeight = _spriteFont.GetGlyphs()['A'].BoundsInTexture.Height;
         }
 
         public bool load(AssetManager am)
@@ -76,7 +84,7 @@ namespace monogame.Font
         {
             _spriteFont = _fileHandle.loadFromContentManager<SpriteFont>();
             _sharedFontGlyphLayout = newGlyphLayout();
-            _capHeight = _spriteFont.MeasureString("A").Y;
+            _capHeight = _spriteFont.GetGlyphs()['A'].BoundsInTexture.Height;
             return true;
         }
 

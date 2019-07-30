@@ -38,7 +38,7 @@ namespace monogame
 
         public override GameFont newBitmapFont(FileHandle fh)
         {
-            return new MonoGameGameFont((MonoGameFileHandle) fh, ((MonoGameFileHandle)fh.parent()).firstMatchingChildFile(fh.nameWithoutExtension() + "_"));
+            return MonoGameGameFont.loadBitmapFont((MonoGameFileHandle) fh);
         }
 
         public override GameFont newTrueTypeFont(FileHandle fh)
