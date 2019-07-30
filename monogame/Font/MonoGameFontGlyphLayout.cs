@@ -35,15 +35,23 @@ namespace monogame.Font
         
         public void setText(CharSequence cs)
         {
-            _textSize = _font._spriteFont.MeasureString(cs.toString());
+            _textSize.X = _font._spriteFont.MeasureString(cs.toString()).X;
+            _textSize.Y = _font.getCapHeight();
+            for (var i = 0; i < cs.length(); i++)
+            {
+                if (cs.charAt(i) == '\n' && i + 1 < cs.length())
+                {
+                    _textSize.Y += _font.getCapHeight();
+                }
+            }
         }
 
         public void setText(CharSequence cs, Color color, float targetWidth, int align, bool wrap)
         {
-            setText(_font.wrapText(cs.toString(), targetWidth));
+            setText(_font.wrapText(cs.toString(), targetWidth + 1));
             if (!wrap)
             {
-                _textSize.Y = _font.getLineHeight();
+                _textSize.Y = _font.getCapHeight();
             }
         }
 
