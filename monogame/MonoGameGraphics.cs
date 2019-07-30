@@ -630,13 +630,17 @@ namespace monogame
 
         public void setClip(org.mini2Dx.core.geom.Rectangle clip)
         {
+            if (_beginSpriteBatchCalled)
+            {
+                flush();
+            }
             _rasterizerState = new RasterizerState() { ScissorTestEnable = true };
             _clipRectangle = clip;
             var rect = _graphicsDevice.ScissorRectangle;
-            rect.X = (int) clip.getX();
-            rect.Y = (int) clip.getY();
-            rect.Width = (int) clip.getWidth();
-            rect.Height = (int) clip.getHeight();
+            rect.X = (int) (clip.getX() * _scale.X);
+            rect.Y = (int) (clip.getY() * _scale.Y);
+            rect.Width = (int) (clip.getWidth() * _scale.X);
+            rect.Height = (int) (clip.getHeight() * _scale.Y);
             _graphicsDevice.ScissorRectangle = rect;
             if (_beginSpriteBatchCalled)
             {
