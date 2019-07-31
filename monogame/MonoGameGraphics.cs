@@ -635,11 +635,16 @@ namespace monogame
             {
                 endSpriteBatch();
             }
-            _rasterizerState = new RasterizerState() { ScissorTestEnable = true };
+
+            if (!_rasterizerState.ScissorTestEnable)
+            {
+                _rasterizerState = new RasterizerState{ScissorTestEnable = true};
+            }
+
             _clipRectangle = clip;
             var rect = _graphicsDevice.ScissorRectangle;
-            rect.X = (int) (clip.getX() * _scale.X + _translation.X);
-            rect.Y = (int) (clip.getY() * _scale.Y + _translation.Y);
+            rect.X = (int) (clip.getX() * _scale.X - _translation.X);
+            rect.Y = (int) (clip.getY() * _scale.Y - _translation.Y);
             rect.Width = (int) (clip.getWidth() * _scale.X);
             rect.Height = (int) (clip.getHeight() * _scale.Y);
             _graphicsDevice.ScissorRectangle = rect;
@@ -656,24 +661,21 @@ namespace monogame
 
         public org.mini2Dx.core.geom.Rectangle removeClip()
         {
-            if (_rasterizerState.ScissorTestEnable)
+            if (!_rasterizerState.ScissorTestEnable)
             {
-                var wasSpriteBatchEnded = _beginSpriteBatchCalled;
-                if (_beginSpriteBatchCalled)
-                {
-                    endSpriteBatch();
-                }
+                return null;
+            }
+            var wasSpriteBatchEnded = _beginSpriteBatchCalled;
+            if (_beginSpriteBatchCalled)
+            {
+                endSpriteBatch();
+            }
                 
-                _rasterizerState = new RasterizerState() { ScissorTestEnable = false };
+            _rasterizerState = new RasterizerState{ ScissorTestEnable = false };
 
-                if (wasSpriteBatchEnded)
-                {
-                    beginSpriteBatch();
-                }
-
-                var oldClip = _clipRectangle;
-                _clipRectangle = new org.mini2Dx.core.geom.Rectangle(0, 0, getViewportWidth(), getViewportHeight());
-                return oldClip;
+            if (wasSpriteBatchEnded)
+            {
+                beginSpriteBatch();
             }
 
             return _clipRectangle;

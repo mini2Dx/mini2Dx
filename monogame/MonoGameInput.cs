@@ -137,7 +137,7 @@ namespace monogame
             if (_previousMouseState.ScrollWheelValue != _currentMouseState.ScrollWheelValue)
             {
                 _inputProcessor.scrolled(
-                    Math.Sign(_currentMouseState.ScrollWheelValue - _previousMouseState.ScrollWheelValue));
+                    -Math.Sign(_currentMouseState.ScrollWheelValue - _previousMouseState.ScrollWheelValue));
             }
 
             if (_previousMouseState.LeftButton != _currentMouseState.LeftButton)
