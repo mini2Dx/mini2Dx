@@ -27,6 +27,7 @@ import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
+import org.mini2Dx.tiled.renderer.StaticTileRenderer;
 import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
@@ -111,9 +112,65 @@ public class SpriteUAT extends BasicGameScreen {
 				spriteFlipHVRegion.isFlipX() + "-" + spriteFlipHVRegion.isFlipY(), xPosition, yPosition);
 		yPosition += g.getFont().getLineHeight() + MARGIN;
 		g.drawSprite(spriteFlipHVRegion, xPosition, yPosition);
+		yPosition += spriteFlipHVRegion.getRegionHeight() + MARGIN;
+
+		g.drawString("(6) drawTileImage of (2) hvd", xPosition, yPosition);
+		yPosition += g.getFont().getLineHeight() + MARGIN;
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, false, false, false);
+		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
+
+		g.drawString("(7) drawTileImage of (3) hvd", xPosition, yPosition);
+		yPosition += g.getFont().getLineHeight() + MARGIN;
+		StaticTileRenderer.drawTileImage(g, spriteFlipHRegion, (int) xPosition, (int) yPosition, false, false, false);
+		yPosition += spriteFlipHRegion.getRegionHeight() + MARGIN;
+
+		g.drawString("(8) drawTileImage of (4) hvd", xPosition, yPosition);
+		yPosition += g.getFont().getLineHeight() + MARGIN;
+		StaticTileRenderer.drawTileImage(g, spriteFlipVRegion, (int) xPosition, (int) yPosition, false, false, false);
 
 		xPosition += gc.getWidth() / 2;
 		yPosition = MARGIN;
+
+		g.drawString("(9) drawTileImage of (5) hvd", xPosition, yPosition);
+		yPosition += g.getFont().getLineHeight() + MARGIN;
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, false, false, false);
+		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
+
+		g.drawString("(10) drawTileImage of (2) Hvd", xPosition, yPosition);
+		yPosition += g.getFont().getLineHeight() + MARGIN;
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, true, false, false);
+		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
+
+		g.drawString("(11) drawTileImage of (2) hVd", xPosition, yPosition);
+		yPosition += g.getFont().getLineHeight() + MARGIN;
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, false, true, false);
+		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
+
+		g.drawString("(12) drawTileImage of (2) hvD", xPosition, yPosition);
+		yPosition += g.getFont().getLineHeight() + MARGIN;
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, false, false, true);
+		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
+
+		g.drawString("(13) drawTileImage of (2) HVd", xPosition, yPosition);
+		yPosition += g.getFont().getLineHeight() + MARGIN;
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, true, true, false);
+		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
+
+		g.drawString("(14) drawTileImage of (2) HvD", xPosition, yPosition);
+		yPosition += g.getFont().getLineHeight() + MARGIN;
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, true, false, true);
+		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
+
+		g.drawString("(15) drawTileImage of (2) hVD", xPosition, yPosition);
+		yPosition += g.getFont().getLineHeight() + MARGIN;
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, false, true, true);
+		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
+
+		g.drawString("(16) drawTileImage of (2) HVD", xPosition, yPosition);
+		yPosition += g.getFont().getLineHeight() + MARGIN;
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, true, true, true);
+		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
+
 	}
 
 	@Override
