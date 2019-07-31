@@ -29,7 +29,7 @@ namespace monogame.Graphics
         
         public MonoGameSprite()
         {
-            
+            setOriginCenter();
         }
 
         public MonoGameSprite(Texture texture) : this(texture, texture.getWidth(), texture.getHeight()){}
@@ -40,6 +40,7 @@ namespace monogame.Graphics
             srcY, srcWidth, srcHeight)
         {
             setBounds(srcX, srcY, srcWidth, srcHeight);
+            setOriginCenter();
         }
 
         public MonoGameSprite(TextureRegion region) : this(region, region.getRegionWidth(), region.getRegionHeight()){}
@@ -49,6 +50,7 @@ namespace monogame.Graphics
         public MonoGameSprite(TextureRegion region, int x, int y, int width, int height) : base(region, x, y, width, height)
         {
             setFlip(region.isFlipX(), region.isFlipY());
+            setOriginCenter();
         }
         
         public MonoGameSprite(TextureAtlasRegion region) : this(region, region.getRegionWidth(), region.getRegionHeight()) {}
@@ -62,6 +64,7 @@ namespace monogame.Graphics
             {
                 rotate90(false);
             }
+            setOriginCenter();
         }
         
         public void set(Sprite s)
@@ -136,8 +139,7 @@ namespace monogame.Graphics
 
         public void setOriginCenter()
         {
-            _originX = _width / 2;
-            _originY = _height / 2;
+            setOrigin(getRegionWidth() / 2f, getRegionHeight() / 2f);
         }
 
         public float getRotation()

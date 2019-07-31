@@ -630,21 +630,22 @@ namespace monogame
 
         public void setClip(org.mini2Dx.core.geom.Rectangle clip)
         {
+            var wasSpriteBatchEnded = _beginSpriteBatchCalled;
             if (_beginSpriteBatchCalled)
             {
-                flush();
+                endSpriteBatch();
             }
             _rasterizerState = new RasterizerState() { ScissorTestEnable = true };
             _clipRectangle = clip;
             var rect = _graphicsDevice.ScissorRectangle;
-            rect.X = (int) (clip.getX() * _scale.X);
-            rect.Y = (int) (clip.getY() * _scale.Y);
+            rect.X = (int) (clip.getX() * _scale.X + _translation.X);
+            rect.Y = (int) (clip.getY() * _scale.Y + _translation.Y);
             rect.Width = (int) (clip.getWidth() * _scale.X);
             rect.Height = (int) (clip.getHeight() * _scale.Y);
             _graphicsDevice.ScissorRectangle = rect;
-            if (_beginSpriteBatchCalled)
+            if (wasSpriteBatchEnded)
             {
-                flush();
+                beginSpriteBatch();
             }
         }
 
@@ -657,11 +658,17 @@ namespace monogame
         {
             if (_rasterizerState.ScissorTestEnable)
             {
-                _rasterizerState = new RasterizerState() { ScissorTestEnable = false };
-
+                var wasSpriteBatchEnded = _beginSpriteBatchCalled;
                 if (_beginSpriteBatchCalled)
                 {
-                    flush();
+                    endSpriteBatch();
+                }
+                
+                _rasterizerState = new RasterizerState() { ScissorTestEnable = false };
+
+                if (wasSpriteBatchEnded)
+                {
+                    beginSpriteBatch();
                 }
 
                 var oldClip = _clipRectangle;

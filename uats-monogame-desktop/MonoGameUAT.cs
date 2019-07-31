@@ -48,87 +48,73 @@ namespace mini2Dx_common_uats
 
             public bool keyDown(int keycode)
             {
-                if (keycode == Input.Keys.ESCAPE)
+                switch (keycode)
                 {
-                    Console.WriteLine("Exiting...");
-                    game.exit();
-                }
-                else if (keycode == Input.Keys.S)
-                {
-                    if (isShaderApplied)
-                    {
-                        Mdx.graphicsContext.clearShader();
-                    }
-                    else
-                    {
-                        Mdx.graphicsContext.setShader(game.sampleShader);
-                    }
+                    case Input.Keys.ESCAPE:
+                        Console.WriteLine("Exiting...");
+                        game.exit();
+                        break;
+                    case Input.Keys.S:
+                        if (isShaderApplied)
+                        {
+                            Mdx.graphicsContext.clearShader();
+                        }
+                        else
+                        {
+                            Mdx.graphicsContext.setShader(game.sampleShader);
+                        }
 
-                    isShaderApplied = !isShaderApplied;
-                }
-                else if (keycode == Input.Keys.C)
-                {
-                    if (isClipApplied)
-                    {
-                        Mdx.graphicsContext.removeClip();
-                    }
-                    else
-                    {
-                        Mdx.graphicsContext.setClip(game.sampleClipRectangle);
-                    }
+                        isShaderApplied = !isShaderApplied;
+                        break;
 
-                    isClipApplied = !isClipApplied;
-                }
-                else if (keycode == Input.Keys.Z)
-                {
-                    game.sampleFontCache.clear();
-                }
-                else if (keycode == Input.Keys.NUM_1)
-                {
-                    game.sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400, 165, 100, Align.LEFT, true);
-                }
-                else if (keycode == Input.Keys.NUM_2)
-                {
-                    game.sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 165, 100, Align.CENTER, true);
-                }
-                else if (keycode == Input.Keys.NUM_3)
-                {
-                    game.sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 165, 100, Align.RIGHT, true);
-                }
-                else if (keycode == Input.Keys.NUM_4)
-                {
-                    if (((MonoGameColor)game.sampleFontCache.getColor()).toMonoGameColor() == Color.White)
-                    {
+                    case Input.Keys.C:
+                        if (isClipApplied)
+                        {
+                            Mdx.graphicsContext.removeClip();
+                        }
+                        else
+                        {
+                            Mdx.graphicsContext.setClip(game.sampleClipRectangle);
+                        }
+
+                        isClipApplied = !isClipApplied;
+                        break;
+
+                    case Input.Keys.Z:
+                        game.sampleFontCache.clear();
+                        break;
+                    case Input.Keys.NUM_1:
+                        game.sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400, 165, 100, Align.LEFT, true);
+                        break;
+                    case Input.Keys.NUM_2:
+                        game.sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 165, 100, Align.CENTER, true);
+                        break;
+                    case Input.Keys.NUM_3:
+                        game.sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 165, 100, Align.RIGHT, true);
+                        break;
+                    case Input.Keys.NUM_4 when ((MonoGameColor)game.sampleFontCache.getColor()).toMonoGameColor() == Color.White:
                         game.sampleFontCache.setColor(new MonoGameColor(Color.Blue));
-                    }
-                    else
-                    {
+                        break;
+                    case Input.Keys.NUM_4:
                         game.sampleFontCache.setColor(new MonoGameColor(Color.White));
-                    }
-                }
-                else if (keycode == Input.Keys.NUM_5)
-                {
-                    if (((MonoGameColor)game.sampleFontCache.getColor()).toMonoGameColor() == Color.White)
-                    {
+                        break;
+                    case Input.Keys.NUM_5 when ((MonoGameColor)game.sampleFontCache.getColor()).toMonoGameColor() == Color.White:
                         game.sampleFontCache.setAllColors(new MonoGameColor(Color.Blue));
-                    }
-                    else
-                    {
+                        break;
+                    case Input.Keys.NUM_5:
                         game.sampleFontCache.setAllColors(new MonoGameColor(Color.White));
-                    }
-                }
-                else if (keycode == Input.Keys.NUM_6)
-                {
-                    if (isAlphaChanged)
-                    {
-                        game.sampleFontCache.setAllAlphas(1);
-                    }
-                    else
-                    {
-                        game.sampleFontCache.setAllAlphas(0.2f);
-                    }
-
-                    isAlphaChanged = !isAlphaChanged;
+                        break;
+                    case Input.Keys.NUM_6:
+                        if (isAlphaChanged)
+                        {
+                            game.sampleFontCache.setAllAlphas(1);
+                        }
+                        else
+                        {
+                            game.sampleFontCache.setAllAlphas(0.2f);
+                        }
+                        isAlphaChanged = !isAlphaChanged;
+                        break;
                 }
                 Console.WriteLine("keyDown({0})", keycode);
                 return false;
