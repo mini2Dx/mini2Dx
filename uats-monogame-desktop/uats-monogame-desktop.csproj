@@ -7,7 +7,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{EC789EA9-7450-46D2-A4FB-08A5E9ABD902}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>mini2Dx_common_uats</RootNamespace>
     <AssemblyName>mini2Dx-common-uats</AssemblyName>

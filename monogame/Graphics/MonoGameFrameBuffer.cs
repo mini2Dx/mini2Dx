@@ -40,21 +40,21 @@ namespace monogame.Graphics
 
         public void begin()
         {
-            ((MonoGameGraphics)Mdx.graphicsContext).endSpriteBatch();
+            ((MonoGameGraphics)Mdx.graphicsContext).endRendering();
             bind();
             Mdx.graphicsContext.clearContext();
             ((MonoGameGraphics)Mdx.graphicsContext)._gameWidth = _renderTarget.Width;
             ((MonoGameGraphics)Mdx.graphicsContext)._gameHeight = _renderTarget.Height;
-            ((MonoGameGraphics)Mdx.graphicsContext).beginSpriteBatch();
+            ((MonoGameGraphics)Mdx.graphicsContext).beginRendering();
         }
 
         public void end()
         {
-            ((MonoGameGraphics)Mdx.graphicsContext).endSpriteBatch();
+            ((MonoGameGraphics)Mdx.graphicsContext).endRendering();
             unbind();
             ((MonoGameGraphics)Mdx.graphicsContext)._gameWidth = Mdx.graphicsContext.getWindowWidth();
             ((MonoGameGraphics)Mdx.graphicsContext)._gameHeight = Mdx.graphicsContext.getWindowHeight();
-            ((MonoGameGraphics)Mdx.graphicsContext).beginSpriteBatch();
+            ((MonoGameGraphics)Mdx.graphicsContext).beginRendering();
         }
 
         public void bind()

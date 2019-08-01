@@ -61,6 +61,7 @@ namespace monogame.Font
             _graphicsDevice.SetRenderTarget((RenderTarget2D) _gameFontCache.texture2D);
             _spriteBatch.Begin();
             _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext)._currentRenderTarget);
+            ((MonoGameGraphics)Mdx.graphicsContext).updateClip();
         }
 
         private void endSpriteBatch()
@@ -68,6 +69,7 @@ namespace monogame.Font
             _graphicsDevice.SetRenderTarget((RenderTarget2D)_gameFontCache.texture2D);
             _spriteBatch.End();
             _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext)._currentRenderTarget);
+            ((MonoGameGraphics)Mdx.graphicsContext).updateClip();
         }
 
         public void clear()

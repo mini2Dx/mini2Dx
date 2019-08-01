@@ -14,6 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using monogame.Graphics;
@@ -34,7 +35,9 @@ namespace monogame
 {
     public class MonoGameGraphics : org.mini2Dx.core.Graphics
     {
-        private static readonly BlendState _defaultBlending = BlendState.NonPremultiplied;
+        private static readonly BlendState DefaultBlending = BlendState.NonPremultiplied;
+        private static readonly RasterizerState RasterizerClipping = new RasterizerState{ScissorTestEnable = true};
+        private static readonly RasterizerState RasterizerNoClipping = new RasterizerState{ScissorTestEnable = false};
         
         internal readonly SpriteBatch _spriteBatch;
         internal readonly GraphicsDevice _graphicsDevice;
@@ -50,12 +53,12 @@ namespace monogame
         private TextureFilter _currentMagFilter = TextureFilter.PIXEL;
         private TextureAddressMode _currentUMode = TextureAddressMode.CLAMP;
         private TextureAddressMode _currentVMode = TextureAddressMode.CLAMP;
-        private bool _beginSpriteBatchCalled;
+        private bool _isRendering;
         private GameFont _font;
         private long _frameId;
         internal RenderTarget2D _currentRenderTarget;
         private readonly MonoGameShapeRenderer _shapeRenderer;
-        private BlendState _currentBlending = _defaultBlending;
+        private BlendState _currentBlending = DefaultBlending;
         private Mini2DxBlendFunction _srcFunction = Mini2DxBlendFunction.SRC_ALPHA, _dstFunction = Mini2DxBlendFunction.ONE_MINUS_SRC_ALPHA;
         private bool _isBlending = true;
         private Matrix _transformationMatrix;
@@ -86,7 +89,7 @@ namespace monogame
             _graphicsDevice = graphicsDevice;
             _clipRectangle = new org.mini2Dx.core.geom.Rectangle(0, 0, getWindowWidth(), getWindowHeight());
             _shapeRenderer = new MonoGameShapeRenderer(graphicsDevice, (MonoGameColor) _setColor, _spriteBatch);
-            _rasterizerState = new RasterizerState {ScissorTestEnable = false};
+            _rasterizerState = RasterizerNoClipping;
             _graphicsDevice.ScissorRectangle = new Rectangle();
             _font = Mdx.fonts.defaultFont();
             updateFilter();
@@ -100,11 +103,8 @@ namespace monogame
                 AddressU = MonoGameGraphicsHelpers.convertTextureAddressMode(_currentUMode),
                 AddressV = MonoGameGraphicsHelpers.convertTextureAddressMode(_currentVMode)
             };
-
-            if (_beginSpriteBatchCalled)
-            {
-                flush();
-            }
+            
+            endRendering();
         }
 
         private void updateFilter()
@@ -118,27 +118,40 @@ namespace monogame
 
             _samplerState = newSamplerState;
 
-            if (_beginSpriteBatchCalled)
-            {
-                flush();
-            }
+            endRendering();
         }
 
         private void updateBlending()
         {
-            _currentBlending = _isBlending ? MonoGameGraphicsHelpers.convertBlending(_srcFunction, _dstFunction) : _defaultBlending;
+            _currentBlending = _isBlending ? MonoGameGraphicsHelpers.convertBlending(_srcFunction, _dstFunction) : DefaultBlending;
         }
 
-        internal void beginSpriteBatch()
+        internal void beginRendering()
         {
-            _spriteBatch.Begin(
-                SpriteSortMode.Deferred,
-                _currentBlending,
-                transformMatrix: CurrentTransformationMatrix,
-                effect: _currentShader,
-                rasterizerState: _rasterizerState,
-                samplerState: _samplerState);
-            _beginSpriteBatchCalled = true;
+            if (!_isRendering)
+            {
+                if (_rasterizerState.ScissorTestEnable)
+                {
+                    updateClip();
+                }
+                _spriteBatch.Begin(
+                    SpriteSortMode.Deferred,
+                    _currentBlending,
+                    transformMatrix: CurrentTransformationMatrix,
+                    effect: _currentShader,
+                    rasterizerState: _rasterizerState,
+                    samplerState: _samplerState);
+                _isRendering = true;
+            }
+        }
+
+        internal void endRendering()
+        {
+            if (_isRendering)
+            {
+                _isRendering = false;
+                _spriteBatch.End();
+            }
         }
 
         private Matrix createTransformationMatrix()
@@ -152,31 +165,25 @@ namespace monogame
                    Matrix.CreateRotationZ(MonoGameMathsUtil.degreeToRadian(_rotation)) *
                    Matrix.CreateTranslation(scaledRotationCenterX - scaledTranslationX, scaledRotationCenterY - scaledTranslationY, 0);
         }
-
-        internal void endSpriteBatch()
-        {
-            _spriteBatch.End();
-            _beginSpriteBatchCalled = false;
-        }
         
         public void preRender(int gameWidth, int gameHeight)
         {
-            _graphicsDevice.Clear(_backgroundColor);
             _gameWidth = gameWidth;
             _gameHeight = gameHeight;
             _frameId++;
-            beginSpriteBatch();
+            _graphicsDevice.Clear(_backgroundColor);
+            beginRendering();
         }
 
         public void postRender()
         {
-            endSpriteBatch();
+            endRendering();
             clearScaling();
             clearShader();
             setTranslation(0, 0);
             setRotation(0, 0, 0);
             removeClip();
-            _currentBlending = _defaultBlending;
+            _currentBlending = DefaultBlending;
         }
 
         public void clearContext()
@@ -186,51 +193,61 @@ namespace monogame
 
         public void drawLineSegment(float x1, float y1, float x2, float y2)
         {
+            beginRendering();
             _shapeRenderer.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
         }
 
         public void drawRect(float x, float y, float width, float height)
         {
+            beginRendering();
             _shapeRenderer.drawRect((int) x, (int) y, (int) width, (int) height);
         }
 
         public void fillRect(float x, float y, float width, float height)
         {
+            beginRendering();
             _shapeRenderer.fillRect((int) x, (int) y, (int) width, (int) height);
         }
 
         public void drawCircle(float centerX, float centerY, int radius)
         {
+            beginRendering();
             _shapeRenderer.drawCircle((int) centerX, (int) centerY, radius);
         }
 
         public void drawCircle(float centerX, float centerY, float radius)
         {
+            beginRendering();
             drawCircle(centerX, centerY, (int)radius);
         }
 
         public void fillCircle(float centerX, float centerY, int radius)
         {
+            beginRendering();
             _shapeRenderer.fillCircle((int) centerX, (int) centerY, radius);
         }
 
         public void fillCircle(float centerX, float centerY, float radius)
         {
+            beginRendering();
             fillCircle(centerX, centerY, (int) radius);
         }
 
         public void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3)
         {
+            beginRendering();
             _shapeRenderer.drawTriangle((int) x1, (int) y1, (int) x2, (int) y2, (int) x3, (int) y3);
         }
 
         public void fillTriangle(float x1, float y1, float x2, float y2, float x3, float y3)
         {
+            beginRendering();
             _shapeRenderer.fillTriangle((int) x1, (int) y1, (int) x2, (int) y2, (int) x3, (int) y3);
         }
 
         public void drawPolygon(float[] vertices)
         {
+            beginRendering();
             for (int i = 0; i < vertices.Length - 2; i+=2)
             {
                 drawLineSegment(vertices[i], vertices[i+1], vertices[i + 2], vertices[i + 3]);
@@ -240,6 +257,7 @@ namespace monogame
 
         public void fillPolygon(float[] vertices, short[] triangles)
         {
+            beginRendering();
             for (int i = 0; i < triangles.Length - 2; i+=3)
             {
                 fillTriangle(vertices[triangles[i] * 2], vertices[triangles[i] * 2 + 1], vertices[triangles[i + 1] * 2],
@@ -249,36 +267,43 @@ namespace monogame
 
         public void drawString(string text, float x, float y)
         {
+            beginRendering();
             _font.draw(this, text, x, y);
         }
 
         public void drawString(string text, float x, float y, float targetWidth)
         {
+            beginRendering();
             _font.draw(this, text, x, y, targetWidth);
         }
 
         public void drawString(string text, float x, float y, float targetWidth, int horizontalAlign)
         {
+            beginRendering();
             _font.draw(this, text, x, y, targetWidth, horizontalAlign, true);
         }
 
         public void drawTexture(Texture texture, float x, float y)
         {
+            beginRendering();
             drawTexture(texture, x, y, false);
         }
 
         public void drawTexture(Texture texture, float x, float y, bool flipY)
         {
+            beginRendering();
             drawTexture(texture, x, y, texture.getWidth(), texture.getHeight(), flipY);
         }
 
         public void drawTexture(Texture texture, float x, float y, float width, float height)
         {
+            beginRendering();
             drawTexture(texture, x, y, width, height, false);
         }
 
         public void drawTexture(Texture texture, float x, float y, float width, float height, bool flipY)
         {
+            beginRendering();
             if (texture.getUAddressMode() != _currentUMode || texture.getVAddressMode() != _currentVMode)
             {
                 _currentUMode = texture.getUAddressMode();
@@ -292,16 +317,19 @@ namespace monogame
 
         public void drawTextureRegion(TextureRegion textureRegion, float x, float y)
         {
+            beginRendering();
             drawTextureRegion(textureRegion, x, y, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
         }
 
         public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height)
         {
+            beginRendering();
             drawTextureRegion(textureRegion, x, y, width, height, 0);
         }
 
         public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height, float rotation)
         {
+            beginRendering();
             if (textureRegion.getTexture().getUAddressMode() != _currentUMode || textureRegion.getTexture().getVAddressMode() != _currentVMode)
             {
                 _currentUMode = textureRegion.getTexture().getUAddressMode();
@@ -318,21 +346,25 @@ namespace monogame
 
         public void drawShape(Shape shape)
         {
+            beginRendering();
             drawPolygon(shape.getPolygon().getVertices());
         }
 
         public void fillShape(Shape shape)
         {
+            beginRendering();
             fillPolygon(shape.getPolygon().getVertices(), shape.getPolygon().getTriangles().toArray());
         }
 
         public void drawSprite(Sprite sprite)
         {
+            beginRendering();
             drawSprite(sprite, sprite.getX(), sprite.getY());
         }
 
         public void drawSprite(Sprite sprite, float x, float y)
-        {        
+        {     
+            beginRendering();   
             if (sprite.getTexture().getUAddressMode() != _currentUMode || sprite.getTexture().getVAddressMode() != _currentVMode)
             {
                 _currentUMode = sprite.getTexture().getUAddressMode();
@@ -362,11 +394,13 @@ namespace monogame
 
         public void drawNinePatch(NinePatch ninePatch, float x, float y, float width, float height)
         {
+            beginRendering();
             ninePatch.render(this, x, y, width, height);
         }
 
         public void drawTilingDrawable(TilingDrawable tilingDrawable, float x, float y, float width, float height)
         {
+            beginRendering();
             tilingDrawable.draw(this, x, y, width, height);
         }
 
@@ -376,7 +410,7 @@ namespace monogame
             _rotationCenter.Y = y;
             _rotation = (_rotation + degrees) % 360;
             _isTransformationMatrixDirty = true;
-            flush();
+            endRendering();
         }
 
         public void setRotation(float degrees, float x, float y)
@@ -389,7 +423,7 @@ namespace monogame
             _scale.X *= scaleX;
             _scale.Y *= scaleY;
             _isTransformationMatrixDirty = true;
-            flush();
+            endRendering();
         }
 
         public void setScale(float scaleX, float scaleY)
@@ -397,7 +431,7 @@ namespace monogame
             _scale.X = scaleX;
             _scale.Y = scaleY;
             _isTransformationMatrixDirty = true;
-            flush();
+            endRendering();
         }
 
         public void clearScaling()
@@ -410,7 +444,7 @@ namespace monogame
             _translation.X += translateX;
             _translation.Y += translateY;
             _isTransformationMatrixDirty = true;
-            flush();
+            endRendering();
         }
 
         public void setTranslation(float translateX, float translateY)
@@ -418,7 +452,7 @@ namespace monogame
             _translation.X = translateX;
             _translation.Y = translateY;
             _isTransformationMatrixDirty = true;
-            flush();
+            endRendering();
         }
 
         public void setTint(Color tint)
@@ -442,14 +476,14 @@ namespace monogame
         {
             _isBlending = true;
             updateBlending();
-            flush();
+            endRendering();
         }
 
         public void disableBlending()
         {
             _isBlending = false;
             updateBlending();
-            flush();
+            endRendering();
         }
 
         public void setBlendFunction(Mini2DxBlendFunction srcFunc, Mini2DxBlendFunction dstFunc)
@@ -457,23 +491,20 @@ namespace monogame
             _srcFunction = srcFunc;
             _dstFunction = dstFunc;
             updateBlending();
-            flush();
+            endRendering();
         }
 
         public void clearBlendFunction()
         {
-            _currentBlending = _defaultBlending;
+            _currentBlending = DefaultBlending;
             updateBlending();
-            flush();
+            endRendering();
         }
 
         public void flush()
         {
-            if (_beginSpriteBatchCalled)
-            {
-                endSpriteBatch();
-                beginSpriteBatch();
-            }
+            endRendering();
+            beginRendering();
         }
 
         public int getLineHeight()
@@ -635,30 +666,30 @@ namespace monogame
                 removeClip();
                 return;
             }
-            
-            var wasSpriteBatchEnded = _beginSpriteBatchCalled;
-            
-            if (wasSpriteBatchEnded)
-            {
-                endSpriteBatch();
-            }
 
+            var wasClipping = _rasterizerState.ScissorTestEnable;
+            
             if (!_rasterizerState.ScissorTestEnable)
             {
-                _rasterizerState = new RasterizerState{ScissorTestEnable = true};
+                _rasterizerState = RasterizerClipping;
             }
 
             _clipRectangle = clip;
-            var rect = _graphicsDevice.ScissorRectangle;
-            rect.X = (int) (clip.getX() * _scale.X - _translation.X);
-            rect.Y = (int) (clip.getY() * _scale.Y - _translation.Y);
-            rect.Width = (int) (clip.getWidth() * _scale.X);
-            rect.Height = (int) (clip.getHeight() * _scale.Y);
-            _graphicsDevice.ScissorRectangle = rect;
-            if (wasSpriteBatchEnded)
+            updateClip();
+            if (!wasClipping)
             {
-                beginSpriteBatch();
+                endRendering();
             }
+        }
+
+        internal void updateClip()
+        {
+            var rect = _graphicsDevice.ScissorRectangle;
+            rect.X = (int) (_clipRectangle.getX() * _scale.X - _translation.X);
+            rect.Y = (int) (_clipRectangle.getY() * _scale.Y - _translation.Y);
+            rect.Width = (int) (_clipRectangle.getWidth() * _scale.X);
+            rect.Height = (int) (_clipRectangle.getHeight() * _scale.Y);
+            _graphicsDevice.ScissorRectangle = rect;
         }
 
         public void setClip(float x, float y, float width, float height)
@@ -672,18 +703,10 @@ namespace monogame
             {
                 return null;
             }
-            var wasSpriteBatchEnded = _beginSpriteBatchCalled;
-            if (_beginSpriteBatchCalled)
-            {
-                endSpriteBatch();
-            }
             
-            _rasterizerState = new RasterizerState{ ScissorTestEnable = false };
-
-            if (wasSpriteBatchEnded)
-            {
-                beginSpriteBatch();
-            }
+            endRendering();
+            
+            _rasterizerState = RasterizerNoClipping;
 
             var oldClip = _clipRectangle.copy();
             
@@ -732,11 +755,7 @@ namespace monogame
         public void setShader(Shader shader)
         {
             _currentShader = ((MonoGameShader) shader).shader;
-
-            if (_beginSpriteBatchCalled)
-            {
-                flush();
-            }
+            endRendering();
         }
 
         public void clearShader()

@@ -38,10 +38,9 @@ namespace monogame.Graphics
             _spriteBatch = spriteBatch;
             if (_sharedTexture == null)
             {
-                _sharedTexture = newTexture2D(1, 1);
+                _sharedTexture = new Texture2D(_graphicsDevice, 1, 1, false, SurfaceFormat.Color);
                 _sharedTexture.SetData(new[]{0xffffffff});
             }
-
         }
 
         public void setColor(MonoGameColor color)
@@ -58,11 +57,6 @@ namespace monogame.Graphics
             _spriteBatch.Draw(texture,
                 position, null, color, 0f, 
                 Vector2.Zero, scale, SpriteEffects.None, 0f);
-        }
-
-        private Texture2D newTexture2D(int width, int height)
-        {
-            return new Texture2D(_graphicsDevice, width, height, false, SurfaceFormat.Color);
         }
 
         public void drawLine(int x, int y, int x2, int y2)

@@ -28,7 +28,7 @@ namespace monogame
 
         public void error(string tag, string msg, Exception e)
         {
-            Console.Error.WriteLine($"D/[{tag}] {msg}\n{e.StackTrace}");
+            Console.Error.WriteLine($"E/[{tag}] {msg}\n{e.StackTrace}");
         }
 
         public void error(string tag, string msg)
