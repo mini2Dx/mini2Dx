@@ -14,10 +14,8 @@
  * limitations under the License.
  ******************************************************************************/
 
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using monogame.Font;
 using monogame.Graphics;
 using monogame.Util;
 using org.mini2Dx.core;
@@ -31,13 +29,12 @@ using Texture = org.mini2Dx.core.graphics.Texture;
 using TextureAddressMode = org.mini2Dx.core.graphics.TextureAddressMode;
 using TextureFilter = org.mini2Dx.core.graphics.TextureFilter;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
-using Vector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace monogame
 {
     public class MonoGameGraphics : org.mini2Dx.core.Graphics
     {
-        private static readonly BlendState _defaultBlending = BlendState.NonPremultiplied; 
+        private static readonly BlendState _defaultBlending = BlendState.NonPremultiplied;
         
         internal readonly SpriteBatch _spriteBatch;
         internal readonly GraphicsDevice _graphicsDevice;
@@ -135,7 +132,7 @@ namespace monogame
         internal void beginSpriteBatch()
         {
             _spriteBatch.Begin(
-                SpriteSortMode.Deferred, 
+                SpriteSortMode.Deferred,
                 _currentBlending,
                 transformMatrix: CurrentTransformationMatrix,
                 effect: _currentShader,
@@ -178,6 +175,7 @@ namespace monogame
             clearShader();
             setTranslation(0, 0);
             setRotation(0, 0, 0);
+            removeClip();
             _currentBlending = _defaultBlending;
         }
 
@@ -630,8 +628,17 @@ namespace monogame
 
         public void setClip(org.mini2Dx.core.geom.Rectangle clip)
         {
+
+            if (clip.getX() == 0 && clip.getY() == 0 && clip.getWidth() == getViewportWidth() &&
+                clip.getHeight() == getViewportHeight())
+            {
+                removeClip();
+                return;
+            }
+            
             var wasSpriteBatchEnded = _beginSpriteBatchCalled;
-            if (_beginSpriteBatchCalled)
+            
+            if (wasSpriteBatchEnded)
             {
                 endSpriteBatch();
             }
@@ -670,7 +677,7 @@ namespace monogame
             {
                 endSpriteBatch();
             }
-                
+            
             _rasterizerState = new RasterizerState{ ScissorTestEnable = false };
 
             if (wasSpriteBatchEnded)
@@ -678,12 +685,21 @@ namespace monogame
                 beginSpriteBatch();
             }
 
-            return _clipRectangle;
+            var oldClip = _clipRectangle.copy();
+            
+            _clipRectangle.setX(0);
+            _clipRectangle.setY(0);
+            _clipRectangle.setWidth(getViewportWidth());
+            _clipRectangle.setHeight(getViewportHeight());
+            
+            return (org.mini2Dx.core.geom.Rectangle) oldClip;
         }
 
         public org.mini2Dx.core.geom.Rectangle peekClip()
         {
-            return _clipRectangle;
+            var rect = new org.mini2Dx.core.geom.Rectangle();
+            peekClip(rect);
+            return rect;
         }
 
         public void peekClip(org.mini2Dx.core.geom.Rectangle rectangle)
