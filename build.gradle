@@ -13,11 +13,13 @@ buildscript {
 		maven { url "https://oss.sonatype.org/service/local/repositories/releases/content/" }
     }
     dependencies {
+		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
 		classpath 'me.champeau.gradle:jmh-gradle-plugin:0.4.8'
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.9.0'
 		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.8'
 		classpath "org.mini2Dx:gradle-ikvm-plugin:2.10.1"
 		classpath "org.mini2Dx:gradle-mini2Dx-mgcb:1.0.1"
+		classpath 'com.android.tools.build:gradle:3.4.2'
     }
 }
 
@@ -294,12 +296,12 @@ project(":" + rootProject.name + "-libgdx") {
 
 project(":" + rootProject.name + "-libgdx-desktop") {
 	description = "mini2Dx desktop runtime"
-	
+
 	dependencies {
 		compile project(":" + rootProject.name + "-libgdx")
 		compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+		compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+		compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
 		compile "de.golfgl.gdxcontrollerutils:gdx-controllers-jamepad:$gdxAdvancedControllersVersion"
 		compile "org.reflections:reflections:$reflectionsVersion"
 
@@ -308,6 +310,19 @@ project(":" + rootProject.name + "-libgdx-desktop") {
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
 		testCompile "net.jodah:concurrentunit:$concurrentUnitVersion"
+	}
+}
+
+if (hasAndroidSdk()) {
+	project(":" + rootProject.name + "-libgdx-android") {
+		description = "mini2Dx Android runtime"
+
+		dependencies {
+			implementation project(":" + rootProject.name + "-core")
+			implementation project(":" + rootProject.name + "-libgdx")
+
+			implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+		}
 	}
 }
 
@@ -345,7 +360,7 @@ project(":" + rootProject.name + "-ui") {
 	}
 
 	task packDefaultUiTheme {
-		TexturePacker.process("$projectDir/default-mdx-theme", "$projectDir/src/main/resources", "default-mdx-theme")
+		TexturePacker.process("$projectDir/default-mdx-theme", "$projectDir/../uats-libgdx-desktop/assets", "default-mdx-theme")
 	}
 
 	jmh {
@@ -428,6 +443,60 @@ project(":" + rootProject.name + "-uats") {
 	build.dependsOn ikvm, generateMonoGameContent
 }
 
+if (hasAndroidSdk()){
+	project(":" + rootProject.name + "-uats-libgdx-android") {
+		description = "mini2Dx Android UATs launcher"
+
+		apply plugin: "com.android.application"
+
+		sourceCompatibility = 1.7
+		targetCompatibility = 1.7
+
+		ext {
+			appName = 'mini2Dx-uats'
+		}
+
+		configurations {
+			natives
+		}
+
+		//project(":" + rootProject.name + "-uats-libgdx-android").installDebug.dependsOn project(":" + rootProject.name + "-uats").processResources
+
+		dependencies {
+			implementation project(":" + rootProject.name + "-libgdx-android")
+			implementation project(":" + rootProject.name + "-uats")
+			implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+			implementation "com.android.support:multidex:$multiDexVersion"
+
+			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
+			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
+			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+			natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi"
+			natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
+			natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
+			natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
+			natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
+
+			androidTestCompile (project(path: ":" + rootProject.name + "-core", configuration: 'testOutput')) {
+				exclude group: 'junit'
+				exclude group: 'org.hamcrest'
+			}
+			androidTestCompile ("org.jmock:jmock-junit4:$jmockVersion") {
+				exclude group: 'junit'
+				exclude group: 'org.hamcrest'
+			}
+			androidTestCompile ("org.jmock:jmock-legacy:$jmockVersion") {
+				exclude group: 'junit'
+				exclude group: 'org.hamcrest'
+			}
+			androidTestCompile 'com.android.support.test:runner:0.4'
+			androidTestCompile 'com.android.support.test:rules:0.4'
+		}
+	}
+}
+
 project(":" + rootProject.name + "-uats-libgdx-desktop") {
 	description = "mini2Dx desktop UATs launcher"
 	
@@ -453,4 +522,49 @@ project(":" + rootProject.name + "-monogame") {
 			commandLine 'msbuild', '../mini2Dx.sln'
 		}
 	}
+}
+
+boolean hasAndroidSdk() {
+	try {
+		def rootDir = "$rootDir"
+		def localProperties = new File(rootDir, "local.properties")
+		if (localProperties.exists()) {
+			Properties properties = new Properties()
+			localProperties.withInputStream { instr ->
+				properties.load(instr)
+			}
+			def androidHome = properties.getProperty('sdk.dir')
+			if(androidHome != null && androidHome.length() > 0) {
+				println androidHome
+				return true;
+			}
+		}
+	} catch (all) {
+		println all
+	}
+	try {
+		def androidHome = "$System.env.ANDROID_HOME"
+		if(androidHome != null && androidHome.length() > 0 && !androidHome.contains('null')) {
+			println androidHome
+			return true;
+		}
+	} catch (all) {
+		println all
+	}
+
+	try {
+		def androidExecPath = new ByteArrayOutputStream()
+		if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+			return false
+		} else {
+			exec {
+				commandLine 'which', 'android'
+				standardOutput = androidExecPath
+			}
+		}
+		return androidExecPath.toString() != null && androidExecPath.toString().trim().length() > 0;
+	} catch (all) {
+		println all
+	}
+	return false
 }

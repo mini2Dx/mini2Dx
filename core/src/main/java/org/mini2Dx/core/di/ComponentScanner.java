@@ -20,6 +20,8 @@ import org.mini2Dx.core.di.annotation.Singleton;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.gdx.utils.Array;
 
+import java.io.IOException;
+
 /**
  * A common interface to component scanning implementations.
  *
@@ -34,7 +36,7 @@ public interface ComponentScanner {
      * @param packageNames  The package name to scan through, e.g. org.mini2Dx.component
      * @throws MdxException Thrown if an exception occurs during scanning
      */
-    public void scan(String[] packageNames) throws MdxException;
+    public void scan(String[] packageNames) throws MdxException, IOException;
 
     public Array<Class<?>> getSingletonClasses();
 

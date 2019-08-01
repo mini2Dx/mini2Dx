@@ -1,0 +1,134 @@
+apply plugin: "com.android.application"
+android {
+    compileSdkVersion 21
+    defaultConfig {
+        testApplicationId "org.mini2Dx.uats.android.test"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testHandleProfiling true
+        testFunctionalTest true
+        minSdkVersion 21
+        multiDexEnabled true
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['../uats-libgdx-desktop/assets']
+            jniLibs.srcDirs = ['libs']
+        }
+        androidTest {
+            java.srcDirs = ['tests']
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'rebel.xml'
+    }
+    adbOptions {
+        timeOutInMs 10 * 60 * 1000
+        installOptions "-d","-t"
+    }
+}
+
+// called every time gradle gets executed, takes the native dependencies of
+// the natives configuration, and extracts them to the proper libs/ folders
+// so they get packed with the APK.
+task copyAndroidNatives() {
+    file("libs/armeabi/").mkdirs();
+    file("libs/armeabi-v7a/").mkdirs();
+    file("libs/x86/").mkdirs();
+
+    configurations.natives.files.each { jar ->
+        def outputDir = null
+        if(jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
+        if(jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
+        if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
+        if(outputDir != null) {
+            copy {
+                from zipTree(jar)
+                into outputDir
+                include "*.so"
+            }
+        }
+    }
+}
+
+task launchAndroid(type: Exec, dependsOn: [':mini2Dx-uats-android:installDebug']) {
+    def path
+    def localProperties = project.file("../local.properties")
+    if (localProperties.exists()) {
+        Properties properties = new Properties()
+        localProperties.withInputStream { instr ->
+            properties.load(instr)
+        }
+        def sdkDir = properties.getProperty('sdk.dir')
+        if (sdkDir) {
+            path = sdkDir
+        } else {
+            path = "$System.env.ANDROID_HOME"
+        }
+    } else {
+        path = "$System.env.ANDROID_HOME"
+    }
+
+    def adb = path + "/platform-tools/adb"
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'org.mini2Dx.uats.android/org.mini2Dx.uats.android.AndroidUATApplication'
+}
+
+// sets up the Android Eclipse project, using the old Ant based build.
+eclipse {
+    // need to specify Java source sets explicitely, SpringSource Gradle Eclipse plugin
+    // ignores any nodes added in classpath.file.withXml
+    sourceSets {
+        main {
+            java.srcDirs "src", 'gen'
+        }
+    }
+
+    jdt {
+        sourceCompatibility = 1.7
+        targetCompatibility = 1.7
+    }
+
+    classpath {
+        plusConfigurations += [ project.configurations.compile ]
+        containers 'org.eclipse.andmore.ANDROID_FRAMEWORK', 'org.eclipse.andmore.LIBRARIES', 'org.eclipse.andmore.DEPENDENCIES'
+    }
+
+    project {
+        name = appName + "-android"
+        natures 'org.eclipse.andmore.AndroidNature'
+        buildCommands.clear();
+        buildCommand "org.eclipse.andmore.ResourceManagerBuilder"
+        buildCommand "org.eclipse.andmore.PreCompilerBuilder"
+        buildCommand "org.eclipse.jdt.core.javabuilder"
+        buildCommand "org.eclipse.andmore.ApkBuilder"
+    }
+}
+
+// sets up the Android Idea project, using the old Ant based build.
+idea {
+    module {
+        sourceDirs += file("src");
+        scopes = [ COMPILE: [plus:[project.configurations.compile]]]
+
+        iml {
+            withXml {
+                def node = it.asNode()
+                def builder = NodeBuilder.newInstance();
+                builder.current = node;
+                builder.component(name: "FacetManager") {
+                    facet(type: "android", name: "Android") {
+                        configuration {
+                            option(name: "UPDATE_PROPERTY_FILES", value:"true")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -64,7 +64,7 @@ public abstract class PlayerData {
      *             Thrown if the game data location cannot be accessed or the
      *             data could not be wiped
      */
-    public abstract void wipe() throws PlayerDataException;
+    public abstract void wipe() throws PlayerDataException, IOException;
 
     /**
      * Returns a {@link FileHandle} of a file or directory in the player data location
@@ -422,7 +422,7 @@ public abstract class PlayerData {
         }
     }
 
-    protected void ensureDirectoryExistsForFile(String... filepath) throws IOException {
+    protected void ensureDirectoryExistsForFile(String... filepath) throws IOException, PlayerDataException {
         ensureDataDirectoryExists();
 
         FileHandle file = resolve(filepath);

@@ -47,10 +47,16 @@ namespace monogame.Font
             _fileHandle = fileHandle;
         }
 
+
         public static MonoGameGameFont loadBitmapFont(MonoGameFileHandle fntFileHandle)
-        {
+        { 
+            Texture2D textureGetter(string textureFileName)
+            {
+                return ((MonoGameTexture) Mdx.graphics.newTexture(fntFileHandle.parent().child(textureFileName)))
+                    .texture2D;
+            }
             var font = new MonoGameGameFont();
-            font._spriteFont = BMFontLoader.LoadXml(fntFileHandle.readString(), textureFileName => ((MonoGameTexture)Mdx.graphics.newTexture(fntFileHandle.parent().child(textureFileName))).texture2D);
+            font._spriteFont = BMFontLoader.LoadXml(fntFileHandle.readString(), textureGetter);
             font._sharedFontGlyphLayout = font.newGlyphLayout();
             font._capHeight = font._spriteFont.GetGlyphs()['A'].BoundsInTexture.Height;
             return font;
