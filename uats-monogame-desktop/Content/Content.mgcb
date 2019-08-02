@@ -24,10 +24,20 @@
 /processor:mini2DxContentProcessor
 /build:../../uats-libgdx-desktop/assets/default-mdx-cursor-up.png;default-mdx-cursor-up.png.png
 
+#begin ../../uats-libgdx-desktop/assets/default-mdx-theme.atlas
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:../../uats-libgdx-desktop/assets/default-mdx-theme.atlas;default-mdx-theme.atlas.atlas
+
 #begin ../../uats-libgdx-desktop/assets/default-mdx-theme.json
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
 /build:../../uats-libgdx-desktop/assets/default-mdx-theme.json;default-mdx-theme.json.json
+
+#begin ../../uats-libgdx-desktop/assets/default-mdx-theme.png
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:../../uats-libgdx-desktop/assets/default-mdx-theme.png;default-mdx-theme.png.png
 
 #begin ../../uats-libgdx-desktop/assets/defaultFont.spritefont
 /importer:FontDescriptionImporter
@@ -45,16 +55,6 @@
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
 /build:../../uats-libgdx-desktop/assets/gnsh-bitmapfont.png;gnsh-bitmapfont.png.png
-
-#begin ../../uats-libgdx-desktop/assets/hex_x_tileset1.tsx
-/importer:mini2DxContentImporter
-/processor:mini2DxContentProcessor
-/build:../../uats-libgdx-desktop/assets/hex_x_tileset1.tsx;hex_x_tileset1.tsx.tsx
-
-#begin ../../uats-libgdx-desktop/assets/hex_y_tileset1.tsx
-/importer:mini2DxContentImporter
-/processor:mini2DxContentProcessor
-/build:../../uats-libgdx-desktop/assets/hex_y_tileset1.tsx;hex_y_tileset1.tsx.tsx
 
 #begin ../../uats-libgdx-desktop/assets/hexagonal_x.tmx
 /importer:mini2DxContentImporter
@@ -75,6 +75,16 @@
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
 /build:../../uats-libgdx-desktop/assets/hexagonal_y_tileset.png;hexagonal_y_tileset.png.png
+
+#begin ../../uats-libgdx-desktop/assets/hex_x_tileset1.tsx
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:../../uats-libgdx-desktop/assets/hex_x_tileset1.tsx;hex_x_tileset1.tsx.tsx
+
+#begin ../../uats-libgdx-desktop/assets/hex_y_tileset1.tsx
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:../../uats-libgdx-desktop/assets/hex_y_tileset1.tsx;hex_y_tileset1.tsx.tsx
 
 #begin ../../uats-libgdx-desktop/assets/isometric.tmx
 /importer:mini2DxContentImporter
@@ -102,11 +112,6 @@
 /processor:mini2DxContentProcessor
 /build:../../uats-libgdx-desktop/assets/object.tx;object.tx.tx
 
-#begin ../../uats-libgdx-desktop/assets/ortho_tileset1.tsx
-/importer:mini2DxContentImporter
-/processor:mini2DxContentProcessor
-/build:../../uats-libgdx-desktop/assets/ortho_tileset1.tsx;ortho_tileset1.tsx.tsx
-
 #begin ../../uats-libgdx-desktop/assets/orthogonal.tmx
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
@@ -126,6 +131,11 @@
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
 /build:../../uats-libgdx-desktop/assets/orthogonal_tsx.tmx;orthogonal_tsx.tmx.tmx
+
+#begin ../../uats-libgdx-desktop/assets/ortho_tileset1.tsx
+/importer:mini2DxContentImporter
+/processor:mini2DxContentProcessor
+/build:../../uats-libgdx-desktop/assets/ortho_tileset1.tsx;ortho_tileset1.tsx.tsx
 
 #begin ../../uats-libgdx-desktop/assets/particles/particle.png
 /importer:mini2DxContentImporter
@@ -167,14 +177,4 @@
 /importer:mini2DxContentImporter
 /processor:mini2DxContentProcessor
 /build:../../uats-libgdx-desktop/assets/unsealed.png;unsealed.png.png
-
-#begin ../../uats-libgdx-desktop/assets/default-mdx-theme.png
-/importer:mini2DxContentImporter
-/processor:mini2DxContentProcessor
-/build:../../uats-libgdx-desktop/assets/default-mdx-theme.png;default-mdx-theme.png.png
-
-#begin ../../uats-libgdx-desktop/assets/default-mdx-theme.atlas
-/importer:mini2DxContentImporter
-/processor:mini2DxContentProcessor
-/build:../../uats-libgdx-desktop/assets/default-mdx-theme.atlas;default-mdx-theme.atlas.atlas
 

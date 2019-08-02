@@ -50,7 +50,7 @@ ext {
 	artemisVersion="2.1.0"
 	beanutilsVersion="1.8.3"
 	gdxVersion="1.9.8"
-	gdxAdvancedControllersVersion="0.2.0"
+	gdxAdvancedControllersVersion="0.3.0"
 	langVersion="3.1"
 	multiDexVersion="1.0.1"
 	nativesLoaderVersion="1.0.0"
@@ -318,10 +318,10 @@ if (hasAndroidSdk()) {
 		description = "mini2Dx Android runtime"
 
 		dependencies {
-			implementation project(":" + rootProject.name + "-core")
-			implementation project(":" + rootProject.name + "-libgdx")
+			api project(":" + rootProject.name + "-libgdx")
 
-			implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+			api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+			api "de.golfgl.gdxcontrollerutils:gdx-controllers-android:$gdxAdvancedControllersVersion"
 		}
 	}
 }
@@ -391,17 +391,17 @@ project(":" + rootProject.name + "-all") {
 		classpath = files(docProjects().collect { p -> p.name.contains("android") ? p.configurations.compile : p.sourceSets.main.compileClasspath })
 	}
 
-	jar {
-		from {
-			configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-		}
+	task fatJar(type: Jar) {
+		baseName = project.name + '-fatjar'
+		from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+		with jar
 	}
 
 	ikvm {
 		ikvmHome = ikvmDir
 		debug = false
 		generateDoc = false
-		jars = project.files(project.jar.archivePath)
+		jars = project.files(project.fatJar.archivePath)
 	}
 
 	build.dependsOn ikvm
@@ -463,10 +463,9 @@ if (hasAndroidSdk()){
 		//project(":" + rootProject.name + "-uats-libgdx-android").installDebug.dependsOn project(":" + rootProject.name + "-uats").processResources
 
 		dependencies {
-			implementation project(":" + rootProject.name + "-libgdx-android")
-			implementation project(":" + rootProject.name + "-uats")
-			implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-			implementation "com.android.support:multidex:$multiDexVersion"
+			api project(":" + rootProject.name + "-libgdx-android")
+			api project(":" + rootProject.name + "-uats")
+			api "com.android.support:multidex:$multiDexVersion"
 
 			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
 			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
