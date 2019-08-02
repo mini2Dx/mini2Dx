@@ -1,6 +1,6 @@
 import org.apache.tools.ant.taskdefs.condition.Os
 
-include "core", "libgdx", "libgdx-desktop", "tiled", "ui", "all", "monogame", "uats", "uats-libgdx-desktop"
+include "core", "libgdx", "libgdx-desktop", "libgdx-android", "tiled", "ui", "all", "monogame", "uats", "uats-libgdx-desktop", "uats-libgdx-android"
 
 rootProject.name = 'mini2Dx'
 rootProject.children.each { it.name = rootProject.name + "-" + it.name }

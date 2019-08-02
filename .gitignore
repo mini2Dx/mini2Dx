@@ -40,3 +40,6 @@ uats-android/assets/texture-region-uat.png
 _tools/__MACOSX/
 obj/
 *.sln.DotSettings.user
+default-mdx-theme.png
+default-mdx-theme.atlas
+Content.mgcb
