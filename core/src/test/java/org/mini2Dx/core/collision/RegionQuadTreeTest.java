@@ -22,6 +22,7 @@ import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.core.Mdx;
 
 import java.util.Random;
 
@@ -35,6 +36,8 @@ public class RegionQuadTreeTest {
 	@Before
 	public void setup() {
 		InterpolationTracker.deregisterAll();
+
+		Mdx.graphics = null;
 
 		rootQuad = new RegionQuadTree<CollisionBox>(2, 0, 0, 128, 128);
 		

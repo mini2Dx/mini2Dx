@@ -25,6 +25,7 @@ import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.core.Mdx;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -59,6 +60,8 @@ public class ConcurrentRegionQuadTreeTest implements Runnable {
 	@Before
 	public void setup() {
 		InterpolationTracker.deregisterAll();
+
+		Mdx.graphics = null;
 
 		rootQuad = new ConcurrentRegionQuadTree<CollisionBox>(2, 0, 0, 128, 128);
 

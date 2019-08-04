@@ -22,6 +22,7 @@ import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.core.Mdx;
 
 import java.util.Random;
 
@@ -35,6 +36,8 @@ public class PointQuadTreeTest {
 	@Before
 	public void setup() {
 		InterpolationTracker.deregisterAll();
+
+		Mdx.graphics = null;
 
 		rootQuad = new PointQuadTree<CollisionPoint>(2, 0, 0, 128, 128);
 		point1 = new CollisionPoint(0, 0);

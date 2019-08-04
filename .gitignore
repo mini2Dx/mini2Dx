@@ -10,6 +10,7 @@ packages/
 .classpath
 .project
 .idea/
+.vscode/
 *.prefs
 *.mp3
 *.releaseBackup

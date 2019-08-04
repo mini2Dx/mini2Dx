@@ -57,9 +57,9 @@ ext {
 	reflectionsVersion="0.9.10"
 	roboVMVersion="2.3.6"
 	
-	junitVersion="4.8.1"
+	junitVersion="4.12"
 	jmockVersion="2.5.1"
-	concurrentUnitVersion="0.4.2"
+	concurrentUnitVersion="0.4.4"
 }
 
 subprojects {
@@ -513,11 +513,19 @@ project(":" + rootProject.name + "-monogame") {
 	description = "mini2Dx MonoGame runtime"
 
 	if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-		task build(type:Exec, dependsOn: project(":" + rootProject.name + "-uats").build) {
+		task nuget(type:Exec, dependsOn: project(":" + rootProject.name + "-uats").build) {
+			commandLine 'cmd', '/c', 'msbuild.exe', '-t:restore', '../mini2Dx.sln'
+		}
+
+		task build(type:Exec, dependsOn: nuget) {
 			commandLine 'cmd', '/c', 'msbuild.exe', '../mini2Dx.sln'
 		}
 	} else {
-		task build(type:Exec, dependsOn: project(":" + rootProject.name + "-uats").build) {
+		task nuget(type:Exec, dependsOn: project(":" + rootProject.name + "-uats").build) {
+			commandLine 'msbuild', '-t:restore', '../mini2Dx.sln'
+		}
+
+		task build(type:Exec, dependsOn: nuget) {
 			commandLine 'msbuild', '../mini2Dx.sln'
 		}
 	}
