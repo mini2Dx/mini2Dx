@@ -441,6 +441,21 @@ project(":" + rootProject.name + "-uats") {
     generateMonoGameContent.dependsOn processResources
     ikvm.dependsOn project(":" + rootProject.name + "-all").build
 	build.dependsOn ikvm, generateMonoGameContent
+
+	if(!projectVersion.contains("SNAPSHOT")) {
+		def docDirectory = new File(project.parent.projectDir.getParentFile(), "mini2Dx-website/docs/javadoc/${projectVersion}");
+		println docDirectory.absolutePath
+
+		task docs(type: Javadoc) {
+			failOnError = false
+			title = 'mini2Dx'
+			source docProjects().collect {p -> p.name.contains("android") ? p.android.sourceSets.main.java.srcDirs : p.sourceSets.main.allJava }
+			classpath = files(docProjects().collect {p -> p.name.contains("android") ? p.configurations.compile : p.sourceSets.main.compileClasspath})
+			destinationDir = docDirectory
+		}
+
+		docs.dependsOn docProjects().build
+	}
 }
 
 if (hasAndroidSdk()){
