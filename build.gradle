@@ -35,7 +35,7 @@ if(sdkProperties.getProperty('sdk.ikvm.dir') == null) {
 def ikvmDir = sdkProperties.getProperty('sdk.ikvm.dir')
 
 if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
-	apply plugin: "files.codearte.nexus-staging"
+	apply plugin: "io.codearte.nexus-staging"
 
 	nexusStaging {
 		packageGroup = 'org.mini2Dx'
@@ -84,7 +84,7 @@ def docProjects() {
 	subprojects.findAll { !it.name.contains('uat') && !it.name.contains('monogame') }
 }
 
-def projectVersion = '2.0.0-SNAPSHOT';
+def projectVersion = '2.0.0-alpha.1';
 
 configure(docProjects()) {
 	apply plugin: "signing"
