@@ -9,58 +9,30 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.android.playerdata;
+package org.mini2Dx.ios;
 
-import java.io.*;
-import java.util.Arrays;
-
-import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.serialization.GameDataSerializable;
-import org.mini2Dx.core.PlayerData;
-//import org.mini2Dx.core.playerdata.PlayerDataException;
-//import org.mini2Dx.core.serialization.SerializationException;
-import org.mini2Dx.core.files.FileHandle;
-import org.mini2Dx.core.exception.SerializationException;
-import org.mini2Dx.core.exception.PlayerDataException;
-
-import com.badlogic.gdx.Gdx;
-//import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
+import org.robovm.apple.uikit.UIRectEdge;
 
 /**
- * Android implementation of {@link PlayerData}
+ * Extends {@link IOSApplicationConfiguration} to include mini2Dx options and defaults
  */
-public class AndroidPlayerData extends PlayerData {
+public class IOSMini2DxConfig extends IOSApplicationConfiguration {
+	public final String gameIdentifier;
+	/**
+	 * The target framerate
+	 */
+	public int targetFPS = 60;
+	/**
+	 * The target timestep
+	 */
+	public float targetTimestep = (1f / targetFPS);
 
-	@Override
-	public FileHandle resolve(String[] filepath) {
-		String path = "";
-		for(int i = 0; i < filepath.length; i++) {
-			path += filepath[i];
-			if(path.length() < filepath.length - 1) {
-				path += "/";
-			}
-		}
-		return Mdx.files.local(path);
+	/** Edges where app gestures must be fired over system gestures.
+	 * Prior to iOS 11, UIRectEdge.All was default behaviour if status bar hidden, see https://github.com/libgdx/libgdx/issues/5110 **/
+	public UIRectEdge screenEdgesDeferringSystemGestures = UIRectEdge.None;
+	
+	public IOSMini2DxConfig(String gameIdentifier) {
+		this.gameIdentifier = gameIdentifier;
 	}
-
-	@Override
-	public FileHandle resolveTmp(String[] filepath) {
-		final String [] tmpFilepath = Arrays.copyOf(filepath, filepath.length);
-		tmpFilepath[tmpFilepath.length - 1] = tmpFilepath[tmpFilepath.length - 1] + ".tmp";
-		return resolve(tmpFilepath);
-	}
-
-	@Override
-	protected void ensureDataDirectoryExists() throws IOException {
-		//Exists by default
-	}
-
-    @Override
-    public void wipe() throws PlayerDataException, IOException {
-        FileHandle directory = Mdx.files.local("./");
-        if(!directory.exists()) {
-            return;
-        }
-        directory.emptyDirectory();
-    }
 }

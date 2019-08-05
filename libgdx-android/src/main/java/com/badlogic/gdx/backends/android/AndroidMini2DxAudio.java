@@ -16,6 +16,7 @@
 package com.badlogic.gdx.backends.android;
 
 import org.mini2Dx.core.Audio;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.audio.MusicCompletionListener;
 import org.mini2Dx.core.audio.SoundCompletionListener;
 
@@ -37,6 +38,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.LongArray;
+import org.mini2Dx.libgdx.LibgdxAudio;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -46,12 +48,11 @@ import java.util.List;
 /**
  * Modified version of {@link AndroidAudio} to support sound completion events
  */
-public class AndroidMini2DxAudio implements Audio, com.badlogic.gdx.Audio {
+public class AndroidMini2DxAudio implements com.badlogic.gdx.Audio {
     private final SoundPool soundPool;
     private final AudioManager manager;
     private final LongArray recentSoundIds = new LongArray();
     protected final List<AndroidMini2DxMusic> musics = new ArrayList<AndroidMini2DxMusic>();
-    private final Array<SoundCompletionListener> soundCompletionListeners = new Array<SoundCompletionListener>(false, 1, SoundCompletionListener.class);
 
     public AndroidMini2DxAudio(Context context, AndroidApplicationConfiguration config) {
         if (!config.disableAudio) {
@@ -81,9 +82,7 @@ public class AndroidMini2DxAudio implements Audio, com.badlogic.gdx.Audio {
                 continue;
             }
             recentSoundIds.removeIndex(i);
-            for (int j = soundCompletionListeners.size - 1; j >= 0; j--) {
-                soundCompletionListeners.items[j].onSoundCompleted(soundId);
-            }
+            ((LibgdxAudio) Mdx.audio).notifySoundCompletionListeners(soundId);
         }
     }
 
@@ -94,70 +93,6 @@ public class AndroidMini2DxAudio implements Audio, com.badlogic.gdx.Audio {
 
     public void appendRecentSoundId(long streamId) {
         recentSoundIds.add(streamId);
-    }
-
-    @Override
-    public org.mini2Dx.core.audio.Sound newSound(org.mini2Dx.core.files.FileHandle fileHandle) throws IOException {
-        return null;
-    }
-
-    @Override
-    public org.mini2Dx.core.audio.Music newMusic(org.mini2Dx.core.files.FileHandle fileHandle) throws IOException {
-        if (soundPool == null) {
-            throw new GdxRuntimeException("Android audio is not enabled by the application config.");
-        }
-        AndroidFileHandle aHandle = (AndroidFileHandle) fileHandle;
-
-        MediaPlayer mediaPlayer = new MediaPlayer();
-
-        if (aHandle.type() == FileType.Internal) {
-            try {
-                AssetFileDescriptor descriptor = aHandle.getAssetFileDescriptor();
-                mediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
-                descriptor.close();
-                mediaPlayer.prepare();
-                AndroidMini2DxMusic music = new AndroidMini2DxMusic(this, mediaPlayer);
-                synchronized (musics) {
-                    musics.add(music);
-                }
-                return music;
-            } catch (Exception ex) {
-                throw new GdxRuntimeException("Error loading audio file: " + fileHandle
-                        + "\nNote: Internal audio files must be placed in the assets directory.", ex);
-            }
-        } else {
-            try {
-                mediaPlayer.setDataSource(aHandle.file().getPath());
-                mediaPlayer.prepare();
-                AndroidMini2DxMusic music = new AndroidMini2DxMusic(this, mediaPlayer);
-                synchronized (musics) {
-                    musics.add(music);
-                }
-                return music;
-            } catch (Exception ex) {
-                throw new GdxRuntimeException("Error loading audio file: " + fileHandle, ex);
-            }
-        }
-    }
-
-    @Override
-    public void addMusicCompletionListener(MusicCompletionListener completionListener) {
-
-    }
-
-    @Override
-    public void removeMusicCompletionListener(MusicCompletionListener completionListener) {
-
-    }
-
-    @Override
-    public void addSoundCompletionListener(SoundCompletionListener listener) {
-        soundCompletionListeners.add(listener);
-    }
-
-    @Override
-    public void removeSoundCompletionListener(SoundCompletionListener listener) {
-        soundCompletionListeners.removeValue(listener, false);
     }
 
     protected void pause() {

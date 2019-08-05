@@ -22,6 +22,7 @@ import org.mini2Dx.android.AndroidGameWrapper;
 import org.mini2Dx.android.AndroidMini2DxConfig;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.libgdx.LibgdxAudio;
 import org.mini2Dx.libgdx.game.ApplicationListener;
 
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
@@ -188,8 +189,7 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 
 		Gdx.app = this;
 		Gdx.input = this.getInput();
-		Gdx.audio = this.getAudio();
-		Mdx.audio = audio;
+		Gdx.audio = audio;
 		Gdx.files = this.getFiles();
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();

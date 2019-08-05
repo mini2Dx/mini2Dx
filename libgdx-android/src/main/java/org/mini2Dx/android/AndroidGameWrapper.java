@@ -23,7 +23,7 @@ import android.content.Context;
 /**
  * Android implementation of {@link GameWrapper}
  */
-public class AndroidGameWrapper extends GameWrapper implements ApplicationListener {
+public class AndroidGameWrapper extends GameWrapper {
 	private final Context applicationContext;
 
 	public AndroidGameWrapper(Context applicationContext, GameContainer gc, String gameIdentifier) {

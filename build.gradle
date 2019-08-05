@@ -20,6 +20,7 @@ buildscript {
 		classpath "org.mini2Dx:gradle-ikvm-plugin:2.10.1"
 		classpath "org.mini2Dx:gradle-mini2Dx-mgcb:1.0.1"
 		classpath 'com.android.tools.build:gradle:3.4.2'
+		classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.7'
     }
 }
 
@@ -328,6 +329,28 @@ if (hasAndroidSdk()) {
 	}
 }
 
+if (true) {
+	project(":" + rootProject.name + "-libgdx-ios") {
+		description = "mini2Dx iOS runtime"
+
+		dependencies {
+			compile project(":" + rootProject.name + "-libgdx")
+
+			compile "com.mobidevelop.robovm:robovm-rt:$roboVMVersion"
+			compile "com.mobidevelop.robovm:robovm-cocoatouch:$roboVMVersion"
+			compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
+			compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+			compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
+
+			compile "org.reflections:reflections:$reflectionsVersion"
+
+			testCompile "junit:junit:$junitVersion"
+			testCompile "org.jmock:jmock-junit4:$jmockVersion"
+			testCompile "org.jmock:jmock-legacy:$jmockVersion"
+		}
+	}
+}
+
 project(":" + rootProject.name + "-tiled") {
 	description = "mini2Dx Tiled support library"
 
@@ -509,6 +532,29 @@ if (hasAndroidSdk()){
 			}
 			androidTestImplementation 'com.android.support.test:runner:0.4'
 			androidTestImplementation 'com.android.support.test:rules:0.4'
+		}
+	}
+}
+
+if (true) {
+	project(":" + rootProject.name + "-uats-libgdx-ios") {
+		description = "mini2Dx UATs iOS launcher"
+
+		apply plugin: "java"
+		apply plugin: "robovm"
+
+		sourceCompatibility = 1.7
+		targetCompatibility = 1.7
+
+		configurations { natives }
+
+		eclipse.project {
+			natures 'org.robovm.eclipse.RoboVMNature'
+		}
+
+		dependencies {
+			compile project(":" + rootProject.name + "-uats")
+			compile project(":" + rootProject.name + "-libgdx-ios")
 		}
 	}
 }

@@ -9,34 +9,42 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.android.playerdata;
+package org.mini2Dx.ios.playerdata;
+
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.PlayerData;
+import org.mini2Dx.core.exception.PlayerDataException;
+import org.mini2Dx.core.exception.SerializationException;
+import org.mini2Dx.core.files.FileHandle;
+import org.mini2Dx.core.serialization.GameDataSerializable;
 
 import java.io.*;
 import java.util.Arrays;
 
-import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.serialization.GameDataSerializable;
-import org.mini2Dx.core.PlayerData;
-//import org.mini2Dx.core.playerdata.PlayerDataException;
-//import org.mini2Dx.core.serialization.SerializationException;
-import org.mini2Dx.core.files.FileHandle;
-import org.mini2Dx.core.exception.SerializationException;
-import org.mini2Dx.core.exception.PlayerDataException;
-
-import com.badlogic.gdx.Gdx;
-//import com.badlogic.gdx.files.FileHandle;
-
 /**
- * Android implementation of {@link PlayerData}
+ * iOS implementation of {@link PlayerData}
  */
-public class AndroidPlayerData extends PlayerData {
+public class IOSPlayerData extends PlayerData {
+
+	@Override
+	public void wipe() throws PlayerDataException {
+		FileHandle directory = Mdx.files.local("./");
+		if (!directory.exists()) {
+			return;
+		}
+		try {
+			directory.emptyDirectory();
+		} catch (IOException e) {
+			throw new PlayerDataException(e);
+		}
+	}
 
 	@Override
 	public FileHandle resolve(String[] filepath) {
 		String path = "";
-		for(int i = 0; i < filepath.length; i++) {
+		for (int i = 0; i < filepath.length; i++) {
 			path += filepath[i];
-			if(path.length() < filepath.length - 1) {
+			if (path.length() < filepath.length - 1) {
 				path += "/";
 			}
 		}
@@ -54,13 +62,4 @@ public class AndroidPlayerData extends PlayerData {
 	protected void ensureDataDirectoryExists() throws IOException {
 		//Exists by default
 	}
-
-    @Override
-    public void wipe() throws PlayerDataException, IOException {
-        FileHandle directory = Mdx.files.local("./");
-        if(!directory.exists()) {
-            return;
-        }
-        directory.emptyDirectory();
-    }
 }
