@@ -189,24 +189,36 @@ public class LibgdxFileHandle implements FileHandle {
 		fileHandle.writeBytes(bytes, offset, length, append);
 	}
 
+    private static FileHandle[] gdxFileArrayToMdxHandles(com.badlogic.gdx.files.FileHandle[] gdxList) {
+        FileHandle[] list = new FileHandle[gdxList.length];
+        for (int i = 0; i < list.length; i++) {
+            list[i] = new LibgdxFileHandle(gdxList[i]);
+        }
+        return list;
+    }
+
 	@Override
 	public FileHandle[] list() throws IOException {
-		return new FileHandle[0];
+        com.badlogic.gdx.files.FileHandle[] gdxList = fileHandle.list();
+        return gdxFileArrayToMdxHandles(gdxList);
 	}
 
 	@Override
 	public FileHandle[] list(FileFilter filter) throws IOException {
-		return new FileHandle[0];
+        com.badlogic.gdx.files.FileHandle[] gdxList = fileHandle.list(filter);
+        return gdxFileArrayToMdxHandles(gdxList);
 	}
 
 	@Override
 	public FileHandle[] list(FilenameFilter filter) throws IOException {
-		return new FileHandle[0];
+        com.badlogic.gdx.files.FileHandle[] gdxList = fileHandle.list(filter);
+        return gdxFileArrayToMdxHandles(gdxList);
 	}
 
 	@Override
 	public FileHandle[] list(String suffix) throws IOException {
-		return new FileHandle[0];
+        com.badlogic.gdx.files.FileHandle[] gdxList = fileHandle.list(suffix);
+        return gdxFileArrayToMdxHandles(gdxList);
 	}
 
 	@Override
