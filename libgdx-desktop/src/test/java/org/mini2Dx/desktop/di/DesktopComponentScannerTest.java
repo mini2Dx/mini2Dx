@@ -9,24 +9,44 @@
  * Neither the name of the mini2Dx nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mini2Dx.uats.android;
+package org.mini2Dx.desktop.di;
 
-import org.junit.runner.RunWith;
-import org.mini2Dx.android.serialization.AndroidXmlSerializer;
-import org.mini2Dx.core.serialization.XmlSerializer;
-import org.mini2Dx.core.serialization.XmlSerializerTest;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.test.runner.AndroidJUnitRunner;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.di.ComponentScanner;
+import org.mini2Dx.core.reflect.jvm.JvmReflection;
+import org.mini2Dx.libgdx.LibgdxFiles;
+import org.mini2Dx.libgdx.desktop.DesktopComponentScanner;
+import org.mini2Dx.core.di.dummy.*;
+import org.mini2Dx.libgdx.game.GameWrapper;
 
 /**
- * User acceptance tests for {@link AndroidXmlSerializer}
+ * Unit tests for {@link ComponentScanner}
  */
-@RunWith(AndroidJUnit4.class)
-public class AndroidXmlSerializerTest extends XmlSerializerTest {
+public class DesktopComponentScannerTest {
+	private ComponentScanner componentScanner;
 
-	@Override
-	public XmlSerializer createXmlSerializer() {
-		return new AndroidXmlSerializer();
+	@Before
+	public void setup() {
+		Gdx.files = new LwjglFiles();
+		Mdx.files = new LibgdxFiles();
+		Mdx.reflect = new JvmReflection();
+		Mdx.platform = GameWrapper.getPlatform();
+		componentScanner = new DesktopComponentScanner();
 	}
-	
+
+	@Test
+	public void testScanPackage() throws Exception {
+		componentScanner.scan(new String[] { "org.mini2Dx.core.di.dummy" });
+
+		Assert.assertEquals(true, componentScanner.getPrototypeClasses()
+				.contains(TestPrototypeBean.class, false));
+		Assert.assertEquals(true, componentScanner.getSingletonClasses()
+				.contains(TestDependency.class, false));
+	}
+
 }

@@ -163,7 +163,7 @@ configure(docProjects()) {
 
 		task testJar(type: Jar, dependsOn: testClasses) {
 			from sourceSets.test.output
-			include '**/serialization/**/*.class','**/di/**/*.class'
+			include '**/serialization/**/*','**/di/**/*'
 			archiveClassifier = 'test'
 		}
 
@@ -291,6 +291,7 @@ project(":" + rootProject.name + "-libgdx") {
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
 		testCompile "net.jodah:concurrentunit:$concurrentUnitVersion"
+		testCompile project(path: ":" + rootProject.name + "-core", configuration: 'testOutput')
 	}
 }
 
@@ -310,6 +311,7 @@ project(":" + rootProject.name + "-libgdx-desktop") {
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
 		testCompile "net.jodah:concurrentunit:$concurrentUnitVersion"
+		testCompile project(path: ":" + rootProject.name + "-core", configuration: 'testOutput')
 	}
 }
 
@@ -493,20 +495,20 @@ if (hasAndroidSdk()){
 			natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
 			natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
 
-			androidTestCompile (project(path: ":" + rootProject.name + "-core", configuration: 'testOutput')) {
+			androidTestImplementation (project(path: ":" + rootProject.name + "-core", configuration: 'testOutput')) {
 				exclude group: 'junit'
 				exclude group: 'org.hamcrest'
 			}
-			androidTestCompile ("org.jmock:jmock-junit4:$jmockVersion") {
+			androidTestImplementation ("org.jmock:jmock-junit4:$jmockVersion") {
 				exclude group: 'junit'
 				exclude group: 'org.hamcrest'
 			}
-			androidTestCompile ("org.jmock:jmock-legacy:$jmockVersion") {
+			androidTestImplementation ("org.jmock:jmock-legacy:$jmockVersion") {
 				exclude group: 'junit'
 				exclude group: 'org.hamcrest'
 			}
-			androidTestCompile 'com.android.support.test:runner:0.4'
-			androidTestCompile 'com.android.support.test:rules:0.4'
+			androidTestImplementation 'com.android.support.test:runner:0.4'
+			androidTestImplementation 'com.android.support.test:rules:0.4'
 		}
 	}
 }
@@ -544,6 +546,20 @@ project(":" + rootProject.name + "-monogame") {
 			commandLine 'msbuild', '../mini2Dx.sln'
 		}
 	}
+}
+
+project(":" + rootProject.name + "-artemis-odb") {
+	description = "mini2Dx artemis-odb support library"
+	
+    dependencies {
+		compile project(":" + rootProject.name + "-core")
+		compile "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
+		compile "net.onedaybeard.artemis:artemis-odb-serializer:$artemisVersion"
+		
+		testCompile "junit:junit:$junitVersion"
+		testCompile "org.jmock:jmock-junit4:$jmockVersion"
+		testCompile "org.jmock:jmock-legacy:$jmockVersion"
+    }
 }
 
 boolean hasAndroidSdk() {
