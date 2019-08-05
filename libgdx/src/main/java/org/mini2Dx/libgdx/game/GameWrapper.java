@@ -137,7 +137,7 @@ public abstract class GameWrapper implements ApplicationListener {
 	 */
 	public abstract boolean isGameWindowReady();
 
-	public Platform getPlatform() {
+	public static Platform getPlatform() {
 		switch(OsInformation.getOs()) {
 		case WINDOWS:
 			return Platform.WINDOWS;

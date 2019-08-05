@@ -27,6 +27,7 @@ import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.reflect.Annotation;
 import org.mini2Dx.core.reflect.Field;
 import org.mini2Dx.core.reflect.Method;
+import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.OrderedMap;
 
 import java.util.concurrent.ExecutorService;
@@ -122,15 +123,25 @@ public class BeanInjector {
 	}
 
 	private void injectSingletons() throws NoSuchBeanException, IllegalArgumentException, IllegalAccessException {
+		Array<String> keys = new Array<String>();
+
 		for (String key : singletons.keys()) {
+			keys.add(key);
+		}
+		for (String key : keys) {
 			Object object = singletons.get(key);
 			inject(object, key, singletons);
 		}
+		keys.clear();
 
 		for (String key : prototypes.keys()) {
+			keys.add(key);
+		}
+		for (String key : keys) {
 			Object object = prototypes.get(key);
 			inject(object, key, singletons);
 		}
+		keys.clear();
 	}
 	
 	private void checkInjectionSuccessful() throws NoSuchBeanException, IllegalArgumentException, IllegalAccessException {

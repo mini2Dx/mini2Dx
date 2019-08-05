@@ -37,6 +37,7 @@ public class PrototypeBean extends Bean implements Runnable {
 		this.bean = bean;
 		this.executorService = executorService;
 		prototypes = new ArrayBlockingQueue<Object>(MAXIMUM_PREPARED_PROTOTYPES);
+		executorService.submit(this);
 	}
 
 	@Override
