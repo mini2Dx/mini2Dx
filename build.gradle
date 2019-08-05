@@ -329,7 +329,7 @@ if (hasAndroidSdk()) {
 	}
 }
 
-if (true) {
+if (Os.isFamily(Os.FAMILY_MAC)) {
 	project(":" + rootProject.name + "-libgdx-ios") {
 		description = "mini2Dx iOS runtime"
 
@@ -536,7 +536,7 @@ if (hasAndroidSdk()){
 	}
 }
 
-if (true) {
+if (Os.isFamily(Os.FAMILY_MAC)) {
 	project(":" + rootProject.name + "-uats-libgdx-ios") {
 		description = "mini2Dx UATs iOS launcher"
 

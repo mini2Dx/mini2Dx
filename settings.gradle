@@ -2,7 +2,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 include "core", "libgdx", "libgdx-desktop", "libgdx-android", "tiled", "ui", "artemis-odb", "all", "monogame", "uats", "uats-libgdx-desktop", "uats-libgdx-android"
 
-if (true) {
+if (Os.isFamily(Os.FAMILY_MAC)) {
 	include "libgdx-ios", "uats-libgdx-ios"
 }
 
