@@ -34,7 +34,7 @@ public class BeanUtils {
         Object result = Mdx.reflect.newInstance(currentClass);
 
         while (!currentClass.equals(Object.class)) {
-            for (Field field : Mdx.reflect.getFields(currentClass)) {
+            for (Field field : Mdx.reflect.getDeclaredFields(currentClass)) {
                 if(field.isFinal()) {
                     continue;
                 }

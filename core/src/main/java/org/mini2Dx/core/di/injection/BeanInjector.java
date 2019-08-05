@@ -211,7 +211,7 @@ public class BeanInjector {
 				/* Injecting a class */
 				String clazzKey = Bean.getClassKey(clazz);
 				if (beans.containsKey(clazzKey)) {
-					Object dependency = beans.get(clazzKey);
+					Object dependency = beans.get(clazzKey, null);
 					field.set(object, dependency);
 				} else if (clazz.isInterface()) {
 					boolean found = false;
