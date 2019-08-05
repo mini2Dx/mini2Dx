@@ -18,6 +18,7 @@ package org.mini2Dx.uats.util;
 import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.files.FallbackFileHandleResolver;
 import org.mini2Dx.core.files.InternalFileHandleResolver;
+import org.mini2Dx.core.files.LocalFileHandleResolver;
 import org.mini2Dx.core.game.ScreenBasedGame;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.TiledMapLoader;
@@ -38,7 +39,8 @@ public class UATApplication extends ScreenBasedGame {
 	public void initialise() {
 		TiledMap.FAST_RENDER_EMPTY_LAYERS = true;
 
-		FallbackFileHandleResolver fallbackFileHandleResolver = new FallbackFileHandleResolver(new InternalFileHandleResolver());
+		FallbackFileHandleResolver fallbackFileHandleResolver = new FallbackFileHandleResolver(new InternalFileHandleResolver(),
+				new LocalFileHandleResolver());
 		assetManager = new AssetManager(fallbackFileHandleResolver);
 
 		assetManager.setAssetLoader(UiTheme.class, new UiThemeLoader(fallbackFileHandleResolver));

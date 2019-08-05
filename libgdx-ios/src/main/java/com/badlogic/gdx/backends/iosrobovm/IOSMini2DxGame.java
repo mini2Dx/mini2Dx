@@ -77,7 +77,7 @@ public class IOSMini2DxGame implements Application {
 	IOSViewControllerListener viewControllerListener;
 	IOSMini2DxConfig config;
 	IOSMini2DxGraphics graphics;
-	IOSAudio audio;
+	IOSMini2DxAudio audio;
 	IOSFiles files;
 	IOSMini2DxInput input;
 	IOSMini2DxNet net;
@@ -139,7 +139,7 @@ public class IOSMini2DxGame implements Application {
 		Gdx.gl = Gdx.gl20 = graphics.gl20;
 		Gdx.gl30 = graphics.gl30;
 		this.files = new IOSFiles();
-		this.audio = new IOSAudio(config);
+		this.audio = new IOSMini2DxAudio(config);
 		this.net = new IOSMini2DxNet(this);
 
 		Gdx.files = this.files;

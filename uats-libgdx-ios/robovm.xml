@@ -7,9 +7,10 @@
   <iosInfoPList>Info.plist.xml</iosInfoPList>
   <resources>
     <resource>
-      <directory>../uats-android/assets</directory>
+      <directory>../uats-libgdx-desktop/assets</directory>
       <includes>
         <include>**</include>
+        <include>**/*</include>
       </includes>
       <skipPngCrush>true</skipPngCrush>
     </resource>
@@ -32,6 +33,7 @@
     <pattern>com.android.org.bouncycastle.crypto.digests.AndroidDigestFactoryOpenSSL</pattern>
     <pattern>org.apache.harmony.security.provider.cert.DRLCertFactory</pattern>
     <pattern>org.apache.harmony.security.provider.crypto.CryptoProvider</pattern>
+    <pattern>org.mini2Dx.ui.**</pattern>
   </forceLinkClasses>
   <libs>
       <lib>z</lib> 

@@ -56,7 +56,7 @@ ext {
 	multiDexVersion="1.0.1"
 	nativesLoaderVersion="1.0.0"
 	reflectionsVersion="0.9.10"
-	roboVMVersion="2.3.6"
+	roboVMVersion="2.3.7"
 	
 	junitVersion="4.12"
 	jmockVersion="2.5.1"
@@ -543,8 +543,8 @@ if (Os.isFamily(Os.FAMILY_MAC)) {
 		apply plugin: "java"
 		apply plugin: "robovm"
 
-		sourceCompatibility = 1.7
-		targetCompatibility = 1.7
+		sourceCompatibility = 1.8
+		targetCompatibility = 1.8
 
 		configurations { natives }
 

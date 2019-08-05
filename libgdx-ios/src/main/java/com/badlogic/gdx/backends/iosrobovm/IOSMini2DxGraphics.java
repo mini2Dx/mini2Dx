@@ -376,6 +376,7 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 	@Override
 	public void update (GLKViewController controller) {
 		makeCurrent();
+		app.audio.update();
 		app.processRunnables();
 		// pause the GLKViewController render loop if we are no longer continuous
 		// and if we haven't requested a frame in the last loop iteration
