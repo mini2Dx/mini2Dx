@@ -16,8 +16,58 @@
 package org.mini2Dx.core.graphics;
 
 import org.mini2Dx.core.Graphics;
+import org.mini2Dx.core.Mdx;
 
-public interface TilingDrawable {
+public class TilingDrawable {
 
-	public void draw(Graphics g, float x, float y, float width, float height);
+	private final TextureRegion drawable;
+	private final TextureRegion sharedRegion;
+
+	public TilingDrawable(TextureRegion region){
+		drawable = region;
+		sharedRegion = Mdx.graphics.newTextureRegion(drawable);
+	}
+
+	public void draw(Graphics g, float x, float y, float width, float height){
+		int xCount = (int) (width / drawable.getRegionWidth());
+		int yCount = (int) (height / drawable.getRegionHeight());
+		int xRemainder = (int) (width - xCount * drawable.getRegionWidth());
+		int yRemainder = (int) (height - yCount * drawable.getRegionHeight());
+
+		for (int i = 0; i < xCount; i++)
+		{
+			for (int j = 0; j < yCount; j++)
+			{
+				g.drawTextureRegion(drawable, x + drawable.getRegionWidth() * i, y + j * drawable.getRegionHeight());
+			}
+		}
+
+		if (xRemainder != 0)
+		{
+			sharedRegion.setRegionWidth(xRemainder);
+			sharedRegion.setRegionHeight(drawable.getRegionHeight());
+
+			for (int i = 0; i < yCount; i++)
+			{
+				g.drawTextureRegion(sharedRegion, x + xCount * drawable.getRegionWidth(), y + i * drawable.getRegionHeight());
+			}
+		}
+
+		if (yRemainder != 0)
+		{
+			sharedRegion.setRegionWidth(drawable.getRegionWidth());
+			sharedRegion.setRegionHeight(yRemainder);
+			for (int i = 0; i < xCount; i++)
+			{
+				g.drawTextureRegion(sharedRegion, x + i * drawable.getRegionWidth(), y + yCount * drawable.getRegionHeight());
+			}
+		}
+
+		if (xRemainder != 0 && yRemainder != 0)
+		{
+			sharedRegion.setRegionWidth(xRemainder);
+			sharedRegion.setRegionHeight(yRemainder);
+			g.drawTextureRegion(sharedRegion, x + xCount * drawable.getRegionWidth(), y + yCount * drawable.getRegionHeight());
+		}
+	}
 }

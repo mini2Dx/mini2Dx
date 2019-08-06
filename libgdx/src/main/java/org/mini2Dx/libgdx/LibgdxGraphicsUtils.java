@@ -24,7 +24,7 @@ import org.mini2Dx.core.graphics.*;
 import org.mini2Dx.libgdx.files.LibgdxFileHandle;
 import org.mini2Dx.libgdx.graphics.*;
 
-public class LibgdxGraphicsUtils implements GraphicsUtils {
+public class LibgdxGraphicsUtils extends GraphicsUtils {
 	@Override
 	public Color newColor(int rgba8888) {
 		return new LibgdxColor(rgba8888);
@@ -209,11 +209,6 @@ public class LibgdxGraphicsUtils implements GraphicsUtils {
 	public NinePatch newNinePatch(TextureRegion region, int left, int right, int top, int bottom) {
 		final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) region;
 		return new LibgdxNinePatch(gdxTextureRegion, left, right, top, bottom);
-	}
-
-	@Override
-	public TilingDrawable newTilingDrawable(TextureRegion textureRegion) {
-		return null;
 	}
 
 	@Override

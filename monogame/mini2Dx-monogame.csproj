@@ -69,7 +69,6 @@
     <Compile Include="Graphics\MonoGameTextureAtlas.cs" />
     <Compile Include="Graphics\MonoGameTextureAtlasRegion.cs" />
     <Compile Include="Graphics\MonoGameTextureRegion.cs" />
-    <Compile Include="Graphics\MonoGameTilingDrawable.cs" />
     <Compile Include="Input\MonoGameGamePad.cs" />
     <Compile Include="Input\MonoGamePS4GamePad.cs" />
     <Compile Include="Input\MonoGameXboxGamePad.cs" />
