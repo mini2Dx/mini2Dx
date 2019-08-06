@@ -19,21 +19,6 @@ import org.mini2Dx.core.Graphics;
  */
 public class MdxInvocationStrategy extends InvocationStrategy {
 
-    protected void interpolate(Bag<InterpolatingSystem> systemsBag) {
-        Object[] systems = systemsBag.getData();
-        for (int i = 0, s = systemsBag.size(); s > i; i++) {
-            if (disabled.get(i)) {
-                continue;
-            }
-            updateEntityStates();
-
-            InterpolatingSystem system = (InterpolatingSystem) systems[i];
-            system.interpolateSystem();
-        }
-
-        updateEntityStates();
-    }
-
     protected void render(Bag<RenderingSystem> systemsBag, Graphics g) {
         Object[] systems = systemsBag.getData();
         for (int i = 0, s = systemsBag.size(); s > i; i++) {

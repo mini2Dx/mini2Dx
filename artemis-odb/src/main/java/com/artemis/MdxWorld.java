@@ -20,7 +20,6 @@ import org.mini2Dx.gdx.utils.Array;
  * Extends {@link World} to allow for interpolating and rendering of {@link System}s
  */
 public class MdxWorld extends World {
-    private final Bag<InterpolatingSystem> interpolatingSystemsBag;
     private final Bag<RenderingSystem> renderingSystemsBag;
 
     private final MdxInvocationStrategy mdxInvocationStrategy;
@@ -35,27 +34,16 @@ public class MdxWorld extends World {
      */
     public MdxWorld(WorldConfiguration configuration) {
         super(configuration);
-        interpolatingSystemsBag = new Bag<InterpolatingSystem>();
-        renderingSystemsBag = new Bag<RenderingSystem>();
+        renderingSystemsBag = new Bag<>();
         mdxInvocationStrategy = new MdxInvocationStrategy();
 
         for (BaseSystem system : configuration.systems) {
-            if (system instanceof InterpolatingSystem) {
-                interpolatingSystemsBag.add((InterpolatingSystem) system);
-            }
             if (system instanceof RenderingSystem) {
                 renderingSystemsBag.add((RenderingSystem) system);
             }
         }
 
         setInvocationStrategy(mdxInvocationStrategy);
-    }
-
-    /**
-     * Invokes interpolate on all {@link InterpolatingEntitySystem}s
-     */
-    public void interpolate() {
-        mdxInvocationStrategy.interpolate(interpolatingSystemsBag);
     }
 
     /**
@@ -116,7 +104,7 @@ public class MdxWorld extends World {
      */
     public void addWorldListener(WorldListener listener) {
         if (worldListeners == null) {
-            worldListeners = new Array<WorldListener>();
+            worldListeners = new Array<>();
         }
         worldListeners.add(listener);
     }
