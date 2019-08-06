@@ -18,6 +18,7 @@ package org.mini2Dx.core.font;
 import com.badlogic.gdx.utils.Align;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,6 +46,7 @@ public class MonospaceFontGlyphLayoutTest {
 
 	@Before
 	public void setUp() {
+		mockery.setImposteriser(ClassImposteriser.INSTANCE);
 		color = mockery.mock(Color.class);
 		graphicsUtils = mockery.mock(GraphicsUtils.class);
 
