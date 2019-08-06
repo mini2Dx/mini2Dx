@@ -19,80 +19,82 @@ import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.font.GameFont;
 import org.mini2Dx.core.graphics.*;
 
-public interface GraphicsUtils {
+public abstract class GraphicsUtils {
 
-	public Color newColor(int rgba8888);
+	public abstract Color newColor(int rgba8888);
 
-	public Color newColor(int r, int g, int b, int a);
+	public abstract Color newColor(int r, int g, int b, int a);
 
-	public Color newColor(float r, float g, float b, float a);
+	public abstract Color newColor(float r, float g, float b, float a);
 
-	public Color newColor(byte r, byte g, byte b, byte a);
+	public abstract Color newColor(byte r, byte g, byte b, byte a);
 
-	public Color newColor(Color color);
+	public abstract Color newColor(Color color);
 
-	public Pixmap newPixmap(int width, int height, PixmapFormat format);
+	public abstract Pixmap newPixmap(int width, int height, PixmapFormat format);
 
-	public Pixmap newPixmap(FileHandle file);
+	public abstract Pixmap newPixmap(FileHandle file);
 
-	public Texture newTexture(FileHandle file);
+	public abstract Texture newTexture(FileHandle file);
 
-	public Texture newTexture(FileHandle file, PixmapFormat format);
+	public abstract Texture newTexture(FileHandle file, PixmapFormat format);
 
-	public Texture newTexture(Pixmap pixmap);
+	public abstract Texture newTexture(Pixmap pixmap);
 
-	public Texture newTexture(Pixmap pixmap, PixmapFormat format);
+	public abstract Texture newTexture(Pixmap pixmap, PixmapFormat format);
 
-	public Texture newTexture(byte [] fileData);
+	public abstract Texture newTexture(byte[] fileData);
 
-	public TextureRegion newTextureRegion(Texture texture);
+	public abstract TextureRegion newTextureRegion(Texture texture);
 
-	public TextureRegion newTextureRegion(Texture texture, int width, int height);
+	public abstract TextureRegion newTextureRegion(Texture texture, int width, int height);
 
-	public TextureRegion newTextureRegion(Texture texture, int x, int y, int width, int height);
+	public abstract TextureRegion newTextureRegion(Texture texture, int x, int y, int width, int height);
 
-	public TextureRegion newTextureRegion(TextureRegion textureRegion);
+	public abstract TextureRegion newTextureRegion(TextureRegion textureRegion);
 
-	public TextureRegion newTextureRegion(TextureRegion textureRegion, int width, int height);
+	public abstract TextureRegion newTextureRegion(TextureRegion textureRegion, int width, int height);
 
-	public TextureRegion newTextureRegion(TextureRegion textureRegion, int x, int y, int width, int height);
+	public abstract TextureRegion newTextureRegion(TextureRegion textureRegion, int x, int y, int width, int height);
 
-	public Sprite newSprite(Texture texture);
+	public abstract Sprite newSprite(Texture texture);
 
-	public Sprite newSprite(Texture texture, int width, int height);
+	public abstract Sprite newSprite(Texture texture, int width, int height);
 
-	public Sprite newSprite(Texture texture, int x, int y, int width, int height);
+	public abstract Sprite newSprite(Texture texture, int x, int y, int width, int height);
 
-	public Sprite newSprite(TextureRegion textureRegion);
+	public abstract Sprite newSprite(TextureRegion textureRegion);
 
-	public Sprite newSprite(TextureRegion textureRegion, int width, int height);
+	public abstract Sprite newSprite(TextureRegion textureRegion, int width, int height);
 
-	public Sprite newSprite(TextureRegion textureRegion, int x, int y, int width, int height);
+	public abstract Sprite newSprite(TextureRegion textureRegion, int x, int y, int width, int height);
 
-	public Sprite newSprite(Sprite sprite);
+	public abstract Sprite newSprite(Sprite sprite);
 
 	/** Loads the specified pack file, using the parent directory of the pack file to find the page images. */
-	public TextureAtlas newTextureAtlas (FileHandle packFile);
+	public abstract TextureAtlas newTextureAtlas(FileHandle packFile);
 
 	/** @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner.*/
-	public TextureAtlas newTextureAtlas(FileHandle packFile, boolean flip);
+	public abstract TextureAtlas newTextureAtlas(FileHandle packFile, boolean flip);
 
-	public TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir);
+	public abstract TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir);
 
 	/** @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner. */
-	public TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir, boolean flip);
+	public abstract TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir, boolean flip);
 
-	public ParticleEffect newParticleEffect();
+	public abstract ParticleEffect newParticleEffect();
 
-	public ParticleEffect newParticleEffect(FileHandle effectFile, FileHandle imagesDir);
+	public abstract ParticleEffect newParticleEffect(FileHandle effectFile, FileHandle imagesDir);
 
-	public ParticleEffect newParticleEffect(FileHandle effectFile, TextureAtlas atlas);
+	public abstract ParticleEffect newParticleEffect(FileHandle effectFile, TextureAtlas atlas);
 
-	public NinePatch newNinePatch(Texture texture, int left, int right, int top, int bottom);
+	public abstract NinePatch newNinePatch(Texture texture, int left, int right, int top, int bottom);
 
-	public NinePatch newNinePatch(TextureRegion region, int left, int right, int top, int bottom);
+	public abstract NinePatch newNinePatch(TextureRegion region, int left, int right, int top, int bottom);
 
-	public TilingDrawable newTilingDrawable(TextureRegion textureRegion);
+	public TilingDrawable newTilingDrawable(TextureRegion textureRegion){
+		return new TilingDrawable(textureRegion);
+	}
 
 	/**
 	 * Loads a shader at the specified path. Note: only provide the shader name, e.g. for the following files<br>
@@ -103,9 +105,9 @@ public interface GraphicsUtils {
 	 * @param path The shader path
 	 * @return The platform-specific implementation of {@link Shader}
 	 */
-	public Shader newShader(String path);
+	public abstract Shader newShader(String path);
 
-	public FrameBuffer newFrameBuffer(int width, int height);
+	public abstract FrameBuffer newFrameBuffer(int width, int height);
 
 	/**
 	 * Creates a new custom mouse cursor. This class must be set as the {@link org.mini2Dx.gdx.InputProcessor} or added to a {@link org.mini2Dx.gdx.InputMultiplexer}.
@@ -114,5 +116,5 @@ public interface GraphicsUtils {
 	 * @param xHotspot The x location of the hotspot pixel within the cursor image (origin top-left corner)
 	 * @param yHotspot The y location of the hotspot pixel within the cursor image (origin top-left corner)
 	 */
-	public CustomCursor newCustomCursor(Pixmap upPixmap, Pixmap downPixmap, int xHotspot, int yHotspot);
+	public abstract CustomCursor newCustomCursor(Pixmap upPixmap, Pixmap downPixmap, int xHotspot, int yHotspot);
 }
