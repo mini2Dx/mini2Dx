@@ -376,8 +376,8 @@ namespace monogame
                 updateAddressMode();
             }
 
-            _sharedPositionVector.X = x - sprite.getOriginX();
-            _sharedPositionVector.Y = y - sprite.getOriginY();
+            _sharedPositionVector.X = x + sprite.getOriginX();
+            _sharedPositionVector.Y = y + sprite.getOriginY();
             _sharedSourceRectangle.X = sprite.getRegionX();
             _sharedSourceRectangle.Y = sprite.getRegionY();
             _sharedSourceRectangle.Width = sprite.getRegionWidth();
