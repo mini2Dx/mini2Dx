@@ -153,7 +153,7 @@ namespace monogame.Font
             while (node != null)
             {
                 var operation = node.Value;
-                operation.color = ((MonoGameColor)color).toMonoGameColor();
+                operation.color = ((MonoGameColor)color)._color;
                 addText(operation);
                 node.Value = operation;
                 node = node.Next;
@@ -178,7 +178,7 @@ namespace monogame.Font
 
         public void setColor(Color color)
         {
-            _setColor = ((MonoGameColor)color).toMonoGameColor();
+            _setColor = ((MonoGameColor)color)._color;
         }
 
         public Color getColor()

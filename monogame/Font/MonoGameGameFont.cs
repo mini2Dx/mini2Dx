@@ -197,7 +197,7 @@ namespace monogame.Font
 
         public void setColor(Color c)
         {
-            _color = ((MonoGameColor) c).toMonoGameColor();
+            _color = ((MonoGameColor) c)._color;
         }
 
         public float getLineHeight()

@@ -21,6 +21,7 @@ import org.mini2Dx.core.graphics.Color;
 
 /**
  * Static utility methods for {@link Color}s
+ * The colors returned by this class are readonly, if you want to change their values you should call {@link Color#copy()} on them, otherwise you'll get UnsupportedOperationException
  */
 public class Colors {
 
@@ -54,231 +55,231 @@ public class Colors {
 
 	public static Color CLEAR() {
 		if(COLOR_CLEAR == null) {
-			COLOR_CLEAR = Mdx.graphics.newColor(0f, 0f, 0f, 0f);
+			COLOR_CLEAR = Mdx.graphics.newReadOnlyColor(0f, 0f, 0f, 0f);
 		}
 		return COLOR_CLEAR;
 	}
 
 	public static Color WHITE() {
 		if(COLOR_WHITE == null) {
-			COLOR_WHITE = Mdx.graphics.newColor(1f, 1f, 1f, 1f);
+			COLOR_WHITE = Mdx.graphics.newReadOnlyColor(1f, 1f, 1f, 1f);
 		}
 		return COLOR_WHITE;
 	}
 
 	public static Color WHITE_M1() {
 		if(COLOR_WHITE_M1 == null) {
-			COLOR_WHITE_M1 = rgbToColor("254,254,254");
+			COLOR_WHITE_M1 = Mdx.graphics.newReadOnlyColor(254,254,254, 255);
 		}
 		return COLOR_WHITE_M1;
 	}
 
 	public static Color LIGHT_GRAY() {
 		if(COLOR_LIGHT_GRAY == null) {
-			COLOR_LIGHT_GRAY = Mdx.graphics.newColor(211,211,211, 255);
+			COLOR_LIGHT_GRAY = Mdx.graphics.newReadOnlyColor(211,211,211, 255);
 		}
 		return COLOR_LIGHT_GRAY;
 	}
 
 	public static Color GRAY() {
 		if(COLOR_GRAY == null) {
-			COLOR_GRAY = Mdx.graphics.newColor(128, 128, 128, 255);
+			COLOR_GRAY = Mdx.graphics.newReadOnlyColor(128, 128, 128, 255);
 		}
 		return COLOR_GRAY;
 	}
 
 	public static Color DARK_GRAY() {
 		if(COLOR_DARK_GRAY == null) {
-			COLOR_DARK_GRAY = Mdx.graphics.newColor(105,105,105, 255);
+			COLOR_DARK_GRAY = Mdx.graphics.newReadOnlyColor(105,105,105, 255);
 		}
 		return COLOR_DARK_GRAY;
 	}
 
 	public static Color BLACK_P1() {
 		if(COLOR_BLACK_P1 == null) {
-			COLOR_BLACK_P1 = rgbToColor("1,1,1");
+			COLOR_BLACK_P1 = Mdx.graphics.newReadOnlyColor(1,1,1, 255);
 		}
 		return COLOR_BLACK_P1;
 	}
 
 	public static Color BLACK() {
 		if(COLOR_BLACK == null) {
-			COLOR_BLACK = Mdx.graphics.newColor(0f, 0f, 0f, 1f);
+			COLOR_BLACK = Mdx.graphics.newReadOnlyColor(0f, 0f, 0f, 1f);
 		}
 		return COLOR_BLACK;
 	}
 
 	public static Color RED() {
 		if(COLOR_RED == null) {
-			COLOR_RED = Mdx.graphics.newColor(1f, 0f, 0f, 1f);
+			COLOR_RED = Mdx.graphics.newReadOnlyColor(1f, 0f, 0f, 1f);
 		}
 		return COLOR_RED;
 	}
 
 	public static Color GREEN() {
 		if(COLOR_GREEN == null) {
-			COLOR_GREEN = Mdx.graphics.newColor(0f, 1f, 0f, 1f);
+			COLOR_GREEN = Mdx.graphics.newReadOnlyColor(0f, 1f, 0f, 1f);
 		}
 		return COLOR_GREEN;
 	}
 
 	public static Color BLUE() {
 		if(COLOR_BLUE == null) {
-			COLOR_BLUE = Mdx.graphics.newColor(0f, 0f, 1f, 1f);
+			COLOR_BLUE = Mdx.graphics.newReadOnlyColor(0f, 0f, 1f, 1f);
 		}
 		return COLOR_BLUE;
 	}
 
 	public static Color MAROON() {
 		if(COLOR_MAROON == null) {
-			COLOR_MAROON = Mdx.graphics.newColor(128,0,0, 255);
+			COLOR_MAROON = Mdx.graphics.newReadOnlyColor(128,0,0, 255);
 		}
 		return COLOR_MAROON;
 	}
 
 	public static Color CORAL() {
 		if(COLOR_CORAL == null) {
-			COLOR_CORAL = Mdx.graphics.newColor(255,127,80, 255);
+			COLOR_CORAL = Mdx.graphics.newReadOnlyColor(255,127,80, 255);
 		}
 		return COLOR_CORAL;
 	}
 
 	public static Color SALMON() {
 		if(COLOR_SALMON == null) {
-			COLOR_SALMON = Mdx.graphics.newColor(250,128,114, 255);
+			COLOR_SALMON = Mdx.graphics.newReadOnlyColor(250,128,114, 255);
 		}
 		return COLOR_SALMON;
 	}
 
 	public static Color PINK() {
 		if(COLOR_PINK == null) {
-			COLOR_PINK = Mdx.graphics.newColor(255,192,203, 255);
+			COLOR_PINK = Mdx.graphics.newReadOnlyColor(255,192,203, 255);
 		}
 		return COLOR_PINK;
 	}
 
 	public static Color LIME() {
 		if(COLOR_LIME == null) {
-			COLOR_LIME = Mdx.graphics.newColor(0,255,0, 255);
+			COLOR_LIME = Mdx.graphics.newReadOnlyColor(0,255,0, 255);
 		}
 		return COLOR_LIME;
 	}
 
 	public static Color FOREST() {
 		if(COLOR_FOREST == null) {
-			COLOR_FOREST = Mdx.graphics.newColor(34,139,34, 255);
+			COLOR_FOREST = Mdx.graphics.newReadOnlyColor(34,139,34, 255);
 		}
 		return COLOR_FOREST;
 	}
 
 	public static Color OLIVE() {
 		if(COLOR_OLIVE == null) {
-			COLOR_OLIVE = Mdx.graphics.newColor(128,128,0, 255);
+			COLOR_OLIVE = Mdx.graphics.newReadOnlyColor(128,128,0, 255);
 		}
 		return COLOR_OLIVE;
 	}
 
 	public static Color NAVY() {
 		if(COLOR_NAVY == null) {
-			COLOR_NAVY = Mdx.graphics.newColor(0,0,128, 255);
+			COLOR_NAVY = Mdx.graphics.newReadOnlyColor(0,0,128, 255);
 		}
 		return COLOR_NAVY;
 	}
 
 	public static Color ROYAL() {
 		if(COLOR_ROYAL == null) {
-			COLOR_ROYAL = Mdx.graphics.newColor(65,105,225, 255);
+			COLOR_ROYAL = Mdx.graphics.newReadOnlyColor(65,105,225, 255);
 		}
 		return COLOR_ROYAL;
 	}
 
 	public static Color SKY() {
 		if(COLOR_SKY == null) {
-			COLOR_SKY = Mdx.graphics.newColor(135,206,235, 255);
+			COLOR_SKY = Mdx.graphics.newReadOnlyColor(135,206,235, 255);
 		}
 		return COLOR_SKY;
 	}
 
 	public static Color CYAN() {
 		if(COLOR_CYAN == null) {
-			COLOR_CYAN = Mdx.graphics.newColor(0,255,255, 255);
+			COLOR_CYAN = Mdx.graphics.newReadOnlyColor(0,255,255, 255);
 		}
 		return COLOR_CYAN;
 	}
 
 	public static Color TEAL() {
 		if(COLOR_TEAL == null) {
-			COLOR_TEAL = Mdx.graphics.newColor(0,128,128, 255);
+			COLOR_TEAL = Mdx.graphics.newReadOnlyColor(0,128,128, 255);
 		}
 		return COLOR_TEAL;
 	}
 
 	public static Color YELLOW() {
 		if(COLOR_YELLOW == null) {
-			COLOR_YELLOW = Mdx.graphics.newColor(255,255,0, 255);
+			COLOR_YELLOW = Mdx.graphics.newReadOnlyColor(255,255,0, 255);
 		}
 		return COLOR_YELLOW;
 	}
 
 	public static Color GOLD() {
 		if(COLOR_GOLD == null) {
-			COLOR_GOLD = Mdx.graphics.newColor(255,215,0, 255);
+			COLOR_GOLD = Mdx.graphics.newReadOnlyColor(255,215,0, 255);
 		}
 		return COLOR_GOLD;
 	}
 
 	public static Color GOLDENROD() {
 		if(COLOR_GOLDENROD == null) {
-			COLOR_GOLDENROD = Mdx.graphics.newColor(218,165,32, 255);
+			COLOR_GOLDENROD = Mdx.graphics.newReadOnlyColor(218,165,32, 255);
 		}
 		return COLOR_GOLDENROD;
 	}
 
 	public static Color ORANGE() {
 		if(COLOR_ORANGE == null) {
-			COLOR_ORANGE = Mdx.graphics.newColor(255,165,0, 255);
+			COLOR_ORANGE = Mdx.graphics.newReadOnlyColor(255,165,0, 255);
 		}
 		return COLOR_ORANGE;
 	}
 
 	public static Color BROWN() {
 		if(COLOR_BROWN == null) {
-			COLOR_BROWN = Mdx.graphics.newColor(165,42,42, 255);
+			COLOR_BROWN = Mdx.graphics.newReadOnlyColor(165,42,42, 255);
 		}
 		return COLOR_BROWN;
 	}
 
 	public static Color TAN() {
 		if(COLOR_TAN == null) {
-			COLOR_TAN = Mdx.graphics.newColor(210,180,140, 255);
+			COLOR_TAN = Mdx.graphics.newReadOnlyColor(210,180,140, 255);
 		}
 		return COLOR_TAN;
 	}
 
 	public static Color FIREBRICK() {
 		if(COLOR_FIREBRICK == null) {
-			COLOR_FIREBRICK = Mdx.graphics.newColor(178,34,34, 255);
+			COLOR_FIREBRICK = Mdx.graphics.newReadOnlyColor(178,34,34, 255);
 		}
 		return COLOR_FIREBRICK;
 	}
 
 	public static Color PURPLE() {
 		if(COLOR_PURPLE == null) {
-			COLOR_PURPLE = Mdx.graphics.newColor(128,0,128, 255);
+			COLOR_PURPLE = Mdx.graphics.newReadOnlyColor(128,0,128, 255);
 		}
 		return COLOR_PURPLE;
 	}
 
 	public static Color VIOLET() {
 		if(COLOR_VIOLET == null) {
-			COLOR_VIOLET = Mdx.graphics.newColor(238,130,238, 255);
+			COLOR_VIOLET = Mdx.graphics.newReadOnlyColor(238,130,238, 255);
 		}
 		return COLOR_VIOLET;
 	}
 
 	public static Color MAGENTA() {
 		if(COLOR_MAGENTA == null) {
-			COLOR_MAGENTA = Mdx.graphics.newColor(255,0,255, 255);
+			COLOR_MAGENTA = Mdx.graphics.newReadOnlyColor(255,0,255, 255);
 		}
 		return COLOR_MAGENTA;
 	}
@@ -319,8 +320,8 @@ public class Colors {
 	private static Color COLOR_TAN = null;
 	private static Color COLOR_FIREBRICK = null;
 
-	public static Color COLOR_PURPLE = null;
-	public static Color COLOR_VIOLET = null;
+	private static Color COLOR_PURPLE = null;
+	private static Color COLOR_VIOLET = null;
 	private static Color COLOR_MAGENTA = null;
 
 }

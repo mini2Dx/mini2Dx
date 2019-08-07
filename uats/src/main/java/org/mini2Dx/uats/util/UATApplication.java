@@ -69,6 +69,7 @@ public class UATApplication extends ScreenBasedGame {
 		addScreen(new FlexUiUAT(assetManager, fallbackFileHandleResolver));
 		addScreen(new PixelUiUAT(assetManager, fallbackFileHandleResolver));
 		addScreen(new TilingDrawableUAT(fallbackFileHandleResolver));
+		addScreen(new SpriteCacheUAT(fallbackFileHandleResolver));
 		addScreen(new UiSerializationUAT(assetManager));
 	}
 

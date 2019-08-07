@@ -15,11 +15,14 @@
  ******************************************************************************/
 package org.mini2Dx.core.graphics;
 
+import org.mini2Dx.core.Graphics;
+
 public interface SpriteCache {
 
     /**
      * Adds a {@link Sprite} to the cache.
      * @param sprite The {@link Sprite} to be added.
+     * @return The index of the added sprite
      */
     public int add(Sprite sprite);
 
@@ -28,6 +31,7 @@ public interface SpriteCache {
      * @param texture The texture to be added
      * @param x x position of the texture
      * @param y y position of the texture
+     * @return The index of the added texture
      */
     public int add(Texture texture, float x, float y);
 
@@ -40,6 +44,7 @@ public interface SpriteCache {
      * @param srcY y point in the texture
      * @param srcWidth width of the region to be drawn
      * @param srcHeight height of the region to be drawn
+     * @return The index of the added texture
      */
     public int add(Texture texture, float x, float y, int srcX, int srcY, int srcWidth, int srcHeight);
 
@@ -54,6 +59,7 @@ public interface SpriteCache {
      * @param srcHeight height of the region to be drawn
      * @param flipX indication of whether the region should be drawn x-flipped
      * @param flipY indication of whether the region should be drawn y-flipped
+     * @return The index of the added texture
      */
     public int add(Texture texture, float x, float y, int srcX, int srcY, int srcWidth, int srcHeight, boolean flipX, boolean flipY);
 
@@ -70,6 +76,7 @@ public interface SpriteCache {
      * @param scaleY scale of the texture in the y direction
      * @param flipX indication of whether the region should be drawn x-flipped
      * @param flipY indication of whether the region should be drawn y-flipped
+     * @return The index of the added texture
      */
     public int add(Texture texture, float x, float y, int srcX, int srcY, int srcWidth, int srcHeight, float scaleX, float scaleY, boolean flipX, boolean flipY);
 
@@ -89,6 +96,7 @@ public interface SpriteCache {
      * @param rotation rotation of the texture around the origin point (in degrees)
      * @param flipX indication of whether the region should be drawn x-flipped
      * @param flipY indication of whether the region should be drawn y-flipped
+     * @return The index of the added texture
      */
     public int add(Texture texture, float x, float y, int srcX, int srcY, int srcWidth, int srcHeight, float scaleX, float scaleY, float originX, float originY, float rotation, boolean flipX, boolean flipY);
 
@@ -97,6 +105,7 @@ public interface SpriteCache {
      * @param region the texture region to be added
      * @param x x position of the texture region
      * @param y y position of the texture region
+     * @return The index of the added texture region
      */
     public int add(TextureRegion region, float x, float y);
 
@@ -107,6 +116,7 @@ public interface SpriteCache {
      * @param y y position of the texture region
      * @param scaleX scale of the texture region in the x direction
      * @param scaleY scale of the texture region in the y direction
+     * @return The index of the added texture region
      */
     public int add(TextureRegion region, float x, float y, float scaleX, float scaleY);
 
@@ -120,6 +130,7 @@ public interface SpriteCache {
      * @param originX x position of the point around which the region should be rotated
      * @param originY y position of the point around which the region should be rotated
      * @param rotation rotation of the texture around the origin point (in degrees)
+     * @return The index of the added texture region
      */
     public int add(TextureRegion region, float x, float y, float scaleX, float scaleY, float originX, float originY, float rotation);
 
@@ -135,6 +146,7 @@ public interface SpriteCache {
      * @param rotation rotation of the texture around the origin point (in degrees)
      * @param flipX indication of whether the region should be drawn x-flipped
      * @param flipY indication of whether the region should be drawn y-flipped
+     * @return The index of the added texture region
      */
     public int add(TextureRegion region, float x, float y, float scaleX, float scaleY, float originX, float originY, float rotation, boolean flipX, boolean flipY);
 
@@ -150,17 +162,19 @@ public interface SpriteCache {
 
     /**
      * Draws all the images defined in a SpriteCache to the screen.
+     * @param g the current {@link Graphics} context
      * @param cacheID ID of the SpriteCache containing the images to draw.
      */
-    public void draw(int cacheID);
+    public void draw(Graphics g, int cacheID);
 
     /**
      * Draws a subset of the images defined in a SpriteCache to the screen.
+     * @param g the current {@link Graphics} context
      * @param cacheID ID of the SpriteCache containing the images to draw.
      * @param offset The index of the first image to draw
      * @param length The number of the images to draw
      */
-    public void draw(int cacheID, int offset, int length);
+    public void draw(Graphics g, int cacheID, int offset, int length);
 
     /**
      * Starts the definition of a new cache
@@ -169,7 +183,7 @@ public interface SpriteCache {
 
     /**
      * Starts the redefinition of an existing cache
-     * @param cacheID
+     * @param cacheID ID of the cache to be redefined
      */
     public void beginCache(int cacheID);
 

@@ -63,6 +63,10 @@ namespace monogame
         private bool _isBlending = true;
         private Matrix _transformationMatrix;
         private bool _isTransformationMatrixDirty = true;
+        private Vector2 _sharedPositionVector = Vector2.Zero;
+        private Vector2 _sharedScaleVector = Vector2.Zero;
+        private Vector2 _sharedOriginVector = Vector2.Zero;
+        private Rectangle _sharedSourceRectangle = Rectangle.Empty;
 
         private Vector2 _scale = Vector2.One;
         private Vector2 _translation = Vector2.Zero;
@@ -172,7 +176,6 @@ namespace monogame
             _gameHeight = gameHeight;
             _frameId++;
             _graphicsDevice.Clear(_backgroundColor);
-            beginRendering();
         }
 
         public void postRender()
@@ -217,7 +220,6 @@ namespace monogame
 
         public void drawCircle(float centerX, float centerY, float radius)
         {
-            beginRendering();
             drawCircle(centerX, centerY, (int)radius);
         }
 
@@ -229,7 +231,6 @@ namespace monogame
 
         public void fillCircle(float centerX, float centerY, float radius)
         {
-            beginRendering();
             fillCircle(centerX, centerY, (int) radius);
         }
 
@@ -247,7 +248,6 @@ namespace monogame
 
         public void drawPolygon(float[] vertices)
         {
-            beginRendering();
             for (int i = 0; i < vertices.Length - 2; i+=2)
             {
                 drawLineSegment(vertices[i], vertices[i+1], vertices[i + 2], vertices[i + 3]);
@@ -257,7 +257,6 @@ namespace monogame
 
         public void fillPolygon(float[] vertices, short[] triangles)
         {
-            beginRendering();
             for (int i = 0; i < triangles.Length - 2; i+=3)
             {
                 fillTriangle(vertices[triangles[i] * 2], vertices[triangles[i] * 2 + 1], vertices[triangles[i + 1] * 2],
@@ -285,19 +284,16 @@ namespace monogame
 
         public void drawTexture(Texture texture, float x, float y)
         {
-            beginRendering();
             drawTexture(texture, x, y, false);
         }
 
         public void drawTexture(Texture texture, float x, float y, bool flipY)
         {
-            beginRendering();
             drawTexture(texture, x, y, texture.getWidth(), texture.getHeight(), flipY);
         }
 
         public void drawTexture(Texture texture, float x, float y, float width, float height)
         {
-            beginRendering();
             drawTexture(texture, x, y, width, height, false);
         }
 
@@ -310,55 +306,63 @@ namespace monogame
                 _currentVMode = texture.getVAddressMode();
                 updateAddressMode();
             }
-            _spriteBatch.Draw(((MonoGameTexture)texture).texture2D, new Vector2(x, y), null, _tint, 0,
-                Vector2.Zero, new Vector2(width / texture.getWidth(), height / texture.getHeight()),
-                flipY ? SpriteEffects.FlipVertically : SpriteEffects.None, 0f);
+
+            _sharedPositionVector.X = x;
+            _sharedPositionVector.Y = y;
+            _sharedScaleVector.X = width / texture.getWidth();
+            _sharedScaleVector.Y = height / texture.getHeight();
+            _spriteBatch.Draw(((MonoGameTexture)texture).texture2D, _sharedPositionVector, null, _tint, 0,
+                Vector2.Zero, _sharedScaleVector, flipY ? SpriteEffects.FlipVertically : SpriteEffects.None, 0f);
         }
 
         public void drawTextureRegion(TextureRegion textureRegion, float x, float y)
         {
-            beginRendering();
             drawTextureRegion(textureRegion, x, y, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
         }
 
         public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height)
         {
-            beginRendering();
             drawTextureRegion(textureRegion, x, y, width, height, 0);
         }
 
         public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height, float rotation)
         {
             beginRendering();
+            
             if (textureRegion.getTexture().getUAddressMode() != _currentUMode || textureRegion.getTexture().getVAddressMode() != _currentVMode)
             {
                 _currentUMode = textureRegion.getTexture().getUAddressMode();
                 _currentVMode = textureRegion.getTexture().getVAddressMode();
                 updateAddressMode();
             }
-            var sourceRectangle = new Rectangle(textureRegion.getRegionX(), textureRegion.getRegionY(), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
-            _spriteBatch.Draw(((MonoGameTexture) textureRegion.getTexture()).texture2D,
-                new Vector2(x, y), sourceRectangle, _tint, rotation, Vector2.Zero, 
-                new Vector2(width / textureRegion.getRegionWidth(), height / textureRegion.getRegionHeight()),
+            
+            _sharedSourceRectangle.X = textureRegion.getRegionX();
+            _sharedSourceRectangle.Y = textureRegion.getRegionY();
+            _sharedSourceRectangle.Width = textureRegion.getRegionWidth();
+            _sharedSourceRectangle.Height = textureRegion.getRegionHeight();
+            _sharedPositionVector.X = x;
+            _sharedPositionVector.Y = y;
+            _sharedScaleVector.X = width / textureRegion.getRegionWidth();
+            _sharedScaleVector.Y = height / textureRegion.getRegionHeight();
+            
+            _spriteBatch.Draw(((MonoGameTexture) textureRegion.getTexture()).texture2D, _sharedPositionVector,
+                _sharedSourceRectangle, _tint, rotation, Vector2.Zero, _sharedScaleVector,
                 (textureRegion.isFlipX() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
-                        (textureRegion.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
+                (textureRegion.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
         }
 
         public void drawShape(Shape shape)
         {
-            beginRendering();
             drawPolygon(shape.getPolygon().getVertices());
         }
 
         public void fillShape(Shape shape)
         {
-            beginRendering();
             fillPolygon(shape.getPolygon().getVertices(), shape.getPolygon().getTriangles().toArray());
         }
 
         public void drawSprite(Sprite sprite)
         {
-            beginRendering();
             drawSprite(sprite, sprite.getX(), sprite.getY());
         }
 
@@ -370,21 +374,59 @@ namespace monogame
                 _currentUMode = sprite.getTexture().getUAddressMode();
                 _currentVMode = sprite.getTexture().getVAddressMode();
                 updateAddressMode();
-            }    
-            var sourceRectangle = new Rectangle(sprite.getRegionX(), sprite.getRegionY(), sprite.getRegionWidth(), sprite.getRegionHeight());
-            var origin = new Vector2(sprite.getOriginX(), sprite.getOriginY());
-            _spriteBatch.Draw(((MonoGameTexture) sprite.getTexture()).texture2D, 
-                new Vector2(x, y) + origin, sourceRectangle,
-                ((MonoGameColor) sprite.getTint()).toMonoGameColor(),
-                MonoGameMathsUtil.degreeToRadian(((MonoGameSprite) sprite).getTotalRotation()), origin, 
-                new Vector2(sprite.getScaleX(), sprite.getScaleY()),
-                (sprite.isFlipX() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
+            }
+
+            _sharedPositionVector.X = x - sprite.getOriginX();
+            _sharedPositionVector.Y = y - sprite.getOriginY();
+            _sharedSourceRectangle.X = sprite.getRegionX();
+            _sharedSourceRectangle.Y = sprite.getRegionY();
+            _sharedSourceRectangle.Width = sprite.getRegionWidth();
+            _sharedSourceRectangle.Height = sprite.getRegionHeight();
+            _sharedOriginVector.X = sprite.getOriginX();
+            _sharedOriginVector.Y = sprite.getOriginY();
+            _sharedScaleVector.X = sprite.getScaleX();
+            _sharedScaleVector.Y = sprite.getScaleY();
+            
+            _spriteBatch.Draw(((MonoGameTexture) sprite.getTexture()).texture2D, _sharedPositionVector,
+                _sharedSourceRectangle, ((MonoGameColor) sprite.getTint())._color,
+                MonoGameMathsUtil.degreeToRadian(((MonoGameSprite) sprite).getTotalRotation()),
+                _sharedOriginVector, _sharedScaleVector, (sprite.isFlipX() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
                 (sprite.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
+        }
+
+        internal void drawTexture(MonoGameTexture texture, float x, float y, int srcX, int srcY, int srcWidth,
+            int srcHeight, float scaleX, float scaleY, float originX, float originY, float rotation, bool flipX,
+            bool flipY, MonoGameColor tint)
+        {     
+            beginRendering();   
+            if (texture.getUAddressMode() != _currentUMode || texture.getVAddressMode() != _currentVMode)
+            {
+                _currentUMode = texture.getUAddressMode();
+                _currentVMode = texture.getVAddressMode();
+                updateAddressMode();
+            }
+            
+
+            _sharedPositionVector.X = x - originX;
+            _sharedPositionVector.Y = y - originY;
+            _sharedSourceRectangle.X = srcX;
+            _sharedSourceRectangle.Y = srcY;
+            _sharedSourceRectangle.Width = srcWidth;
+            _sharedSourceRectangle.Height = srcHeight;
+            _sharedOriginVector.X = originX;
+            _sharedOriginVector.Y = originY;
+            _sharedScaleVector.X = scaleX;
+            _sharedScaleVector.Y = scaleY;
+            
+            _spriteBatch.Draw(texture.texture2D, _sharedPositionVector, _sharedSourceRectangle, tint._color,
+                MonoGameMathsUtil.degreeToRadian(rotation), _sharedOriginVector, _sharedScaleVector,
+                (flipX ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
+                (flipY ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
         }
 
         public void drawSpriteCache(SpriteCache spriteCache, int cacheId)
         {
-            throw new System.NotImplementedException();
+            spriteCache.draw(this, cacheId);
         }
 
         public void drawParticleEffect(ParticleEffect effect)
@@ -536,7 +578,7 @@ namespace monogame
 
         public void setBackgroundColor(Color backgroundColor)
         {
-            _backgroundColor = ((MonoGameColor) backgroundColor).toMonoGameColor();
+            _backgroundColor = ((MonoGameColor) backgroundColor)._color;
         }
 
         public Color getTint()

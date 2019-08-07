@@ -51,6 +51,31 @@ public class LibgdxGraphicsUtils extends GraphicsUtils {
 	}
 
 	@Override
+	public Color newReadOnlyColor(int rgba8888) {
+		return new LibgdxReadOnlyColor(rgba8888);
+	}
+
+	@Override
+	public Color newReadOnlyColor(int r, int g, int b, int a) {
+		return new LibgdxReadOnlyColor(r, g, b, a);
+	}
+
+	@Override
+	public Color newReadOnlyColor(float r, float g, float b, float a) {
+		return new LibgdxReadOnlyColor(r, g, b, a);
+	}
+
+	@Override
+	public Color newReadOnlyColor(byte r, byte g, byte b, byte a) {
+		return new LibgdxReadOnlyColor(r, g, b, a);
+	}
+
+	@Override
+	public Color newReadOnlyColor(Color color) {
+		return new LibgdxReadOnlyColor(color.rf(), color.gf(), color.bf(), color.af());
+	}
+
+	@Override
 	public Pixmap newPixmap(int width, int height, PixmapFormat format) {
 		return new LibgdxPixmap(new com.badlogic.gdx.graphics.Pixmap(width, height, LibgdxPixmap.toGdxPixmapFormat(format)));
 	}
@@ -226,5 +251,10 @@ public class LibgdxGraphicsUtils extends GraphicsUtils {
 	@Override
 	public CustomCursor newCustomCursor(Pixmap upPixmap, Pixmap downPixmap, int xHotspot, int yHotspot) {
 		return new LibgdxCustomCursor(upPixmap, downPixmap, xHotspot, yHotspot);
+	}
+
+	@Override
+	public SpriteCache newSpriteCache() {
+		return null;
 	}
 }

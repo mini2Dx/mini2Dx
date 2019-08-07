@@ -66,6 +66,31 @@ namespace monogame
             return new MonoGameColor(color.rb(), color.gb(), color.bb(), color.ab());
         }
 
+        public override Color newReadOnlyColor(float r, float g, float b, float a)
+        {
+            return new MonoGameReadOnlyColor(r,g,b,a);
+        }
+
+        public override Color newReadOnlyColor(int rgba8888)
+        {
+            return new MonoGameReadOnlyColor(MonoGameColor.toMonoGameColor((uint) rgba8888));
+        }
+
+        public override Color newReadOnlyColor(int r, int g, int b, int a)
+        {
+            return new MonoGameReadOnlyColor(r,g,b,a);
+        }
+
+        public override Color newReadOnlyColor(byte r, byte g, byte b, byte a)
+        {
+            return new MonoGameReadOnlyColor(r,g,b,a);
+        }
+
+        public override Color newReadOnlyColor(Color color)
+        {
+            return new MonoGameReadOnlyColor(color.rb(), color.gb(), color.bb(), color.ab());
+        }
+
         public override NinePatch newNinePatch(Texture texture, int left, int right, int top, int bottom)
         {
             return newNinePatch(new MonoGameTextureRegion(texture), left, right, top, bottom);
@@ -251,6 +276,11 @@ namespace monogame
         public override CustomCursor newCustomCursor(Pixmap p1, Pixmap p2, int i1, int i2)
         {
             return new MonoGameCustomCursor(p1, p2, i1, i2);
+        }
+
+        public override SpriteCache newSpriteCache()
+        {
+            return new MonoGameSpriteCache(_graphicsDevice);
         }
     }
 }
