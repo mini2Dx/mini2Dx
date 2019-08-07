@@ -21,7 +21,7 @@ namespace monogame.Graphics
 {
     public class MonoGameColor : org.mini2Dx.core.graphics.Color
     {
-        private Microsoft.Xna.Framework.Color _color;
+        internal Microsoft.Xna.Framework.Color _color;
 
         public MonoGameColor(byte r, byte g, byte b, byte a)
         {
@@ -50,7 +50,7 @@ namespace monogame.Graphics
             return new MonoGameColor(new Microsoft.Xna.Framework.Color(_color.PackedValue));
         }
 
-        public Color set(Color c)
+        public virtual Color set(Color c)
         {
             _color.R = c.getRAsByte();
             _color.G = c.getGAsByte();
@@ -59,7 +59,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color set(float r, float g, float b, float a)
+        public virtual Color set(float r, float g, float b, float a)
         {
             _color.R = floatToByte(r);
             _color.G = floatToByte(g);
@@ -68,7 +68,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color set(byte r, byte g, byte b, byte a)
+        public virtual Color set(byte r, byte g, byte b, byte a)
         {
             _color.R = r;
             _color.G = g;
@@ -77,7 +77,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color add(Color c)
+        public virtual Color add(Color c)
         {
             _color.R += c.getRAsByte();
             _color.G += c.getGAsByte();
@@ -86,7 +86,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color add(float r, float g, float b, float a)
+        public virtual Color add(float r, float g, float b, float a)
         {
             _color.R += floatToByte(r);
             _color.G += floatToByte(g);
@@ -95,7 +95,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color add(byte r, byte g, byte b, byte a)
+        public virtual Color add(byte r, byte g, byte b, byte a)
         {
             _color.R += r;
             _color.G += g;
@@ -104,7 +104,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color multiply(Color c)
+        public virtual Color multiply(Color c)
         {
             _color.R = (byte) (_color.R * c.getRAsFloat());
             _color.G = (byte) (_color.G * c.getGAsFloat());
@@ -113,7 +113,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color multiply(float r, float g, float b, float a)
+        public virtual Color multiply(float r, float g, float b, float a)
         {
             _color.R = (byte) (_color.R * r);
             _color.G = (byte) (_color.G * g);
@@ -122,7 +122,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color multiply(byte r, byte g, byte b, byte a)
+        public virtual Color multiply(byte r, byte g, byte b, byte a)
         {
             _color.R = (byte) (_color.R * byteToFloat(r));
             _color.G = (byte) (_color.G * byteToFloat(g));
@@ -131,7 +131,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color multiply(float multiplier)
+        public virtual Color multiply(float multiplier)
         {
             _color.R = (byte) (_color.R * multiplier);
             _color.G = (byte) (_color.G * multiplier);
@@ -140,7 +140,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color subtract(Color c)
+        public virtual Color subtract(Color c)
         {
             _color.R -= c.getRAsByte();
             _color.G -= c.getGAsByte();
@@ -149,7 +149,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color subtract(float r, float g, float b, float a)
+        public virtual Color subtract(float r, float g, float b, float a)
         {
             _color.R -= floatToByte(r);
             _color.G -= floatToByte(g);
@@ -158,7 +158,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color subtract(byte r, byte g, byte b, byte a)
+        public virtual Color subtract(byte r, byte g, byte b, byte a)
         {
             _color.R -= r;
             _color.G -= g;
@@ -167,7 +167,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color lerp(Color color, float t)
+        public virtual Color lerp(Color color, float t)
         {
             _color.R = (byte) ((color.getRAsByte() - _color.R) * t + _color.R);
             _color.G = (byte) ((color.getGAsByte() - _color.G) * t + _color.G);
@@ -176,7 +176,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color lerp(float r, float g, float b, float a, float t)
+        public virtual Color lerp(float r, float g, float b, float a, float t)
         {
             _color.R = (byte) ((floatToByte(r) - _color.R) * t + _color.R);
             _color.G = (byte) ((floatToByte(g) - _color.G) * t + _color.G);
@@ -185,7 +185,7 @@ namespace monogame.Graphics
             return this;
         }
 
-        public Color lerp(byte r, byte g, byte b, byte a, float t)
+        public virtual Color lerp(byte r, byte g, byte b, byte a, float t)
         {
             _color.R = (byte) ((r - _color.R) * t + _color.R);
             _color.G = (byte) ((g - _color.G) * t + _color.G);
@@ -254,11 +254,6 @@ namespace monogame.Graphics
             return (byte) (rgba8888 & 0xff);
         }
 
-        public Microsoft.Xna.Framework.Color toMonoGameColor()
-        {
-            return new Microsoft.Xna.Framework.Color(_color.PackedValue);
-        }
-        
         public static Microsoft.Xna.Framework.Color toMonoGameColor(UInt32 rgba8888)
         {
             return new Microsoft.Xna.Framework.Color(getRAsByte(rgba8888), getGAsByte(rgba8888), getBAsByte(rgba8888), getAAsByte(rgba8888));
@@ -422,42 +417,42 @@ namespace monogame.Graphics
             return true;
         }
 
-        public void setA(float f)
+        public virtual void setA(float f)
         {
             _color.A = (byte) (Math.Min(1, Math.Max(0, f)) * 255);
         }
 
-        public void setR(float f)
+        public virtual void setR(float f)
         {
             _color.R = (byte)(Math.Min(1, Math.Max(0, f)) * 255);
         }
 
-        public void setG(float f)
+        public virtual void setG(float f)
         {
             _color.G = (byte)(Math.Min(1, Math.Max(0, f)) * 255);
         }
 
-        public void setB(float f)
+        public virtual void setB(float f)
         {
             _color.B = (byte)(Math.Min(1, Math.Max(0, f)) * 255);
         }
 
-        public void setR(byte b)
+        public virtual void setR(byte b)
         {
             _color.R = b;
         }
 
-        public void setG(byte b)
+        public virtual void setG(byte b)
         {
             _color.G = b;
         }
 
-        public void setB(byte b)
+        public virtual void setB(byte b)
         {
             _color.B = b;
         }
 
-        public void setA(byte b)
+        public virtual void setA(byte b)
         {
             _color.A = b;
         }

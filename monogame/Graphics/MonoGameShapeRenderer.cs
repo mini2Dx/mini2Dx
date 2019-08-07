@@ -45,7 +45,7 @@ namespace monogame.Graphics
 
         public void setColor(MonoGameColor color)
         {
-            _color = color.toMonoGameColor();
+            _color = color._color;
         }
         
         private void draw(Texture2D texture, Vector2 position, Color color, Vector2 scale = default(Vector2))

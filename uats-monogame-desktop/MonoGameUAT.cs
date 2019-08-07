@@ -92,18 +92,6 @@ namespace mini2Dx_common_uats
                     case Input.Keys.NUM_3:
                         game.sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 165, 100, Align.RIGHT, true);
                         break;
-                    case Input.Keys.NUM_4 when ((MonoGameColor)game.sampleFontCache.getColor()).toMonoGameColor() == Color.White:
-                        game.sampleFontCache.setColor(new MonoGameColor(Color.Blue));
-                        break;
-                    case Input.Keys.NUM_4:
-                        game.sampleFontCache.setColor(new MonoGameColor(Color.White));
-                        break;
-                    case Input.Keys.NUM_5 when ((MonoGameColor)game.sampleFontCache.getColor()).toMonoGameColor() == Color.White:
-                        game.sampleFontCache.setAllColors(new MonoGameColor(Color.Blue));
-                        break;
-                    case Input.Keys.NUM_5:
-                        game.sampleFontCache.setAllColors(new MonoGameColor(Color.White));
-                        break;
                     case Input.Keys.NUM_6:
                         if (isAlphaChanged)
                         {

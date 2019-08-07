@@ -62,9 +62,11 @@
     <Compile Include="Graphics\MonoGameFrameBuffer.cs" />
     <Compile Include="Graphics\MonoGameNinePatch.cs" />
     <Compile Include="Graphics\MonoGamePixmap.cs" />
+    <Compile Include="Graphics\MonoGameReadOnlyColor.cs" />
     <Compile Include="Graphics\MonoGameShader.cs" />
     <Compile Include="Graphics\MonoGameShapeRenderer.cs" />
     <Compile Include="Graphics\MonoGameSprite.cs" />
+    <Compile Include="Graphics\MonoGameSpriteCache.cs" />
     <Compile Include="Graphics\MonoGameTexture.cs" />
     <Compile Include="Graphics\MonoGameTextureAtlas.cs" />
     <Compile Include="Graphics\MonoGameTextureAtlasRegion.cs" />

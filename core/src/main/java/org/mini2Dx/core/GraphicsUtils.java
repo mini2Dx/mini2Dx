@@ -31,6 +31,16 @@ public abstract class GraphicsUtils {
 
 	public abstract Color newColor(Color color);
 
+	public abstract Color newReadOnlyColor(int rgba8888);
+
+	public abstract Color newReadOnlyColor(int r, int g, int b, int a);
+
+	public abstract Color newReadOnlyColor(float r, float g, float b, float a);
+
+	public abstract Color newReadOnlyColor(byte r, byte g, byte b, byte a);
+
+	public abstract Color newReadOnlyColor(Color color);
+
 	public abstract Pixmap newPixmap(int width, int height, PixmapFormat format);
 
 	public abstract Pixmap newPixmap(FileHandle file);
@@ -117,4 +127,6 @@ public abstract class GraphicsUtils {
 	 * @param yHotspot The y location of the hotspot pixel within the cursor image (origin top-left corner)
 	 */
 	public abstract CustomCursor newCustomCursor(Pixmap upPixmap, Pixmap downPixmap, int xHotspot, int yHotspot);
+
+	public abstract SpriteCache newSpriteCache();
 }
