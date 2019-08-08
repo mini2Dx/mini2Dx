@@ -55,11 +55,6 @@ public class SpriteCacheUAT extends BasicGameScreen {
 		TextureRegion cardDiamondsK = textureAtlas.findRegion("cardDiamondsK");
 		TextureRegion cardDiamondsQ = textureAtlas.findRegion("cardDiamondsQ");
 
-		//TODO: remove this
-		if (spriteCache == null){ //temp fix to run the UAT on libgdx because the spritecache isn't implemented there.
-			return;
-		}
-
 		spriteCache.beginCache();
 		for (int x = 0; x < 4; x++){
 			for (int y = 0; y < 4; y++){

@@ -503,7 +503,7 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public void drawSpriteCache(SpriteCache spriteCache, int cacheId) {
-
+		spriteCache.draw(this, cacheId);
 	}
 
 	@Override
@@ -520,7 +520,7 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public void drawTilingDrawable(TilingDrawable tilingDrawable, float x, float y, float width, float height) {
-
+		tilingDrawable.draw(this, x, y, width, height);
 	}
 
 	@Override
