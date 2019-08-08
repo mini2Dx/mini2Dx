@@ -255,6 +255,6 @@ public class LibgdxGraphicsUtils extends GraphicsUtils {
 
 	@Override
 	public SpriteCache newSpriteCache() {
-		return null;
+		return new LibgdxSpriteCache();
 	}
 }
