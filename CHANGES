@@ -8,6 +8,13 @@
 - Added new GamePad API with improved controller/feature support (third-party controllers, rumble, player index, etc.)
 - Simplified geometry class hierarchy
 
+[1.9.10]
+- Update to latest RoboVM to support iOS 12
+- Fixed clipping not working when rendering shapes
+
+[1.9.9]
+- Fixed TSX paths not being normalised
+
 [1.9.8]
 - Added ActionListenerAdapter, HoverListenerAdapter, and UiInputSourceListenerAdapter
 
