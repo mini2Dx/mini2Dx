@@ -162,7 +162,9 @@ public class Polygon extends Shape {
 	protected boolean triangleContains(float x, float y, float p1x, float p1y, float p2x, float p2y, float p3x,
 			float p3y) {
 		boolean b1, b2, b3;
-
+		if (MathUtils.isEqual(p1x, p2x) && MathUtils.isEqual(p2x, p3x) && MathUtils.isEqual(p1y, p2y) && MathUtils.isEqual(p2y, p3y)){
+		    return MathUtils.isEqual(x, p1x) && MathUtils.isEqual(y, p1y);
+        }
 		b1 = sign(x, y, p1x, p1y, p2x, p2y) < 0.0f;
 		b2 = sign(x, y, p2x, p2y, p3x, p3y) < 0.0f;
 		b3 = sign(x, y, p3x, p3y, p1x, p1y) < 0.0f;
