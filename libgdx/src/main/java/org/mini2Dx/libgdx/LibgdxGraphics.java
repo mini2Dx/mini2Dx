@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.LibgdxSpriteBatchWrapper;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
@@ -134,6 +133,33 @@ public class LibgdxGraphics implements Graphics {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 	}
 
+	private void setupDepthBuffer(boolean beginSpriteBatch) {
+		if (clip != null) {
+			Gdx.gl.glDepthFunc(GL20.GL_LESS);
+			Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+
+			Gdx.gl.glDepthMask(true);
+			Gdx.gl.glColorMask(false, false, false, false);
+
+			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+			shapeRenderer.setColor(0f, 1f, 0f, 0.5f);
+			shapeRenderer.rect(clip.getX(), clip.getY(), clip.getWidth(), clip.getHeight());
+
+			shapeRenderer.end();
+
+			if (beginSpriteBatch){
+				spriteBatch.begin();
+			}
+
+			Gdx.gl.glColorMask(true, true, true, true);
+			Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+			Gdx.gl.glDepthFunc(GL20.GL_EQUAL);
+		} else if (beginSpriteBatch){
+			spriteBatch.begin();
+		}
+	}
+
 	/**
 	 * This method allows for translation, scaling, etc. to be set before the
 	 * {@link SpriteBatch} begins
@@ -146,28 +172,7 @@ public class LibgdxGraphics implements Graphics {
 				Gdx.gl.glClearDepthf(1f);
 				Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
 
-				if (clip != null) {
-					Gdx.gl.glDepthFunc(GL20.GL_LESS);
-					Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-
-					Gdx.gl.glDepthMask(true);
-					Gdx.gl.glColorMask(false, false, false, false);
-
-					shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-					shapeRenderer.setColor(0f, 1f, 0f, 0.5f);
-					shapeRenderer.rect(clip.getX(), clip.getY(), clip.getWidth(), clip.getHeight());
-
-					shapeRenderer.end();
-
-					spriteBatch.begin();
-
-					Gdx.gl.glColorMask(true, true, true, true);
-					Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-					Gdx.gl.glDepthFunc(GL20.GL_EQUAL);
-				} else {
-					spriteBatch.begin();
-				}
+				setupDepthBuffer(true);
 			}
 			rendering = true;
 		}
@@ -248,16 +253,11 @@ public class LibgdxGraphics implements Graphics {
 		this.rotationY = 0f;
 	}
 
+
 	@Override
 	public void drawLineSegment(float x1, float y1, float x2, float y2) {
-		beginRendering();
-		endRendering();
+		beginShapeRendering(ShapeRenderer.ShapeType.Filled);
 
-		renderingShapes = true;
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		shapeRenderer.setColor(color.rf(), color.gf(), color.bf(), color.af());
 		shapeRenderer.rectLine(x1, y1, x2, y2, lineHeight);
 		shapeRenderer.end();
 
@@ -269,14 +269,7 @@ public class LibgdxGraphics implements Graphics {
 		int roundWidth = MathUtils.round(width);
 		int roundHeight = MathUtils.round(height);
 
-		beginRendering();
-		endRendering();
-
-		renderingShapes = true;
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		shapeRenderer.setColor(color.rf(), color.gf(), color.bf(), color.af());
+		beginShapeRendering(ShapeRenderer.ShapeType.Filled);
 		shapeRenderer.rectLine(x, y, x + roundWidth, y, lineHeight);
 		shapeRenderer.rectLine(x, y, x , y + roundHeight, lineHeight);
 		shapeRenderer.rectLine(x + roundWidth, y, x + roundWidth, y + roundHeight, lineHeight);
@@ -284,6 +277,18 @@ public class LibgdxGraphics implements Graphics {
 		shapeRenderer.end();
 
 		beginRendering();
+	}
+
+	private void beginShapeRendering(ShapeRenderer.ShapeType shapeType) {
+		beginRendering();
+		endRendering();
+		setupDepthBuffer(false);
+
+		renderingShapes = true;
+		shapeRenderer.begin(shapeType);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.setColor(color.rf(), color.gf(), color.bf(), color.af());
 	}
 
 	@Override
@@ -296,14 +301,7 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public void drawCircle(float centerX, float centerY, int radius) {
-		beginRendering();
-		endRendering();
-
-		renderingShapes = true;
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		shapeRenderer.setColor(color.rf(), color.gf(), color.bf(), color.af());
+		beginShapeRendering(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.circle(centerX, centerY, radius);
 		shapeRenderer.end();
 	}
@@ -315,14 +313,7 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public void fillCircle(float centerX, float centerY, int radius) {
-		beginRendering();
-		endRendering();
-
-		renderingShapes = true;
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		shapeRenderer.setColor(color.rf(), color.gf(), color.bf(), color.af());
+		beginShapeRendering(ShapeRenderer.ShapeType.Filled);
 		shapeRenderer.circle(centerX, centerY, radius);
 		shapeRenderer.end();
 
@@ -358,14 +349,7 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public void drawPolygon(float[] vertices) {
-		beginRendering();
-		endRendering();
-
-		renderingShapes = true;
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		shapeRenderer.setColor(color.rf(), color.gf(), color.bf(), color.af());
+		beginShapeRendering(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.polygon(vertices);
 		shapeRenderer.end();
 

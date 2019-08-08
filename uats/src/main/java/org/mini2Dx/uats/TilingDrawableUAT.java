@@ -8,7 +8,10 @@ import org.mini2Dx.core.graphics.TilingDrawable;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
+import org.mini2Dx.core.screen.transition.FadeInTransition;
+import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import org.mini2Dx.uats.util.ScreenIds;
+import org.mini2Dx.uats.util.UATSelectionScreen;
 
 public class TilingDrawableUAT extends BasicGameScreen {
 
@@ -29,6 +32,10 @@ public class TilingDrawableUAT extends BasicGameScreen {
 
     @Override
     public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
+        if (Mdx.input.justTouched()) {
+            screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(),
+                    new FadeInTransition());
+        }
         side += sign;
         if (side == 100 || side == 250){
             sign = -sign;
