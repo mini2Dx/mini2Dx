@@ -61,7 +61,8 @@ public class LibgdxGraphics implements Graphics {
 
 	private int defaultBlendSrcFunc = GL20.GL_SRC_ALPHA, defaultBlendDstFunc = GL20.GL_ONE_MINUS_SRC_ALPHA;
 	private int lineHeight;
-	private boolean rendering, renderingShapes, renderingStage;
+	private boolean rendering;
+	private boolean renderingShapes;
 	private Rectangle clip;
 
 	private float [] triangleVertices = new float[6];
@@ -113,7 +114,6 @@ public class LibgdxGraphics implements Graphics {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
 
 		rendering = false;
-		renderingStage = false;
 
 		if (defaultShader == null) {
 			defaultShader = new LibgdxShader(SpriteBatch.createDefaultShader());
@@ -166,14 +166,12 @@ public class LibgdxGraphics implements Graphics {
 	 */
 	private void beginRendering() {
 		if (!rendering) {
-			if(!renderingStage) {
-				applyTransformations();
+			applyTransformations();
 
-				Gdx.gl.glClearDepthf(1f);
-				Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
+			Gdx.gl.glClearDepthf(1f);
+			Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
 
-				setupDepthBuffer(true);
-			}
+			setupDepthBuffer(true);
 			rendering = true;
 		}
 	}
@@ -183,18 +181,16 @@ public class LibgdxGraphics implements Graphics {
 	 */
 	private void endRendering() {
 		if (rendering) {
-			if(!renderingStage) {
-				undoTransformations();
-				spriteBatch.end();
-				if (renderingShapes) {
-					shapeRenderer.end();
-				}
+			undoTransformations();
+			spriteBatch.end();
+			if (renderingShapes) {
+				shapeRenderer.end();
+			}
 
-				if (clip != null) {
-					Gdx.gl.glClearDepthf(1f);
-					Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
-					Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
-				}
+			if (clip != null) {
+				Gdx.gl.glClearDepthf(1f);
+				Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
+				Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 			}
 		}
 		rendering = false;

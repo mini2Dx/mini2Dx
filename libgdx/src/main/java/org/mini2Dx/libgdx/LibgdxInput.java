@@ -143,6 +143,16 @@ public class LibgdxInput implements Input {
 	}
 
 	@Override
+	public boolean isKeyDown(int key) {
+		return Gdx.input.isKeyPressed(key);
+	}
+
+	@Override
+	public boolean isKeyUp(int key) {
+		return !Gdx.input.isKeyPressed(key);
+	}
+
+	@Override
 	public boolean justTouched() {
 		return Gdx.input.justTouched();
 	}

@@ -99,6 +99,20 @@ public interface Input {
     public boolean isKeyJustPressed(int key);
 
     /**
+     * Returns if a keyboard key is down
+     * @param key The keyboard keycode
+     * @return True if the key is down
+     */
+    public boolean isKeyDown(int key);
+
+    /**
+     * Returns if a keyboard key is up
+     * @param key The keyboard keycode
+     * @return True if the key is down
+     */
+    public boolean isKeyUp(int key);
+
+    /**
      * Returns if the the screen was just touched or the mouse was just clicked
      * @return True if the screen was touched or mouse button pressed down then released
      */
