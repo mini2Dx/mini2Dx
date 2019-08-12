@@ -38,10 +38,18 @@ import org.mini2Dx.libgdx.game.GameWrapper;
 import org.mini2Dx.libgdx.graphics.*;
 
 public class LibgdxGraphics implements Graphics {
+	enum RenderState {
+		NOT_RENDERING,
+		SHAPES,
+		POLYGONS,
+		SPRITEBATCH
+	}
+
 	private static final String LOGGING_TAG = LibgdxGraphics.class.getSimpleName();
 
 	public final LibgdxSpriteBatchWrapper spriteBatch;
 
+	private final static Vector3 cameraRotationPoint = new Vector3(0, 0, 0), cameraRotationAxis = new Vector3(0, 0, 1);
 	private final GameWrapper gameWrapper;
 	private final ShapeTextureCache colorTextureCache;
 	private final ShapeRenderer shapeRenderer;
@@ -61,8 +69,8 @@ public class LibgdxGraphics implements Graphics {
 
 	private int defaultBlendSrcFunc = GL20.GL_SRC_ALPHA, defaultBlendDstFunc = GL20.GL_ONE_MINUS_SRC_ALPHA;
 	private int lineHeight;
-	private boolean rendering;
-	private boolean renderingShapes;
+	private RenderState rendering;
+	private boolean transformationsApplied;
 	private Rectangle clip;
 
 	private float [] triangleVertices = new float[6];
@@ -70,10 +78,10 @@ public class LibgdxGraphics implements Graphics {
 	private float [] polygonRenderData = new float[15];
 
 	public LibgdxGraphics(GameWrapper gameWrapper, LibgdxSpriteBatchWrapper spriteBatch, PolygonSpriteBatch polygonSpriteBatch, ShapeRenderer shapeRenderer) {
-		super();
 		this.gameWrapper = gameWrapper;
 		this.spriteBatch = spriteBatch;
 		this.shapeRenderer = shapeRenderer;
+		this.shapeRenderer.setAutoShapeType(true);
 		this.polygonSpriteBatch = polygonSpriteBatch;
 
 		this.windowWidth = Gdx.graphics.getWidth();
@@ -111,7 +119,7 @@ public class LibgdxGraphics implements Graphics {
 		Gdx.gl.glClearColor(backgroundColor.rf(), backgroundColor.gf(), backgroundColor.bf(), 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
 
-		rendering = false;
+		rendering = RenderState.NOT_RENDERING;
 
 		if (defaultShader == null) {
 			defaultShader = new LibgdxShader(SpriteBatch.createDefaultShader());
@@ -131,7 +139,7 @@ public class LibgdxGraphics implements Graphics {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 	}
 
-	private void setupDepthBuffer(boolean beginSpriteBatch) {
+	private void setupDepthBuffer() {
 		if (clip != null) {
 			Gdx.gl.glDepthFunc(GL20.GL_LESS);
 			Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
@@ -146,92 +154,118 @@ public class LibgdxGraphics implements Graphics {
 
 			shapeRenderer.end();
 
-			if (beginSpriteBatch){
-				spriteBatch.begin();
-			}
-
 			Gdx.gl.glColorMask(true, true, true, true);
 			Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 			Gdx.gl.glDepthFunc(GL20.GL_EQUAL);
-		} else if (beginSpriteBatch){
-			spriteBatch.begin();
 		}
 	}
 
-	/**
-	 * This method allows for translation, scaling, etc. to be set before the
-	 * {@link SpriteBatch} begins
-	 */
-	private void beginRendering() {
-		if (!rendering) {
-			applyTransformations();
-
-			Gdx.gl.glClearDepthf(1f);
-			Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
-
-			setupDepthBuffer(true);
-			rendering = true;
+	private void beginRendering(RenderState newState) {
+		if (newState == rendering){
+			return;
 		}
+		switch (rendering){
+			case NOT_RENDERING:
+				applyTransformations();
+				Gdx.gl.glClearDepthf(1f);
+				Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
+				setupDepthBuffer();
+				break;
+			case SHAPES:
+				shapeRenderer.end();
+				break;
+			case POLYGONS:
+				polygonSpriteBatch.end();
+				break;
+			case SPRITEBATCH:
+				spriteBatch.end();
+				break;
+		}
+		switch (newState){
+			case SHAPES:
+				shapeRenderer.begin();
+				break;
+			case POLYGONS:
+				polygonSpriteBatch.begin();
+				break;
+			case SPRITEBATCH:
+				spriteBatch.begin();
+				break;
+		}
+		rendering = newState;
 	}
 
 	/**
 	 * Ends rendering
 	 */
 	private void endRendering() {
-		if (rendering) {
-			undoTransformations();
-			spriteBatch.end();
-			if (renderingShapes) {
+		switch (rendering){
+			case NOT_RENDERING:
+				return;
+			case SHAPES:
 				shapeRenderer.end();
-			}
-
-			if (clip != null) {
-				Gdx.gl.glClearDepthf(1f);
-				Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
-				Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
-			}
+				break;
+			case POLYGONS:
+				polygonSpriteBatch.end();
+				break;
+			case SPRITEBATCH:
+				spriteBatch.end();
+				break;
 		}
-		rendering = false;
-		renderingShapes = false;
+		undoTransformations();
+		if (clip != null) {
+			Gdx.gl.glClearDepthf(1f);
+			Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
+			Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+		}
+		rendering = RenderState.NOT_RENDERING;
 	}
 
 	/**
 	 * Applies all translation, scaling and rotation to the {@link SpriteBatch}
 	 */
 	private void applyTransformations() {
-		float viewportWidth = MathUtils.round(windowWidth / scaleX);
-		float viewportHeight = MathUtils.round(windowHeight / scaleY);
+		if (!transformationsApplied) {
+			transformationsApplied = true;
+			float viewportWidth = MathUtils.round(windowWidth / scaleX);
+			float viewportHeight = MathUtils.round(windowHeight / scaleY);
 
-		camera.setToOrtho(true, viewportWidth, viewportHeight);
+			camera.setToOrtho(true, viewportWidth, viewportHeight);
 
-		if (translationX != 0f || translationY != 0f) {
-			camera.translate(translationX, translationY);
+			if (translationX != 0f || translationY != 0f) {
+				camera.translate(translationX, translationY);
+			}
+			camera.update();
+
+			if (rotation != 0f) {
+				cameraRotationPoint.x = rotationX;
+				cameraRotationPoint.y = rotationY;
+				camera.rotateAround(cameraRotationPoint, cameraRotationAxis, -rotation);
+			}
+			camera.update();
+
+			spriteBatch.setProjectionMatrix(camera.combined);
+			shapeRenderer.setProjectionMatrix(camera.combined);
+			polygonSpriteBatch.setProjectionMatrix(camera.combined);
 		}
-		camera.update();
-
-		if (rotation != 0f) {
-			camera.rotateAround(new Vector3(rotationX, rotationY, 0), new Vector3(0, 0, 1), -rotation);
-		}
-		camera.update();
-
-		spriteBatch.setProjectionMatrix(camera.combined);
-		shapeRenderer.setProjectionMatrix(camera.combined);
-		polygonSpriteBatch.setProjectionMatrix(camera.combined);
 	}
 
 	/**
 	 * Cleans up all translations, scaling and rotation
 	 */
 	private void undoTransformations() {
-		if (rotation != 0f) {
-			camera.rotateAround(new Vector3(rotationX, rotationY, 0), new Vector3(0, 0, 1), rotation);
-		}
-		camera.update();
+		if (transformationsApplied) {
+			transformationsApplied = false;
+			if (rotation != 0f) {
+				camera.rotateAround(cameraRotationPoint, cameraRotationAxis, rotation);
+			}
+			camera.update();
 
-		if (translationX != 0f || translationY != 0f) {
-			camera.translate(-translationX, -translationY);
+			if (translationX != 0f || translationY != 0f) {
+				camera.translate(-translationX, -translationY);
+			}
+			camera.update();
 		}
-		camera.update();
 	}
 
 	/**
@@ -253,9 +287,6 @@ public class LibgdxGraphics implements Graphics {
 		beginShapeRendering(ShapeRenderer.ShapeType.Filled);
 
 		shapeRenderer.rectLine(x1, y1, x2, y2, lineHeight);
-		shapeRenderer.end();
-
-		beginRendering();
 	}
 
 	@Override
@@ -268,26 +299,18 @@ public class LibgdxGraphics implements Graphics {
 		shapeRenderer.rectLine(x, y, x , y + roundHeight, lineHeight);
 		shapeRenderer.rectLine(x + roundWidth, y, x + roundWidth, y + roundHeight, lineHeight);
 		shapeRenderer.rectLine(x, y + roundHeight, x + roundWidth, y + roundHeight, lineHeight);
-		shapeRenderer.end();
-
-		beginRendering();
 	}
 
 	private void beginShapeRendering(ShapeRenderer.ShapeType shapeType) {
-		beginRendering();
-		endRendering();
-		setupDepthBuffer(false);
+		beginRendering(RenderState.SHAPES);
 
-		renderingShapes = true;
-		shapeRenderer.begin(shapeType);
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.set(shapeType);
 		shapeRenderer.setColor(color.rf(), color.gf(), color.bf(), color.af());
 	}
 
 	@Override
 	public void fillRect(float x, float y, float width, float height) {
-		beginRendering();
+		beginRendering(RenderState.SPRITEBATCH);
 
 		spriteBatch.draw(colorTextureCache.getFilledRectangleTexture(color), x, y, 0, 0, width, height, 1f, 1f, 0, 0, 0,
 				1, 1, false, false);
@@ -297,7 +320,6 @@ public class LibgdxGraphics implements Graphics {
 	public void drawCircle(float centerX, float centerY, int radius) {
 		beginShapeRendering(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.circle(centerX, centerY, radius);
-		shapeRenderer.end();
 	}
 
 	@Override
@@ -309,9 +331,6 @@ public class LibgdxGraphics implements Graphics {
 	public void fillCircle(float centerX, float centerY, int radius) {
 		beginShapeRendering(ShapeRenderer.ShapeType.Filled);
 		shapeRenderer.circle(centerX, centerY, radius);
-		shapeRenderer.end();
-
-		beginRendering();
 	}
 
 	@Override
@@ -345,17 +364,11 @@ public class LibgdxGraphics implements Graphics {
 	public void drawPolygon(float[] vertices) {
 		beginShapeRendering(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.polygon(vertices);
-		shapeRenderer.end();
-
-		beginRendering();
 	}
 
 	@Override
 	public void fillPolygon(float[] vertices, short[] triangles) {
-		beginRendering();
-		endRendering();
-
-		renderingShapes = true;
+		beginRendering(RenderState.POLYGONS);
 		if(vertices.length * 5 > polygonRenderData.length) {
 			polygonRenderData = new float[vertices.length * 5];
 		}
@@ -370,12 +383,7 @@ public class LibgdxGraphics implements Graphics {
 			polygonRenderData[renderIndex + 3] = vertices[verticesIndex];
 			polygonRenderData[renderIndex + 4] = vertices[verticesIndex + 1];
 		}
-
-		polygonSpriteBatch.begin();
 		polygonSpriteBatch.draw(colorTextureCache.getFilledRectangleTexture(color), polygonRenderData, 0, vertices.length * 5, triangles, 0, triangles.length);
-		polygonSpriteBatch.end();
-
-		beginRendering();
 	}
 
 	@Override
@@ -383,7 +391,7 @@ public class LibgdxGraphics implements Graphics {
 		if (font == null) {
 			return;
 		}
-		beginRendering();
+		beginRendering(RenderState.SPRITEBATCH);
 		font.setColor(color);
 		font.draw(this, text, x, y);
 	}
@@ -398,7 +406,7 @@ public class LibgdxGraphics implements Graphics {
 		if (font == null) {
 			return;
 		}
-		beginRendering();
+		beginRendering(RenderState.SPRITEBATCH);
 		font.setColor(color);
 		font.draw(this, text, x, y, targetWidth, horizontalAlign, true);
 	}
@@ -420,7 +428,7 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public void drawTexture(Texture texture, float x, float y, float width, float height, boolean flipY) {
-		beginRendering();
+		beginRendering(RenderState.SPRITEBATCH);
 		final LibgdxTexture gdxTexture = (LibgdxTexture) texture;
 		spriteBatch.draw(gdxTexture, x, y, 0, 0, width, height, 1f, 1f, 0, 0, 0, texture.getWidth(), texture.getHeight(),
 				false, flipY);
@@ -439,7 +447,7 @@ public class LibgdxGraphics implements Graphics {
 	@Override
 	public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height,
 	                              float rotation) {
-		beginRendering();
+		beginRendering(RenderState.SPRITEBATCH);
 		final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) textureRegion;
 		spriteBatch.draw(gdxTextureRegion.textureRegion, x, y, 0f, 0f, width, height, 1f, 1f, rotation);
 	}
@@ -457,7 +465,7 @@ public class LibgdxGraphics implements Graphics {
 	@Override
 	public void drawSprite(Sprite sprite) {
 		final LibgdxSprite gdxSprite = (LibgdxSprite) sprite;
-		beginRendering();
+		beginRendering(RenderState.SPRITEBATCH);
 		gdxSprite.sprite.draw(spriteBatch);
 	}
 
@@ -465,7 +473,7 @@ public class LibgdxGraphics implements Graphics {
 	public void drawSprite(Sprite sprite, float x, float y) {
 		final LibgdxSprite gdxSprite = (LibgdxSprite) sprite;
 
-		beginRendering();
+		beginRendering(RenderState.SPRITEBATCH);
 		float oldX = sprite.getX();
 		float oldY = sprite.getY();
 		Color oldTint = sprite.getTint();
@@ -491,7 +499,7 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public void drawNinePatch(NinePatch ninePatch, float x, float y, float width, float height) {
-		beginRendering();
+		beginRendering(RenderState.SPRITEBATCH);
 
 		ninePatch.render(this, x, y, width, height);
 	}
@@ -503,15 +511,13 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public void drawFontCache(GameFontCache fontCache) {
-		beginRendering();
+		beginRendering(RenderState.SPRITEBATCH);
 		fontCache.draw(this);
 	}
 
 	@Override
 	public void setClip(float x, float y, float width, float height) {
-		if (rendering) {
-			endRendering();
-		}
+		endRendering();
 
 		if(MathUtils.isEqual(0f, x) && MathUtils.isEqual(0f, y) &&
 				MathUtils.isEqual(getViewportWidth(), width) &&
@@ -534,9 +540,7 @@ public class LibgdxGraphics implements Graphics {
 		if (clip == null) {
 			return null;
 		}
-		if (rendering) {
-			endRendering();
-		}
+		endRendering();
 
 		Rectangle result = clip;
 		clip = null;
@@ -678,9 +682,7 @@ public class LibgdxGraphics implements Graphics {
 		if (MathUtils.isEqual(1f, scaleX) && MathUtils.isEqual(1f, scaleY)) {
 			return;
 		}
-		if (rendering) {
-			endRendering();
-		}
+		endRendering();
 
 		this.scaleX *= scaleX;
 		this.scaleY *= scaleY;
@@ -691,9 +693,7 @@ public class LibgdxGraphics implements Graphics {
 		if (MathUtils.isEqual(this.scaleX, scaleX) && MathUtils.isEqual(this.scaleY, scaleY)) {
 			return;
 		}
-		if (rendering) {
-			endRendering();
-		}
+		endRendering();
 
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
@@ -704,9 +704,7 @@ public class LibgdxGraphics implements Graphics {
 		if (MathUtils.isEqual(this.scaleX, 1f) && MathUtils.isEqual(this.scaleY, 1f)) {
 			return;
 		}
-		if (rendering) {
-			endRendering();
-		}
+		endRendering();
 
 		scaleX = 1f;
 		scaleY = 1f;
@@ -717,9 +715,7 @@ public class LibgdxGraphics implements Graphics {
 		if (MathUtils.isZero(translateX) && MathUtils.isZero(translateY)) {
 			return;
 		}
-		if (rendering) {
-			endRendering();
-		}
+		endRendering();
 
 		this.translationX += translateX;
 		this.translationY += translateY;
@@ -730,9 +726,7 @@ public class LibgdxGraphics implements Graphics {
 		if (MathUtils.isEqual(this.translationX, translateX) && MathUtils.isEqual(this.translationY, translateY)) {
 			return;
 		}
-		if (rendering) {
-			endRendering();
-		}
+		endRendering();
 
 		this.translationX = translateX;
 		this.translationY = translateY;
@@ -743,9 +737,7 @@ public class LibgdxGraphics implements Graphics {
 		if (MathUtils.isZero(degrees)) {
 			return;
 		}
-		if (rendering) {
-			endRendering();
-		}
+		endRendering();
 
 		this.rotation += degrees;
 		this.rotation = this.rotation % 360f;
@@ -761,9 +753,7 @@ public class LibgdxGraphics implements Graphics {
 			return;
 		}
 
-		if (rendering) {
-			endRendering();
-		}
+		endRendering();
 
 		this.rotation = degrees;
 		this.rotation = this.rotation % 360f;
