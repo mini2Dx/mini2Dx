@@ -178,7 +178,7 @@ namespace monogame
         }
 
         //custom contains implementation because c# one is based on linq which is too slow
-        private bool contains(Keys[] keys, Keys key)
+        private static bool contains(Keys[] keys, Keys key)
         {
             for (int i = 0; i < keys.Length; i++)
             {
@@ -532,6 +532,16 @@ namespace monogame
         {
             var monogameKey = gdxKeyToMonoGameKey(i);
             return contains(_currentPressedKeys, monogameKey) && !contains(_previousPressedKeys, monogameKey);
+        }
+
+        public bool isKeyDown(int i)
+        {
+            return contains(_currentPressedKeys, gdxKeyToMonoGameKey(i));
+        }
+
+        public bool isKeyUp(int i)
+        {
+            return !isKeyDown(i);
         }
 
         public bool justTouched()
