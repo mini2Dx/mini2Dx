@@ -103,4 +103,9 @@ public class Mdx {
      * XML serialization API
      */
     public static final XmlSerializer xml = new XmlSerializer();
+
+    /**
+     * Platform utilities API
+     */
+    public static PlatformUtils platformUtils;
 }
