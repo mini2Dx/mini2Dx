@@ -65,6 +65,7 @@ public class LibgdxGraphicsTest {
 		
 		mockery.checking(new Expectations() {
 			{
+				one(shapeRenderer).setAutoShapeType(true);
 				one(fonts).defaultFont();
 				will(returnValue(gameFont));
 				one(gdxGraphics).getWidth();
