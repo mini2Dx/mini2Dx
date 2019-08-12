@@ -82,6 +82,7 @@
     <Compile Include="MonoGameGraphicsUtils.cs" />
     <Compile Include="MonoGameInput.cs" />
     <Compile Include="MonoGameLogger.cs" />
+    <Compile Include="MonoGamePlatformUtils.cs" />
     <Compile Include="MonoGamePlayerData.cs" />
     <Compile Include="MonoGameTaskExecutor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

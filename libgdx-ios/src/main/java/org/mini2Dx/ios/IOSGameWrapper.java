@@ -31,6 +31,7 @@ public class IOSGameWrapper extends GameWrapper {
 	public void initialise(String gameIdentifier) {
 		Mdx.di = new DependencyInjection(new IOSComponentScanner());
 		Mdx.playerData = new IOSPlayerData();
+		Mdx.platformUtils = new IOSPlatformUtils();
 	}
 
 	@Override

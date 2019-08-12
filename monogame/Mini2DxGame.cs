@@ -26,6 +26,8 @@ namespace monogame
 {
     public class Mini2DxGame : Game
     {
+        public static Mini2DxGame instance;
+        
         GraphicsDeviceManager graphics;
         private GameContainer game;
         private const float targetFPS = 60;
@@ -48,6 +50,7 @@ namespace monogame
             graphics.PreferredBackBufferWidth = 800;
             graphics.PreferredBackBufferHeight = 720;
             this.game = game;
+            instance = this;
         }
 
         /// <summary>
@@ -81,6 +84,7 @@ namespace monogame
             Mdx.log = new MonoGameLogger();
             Mdx.playerData = new MonoGamePlayerData();
             Mdx.reflect = new JvmReflection();
+            Mdx.platformUtils = new MonoGamePlatformUtils();
             base.Initialize();
         }
 
