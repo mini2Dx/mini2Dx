@@ -79,9 +79,7 @@ public class LibgdxGraphics implements Graphics {
 		this.windowHeight = Gdx.graphics.getHeight();
 
 		defaultTint = new LibgdxColor(spriteBatch.getColor());
-		if (defaultTint != null) {
-			font = Mdx.fonts.defaultFont();
-		}
+		font = Mdx.fonts.defaultFont();
 		tint = defaultTint;
 
 		lineHeight = 1;
@@ -606,79 +604,37 @@ public class LibgdxGraphics implements Graphics {
 	public void setBlendFunction(Mini2DxBlendFunction srcFunc, Mini2DxBlendFunction dstFunc) {
 		final int srcF, dstF;
 
-		switch(srcFunc) {
-		default:
-		case ZERO:
-			srcF = GL20.GL_ZERO;
-			break;
-		case ONE:
-			srcF = GL20.GL_ONE;
-			break;
-		case SRC_COLOR:
-			srcF = GL20.GL_SRC_COLOR;
-			break;
-		case ONE_MINUS_SRC_COLOR:
-			srcF = GL20.GL_ONE_MINUS_SRC_COLOR;
-			break;
-		case DST_COLOR:
-			srcF = GL20.GL_DST_COLOR;
-			break;
-		case ONE_MINUS_DST_COLOR:
-			srcF = GL20.GL_ONE_MINUS_DST_COLOR;
-			break;
-		case SRC_ALPHA:
-			srcF = GL20.GL_SRC_ALPHA;
-			break;
-		case ONE_MINUS_SRC_ALPHA:
-			srcF = GL20.GL_ONE_MINUS_SRC_ALPHA;
-			break;
-		case DST_ALPHA:
-			srcF = GL20.GL_DST_ALPHA;
-			break;
-		case ONE_MINUS_DST_ALPHA:
-			srcF = GL20.GL_ONE_MINUS_DST_ALPHA;
-			break;
-		case SRC_ALPHA_SATURATE:
-			srcF = GL20.GL_SRC_ALPHA_SATURATE;
-			break;
-		}
-		switch(dstFunc) {
-		default:
-		case ZERO:
-			dstF = GL20.GL_ZERO;
-			break;
-		case ONE:
-			dstF = GL20.GL_ONE;
-			break;
-		case SRC_COLOR:
-			dstF = GL20.GL_SRC_COLOR;
-			break;
-		case ONE_MINUS_SRC_COLOR:
-			dstF = GL20.GL_ONE_MINUS_SRC_COLOR;
-			break;
-		case DST_COLOR:
-			dstF = GL20.GL_DST_COLOR;
-			break;
-		case ONE_MINUS_DST_COLOR:
-			dstF = GL20.GL_ONE_MINUS_DST_COLOR;
-			break;
-		case SRC_ALPHA:
-			dstF = GL20.GL_SRC_ALPHA;
-			break;
-		case ONE_MINUS_SRC_ALPHA:
-			dstF = GL20.GL_ONE_MINUS_SRC_ALPHA;
-			break;
-		case DST_ALPHA:
-			dstF = GL20.GL_DST_ALPHA;
-			break;
-		case ONE_MINUS_DST_ALPHA:
-			dstF = GL20.GL_ONE_MINUS_DST_ALPHA;
-			break;
-		case SRC_ALPHA_SATURATE:
-			dstF = GL20.GL_SRC_ALPHA_SATURATE;
-			break;
-		}
+		srcF = convertBlendFunction(srcFunc);
+		dstF = convertBlendFunction(dstFunc);
 		spriteBatch.setBlendFunction(srcF, dstF);
+	}
+
+	private int convertBlendFunction(Mini2DxBlendFunction func) {
+		switch(func) {
+			default:
+			case ZERO:
+				return GL20.GL_ZERO;
+			case ONE:
+				return GL20.GL_ONE;
+			case SRC_COLOR:
+				return GL20.GL_SRC_COLOR;
+			case ONE_MINUS_SRC_COLOR:
+				return GL20.GL_ONE_MINUS_SRC_COLOR;
+			case DST_COLOR:
+				return GL20.GL_DST_COLOR;
+			case ONE_MINUS_DST_COLOR:
+				return GL20.GL_ONE_MINUS_DST_COLOR;
+			case SRC_ALPHA:
+				return GL20.GL_SRC_ALPHA;
+			case ONE_MINUS_SRC_ALPHA:
+				return GL20.GL_ONE_MINUS_SRC_ALPHA;
+			case DST_ALPHA:
+				return GL20.GL_DST_ALPHA;
+			case ONE_MINUS_DST_ALPHA:
+				return GL20.GL_ONE_MINUS_DST_ALPHA;
+			case SRC_ALPHA_SATURATE:
+				return GL20.GL_SRC_ALPHA_SATURATE;
+		}
 	}
 
 	@Override
