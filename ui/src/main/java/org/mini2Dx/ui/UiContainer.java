@@ -19,11 +19,13 @@ import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.core.graphics.viewport.Viewport;
 import org.mini2Dx.core.input.GamePadType;
 import org.mini2Dx.core.input.button.GamePadButton;
 import org.mini2Dx.gdx.Input;
 import org.mini2Dx.gdx.InputProcessor;
 import org.mini2Dx.gdx.math.MathUtils;
+import org.mini2Dx.gdx.math.Vector2;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.IntArray;
 import org.mini2Dx.gdx.utils.IntSet;
@@ -54,6 +56,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class UiContainer extends ParentUiElement implements InputProcessor {
 	private static final String LOGGING_TAG = UiContainer.class.getSimpleName();
+	private static final Vector2 SHARED_VECTOR = new Vector2();
 	private static final Array<UiContainer> uiContainerInstances = new Array<UiContainer>(true, 2, UiContainer.class);
 	private static Visibility defaultVisibility = Visibility.HIDDEN;
 	private static UiTheme UI_THEME;
@@ -88,6 +91,8 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	private ScreenSizeScaleMode screenSizeScaleMode = ScreenSizeScaleMode.NO_SCALING;
 
 	private boolean passThroughMouseMovement = false;
+
+	private Viewport viewport;
 
 	/**
 	 * Constructor
@@ -321,8 +326,13 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		if (!pointerNavigationAllowed()) {
 			return false;
 		}
-		screenX = MathUtils.round(screenX / scaleX);
-		screenY = MathUtils.round(screenY / scaleY);
+		if (viewport != null) {
+			SHARED_VECTOR.x = screenX;
+			SHARED_VECTOR.y = screenY;
+			viewport.toWorldCoordinates(SHARED_VECTOR);
+			screenX = MathUtils.round(SHARED_VECTOR.x);
+			screenY = MathUtils.round(SHARED_VECTOR.y);
+		}
 
 		updateLastInputSource(screenX, screenY);
 
@@ -363,8 +373,13 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		if (!pointerNavigationAllowed()) {
 			return false;
 		}
-		screenX = MathUtils.round(screenX / scaleX);
-		screenY = MathUtils.round(screenY / scaleY);
+		if (viewport != null) {
+			SHARED_VECTOR.x = screenX;
+			SHARED_VECTOR.y = screenY;
+			viewport.toWorldCoordinates(SHARED_VECTOR);
+			screenX = MathUtils.round(SHARED_VECTOR.x);
+			screenY = MathUtils.round(SHARED_VECTOR.y);
+		}
 
 		updateLastInputSource(screenX, screenY);
 
@@ -384,8 +399,13 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		if (!pointerNavigationAllowed()) {
 			return false;
 		}
-		screenX = MathUtils.round(screenX / scaleX);
-		screenY = MathUtils.round(screenY / scaleY);
+		if (viewport != null) {
+			SHARED_VECTOR.x = screenX;
+			SHARED_VECTOR.y = screenY;
+			viewport.toWorldCoordinates(SHARED_VECTOR);
+			screenX = MathUtils.round(SHARED_VECTOR.x);
+			screenY = MathUtils.round(SHARED_VECTOR.y);
+		}
 
 		updateLastInputSource(screenX, screenY);
 
@@ -401,8 +421,14 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		screenX = MathUtils.round(screenX / scaleX);
-		screenY = MathUtils.round(screenY / scaleY);
+
+		if (viewport != null) {
+			SHARED_VECTOR.x = screenX;
+			SHARED_VECTOR.y = screenY;
+			viewport.toWorldCoordinates(SHARED_VECTOR);
+			screenX = MathUtils.round(SHARED_VECTOR.x);
+			screenY = MathUtils.round(SHARED_VECTOR.y);
+		}
 
 		updateLastInputSource(screenX, screenY);
 
@@ -1172,5 +1198,9 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			return;
 		}
 		UiContainer.defaultVisibility = defaultVisibility;
+	}
+
+	public void setViewport(Viewport viewport) {
+		this.viewport = viewport;
 	}
 }
