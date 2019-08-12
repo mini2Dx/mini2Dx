@@ -17,6 +17,7 @@ package org.mini2Dx.uats;
 
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.PerformanceTracker;
 import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.files.FileHandleResolver;
 import org.mini2Dx.core.game.GameContainer;
@@ -161,6 +162,8 @@ public class GraphicsUAT extends BasicGameScreen {
 			g.drawTextureRegion(atlasTextureRegion, 0, 360);
 			g.drawNinePatch(ninePatch, 512, 360, 128, 128);
 		}
+
+		PerformanceTracker.drawInBottomLeft(g);
 	}
 
 	public void detectKeyPress(ScreenManager<? extends GameScreen> screenManager) {

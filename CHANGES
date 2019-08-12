@@ -7,6 +7,8 @@
 - Added (optional) object pooling for geometry classes
 - Added new GamePad API with improved controller/feature support (third-party controllers, rumble, player index, etc.)
 - Simplified geometry class hierarchy
+- Optimised shape rendering under LibGDX
+- Fixed UI input when rendering to a viewport
 
 [1.9.10]
 - Update to latest RoboVM to support iOS 12
