@@ -115,4 +115,12 @@ public class LibgdxTextureRegionWrapper extends TextureRegion {
 		}
 		flip(false, true);
 	}
+
+	public void setRegionHeight (int height) {
+		if (!isFlipY()) {
+			setV(getV2() + height / (float)getTexture().getHeight());
+		} else {
+			setV2(getV() + height / (float)getTexture().getHeight());
+		}
+	}
 }

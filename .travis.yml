@@ -37,7 +37,8 @@ notifications:
 before_install:
   - sudo apt-get update
 before_script:
-  - android-update-sdk --components=sys-img-armeabi-v7a-android-21 --accept-licenses='android-sdk-license-[0-9a-f]{8}'
+  - yes | sdkmanager --update
   - curl -LO https://github.com/MonoGame/MonoGame/releases/download/v3.7.1/monogame-sdk.run
   - yes Y | sudo sh monogame-sdk.run
+  - unzip _tools/ikvm.zip -d _tools
 script: ./gradlew -Pikvm.home=$TRAVIS_BUILD_DIR/_tools/ikvm clean build --stacktrace
