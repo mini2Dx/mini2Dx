@@ -10,6 +10,7 @@ addons:
         key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xA6A19B38D3D831EF'
     packages:
       - mono-complete
+      - cabextract
 android:
   components:
     - tools
@@ -41,4 +42,12 @@ before_script:
   - curl -LO https://github.com/MonoGame/MonoGame/releases/download/v3.7.1/monogame-sdk.run
   - yes Y | sudo sh monogame-sdk.run
   - unzip _tools/ikvm.zip -d _tools
-script: ./gradlew -Pikvm.home=$TRAVIS_BUILD_DIR/_tools/ikvm clean build --stacktrace
+  - wget https://www.freedesktop.org/software/fontconfig/webfonts/webfonts.tar.gz
+  - tar -xzf webfonts.tar.gz
+  - cd msfonts/
+  - cabextract *.exe
+  - mkdir ~/.local/share/fonts/
+  - cp *.ttf *.TTF ~/.local/share/fonts/
+  - sudo fc-cache -f -v
+  - cd ..
+script: ./gradlew -Pikvm.home=$TRAVIS_BUILD_DIR/_tools/ikvm clean build --stacktrace -x :mini2Dx-uats-libgdx-android:check -x :mini2Dx-uats-libgdx-android:validateSigningDebug -x :mini2Dx-uats-libgdx-android:packageDebug
