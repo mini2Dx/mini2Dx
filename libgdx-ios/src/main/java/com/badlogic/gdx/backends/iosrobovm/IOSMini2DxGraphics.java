@@ -348,7 +348,7 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 			fps = frames;
 			frames = 0;
 		}
-		//Mdx.performanceTracker.markFrame();
+		Mdx.platformUtils.markFrame();
 
 		float delta = deltaTime;
 		if (delta > maximumDelta) {
@@ -358,10 +358,10 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 		accumulator += delta;
 
 		while (accumulator >= targetTimestep) {
-			//Mdx.performanceTracker.markUpdateBegin();
+			Mdx.platformUtils.markUpdateBegin();
 			input.processEvents();
 			app.listener.update(targetTimestep);
-			//Mdx.performanceTracker.markUpdateEnd();
+			Mdx.platformUtils.markUpdateEnd();
 			accumulator -= targetTimestep;
 		}
 		app.listener.interpolate(accumulator / targetTimestep);

@@ -15,13 +15,13 @@
  ******************************************************************************/
 package org.mini2Dx.core.util;
 
-import org.mini2Dx.gdx.utils.Queue;
+import org.mini2Dx.core.collections.LongQueue;
 
 /**
  * Utility class for tracking a rolling average
  */
 public class RollingAverage {
-	private final Queue<Long> queue = new Queue<>();
+	private final LongQueue queue = new LongQueue();
 	private int size;
 	private double average;
 
@@ -34,8 +34,8 @@ public class RollingAverage {
 		if (queue.size < size) {
 			queue.addLast(value);
 			long sum = 0;
-			for (long i : queue) {
-				sum += i;
+			for (int i = 0; i < queue.size; i++) {
+				sum += queue.get(i);
 			}
 			average = (double) sum / queue.size;
 		} else {

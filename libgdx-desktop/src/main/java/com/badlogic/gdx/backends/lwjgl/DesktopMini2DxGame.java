@@ -20,6 +20,7 @@ import com.badlogic.gdx.backends.lwjgl.audio.Mini2DxOpenALAudio;
 import com.badlogic.gdx.utils.*;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.libgdx.desktop.DesktopGameWrapper;
 import org.mini2Dx.libgdx.desktop.DesktopMini2DxConfig;
@@ -220,7 +221,7 @@ public class DesktopMini2DxGame implements Application {
 			int frameRate = isBackground ? graphics.config.backgroundFPS : graphics.config.foregroundFPS;
 			if (shouldRender) {
 				graphics.updateTime();
-				//Mdx.performanceTracker.markFrame();
+				Mdx.platformUtils.markFrame();
 				graphics.frameId++;
 
 				float delta = graphics.getDeltaTime();
@@ -231,11 +232,11 @@ public class DesktopMini2DxGame implements Application {
 				accumulator += delta;
 
 				while (accumulator >= targetTimestep) {
-					//Mdx.performanceTracker.markUpdateBegin();
+					Mdx.platformUtils.markUpdateBegin();
 					input.update();
 					input.processEvents();
 					listener.update(targetTimestep);
-					//Mdx.performanceTracker.markUpdateEnd();
+					Mdx.platformUtils.markUpdateEnd();
 					accumulator -= targetTimestep;
 				}
 				listener.interpolate(accumulator / targetTimestep);

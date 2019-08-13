@@ -13,16 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.libgdx;
+package org.mini2Dx.core;
 
-import com.badlogic.gdx.Gdx;
-import org.mini2Dx.core.JvmPlatformUtils;
-
-public class IOSPlatformUtils extends JvmPlatformUtils {
+public abstract class JvmPlatformUtils extends PlatformUtils {
     @Override
-    public void exit(boolean ignorePlatformRestrictions) {
-        if (ignorePlatformRestrictions) {
-            Gdx.app.exit();
-        }
+    public long nanoTime() {
+        return System.nanoTime();
+    }
+
+    @Override
+    public long currentTimeMillis() {
+        return System.currentTimeMillis();
+    }
+
+    @Override
+    public long getTotalMemory() {
+        return Runtime.getRuntime().totalMemory();
+    }
+
+    @Override
+    public long getAvailableMemory() {
+        return Runtime.getRuntime().freeMemory();
+    }
+
+    @Override
+    public long getUsedMemory() {
+        return getTotalMemory() - getAvailableMemory();
     }
 }

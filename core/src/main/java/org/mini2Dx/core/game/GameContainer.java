@@ -34,7 +34,7 @@ public abstract class GameContainer {
     private Array<GameResizeListener> gameResizeListeners;
 
     /**
-     * Initialse the game
+     * Initialise the game
      */
     public abstract void initialise();
 

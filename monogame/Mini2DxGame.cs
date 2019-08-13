@@ -126,10 +126,12 @@ namespace monogame
 
             while (_timeAccumulator >= targetTimeStep)
             {
+                Mdx.platformUtils.markUpdateBegin();
                 ((MonoGameInput)Mdx.input).update();
                 ((MonoGameAudio)Mdx.audio).update();
                 game.update(targetTimeStep);
                 _timeAccumulator -= targetTimeStep;
+                Mdx.platformUtils.markUpdateEnd();
             }
             game.interpolate(_timeAccumulator / targetTimeStep);
 
@@ -142,6 +144,7 @@ namespace monogame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            Mdx.platformUtils.markFrame();
             Mdx.graphicsContext.preRender(Mdx.graphicsContext.getWindowWidth(), Mdx.graphicsContext.getWindowHeight());
             game.render(Mdx.graphicsContext);
             Mdx.graphicsContext.postRender();

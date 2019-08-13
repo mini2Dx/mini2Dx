@@ -14,6 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>DesktopGL</MonoGamePlatform>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -118,6 +119,10 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\monogame-pipeline-ext\monogame-pipeline-ext.csproj">
+      <Project>{6f98e109-6222-4843-b89a-22cdae2fe514}</Project>
+      <Name>monogame-pipeline-ext</Name>
+    </ProjectReference>
     <ProjectReference Include="..\monogame\mini2Dx-monogame.csproj">
       <Project>{ac3ae86c-55ad-4f1e-97e8-12e6389137ad}</Project>
       <Name>mini2Dx-monogame</Name>

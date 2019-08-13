@@ -52,6 +52,7 @@ public class AndroidMini2DxGraphics extends AndroidGraphics {
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
+		Mdx.platformUtils.markFrame();
 
 		// After pause deltaTime can have somewhat huge value that destabilizes
 		// the mean, so let's cut it off
@@ -121,8 +122,10 @@ public class AndroidMini2DxGraphics extends AndroidGraphics {
 			accumulator += delta;
 
 			while (accumulator >= targetTimestep) {
+				Mdx.platformUtils.markUpdateBegin();
 				app.getInput().processEvents();
 				game.getApplicationListener().update(targetTimestep);
+				Mdx.platformUtils.markUpdateEnd();
 				accumulator -= targetTimestep;
 			}
 			game.getApplicationListener().interpolate(accumulator / targetTimestep);
