@@ -15,33 +15,17 @@
  ******************************************************************************/
 package org.mini2Dx.libgdx.desktop;
 
+import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
-import org.mini2Dx.core.DependencyInjection;
-import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.libgdx.*;
-import org.mini2Dx.libgdx.desktop.DesktopPlayerData;
-import org.mini2Dx.libgdx.game.GameWrapper;
+import org.mini2Dx.libgdx.LibgdxPlatformUtils;
 
-/**
- * Desktop implementation of {@link GameWrapper}
- */
-public class DesktopGameWrapper extends GameWrapper {
-
-	public DesktopGameWrapper(GameContainer gc, String gameIdentifier) {
-		super(gc, gameIdentifier);
-	}
-
-	@Override
-	public void initialise(String gameIdentifier) {
-		Mdx.di = new DependencyInjection(new DesktopComponentScanner());
-		Mdx.playerData = new DesktopPlayerData(gameIdentifier);
-		Mdx.platformUtils = new DesktopPlatformUtils();
-	}
-
-	@Override
-	public boolean isGameWindowReady() {
-		return Display.isActive();
-	}
-
+public class DesktopPlatformUtils extends LibgdxPlatformUtils {
+    @Override
+    public boolean isGameThread() {
+        try {
+            return Display.isCurrent();
+        } catch (LWJGLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
