@@ -38,15 +38,41 @@ public abstract class PlatformUtils {
      */
     public abstract void exit(boolean ignorePlatformRestrictions);
 
+    /**
+     * Platform independent version of {@link System#nanoTime()}
+     * @see System#nanoTime()
+     */
     public abstract long nanoTime();
 
+    /**
+     * Platform independent version of {@link System#currentTimeMillis()}
+     * @see System#currentTimeMillis()
+     */
     public abstract long currentTimeMillis();
 
+    /**
+     * Gets the total memory that can be used by the game
+     * @return Number of bytes that can be used by the game
+     */
     public abstract long getTotalMemory();
 
+    /**
+     * Gets the total memory available for the game
+     * @return Number of bytes available for the game
+     */
     public abstract long getAvailableMemory();
 
+    /**
+     * Gets the total memory used by the game
+     * @return Number of bytes used by the game
+     */
     public abstract long getUsedMemory();
+
+    /**
+     * Indicates if the current thread is the game thread
+     * @return if the current thread is the game thread
+     */
+    public abstract boolean isGameThread();
 
     /**
      * Internal usage only: marks the beginning of update operations

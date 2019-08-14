@@ -15,6 +15,7 @@
  ******************************************************************************/
 using System;
 using System.Diagnostics;
+using System.Threading;
 
 namespace monogame
 {
@@ -50,6 +51,11 @@ namespace monogame
         public override long getUsedMemory()
         {
             return Process.GetCurrentProcess().WorkingSet64;
+        }
+
+        public override bool isGameThread()
+        {
+            return Thread.CurrentThread.ManagedThreadId == 1 && Thread.CurrentThread.Name == null;
         }
     }
 }

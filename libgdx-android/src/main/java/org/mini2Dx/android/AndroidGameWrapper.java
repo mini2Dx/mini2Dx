@@ -35,6 +35,7 @@ public class AndroidGameWrapper extends GameWrapper {
 	public void initialise(String gameIdentifier) {
 		Mdx.di = new AndroidDependencyInjection(applicationContext);
 		Mdx.playerData = new AndroidPlayerData();
+		Mdx.platformUtils = new AndroidPlatformUtils();
 	}
 	
 	@Override

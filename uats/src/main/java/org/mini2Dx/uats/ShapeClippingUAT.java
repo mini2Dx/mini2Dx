@@ -17,12 +17,8 @@ package org.mini2Dx.uats;
 
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.files.FileHandleResolver;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Colors;
-import org.mini2Dx.core.graphics.SpriteCache;
-import org.mini2Dx.core.graphics.TextureAtlas;
-import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
@@ -32,7 +28,7 @@ import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
 /**
- * User acceptance testing of {@link SpriteCache} APIs
+ * User acceptance testing of {@link Graphics} clipping APIs
  */
 public class ShapeClippingUAT extends BasicGameScreen {
 

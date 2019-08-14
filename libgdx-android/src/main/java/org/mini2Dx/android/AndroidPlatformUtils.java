@@ -13,19 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.libgdx;
+package org.mini2Dx.android;
 
 import org.mini2Dx.libgdx.LibgdxPlatformUtils;
 
-public class IOSPlatformUtils extends LibgdxPlatformUtils {
-    @Override
-    public void exit(boolean ignorePlatformRestrictions) {
-        if (ignorePlatformRestrictions) {
-            super.exit();
-        }
-    }
+public class AndroidPlatformUtils extends LibgdxPlatformUtils {
     @Override
     public boolean isGameThread() {
-        return true;
+        return Thread.currentThread().getName().startsWith("GLThread");
     }
 }
