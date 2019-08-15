@@ -57,16 +57,28 @@ public interface QuadTree<T extends Positionable> extends PositionChangeListener
 	public void clear();
 	
 	public Array<T> getElementsWithinArea(Shape area);
+
+	public Array<T> getElementsWithinArea(Shape area, QuadTreeSearchDirection searchDirection);
 	
 	public void getElementsWithinArea(Array<T> result, Shape area);
+
+	public void getElementsWithinArea(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection);
 	
 	public Array<T> getElementsIntersectingLineSegment(LineSegment lineSegment);
+
+	public Array<T> getElementsIntersectingLineSegment(LineSegment lineSegment, QuadTreeSearchDirection searchDirection);
 	
 	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment);
+
+	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment, QuadTreeSearchDirection searchDirection);
 	
 	public Array<T> getElementsContainingPoint(Point point);
+
+	public Array<T> getElementsContainingPoint(Point point, QuadTreeSearchDirection searchDirection);
 	
 	public void getElementsContainingPoint(Array<T> result, Point point);
+
+	public void getElementsContainingPoint(Array<T> result, Point point, QuadTreeSearchDirection searchDirection);
 	
 	public Array<T> getElements();
 	

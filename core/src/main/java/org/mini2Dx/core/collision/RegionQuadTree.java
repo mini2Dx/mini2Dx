@@ -155,7 +155,6 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			g.setColor(tmp);
 		}
 
-		tmp = g.getColor();
 		g.setColor(ELEMENT_COLOR);
 		for (T element : elements) {
 			g.drawRect(element.getX(), element.getY(), element.getWidth(), element.getHeight());
@@ -281,10 +280,13 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 	}
 
 	@Override
-	public Array<T> getElementsWithinArea(Shape area) {
-		Array<T> result = new Array<T>();
-		getElementsWithinArea(result, area);
-		return result;
+	protected void addElementsWithinArea(Array<T> result, Shape area) {
+		for (int i = elements.size - 1; i >= 0; i--) {
+			T element = elements.get(i);
+			if (element != null && (area.contains(element) || area.intersects(element))) {
+				result.add(element);
+			}
+		}
 	}
 
 	@Override
@@ -299,21 +301,63 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			if (bottomRight.contains(area) || bottomRight.intersects(area))
 				bottomRight.getElementsWithinArea(result, area);
 		}
-		for (int i = elements.size - 1; i >= 0; i--) {
-			T element = elements.get(i);
-			if (element == null)
-				continue;
-			if (area.contains(element) || area.intersects(element)) {
-				result.add(element);
-			}
-		}
+		addElementsWithinArea(result, area);
 	}
 
 	@Override
-	public Array<T> getElementsContainingPoint(Point point) {
-		Array<T> result = new Array<T>();
-		getElementsContainingPoint(result, point);
-		return result;
+	public void getElementsWithinArea(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection) {
+		switch (searchDirection){
+			case UPWARDS:
+				getElementsWithinAreaUpwards(result, area, true);
+				break;
+			case DOWNWARDS:
+				getElementsWithinArea(result, area);
+				break;
+		}
+	}
+
+	private void getElementsWithinAreaUpwards(Array<T> result, Shape area, boolean firstInvocation) {
+		if (elements != null) {
+			addElementsWithinArea(result, area);
+		}
+		if (firstInvocation && topLeft != null){
+			if (area.contains(topLeft) || area.intersects(topLeft)){
+				topLeft.getElementsWithinArea(result, area);
+			}
+			if (area.contains(topRight) || area.intersects(topRight)){
+				topRight.getElementsWithinArea(result, area);
+			}
+			if (area.contains(bottomLeft) || area.intersects(bottomLeft)){
+				bottomLeft.getElementsWithinArea(result, area);
+			}
+			if (area.contains(bottomRight) || area.intersects(bottomRight)){
+				bottomRight.getElementsWithinArea(result, area);
+			}
+		}
+		if (parent != null) {
+			if (parent.topLeft != this && (area.contains(parent.topLeft) || area.intersects(parent.topLeft))) {
+				parent.topLeft.getElementsWithinArea(result, area);
+			}
+			if (parent.topRight != this && (area.contains(parent.topRight) || area.intersects(parent.topRight))) {
+				parent.topRight.getElementsWithinArea(result, area);
+			}
+			if (parent.bottomLeft != this && (area.contains(parent.bottomLeft) || area.intersects(parent.bottomLeft))) {
+				parent.bottomLeft.getElementsWithinArea(result, area);
+			}
+			if (parent.bottomRight != this && (area.contains(parent.bottomRight) || area.intersects(parent.bottomRight))) {
+				parent.bottomRight.getElementsWithinArea(result, area);
+			}
+			((RegionQuadTree<T>)parent).getElementsWithinAreaUpwards(result, area, false);
+		}
+	}
+
+	protected void addElementsContainingPoint(Array<T> result, Point point) {
+		for (int i = elements.size - 1; i >= 0; i--) {
+			T element = elements.get(i);
+			if (element != null && element.contains(point)) {
+				result.add(element);
+			}
+		}
 	}
 
 	@Override
@@ -337,37 +381,126 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 	}
 
 	@Override
-	public Array<T> getElementsIntersectingLineSegment(LineSegment lineSegment) {
-		Array<T> result = new Array<T>();
-		getElementsIntersectingLineSegment(result, lineSegment);
-		return result;
+	public void getElementsContainingPoint(Array<T> result, Point point, QuadTreeSearchDirection searchDirection) {
+		switch (searchDirection){
+			case UPWARDS:
+				getElementsContainingPointUpwards(result, point, true);
+				break;
+			case DOWNWARDS:
+				getElementsContainingPoint(result, point);
+				break;
+		}
+	}
+
+	private void getElementsContainingPointUpwards(Array<T> result, Point point, boolean firstInvocation) {
+		if (elements != null){
+			addElementsContainingPoint(result, point);
+		}
+		if (firstInvocation && topLeft != null){
+			if (topLeft.contains(point)){
+				topLeft.getElementsContainingPoint(result, point);
+			}
+			if (topRight.contains(point)){
+				topRight.getElementsContainingPoint(result, point);
+			}
+			if (bottomLeft.contains(point)){
+				bottomLeft.getElementsContainingPoint(result, point);
+			}
+			if (bottomRight.contains(point)){
+				bottomRight.getElementsContainingPoint(result, point);
+			}
+		}
+		if (parent != null){
+			if (parent.topLeft != this && (parent.topLeft.contains(point) || parent.topLeft.contains(point))) {
+				parent.topLeft.getElementsContainingPoint(result, point);
+			}
+			if (parent.topRight != this && (parent.topRight.contains(point) || parent.topRight.contains(point))) {
+				parent.topRight.getElementsContainingPoint(result, point);
+			}
+			if (parent.bottomLeft != this && (parent.bottomLeft.contains(point) || parent.bottomLeft.contains(point))) {
+				parent.bottomLeft.getElementsContainingPoint(result, point);
+			}
+			if (parent.bottomRight != this && (parent.bottomRight.contains(point) || parent.bottomRight.contains(point))) {
+				parent.bottomRight.getElementsContainingPoint(result, point);
+			}
+			((RegionQuadTree<T>)parent).getElementsContainingPointUpwards(result, point, false);
+		}
 	}
 
 	@Override
-	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment) {
-		if (topLeft != null) {
-			if (topLeft.intersects(lineSegment) || topLeft.contains(lineSegment.getPointA())
-					|| topLeft.contains(lineSegment.getPointB())) {
-				topLeft.getElementsIntersectingLineSegment(result, lineSegment);
-			}
-			if (topRight.intersects(lineSegment) || topRight.contains(lineSegment.getPointA())
-					|| topRight.contains(lineSegment.getPointB())) {
-				topRight.getElementsIntersectingLineSegment(result, lineSegment);
-			}
-			if (bottomLeft.intersects(lineSegment) || bottomLeft.contains(lineSegment.getPointA())
-					|| bottomLeft.contains(lineSegment.getPointB())) {
-				bottomLeft.getElementsIntersectingLineSegment(result, lineSegment);
-			}
-			if (bottomRight.intersects(lineSegment) || bottomRight.contains(lineSegment.getPointA())
-					|| bottomRight.contains(lineSegment.getPointB())) {
-				bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
-			}
-		}
+	protected void addElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment) {
 		for (int i = elements.size - 1; i >= 0; i--) {
 			T element = elements.get(i);
 			if (element != null && element.intersects(lineSegment)) {
 				result.add(element);
 			}
+		}
+	}
+
+	@Override
+	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment) {
+		if (topLeft != null) {
+			if (intersects(topLeft, lineSegment)) {
+				topLeft.getElementsIntersectingLineSegment(result, lineSegment);
+			}
+			if (intersects(topRight, lineSegment)) {
+				topRight.getElementsIntersectingLineSegment(result, lineSegment);
+			}
+			if (intersects(bottomLeft, lineSegment)) {
+				bottomLeft.getElementsIntersectingLineSegment(result, lineSegment);
+			}
+			if (intersects(bottomRight, lineSegment)) {
+				bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
+			}
+		}
+		addElementsIntersectingLineSegment(result, lineSegment);
+	}
+
+	@Override
+	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment, QuadTreeSearchDirection searchDirection) {
+
+		switch (searchDirection){
+			case UPWARDS:
+				addElementsIntersectingLineSegmentUpwards(result, lineSegment, true);
+				break;
+			case DOWNWARDS:
+				getElementsIntersectingLineSegment(result, lineSegment);
+				break;
+		}
+	}
+
+	private void addElementsIntersectingLineSegmentUpwards(Array<T> result, LineSegment lineSegment, boolean firstInvocation) {
+		if (elements != null) {
+			addElementsIntersectingLineSegment(result, lineSegment);
+		}
+		if (topLeft != null && firstInvocation){
+			if (intersects(topLeft, lineSegment)){
+				topLeft.getElementsIntersectingLineSegment(result, lineSegment);
+			}
+			if (intersects(topRight, lineSegment)){
+				topRight.getElementsIntersectingLineSegment(result, lineSegment);
+			}
+			if (intersects(bottomLeft, lineSegment)){
+				bottomLeft.getElementsIntersectingLineSegment(result, lineSegment);
+			}
+			if (intersects(bottomRight, lineSegment)){
+				bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
+			}
+		}
+		if (parent != null) {
+			if (parent.topLeft != this && intersects(parent.topLeft, lineSegment)) {
+				parent.topLeft.getElementsIntersectingLineSegment(result, lineSegment);
+			}
+			if (parent.topRight != this && intersects(parent.topRight, lineSegment)) {
+				parent.topRight.getElementsIntersectingLineSegment(result, lineSegment);
+			}
+			if (parent.bottomLeft != this && intersects(parent.bottomLeft, lineSegment)) {
+				parent.bottomLeft.getElementsIntersectingLineSegment(result, lineSegment);
+			}
+			if (parent.bottomRight != this && intersects(parent.bottomRight, lineSegment)) {
+				parent.bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
+			}
+			((RegionQuadTree<T>)parent).addElementsIntersectingLineSegmentUpwards(result, lineSegment, false);
 		}
 	}
 

@@ -185,13 +185,10 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 			g.setColor(QUAD_COLOR);
 			g.drawShape(this);
 			g.drawRect(getX(), getY(), getWidth(), getHeight());
-			g.setColor(tmp);
-		}
-
-		tmp = g.getColor();
-		g.setColor(ELEMENT_COLOR);
-		for (T element : elements) {
-			g.fillRect(element.getX(), element.getY(), 1f, 1f);
+			g.setColor(ELEMENT_COLOR);
+			for (T element : elements) {
+				g.fillRect(element.getX(), element.getY(), 1f, 1f);
+			}
 		}
 		g.setColor(tmp);
 		lock.readLock().unlock();
@@ -268,6 +265,7 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 
 		elements.add(element);
 		element.addPostionChangeListener(this);
+		QuadTreeAwareUtils.setQuadTreeRef(element, this);
 		int totalElements = elements.size;
 		lock.writeLock().unlock();
 
@@ -541,14 +539,17 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		if (parent == null) {
 			return result;
 		}
-		if (result && parent.isMergable()) {
-			if(!topDownInvocation) {
-				parent.lock.readLock().lock();
+		if (result) {
+			if (parent.isMergable()) {
+				if (!topDownInvocation) {
+					parent.lock.readLock().lock();
+				}
+				parent.merge();
+				if (!topDownInvocation) {
+					parent.lock.readLock().unlock();
+				}
 			}
-			parent.merge();
-			if(!topDownInvocation) {
-				parent.lock.readLock().unlock();
-			}
+			QuadTreeAwareUtils.removeQuadTreeRef(element);
 		}
 		return result;
 	}
@@ -561,6 +562,31 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 	}
 
 	@Override
+	public Array<T> getElementsWithinArea(Shape area, QuadTreeSearchDirection searchDirection) {
+		Array<T> result = new Array<>();
+
+		switch (searchDirection){
+			case UPWARDS:
+				getElementsWithinArea(result, area, searchDirection);
+				break;
+			case DOWNWARDS:
+				getElementsWithinArea(result, area);
+				break;
+		}
+
+		return result;
+	}
+
+	protected void addElementsWithinArea(Array<T> result, Shape area) {
+		for (int i = elements.size - 1; i >= 0; i--) {
+			T element = elements.get(i);
+			if (element != null && area.contains(element.getX(), element.getY())) {
+				result.add(element);
+			}
+		}
+	}
+
+	@Override
 	public void getElementsWithinArea(Array<T> result, Shape area) {
 		lock.readLock().lock();
 		if (topLeft != null) {
@@ -569,20 +595,62 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 			bottomLeft.getElementsWithinArea(result, area);
 			bottomRight.getElementsWithinArea(result, area);
 		} else {
-			for (int i = elements.size - 1; i >= 0; i--) {
-				T element = elements.get(i);
-				if (element != null && area.contains(element.getX(), element.getY())) {
-					result.add(element);
-				}
-			}
+			addElementsWithinArea(result, area);
 		}
 		lock.readLock().unlock();
+	}
+
+	@Override
+	public void getElementsWithinArea(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection) {
+		switch (searchDirection){
+			case UPWARDS:
+				lock.readLock().lock();
+				if (elements != null) {
+					addElementsWithinArea(result, area);
+				}
+				if (parent != null) {
+					if (parent.topLeft != this && (area.contains(parent.topLeft) || area.intersects(parent.topLeft))) {
+						parent.topLeft.getElementsWithinArea(result, area);
+					}
+					if (parent.topRight != this && (area.contains(parent.topRight) || area.intersects(parent.topRight))) {
+						parent.topRight.getElementsWithinArea(result, area);
+					}
+					if (parent.bottomLeft != this && (area.contains(parent.bottomLeft) || area.intersects(parent.bottomLeft))) {
+						parent.bottomLeft.getElementsWithinArea(result, area);
+					}
+					if (parent.bottomRight != this && (area.contains(parent.bottomRight) || area.intersects(parent.bottomRight))) {
+						parent.bottomRight.getElementsWithinArea(result, area);
+					}
+					parent.getElementsWithinArea(result, area, searchDirection);
+				}
+				lock.readLock().unlock();
+				break;
+			case DOWNWARDS:
+				getElementsWithinArea(result, area);
+				break;
+		}
 	}
 
 	@Override
 	public Array<T> getElementsContainingPoint(Point point) {
 		Array<T> result = new Array<T>();
 		getElementsContainingPoint(result, point);
+		return result;
+	}
+
+	@Override
+	public Array<T> getElementsContainingPoint(Point point, QuadTreeSearchDirection searchDirection) {
+		Array<T> result = new Array<>();
+
+		switch (searchDirection){
+			case UPWARDS:
+				getElementsContainingPoint(result, point, searchDirection);
+				break;
+			case DOWNWARDS:
+				getElementsContainingPoint(result, point);
+				break;
+		}
+
 		return result;
 	}
 
@@ -620,40 +688,123 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 		lock.readLock().unlock();
 	}
 
+	protected void addElementsContainingPoint(Array<T> result, Point point) {
+		lock.readLock().lock();
+		for (int i = elements.size - 1; i >= 0; i--) {
+			T element = elements.get(i);
+			if (element == null) {
+				continue;
+			}
+			if (element.getX() != point.x) {
+				continue;
+			}
+			if (element.getY() != point.y) {
+				continue;
+			}
+			result.add(element);
+		}
+		lock.readLock().unlock();
+	}
+
+	@Override
+	public void getElementsContainingPoint(Array<T> result, Point point, QuadTreeSearchDirection searchDirection) {
+		switch (searchDirection){
+			case UPWARDS:
+				if (elements != null){
+					addElementsContainingPoint(result, point);
+				}
+				break;
+			case DOWNWARDS:
+				getElementsContainingPoint(result, point);
+				break;
+		}
+	}
+
 	public Array<T> getElementsIntersectingLineSegment(LineSegment lineSegment) {
 		Array<T> result = new Array<T>();
 		getElementsIntersectingLineSegment(result, lineSegment);
 		return result;
 	}
 
+	@Override
+	public Array<T> getElementsIntersectingLineSegment(LineSegment lineSegment, QuadTreeSearchDirection searchDirection) {
+		Array<T> result = new Array<>();
+
+		switch (searchDirection){
+			case UPWARDS:
+				getElementsIntersectingLineSegment(result, lineSegment, searchDirection);
+				break;
+			case DOWNWARDS:
+				getElementsIntersectingLineSegment(result, lineSegment);
+				break;
+		}
+
+		return result;
+	}
+
+	protected static boolean intersects(ConcurrentPointQuadTree tree, LineSegment segment){
+		return tree.intersects(segment) || tree.contains(segment.getPointA()) || tree.contains(segment.getPointB());
+	}
+
+	protected void addElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment) {
+		for (int i = elements.size - 1; i >= 0; i--) {
+			T element = elements.get(i);
+			if (element != null && lineSegment.contains(element.getX(), element.getY())) {
+				result.add(element);
+			}
+		}
+	}
+
 	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment) {
 		lock.readLock().lock();
 		if (topLeft != null) {
-			if (topLeft.intersects(lineSegment) || topLeft.contains(lineSegment.getPointA())
-					|| topLeft.contains(lineSegment.getPointB())) {
+			if (intersects(topLeft, lineSegment)) {
 				topLeft.getElementsIntersectingLineSegment(result, lineSegment);
 			}
-			if (topRight.intersects(lineSegment) || topRight.contains(lineSegment.getPointA())
-					|| topRight.contains(lineSegment.getPointB())) {
+			if (intersects(topRight, lineSegment)) {
 				topRight.getElementsIntersectingLineSegment(result, lineSegment);
 			}
-			if (bottomLeft.intersects(lineSegment) || bottomLeft.contains(lineSegment.getPointA())
-					|| bottomLeft.contains(lineSegment.getPointB())) {
+			if (intersects(bottomLeft, lineSegment)) {
 				bottomLeft.getElementsIntersectingLineSegment(result, lineSegment);
 			}
-			if (bottomRight.intersects(lineSegment) || bottomRight.contains(lineSegment.getPointA())
-					|| bottomRight.contains(lineSegment.getPointB())) {
+			if (intersects(bottomRight, lineSegment)) {
 				bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
 			}
 		} else {
-			for (int i = elements.size - 1; i >= 0; i--) {
-				T element = elements.get(i);
-				if (element != null && lineSegment.contains(element.getX(), element.getY())) {
-					result.add(element);
-				}
-			}
+			addElementsIntersectingLineSegment(result, lineSegment);
 		}
 		lock.readLock().unlock();
+	}
+
+	@Override
+	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment, QuadTreeSearchDirection searchDirection) {
+		switch (searchDirection){
+			case UPWARDS:
+				lock.readLock().lock();
+				if (elements != null) {
+					addElementsIntersectingLineSegment(result, lineSegment);
+				}
+				if (parent != null) {
+					if (parent.topLeft != this && intersects(parent.topLeft, lineSegment)) {
+						parent.topLeft.getElementsIntersectingLineSegment(result, lineSegment);
+					}
+					if (parent.topRight != this && intersects(parent.topRight, lineSegment)) {
+						parent.topRight.getElementsIntersectingLineSegment(result, lineSegment);
+					}
+					if (parent.bottomLeft != this && intersects(parent.bottomLeft, lineSegment)) {
+						parent.bottomLeft.getElementsIntersectingLineSegment(result, lineSegment);
+					}
+					if (parent.bottomRight != this && intersects(parent.bottomRight, lineSegment)) {
+						parent.bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
+					}
+					parent.getElementsIntersectingLineSegment(result, lineSegment, searchDirection);
+				}
+				lock.readLock().unlock();
+				break;
+			case DOWNWARDS:
+				getElementsIntersectingLineSegment(result, lineSegment);
+				break;
+		}
 	}
 
 	public Array<T> getElements() {
