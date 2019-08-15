@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.core.serialization.map.serialize;
 
-import org.mini2Dx.core.util.LongArrayIterable;
+import org.mini2Dx.core.collections.LongArrayIterable;
 import org.mini2Dx.gdx.utils.LongArray;
 import org.mini2Dx.gdx.utils.LongMap;
 
