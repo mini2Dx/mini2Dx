@@ -18,6 +18,7 @@ package org.mini2Dx.core.collision;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.collision.util.QuadTreeAwareCollisionPoint;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.util.InterpolationTracker;
@@ -30,8 +31,10 @@ import java.util.Random;
  * Unit tests for {@link PointQuadTree}
  */
 public class PointQuadTreeTest {
+
 	private QuadTree<CollisionPoint> rootQuad;
 	private CollisionPoint point1, point2, point3, point4;
+	private QuadTreeAwareCollisionPoint qAPoint1, qAPoint2, qAPoint3, qAPoint4;
 
 	@Before
 	public void setup() {
@@ -44,6 +47,10 @@ public class PointQuadTreeTest {
 		point2 = new CollisionPoint(127, 0);
 		point3 = new CollisionPoint(0, 127);
 		point4 = new CollisionPoint(127, 127);
+		qAPoint1 = new QuadTreeAwareCollisionPoint(point1);
+		qAPoint2 = new QuadTreeAwareCollisionPoint(point2);
+		qAPoint3 = new QuadTreeAwareCollisionPoint(point3);
+		qAPoint4 = new QuadTreeAwareCollisionPoint(point4);
 	}
 	
 	@Test
@@ -158,7 +165,7 @@ public class PointQuadTreeTest {
 		rootQuad.add(new CollisionPoint(48, 48));
 		Assert.assertEquals(6, rootQuad.getTotalElements());
 	}
-	
+
 	@Test
 	public void testGetElementsWithinRegion() {
 		rootQuad.add(point1);
@@ -169,31 +176,68 @@ public class PointQuadTreeTest {
 		Array<CollisionPoint> collisionPoints = rootQuad.getElementsWithinArea(new Rectangle(0, 0, 64, 64));
 		Assert.assertEquals(1, collisionPoints.size);
 		Assert.assertEquals(point1, collisionPoints.get(0));
-		
+
 		collisionPoints = rootQuad.getElementsWithinArea(new Rectangle(64, 0, 64, 64));
 		Assert.assertEquals(1, collisionPoints.size);
 		Assert.assertEquals(point2, collisionPoints.get(0));
-		
+
 		collisionPoints = rootQuad.getElementsWithinArea(new Rectangle(0, 64, 64, 64));
 		Assert.assertEquals(1, collisionPoints.size);
 		Assert.assertEquals(point3, collisionPoints.get(0));
-		
+
 		collisionPoints = rootQuad.getElementsWithinArea(new Rectangle(64, 64, 64, 64));
 		Assert.assertEquals(1, collisionPoints.size);
 		Assert.assertEquals(point4, collisionPoints.get(0));
-		
+
 		CollisionPoint collisionPoint5 = new CollisionPoint(32, 32);
 		CollisionPoint collisionPoint6 = new CollisionPoint(48, 48);
 		rootQuad.add(collisionPoint5);
 		rootQuad.add(collisionPoint6);
-		
+
 		collisionPoints = rootQuad.getElementsWithinArea(new Rectangle(0, 0, 64, 64));
 		Assert.assertEquals(3, collisionPoints.size);
 		Assert.assertEquals(true, collisionPoints.contains(point1, false));
 		Assert.assertEquals(true, collisionPoints.contains(collisionPoint5, false));
 		Assert.assertEquals(true, collisionPoints.contains(collisionPoint6, false));
 	}
-	
+
+	@Test
+	public void testGetElementsWithinRegionUpwards() {
+		rootQuad.add(qAPoint1);
+		rootQuad.add(qAPoint2);
+		rootQuad.add(qAPoint3);
+		rootQuad.add(qAPoint4);
+
+		Array<CollisionPoint> collisionPoints;
+
+		collisionPoints = qAPoint1.getQuad().getElementsWithinArea(new Rectangle(0, 0, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(qAPoint1, collisionPoints.get(0));
+
+		collisionPoints = qAPoint2.getQuad().getElementsWithinArea(new Rectangle(64, 0, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(qAPoint2, collisionPoints.get(0));
+
+		collisionPoints = qAPoint3.getQuad().getElementsWithinArea(new Rectangle(0, 64, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(qAPoint3, collisionPoints.get(0));
+
+		collisionPoints = qAPoint4.getQuad().getElementsWithinArea(new Rectangle(64, 64, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(qAPoint4, collisionPoints.get(0));
+
+		QuadTreeAwareCollisionPoint collisionPoint5 = new QuadTreeAwareCollisionPoint(32, 32);
+		QuadTreeAwareCollisionPoint collisionPoint6 = new QuadTreeAwareCollisionPoint(48, 48);
+		rootQuad.add(collisionPoint5);
+		rootQuad.add(collisionPoint6);
+
+		collisionPoints = qAPoint1.getQuad().getElementsWithinArea(new Rectangle(0, 0, 64, 64), QuadTreeSearchDirection.UPWARDS);
+		Assert.assertEquals(3, collisionPoints.size);
+		Assert.assertEquals(true, collisionPoints.contains(qAPoint1, false));
+		Assert.assertEquals(true, collisionPoints.contains(collisionPoint5, false));
+		Assert.assertEquals(true, collisionPoints.contains(collisionPoint6, false));
+	}
+
 	@Test
 	public void testGetElementsIntersectingLineSegment() {
 		rootQuad.add(point1);
@@ -206,5 +250,19 @@ public class PointQuadTreeTest {
 		Assert.assertEquals(false, CollisionPoints.contains(point2, false));
 		Assert.assertEquals(false, CollisionPoints.contains(point3, false));
 		Assert.assertEquals(true, CollisionPoints.contains(point4, false));
+	}
+
+	@Test
+	public void testGetElementsIntersectingLineSegmentUpwards() {
+		rootQuad.add(qAPoint1);
+		rootQuad.add(qAPoint2);
+		rootQuad.add(qAPoint3);
+		rootQuad.add(qAPoint4);
+
+		Array<CollisionPoint> CollisionPoints = qAPoint1.getQuad().getElementsIntersectingLineSegment(new LineSegment(0, 0, 128, 128), QuadTreeSearchDirection.UPWARDS);
+		Assert.assertEquals(true, CollisionPoints.contains(qAPoint1, false));
+		Assert.assertEquals(false, CollisionPoints.contains(qAPoint2, false));
+		Assert.assertEquals(false, CollisionPoints.contains(qAPoint3, false));
+		Assert.assertEquals(true, CollisionPoints.contains(qAPoint4, false));
 	}
 }

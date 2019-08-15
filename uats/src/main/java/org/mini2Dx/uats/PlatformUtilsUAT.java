@@ -33,7 +33,7 @@ import org.mini2Dx.uats.util.UATSelectionScreen;
  */
 public class PlatformUtilsUAT extends BasicGameScreen {
 
-    private String gameThreadTestStatus = "in progress";
+    private String gameThreadTestStatus = "";
 
     @Override
     public void initialise(GameContainer gc) {
