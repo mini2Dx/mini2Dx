@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.util;
+package org.mini2Dx.core.collections;
 
 import junit.framework.Assert;
 import org.junit.Test;
+import org.mini2Dx.core.collections.IntTreeMap;
 import org.mini2Dx.gdx.utils.IntMap;
 
 import java.util.TreeMap;

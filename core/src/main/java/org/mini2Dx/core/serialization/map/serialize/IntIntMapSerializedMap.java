@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.core.serialization.map.serialize;
 
-import org.mini2Dx.core.util.IntArrayIterable;
+import org.mini2Dx.core.collections.IntArrayIterable;
 import org.mini2Dx.gdx.utils.IntArray;
 import org.mini2Dx.gdx.utils.IntIntMap;
 
