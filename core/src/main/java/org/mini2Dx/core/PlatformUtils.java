@@ -26,6 +26,8 @@ public abstract class PlatformUtils {
     private final RollingAverage averageUpdateDuration = new RollingAverage(GameContainer.TARGET_FPS);
 
     private long updateStart;
+    private long renderStart;
+    private final RollingAverage averageRenderDuration = new RollingAverage(GameContainer.TARGET_FPS);
 
     private long frameSecondStart;
     private int frames;
@@ -91,6 +93,23 @@ public abstract class PlatformUtils {
     }
 
     /**
+     * Internal usage only: marks the end of rendering operations
+     */
+    public void markRenderEnd() {
+        long time = nanoTime();
+        long renderDuration = time - renderStart;
+
+        averageUpdateDuration.mark(renderDuration);
+    }
+
+    /**
+     * Internal usage only: marks the beginning of rendering operations
+     */
+    public void markRenderBegin() {
+        renderStart = nanoTime();
+    }
+
+    /**
      * Internal usage only: marks the end of update operations
      */
     public void markUpdateEnd() {
@@ -139,5 +158,14 @@ public abstract class PlatformUtils {
      */
     public double getAverageUpdateDuration() {
         return averageUpdateDuration.getAverage();
+    }
+
+    /**
+     * Returns the average duration of render({@link Graphics})
+     *
+     * @return The average duration in nanoseconds
+     */
+    public double getAverageRenderDuration() {
+        return averageRenderDuration.getAverage();
     }
 }

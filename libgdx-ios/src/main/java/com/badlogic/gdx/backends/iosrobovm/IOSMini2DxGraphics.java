@@ -366,7 +366,9 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 		}
 		app.listener.interpolate(accumulator / targetTimestep);
 		frameId++;
+		Mdx.platformUtils.markRenderBegin();
 		app.listener.render();
+		Mdx.platformUtils.markRenderEnd();
 	}
 
 	void makeCurrent () {

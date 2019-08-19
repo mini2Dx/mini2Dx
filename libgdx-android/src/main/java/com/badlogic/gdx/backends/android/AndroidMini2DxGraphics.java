@@ -131,7 +131,9 @@ public class AndroidMini2DxGraphics extends AndroidGraphics {
 			game.getApplicationListener().interpolate(accumulator / targetTimestep);
 			
 			frameId++;
+			Mdx.platformUtils.markRenderBegin();
 			app.getApplicationListener().render();
+			Mdx.platformUtils.markRenderEnd();
 		}
 
 		if (lpause) {

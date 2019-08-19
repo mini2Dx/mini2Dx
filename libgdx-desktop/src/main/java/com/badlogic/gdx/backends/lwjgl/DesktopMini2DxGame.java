@@ -240,8 +240,9 @@ public class DesktopMini2DxGame implements Application {
 					accumulator -= targetTimestep;
 				}
 				listener.interpolate(accumulator / targetTimestep);
-
+				Mdx.platformUtils.markRenderBegin();
 				listener.render();
+				Mdx.platformUtils.markRenderEnd();
 				Display.update(false);
 			} else {
 				// Sleeps to avoid wasting CPU in an empty loop.

@@ -146,7 +146,9 @@ namespace monogame
         {
             Mdx.platformUtils.markFrame();
             Mdx.graphicsContext.preRender(Mdx.graphicsContext.getWindowWidth(), Mdx.graphicsContext.getWindowHeight());
+            Mdx.platformUtils.markRenderBegin();
             game.render(Mdx.graphicsContext);
+            Mdx.platformUtils.markRenderEnd();
             Mdx.graphicsContext.postRender();
             base.Draw(gameTime);
         }
