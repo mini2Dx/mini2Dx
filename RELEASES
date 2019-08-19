@@ -1,15 +1,3 @@
 Project Generator Version: 1.2.3
+mini2Dx: 2.0.0-alpha.14, libGDX: 1.9.8, roboVM: 2.3.7, androidBuildTools: 21.0.0, androidApi: 21, miniscript: 1.1.1, minibus: 1.3.0, parcl: 1.6.1, gradle-butler-plugin: 1.1.3
 mini2Dx: 1.9.10, libGDX: 1.9.8, roboVM: 2.3.7, androidBuildTools: 21.0.0, androidApi: 21, miniscript: 1.1.1, minibus: 1.3.0, parcl: 1.6.1, gradle-butler-plugin: 1.1.3
-mini2Dx: 1.8.2, libGDX: 1.9.6, roboVM: 2.3.3, androidBuildTools: 21.0.0, androidApi: 21, miniscript: 1.0.1, minibus: 1.2.0, parcl: 1.3.1, gradle-butler-plugin: 1.1.2
-mini2Dx: 1.7.14, libGDX: 1.9.6, roboVM: 2.3.0, androidBuildTools: 21.0.0, androidApi: 21, miniscript: 1.0.1, minibus: 1.2.0, parcl: 1.3.1, gradle-butler-plugin: 1.1.2
-mini2Dx: 1.6.5, libGDX: 1.9.6, roboVM: 2.3.0, androidBuildTools: 21.0.0, androidApi: 21, miniscript: 1.0.0-beta1, minibus: 1.2.0, parcl: 1.1.0, gradle-butler-plugin: 1.1.2
-mini2Dx: 1.5.4, libGDX: 1.9.6, roboVM: 2.3.0, androidBuildTools: 21.0.0, androidApi: 21, miniscript: 1.0.0-beta1, minibus: 1.2.0, parcl: 1.1.0, gradle-butler-plugin: 1.1.2
-mini2Dx: 1.4.9, libGDX: 1.9.4, roboVM: 2.2.0, androidBuildTools: 21.0.0, androidApi: 21, miniscript: 1.0.0-beta1, minibus: 1.2.0, parcl: 1.1.0, gradle-butler-plugin: 1.1.2
-mini2Dx: 1.3.1, libGDX: 1.9.4, roboVM: 2.2.0, androidBuildTools: 21.0.0, androidApi: 21, miniscript: 1.0.0-beta1, minibus: 1.1.1, parcl: 1.0.10, gradle-butler-plugin: 1.1.0
-mini2Dx: 1.2.1, libGDX: 1.6.5, roboVM: 1.6.0, androidBuildTools: 20.0.0, androidApi: 20, parcl: 1.0.6, deprecated: true
-mini2Dx: 1.2.0, libGDX: 1.6.5, roboVM: 1.6.0, androidBuildTools: 20.0.0, androidApi: 20, parcl: 1.0.6, deprecated: true
-mini2Dx: 1.1.0, libGDX: 1.6.4, roboVM: 1.5.0, androidBuildTools: 20.0.0, androidApi: 20, parcl: 1.0.6, deprecated: true
-mini2Dx: 1.0.1, libGDX: 1.6.1, roboVM: 1.2.0, androidBuildTools: 20.0.0, androidApi: 20, parcl: 1.0.6, deprecated: true
-mini2Dx: 1.0.0, libGDX: 1.6.1, roboVM: 1.2.0, androidBuildTools: 20.0.0, androidApi: 20, parcl: 1.0.6, deprecated: true
-mini2Dx: 1.0.0-RC2, libGDX: 1.6.1, roboVM: 1.2.0, androidBuildTools: 20.0.0, androidApi: 20, parcl: 1.0.6, deprecated: true
-mini2Dx: 1.0.0-RC1, libGDX: 1.6.1, roboVM: 1.2.0, androidBuildTools: 20.0.0, androidApi: 20, parcl: 1.0.5, deprecated: true
