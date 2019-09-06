@@ -15,9 +15,10 @@
  ******************************************************************************/
 package org.mini2Dx.core.input.nswitch;
 
+import org.mini2Dx.core.input.MappedGamePadListener;
 import org.mini2Dx.core.input.button.SwitchDualJoyConButton;
 
-public interface SwitchDualJoyConGamePadListener {
+public interface SwitchDualJoyConGamePadListener extends MappedGamePadListener {
 
 	public void connected(SwitchDualJoyConGamePad gamePad);
 

@@ -15,10 +15,11 @@
  ******************************************************************************/
 package org.mini2Dx.core.input.xbox;
 
+import org.mini2Dx.core.input.MappedGamePadListener;
 import org.mini2Dx.core.input.button.XboxButton;
 import org.mini2Dx.core.input.deadzone.DeadZone;
 
-public interface XboxGamePadListener {
+public interface XboxGamePadListener extends MappedGamePadListener {
 	/**
 	 * Called when a gamepad connects
 	 *

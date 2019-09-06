@@ -15,9 +15,101 @@
  ******************************************************************************/
 package org.mini2Dx.core.graphics;
 
+import org.mini2Dx.gdx.math.Matrix4;
+import org.mini2Dx.gdx.math.Vector2;
+import org.mini2Dx.gdx.math.Vector3;
 import org.mini2Dx.gdx.utils.Disposable;
 
+/**
+ * Interface to platform-specific shader implementations
+ */
 public interface Shader extends Disposable {
+	/**
+	 * Binds the shader for parameter modification
+	 */
+	public void begin();
+
+	/**
+	 * Unbinds the shader for parameter modification
+	 */
+	public void end();
+
+	/**
+	 * Checks if the shader has the specified parameter (uniform, attribute, etc.).
+	 * @param name The parameter name
+	 * @return False if the uniform, attribute, etc. does not exist
+	 */
+	public boolean hasParameter(String name);
+
+	/**
+	 * Sets the specified float parameter (uniform). Note: {@link #begin()} must be called before using this method
+	 * @param name The parameter name
+	 * @param value
+	 */
+	public void setParameterf(String name, float value);
+
+	/**
+	 * Sets the specified parameter (uniform). Note: {@link #begin()} must be called before using this method
+	 * @param name The parameter name
+	 * @param value1
+	 * @param value2
+	 */
+	public void setParameterf(String name, float value1, float value2);
+
+	/**
+	 * Sets the specified parameter (uniform). Note: {@link #begin()} must be called before using this method
+	 * @param name The parameter name
+	 * @param value1
+	 * @param value2
+	 * @param value3
+	 */
+	public void setParameterf(String name, float value1, float value2, float value3);
+
+	/**
+	 * Sets the specified parameter (uniform or attribute). Note: {@link #begin()} must be called before using this method
+	 * @param name The parameter name
+	 * @param value1
+	 * @param value2
+	 * @param value3
+	 * @param value4
+	 */
+	public void setParameterf(String name, float value1, float value2, float value3, float value4);
+
+	/**
+	 * Sets the specified parameter (uniform). Note: {@link #begin()} must be called before using this method
+	 * @param name The parameter name
+	 * @param vec
+	 */
+	public void setParameterf(String name, Vector2 vec);
+
+	/**
+	 * Sets the specified parameter (uniform). Note: {@link #begin()} must be called before using this method
+	 * @param name The parameter name
+	 * @param vec
+	 */
+	public void setParameterf(String name, Vector3 vec);
+
+	/**
+	 * Sets the specified parameter (uniform). Note: {@link #begin()} must be called before using this method
+	 * @param name The parameter name
+	 * @param value
+	 */
+	public void setParameteri(String name, int value);
+
+	/**
+	 * Sets the specified parameter (uniform). Note: {@link #begin()} must be called before using this method
+	 * @param name The parameter name
+	 * @param matrix
+	 */
+	public void setParameterMatrix(String name, Matrix4 matrix);
+
+	/**
+	 * Sets the specified parameter (uniform). Note: {@link #begin()} must be called before using this method
+	 * @param name The parameter name
+	 * @param matrix
+	 * @param transpose
+	 */
+	public void setParameterMatrix(String name, Matrix4 matrix, boolean transpose);
 
 	public String getLog();
 
@@ -25,7 +117,11 @@ public interface Shader extends Disposable {
 	 * Returns if this shader compiled successfully
 	 * @return
 	 */
-	public boolean isCompiled();
+	public abstract boolean isCompiled();
 
-	public ShaderType getShaderType();
+	/**
+	 * Returns the {@link ShaderType} (Note: different platforms require different types)
+	 * @return
+	 */
+	public abstract ShaderType getShaderType();
 }

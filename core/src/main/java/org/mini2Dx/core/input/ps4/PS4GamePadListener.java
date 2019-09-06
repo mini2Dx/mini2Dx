@@ -15,9 +15,10 @@
  ******************************************************************************/
 package org.mini2Dx.core.input.ps4;
 
+import org.mini2Dx.core.input.MappedGamePadListener;
 import org.mini2Dx.core.input.button.PS4Button;
 
-public interface PS4GamePadListener {
+public interface PS4GamePadListener extends MappedGamePadListener {
 	public void connected(PS4GamePad gamePad);
 
 	public void disconnected(PS4GamePad gamePad);

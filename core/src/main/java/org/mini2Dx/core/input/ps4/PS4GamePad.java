@@ -17,6 +17,7 @@ package org.mini2Dx.core.input.ps4;
 
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.GamePadListener;
+import org.mini2Dx.core.input.GamePadMapping;
 import org.mini2Dx.core.input.button.PS4Button;
 import org.mini2Dx.core.input.deadzone.DeadZone;
 import org.mini2Dx.core.input.deadzone.NoopDeadZone;
@@ -24,7 +25,7 @@ import org.mini2Dx.core.input.deadzone.RadialDeadZone;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
 
-public abstract class PS4GamePad implements GamePadListener, Disposable {
+public abstract class PS4GamePad implements GamePadMapping<PS4GamePadListener>, Disposable {
 	public static final String [] ID = new String [] {
 		"Sony DualShock 4".toLowerCase(),
 		"PS4".toLowerCase()
@@ -158,18 +159,32 @@ public abstract class PS4GamePad implements GamePadListener, Disposable {
 		return false;
 	}
 
+	@Override
 	public void addListener(PS4GamePadListener listener) {
 		listeners.add(listener);
 	}
 
+	@Override
+	public void addListener(int index, PS4GamePadListener listener) {
+		listeners.insert(index, listener);
+	}
+
+	@Override
 	public void removeListener(PS4GamePadListener listener) {
 		listeners.removeValue(listener, false);
 	}
 
+	@Override
+	public void removeListener(int index) {
+		listeners.removeIndex(index);
+	}
+
+	@Override
 	public void clearListeners() {
 		listeners.clear();
 	}
 
+	@Override
 	public int getTotalListeners() {
 		return listeners.size;
 	}

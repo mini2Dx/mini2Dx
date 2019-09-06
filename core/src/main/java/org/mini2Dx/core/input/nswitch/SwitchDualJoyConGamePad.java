@@ -17,6 +17,7 @@ package org.mini2Dx.core.input.nswitch;
 
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.GamePadListener;
+import org.mini2Dx.core.input.GamePadMapping;
 import org.mini2Dx.core.input.button.SwitchDualJoyConButton;
 import org.mini2Dx.core.input.deadzone.DeadZone;
 import org.mini2Dx.core.input.deadzone.NoopDeadZone;
@@ -24,7 +25,7 @@ import org.mini2Dx.core.input.deadzone.RadialDeadZone;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
 
-public abstract class SwitchDualJoyConGamePad implements GamePadListener, Disposable {
+public abstract class SwitchDualJoyConGamePad implements GamePadMapping<SwitchDualJoyConGamePadListener>, Disposable {
 
 	private final Array<SwitchDualJoyConGamePadListener> listeners = new Array<SwitchDualJoyConGamePadListener>(true, 2, SwitchDualJoyConGamePadListener.class);
 	private final GamePad gamePad;

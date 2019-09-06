@@ -18,12 +18,82 @@ package org.mini2Dx.libgdx.graphics;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import org.mini2Dx.core.graphics.Shader;
 import org.mini2Dx.core.graphics.ShaderType;
+import org.mini2Dx.gdx.math.Matrix4;
+import org.mini2Dx.gdx.math.Vector2;
+import org.mini2Dx.gdx.math.Vector3;
 
 public class LibgdxShader implements Shader {
 	public final ShaderProgram shaderProgram;
+	private final com.badlogic.gdx.math.Matrix4 tmpMatrix4 = new com.badlogic.gdx.math.Matrix4();
 
 	public LibgdxShader(ShaderProgram shaderProgram) {
 		this.shaderProgram = shaderProgram;
+	}
+
+	@Override
+	public void begin() {
+		shaderProgram.begin();
+	}
+
+	@Override
+	public void end() {
+		shaderProgram.end();
+	}
+
+	@Override
+	public boolean hasParameter(String name) {
+		return shaderProgram.hasAttribute(name) || shaderProgram.hasUniform(name);
+	}
+
+	@Override
+	public void setParameterf(String name, float value) {
+		shaderProgram.setUniformf(name, value);
+	}
+
+	@Override
+	public void setParameterf(String name, float value1, float value2) {
+		shaderProgram.setUniformf(name, value1, value2);
+	}
+
+	@Override
+	public void setParameterf(String name, float value1, float value2, float value3) {
+		shaderProgram.setUniformf(name, value1, value2, value3);
+	}
+
+	@Override
+	public void setParameterf(String name, float value1, float value2, float value3, float value4) {
+		if(shaderProgram.hasAttribute(name)) {
+			shaderProgram.setAttributef(name, value1, value2, value3, value4);
+		} else {
+			shaderProgram.setUniformf(name, value1, value2, value3, value4);
+		}
+	}
+
+	@Override
+	public void setParameterf(String name, Vector2 vec) {
+		shaderProgram.setUniformf(name, vec.x, vec.y);
+	}
+
+	@Override
+	public void setParameterf(String name, Vector3 vec) {
+		shaderProgram.setUniformf(name, vec.x, vec.y, vec.z);
+	}
+
+	@Override
+	public void setParameteri(String name, int value) {
+		shaderProgram.setUniformi(name, value);
+	}
+
+	@Override
+	public void setParameterMatrix(String name, Matrix4 matrix) {
+		tmpMatrix4.set(matrix.getValues());
+		shaderProgram.setUniformMatrix(name, tmpMatrix4);
+	}
+
+	@Override
+	public void setParameterMatrix(String name, Matrix4 matrix, boolean transpose) {
+		tmpMatrix4.set(matrix.getValues());
+		shaderProgram.setUniformMatrix(name, tmpMatrix4, transpose);
 	}
 
 	@Override

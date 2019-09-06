@@ -3,9 +3,10 @@
  */
 package org.mini2Dx.core.input.nswitch;
 
+import org.mini2Dx.core.input.MappedGamePadListener;
 import org.mini2Dx.core.input.button.SwitchJoyConLButton;
 
-public interface SwitchJoyConLGamePadListener {
+public interface SwitchJoyConLGamePadListener extends MappedGamePadListener {
 
 	public void connected(SwitchJoyConLGamePad gamePad);
 
