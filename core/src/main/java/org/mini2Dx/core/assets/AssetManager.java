@@ -188,6 +188,10 @@ public class AssetManager implements Disposable {
 		loadingQueue.clear();
 	}
 
+	/**
+	 * Returns the loading progress
+	 * @return A value between 0.0 and 1.0
+	 */
 	public float getProgress() {
 		return completedTasks / queuedAssets;
 	}
