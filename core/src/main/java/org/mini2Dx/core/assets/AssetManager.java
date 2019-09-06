@@ -60,6 +60,9 @@ public class AssetManager implements Disposable {
 	private final Array<AssetDescriptor> loadingQueue = new Array<AssetDescriptor>(false, 32);
 	private final Array<AssetLoadingTask> loadingTasks = new Array<AssetLoadingTask>(false, 32);
 
+	private float queuedAssets = 0f;
+	private float completedTasks = 0f;
+
 	public AssetManager(FileHandleResolver fileHandleResolver) {
 		this(fileHandleResolver, true);
 	}
@@ -118,6 +121,7 @@ public class AssetManager implements Disposable {
 		}
 
 		loadingQueue.add(assetDescriptor);
+		queuedAssets++;
 	}
 
 	public void unload(String filePath) {
@@ -147,6 +151,7 @@ public class AssetManager implements Disposable {
 		for(int i = loadingTasks.size - 1; i >= 0; i--) {
 			if(loadingTasks.get(i).update(this)) {
 				loadingTasks.removeIndex(i);
+				completedTasks++;
 			}
 			if(System.nanoTime() - startTime >= TimeUnit.MILLISECONDS.toNanos(UPDATE_TIMEBOX_MILLIS)) {
 				return false;
@@ -181,6 +186,10 @@ public class AssetManager implements Disposable {
 	@Override
 	public void dispose() {
 		loadingQueue.clear();
+	}
+
+	public float getProgress() {
+		return completedTasks / queuedAssets;
 	}
 
 	ObjectMap<String, ReferenceCountedObject> getAssets() {
