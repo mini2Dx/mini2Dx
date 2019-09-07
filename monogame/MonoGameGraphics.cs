@@ -145,6 +145,12 @@ namespace monogame
                     effect: _currentShader,
                     rasterizerState: _rasterizerState,
                     samplerState: _samplerState);
+
+                if(_currentShader != null)
+                {
+                    _currentShader.CurrentTechnique.Passes[0].Apply();
+                }
+
                 _isRendering = true;
             }
         }
@@ -796,8 +802,8 @@ namespace monogame
 
         public void setShader(Shader shader)
         {
-            _currentShader = ((MonoGameShader) shader).shader;
             endRendering();
+            _currentShader = ((MonoGameShader) shader).shader;
         }
 
         public void clearShader()

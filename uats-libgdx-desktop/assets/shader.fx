@@ -86,9 +86,7 @@ VSOutput SpriteVertexShader(	float4 position	: POSITION0,
 
 float4 SpritePixelShader(VSOutput input) : SV_Target0
 {
-    float4 base = SAMPLE_TEXTURE(u_texture, input.texCoord);
-    float4 overlay = SAMPLE_TEXTURE(u_overlay, input.texCoord);
-    return base * 0.5 + overlay * (1.0 - 0.5);
+    return SAMPLE_TEXTURE(u_texture, input.texCoord) * input.color * SAMPLE_TEXTURE(u_overlay, input.texCoord);
 }
 
 TECHNIQUE( SpriteBatch, SpriteVertexShader, SpritePixelShader );
