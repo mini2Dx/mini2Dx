@@ -200,6 +200,11 @@ namespace monogame
             _graphicsDevice.Clear(_backgroundColor);
         }
 
+        public void clearContext(Color c)
+        {
+            _graphicsDevice.Clear((c as MonoGameColor)._color);
+        }
+
         public void drawLineSegment(float x1, float y1, float x2, float y2)
         {
             beginRendering();

@@ -48,6 +48,12 @@ public interface Graphics {
     public void clearContext();
 
     /**
+     * Clears the graphics context (e.g. glClear on OpenGL platforms)
+     * @param color The {@link Color} to clear with
+     */
+    public void clearContext(Color color);
+
+    /**
      * Renders a line segment to the window in the current {@link Color} with
      * the set line height
      *

@@ -139,6 +139,12 @@ public class LibgdxGraphics implements Graphics {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 	}
 
+	@Override
+	public void clearContext(Color color) {
+		Gdx.gl.glClearColor(color.rf(), color.gf(), color.bf(), color.af());
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+	}
+
 	private void setupDepthBuffer() {
 		if (clip != null) {
 			Gdx.gl.glDepthFunc(GL20.GL_LESS);
