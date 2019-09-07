@@ -18,6 +18,8 @@ package org.mini2Dx.libgdx.graphics;
 import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.gdx.math.MathUtils;
 
+import java.util.Objects;
+
 public class LibgdxColor implements Color {
 	public com.badlogic.gdx.graphics.Color color;
 
@@ -306,5 +308,18 @@ public class LibgdxColor implements Color {
 	@Override
 	public int bgra4444() {
 		return ((int)(color.b * 15) << 12) | ((int)(color.g * 15) << 8) | ((int)(color.r * 15) << 4) | (int)(color.a * 15);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		LibgdxColor that = (LibgdxColor) o;
+		return color.equals(that.color);
+	}
+
+	@Override
+	public int hashCode() {
+		return color.hashCode();
 	}
 }
