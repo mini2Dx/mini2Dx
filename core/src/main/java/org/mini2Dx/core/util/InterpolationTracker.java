@@ -21,33 +21,53 @@ import org.mini2Dx.gdx.utils.OrderedSet;
  * Tracks {@link Interpolatable} objects and auto-interpolates them each frame
  */
 public class InterpolationTracker {
-	private static final OrderedSet<Interpolatable> INTERPOLATABLES = new OrderedSet<Interpolatable>(512);
+	public static int INITIAL_SIZE = 1024;
+	private static OrderedSet<Interpolatable> INTERPOLATABLES = null;
+
+	private static void init() {
+		if(INTERPOLATABLES != null) {
+			return;
+		}
+		INTERPOLATABLES = new OrderedSet<Interpolatable>(INITIAL_SIZE);
+	}
 
 	public static void preUpdate() {
+		init();
+
 		for(Interpolatable interpolatable : INTERPOLATABLES.orderedItems()) {
 			interpolatable.preUpdate();
 		}
 	}
 
 	public static void interpolate(float alpha) {
+		init();
+
 		for(Interpolatable interpolatable : INTERPOLATABLES.orderedItems()) {
 			interpolatable.interpolate(alpha);
 		}
 	}
 
 	public static synchronized boolean isRegistered(Interpolatable interpolatable) {
+		init();
+
 		return INTERPOLATABLES.contains(interpolatable);
 	}
 
 	public static synchronized void register(Interpolatable interpolatable) {
+		init();
+
 		INTERPOLATABLES.add(interpolatable);
 	}
 
 	public static synchronized void deregister(Interpolatable interpolatable) {
+		init();
+
 		INTERPOLATABLES.remove(interpolatable);
 	}
 
 	public static synchronized void deregisterAll() {
+		init();
+		
 		INTERPOLATABLES.clear();
 	}
 }
