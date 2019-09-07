@@ -20,8 +20,8 @@ import org.mini2Dx.core.Mdx;
 
 public class TilingDrawable {
 
-	private final TextureRegion drawable;
-	private final TextureRegion sharedRegion;
+	private TextureRegion drawable;
+	private TextureRegion sharedRegion;
 
 	public TilingDrawable(TextureRegion region){
 		drawable = region;
@@ -69,5 +69,10 @@ public class TilingDrawable {
 			sharedRegion.setRegionHeight(yRemainder);
 			g.drawTextureRegion(sharedRegion, x + xCount * drawable.getRegionWidth(), y + yCount * drawable.getRegionHeight());
 		}
+	}
+
+	public void set(TextureRegion textureRegion) {
+		this.drawable = textureRegion;
+		sharedRegion.setRegion(textureRegion);
 	}
 }
