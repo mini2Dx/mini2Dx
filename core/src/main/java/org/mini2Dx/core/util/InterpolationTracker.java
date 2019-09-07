@@ -21,7 +21,7 @@ import org.mini2Dx.gdx.utils.OrderedSet;
  * Tracks {@link Interpolatable} objects and auto-interpolates them each frame
  */
 public class InterpolationTracker {
-	public static int INITIAL_SIZE = 1024;
+	public static int INITIAL_SIZE = 512;
 	private static OrderedSet<Interpolatable> INTERPOLATABLES = null;
 
 	private static void init() {
