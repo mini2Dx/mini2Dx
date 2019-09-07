@@ -43,15 +43,23 @@ public interface Graphics {
     public void postRender();
 
     /**
-     * Clears the graphics context (e.g. glClear on OpenGL platforms)
+     * Clears the graphics context (e.g. glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) on OpenGL platforms) using the background color
      */
     public void clearContext();
 
     /**
-     * Clears the graphics context (e.g. glClear on OpenGL platforms)
+     * Clears the graphics context (e.g. glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) on OpenGL platforms)
      * @param color The {@link Color} to clear with
      */
     public void clearContext(Color color);
+
+    /**
+     * Clears the graphics context (e.g. glClear on OpenGL platforms)
+     * @param color The {@link Color} to clear with
+     * @param depthBufferBit True if depth buffer bit should be set during clear
+     * @param colorBufferBit True if color buffer bit should be set during clear
+     */
+    public void clearContext(Color color, boolean depthBufferBit, boolean colorBufferBit);
 
     /**
      * Renders a line segment to the window in the current {@link Color} with

@@ -197,12 +197,37 @@ namespace monogame
 
         public void clearContext()
         {
-            _graphicsDevice.Clear(_backgroundColor);
+            internalClearContext(_backgroundColor, true, true);
         }
 
         public void clearContext(Color c)
         {
-            _graphicsDevice.Clear((c as MonoGameColor)._color);
+            clearContext(c, true, true);
+        }
+
+        public void clearContext(Color c, bool depthBufferBit, bool colorBufferBit)
+        {
+            internalClearContext((c as MonoGameColor)._color, depthBufferBit, colorBufferBit);
+        }
+
+        private void internalClearContext(Microsoft.Xna.Framework.Color c, bool depthBufferBit, bool colorBufferBit)
+        {
+            if (depthBufferBit && colorBufferBit)
+            {
+                _graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, c, _graphicsDevice.Viewport.MaxDepth, 0);
+            }
+            else if (depthBufferBit)
+            {
+                _graphicsDevice.Clear(ClearOptions.DepthBuffer, c, _graphicsDevice.Viewport.MaxDepth, 0);
+            }
+            else if (colorBufferBit)
+            {
+                _graphicsDevice.Clear(ClearOptions.Target, c, _graphicsDevice.Viewport.MaxDepth, 0);
+            }
+            else
+            {
+                _graphicsDevice.Clear(c);
+            }
         }
 
         public void drawLineSegment(float x1, float y1, float x2, float y2)
