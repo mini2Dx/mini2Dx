@@ -20,13 +20,13 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.files.FileHandleResolver;
 import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.core.graphics.Colors;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
-import org.mini2Dx.core.graphics.Colors;
 import org.mini2Dx.gdx.Input;
 import org.mini2Dx.gdx.InputMultiplexer;
 import org.mini2Dx.uats.*;
@@ -323,7 +323,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 				nextScreenId = ScreenIds.getScreenId(PixelUiUAT.class);
 			}
 		})));
-		uatsDialog.add(FlexRow.withElements("row-platform-utils", UiUtils.createButton(uiNavigation, "Platform utils", new ActionListener() {
+		uatsDialog.add(FlexRow.withElements("row-platform-utils", UiUtils.createButton(uiNavigation, "Platform Utils", new ActionListener() {
 			@Override
 			public void onActionBegin(ActionEvent event) {
 			}
@@ -331,6 +331,16 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 			@Override
 			public void onActionEnd(ActionEvent event) {
 				nextScreenId = ScreenIds.getScreenId(PlatformUtilsUAT.class);
+			}
+		})));
+		uatsDialog.add(FlexRow.withElements("row-shader", UiUtils.createButton(uiNavigation, "Shader", new ActionListener() {
+			@Override
+			public void onActionBegin(ActionEvent event) {
+			}
+
+			@Override
+			public void onActionEnd(ActionEvent event) {
+				nextScreenId = ScreenIds.getScreenId(ShaderUAT.class);
 			}
 		})));
 		uatsDialog.add(FlexRow.withElements("row-shape-clipping", UiUtils.createButton(uiNavigation, "Shape Clipping", new ActionListener() {

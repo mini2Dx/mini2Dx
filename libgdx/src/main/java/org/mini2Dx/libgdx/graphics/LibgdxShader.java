@@ -15,14 +15,19 @@
  ******************************************************************************/
 package org.mini2Dx.libgdx.graphics;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import org.mini2Dx.core.graphics.Shader;
 import org.mini2Dx.core.graphics.ShaderType;
+import org.mini2Dx.core.graphics.Texture;
 import org.mini2Dx.gdx.math.Matrix4;
 import org.mini2Dx.gdx.math.Vector2;
 import org.mini2Dx.gdx.math.Vector3;
 
 public class LibgdxShader implements Shader {
+	private static int AUTO_BIND_ID = 1;
+
 	public final ShaderProgram shaderProgram;
 	private final com.badlogic.gdx.math.Matrix4 tmpMatrix4 = new com.badlogic.gdx.math.Matrix4();
 
@@ -43,6 +48,20 @@ public class LibgdxShader implements Shader {
 	@Override
 	public boolean hasParameter(String name) {
 		return shaderProgram.hasAttribute(name) || shaderProgram.hasUniform(name);
+	}
+
+	@Override
+	public void setParameter(String name, Texture texture) {
+		setParameter(name, AUTO_BIND_ID, texture);
+		AUTO_BIND_ID = AUTO_BIND_ID + 1 >= GL20.GL_MAX_TEXTURE_UNITS ? 1 : AUTO_BIND_ID++;
+	}
+
+	@Override
+	public void setParameter(String name, int bindId, Texture texture) {
+		LibgdxTexture libgdxTexture = (LibgdxTexture) texture;
+		libgdxTexture.bind(bindId);
+		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+		shaderProgram.setUniformi(name, bindId);
 	}
 
 	@Override

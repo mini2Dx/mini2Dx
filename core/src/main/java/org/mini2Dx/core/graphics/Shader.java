@@ -42,6 +42,22 @@ public interface Shader extends Disposable {
 	public boolean hasParameter(String name);
 
 	/**
+	 * Sets the specified texture parameter. Automatically allocates a bind ID for the texture on OpenGL platforms.
+	 * Note: {@link #begin()} must be called before using this method
+	 * @param name The parameter name
+	 * @param texture The texture to bind to the parameter
+	 */
+	public void setParameter(String name, Texture texture);
+
+	/**
+	 * Sets the specified texture parameter. Note: {@link #begin()} must be called before using this method
+	 * @param name The parameter name
+	 * @param bindId The texture bind ID to use on OpenGL platforms
+	 * @param texture The texture to bind to the parameter
+	 */
+	public void setParameter(String name, int bindId, Texture texture);
+
+	/**
 	 * Sets the specified float parameter (uniform). Note: {@link #begin()} must be called before using this method
 	 * @param name The parameter name
 	 * @param value

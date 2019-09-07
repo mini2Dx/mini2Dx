@@ -33,12 +33,21 @@ namespace monogame.Graphics
         
         public MonoGameShader(string name)
         {
+            if(!name.EndsWith(".fx"))
+            {
+                name += ".fx";
+            }
             shader = ((MonoGameFiles) Mdx.files)._contentManager.Load<Effect>(name);
+            shader.CurrentTechnique = shader.Techniques[0];
         }
 
         public MonoGameShader(Effect effect)
         {
             shader = effect;
+            if(shader != null)
+            {
+                shader.CurrentTechnique = shader.Techniques[0];
+            }
         }
         
         public void dispose()
@@ -64,6 +73,17 @@ namespace monogame.Graphics
             {
             }
             return false;
+        }
+
+        public void setParameter(string str, org.mini2Dx.core.graphics.Texture t)
+        {
+            setParameter(str, 0, t);
+        }
+
+        public void setParameter(string str, int i, org.mini2Dx.core.graphics.Texture t)
+        {
+            MonoGameTexture texture = t as MonoGameTexture;
+            shader.Parameters[str].SetValue(texture.texture2D);
         }
 
         public void setParameterf(string str, float f)
