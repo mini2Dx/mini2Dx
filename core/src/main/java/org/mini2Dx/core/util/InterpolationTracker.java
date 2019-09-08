@@ -70,4 +70,10 @@ public class InterpolationTracker {
 		
 		INTERPOLATABLES.clear();
 	}
+
+	public static synchronized int getTotalObjects() {
+		init();
+
+		return INTERPOLATABLES.size;
+	}
 }

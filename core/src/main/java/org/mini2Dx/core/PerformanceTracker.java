@@ -17,6 +17,7 @@ package org.mini2Dx.core;
 
 import org.mini2Dx.core.font.FontGlyphLayout;
 import org.mini2Dx.core.util.Align;
+import org.mini2Dx.core.util.InterpolationTracker;
 
 import java.util.Locale;
 
@@ -26,9 +27,10 @@ public class PerformanceTracker {
     private static final String UPDATE_PREFIX = "Updates / second:: ";
     private static final String FRAMES_PREFIX = "Frames / second:: ";
     private static final String MEMORY_PREFIX = "Memory usage:: ";
+    private static final String INTERPOLATABLES_PREFIX = "Interpolating Objects:: ";
     private static final String MS = "ms";
 
-    private static final String[] messages = new String[5];
+    private static final String[] messages = new String[6];
     private static long lastMessagesUpdate = 0L;
 
     private static FontGlyphLayout glyphLayout;
@@ -139,6 +141,7 @@ public class PerformanceTracker {
         messages[3] = FRAMES_PREFIX + Mdx.platformUtils.getFramesPerSecond();
         messages[4] = MEMORY_PREFIX + getHumanReadableByteValue(Mdx.platformUtils.getUsedMemory()) + "/"
                 + getHumanReadableByteValue(Mdx.platformUtils.getTotalMemory());
+        messages[5] = INTERPOLATABLES_PREFIX + InterpolationTracker.getTotalObjects();
     }
 
 
