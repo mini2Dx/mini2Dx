@@ -93,20 +93,20 @@ public abstract class PlatformUtils {
     }
 
     /**
+     * Internal usage only: marks the beginning of rendering operations
+     */
+    public void markRenderBegin() {
+        renderStart = nanoTime();
+    }
+
+    /**
      * Internal usage only: marks the end of rendering operations
      */
     public void markRenderEnd() {
         long time = nanoTime();
         long renderDuration = time - renderStart;
 
-        averageUpdateDuration.mark(renderDuration);
-    }
-
-    /**
-     * Internal usage only: marks the beginning of rendering operations
-     */
-    public void markRenderBegin() {
-        renderStart = nanoTime();
+        averageRenderDuration.mark(renderDuration);
     }
 
     /**
