@@ -283,13 +283,13 @@ public class MonospaceGameFont implements GameFont {
 		public int frameWidth;
 		@Field
 		public int frameHeight;
-		@Field
+		@Field(optional = true)
 		public int framePaddingLeft;
-		@Field
+		@Field(optional = true)
 		public int framePaddingRight;
-		@Field
+		@Field(optional = true)
 		public int framePaddingTop;
-		@Field
+		@Field(optional = true)
 		public int framePaddingBottom;
 		@Field(optional = true)
 		public int characterWidth = -1;

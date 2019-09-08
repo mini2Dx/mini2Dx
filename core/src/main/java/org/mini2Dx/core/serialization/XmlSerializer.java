@@ -448,6 +448,7 @@ public class XmlSerializer {
         Class<?> valueClass = deserializedCollection.getValueClass();
 
         for(XmlReader.Element value : element.getChildrenByName("value")) {
+            System.out.println(value.getText());
             deserializedCollection.add(deserializeObject(value, valueClass));
         }
     }
@@ -676,6 +677,9 @@ public class XmlSerializer {
     }
 
     private <T> T parsePrimitive(String value, Class<T> fieldClass) throws SerializationException {
+        if(value.contains("&nbsp;")) {
+            value = value.replace("&nbsp;", " ");
+        }
         try {
             if (fieldClass.equals(Boolean.TYPE) || fieldClass.equals(Boolean.class)) {
                 return (T) new Boolean(value);
@@ -697,6 +701,11 @@ public class XmlSerializer {
                 return (T) value;
             }
         } catch (Exception e) {
+            if(Mdx.log != null) {
+                Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
+            } else {
+                e.printStackTrace();
+            }
             throw new SerializationException(e.getMessage(), e);
         }
     }

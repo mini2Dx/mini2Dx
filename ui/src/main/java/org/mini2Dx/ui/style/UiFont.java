@@ -75,6 +75,13 @@ public class UiFont {
 			} catch (Exception e) {
 				Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
 			}
+		} else if(path.endsWith(".json")) {
+			try {
+				final MonospaceGameFont.FontParameters fontParameters = Mdx.json.fromJson(fileHandleResolver.resolve(path).readString(), MonospaceGameFont.FontParameters.class);
+				gameFont = Mdx.fonts.newMonospaceFont(fontParameters);
+			} catch (Exception e) {
+				Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
+			}
 		}
 		if(gameFont != null) {
 			gameFont.load(assetManager);
@@ -88,6 +95,17 @@ public class UiFont {
 		if(path.endsWith(".xml")) {
 			try {
 				final MonospaceGameFont.FontParameters fontParameters = Mdx.xml.fromXml(fileHandleResolver.resolve(path).reader(), MonospaceGameFont.FontParameters.class);
+				if(fontParameters.textureAtlasPath != null) {
+					dependencies.add(new AssetDescriptor(fontParameters.textureAtlasPath, TextureAtlas.class));
+				} else if(fontParameters.texturePath != null) {
+					dependencies.add(new AssetDescriptor(fontParameters.texturePath, Texture.class));
+				}
+			} catch (Exception e) {
+				Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
+			}
+		} else if(path.endsWith(".json")) {
+			try {
+				final MonospaceGameFont.FontParameters fontParameters = Mdx.json.fromJson(fileHandleResolver.resolve(path).readString(), MonospaceGameFont.FontParameters.class);
 				if(fontParameters.textureAtlasPath != null) {
 					dependencies.add(new AssetDescriptor(fontParameters.textureAtlasPath, TextureAtlas.class));
 				} else if(fontParameters.texturePath != null) {
