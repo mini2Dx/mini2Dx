@@ -20,11 +20,11 @@ import org.mini2Dx.core.graphics.FrameBuffer;
 import org.mini2Dx.core.graphics.Texture;
 
 public class LibgdxFrameBuffer implements FrameBuffer {
-	public final com.badlogic.gdx.graphics.glutils.FrameBuffer frameBuffer;
+	public final com.badlogic.gdx.graphics.glutils.LibgdxFrameBufferWrapper frameBuffer;
 	public LibgdxTexture texture = null;
 
 	public LibgdxFrameBuffer(int width, int height) {
-		this.frameBuffer = new com.badlogic.gdx.graphics.glutils.FrameBuffer(
+		this.frameBuffer = new com.badlogic.gdx.graphics.glutils.LibgdxFrameBufferWrapper(
 				Pixmap.Format.RGBA8888, width, height, true);
 	}
 
