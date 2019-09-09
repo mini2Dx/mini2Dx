@@ -40,7 +40,8 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * XML serialization based on {@link org.mini2Dx.core.serialization.annotation.Field} annotations
+ * XML serialization based on {@link org.mini2Dx.core.serialization.annotation.Field} annotations.<br>
+ *     Note: Only supports 8-bit character sets, CDATA and special tags (&amp;lt;). To workaround the parser not allowing tags containing only spaces, spaces can be represented by &amp;amp;nbsp;
  */
 public class XmlSerializer {
     private static final String LOGGING_TAG = XmlSerializer.class.getSimpleName();

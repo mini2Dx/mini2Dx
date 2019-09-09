@@ -137,6 +137,13 @@ public class XmlSerializationTest {
 	}
 
 	@Test
+	public void testXmlSerializationWithNullField() throws SerializationException {
+		parentObject.getFinalStringMap().put("test", null);
+		String xml = xmlSerializer.toXml(parentObject);
+		xmlSerializer.fromXml(xml, TestParentObject.class);
+	}
+
+	@Test
 	public void testPrettyXmlDeserialization() throws SerializationException {
 		String xml = "<?xml version=\"1.0\"?>\n";
 		xml += "<data>\n";
