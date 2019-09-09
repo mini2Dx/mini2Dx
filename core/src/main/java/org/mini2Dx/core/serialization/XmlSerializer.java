@@ -449,7 +449,6 @@ public class XmlSerializer {
         Class<?> valueClass = deserializedCollection.getValueClass();
 
         for(XmlReader.Element value : element.getChildrenByName("value")) {
-            System.out.println(value.getText());
             deserializedCollection.add(deserializeObject(value, valueClass));
         }
     }
