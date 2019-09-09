@@ -677,7 +677,7 @@ public class XmlSerializer {
     }
 
     private <T> T parsePrimitive(String value, Class<T> fieldClass) throws SerializationException {
-        if(value.contains("&nbsp;")) {
+        if(value != null && value.contains("&nbsp;")) {
             value = value.replace("&nbsp;", " ");
         }
         try {
