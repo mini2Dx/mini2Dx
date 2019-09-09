@@ -332,6 +332,9 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			viewport.toWorldCoordinates(SHARED_VECTOR);
 			screenX = MathUtils.round(SHARED_VECTOR.x);
 			screenY = MathUtils.round(SHARED_VECTOR.y);
+		} else {
+			screenX = MathUtils.round(screenX / scaleX);
+			screenY = MathUtils.round(screenY / scaleY);
 		}
 
 		updateLastInputSource(screenX, screenY);
@@ -379,6 +382,9 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			viewport.toWorldCoordinates(SHARED_VECTOR);
 			screenX = MathUtils.round(SHARED_VECTOR.x);
 			screenY = MathUtils.round(SHARED_VECTOR.y);
+		} else {
+			screenX = MathUtils.round(screenX / scaleX);
+			screenY = MathUtils.round(screenY / scaleY);
 		}
 
 		updateLastInputSource(screenX, screenY);
@@ -405,6 +411,9 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			viewport.toWorldCoordinates(SHARED_VECTOR);
 			screenX = MathUtils.round(SHARED_VECTOR.x);
 			screenY = MathUtils.round(SHARED_VECTOR.y);
+		} else {
+			screenX = MathUtils.round(screenX / scaleX);
+			screenY = MathUtils.round(screenY / scaleY);
 		}
 
 		updateLastInputSource(screenX, screenY);
@@ -428,6 +437,9 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			viewport.toWorldCoordinates(SHARED_VECTOR);
 			screenX = MathUtils.round(SHARED_VECTOR.x);
 			screenY = MathUtils.round(SHARED_VECTOR.y);
+		} else {
+			screenX = MathUtils.round(screenX / scaleX);
+			screenY = MathUtils.round(screenY / scaleY);
 		}
 
 		updateLastInputSource(screenX, screenY);
