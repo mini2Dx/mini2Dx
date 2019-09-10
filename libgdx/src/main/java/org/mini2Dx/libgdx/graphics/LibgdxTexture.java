@@ -178,6 +178,39 @@ public class LibgdxTexture extends com.badlogic.gdx.graphics.Texture implements 
 	}
 
 	public void setTextureFilter(org.mini2Dx.core.graphics.TextureFilter minFilter, org.mini2Dx.core.graphics.TextureFilter magFilter) {
+		final TextureFilter gdxMinFilter, gdxMagFilter;
 
+		switch(minFilter) {
+		default:
+		case LINEAR:
+			gdxMinFilter = TextureFilter.Linear;
+			break;
+		case PIXEL:
+			gdxMinFilter = TextureFilter.Nearest;
+			break;
+		case LINEAR_MIP_POINT:
+			gdxMinFilter = TextureFilter.MipMapLinearNearest;
+			break;
+		case PIXEL_MIP_LINEAR:
+			gdxMinFilter = TextureFilter.MipMapNearestLinear;
+			break;
+		}
+		switch(magFilter) {
+		default:
+		case LINEAR:
+			gdxMagFilter = TextureFilter.Linear;
+			break;
+		case PIXEL:
+			gdxMagFilter = TextureFilter.Nearest;
+			break;
+		case LINEAR_MIP_POINT:
+			gdxMagFilter = TextureFilter.MipMapLinearNearest;
+			break;
+		case PIXEL_MIP_LINEAR:
+			gdxMagFilter = TextureFilter.MipMapNearestLinear;
+			break;
+		}
+
+		super.setFilter(gdxMinFilter, gdxMagFilter);
 	}
 }
