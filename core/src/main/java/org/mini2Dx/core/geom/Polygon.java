@@ -655,8 +655,7 @@ public class Polygon extends Shape {
 	@Override
 	public float getCenterX() {
 		if(centroidDirty) {
-			GeometryUtils.polygonCentroid(vertices, 0, vertices.length, centroid);
-			centroidDirty = false;
+			setCentroid();
 		}
 		return centroid.x;
 	}
@@ -664,10 +663,54 @@ public class Polygon extends Shape {
 	@Override
 	public float getCenterY() {
 		if(centroidDirty) {
-			GeometryUtils.polygonCentroid(vertices, 0, vertices.length, centroid);
-			centroidDirty = false;
+			setCentroid();
 		}
 		return centroid.y;
+	}
+
+	private void setCentroid() {
+		switch(getNumberOfSides()) {
+		case 3:
+			centroid.x = (vertices[0] + vertices[2] + vertices[4]) / 3f;
+			centroid.y = (vertices[1] + vertices[3] + vertices[5]) / 3f;
+			break;
+		case 4:
+			if(MathUtils.isZero(rotation)) {
+				centroid.x = getX() + (getWidth() * 0.5f);
+				centroid.y = getY() + (getHeight() * 0.5f);
+			} else {
+				float avgX1 = (vertices[0] + vertices[2] + vertices[4]) / 3f;
+				float avgY1 = (vertices[1] + vertices[3] + vertices[5]) / 3f;
+				float avgX2 = (vertices[0] + vertices[6] + vertices[4]) / 3f;
+				float avgY2 = (vertices[1] + vertices[7] + vertices[5]) / 3f;
+				centroid.x = avgX1 - (avgX1 - avgX2) * 0.5f;
+				centroid.y = avgY1 - (avgY1 - avgY2) * 0.5f;
+			}
+			break;
+		default:
+			float area = 0, x = 0, y = 0;
+			int last = vertices.length - 2;
+			float x1 = vertices[last], y1 = vertices[last + 1];
+			for (int i = 0; i <= last; i += 2) {
+				float x2 = vertices[i], y2 = vertices[i + 1];
+				float a = x1 * y2 - x2 * y1;
+				area += a;
+				x += (x1 + x2) * a;
+				y += (y1 + y2) * a;
+				x1 = x2;
+				y1 = y2;
+			}
+			if (area == 0) {
+				centroid.x = 0f;
+				centroid.y = 0f;
+			} else {
+				area *= 0.5f;
+				centroid.x = x / (6f * area);
+				centroid.y = y / (6f * area);
+			}
+			break;
+		}
+		centroidDirty = false;
 	}
 	
 	@Override
@@ -836,7 +879,6 @@ public class Polygon extends Shape {
 		}
 		
 		setDirty();
-		centroidDirty = false;
 		notifySizeChangeListeners();
 	}
 

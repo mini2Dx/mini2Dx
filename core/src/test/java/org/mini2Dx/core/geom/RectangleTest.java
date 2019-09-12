@@ -25,6 +25,7 @@ import java.util.Random;
  * Unit tests for {@link Rectangle}
  */
 public class RectangleTest {
+	private final int SEED = 235824905;
 	private Rectangle rectangle1, rectangle2;
 
 	@Test
@@ -53,16 +54,27 @@ public class RectangleTest {
 
 	@Test
 	public void testManyRectangles() {
-		Random random = new Random();
+		Random random = new Random(SEED);
 		for(int i = 0; i < 1000; i++) {
-			float x = random.nextInt();
-			float y = random.nextInt();
+			float x = (random.nextFloat() * 10000000f) - 5000000f;
+			float y = (random.nextFloat() * 10000000f) - 5000000f;
 			rectangle1 = new Rectangle(x, y, 50f, 50f);
 			Assert.assertEquals(x, rectangle1.getX(), 0);
 			Assert.assertEquals(y, rectangle1.getY(), 0);
 			Assert.assertEquals(50f, rectangle1.getWidth(), 0);
 			Assert.assertEquals(50f, rectangle1.getHeight(), 0);
+			System.out.println(x + "," + y);
+			Assert.assertEquals(x + 25f, rectangle1.getCenterX(), 0.01f);
+			Assert.assertEquals(y + 25f, rectangle1.getCenterY(), 0.01f);
 		}
+	}
+
+	@Test
+	public void testCenterXY() {
+		Rectangle rectangle = new Rectangle();
+		rectangle.set(21378.2f,10422.5f, 30f, 30f);
+		Assert.assertEquals(21378.2f + 15f, rectangle.getCenterX(), 0.01f);
+		Assert.assertEquals(10422.5f + 15f, rectangle.getCenterY(), 0.01f);
 	}
 
 	@Test
@@ -73,6 +85,8 @@ public class RectangleTest {
 		Assert.assertEquals(100f, rectangle1.getY(), 0);
 		Assert.assertEquals(50f, rectangle1.getWidth(), 0);
 		Assert.assertEquals(50f, rectangle1.getHeight(), 0);
+		Assert.assertEquals(225f, rectangle1.getCenterX(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(125f, rectangle1.getCenterY(), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 
 	@Test
@@ -83,6 +97,8 @@ public class RectangleTest {
 		Assert.assertEquals(200f, rectangle1.getY(), 0);
 		Assert.assertEquals(50f, rectangle1.getWidth(), 0);
 		Assert.assertEquals(50f, rectangle1.getHeight(), 0);
+		Assert.assertEquals(125f, rectangle1.getCenterX(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(225f, rectangle1.getCenterY(), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 
 	@Test
