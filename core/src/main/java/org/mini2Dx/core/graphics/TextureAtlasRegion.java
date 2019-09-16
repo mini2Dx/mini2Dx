@@ -23,6 +23,12 @@ public interface TextureAtlasRegion extends TextureRegion {
 	public String getName();
 
 	/**
+	 * Returns the name (path) of the texture used by this region
+	 * @return
+	 */
+	public String getTexturePath();
+
+	/**
 	 * The number at the end of the original filename
 	 * @return -1 if none
 	 */

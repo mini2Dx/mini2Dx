@@ -116,6 +116,14 @@ public interface FileHandle {
 	public String readString(String charset) throws IOException;
 
 	/**
+	 * Reads the entire file into a string array where each element represents a single line.
+	 *
+	 * @throws IOException if the file handle represents a directory, doesn't exist, or could not be read.
+	 * @return
+	 */
+	public String[] readAllLines() throws IOException;
+
+	/**
 	 * Reads the entire file into a byte array.
 	 *
 	 * @throws IOException if the file handle represents a directory, doesn't exist, or could not be read.

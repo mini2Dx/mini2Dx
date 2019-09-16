@@ -135,6 +135,11 @@ public class LibgdxFileHandle implements FileHandle {
 	}
 
 	@Override
+	public String[] readAllLines() throws IOException {
+		return readString().replace("\r\n", "\n").split("\n");
+	}
+
+	@Override
 	public byte[] readBytes() throws IOException {
 		return fileHandle.readBytes();
 	}

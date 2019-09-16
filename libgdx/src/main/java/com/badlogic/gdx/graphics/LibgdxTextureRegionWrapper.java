@@ -51,7 +51,9 @@ public class LibgdxTextureRegionWrapper extends TextureRegion {
 
 	/** Constructs a region with the same texture and coordinates of the specified region. */
 	public LibgdxTextureRegionWrapper (TextureRegion region) {
-		super(region);
+		if (region.getTexture() != null){
+			super.setRegion(region);
+		}
 	}
 
 	/** Constructs a region with the same texture as the specified region and sets the coordinates relative to the specified region.

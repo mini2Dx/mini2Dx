@@ -153,6 +153,18 @@ namespace monogame
             return new MonoGameSprite(texture);
         }
 
+        public override TextureAtlasRegion newTextureAtlasRegion(Texture texture, string name, int index, int x, int y, int width, int height,
+            bool rotate, int originalWidth, int originalHeight, int offsetX, int offsetY)
+        {
+            return new MonoGameTextureAtlasRegion(texture, name, index, x, y, width, height, rotate, originalWidth, originalHeight, offsetX, offsetY);
+        }
+
+        public override TextureAtlasRegion newTextureAtlasRegion(String texturePath, string name, int index, int x, int y, int width, int height,
+            bool rotate, int originalWidth, int originalHeight, int offsetX, int offsetY)
+        {
+            return new MonoGameTextureAtlasRegion(texturePath, name, index, x, y, width, height, rotate, originalWidth, originalHeight, offsetX, offsetY);
+        }
+
         public override Sprite newSprite(Texture texture)
         {
             return new MonoGameSprite(texture);
@@ -216,26 +228,6 @@ namespace monogame
             texture.SetData(rawPixmap);
 
             return new MonoGameTexture(texture);
-        }
-
-        public override TextureAtlas newTextureAtlas(FileHandle packFile)
-        {
-            return newTextureAtlas(packFile, false);
-        }
-
-        public override TextureAtlas newTextureAtlas(FileHandle packFile, bool flip)
-        {
-            return newTextureAtlas(packFile, packFile.parent(), flip);
-        }
-
-        public override TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir)
-        {
-            return newTextureAtlas(packFile, imagesDir, false);
-        }
-
-        public override TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir, bool flip)
-        {
-            return new MonoGameTextureAtlas(packFile, imagesDir, flip);
         }
 
         public override TextureRegion newTextureRegion(Texture texture)

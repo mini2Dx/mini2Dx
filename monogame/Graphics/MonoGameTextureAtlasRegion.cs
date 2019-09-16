@@ -18,17 +18,18 @@ using org.mini2Dx.core.graphics;
 
 namespace monogame.Graphics
 {
-    public class MonoGameTextureAtlasRegion : MonoGameTextureRegion, org.mini2Dx.core.graphics.TextureAtlasRegion, System.IComparable<MonoGameTextureAtlasRegion>
+    public class MonoGameTextureAtlasRegion : MonoGameTextureRegion, org.mini2Dx.core.graphics.TextureAtlasRegion
     {
-        public string name;
-        public bool rotate;
-        public int x, y;
-        public int width, height;
-        public int originalWidth, originalHeight;
-        public int offsetX, offsetY;
-        public int index;
+        public readonly string name;
+        public readonly string texturePath = "";
+        public readonly bool rotate;
+        public readonly int x, y;
+        public readonly int width, height;
+        public readonly int originalWidth, originalHeight;
+        public readonly int offsetX, offsetY;
+        public readonly int index;
         
-        public MonoGameTextureAtlasRegion(Texture texture, string name, int index, int x, int y, int width, int height, bool rotate) : base(texture, x, y, width, height)
+        public MonoGameTextureAtlasRegion(Texture texture, string name, int index, int x, int y, int width, int height, bool rotate, int originalWidth, int originalHeight, int offsetX, int offsetY) : base(texture, x, y, width, height)
         {
             this.name = name;
             this.index = index;
@@ -37,8 +38,34 @@ namespace monogame.Graphics
             this.width = width;
             this.height = height;
             this.rotate = rotate;
+            this.originalWidth = originalWidth;
+            this.originalHeight = originalHeight;
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
         }
-        
+
+        public MonoGameTextureAtlasRegion(string texturePath, string name, int index, int x, int y, int width, int height, bool rotate, int originalWidth, int originalHeight, int offsetX, int offsetY)
+        {
+            this.texturePath = texturePath;
+            this.name = name;
+            this.index = index;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.rotate = rotate;
+            this.originalWidth = originalWidth;
+            this.originalHeight = originalHeight;
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
+        }
+
+        public override void setTexture(Texture t)
+        {
+            base.setTexture(t);
+            setRegion(x, y, width, height);
+        }
+
         public float getRotatedPackedWidth()
         {
             if (rotate)
@@ -61,6 +88,11 @@ namespace monogame.Graphics
             {
                 return getRegionHeight();
             }
+        }
+
+        public string getTexturePath()
+        {
+            return texturePath;
         }
 
         public string getName()
@@ -101,16 +133,6 @@ namespace monogame.Graphics
         public float getOffsetY()
         {
             return offsetY;
-        }
-
-        public int CompareTo(MonoGameTextureAtlasRegion other)
-        {
-            int nameCompare = name.CompareTo(other.name);
-            if(nameCompare == 0)
-            {
-                return index.CompareTo(other.index);
-            }
-            return nameCompare;
         }
     }
 }
