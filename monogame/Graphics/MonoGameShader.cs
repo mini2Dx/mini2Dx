@@ -137,14 +137,40 @@ namespace monogame.Graphics
 
         public void setParameterMatrix(string str, Matrix4 m)
         {
-            //TODO: How to convert to monogame matrix?
-            throw new System.NotImplementedException();
+            setParameterMatrix(str, m, false);
         }
 
         public void setParameterMatrix(string str, Matrix4 m, bool b)
         {
-            //TODO: How to convert to monogame matrix?
-            throw new System.NotImplementedException();
+            setTempMatrix(m);
+            if (b)
+            {
+                shader.Parameters[str].SetValueTranspose(tmpMatrix);
+            }
+            else
+            {
+                shader.Parameters[str].SetValue(tmpMatrix);
+            }
+        }
+
+        private void setTempMatrix(Matrix4 m)
+        {
+            tmpMatrix.M11 = m.val[Matrix4.M00];
+            tmpMatrix.M12 = m.val[Matrix4.M01];
+            tmpMatrix.M13 = m.val[Matrix4.M02];
+            tmpMatrix.M14 = m.val[Matrix4.M03];
+            tmpMatrix.M21 = m.val[Matrix4.M10];
+            tmpMatrix.M22 = m.val[Matrix4.M11];
+            tmpMatrix.M23 = m.val[Matrix4.M12];
+            tmpMatrix.M24 = m.val[Matrix4.M13];
+            tmpMatrix.M31 = m.val[Matrix4.M20];
+            tmpMatrix.M32 = m.val[Matrix4.M21];
+            tmpMatrix.M33 = m.val[Matrix4.M22];
+            tmpMatrix.M34 = m.val[Matrix4.M23];
+            tmpMatrix.M41 = m.val[Matrix4.M30];
+            tmpMatrix.M42 = m.val[Matrix4.M31];
+            tmpMatrix.M43 = m.val[Matrix4.M32];
+            tmpMatrix.M44 = m.val[Matrix4.M33];
         }
 
         public string getLog()
