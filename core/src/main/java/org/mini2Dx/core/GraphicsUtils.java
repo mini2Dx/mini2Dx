@@ -67,6 +67,14 @@ public abstract class GraphicsUtils {
 
 	public abstract TextureRegion newTextureRegion(TextureRegion textureRegion, int x, int y, int width, int height);
 
+	public abstract TextureAtlasRegion newTextureAtlasRegion(Texture texture, String name, int index, int x, int y,
+															 int width, int height, boolean rotate, int originalWidth,
+															 int originalHeight, int offsetX, int offsetY);
+
+	public abstract TextureAtlasRegion newTextureAtlasRegion(String texturePath, String name, int index, int x, int y,
+															 int width, int height, boolean rotate, int originalWidth,
+															 int originalHeight, int offsetX, int offsetY);
+
 	public abstract Sprite newSprite(Texture texture);
 
 	public abstract Sprite newSprite(Texture texture, int width, int height);
@@ -82,15 +90,13 @@ public abstract class GraphicsUtils {
 	public abstract Sprite newSprite(Sprite sprite);
 
 	/** Loads the specified pack file, using the parent directory of the pack file to find the page images. */
-	public abstract TextureAtlas newTextureAtlas(FileHandle packFile);
+	public TextureAtlas newTextureAtlas(FileHandle packFile){
+		return newTextureAtlas(packFile, packFile.parent());
+	}
 
-	/** @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner.*/
-	public abstract TextureAtlas newTextureAtlas(FileHandle packFile, boolean flip);
-
-	public abstract TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir);
-
-	/** @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner. */
-	public abstract TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir, boolean flip);
+	public TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir){
+		return new TextureAtlas(packFile, imagesDir);
+	}
 
 	public abstract ParticleEffect newParticleEffect();
 

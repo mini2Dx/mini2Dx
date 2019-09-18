@@ -112,7 +112,7 @@ namespace monogame.Graphics
             return _texture;
         }
 
-        public void setTexture(Texture texture)
+        public virtual void setTexture(Texture texture)
         {
             _texture = texture;
         }

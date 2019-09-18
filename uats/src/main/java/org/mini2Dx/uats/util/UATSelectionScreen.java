@@ -21,6 +21,7 @@ import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.files.FileHandleResolver;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Colors;
+import org.mini2Dx.core.graphics.TextureAtlas;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
@@ -331,6 +332,16 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 			@Override
 			public void onActionEnd(ActionEvent event) {
 				nextScreenId = ScreenIds.getScreenId(PlatformUtilsUAT.class);
+			}
+		})));
+		uatsDialog.add(FlexRow.withElements("row-textureatlas-loader", UiUtils.createButton(uiNavigation, "Texture Atlas Loader", new ActionListener() {
+			@Override
+			public void onActionBegin(ActionEvent event) {
+			}
+
+			@Override
+			public void onActionEnd(ActionEvent event) {
+				nextScreenId = ScreenIds.getScreenId(TextureAtlasLoaderUAT.class);
 			}
 		})));
 		uatsDialog.add(FlexRow.withElements("row-shader", UiUtils.createButton(uiNavigation, "Shader", new ActionListener() {

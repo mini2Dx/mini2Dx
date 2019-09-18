@@ -152,6 +152,18 @@ public class LibgdxGraphicsUtils extends GraphicsUtils {
 	}
 
 	@Override
+	public TextureAtlasRegion newTextureAtlasRegion(Texture texture, String name, int index, int x, int y, int width,
+													int height, boolean rotate, int originalWidth,
+													int originalHeight, int offsetX, int offsetY) {
+		return new LibgdxTextureAtlasRegion(texture, name, index, x, y, width, height, rotate, originalWidth, originalHeight, offsetX, offsetY);
+	}
+
+	@Override
+	public TextureAtlasRegion newTextureAtlasRegion(String texturePath, String name, int index, int x, int y, int width, int height, boolean rotate, int originalWidth, int originalHeight, int offsetX, int offsetY) {
+		return new LibgdxTextureAtlasRegion(texturePath, name, index, x, y, width, height, rotate, originalWidth, originalHeight, offsetX, offsetY);
+	}
+
+	@Override
 	public Sprite newSprite(Texture texture) {
 		final LibgdxTexture gdxTexture = (LibgdxTexture) texture;
 		return new LibgdxSprite(gdxTexture);
@@ -191,22 +203,13 @@ public class LibgdxGraphicsUtils extends GraphicsUtils {
 
 	@Override
 	public TextureAtlas newTextureAtlas(FileHandle packFile) {
-		return newTextureAtlas(packFile, false);
+		return newTextureAtlas(packFile, packFile.parent());
 	}
 
-	@Override
-	public TextureAtlas newTextureAtlas(FileHandle packFile, boolean flip) {
-		return newTextureAtlas(packFile, packFile.parent(), flip);
-	}
 
 	@Override
 	public TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir) {
-		return newTextureAtlas(packFile, imagesDir, false);
-	}
-
-	@Override
-	public TextureAtlas newTextureAtlas(FileHandle packFile, FileHandle imagesDir, boolean flip) {
-		return new LibgdxTextureAtlas(packFile, imagesDir, flip);
+		return new TextureAtlas(packFile, imagesDir);
 	}
 
 	@Override

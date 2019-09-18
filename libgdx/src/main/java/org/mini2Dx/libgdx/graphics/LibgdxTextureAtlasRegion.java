@@ -16,65 +16,108 @@
 package org.mini2Dx.libgdx.graphics;
 
 import com.badlogic.gdx.graphics.LibgdxTextureRegionWrapper;
-import com.badlogic.gdx.graphics.g2d.LibgdxTextureAtlasWrapper;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import org.mini2Dx.core.graphics.Texture;
 import org.mini2Dx.core.graphics.TextureAtlasRegion;
 
 public class LibgdxTextureAtlasRegion extends LibgdxTextureRegion implements TextureAtlasRegion {
-	public final LibgdxTextureAtlasWrapper.AtlasRegion atlasRegion;
 
-	public LibgdxTextureAtlasRegion(LibgdxTextureAtlasWrapper.AtlasRegion atlasRegion) {
-		super(new LibgdxTextureRegionWrapper(atlasRegion));
-		this.atlasRegion = atlasRegion;
-	}
+    public final String name, texturePath;
+    public final boolean rotate;
+    public final int x, y;
+    public final int width, height;
+    public final int originalWidth, originalHeight;
+    public final int offsetX, offsetY;
+    public final int index;
 
-	@Override
-	public String getName() {
-		return atlasRegion.name;
-	}
+    public LibgdxTextureAtlasRegion(Texture texture, String name, int index, int x, int y, int width, int height,
+                                    boolean rotate, int originalWidth, int originalHeight, int offsetX, int offsetY) {
+        super(new LibgdxTextureRegion(new LibgdxTextureRegionWrapper((LibgdxTexture) texture)), x, y, width, height);
+        this.texturePath = "";
+        this.name = name;
+        this.index = index;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.rotate = rotate;
+        this.originalWidth = originalWidth;
+        this.originalHeight = originalHeight;
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
+    }
 
-	@Override
-	public int getIndex() {
-		return atlasRegion.index;
-	}
+    public LibgdxTextureAtlasRegion(String texturePath, String name, int index, int x, int y, int width, int height,
+                                    boolean rotate, int originalWidth, int originalHeight, int offsetX, int offsetY) {
+        super(new LibgdxTextureRegion(new LibgdxTextureRegionWrapper()));
+        this.texturePath = texturePath;
+        this.name = name;
+        this.index = index;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.rotate = rotate;
+        this.originalWidth = originalWidth;
+        this.originalHeight = originalHeight;
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
+    }
 
-	@Override
-	public float getPackedWidth() {
-		return atlasRegion.packedWidth;
-	}
+    public float getRotatedPackedWidth() {
+        if (rotate) {
+            return getRegionHeight();
+        } else {
+            return getRegionWidth();
+        }
+    }
 
-	@Override
-	public float getPackedHeight() {
-		return atlasRegion.packedHeight;
-	}
+    public float getRotatedPackedHeight() {
+        if (rotate) {
+            return getRegionWidth();
+        } else {
+            return getRegionHeight();
+        }
+    }
 
-	@Override
-	public float getOriginalWidth() {
-		return atlasRegion.originalWidth;
-	}
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public float getOriginalHeight() {
-		return atlasRegion.originalHeight;
-	}
+    public String getTexturePath() {
+        return texturePath;
+    }
 
-	@Override
-	public float getOffsetX() {
-		return atlasRegion.offsetX;
-	}
+    @Override
+    public void setTexture(Texture texture) {
+        super.setTexture(texture);
+        super.setRegion(x, y + height, width, -height);
+    }
 
-	@Override
-	public float getOffsetY() {
-		return atlasRegion.offsetY;
-	}
+    public int getIndex() {
+        return index;
+    }
 
-	@Override
-	public float getRotatedPackedWidth() {
-		return atlasRegion.getRotatedPackedWidth();
-	}
+    public float getPackedWidth() {
+        return width;
+    }
 
-	@Override
-	public float getRotatedPackedHeight() {
-		return atlasRegion.getRotatedPackedHeight();
-	}
+    public float getPackedHeight() {
+        return height;
+    }
+
+    public float getOriginalWidth() {
+        return originalWidth;
+    }
+
+    public float getOriginalHeight() {
+        return originalHeight;
+    }
+
+    public float getOffsetX() {
+        return offsetX;
+    }
+
+    public float getOffsetY() {
+        return offsetY;
+    }
 }

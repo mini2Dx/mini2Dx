@@ -15,23 +15,41 @@
  ******************************************************************************/
 package org.mini2Dx.core.assets.loader;
 
-import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.*;
 import org.mini2Dx.core.files.FileHandle;
+import org.mini2Dx.core.graphics.Texture;
 import org.mini2Dx.core.graphics.TextureAtlas;
+import org.mini2Dx.core.graphics.TextureAtlasConfig;
 import org.mini2Dx.gdx.utils.Array;
 
-import java.io.IOException;
+public class TextureAtlasLoader implements AsyncAssetLoader<TextureAtlas> {
 
-public class TextureAtlasLoader implements AssetLoader<TextureAtlas> {
 
 	@Override
 	public TextureAtlas loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
-		return Mdx.graphics.newTextureAtlas(assetDescriptor.getResolvedFileHandle());
+		FileHandle resolvedFileHandle = assetDescriptor.getResolvedFileHandle();
+		TextureAtlasConfig atlasConfig = asyncLoadingCache.getCache(resolvedFileHandle.path(), TextureAtlasConfig.class);
+		for (String path : atlasConfig.textures.keySet()){
+			atlasConfig.textures.replace(path, assetManager.get(path, Texture.class));
+		}
+		return new TextureAtlas(atlasConfig);
 	}
 
 	@Override
 	public Array<AssetDescriptor> getDependencies(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
-		return null;
+		FileHandle resolvedFileHandle = assetDescriptor.getResolvedFileHandle();
+		TextureAtlasConfig atlasConfig = new TextureAtlasConfig(resolvedFileHandle);
+		asyncLoadingCache.setCache(resolvedFileHandle.path(), atlasConfig);
+		String[] dependenciesPaths = atlasConfig.getDependencies();
+		Array<AssetDescriptor> descriptors = new Array<>(dependenciesPaths.length);
+		for (String dependencyPath : dependenciesPaths) {
+			descriptors.add(new AssetDescriptor<>(dependencyPath, Texture.class));
+		}
+		return descriptors;
+	}
+
+	@Override
+	public void loadOnAsyncThread(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+
 	}
 }
