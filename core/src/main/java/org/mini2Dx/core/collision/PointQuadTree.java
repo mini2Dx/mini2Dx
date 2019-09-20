@@ -502,6 +502,26 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	}
 
 	@Override
+	public Array<T> getElementsContainingArea(Shape area, boolean entirelyContained) {
+		return new Array<>();
+	}
+
+	@Override
+	public Array<T> getElementsContainingArea(Shape area, QuadTreeSearchDirection searchDirection, boolean entirelyContained) {
+		return new Array<>();
+	}
+
+	@Override
+	public void getElementsContainingArea(Array<T> result, Shape area, boolean entirelyContained) {
+
+	}
+
+	@Override
+	public void getElementsContainingArea(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection, boolean entirelyContained) {
+
+	}
+
+	@Override
 	public Array<T> getElementsContainingPoint(Point point) {
 		Array<T> result = new Array<T>();
 		getElementsContainingPoint(result, point);

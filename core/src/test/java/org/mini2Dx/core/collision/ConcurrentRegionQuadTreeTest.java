@@ -538,6 +538,100 @@ public class ConcurrentRegionQuadTreeTest implements Runnable {
 		Assert.assertEquals(false, concurrencyExceptionOccurred.get());
 	}
 
+	@Test
+	public void testGetElementsContainingArea() {
+		rootQuad.add(box1);
+
+		//Collision box is inside box1
+		Array<CollisionBox> collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(2, 2, 10, 10), false);
+		Assert.assertEquals(1, collisionBoxs.size);
+		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
+
+		collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(2, 2, 10, 10), true);
+		Assert.assertEquals(1, collisionBoxs.size);
+		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
+
+		//Collision box is outside box1
+		collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(40, 40, 10, 10), false);
+		Assert.assertEquals(0, collisionBoxs.size);
+		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
+
+		collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(40, 40, 10, 10), true);
+		Assert.assertEquals(0, collisionBoxs.size);
+		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
+
+		//Collision box is partially inside box1
+		collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(25, 25, 10, 10), false);
+		Assert.assertEquals(1, collisionBoxs.size);
+		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
+
+		collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(25, 25, 10, 10), true);
+		Assert.assertEquals(0, collisionBoxs.size);
+		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
+
+		//Collision box is larger than, and contains box 1
+		collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(0.5f, 0.5f, 64, 64), false);
+		Assert.assertEquals(0, collisionBoxs.size);
+		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
+
+		collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(0.5f, 0.5f, 64, 64), true);
+		Assert.assertEquals(0, collisionBoxs.size);
+		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
+	}
+
+	@Test
+	public void testGetElementsContainingAreaUpwards() {
+		rootQuad.add(qABox1);
+		rootQuad.add(qABox2);
+		rootQuad.add(qABox3);
+		rootQuad.add(qABox4);
+
+		//Small area, entirely contained
+		Array<CollisionBox> collisionBoxs = qABox1.getQuad().getElementsContainingArea(
+				new CollisionBox(16, 16, 1, 1), QuadTreeSearchDirection.UPWARDS, true);
+		Assert.assertEquals(1, collisionBoxs.size);
+		Assert.assertEquals(true, collisionBoxs.contains(qABox1, false));
+
+		collisionBoxs = qABox1.getQuad().getElementsContainingArea(new CollisionBox(112, 16, 1, 1), true);
+		Assert.assertEquals(0, collisionBoxs.size);
+
+		collisionBoxs = qABox1.getQuad().getElementsContainingArea(new CollisionBox(112, 16, 1, 1), QuadTreeSearchDirection.UPWARDS, true);
+		Assert.assertEquals(1, collisionBoxs.size);
+		Assert.assertEquals(true, collisionBoxs.contains(qABox2, false));
+
+		collisionBoxs = qABox3.getQuad().getElementsContainingArea(new CollisionBox(16, 112, 1, 1), QuadTreeSearchDirection.UPWARDS, true);
+		Assert.assertEquals(1, collisionBoxs.size);
+		Assert.assertEquals(true, collisionBoxs.contains(qABox3, false));
+
+		collisionBoxs = qABox4.getQuad().getElementsContainingArea(new CollisionBox(112, 112, 1, 1), QuadTreeSearchDirection.UPWARDS, true);
+		Assert.assertEquals(1, collisionBoxs.size);
+		Assert.assertEquals(true, collisionBoxs.contains(qABox4, false));
+
+
+		//Not entirely contained tests
+		collisionBoxs = qABox1.getQuad().getElementsContainingArea(
+				new CollisionBox(16, 16, 20, 10), QuadTreeSearchDirection.UPWARDS, false);
+		Assert.assertEquals(1, collisionBoxs.size);
+		Assert.assertEquals(true, collisionBoxs.contains(qABox1, false));
+
+		collisionBoxs = qABox1.getQuad().getElementsContainingArea(
+				new CollisionBox(16, 16, 20, 10), QuadTreeSearchDirection.UPWARDS, true);
+		Assert.assertEquals(0, collisionBoxs.size);
+		Assert.assertEquals(false, collisionBoxs.contains(qABox1, false));
+
+
+		//Area larger than element tests
+		collisionBoxs = qABox1.getQuad().getElementsContainingArea(
+				new CollisionBox(0.5f, 0.5f, 40, 40), QuadTreeSearchDirection.UPWARDS, false);
+		Assert.assertEquals(0, collisionBoxs.size);
+		Assert.assertEquals(false, collisionBoxs.contains(qABox1, false));
+
+		collisionBoxs = qABox1.getQuad().getElementsContainingArea(
+				new CollisionBox(0.5f, 0.5f, 40, 40), QuadTreeSearchDirection.UPWARDS, true);
+		Assert.assertEquals(0, collisionBoxs.size);
+		Assert.assertEquals(false, collisionBoxs.contains(qABox1, false));
+	}
+
 	@Override
 	public void run() {
 		ConcurrencyThreadType threadType = ConcurrencyThreadType.READER;
