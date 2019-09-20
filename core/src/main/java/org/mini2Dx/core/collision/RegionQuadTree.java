@@ -351,6 +351,113 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 		}
 	}
 
+	@Override
+	public Array<T> getElementsContainingArea(Shape area, boolean entirelyContained) {
+		Array<T> result = new Array<T>();
+		getElementsContainingArea(result, area, entirelyContained);
+		return result;
+	}
+
+	@Override
+	public Array<T> getElementsContainingArea(Shape area, QuadTreeSearchDirection searchDirection, boolean entirelyContained) {
+		Array<T> result = new Array<>();
+
+		switch (searchDirection){
+		case UPWARDS:
+			getElementsContainingArea(result, area, searchDirection, entirelyContained);
+			break;
+		case DOWNWARDS:
+			getElementsContainingArea(result, area, entirelyContained);
+			break;
+		}
+
+		return result;
+	}
+
+	protected void addElementsContainingArea(Array<T> result, Shape area, boolean entirelyContained) {
+		if(entirelyContained) {
+			for (int i = elements.size - 1; i >= 0; i--) {
+				T element = elements.get(i);
+				if (element != null && element.contains(area)) {
+					result.add(element);
+				}
+			}
+		} else {
+			for (int i = elements.size - 1; i >= 0; i--) {
+				T element = elements.get(i);
+				if (element != null && (element.contains(area) || element.intersects(area))) {
+					//If area is larger than element it is not contained.
+					if(area.getWidth() > element.getWidth() || area.getHeight() > element.getHeight()) {
+						continue;
+					}
+					result.add(element);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void getElementsContainingArea(Array<T> result, Shape area, boolean entirelyContained) {
+		if (topLeft != null) {
+			if (topLeft.contains(area) || topLeft.intersects(area))
+				topLeft.getElementsContainingArea(result, area, entirelyContained);
+			if (topRight.contains(area) || topRight.intersects(area))
+				topRight.getElementsContainingArea(result, area, entirelyContained);
+			if (bottomLeft.contains(area) || bottomLeft.intersects(area))
+				bottomLeft.getElementsContainingArea(result, area, entirelyContained);
+			if (bottomRight.contains(area) || bottomRight.intersects(area))
+				bottomRight.getElementsContainingArea(result, area, entirelyContained);
+		}
+		addElementsContainingArea(result, area, entirelyContained);
+	}
+
+	@Override
+	public void getElementsContainingArea(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection, boolean entirelyContained) {
+		switch (searchDirection){
+		case UPWARDS:
+			getElementsContainingAreaUpwards(result, area, true, entirelyContained);
+			break;
+		case DOWNWARDS:
+			getElementsContainingArea(result, area, entirelyContained);
+			break;
+		}
+	}
+
+	protected void getElementsContainingAreaUpwards(Array<T> result, Shape area, boolean firstInvocation, boolean entirelyContained) {
+		if (elements != null) {
+			addElementsContainingArea(result, area, entirelyContained);
+		}
+		if (firstInvocation && topLeft != null){
+			if (area.contains(topLeft) || area.intersects(topLeft)){
+				topLeft.getElementsContainingArea(result, area, entirelyContained);
+			}
+			if (area.contains(topRight) || area.intersects(topRight)){
+				topRight.getElementsContainingArea(result, area, entirelyContained);
+			}
+			if (area.contains(bottomLeft) || area.intersects(bottomLeft)){
+				bottomLeft.getElementsContainingArea(result, area, entirelyContained);
+			}
+			if (area.contains(bottomRight) || area.intersects(bottomRight)){
+				bottomRight.getElementsContainingArea(result, area, entirelyContained);
+			}
+		}
+		if (parent != null) {
+			if (parent.topLeft != this && (area.contains(parent.topLeft) || area.intersects(parent.topLeft))) {
+				parent.topLeft.getElementsContainingArea(result, area, entirelyContained);
+			}
+			if (parent.topRight != this && (area.contains(parent.topRight) || area.intersects(parent.topRight))) {
+				parent.topRight.getElementsContainingArea(result, area, entirelyContained);
+			}
+			if (parent.bottomLeft != this && (area.contains(parent.bottomLeft) || area.intersects(parent.bottomLeft))) {
+				parent.bottomLeft.getElementsContainingArea(result, area, entirelyContained);
+			}
+			if (parent.bottomRight != this && (area.contains(parent.bottomRight) || area.intersects(parent.bottomRight))) {
+				parent.bottomRight.getElementsContainingArea(result, area, entirelyContained);
+			}
+			((RegionQuadTree<T>)parent).getElementsContainingAreaUpwards(result, area, false, entirelyContained);
+		}
+	}
+
 	protected void addElementsContainingPoint(Array<T> result, Point point) {
 		for (int i = elements.size - 1; i >= 0; i--) {
 			T element = elements.get(i);
