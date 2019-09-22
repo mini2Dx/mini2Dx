@@ -123,6 +123,7 @@ public class LibgdxGraphics implements Graphics {
 
 		if (defaultShader == null) {
 			defaultShader = new LibgdxShader(SpriteBatch.createDefaultShader());
+			currentShader = defaultShader;
 		}
 	}
 
@@ -619,7 +620,8 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public void clearShader() {
-		setShader(defaultShader);
+		currentShader = defaultShader;
+		setShader(currentShader);
 	}
 
 	@Override
