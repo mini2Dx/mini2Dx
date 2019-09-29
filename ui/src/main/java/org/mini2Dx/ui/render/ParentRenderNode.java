@@ -377,10 +377,13 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 	}
 
 	public RenderNode<?, ?> searchTreeForElementById(String id) {
-		if (rootNode == null) {
-			return getElementById(id);
+		RenderNode<?, ?> renderNode = getElementById(id);
+		if (renderNode == null) {
+			if (rootNode != null ){
+				return rootNode.getElementById(id);
+			}
 		}
-		return rootNode.getElementById(id);
+		return renderNode;
 	}
 
 	public LayoutRuleset getLayoutRuleset() {

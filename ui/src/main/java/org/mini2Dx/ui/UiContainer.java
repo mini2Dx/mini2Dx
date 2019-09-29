@@ -585,7 +585,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			}
 			GamePadEventTriggerParams params = EventTriggerParamsPool.allocateGamePadParams();
 			params.setGamePadButton(button);
-			hotkeyAction.setState(NodeState.ACTION);
+			hotkeyAction.setState(NodeState.NORMAL);
 			hotkeyAction.endAction(EventTrigger.CONTROLLER, params);
 			EventTriggerParamsPool.release(params);
 		} else if (activeAction != null) {
