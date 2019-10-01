@@ -39,7 +39,7 @@ public class XboxUiInput extends XboxGamePadAdapter implements GamePadUiInput<Xb
 	
 	/* User configurable fields */
 	private float stickRepeatTimer = 0.25f;
-	private float stickThreshold = 0.25f;
+	private float stickThreshold = 0.35f;
 	private boolean enabled = true;
 	private XboxButton actionButton = XboxButton.A;
 	private boolean debug = false;
@@ -137,42 +137,47 @@ public class XboxUiInput extends XboxGamePadAdapter implements GamePadUiInput<Xb
 
 	@Override
 	public boolean leftStickXMoved(XboxGamePad controller, float value) {
+		if(!enabled) {
+			return false;
+		}
+
 		if(value < -stickThreshold) {
+			uiContainer.setLastInputSource(InputSource.CONTROLLER);
+			uiContainer.setLastGamePadType(GamePadType.XBOX);
 			left = true;
 			right = false;
 		} else if(value > stickThreshold) {
+			uiContainer.setLastInputSource(InputSource.CONTROLLER);
+			uiContainer.setLastGamePadType(GamePadType.XBOX);
 			right = true;
 			left = false;
 		} else {
 			left = false;
 			right = false;
 		}
-		if(enabled) {
-			uiContainer.setLastInputSource(InputSource.CONTROLLER);
-			uiContainer.setLastGamePadType(GamePadType.XBOX);
-			return uiContainer.getActiveNavigation() != null;
-		}
-		return false;
+		return uiContainer.getActiveNavigation() != null;
 	}
 	
 	@Override
 	public boolean leftStickYMoved(XboxGamePad controller, float value) {
+		if(!enabled) {
+			return false;
+		}
 		if(value < -stickThreshold) {
+			uiContainer.setLastInputSource(InputSource.CONTROLLER);
+			uiContainer.setLastGamePadType(GamePadType.XBOX);
 			up = true;
 			down = false;
 		} else if(value > stickThreshold) {
+			uiContainer.setLastInputSource(InputSource.CONTROLLER);
+			uiContainer.setLastGamePadType(GamePadType.XBOX);
 			down = true;
 			up = false;
 		} else {
 			down = false;
 			up = false;
 		}
-		if(enabled) {
-			uiContainer.setLastInputSource(InputSource.CONTROLLER);
-			uiContainer.setLastGamePadType(GamePadType.XBOX);
-			return uiContainer.getActiveNavigation() != null;
-		}
-		return false;
+		return uiContainer.getActiveNavigation() != null;
 	}
 	
 	@Override
