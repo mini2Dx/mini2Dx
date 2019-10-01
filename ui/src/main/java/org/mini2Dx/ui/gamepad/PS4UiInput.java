@@ -38,7 +38,7 @@ public class PS4UiInput extends PS4GamePadAdapter implements GamePadUiInput<PS4B
 	
 	/* User configurable fields */
 	private float stickRepeatTimer = 0.25f;
-	private float stickThreshold = 0.25f;
+	private float stickThreshold = 0.35f;
 	private boolean enabled = true;
 	private PS4Button actionButton = PS4Button.CROSS;
 	
@@ -119,42 +119,46 @@ public class PS4UiInput extends PS4GamePadAdapter implements GamePadUiInput<PS4B
 	
 	@Override
 	public boolean leftStickXMoved(PS4GamePad controller, float value) {
+		if(!enabled) {
+			return false;
+		}
 		if(value < -stickThreshold) {
+			uiContainer.setLastInputSource(InputSource.CONTROLLER);
+			uiContainer.setLastGamePadType(GamePadType.PS4);
 			left = true;
 			right = false;
 		} else if(value > stickThreshold) {
+			uiContainer.setLastInputSource(InputSource.CONTROLLER);
+			uiContainer.setLastGamePadType(GamePadType.PS4);
 			right = true;
 			left = false;
 		} else {
 			left = false;
 			right = false;
 		}
-		if(enabled) {
-			uiContainer.setLastInputSource(InputSource.CONTROLLER);
-			uiContainer.setLastGamePadType(GamePadType.PS4);
-			return uiContainer.getActiveNavigation() != null;
-		}
-		return false;
+		return uiContainer.getActiveNavigation() != null;
 	}
 	
 	@Override
 	public boolean leftStickYMoved(PS4GamePad controller, float value) {
+		if(!enabled) {
+			return false;
+		}
 		if(value < -stickThreshold) {
+			uiContainer.setLastInputSource(InputSource.CONTROLLER);
+			uiContainer.setLastGamePadType(GamePadType.PS4);
 			up = true;
 			down = false;
 		} else if(value > stickThreshold) {
+			uiContainer.setLastInputSource(InputSource.CONTROLLER);
+			uiContainer.setLastGamePadType(GamePadType.PS4);
 			down = true;
 			up = false;
 		} else {
 			down = false;
 			up = false;
 		}
-		if(enabled) {
-			uiContainer.setLastInputSource(InputSource.CONTROLLER);
-			uiContainer.setLastGamePadType(GamePadType.PS4);
-			return uiContainer.getActiveNavigation() != null;
-		}
-		return false;
+		return uiContainer.getActiveNavigation() != null;
 	}
 	
 	@Override
