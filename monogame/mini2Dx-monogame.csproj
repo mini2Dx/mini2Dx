@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>monogame</RootNamespace>
     <AssemblyName>monogame</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,15 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IKVM.OpenJDK.Core">
-      <HintPath>..\_tools\ikvm\bin\IKVM.OpenJDK.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Runtime">
-      <HintPath>..\_tools\ikvm\bin\IKVM.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="mini2Dx-all, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\all\build\libs\mini2Dx-all.dll</HintPath>
+    <Reference Include="openjdk8">
+      <HintPath>..\..\coffea\openjdk8\generated-src\bin\Debug\openjdk8.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -98,6 +92,12 @@
     <PackageReference Include="SpriteFontPlus.MonoGame">
       <Version>0.7.0.22</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\all\generated-src\mini2Dx.csproj">
+      <Project>{9b80a3ef-ec54-4f2c-9587-341ed39da58b}</Project>
+      <Name>mini2Dx</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

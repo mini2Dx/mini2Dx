@@ -15,11 +15,11 @@
  ******************************************************************************/
 
 using System;
-using org.mini2Dx.core.graphics;
+using Org.Mini2Dx.Core.Graphics;
 
 namespace monogame.Graphics
 {
-    public class MonoGameColor : org.mini2Dx.core.graphics.Color
+    public class MonoGameColor : Color
     {
         internal Microsoft.Xna.Framework.Color _color;
 

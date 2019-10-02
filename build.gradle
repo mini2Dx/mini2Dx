@@ -17,9 +17,9 @@ buildscript {
 		classpath 'me.champeau.gradle:jmh-gradle-plugin:0.4.8'
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.9.0'
 		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.8'
-		classpath "org.mini2Dx:gradle-ikvm-plugin:2.10.1"
 		classpath "org.mini2Dx:gradle-mini2Dx-mgcb:1.0.2"
 		classpath 'com.android.tools.build:gradle:3.4.2'
+		classpath "com.viridiansoftware:gradle-desugar-task:1.0.1"
 		classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.7'
     }
 }
@@ -401,8 +401,6 @@ project(":" + rootProject.name + "-ui") {
 project(":" + rootProject.name + "-all") {
 	description = "All mini2Dx core libraries packed into a single jar"
 
-	apply plugin: "ikvm"
-
 	dependencies {
 		compile project(":" + rootProject.name + "-core")
 		compile project(":" + rootProject.name + "-tiled")
@@ -422,34 +420,37 @@ project(":" + rootProject.name + "-all") {
 		with jar
 	}
 
-	ikvm {
-		ikvmHome = ikvmDir
-		debug = false
-		generateDoc = false
-		jars = project.files(project.fatJar.archivePath)
+	task desugarJar(type: com.viridiansoftware.desugar.DesugarTask, dependsOn: fatJar) {
+		inputJar file('build/libs/' + project.name + '-fatjar-' + project.version + '.jar')
+		outputJar file('build/libs/' + project.name + '-desugarjar.jar')
+		bootstrapClasspath files("${jdkJar}")
+		coreLibrary false
+		minSdkVersion 19
+		verbose true
 	}
 
-	build.dependsOn ikvm
+	task transpile(type: Exec, dependsOn: desugarJar) {
+		workingDir 'build/libs'
+		commandLine 'cmd', '/c', "${transpilerExe}",
+				'-i', project.name + '-desugarjar.jar',
+				'-o', project.file("generated-src").getAbsolutePath(),
+				'-p', 'mini2Dx',
+				'-r', "${jdkDll}"
+	}
+
+	build.dependsOn transpile
 }
 
 project(":" + rootProject.name + "-uats") {
 	description = "mini2Dx UATs library"
 	version = projectVersion
 
-	apply plugin: "ikvm"
+	apply plugin: "java"
 	apply plugin: "org.mini2Dx.mgcb"
 
 	task copyUatResources(type: Copy) {
 		from '../uats/src/main/resources', '../tiled/src/test/resources', '../ui/src/main/resources'
 		into '../uats-libgdx-desktop/assets'
-	}
-
-	ikvm {
-		ikvmHome = ikvmDir
-		debug = false
-		generateDoc = false
-		jars = project.files(project.jar.archivePath)
-		dllReferences = [project.file("../all/build/libs/mini2Dx-all.dll").absolutePath]
 	}
 
 	dependencies {
@@ -464,8 +465,7 @@ project(":" + rootProject.name + "-uats") {
 
 	processResources.dependsOn copyUatResources
     generateMonoGameContent.dependsOn processResources
-    ikvm.dependsOn project(":" + rootProject.name + "-all").build
-	build.dependsOn ikvm, generateMonoGameContent
+	build.dependsOn generateMonoGameContent
 
 	if(!projectVersion.contains("SNAPSHOT")) {
 		def docDirectory = new File(project.parent.projectDir.getParentFile(), "mini2Dx-website/docs/javadoc/${projectVersion}");
