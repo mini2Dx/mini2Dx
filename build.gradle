@@ -435,6 +435,7 @@ project(":" + rootProject.name + "-all") {
 				'-i', project.name + '-desugarjar.jar',
 				'-o', project.file("generated-src").getAbsolutePath(),
 				'-p', 'mini2Dx',
+				'--desugar', "${desugarWorkarounds}",
 				'-r', "${jdkDll}"
 	}
 
