@@ -16,15 +16,15 @@
 
 using System;
 using Microsoft.Xna.Framework.Input;
-using org.mini2Dx.core.input;
-using org.mini2Dx.core.input.button;
-using org.mini2Dx.core.input.deadzone;
-using org.mini2Dx.gdx.math;
-using GamePad = org.mini2Dx.core.input.GamePad;
+using Org.Mini2Dx.Core.Input;
+using Org.Mini2Dx.Core.Input.Button;
+using Org.Mini2Dx.Core.Input.Deadzone;
+using Org.Mini2Dx.Gdx.Math;
+using GamePad = Org.Mini2Dx.Core.Input.GamePad;
 
 namespace monogame.Input
 {
-    public class MonoGameXboxGamePad : org.mini2Dx.core.input.xbox.XboxGamePad
+    public class MonoGameXboxGamePad : Org.Mini2Dx.Core.Input.Xbox.XboxGamePad
     {
         private PovState _prevPovState;
         
@@ -33,9 +33,10 @@ namespace monogame.Input
             _prevPovState = gamePad.getPov(0);
         }
 
-        public MonoGameXboxGamePad(GamePad gamePad) : base(gamePad)
+        public MonoGameXboxGamePad(GamePad gamePad) : base()
         {
             _prevPovState = gamePad.getPov(0);
+            base._init_(gamePad);
         }
 
         public override void onConnect(GamePad gamePad)
@@ -53,27 +54,27 @@ namespace monogame.Input
             switch ((Buttons)buttonCode)
             {
                 case Buttons.Start:
-                    return XboxButton.START;
+                    return XboxButton.START_;
                 case Buttons.Back:
-                    return XboxButton.BACK;
+                    return XboxButton.BACK_;
                 case Buttons.LeftStick:
-                    return XboxButton.LEFT_STICK;
+                    return XboxButton.LEFT_STICK_;
                 case Buttons.RightStick:
-                    return XboxButton.RIGHT_STICK;
+                    return XboxButton.RIGHT_STICK_;
                 case Buttons.LeftShoulder:
-                    return XboxButton.LEFT_SHOULDER;
+                    return XboxButton.LEFT_SHOULDER_;
                 case Buttons.RightShoulder:
-                    return XboxButton.RIGHT_SHOULDER;
+                    return XboxButton.RIGHT_SHOULDER_;
                 case Buttons.A:
-                    return XboxButton.A;
+                    return XboxButton.A_;
                 case Buttons.B:
-                    return XboxButton.B;
+                    return XboxButton.B_;
                 case Buttons.X:
-                    return XboxButton.X;
+                    return XboxButton.X_;
                 case Buttons.Y:
-                    return XboxButton.Y;
+                    return XboxButton.Y_;
                 case Buttons.BigButton:
-                    return XboxButton.GUIDE;
+                    return XboxButton.GUIDE_;
                 default:
                     return null;
             }
@@ -99,48 +100,48 @@ namespace monogame.Input
 
         public override void onPovChanged(GamePad gamePad, int povCode, PovState povState)
         {
-            if (povState.isPressed(PovState.NORTH) != _prevPovState.isPressed(PovState.NORTH))
+            if (povState.isPressed(PovState.NORTH_) != _prevPovState.isPressed(PovState.NORTH_))
             {
-                if (povState.isPressed(PovState.NORTH))
+                if (povState.isPressed(PovState.NORTH_))
                 {
-                    notifyButtonDown(XboxButton.UP);
+                    notifyButtonDown(XboxButton.UP_);
                 }
                 else
                 {
-                    notifyButtonUp(XboxButton.UP);
+                    notifyButtonUp(XboxButton.UP_);
                 }
             }
-            if (povState.isPressed(PovState.SOUTH) != _prevPovState.isPressed(PovState.SOUTH))
+            if (povState.isPressed(PovState.SOUTH_) != _prevPovState.isPressed(PovState.SOUTH_))
             {
-                if (povState.isPressed(PovState.SOUTH))
+                if (povState.isPressed(PovState.SOUTH_))
                 {
-                    notifyButtonDown(XboxButton.DOWN);
+                    notifyButtonDown(XboxButton.DOWN_);
                 }
                 else
                 {
-                    notifyButtonUp(XboxButton.DOWN);
+                    notifyButtonUp(XboxButton.DOWN_);
                 }
             }
-            if (povState.isPressed(PovState.EAST) != _prevPovState.isPressed(PovState.EAST))
+            if (povState.isPressed(PovState.EAST_) != _prevPovState.isPressed(PovState.EAST_))
             {
-                if (povState.isPressed(PovState.EAST))
+                if (povState.isPressed(PovState.EAST_))
                 {
-                    notifyButtonDown(XboxButton.RIGHT);
+                    notifyButtonDown(XboxButton.RIGHT_);
                 }
                 else
                 {
-                    notifyButtonUp(XboxButton.RIGHT);
+                    notifyButtonUp(XboxButton.RIGHT_);
                 }
             }
-            if (povState.isPressed(PovState.WEST) != _prevPovState.isPressed(PovState.WEST))
+            if (povState.isPressed(PovState.WEST_) != _prevPovState.isPressed(PovState.WEST_))
             {
-                if (povState.isPressed(PovState.WEST))
+                if (povState.isPressed(PovState.WEST_))
                 {
-                    notifyButtonDown(XboxButton.LEFT);
+                    notifyButtonDown(XboxButton.LEFT_);
                 }
                 else
                 {
-                    notifyButtonUp(XboxButton.LEFT);
+                    notifyButtonUp(XboxButton.LEFT_);
                 }
             }
 

@@ -19,12 +19,13 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using monogame.Audio;
 using monogame.Util;
-using org.mini2Dx.core.audio;
-using org.mini2Dx.core.files;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Audio;
+using Org.Mini2Dx.Core.Files;
 
 namespace monogame
 {
-    public class MonoGameAudio : org.mini2Dx.core.Audio
+    public class MonoGameAudio : _Audio
     {
         private static readonly LinkedList<MusicCompletionListener> _musicCompletionListeners;
         private static readonly LinkedList<SoundCompletionListener> _soundCompletionListeners;

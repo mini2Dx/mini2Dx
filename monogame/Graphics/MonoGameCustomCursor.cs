@@ -1,6 +1,10 @@
 using Microsoft.Xna.Framework.Input;
-using org.mini2Dx.core;
-using org.mini2Dx.core.graphics;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Assets;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Graphics;
+using Org.Mini2Dx.Core.Util;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
 
 namespace monogame.Graphics
 {
@@ -11,10 +15,12 @@ namespace monogame.Graphics
         
         public MonoGameCustomCursor(Pixmap upPixmap, Pixmap downPixmap, int xHotspot, int yHotspot) : base(upPixmap, downPixmap, xHotspot, yHotspot)
         {
-            upCursor = MouseCursor.FromTexture2D(((MonoGameTexture)Mdx.graphics.newTexture(upPixmap)).texture2D, xHotspot, yHotspot);
-            downCursor = MouseCursor.FromTexture2D(((MonoGameTexture)Mdx.graphics.newTexture(downPixmap)).texture2D, xHotspot, yHotspot);
+            upCursor = MouseCursor.FromTexture2D(((MonoGameTexture)Mdx.graphics_.newTexture(upPixmap)).texture2D, xHotspot, yHotspot);
+            downCursor = MouseCursor.FromTexture2D(((MonoGameTexture)Mdx.graphics_.newTexture(downPixmap)).texture2D, xHotspot, yHotspot);
             Mouse.SetCursor(upCursor);
         }
+
+
 
         public override bool keyDown(int obj0)
         {
@@ -34,14 +40,14 @@ namespace monogame.Graphics
         public override bool touchDown(int obj0, int obj1, int obj2, int obj3)
         {
             Mouse.SetCursor(downCursor);
-            Mdx.log.debug(DEBUG_TAG, "touchDown");
+            Mdx.log_.debug(DEBUG_TAG, "touchDown");
             return false;
         }
 
         public override bool touchUp(int obj0, int obj1, int obj2, int obj3)
         {
             Mouse.SetCursor(upCursor);
-            Mdx.log.debug(DEBUG_TAG, "touchUp");
+            Mdx.log_.debug(DEBUG_TAG, "touchUp");
             return false;
         }
 

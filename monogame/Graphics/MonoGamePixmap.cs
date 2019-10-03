@@ -14,11 +14,16 @@
  * limitations under the License.
  ******************************************************************************/
 using System;
-using org.mini2Dx.core.graphics;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Assets;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Graphics;
+using Org.Mini2Dx.Core.Util;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
 
 namespace monogame.Graphics
 {
-    class MonoGamePixmap : org.mini2Dx.core.graphics.Pixmap
+    class MonoGamePixmap : Org.Mini2Dx.Core.Graphics.Pixmap
     {
         private UInt32[,] _pixmap;
         private MonoGameColor _setColor;
@@ -27,7 +32,7 @@ namespace monogame.Graphics
         private readonly PixmapFormat _format;
         private readonly int _width, _height;
 
-        public MonoGamePixmap(int width, int height) : this(width, height, PixmapFormat.RGBA8888){}
+        public MonoGamePixmap(int width, int height) : this(width, height, PixmapFormat.RGBA8888_){}
 
         public MonoGamePixmap(int width, int height, PixmapFormat format)
         {
@@ -35,8 +40,8 @@ namespace monogame.Graphics
             _height = height;
             _pixmap = new UInt32[width, height];
             _setColor = new MonoGameColor(0,0, 0, 255);
-            _blending = PixmapBlending.NONE;
-            _filter = PixmapFilter.NEAREST_NEIGHBOUR;
+            _blending = PixmapBlending.NONE_;
+            _filter = PixmapFilter.NEAREST_NEIGHBOUR_;
             _format = format;
         }
         
@@ -144,9 +149,9 @@ namespace monogame.Graphics
                 }
                 else
                 {
-                    var newR = (byte)(MonoGameColor.getRAsByte(color) * colorAlpha + MonoGameColor.getAAsByte((uint) getPixel(x, y)) * (255 - colorAlpha));
-                    var newG = (byte)(MonoGameColor.getRAsByte(color) * colorAlpha + MonoGameColor.getAAsByte((uint) getPixel(x, y)) * (255 - colorAlpha));
-                    var newB = (byte)(MonoGameColor.getRAsByte(color) * colorAlpha + MonoGameColor.getAAsByte((uint) getPixel(x, y)) * (255 - colorAlpha));
+                    var newR = (sbyte)(MonoGameColor.getRAsByte(color) * colorAlpha + MonoGameColor.getAAsByte((uint) getPixel(x, y)) * (255 - colorAlpha));
+                    var newG = (sbyte)(MonoGameColor.getRAsByte(color) * colorAlpha + MonoGameColor.getAAsByte((uint) getPixel(x, y)) * (255 - colorAlpha));
+                    var newB = (sbyte)(MonoGameColor.getRAsByte(color) * colorAlpha + MonoGameColor.getAAsByte((uint) getPixel(x, y)) * (255 - colorAlpha));
                     _pixmap[x, y] = MonoGameColor.toRGBA8888(newR, newG, newB, colorAlpha);
                 }
             }
@@ -193,7 +198,7 @@ namespace monogame.Graphics
                     }
                 }
             }
-            else if (_filter == PixmapFilter.NEAREST_NEIGHBOUR)
+            else if (_filter == PixmapFilter.NEAREST_NEIGHBOUR_)
             {
                 var xRatio = (float)srcWidth / dstWidth;
                 var yRatio = (float)srcHeight / dstHeight;
@@ -393,7 +398,7 @@ namespace monogame.Graphics
 
         public UInt32[] toRawPixelsARGB()
         {
-            if (_format != PixmapFormat.RGBA8888)
+            if (_format != PixmapFormat.RGBA8888_)
             {
                 throw new NotSupportedException();
             }
@@ -410,12 +415,12 @@ namespace monogame.Graphics
             return rawPixels;
         }
 
-        public byte[] getPixels()
+        public sbyte[] getPixels()
         {
             var numOfPixels = getWidth() * getHeight();
             var bytesPerPixel = getBytesPerPixel(_format);
 
-            var bytes = new byte[numOfPixels * bytesPerPixel];
+            var bytes = new sbyte[numOfPixels * bytesPerPixel];
 
             for (int currentPixel = 0; currentPixel < numOfPixels; currentPixel++)
             {
@@ -423,16 +428,16 @@ namespace monogame.Graphics
                 switch (bytesPerPixel)
                 {
                     case 4:
-                        bytes[(bytesPerPixel * currentPixel) + bytesPerPixel - 4] = (byte) (convertedPixel >> 24 & 0xff);
+                        bytes[(bytesPerPixel * currentPixel) + bytesPerPixel - 4] = (sbyte) (convertedPixel >> 24 & 0xff);
                         goto case 3; //because c# doesn't support switch fallthrough
                     case 3:
-                        bytes[(bytesPerPixel * currentPixel) + bytesPerPixel - 3] = (byte) (convertedPixel >> 16 & 0xff);
+                        bytes[(bytesPerPixel * currentPixel) + bytesPerPixel - 3] = (sbyte) (convertedPixel >> 16 & 0xff);
                         goto case 2; //because c# doesn't support switch fallthrough
                     case 2:
-                        bytes[(bytesPerPixel * currentPixel) + bytesPerPixel - 2] = (byte) (convertedPixel >> 8 & 0xff);
+                        bytes[(bytesPerPixel * currentPixel) + bytesPerPixel - 2] = (sbyte) (convertedPixel >> 8 & 0xff);
                         goto case 1; //because c# doesn't support switch fallthrough
                     case 1:
-                        bytes[(bytesPerPixel * currentPixel) + bytesPerPixel - 1] = (byte) (convertedPixel & 0xff);
+                        bytes[(bytesPerPixel * currentPixel) + bytesPerPixel - 1] = (sbyte) (convertedPixel & 0xff);
                         break;
                     default:
                         return null;
@@ -445,15 +450,15 @@ namespace monogame.Graphics
         public static int getBytesPerPixel(PixmapFormat format)
         {
             var bytesPerPixel = 2;
-            if (format == PixmapFormat.INTENSITY)
+            if (format == PixmapFormat.INTENSITY_)
             {
                 bytesPerPixel = 1;
             }
-            else if (format == PixmapFormat.RGB888)
+            else if (format == PixmapFormat.RGB888_)
             {
                 bytesPerPixel = 3;
             }
-            else if (format == PixmapFormat.RGBA8888)
+            else if (format == PixmapFormat.RGBA8888_)
             {
                 bytesPerPixel = 4;
             }

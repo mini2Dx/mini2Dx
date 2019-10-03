@@ -18,15 +18,18 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using org.mini2Dx.core;
-using org.mini2Dx.core.graphics;
-using Color = org.mini2Dx.core.graphics.Color;
-using Texture = org.mini2Dx.core.graphics.Texture;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Assets;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Graphics;
+using Org.Mini2Dx.Core.Util;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
+using Texture = Org.Mini2Dx.Core.Graphics.Texture;
 
 namespace monogame.Graphics
 {
     
-    public class MonoGameSpriteCache : org.mini2Dx.core.graphics.SpriteCache
+    public class MonoGameSpriteCache : Org.Mini2Dx.Core.Graphics.SpriteCache
     {
         private struct SpriteCacheDrawingOperation
         {
@@ -45,7 +48,7 @@ namespace monogame.Graphics
         {
             public static GraphicsDevice graphicsDevice;
             public readonly MonoGameTexture texture = new MonoGameTexture(new RenderTarget2D(graphicsDevice,
-                Mdx.graphicsContext.getWindowWidth(), Mdx.graphicsContext.getWindowHeight(), false, SurfaceFormat.Color,
+                Mdx.graphicsContext_.getWindowWidth(), Mdx.graphicsContext_.getWindowHeight(), false, SurfaceFormat.Color,
                 graphicsDevice.PresentationParameters.DepthStencilFormat, 0, RenderTargetUsage.PreserveContents));
             public readonly List<SpriteCacheDrawingOperation> operations = new List<SpriteCacheDrawingOperation>();
 
@@ -82,16 +85,16 @@ namespace monogame.Graphics
         {
             _graphicsDevice.SetRenderTarget((RenderTarget2D)_caches[_currentCache].texture.texture2D);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, effect: ((MonoGameShader) _customShader)?.shader);
-            _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext)._currentRenderTarget);
-            ((MonoGameGraphics)Mdx.graphicsContext).updateClip();
+            _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext_)._currentRenderTarget);
+            ((MonoGameGraphics)Mdx.graphicsContext_).updateClip();
         }
 
         private void endSpriteBatch()
         {
             _graphicsDevice.SetRenderTarget((RenderTarget2D)_caches[_currentCache].texture.texture2D);
             _spriteBatch.End();
-            _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext)._currentRenderTarget);
-            ((MonoGameGraphics)Mdx.graphicsContext).updateClip();
+            _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext_)._currentRenderTarget);
+            ((MonoGameGraphics)Mdx.graphicsContext_).updateClip();
         }
 
         private void add(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight, out int posX, out int posY)
@@ -246,12 +249,12 @@ namespace monogame.Graphics
             _spriteBatch.Dispose();
         }
 
-        public void draw(org.mini2Dx.core.Graphics g, int cacheID)
+        public void draw(Org.Mini2Dx.Core._Graphics g, int cacheID)
         {
             draw(g, cacheID, 0, _caches[cacheID].operations.Count);
         }
 
-        public void draw(org.mini2Dx.core.Graphics g, int cacheID, int offset, int length)
+        public void draw(Org.Mini2Dx.Core._Graphics g, int cacheID, int offset, int length)
         {
             for (var i = offset; i < _caches[cacheID].operations.Count && i < offset + length; i++)
             {
@@ -259,7 +262,7 @@ namespace monogame.Graphics
             }
         }
 
-        private static void draw(org.mini2Dx.core.Graphics g, MonoGameTexture texture, SpriteCacheDrawingOperation op)
+        private static void draw(Org.Mini2Dx.Core._Graphics g, MonoGameTexture texture, SpriteCacheDrawingOperation op)
         {
             ((MonoGameGraphics) g).drawTexture(texture, op.dstX, op.dstY, op.srcX, op.srcY, op.srcWidth, op.srcHeight, op.scaleX, op.scaleY, op.originX, op.originY, op.rotation, op.flipX, op.flipY, op.color);
         }

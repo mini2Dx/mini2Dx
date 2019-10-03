@@ -15,12 +15,16 @@
  ******************************************************************************/
 
 using Microsoft.Xna.Framework.Graphics;
-using org.mini2Dx.core;
-using Texture = org.mini2Dx.core.graphics.Texture;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Assets;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Util;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
+using Texture = Org.Mini2Dx.Core.Graphics.Texture;
 
 namespace monogame.Graphics
 {
-    public class MonoGameFrameBuffer : org.mini2Dx.core.graphics.FrameBuffer
+    public class MonoGameFrameBuffer : Org.Mini2Dx.Core.Graphics.FrameBuffer
     {
         private GraphicsDevice _graphicsDevice;
         private RenderTarget2D _renderTarget;
@@ -40,33 +44,33 @@ namespace monogame.Graphics
 
         public void begin()
         {
-            ((MonoGameGraphics)Mdx.graphicsContext).endRendering();
+            ((MonoGameGraphics)Mdx.graphicsContext_).endRendering();
             bind();
-            Mdx.graphicsContext.clearContext();
-            ((MonoGameGraphics)Mdx.graphicsContext)._gameWidth = _renderTarget.Width;
-            ((MonoGameGraphics)Mdx.graphicsContext)._gameHeight = _renderTarget.Height;
-            ((MonoGameGraphics)Mdx.graphicsContext).beginRendering();
+            Mdx.graphicsContext_.clearContext();
+            ((MonoGameGraphics)Mdx.graphicsContext_)._gameWidth = _renderTarget.Width;
+            ((MonoGameGraphics)Mdx.graphicsContext_)._gameHeight = _renderTarget.Height;
+            ((MonoGameGraphics)Mdx.graphicsContext_).beginRendering();
         }
 
         public void end()
         {
-            ((MonoGameGraphics)Mdx.graphicsContext).endRendering();
+            ((MonoGameGraphics)Mdx.graphicsContext_).endRendering();
             unbind();
-            ((MonoGameGraphics)Mdx.graphicsContext)._gameWidth = Mdx.graphicsContext.getWindowWidth();
-            ((MonoGameGraphics)Mdx.graphicsContext)._gameHeight = Mdx.graphicsContext.getWindowHeight();
-            ((MonoGameGraphics)Mdx.graphicsContext).beginRendering();
+            ((MonoGameGraphics)Mdx.graphicsContext_)._gameWidth = Mdx.graphicsContext_.getWindowWidth();
+            ((MonoGameGraphics)Mdx.graphicsContext_)._gameHeight = Mdx.graphicsContext_.getWindowHeight();
+            ((MonoGameGraphics)Mdx.graphicsContext_).beginRendering();
         }
 
         public void bind()
         {
             _graphicsDevice.SetRenderTarget(_renderTarget);
-            ((MonoGameGraphics)Mdx.graphicsContext)._currentRenderTarget = _renderTarget;
+            ((MonoGameGraphics)Mdx.graphicsContext_)._currentRenderTarget = _renderTarget;
         }
 
         public void unbind()
         {
             _graphicsDevice.SetRenderTarget(null);
-            ((MonoGameGraphics)Mdx.graphicsContext)._currentRenderTarget = null;
+            ((MonoGameGraphics)Mdx.graphicsContext_)._currentRenderTarget = null;
         }
 
         public int getWidth()

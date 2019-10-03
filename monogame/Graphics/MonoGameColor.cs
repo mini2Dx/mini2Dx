@@ -23,7 +23,7 @@ namespace monogame.Graphics
     {
         internal Microsoft.Xna.Framework.Color _color;
 
-        public MonoGameColor(byte r, byte g, byte b, byte a)
+        public MonoGameColor(sbyte r, sbyte g, sbyte b, sbyte a)
         {
             _color = new Microsoft.Xna.Framework.Color(r, g, b, a);
         }
@@ -33,7 +33,7 @@ namespace monogame.Graphics
             _color = new Microsoft.Xna.Framework.Color(r, g, b, a);
         }
 
-        public MonoGameColor(int r, int g, int b, int a) : this((byte) r, (byte) g, (byte) b, (byte) a) {}
+        public MonoGameColor(int r, int g, int b, int a) : this((sbyte) r, (sbyte) g, (sbyte) b, (sbyte) a) {}
 
         public MonoGameColor(UInt32 rgba8888)
         {
@@ -52,10 +52,10 @@ namespace monogame.Graphics
 
         public virtual Color set(Color c)
         {
-            _color.R = c.getRAsByte();
-            _color.G = c.getGAsByte();
-            _color.B = c.getBAsByte();
-            _color.A = c.getAAsByte();
+            _color.R = (byte) c.getRAsByte();
+            _color.G = (byte) c.getGAsByte();
+            _color.B = (byte) c.getBAsByte();
+            _color.A = (byte) c.getAAsByte();
             return this;
         }
 
@@ -68,21 +68,21 @@ namespace monogame.Graphics
             return this;
         }
 
-        public virtual Color set(byte r, byte g, byte b, byte a)
+        public virtual Color set(sbyte r, sbyte g, sbyte b, sbyte a)
         {
-            _color.R = r;
-            _color.G = g;
-            _color.B = b;
-            _color.A = a;
+            _color.R = (byte) r;
+            _color.G = (byte) g;
+            _color.B = (byte) b;
+            _color.A = (byte) a;
             return this;
         }
 
         public virtual Color add(Color c)
         {
-            _color.R += c.getRAsByte();
-            _color.G += c.getGAsByte();
-            _color.B += c.getBAsByte();
-            _color.A += c.getAAsByte();
+            _color.R += (byte) c.getRAsByte();
+            _color.G += (byte) c.getGAsByte();
+            _color.B += (byte) c.getBAsByte();
+            _color.A += (byte) c.getAAsByte();
             return this;
         }
 
@@ -95,12 +95,12 @@ namespace monogame.Graphics
             return this;
         }
 
-        public virtual Color add(byte r, byte g, byte b, byte a)
+        public virtual Color add(sbyte r, sbyte g, sbyte b, sbyte a)
         {
-            _color.R += r;
-            _color.G += g;
-            _color.B += b;
-            _color.A += a;
+            _color.R += (byte) r;
+            _color.G += (byte) g;
+            _color.B += (byte) b;
+            _color.A += (byte) a;
             return this;
         }
 
@@ -122,12 +122,12 @@ namespace monogame.Graphics
             return this;
         }
 
-        public virtual Color multiply(byte r, byte g, byte b, byte a)
+        public virtual Color multiply(sbyte r, sbyte g, sbyte b, sbyte a)
         {
-            _color.R = (byte) (_color.R * byteToFloat(r));
-            _color.G = (byte) (_color.G * byteToFloat(g));
-            _color.B = (byte) (_color.B * byteToFloat(b));
-            _color.A = (byte) (_color.A * byteToFloat(a) );
+            _color.R = (byte) (_color.R * sbyteToFloat(r));
+            _color.G = (byte) (_color.G * sbyteToFloat(g));
+            _color.B = (byte) (_color.B * sbyteToFloat(b));
+            _color.A = (byte) (_color.A * sbyteToFloat(a) );
             return this;
         }
 
@@ -142,10 +142,10 @@ namespace monogame.Graphics
 
         public virtual Color subtract(Color c)
         {
-            _color.R -= c.getRAsByte();
-            _color.G -= c.getGAsByte();
-            _color.B -= c.getBAsByte();
-            _color.A -= c.getAAsByte();
+            _color.R -= (byte) c.getRAsByte();
+            _color.G -= (byte) c.getGAsByte();
+            _color.B -= (byte) c.getBAsByte();
+            _color.A -= (byte) c.getAAsByte();
             return this;
         }
 
@@ -158,12 +158,12 @@ namespace monogame.Graphics
             return this;
         }
 
-        public virtual Color subtract(byte r, byte g, byte b, byte a)
+        public virtual Color subtract(sbyte r, sbyte g, sbyte b, sbyte a)
         {
-            _color.R -= r;
-            _color.G -= g;
-            _color.B -= b;
-            _color.A -= a;
+            _color.R -= (byte) r;
+            _color.G -= (byte) g;
+            _color.B -= (byte) b;
+            _color.A -= (byte) a;
             return this;
         }
 
@@ -178,14 +178,14 @@ namespace monogame.Graphics
 
         public virtual Color lerp(float r, float g, float b, float a, float t)
         {
-            _color.R = (byte) ((floatToByte(r) - _color.R) * t + _color.R);
-            _color.G = (byte) ((floatToByte(g) - _color.G) * t + _color.G);
-            _color.B = (byte) ((floatToByte(b) - _color.B) * t + _color.B);
-            _color.A = (byte) ((floatToByte(a) - _color.A) * t + _color.A);
+            _color.R = (byte) ((floatTosbyte(r) - _color.R) * t + _color.R);
+            _color.G = (byte) ((floatTosbyte(g) - _color.G) * t + _color.G);
+            _color.B = (byte) ((floatTosbyte(b) - _color.B) * t + _color.B);
+            _color.A = (byte) ((floatTosbyte(a) - _color.A) * t + _color.A);
             return this;
         }
 
-        public virtual Color lerp(byte r, byte g, byte b, byte a, float t)
+        public virtual Color lerp(sbyte r, sbyte g, sbyte b, sbyte a, float t)
         {
             _color.R = (byte) ((r - _color.R) * t + _color.R);
             _color.G = (byte) ((g - _color.G) * t + _color.G);
@@ -214,44 +214,44 @@ namespace monogame.Graphics
             return byteToFloat(_color.A);
         }
 
-        public byte getRAsByte()
+        public sbyte getRAsByte()
         {
-            return _color.R;
+            return (sbyte) _color.R;
         }
 
-        public static byte getRAsByte(UInt32 rgba8888)
+        public static sbyte getRAsByte(UInt32 rgba8888)
         {
-            return (byte) (rgba8888 >> 24);
+            return (sbyte) (rgba8888 >> 24);
         }
 
-        public byte getGAsByte()
+        public sbyte getGAsByte()
         {
-            return _color.G;
+            return (sbyte) _color.G;
         }
 
-        public static byte getGAsByte(UInt32 rgba8888)
+        public static sbyte getGAsByte(UInt32 rgba8888)
         {
-            return (byte) (rgba8888 >> 16 & 0xff);
+            return (sbyte) (rgba8888 >> 16 & 0xff);
         }
 
-        public byte getBAsByte()
+        public sbyte getBAsByte()
         {
-            return _color.B;
+            return (sbyte) _color.B;
         }
 
-        public static byte getBAsByte(UInt32 rgba8888)
+        public static sbyte getBAsByte(UInt32 rgba8888)
         {
-            return (byte) (rgba8888 >> 8 & 0xff);
+            return (sbyte) (rgba8888 >> 8 & 0xff);
         }
 
-        public byte getAAsByte()
+        public sbyte getAAsByte()
         {
-            return _color.A;
+            return (sbyte) _color.A;
         }
 
-        public static byte getAAsByte(UInt32 rgba8888)
+        public static sbyte getAAsByte(UInt32 rgba8888)
         {
-            return (byte) (rgba8888 & 0xff);
+            return (sbyte) (rgba8888 & 0xff);
         }
 
         public static Microsoft.Xna.Framework.Color toMonoGameColor(UInt32 rgba8888)
@@ -261,7 +261,17 @@ namespace monogame.Graphics
 
         private static byte floatToByte(float f)
         {
-            return (byte) (f * 255);
+            return (byte)(f * 255);
+        }
+
+        private static sbyte floatTosbyte(float f)
+        {
+            return (sbyte) (byte) (f * 255);
+        }
+
+        private static float sbyteToFloat(sbyte b)
+        {
+            return ((byte) b) / 255f;
         }
 
         private static float byteToFloat(byte b)
@@ -281,15 +291,15 @@ namespace monogame.Graphics
 
         public UInt32 toRGBA8888()
         {
-            return toRGB888() << 8 | getAAsByte();
+            return toRGB888() << 8 | (byte) getAAsByte();
         }
 
-        public static UInt32 toRGBA8888(byte r, byte g, byte b, byte a)
+        public static UInt32 toRGBA8888(sbyte r, sbyte g, sbyte b, sbyte a)
         {
             return (uint) (r << 24 | g << 16 | b << 8 | a);
         }
 
-        public static UInt32 toARGB8888(byte r, byte g, byte b, byte a)
+        public static UInt32 toARGB8888(sbyte r, sbyte g, sbyte b, sbyte a)
         {
             return (uint) (a << 24 | r << 16 | g << 8 | b);
         }
@@ -343,38 +353,38 @@ namespace monogame.Graphics
             return toRGBA4444(toRGBA8888());
         }
 
-        public static byte toIntensity(UInt32 rgba8888)
+        public static sbyte toIntensity(UInt32 rgba8888)
         {
-            return (byte) (0.21 * getRAsByte(rgba8888) + 0.72 * getGAsByte(rgba8888) + 0.07 * getBAsByte(rgba8888));
+            return (sbyte) (0.21 * getRAsByte(rgba8888) + 0.72 * getGAsByte(rgba8888) + 0.07 * getBAsByte(rgba8888));
         }
 
         public static UInt32 convertTo(PixmapFormat format, UInt32 colorRGBA8888)
         {
-            if (format == PixmapFormat.RGBA8888)
+            if (format == PixmapFormat.RGBA8888_)
             {
                 return colorRGBA8888;
             }
-            else if (format == PixmapFormat.RGB565)
+            else if (format == PixmapFormat.RGB565_)
             {
                 return toRGB565(colorRGBA8888);
             }
-            else if (format == PixmapFormat.RGB888)
+            else if (format == PixmapFormat.RGB888_)
             {
                 return toRGB888(colorRGBA8888);
             }
-            else if (format == PixmapFormat.RGBA4444)
+            else if (format == PixmapFormat.RGBA4444_)
             {
                 return toRGBA4444(colorRGBA8888);
             }
-            else if (format == PixmapFormat.ALPHA)
+            else if (format == PixmapFormat.ALPHA_)
             {
-                return getAAsByte(colorRGBA8888);
+                return (byte) getAAsByte(colorRGBA8888);
             }
-            else if (format == PixmapFormat.INTENSITY)
+            else if (format == PixmapFormat.INTENSITY_)
             {
-                return toIntensity(colorRGBA8888);
+                return (byte) toIntensity(colorRGBA8888);
             }
-            else if (format == PixmapFormat.LUMINANCE_ALPHA)
+            else if (format == PixmapFormat.LUMINANCE_ALPHA_)
             {
                 return toLuminanceAlpha(colorRGBA8888);
             }
@@ -382,7 +392,7 @@ namespace monogame.Graphics
             return 0;
         }
 
-        public byte toIntensity()
+        public sbyte toIntensity()
         {
             return toIntensity(toRGBA8888());
         }
@@ -437,24 +447,24 @@ namespace monogame.Graphics
             _color.B = (byte)(Math.Min(1, Math.Max(0, f)) * 255);
         }
 
-        public virtual void setR(byte b)
+        public virtual void setR(sbyte b)
         {
-            _color.R = b;
+            _color.R = (byte)b;
         }
 
-        public virtual void setG(byte b)
+        public virtual void setG(sbyte b)
         {
-            _color.G = b;
+            _color.G = (byte)b;
         }
 
-        public virtual void setB(byte b)
+        public virtual void setB(sbyte b)
         {
-            _color.B = b;
+            _color.B = (byte)b;
         }
 
-        public virtual void setA(byte b)
+        public virtual void setA(sbyte b)
         {
-            _color.A = b;
+            _color.A = (byte)b;
         }
 
         public float rf()

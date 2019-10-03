@@ -16,20 +16,21 @@
 
 using System.Collections.Generic;
 using System.Text;
+using Java.Lang;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using monogame.Files;
 using monogame.Graphics;
-using org.mini2Dx.core;
-using org.mini2Dx.core.assets;
-using org.mini2Dx.core.font;
-using org.mini2Dx.core.util;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Assets;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Util;
 using SpriteFontPlus;
-using Color = org.mini2Dx.core.graphics.Color;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
 
 namespace monogame.Font
 {
-    public class MonoGameGameFont : org.mini2Dx.core.font.GameFont
+    public class MonoGameGameFont : GameFont
     {
         internal SpriteFont _spriteFont;
         private FontGlyphLayout _sharedFontGlyphLayout;
@@ -52,7 +53,7 @@ namespace monogame.Font
         { 
             Texture2D textureGetter(string textureFileName)
             {
-                return ((MonoGameTexture) Mdx.graphics.newTexture(fntFileHandle.parent().child(textureFileName)))
+                return ((MonoGameTexture) Mdx.graphics_.newTexture(fntFileHandle.parent().child(textureFileName)))
                     .texture2D;
             }
             var font = new MonoGameGameFont();
@@ -76,7 +77,7 @@ namespace monogame.Font
                     CharacterRange.LatinExtendedA,
                     CharacterRange.Cyrillic
                 }
-            ).CreateSpriteFont(((MonoGameGraphics)Mdx.graphicsContext)._graphicsDevice);
+            ).CreateSpriteFont(((MonoGameGraphics)Mdx.graphicsContext_)._graphicsDevice);
             _sharedFontGlyphLayout = newGlyphLayout();
             _capHeight = _spriteFont.GetGlyphs()['A'].BoundsInTexture.Height;
         }
@@ -99,29 +100,29 @@ namespace monogame.Font
             return false;
         }
 
-        public void draw(org.mini2Dx.core.Graphics g, string str, float x, float y)
+        public void draw(_Graphics g, String str, float x, float y)
         {
             _sharedFontGlyphLayout.setText(str);
             draw(g, str, x, y, _sharedFontGlyphLayout.getWidth());
             _sharedFontGlyphLayout.reset();
         }
 
-        public void draw(org.mini2Dx.core.Graphics g, string str, float x, float y, float targetWidth)
+        public void draw(_Graphics g, String str, float x, float y, float targetWidth)
         {
-            draw(g, str, x, y, targetWidth, Align.LEFT, true);
+            draw(g, str, x, y, targetWidth, Align.LEFT_, true);
         }
 
-        internal void draw(SpriteBatch spriteBatch, string str, float targetWidth, int horizontalAlignment, bool wrap, Vector2 position, Microsoft.Xna.Framework.Color renderColor)
+        internal void draw(SpriteBatch spriteBatch, String str, float targetWidth, int horizontalAlignment, bool wrap, Vector2 position, Microsoft.Xna.Framework.Color renderColor)
         {
 
             var strings = wrapText(str, targetWidth + 1).Split('\n');
             var origin = Vector2.Zero;
-            if ((horizontalAlignment & Align.RIGHT) != 0)
+            if ((horizontalAlignment & Align.RIGHT_) != 0)
             {
                 origin.X = _spriteFont.MeasureString(strings[0]).X;
                 position.X += targetWidth;
             }
-            else if ((horizontalAlignment & Align.CENTER) != 0)
+            else if ((horizontalAlignment & Align.CENTER_) != 0)
             {
                 origin.X = (int)(_spriteFont.MeasureString(strings[0]).X / 2);
                 position.X += (int)(targetWidth / 2);
@@ -140,11 +141,11 @@ namespace monogame.Font
             {
                 for (var i = 1; i < strings.Length; i++)
                 {
-                    if ((horizontalAlignment & Align.RIGHT) != 0)
+                    if ((horizontalAlignment & Align.RIGHT_) != 0)
                     {
                         origin.X = _spriteFont.MeasureString(strings[i]).X;
                     }
-                    else if ((horizontalAlignment & Align.CENTER) != 0)
+                    else if ((horizontalAlignment & Align.CENTER_) != 0)
                     {
                         origin.X = (int)(_spriteFont.MeasureString(strings[i]).X / 2);
                     }
@@ -162,7 +163,7 @@ namespace monogame.Font
             }
         }
 
-        public void draw(org.mini2Dx.core.Graphics g, string str, float x, float y, float targetWidth, int horizontalAlignment, bool wrap)
+        public void draw(_Graphics g, String str, float x, float y, float targetWidth, int horizontalAlignment, bool wrap)
         {
             var graphics = (MonoGameGraphics)g;
             draw(graphics._spriteBatch, str, targetWidth, horizontalAlignment, wrap,
@@ -220,13 +221,13 @@ namespace monogame.Font
             _sharedFontGlyphLayout.dispose();
         }
 
-        internal string wrapText(string text, float maxLineWidth) {
+        internal String wrapText(string text, float maxLineWidth) {
             if(_spriteFont.MeasureString(text).X < maxLineWidth) {
                 return text;
             }
 
             var words = text.Split(' ');
-            var wrappedText = new StringBuilder();
+            var wrappedText = new System.Text.StringBuilder();
             var lineWidth = 0f;
             var spaceWidth = _spriteFont.MeasureString(" ").X;
             

@@ -14,11 +14,17 @@
  * limitations under the License.
  ******************************************************************************/
 
-using org.mini2Dx.core.graphics;
+using Java.Lang;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Assets;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Util;
+using Org.Mini2Dx.Core.Graphics;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
 
 namespace monogame.Graphics
 {
-    public class MonoGameTextureAtlasRegion : MonoGameTextureRegion, org.mini2Dx.core.graphics.TextureAtlasRegion
+    public class MonoGameTextureAtlasRegion : MonoGameTextureRegion, TextureAtlasRegion
     {
         public readonly string name;
         public readonly string texturePath = "";

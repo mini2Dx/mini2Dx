@@ -15,9 +15,14 @@
  ******************************************************************************/
 
 using System;
-using org.mini2Dx.core.geom;
-using org.mini2Dx.core.graphics;
-using Texture = org.mini2Dx.core.graphics.Texture;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Assets;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Geom;
+using Org.Mini2Dx.Core.Graphics;
+using Org.Mini2Dx.Core.Util;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
+using Texture = Org.Mini2Dx.Core.Graphics.Texture;
 
 namespace monogame.Graphics
 {
@@ -198,7 +203,8 @@ namespace monogame.Graphics
 
         public Rectangle getBoundingRectangle()
         {
-            var rect = new Rectangle(_x, _y, _width, _height);
+            var rect = new Rectangle();
+            rect._init_(_x, _y, _width, _height);
             rect.setRotation(_90degRotation + _rotation);
             return rect;
         }

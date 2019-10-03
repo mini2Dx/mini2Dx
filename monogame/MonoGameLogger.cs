@@ -15,28 +15,28 @@
  ******************************************************************************/
 using System;
 using System.Diagnostics;
-using Exception = java.lang.Exception;
+using Exception = Java.Lang.Exception;
 
 namespace monogame
 {
-    public class MonoGameLogger : org.mini2Dx.core.Logger
+    public class MonoGameLogger : Org.Mini2Dx.Core.Logger
     {
-        public void debug(string tag, string msg)
+        public void debug(Java.Lang.String tag, Java.Lang.String msg)
         {
             Debug.WriteLine($"D/[{tag}] {msg}");
         }
 
-        public void error(string tag, string msg, Exception e)
+        public void error(Java.Lang.String tag, Java.Lang.String msg, Exception e)
         {
             Console.Error.WriteLine($"E/[{tag}] {msg}\n{e.StackTrace}");
         }
 
-        public void error(string tag, string msg)
+        public void error(Java.Lang.String tag, Java.Lang.String msg)
         {
             Console.Error.WriteLine($"E/[{tag}] {msg}");
         }
 
-        public void info(string tag, string msg)
+        public void info(Java.Lang.String tag, Java.Lang.String msg)
         {
             Console.WriteLine($"I/[{tag}] {msg}");
         }

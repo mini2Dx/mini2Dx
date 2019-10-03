@@ -19,21 +19,22 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using monogame.Graphics;
 using monogame.Util;
-using org.mini2Dx.core;
-using org.mini2Dx.core.font;
-using org.mini2Dx.core.geom;
-using org.mini2Dx.core.graphics;
-using org.mini2Dx.gdx.math;
-using Color = org.mini2Dx.core.graphics.Color;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Files;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Geom;
+using Org.Mini2Dx.Core.Graphics;
+using Org.Mini2Dx.Gdx.Math;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
-using Texture = org.mini2Dx.core.graphics.Texture;
-using TextureAddressMode = org.mini2Dx.core.graphics.TextureAddressMode;
-using TextureFilter = org.mini2Dx.core.graphics.TextureFilter;
+using Texture = Org.Mini2Dx.Core.Graphics.Texture;
+using TextureAddressMode = Org.Mini2Dx.Core.Graphics.TextureAddressMode;
+using TextureFilter = Org.Mini2Dx.Core.Graphics.TextureFilter;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace monogame
 {
-    public class MonoGameGraphics : org.mini2Dx.core.Graphics
+    public class MonoGameGraphics : Org.Mini2Dx.Core._Graphics
     {
         private static readonly BlendState DefaultBlending = BlendState.NonPremultiplied;
         private static readonly RasterizerState RasterizerClipping = new RasterizerState{ScissorTestEnable = true};
@@ -46,20 +47,20 @@ namespace monogame
         internal Microsoft.Xna.Framework.Color _tint = Microsoft.Xna.Framework.Color.White;
         internal int _gameWidth, _gameHeight;
         private Effect _currentShader;
-        private org.mini2Dx.core.geom.Rectangle _clipRectangle;
+        private Org.Mini2Dx.Core.Geom.Rectangle _clipRectangle;
         private RasterizerState _rasterizerState;
         private SamplerState _samplerState = new SamplerState();
-        private TextureFilter _currentMinFilter = TextureFilter.PIXEL;
-        private TextureFilter _currentMagFilter = TextureFilter.PIXEL;
-        private TextureAddressMode _currentUMode = TextureAddressMode.CLAMP;
-        private TextureAddressMode _currentVMode = TextureAddressMode.CLAMP;
+        private TextureFilter _currentMinFilter = TextureFilter.PIXEL_;
+        private TextureFilter _currentMagFilter = TextureFilter.PIXEL_;
+        private TextureAddressMode _currentUMode = TextureAddressMode.CLAMP_;
+        private TextureAddressMode _currentVMode = TextureAddressMode.CLAMP_;
         private bool _isRendering;
         private GameFont _font;
         private long _frameId;
         internal RenderTarget2D _currentRenderTarget;
         private readonly MonoGameShapeRenderer _shapeRenderer;
         private BlendState _currentBlending = DefaultBlending;
-        private Mini2DxBlendFunction _srcFunction = Mini2DxBlendFunction.SRC_ALPHA, _dstFunction = Mini2DxBlendFunction.ONE_MINUS_SRC_ALPHA;
+        private Mini2DxBlendFunction _srcFunction = Mini2DxBlendFunction.SRC_ALPHA_, _dstFunction = Mini2DxBlendFunction.ONE_MINUS_SRC_ALPHA_;
         private bool _isBlending = true;
         private Matrix _transformationMatrix;
         private bool _isTransformationMatrixDirty = true;
@@ -91,11 +92,12 @@ namespace monogame
         {
             _spriteBatch = new SpriteBatch(graphicsDevice);
             _graphicsDevice = graphicsDevice;
-            _clipRectangle = new org.mini2Dx.core.geom.Rectangle(0, 0, getWindowWidth(), getWindowHeight());
+            _clipRectangle = new Org.Mini2Dx.Core.Geom.Rectangle();
+            _clipRectangle._init_(0, 0, getWindowWidth(), getWindowHeight());
             _shapeRenderer = new MonoGameShapeRenderer(graphicsDevice, (MonoGameColor) _setColor, _spriteBatch);
             _rasterizerState = RasterizerNoClipping;
             _graphicsDevice.ScissorRectangle = new Rectangle();
-            _font = Mdx.fonts.defaultFont();
+            _font = Mdx.fonts_.defaultFont();
             updateFilter();
         }
 
@@ -300,19 +302,19 @@ namespace monogame
             }
         }
 
-        public void drawString(string text, float x, float y)
+        public void drawString(Java.Lang.String text, float x, float y)
         {
             beginRendering();
             _font.draw(this, text, x, y);
         }
 
-        public void drawString(string text, float x, float y, float targetWidth)
+        public void drawString(Java.Lang.String text, float x, float y, float targetWidth)
         {
             beginRendering();
             _font.draw(this, text, x, y, targetWidth);
         }
 
-        public void drawString(string text, float x, float y, float targetWidth, int horizontalAlign)
+        public void drawString(Java.Lang.String text, float x, float y, float targetWidth, int horizontalAlign)
         {
             beginRendering();
             _font.draw(this, text, x, y, targetWidth, horizontalAlign, true);
@@ -535,10 +537,10 @@ namespace monogame
 
         public void setTint(Color tint)
         {
-            _tint.R = tint.getRAsByte();
-            _tint.G = tint.getGAsByte();
-            _tint.B = tint.getBAsByte();
-            _tint.A = tint.getAAsByte();
+            _tint.R = (byte)tint.getRAsByte();
+            _tint.G = (byte)tint.getGAsByte();
+            _tint.B = (byte)tint.getBAsByte();
+            _tint.A = (byte)tint.getAAsByte();
         }
 
 
@@ -732,10 +734,12 @@ namespace monogame
 
         public Matrix4 getProjectionMatrix()
         {
-            return new Matrix4(Matrix.ToFloatArray(CurrentTransformationMatrix));
+            Matrix4 result = new Matrix4();
+            result._init_(Matrix.ToFloatArray(CurrentTransformationMatrix));
+            return result;
         }
 
-        public void setClip(org.mini2Dx.core.geom.Rectangle clip)
+        public void setClip(Org.Mini2Dx.Core.Geom.Rectangle clip)
         {
 
             if (clip.getX() == 0 && clip.getY() == 0 && clip.getWidth() == getViewportWidth() &&
@@ -772,10 +776,12 @@ namespace monogame
 
         public void setClip(float x, float y, float width, float height)
         {
-            setClip(new org.mini2Dx.core.geom.Rectangle(x, y, width, height));
+            var rect = new Org.Mini2Dx.Core.Geom.Rectangle();
+            rect._init_(x, y, width, height);
+            setClip(rect);
         }
 
-        public org.mini2Dx.core.geom.Rectangle removeClip()
+        public Org.Mini2Dx.Core.Geom.Rectangle removeClip()
         {
             if (!_rasterizerState.ScissorTestEnable)
             {
@@ -793,17 +799,18 @@ namespace monogame
             _clipRectangle.setWidth(getViewportWidth());
             _clipRectangle.setHeight(getViewportHeight());
             
-            return (org.mini2Dx.core.geom.Rectangle) oldClip;
+            return (Org.Mini2Dx.Core.Geom.Rectangle) oldClip;
         }
 
-        public org.mini2Dx.core.geom.Rectangle peekClip()
+        public Org.Mini2Dx.Core.Geom.Rectangle peekClip()
         {
-            var rect = new org.mini2Dx.core.geom.Rectangle();
+            var rect = new Org.Mini2Dx.Core.Geom.Rectangle();
+            rect._init_();
             peekClip(rect);
             return rect;
         }
 
-        public void peekClip(org.mini2Dx.core.geom.Rectangle rectangle)
+        public void peekClip(Org.Mini2Dx.Core.Geom.Rectangle rectangle)
         {
             rectangle.setXY(_clipRectangle.getX(), _clipRectangle.getY());
             rectangle.setHeight(_clipRectangle.getHeight());

@@ -19,14 +19,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using monogame.Files;
 using monogame.Graphics;
-using org.mini2Dx.core.files;
-using org.mini2Dx.core.graphics;
-using Color = org.mini2Dx.core.graphics.Color;
-using Texture = org.mini2Dx.core.graphics.Texture;
+using Org.Mini2Dx.Core.Files;
+using Org.Mini2Dx.Core.Graphics;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
+using Texture = Org.Mini2Dx.Core.Graphics.Texture;
 
 namespace monogame
 {
-    public class MonoGameGraphicsUtils : org.mini2Dx.core.GraphicsUtils
+    public class MonoGameGraphicsUtils : Org.Mini2Dx.Core.GraphicsUtils
     {
         private readonly GraphicsDevice _graphicsDevice;
 
@@ -35,7 +35,7 @@ namespace monogame
             _graphicsDevice = graphicsDevice;
         }
 
-        public override Texture newTexture(byte[] barr)
+        public override Texture newTexture(sbyte[] barr)
         {
             var texture = Texture2D.FromStream(_graphicsDevice, new MemoryStream(barr));
             return new MonoGameTexture(texture);
@@ -56,7 +56,7 @@ namespace monogame
             return new MonoGameColor(r,g,b,a);
         }
 
-        public override Color newColor(byte r, byte g, byte b, byte a)
+        public override Color newColor(sbyte r, sbyte g, sbyte b, sbyte a)
         {
             return new MonoGameColor(r,g,b,a);
         }
@@ -81,7 +81,7 @@ namespace monogame
             return new MonoGameReadOnlyColor(r,g,b,a);
         }
 
-        public override Color newReadOnlyColor(byte r, byte g, byte b, byte a)
+        public override Color newReadOnlyColor(sbyte r, sbyte g, sbyte b, sbyte a)
         {
             return new MonoGameReadOnlyColor(r,g,b,a);
         }
@@ -153,13 +153,13 @@ namespace monogame
             return new MonoGameSprite(texture);
         }
 
-        public override TextureAtlasRegion newTextureAtlasRegion(Texture texture, string name, int index, int x, int y, int width, int height,
+        public override TextureAtlasRegion newTextureAtlasRegion(Texture texture, Java.Lang.String name, int index, int x, int y, int width, int height,
             bool rotate, int originalWidth, int originalHeight, int offsetX, int offsetY)
         {
             return new MonoGameTextureAtlasRegion(texture, name, index, x, y, width, height, rotate, originalWidth, originalHeight, offsetX, offsetY);
         }
 
-        public override TextureAtlasRegion newTextureAtlasRegion(String texturePath, string name, int index, int x, int y, int width, int height,
+        public override TextureAtlasRegion newTextureAtlasRegion(Java.Lang.String texturePath, Java.Lang.String name, int index, int x, int y, int width, int height,
             bool rotate, int originalWidth, int originalHeight, int offsetX, int offsetY)
         {
             return new MonoGameTextureAtlasRegion(texturePath, name, index, x, y, width, height, rotate, originalWidth, originalHeight, offsetX, offsetY);
@@ -260,7 +260,7 @@ namespace monogame
             return new MonoGameTextureRegion(texture, width, height);
         }
 
-        public override Shader newShader(String path)
+        public override Shader newShader(Java.Lang.String path)
         {
             return new MonoGameShader(path);
         }

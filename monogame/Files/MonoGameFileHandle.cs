@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-using java.io;
+using Java.Io;
 using monogame.Util;
-using org.mini2Dx.core;
-using org.mini2Dx.core.files;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Audio;
+using Org.Mini2Dx.Core.Files;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using File = System.IO.File;
-using IOException = java.io.IOException;
+using IOException = Java.Io.IOException;
 
 namespace monogame.Files
 {
@@ -53,7 +54,7 @@ namespace monogame.Files
 
         internal T loadFromContentManager<T>()
         {
-            if (_fileType != FileType.INTERNAL)
+            if (_fileType != FileType.INTERNAL_)
             {
                 throw new NotSupportedException("You can load from contentManager only INTERNAL files");
             }
@@ -87,17 +88,17 @@ namespace monogame.Files
 
         public FileHandle normalizedHandle()
         {
-            if(type().Equals(FileType.INTERNAL))
+            if(type().Equals(FileType.INTERNAL_))
             {
-                return Mdx.files.@internal(normalize());
+                return Mdx.files_.@internal(normalize());
             }
-            else if (type().Equals(FileType.EXTERNAL))
+            else if (type().Equals(FileType.EXTERNAL_))
             {
-                return Mdx.files.external(normalize());
+                return Mdx.files_.external(normalize());
             }
             else
             {
-                return Mdx.files.local(normalize());
+                return Mdx.files_.local(normalize());
             }
         }
 
@@ -138,9 +139,9 @@ namespace monogame.Files
 
         public InputStream read()
         {
-            if (_fileType == FileType.INTERNAL)
+            if (_fileType == FileType.INTERNAL_)
             {
-                return new MonoGameInputStream(((MonoGameFiles)Mdx.files)._contentManager.OpenStream(path()));
+                return new MonoGameInputStream(((MonoGameFiles)Mdx.files_)._contentManager.OpenStream(path()));
             }
             return new MonoGameInputStream(this);
         }
@@ -177,7 +178,7 @@ namespace monogame.Files
                 throw new IOException("Can't read from a directory");
             }
 
-            if (_fileType == FileType.INTERNAL)
+            if (_fileType == FileType.INTERNAL_)
             {
                 return new StreamReader(((MonoGameFiles)Mdx.files)._contentManager.OpenStream(path())).ReadToEnd();
             }
@@ -192,7 +193,7 @@ namespace monogame.Files
                 throw new IOException("Can't read from a directory");
             }
 
-            if (_fileType == FileType.INTERNAL)
+            if (_fileType == FileType.INTERNAL_)
             {
                 return readString();
             }
@@ -212,7 +213,7 @@ namespace monogame.Files
                 throw new IOException("Can't read from a directory");
             }
 
-            if (_fileType == FileType.INTERNAL)
+            if (_fileType == FileType.INTERNAL_)
             {
                 using (MemoryStream ms = new MemoryStream())
                 {
@@ -235,7 +236,7 @@ namespace monogame.Files
 
             var readBytesNumber = 0;
             Stream byteStream;
-            if (_fileType == FileType.INTERNAL)
+            if (_fileType == FileType.INTERNAL_)
             {
                 byteStream = ((MonoGameFiles) Mdx.files)._contentManager.OpenStream(path());
             }
@@ -287,7 +288,7 @@ namespace monogame.Files
                 throw new IOException("Can't read write to directory");
             }
 
-            if (type() == FileType.INTERNAL)
+            if (type() == FileType.INTERNAL_)
             {
                 throw new IOException("Can't write in an INTERNAL file");
             }
@@ -309,7 +310,7 @@ namespace monogame.Files
                 throw new IOException("Can't read write to directory");
             }
 
-            if (type() == FileType.INTERNAL)
+            if (type() == FileType.INTERNAL_)
             {
                 throw new IOException("Can't write in an INTERNAL file");
             }
@@ -336,7 +337,7 @@ namespace monogame.Files
                 throw new IOException("Can't read write to directory");
             }
 
-            if (type() == FileType.INTERNAL)
+            if (type() == FileType.INTERNAL_)
             {
                 throw new IOException("Can't write in an INTERNAL file");
             }
@@ -359,7 +360,7 @@ namespace monogame.Files
 
         public FileHandle[] list(string suffix)
         {
-            if (!_isDirectory || _fileType == FileType.INTERNAL)
+            if (!_isDirectory || _fileType == FileType.INTERNAL_)
                 return new FileHandle[0];
             var matchingChilds = new List<FileHandle>();
             var childFiles = _directoryInfo.GetFiles();
@@ -375,7 +376,7 @@ namespace monogame.Files
                 if (child.Name.EndsWith(suffix))
                 {
                     var path = child.ToString();
-                    if (_fileType == FileType.INTERNAL)
+                    if (_fileType == FileType.INTERNAL_)
                     {
                         path = path.Replace(".xnb", "");
                     }
@@ -414,7 +415,7 @@ namespace monogame.Files
                 {
                     var path = this.path();
                     var fileName = child.Name;
-                    if (_fileType == FileType.INTERNAL)
+                    if (_fileType == FileType.INTERNAL_)
                     {
                         fileName = fileName.Replace(".xnb", "");
                     }
@@ -452,7 +453,7 @@ namespace monogame.Files
 
         public void mkdirs()
         {
-            if (_fileType == FileType.INTERNAL)
+            if (_fileType == FileType.INTERNAL_)
             {
                 throw new IOException("You can't mkdirs() an INTERNAL file");
             }
@@ -468,7 +469,7 @@ namespace monogame.Files
 
         public bool delete()
         {
-            if (_fileType == FileType.INTERNAL)
+            if (_fileType == FileType.INTERNAL_)
             {
                 throw new IOException("You can't delete() an INTERNAL file");
             }
@@ -492,7 +493,7 @@ namespace monogame.Files
 
         public bool deleteDirectory()
         {
-            if (_fileType == FileType.INTERNAL)
+            if (_fileType == FileType.INTERNAL_)
             {
                 throw new IOException("You can't deleteDirectory() an INTERNAL file");
             }
@@ -525,7 +526,7 @@ namespace monogame.Files
 
         public void emptyDirectory()
         {
-            if (_fileType == FileType.INTERNAL)
+            if (_fileType == FileType.INTERNAL_)
             {
                 throw new IOException("You can't emptyDirectory() an INTERNAL file");
             }
@@ -535,7 +536,7 @@ namespace monogame.Files
 
         public void emptyDirectory(bool preserveTree)
         {
-            if (_fileType == FileType.INTERNAL)
+            if (_fileType == FileType.INTERNAL_)
             {
                 throw new IOException("You can't emptyDirectory() an INTERNAL file");
             }
@@ -583,7 +584,7 @@ namespace monogame.Files
 
         public void copyTo(FileHandle dest)
         {
-            if (dest.type() == FileType.INTERNAL)
+            if (dest.type() == FileType.INTERNAL_)
             {
                 throw new IOException();
             }
@@ -622,7 +623,7 @@ namespace monogame.Files
 
         public void moveTo(FileHandle dest)
         {
-            if (_fileType == FileType.INTERNAL || dest.type() == FileType.INTERNAL)
+            if (_fileType == FileType.INTERNAL || dest.type() == FileType.INTERNAL_)
             {
                 throw new IOException("You can't moveTo() an INTERNAL file");
             }

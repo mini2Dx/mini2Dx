@@ -15,14 +15,18 @@
  ******************************************************************************/
 
 using Microsoft.Xna.Framework.Graphics;
-using org.mini2Dx.core;
-using org.mini2Dx.core.graphics;
-using org.mini2Dx.gdx.math;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Assets;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Util;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
 using System;
+using Org.Mini2Dx.Gdx.Math;
+using Org.Mini2Dx.Core.Graphics;
 
 namespace monogame.Graphics
 {
-    public class MonoGameShader : org.mini2Dx.core.graphics.Shader
+    public class MonoGameShader : Org.Mini2Dx.Core.Graphics.Shader
     {
         private Microsoft.Xna.Framework.Vector2 tmpVector2 = new Microsoft.Xna.Framework.Vector2();
         private Microsoft.Xna.Framework.Vector3 tmpVector3 = new Microsoft.Xna.Framework.Vector3();
@@ -37,7 +41,7 @@ namespace monogame.Graphics
             {
                 name += ".fx";
             }
-            shader = ((MonoGameFiles) Mdx.files)._contentManager.Load<Effect>(name);
+            shader = ((MonoGameFiles) Mdx.files_)._contentManager.Load<Effect>(name);
             shader.CurrentTechnique = shader.Techniques[0];
         }
 
@@ -63,11 +67,11 @@ namespace monogame.Graphics
         {
         }
 
-        public bool hasParameter(string str)
+        public bool hasParameter(Java.Lang.String str)
         {
             try
             {
-                return shader.Parameters[str] != null;
+                return shader.Parameters[(string) str] != null;
             }
             catch
             {
@@ -75,105 +79,105 @@ namespace monogame.Graphics
             return false;
         }
 
-        public void setParameter(string str, org.mini2Dx.core.graphics.Texture t)
+        public void setParameter(Java.Lang.String str, Org.Mini2Dx.Core.Graphics.Texture t)
         {
             setParameter(str, 0, t);
         }
 
-        public void setParameter(string str, int i, org.mini2Dx.core.graphics.Texture t)
+        public void setParameter(Java.Lang.String str, int i, Org.Mini2Dx.Core.Graphics.Texture t)
         {
             MonoGameTexture texture = t as MonoGameTexture;
-            shader.Parameters[str].SetValue(texture.texture2D);
+            shader.Parameters[(string) str].SetValue(texture.texture2D);
         }
 
-        public void setParameterf(string str, float f)
+        public void setParameterf(Java.Lang.String str, float f)
         {
-            shader.Parameters[str].SetValue(f);
+            shader.Parameters[(string) str].SetValue(f);
         }
 
-        public void setParameterf(string str, float f1, float f2)
+        public void setParameterf(Java.Lang.String str, float f1, float f2)
         {
             tmpVector2.X = f1;
             tmpVector2.Y = f2;
-            shader.Parameters[str].SetValue(tmpVector2);
+            shader.Parameters[(string) str].SetValue(tmpVector2);
         }
 
-        public void setParameterf(string str, float f1, float f2, float f3)
+        public void setParameterf(Java.Lang.String str, float f1, float f2, float f3)
         {
             tmpVector3.X = f1;
             tmpVector3.Y = f2;
             tmpVector3.Z = f3;
-            shader.Parameters[str].SetValue(tmpVector3);
+            shader.Parameters[(string) str].SetValue(tmpVector3);
         }
 
-        public void setParameterf(string str, float f1, float f2, float f3, float f4)
+        public void setParameterf(Java.Lang.String str, float f1, float f2, float f3, float f4)
         {
             tmpVector4.X = f1;
             tmpVector4.Y = f2;
             tmpVector4.Z = f3;
             tmpVector4.W = f4;
-            shader.Parameters[str].SetValue(tmpVector4);
+            shader.Parameters[(string) str].SetValue(tmpVector4);
         }
 
-        public void setParameterf(string str, Vector2 v)
+        public void setParameterf(Java.Lang.String str, Vector2 v)
         {
-            tmpVector2.X = v.x;
-            tmpVector2.Y = v.y;
-            shader.Parameters[str].SetValue(tmpVector2);
+            tmpVector2.X = v.x_;
+            tmpVector2.Y = v.y_;
+            shader.Parameters[(string) str].SetValue(tmpVector2);
         }
 
-        public void setParameterf(string str, Vector3 v)
+        public void setParameterf(Java.Lang.String str, Vector3 v)
         {
-            tmpVector3.X = v.x;
-            tmpVector3.Y = v.y;
-            tmpVector3.Z = v.z;
-            shader.Parameters[str].SetValue(tmpVector3);
+            tmpVector3.X = v.x_;
+            tmpVector3.Y = v.y_;
+            tmpVector3.Z = v.z_;
+            shader.Parameters[(string) str].SetValue(tmpVector3);
         }
 
-        public void setParameteri(string str, int i)
+        public void setParameteri(Java.Lang.String str, int i)
         {
-            shader.Parameters[str].SetValue(i);
+            shader.Parameters[(string) str].SetValue(i);
         }
 
-        public void setParameterMatrix(string str, Matrix4 m)
+        public void setParameterMatrix(Java.Lang.String str, Matrix4 m)
         {
             setParameterMatrix(str, m, false);
         }
 
-        public void setParameterMatrix(string str, Matrix4 m, bool b)
+        public void setParameterMatrix(Java.Lang.String str, Matrix4 m, bool b)
         {
             setTempMatrix(m);
             if (b)
             {
-                shader.Parameters[str].SetValueTranspose(tmpMatrix);
+                shader.Parameters[(string) str].SetValueTranspose(tmpMatrix);
             }
             else
             {
-                shader.Parameters[str].SetValue(tmpMatrix);
+                shader.Parameters[(string) str].SetValue(tmpMatrix);
             }
         }
 
         private void setTempMatrix(Matrix4 m)
         {
-            tmpMatrix.M11 = m.val[Matrix4.M00];
-            tmpMatrix.M12 = m.val[Matrix4.M01];
-            tmpMatrix.M13 = m.val[Matrix4.M02];
-            tmpMatrix.M14 = m.val[Matrix4.M03];
-            tmpMatrix.M21 = m.val[Matrix4.M10];
-            tmpMatrix.M22 = m.val[Matrix4.M11];
-            tmpMatrix.M23 = m.val[Matrix4.M12];
-            tmpMatrix.M24 = m.val[Matrix4.M13];
-            tmpMatrix.M31 = m.val[Matrix4.M20];
-            tmpMatrix.M32 = m.val[Matrix4.M21];
-            tmpMatrix.M33 = m.val[Matrix4.M22];
-            tmpMatrix.M34 = m.val[Matrix4.M23];
-            tmpMatrix.M41 = m.val[Matrix4.M30];
-            tmpMatrix.M42 = m.val[Matrix4.M31];
-            tmpMatrix.M43 = m.val[Matrix4.M32];
-            tmpMatrix.M44 = m.val[Matrix4.M33];
+            tmpMatrix.M11 = m.val_[Matrix4.M00_];
+            tmpMatrix.M12 = m.val_[Matrix4.M01_];
+            tmpMatrix.M13 = m.val_[Matrix4.M02_];
+            tmpMatrix.M14 = m.val_[Matrix4.M03_];
+            tmpMatrix.M21 = m.val_[Matrix4.M10_];
+            tmpMatrix.M22 = m.val_[Matrix4.M11_];
+            tmpMatrix.M23 = m.val_[Matrix4.M12_];
+            tmpMatrix.M24 = m.val_[Matrix4.M13_];
+            tmpMatrix.M31 = m.val_[Matrix4.M20_];
+            tmpMatrix.M32 = m.val_[Matrix4.M21_];
+            tmpMatrix.M33 = m.val_[Matrix4.M22_];
+            tmpMatrix.M34 = m.val_[Matrix4.M23_];
+            tmpMatrix.M41 = m.val_[Matrix4.M30_];
+            tmpMatrix.M42 = m.val_[Matrix4.M31_];
+            tmpMatrix.M43 = m.val_[Matrix4.M32_];
+            tmpMatrix.M44 = m.val_[Matrix4.M33_];
         }
 
-        public string getLog()
+        public Java.Lang.String getLog()
         {
             return string.Empty;
         }
@@ -185,7 +189,7 @@ namespace monogame.Graphics
 
         public ShaderType getShaderType()
         {
-            return ShaderType.HLSL;
+            return ShaderType.HLSL_;
         }
     }
 }

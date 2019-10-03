@@ -15,13 +15,18 @@
  ******************************************************************************/
 
 using System.Diagnostics.CodeAnalysis;
-using org.mini2Dx.core.graphics;
-using Texture = org.mini2Dx.core.graphics.Texture;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Assets;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Graphics;
+using Org.Mini2Dx.Core.Util;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
+using Texture = Org.Mini2Dx.Core.Graphics.Texture;
 
 namespace monogame.Graphics
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public class MonoGameNinePatch : org.mini2Dx.core.graphics.NinePatch
+    public class MonoGameNinePatch : Org.Mini2Dx.Core.Graphics.NinePatch
     {
         private readonly TextureRegion _textureRegion;
         private readonly MonoGameTextureRegion _ninePatchRegion;
@@ -48,12 +53,12 @@ namespace monogame.Graphics
             _bottomY = _textureRegion.getRegionHeight() - bottom;
         }
 
-        private static void draw(org.mini2Dx.core.Graphics g, TextureRegion ninePatchRegion, float dstX, float dstY, float dstWidth, float dstHeight)
+        private static void draw(Org.Mini2Dx.Core._Graphics g, TextureRegion ninePatchRegion, float dstX, float dstY, float dstWidth, float dstHeight)
         {
             g.drawTextureRegion(ninePatchRegion, dstX, dstY, dstWidth, dstHeight);
         }
         
-        public void render(org.mini2Dx.core.Graphics g, float x, float y, float width, float height)
+        public void render(Org.Mini2Dx.Core._Graphics g, float x, float y, float width, float height)
         {
             
             var newTint = _setColor.copy().multiply(g.getTint());

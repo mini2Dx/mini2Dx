@@ -15,17 +15,22 @@
  ******************************************************************************/
 
 using System;
-using java.lang;
 using Microsoft.Xna.Framework.Graphics;
-using org.mini2Dx.core.graphics;
-using TextureAddressMode = org.mini2Dx.core.graphics.TextureAddressMode;
+using Java.Lang;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Assets;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Util;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
+using TextureAddressMode = Org.Mini2Dx.Core.Graphics.TextureAddressMode;
+using Org.Mini2Dx.Core.Graphics;
 
 namespace monogame.Graphics
 {
-    class MonoGameTexture : org.mini2Dx.core.graphics.Texture
+    class MonoGameTexture : Org.Mini2Dx.Core.Graphics.Texture
     {
         internal Texture2D texture2D;
-        private TextureAddressMode _uMode = TextureAddressMode.CLAMP, _vMode = TextureAddressMode.CLAMP;
+        private TextureAddressMode _uMode = TextureAddressMode.CLAMP_, _vMode = TextureAddressMode.CLAMP_;
 
         public MonoGameTexture(Texture2D texture2D)
         {

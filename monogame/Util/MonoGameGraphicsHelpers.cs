@@ -16,9 +16,14 @@
 
 using System;
 using Microsoft.Xna.Framework.Graphics;
-using org.mini2Dx.core.graphics;
-using TextureAddressMode = org.mini2Dx.core.graphics.TextureAddressMode;
-using TextureFilter = org.mini2Dx.core.graphics.TextureFilter;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Assets;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Util;
+using Org.Mini2Dx.Core.Graphics;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
+using TextureAddressMode = Org.Mini2Dx.Core.Graphics.TextureAddressMode;
+using TextureFilter = Org.Mini2Dx.Core.Graphics.TextureFilter;
 
 namespace monogame.Util
 {

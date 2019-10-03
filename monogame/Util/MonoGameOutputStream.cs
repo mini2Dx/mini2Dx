@@ -14,13 +14,13 @@
  * limitations under the License.
  ******************************************************************************/
 using System.IO;
-using java.lang;
+using Java.Lang;
 using monogame.Files;
 
 namespace monogame.Util
 {
     //adapted from http://hg.openjdk.java.net/jdk10/jdk10/jdk/file/777356696811/src/java.base/share/classes/java/io/OutputStream.java
-    public class MonoGameOutputStream : java.io.OutputStream
+    public class MonoGameOutputStream : Java.Io.OutputStream
     {
         
         private readonly Stream _stream;

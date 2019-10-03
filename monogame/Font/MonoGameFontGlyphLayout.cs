@@ -14,15 +14,15 @@
  * limitations under the License.
  ******************************************************************************/
 
-using java.lang;
+using Java.Lang;
 using Microsoft.Xna.Framework;
-using org.mini2Dx.core.font;
-using Color = org.mini2Dx.core.graphics.Color;
+using Org.Mini2Dx.Core.Font;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
 using Math = System.Math;
 
 namespace monogame.Font
 {
-    public class MonoGameFontGlyphLayout : org.mini2Dx.core.font.FontGlyphLayout
+    public class MonoGameFontGlyphLayout : FontGlyphLayout
     {
         private readonly MonoGameGameFont _font;
         private static readonly Vector2 defaultValue = new Vector2(-1, -1);

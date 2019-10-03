@@ -17,12 +17,12 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Media;
 using monogame.Files;
-using org.mini2Dx.core.audio;
-using org.mini2Dx.core.files;
+using Org.Mini2Dx.Core.Audio;
+using Org.Mini2Dx.Core.Files;
 
 namespace monogame.Audio
 {
-    public class MonoGameMusic : org.mini2Dx.core.audio.Music
+    public class MonoGameMusic : Music
     {
         private static int _songNum;
         private readonly int _songId;

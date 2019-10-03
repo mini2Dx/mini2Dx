@@ -15,15 +15,15 @@
  ******************************************************************************/
 using System;
 using Microsoft.Xna.Framework.Input;
-using org.mini2Dx.core.input;
-using org.mini2Dx.core.input.button;
-using org.mini2Dx.core.input.deadzone;
-using org.mini2Dx.gdx.math;
-using GamePad = org.mini2Dx.core.input.GamePad;
+using Org.Mini2Dx.Core.Input;
+using Org.Mini2Dx.Core.Input.Button;
+using Org.Mini2Dx.Core.Input.Deadzone;
+using Org.Mini2Dx.Gdx.Math;
+using GamePad = Org.Mini2Dx.Core.Input.GamePad;
 
 namespace monogame.Input
 {
-    public class MonoGamePS4GamePad : org.mini2Dx.core.input.ps4.PS4GamePad
+    public class MonoGamePS4GamePad : Org.Mini2Dx.Core.Input.Ps4.PS4GamePad
     {
         private PovState _prevPovState;
 
@@ -32,9 +32,10 @@ namespace monogame.Input
             _prevPovState = gamePad.getPov(0);
         }
 
-        public MonoGamePS4GamePad(GamePad gamePad) : base(gamePad)
+        public MonoGamePS4GamePad(GamePad gamePad) : base()
         {
             _prevPovState = gamePad.getPov(0);
+            base._init_(gamePad);
         }
 
         public override void onConnect(GamePad gamePad)
@@ -52,27 +53,27 @@ namespace monogame.Input
             switch ((Buttons)buttonCode)
             {
                 case Buttons.Start:
-                    return PS4Button.OPTIONS;
+                    return PS4Button.OPTIONS_;
                 case Buttons.Back:
-                    return PS4Button.TOUCHPAD;
+                    return PS4Button.TOUCHPAD_;
                 case Buttons.LeftStick:
-                    return PS4Button.L3;
+                    return PS4Button.L3_;
                 case Buttons.RightStick:
-                    return PS4Button.R3;
+                    return PS4Button.R3_;
                 case Buttons.LeftShoulder:
-                    return PS4Button.L1;
+                    return PS4Button.L1_;
                 case Buttons.RightShoulder:
-                    return PS4Button.R1;
+                    return PS4Button.R1_;
                 case Buttons.A:
-                    return PS4Button.CROSS;
+                    return PS4Button.CROSS_;
                 case Buttons.B:
-                    return PS4Button.CIRCLE;
+                    return PS4Button.CIRCLE_;
                 case Buttons.X:
-                    return PS4Button.SQUARE;
+                    return PS4Button.SQUARE_;
                 case Buttons.Y:
-                    return PS4Button.TRIANGLE;
+                    return PS4Button.TRIANGLE_;
                 case Buttons.BigButton:
-                    return PS4Button.PS;
+                    return PS4Button.PS_;
                 default:
                     return null;
             }
@@ -98,48 +99,48 @@ namespace monogame.Input
 
         public override void onPovChanged(GamePad gamePad, int povCode, PovState povState)
         {
-            if (povState.isPressed(PovState.NORTH) != _prevPovState.isPressed(PovState.NORTH))
+            if (povState.isPressed(PovState.NORTH_) != _prevPovState.isPressed(PovState.NORTH_))
             {
-                if (povState.isPressed(PovState.NORTH))
+                if (povState.isPressed(PovState.NORTH_))
                 {
-                    notifyButtonDown(PS4Button.UP);
+                    notifyButtonDown(PS4Button.UP_);
                 }
                 else
                 {
-                    notifyButtonUp(PS4Button.UP);
+                    notifyButtonUp(PS4Button.UP_);
                 }
             }
-            if (povState.isPressed(PovState.SOUTH) != _prevPovState.isPressed(PovState.SOUTH))
+            if (povState.isPressed(PovState.SOUTH_) != _prevPovState.isPressed(PovState.SOUTH_))
             {
-                if (povState.isPressed(PovState.SOUTH))
+                if (povState.isPressed(PovState.SOUTH_))
                 {
-                    notifyButtonDown(PS4Button.DOWN);
+                    notifyButtonDown(PS4Button.DOWN_);
                 }
                 else
                 {
-                    notifyButtonUp(PS4Button.DOWN);
+                    notifyButtonUp(PS4Button.DOWN_);
                 }
             }
-            if (povState.isPressed(PovState.EAST) != _prevPovState.isPressed(PovState.EAST))
+            if (povState.isPressed(PovState.EAST_) != _prevPovState.isPressed(PovState.EAST_))
             {
-                if (povState.isPressed(PovState.EAST))
+                if (povState.isPressed(PovState.EAST_))
                 {
-                    notifyButtonDown(PS4Button.RIGHT);
+                    notifyButtonDown(PS4Button.RIGHT_);
                 }
                 else
                 {
-                    notifyButtonUp(PS4Button.RIGHT);
+                    notifyButtonUp(PS4Button.RIGHT_);
                 }
             }
-            if (povState.isPressed(PovState.WEST) != _prevPovState.isPressed(PovState.WEST))
+            if (povState.isPressed(PovState.WEST_) != _prevPovState.isPressed(PovState.WEST_))
             {
-                if (povState.isPressed(PovState.WEST))
+                if (povState.isPressed(PovState.WEST_))
                 {
-                    notifyButtonDown(PS4Button.LEFT);
+                    notifyButtonDown(PS4Button.LEFT_);
                 }
                 else
                 {
-                    notifyButtonUp(PS4Button.LEFT);
+                    notifyButtonUp(PS4Button.LEFT_);
                 }
             }
 

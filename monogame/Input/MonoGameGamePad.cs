@@ -17,16 +17,16 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
-using org.mini2Dx.core.input;
-using org.mini2Dx.core.input.ps4;
-using org.mini2Dx.core.input.xbox;
+using Org.Mini2Dx.Core.Input;
+using Org.Mini2Dx.Core.Input.Ps4;
+using Org.Mini2Dx.Core.Input.Xbox;
 using GamePad = Microsoft.Xna.Framework.Input.GamePad;
-using GamePadType = org.mini2Dx.core.input.GamePadType;
-using Vector3 = org.mini2Dx.gdx.math.Vector3;
+using GamePadType = Org.Mini2Dx.Core.Input.GamePadType;
+using Vector3 = Org.Mini2Dx.Gdx.Math.Vector3;
 
 namespace monogame.Input
 {
-    public class MonoGameGamePad : org.mini2Dx.core.input.GamePad
+    public class MonoGameGamePad : Org.Mini2Dx.Core.Input.GamePad
     {
         public enum AxisCodes
         {
@@ -114,21 +114,21 @@ namespace monogame.Input
                 displayName = displayName.ToLower();
             }
 
-            for (int i = 0; i < PS4GamePad.ID.Length; i++)
+            for (int i = 0; i < PS4GamePad.ID_.Length; i++)
             {
-                if (displayName.Contains(PS4GamePad.ID[i]))
+                if (displayName.Contains(PS4GamePad.ID_[i]))
                 {
-                    return GamePadType.PS4;
+                    return GamePadType.PS4_;
                 }
             }
-            for (int i = 0; i < XboxGamePad.ID.Length; i++)
+            for (int i = 0; i < XboxGamePad.ID_.Length; i++)
             {
-                if(displayName.Contains(XboxGamePad.ID[i]))
+                if(displayName.Contains(XboxGamePad.ID_[i]))
                 {
-                    return GamePadType.XBOX;
+                    return GamePadType.XBOX_;
                 }
             }
-            return GamePadType.UNKNOWN;
+            return GamePadType.UNKNOWN_;
         }
 
         public bool wasConnected()
@@ -232,46 +232,46 @@ namespace monogame.Input
             }
 
             var state = GamePad.GetState(povCode).DPad;
-            PovState povState = PovState.CENTER;
+            PovState povState = PovState.CENTER_;
             if (state.Down == ButtonState.Pressed)
             {
-                povState = PovState.SOUTH;
+                povState = PovState.SOUTH_;
             }
 
             if (state.Up == ButtonState.Pressed)
             {
-                povState = PovState.NORTH;
+                povState = PovState.NORTH_;
             }
 
             if (state.Left == ButtonState.Pressed)
             {
-                if (povState == PovState.NORTH)
+                if (povState == PovState.NORTH_)
                 {
-                    povState = PovState.NORTH_WEST;
+                    povState = PovState.NORTH_WEST_;
                 }
-                else if (povState == PovState.SOUTH)
+                else if (povState == PovState.SOUTH_)
                 {
-                    povState = PovState.SOUTH_WEST;
+                    povState = PovState.SOUTH_WEST_;
                 }
                 else
                 {
-                    povState = PovState.WEST;
+                    povState = PovState.WEST_;
                 }
             }
 
             if (state.Right == ButtonState.Pressed)
             {
-                if (povState == PovState.NORTH)
+                if (povState == PovState.NORTH_)
                 {
-                    povState = PovState.NORTH_EAST;
+                    povState = PovState.NORTH_EAST_;
                 }
-                else if (povState == PovState.SOUTH)
+                else if (povState == PovState.SOUTH_)
                 {
-                    povState = PovState.SOUTH_EAST;
+                    povState = PovState.SOUTH_EAST_;
                 }
                 else
                 {
-                    povState = PovState.EAST;
+                    povState = PovState.EAST_;
                 }
             }
 
@@ -391,12 +391,12 @@ namespace monogame.Input
             _prevStatus = currentStatus;
         }
 
-        public string getInstanceId()
+        public Java.Lang.String getInstanceId()
         {
             return GamePad.GetCapabilities(_playerIndex).DisplayName + "#" + _playerIndex;
         }
 
-        public string getModelInfo()
+        public Java.Lang.String getModelInfo()
         {
             return GamePad.GetCapabilities(_playerIndex).DisplayName;
         }

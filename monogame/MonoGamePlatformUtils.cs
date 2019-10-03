@@ -19,7 +19,7 @@ using System.Threading;
 
 namespace monogame
 {
-    public class MonoGamePlatformUtils : org.mini2Dx.core.PlatformUtils
+    public class MonoGamePlatformUtils : Org.Mini2Dx.Core.PlatformUtils
     {
         public override void exit(bool b)
         {

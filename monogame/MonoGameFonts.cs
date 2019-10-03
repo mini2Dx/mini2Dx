@@ -16,17 +16,17 @@
 
 using monogame.Files;
 using monogame.Font;
-using org.mini2Dx.core;
-using org.mini2Dx.core.files;
-using org.mini2Dx.core.font;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Files;
+using Org.Mini2Dx.Core.Font;
 
 namespace monogame
 {
-    public class MonoGameFonts : org.mini2Dx.core.Fonts
+    public class MonoGameFonts : Org.Mini2Dx.Core.Fonts
     {
         public override GameFont defaultFont()
         {
-            return newPlatformFont((MonoGameFileHandle)Mdx.files.@internal("defaultFont.spritefont"));
+            return newPlatformFont((MonoGameFileHandle)Mdx.files_.@internal("defaultFont.spritefont"));
         }
 
         public override GameFont newPlatformFont(FileHandle fh)

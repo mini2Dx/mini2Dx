@@ -18,18 +18,18 @@ using System.Runtime.Remoting.Messaging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using monogame.Input;
-using org.mini2Dx.core;
-using org.mini2Dx.core.input.nswitch;
-using org.mini2Dx.core.input.ps4;
-using org.mini2Dx.core.input.xbox;
-using org.mini2Dx.gdx;
-using Array = org.mini2Dx.gdx.utils.Array;
-using GamePad = org.mini2Dx.core.input.GamePad;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Input.Nswitch;
+using Org.Mini2Dx.Core.Input.Ps4;
+using Org.Mini2Dx.Core.Input.Xbox;
+using Org.Mini2Dx.Gdx;
+using Array = Org.Mini2Dx.Gdx.Utils.Array;
+using GamePad = Org.Mini2Dx.Core.Input.GamePad;
 using Math = System.Math;
 
 namespace monogame
 {
-    public class MonoGameInput : org.mini2Dx.core.Input
+    public class MonoGameInput : Org.Mini2Dx.Core._Input
     {
         private InputProcessor _inputProcessor;
         
@@ -144,11 +144,11 @@ namespace monogame
             {
                 if (_currentMouseState.LeftButton == ButtonState.Pressed)
                 {
-                    _inputProcessor.touchDown(_currentMouseState.X, _currentMouseState.Y, 0, org.mini2Dx.gdx.Input.Buttons.LEFT);
+                    _inputProcessor.touchDown(_currentMouseState.X, _currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input.Buttons.LEFT);
                 }
                 else
                 {
-                    _inputProcessor.touchUp(_currentMouseState.X, _currentMouseState.Y, 0, org.mini2Dx.gdx.Input.Buttons.LEFT);
+                    _inputProcessor.touchUp(_currentMouseState.X, _currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input.Buttons.LEFT);
                 }
             }
 
@@ -156,11 +156,11 @@ namespace monogame
             {
                 if (_currentMouseState.MiddleButton == ButtonState.Pressed)
                 {
-                    _inputProcessor.touchDown(_currentMouseState.X, _currentMouseState.Y, 0, org.mini2Dx.gdx.Input.Buttons.MIDDLE);
+                    _inputProcessor.touchDown(_currentMouseState.X, _currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input.Buttons.MIDDLE);
                 }
                 else
                 {
-                    _inputProcessor.touchUp(_currentMouseState.X, _currentMouseState.Y, 0, org.mini2Dx.gdx.Input.Buttons.MIDDLE);
+                    _inputProcessor.touchUp(_currentMouseState.X, _currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input.Buttons.MIDDLE);
                 }
             }
 
@@ -168,11 +168,11 @@ namespace monogame
             {
                 if (_currentMouseState.RightButton == ButtonState.Pressed)
                 {
-                    _inputProcessor.touchDown(_currentMouseState.X, _currentMouseState.Y, 0, org.mini2Dx.gdx.Input.Buttons.RIGHT);
+                    _inputProcessor.touchDown(_currentMouseState.X, _currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input.Buttons.RIGHT);
                 }
                 else
                 {
-                    _inputProcessor.touchUp(_currentMouseState.X, _currentMouseState.Y, 0, org.mini2Dx.gdx.Input.Buttons.RIGHT);
+                    _inputProcessor.touchUp(_currentMouseState.X, _currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input.Buttons.RIGHT);
                 }
             }
         }
@@ -302,100 +302,100 @@ namespace monogame
 
         private Keys gdxKeyToMonoGameKey(int key)
         {
-            if (key >= org.mini2Dx.gdx.Input.Keys.A && key <= org.mini2Dx.gdx.Input.Keys.Z)
+            if (key >= Org.Mini2Dx.Gdx.Input.Keys.A && key <= Org.Mini2Dx.Gdx.Input.Keys.Z)
             {
-                return key - org.mini2Dx.gdx.Input.Keys.A + Keys.A;
+                return key - Org.Mini2Dx.Gdx.Input.Keys.A + Keys.A;
             }
             
-            if (key >= org.mini2Dx.gdx.Input.Keys.F1 && key <= org.mini2Dx.gdx.Input.Keys.F12)
+            if (key >= Org.Mini2Dx.Gdx.Input.Keys.F1 && key <= Org.Mini2Dx.Gdx.Input.Keys.F12)
             {
-                return key - org.mini2Dx.gdx.Input.Keys.F1 + Keys.F1;
+                return key - Org.Mini2Dx.Gdx.Input.Keys.F1 + Keys.F1;
             }
 
-            if (key >= org.mini2Dx.gdx.Input.Keys.NUMPAD_0 && key <= org.mini2Dx.gdx.Input.Keys.NUMPAD_9)
+            if (key >= Org.Mini2Dx.Gdx.Input.Keys.NUMPAD_0 && key <= Org.Mini2Dx.Gdx.Input.Keys.NUMPAD_9)
             {
-                return key - org.mini2Dx.gdx.Input.Keys.NUMPAD_0 + Keys.NumPad0;
+                return key - Org.Mini2Dx.Gdx.Input.Keys.NUMPAD_0 + Keys.NumPad0;
             }
-            if (key >= org.mini2Dx.gdx.Input.Keys.NUM_0 && key <= org.mini2Dx.gdx.Input.Keys.NUM_9)
+            if (key >= Org.Mini2Dx.Gdx.Input.Keys.NUM_0 && key <= Org.Mini2Dx.Gdx.Input.Keys.NUM_9)
             {
-                return key - org.mini2Dx.gdx.Input.Keys.NUM_0 + Keys.D0;
+                return key - Org.Mini2Dx.Gdx.Input.Keys.NUM_0 + Keys.D0;
             }
 
             switch (key)
             {
-                case org.mini2Dx.gdx.Input.Keys.BACK:
+                case Org.Mini2Dx.Gdx.Input.Keys.BACK:
                     return Keys.Back;
-                case org.mini2Dx.gdx.Input.Keys.TAB:
+                case Org.Mini2Dx.Gdx.Input.Keys.TAB:
                     return Keys.Tab;
-                case org.mini2Dx.gdx.Input.Keys.ENTER:
+                case Org.Mini2Dx.Gdx.Input.Keys.ENTER:
                     return Keys.Enter;
-                case org.mini2Dx.gdx.Input.Keys.ESCAPE:
+                case Org.Mini2Dx.Gdx.Input.Keys.ESCAPE:
                     return Keys.Escape;
-                case org.mini2Dx.gdx.Input.Keys.SPACE:
+                case Org.Mini2Dx.Gdx.Input.Keys.SPACE:
                     return Keys.Space;
-                case org.mini2Dx.gdx.Input.Keys.PAGE_UP:
+                case Org.Mini2Dx.Gdx.Input.Keys.PAGE_UP:
                     return Keys.PageUp;
-                case org.mini2Dx.gdx.Input.Keys.PAGE_DOWN:
+                case Org.Mini2Dx.Gdx.Input.Keys.PAGE_DOWN:
                     return Keys.PageDown;
-                case org.mini2Dx.gdx.Input.Keys.END:
+                case Org.Mini2Dx.Gdx.Input.Keys.END:
                     return Keys.End;
-                case org.mini2Dx.gdx.Input.Keys.HOME:
+                case Org.Mini2Dx.Gdx.Input.Keys.HOME:
                     return Keys.Home;
-                case org.mini2Dx.gdx.Input.Keys.LEFT:
+                case Org.Mini2Dx.Gdx.Input.Keys.LEFT:
                     return Keys.Left;
-                case org.mini2Dx.gdx.Input.Keys.UP:
+                case Org.Mini2Dx.Gdx.Input.Keys.UP:
                     return Keys.Up;
-                case org.mini2Dx.gdx.Input.Keys.RIGHT:
+                case Org.Mini2Dx.Gdx.Input.Keys.RIGHT:
                     return Keys.Right;
-                case org.mini2Dx.gdx.Input.Keys.DOWN:
+                case Org.Mini2Dx.Gdx.Input.Keys.DOWN:
                     return Keys.Down;
-                case org.mini2Dx.gdx.Input.Keys.BUTTON_SELECT:
+                case Org.Mini2Dx.Gdx.Input.Keys.BUTTON_SELECT:
                     return Keys.Select;
-                case org.mini2Dx.gdx.Input.Keys.INSERT:
+                case Org.Mini2Dx.Gdx.Input.Keys.INSERT:
                     return Keys.Insert;
-                case org.mini2Dx.gdx.Input.Keys.DEL:
+                case Org.Mini2Dx.Gdx.Input.Keys.DEL:
                     return Keys.Delete;
-                case org.mini2Dx.gdx.Input.Keys.NUM:
+                case Org.Mini2Dx.Gdx.Input.Keys.NUM:
                     return Keys.Multiply;
-                case org.mini2Dx.gdx.Input.Keys.PLUS:
+                case Org.Mini2Dx.Gdx.Input.Keys.PLUS:
                     return Keys.Add;
-                case org.mini2Dx.gdx.Input.Keys.MINUS:
+                case Org.Mini2Dx.Gdx.Input.Keys.MINUS:
                     return Keys.Subtract;
-                case org.mini2Dx.gdx.Input.Keys.SLASH:
+                case Org.Mini2Dx.Gdx.Input.Keys.SLASH:
                     return Keys.Divide;
-                case org.mini2Dx.gdx.Input.Keys.SHIFT_LEFT:
+                case Org.Mini2Dx.Gdx.Input.Keys.SHIFT_LEFT:
                     return Keys.LeftShift;
-                case org.mini2Dx.gdx.Input.Keys.SHIFT_RIGHT:
+                case Org.Mini2Dx.Gdx.Input.Keys.SHIFT_RIGHT:
                     return Keys.RightShift;
-                case org.mini2Dx.gdx.Input.Keys.CONTROL_LEFT:
+                case Org.Mini2Dx.Gdx.Input.Keys.CONTROL_LEFT:
                     return Keys.LeftControl;
-                case org.mini2Dx.gdx.Input.Keys.CONTROL_RIGHT:
+                case Org.Mini2Dx.Gdx.Input.Keys.CONTROL_RIGHT:
                     return Keys.RightControl;
-                case org.mini2Dx.gdx.Input.Keys.ALT_LEFT:
+                case Org.Mini2Dx.Gdx.Input.Keys.ALT_LEFT:
                     return Keys.LeftAlt;
-                case org.mini2Dx.gdx.Input.Keys.ALT_RIGHT:
+                case Org.Mini2Dx.Gdx.Input.Keys.ALT_RIGHT:
                     return Keys.RightAlt;
-                case org.mini2Dx.gdx.Input.Keys.MUTE:
+                case Org.Mini2Dx.Gdx.Input.Keys.MUTE:
                     return Keys.VolumeMute;
-                case org.mini2Dx.gdx.Input.Keys.VOLUME_UP:
+                case Org.Mini2Dx.Gdx.Input.Keys.VOLUME_UP:
                     return Keys.VolumeUp;
-                case org.mini2Dx.gdx.Input.Keys.VOLUME_DOWN:
+                case Org.Mini2Dx.Gdx.Input.Keys.VOLUME_DOWN:
                     return Keys.VolumeDown;
-                case org.mini2Dx.gdx.Input.Keys.MEDIA_NEXT:
+                case Org.Mini2Dx.Gdx.Input.Keys.MEDIA_NEXT:
                     return Keys.MediaNextTrack;
-                case org.mini2Dx.gdx.Input.Keys.MEDIA_PREVIOUS:
+                case Org.Mini2Dx.Gdx.Input.Keys.MEDIA_PREVIOUS:
                     return Keys.MediaPreviousTrack;
-                case org.mini2Dx.gdx.Input.Keys.MEDIA_STOP:
+                case Org.Mini2Dx.Gdx.Input.Keys.MEDIA_STOP:
                     return Keys.MediaStop;
-                case org.mini2Dx.gdx.Input.Keys.MEDIA_PLAY_PAUSE:
+                case Org.Mini2Dx.Gdx.Input.Keys.MEDIA_PLAY_PAUSE:
                     return Keys.MediaPlayPause;
-                case org.mini2Dx.gdx.Input.Keys.SEMICOLON:
+                case Org.Mini2Dx.Gdx.Input.Keys.SEMICOLON:
                     return Keys.OemSemicolon;
-                case org.mini2Dx.gdx.Input.Keys.COMMA:
+                case Org.Mini2Dx.Gdx.Input.Keys.COMMA:
                     return Keys.OemComma;
-                case org.mini2Dx.gdx.Input.Keys.PERIOD:
+                case Org.Mini2Dx.Gdx.Input.Keys.PERIOD:
                     return Keys.OemPeriod;
-                case org.mini2Dx.gdx.Input.Keys.BACKSLASH:
+                case Org.Mini2Dx.Gdx.Input.Keys.BACKSLASH:
                     return Keys.OemBackslash;
                 default:
                     return 0;
@@ -406,105 +406,105 @@ namespace monogame
         {
             if (key >= Keys.A && key <= Keys.Z)
             {
-                return key - Keys.A + org.mini2Dx.gdx.Input.Keys.A;
+                return key - Keys.A + Org.Mini2Dx.Gdx.Input.Keys.A;
             }
             
             if (key >= Keys.F1 && key <= Keys.F12)
             {
-                return key - Keys.F1 + org.mini2Dx.gdx.Input.Keys.F1;
+                return key - Keys.F1 + Org.Mini2Dx.Gdx.Input.Keys.F1;
             }
 
             if (key >= Keys.NumPad0 && key <= Keys.NumPad9)
             {
-                return key - Keys.NumPad0 + org.mini2Dx.gdx.Input.Keys.NUMPAD_0;
+                return key - Keys.NumPad0 + Org.Mini2Dx.Gdx.Input.Keys.NUMPAD_0;
             }
             if (key >= Keys.D0 && key <= Keys.D9)
             {
-                return key - Keys.D0 + org.mini2Dx.gdx.Input.Keys.NUM_0;
+                return key - Keys.D0 + Org.Mini2Dx.Gdx.Input.Keys.NUM_0;
             }
             
             switch (key)
             {
                 case Keys.Back:
-                    return org.mini2Dx.gdx.Input.Keys.BACK;
+                    return Org.Mini2Dx.Gdx.Input.Keys.BACK;
                 case Keys.Tab:
-                    return org.mini2Dx.gdx.Input.Keys.TAB;
+                    return Org.Mini2Dx.Gdx.Input.Keys.TAB;
                 case Keys.Enter:
-                    return org.mini2Dx.gdx.Input.Keys.ENTER;
+                    return Org.Mini2Dx.Gdx.Input.Keys.ENTER;
                 case Keys.Escape:
-                    return org.mini2Dx.gdx.Input.Keys.ESCAPE;
+                    return Org.Mini2Dx.Gdx.Input.Keys.ESCAPE;
                 case Keys.Space:
-                    return org.mini2Dx.gdx.Input.Keys.SPACE;
+                    return Org.Mini2Dx.Gdx.Input.Keys.SPACE;
                 case Keys.PageUp:
-                    return org.mini2Dx.gdx.Input.Keys.PAGE_UP;
+                    return Org.Mini2Dx.Gdx.Input.Keys.PAGE_UP;
                 case Keys.PageDown:
-                    return org.mini2Dx.gdx.Input.Keys.PAGE_DOWN;
+                    return Org.Mini2Dx.Gdx.Input.Keys.PAGE_DOWN;
                 case Keys.End:
-                    return org.mini2Dx.gdx.Input.Keys.END;
+                    return Org.Mini2Dx.Gdx.Input.Keys.END;
                 case Keys.Home:
-                    return org.mini2Dx.gdx.Input.Keys.HOME;
+                    return Org.Mini2Dx.Gdx.Input.Keys.HOME;
                 case Keys.Left:
-                    return org.mini2Dx.gdx.Input.Keys.LEFT;
+                    return Org.Mini2Dx.Gdx.Input.Keys.LEFT;
                 case Keys.Up:
-                    return org.mini2Dx.gdx.Input.Keys.UP;
+                    return Org.Mini2Dx.Gdx.Input.Keys.UP;
                 case Keys.Right:
-                    return org.mini2Dx.gdx.Input.Keys.RIGHT;
+                    return Org.Mini2Dx.Gdx.Input.Keys.RIGHT;
                 case Keys.Down:
-                    return org.mini2Dx.gdx.Input.Keys.DOWN;
+                    return Org.Mini2Dx.Gdx.Input.Keys.DOWN;
                 case Keys.Select:
-                    return org.mini2Dx.gdx.Input.Keys.BUTTON_SELECT;
+                    return Org.Mini2Dx.Gdx.Input.Keys.BUTTON_SELECT;
                 case Keys.Insert:
-                    return org.mini2Dx.gdx.Input.Keys.INSERT;
+                    return Org.Mini2Dx.Gdx.Input.Keys.INSERT;
                 case Keys.Delete:
-                    return org.mini2Dx.gdx.Input.Keys.DEL;
+                    return Org.Mini2Dx.Gdx.Input.Keys.DEL;
                 case Keys.Multiply:
-                    return org.mini2Dx.gdx.Input.Keys.NUM;
+                    return Org.Mini2Dx.Gdx.Input.Keys.NUM;
                 case Keys.Add:
-                    return org.mini2Dx.gdx.Input.Keys.PLUS;
+                    return Org.Mini2Dx.Gdx.Input.Keys.PLUS;
                 case Keys.Subtract:
-                    return org.mini2Dx.gdx.Input.Keys.MINUS;
+                    return Org.Mini2Dx.Gdx.Input.Keys.MINUS;
                 case Keys.Divide:
-                    return org.mini2Dx.gdx.Input.Keys.SLASH;
+                    return Org.Mini2Dx.Gdx.Input.Keys.SLASH;
                 case Keys.LeftShift:
-                    return org.mini2Dx.gdx.Input.Keys.SHIFT_LEFT;
+                    return Org.Mini2Dx.Gdx.Input.Keys.SHIFT_LEFT;
                 case Keys.RightShift:
-                    return org.mini2Dx.gdx.Input.Keys.SHIFT_RIGHT;
+                    return Org.Mini2Dx.Gdx.Input.Keys.SHIFT_RIGHT;
                 case Keys.LeftControl:
-                    return org.mini2Dx.gdx.Input.Keys.CONTROL_LEFT;
+                    return Org.Mini2Dx.Gdx.Input.Keys.CONTROL_LEFT;
                 case Keys.RightControl:
-                    return org.mini2Dx.gdx.Input.Keys.CONTROL_RIGHT;
+                    return Org.Mini2Dx.Gdx.Input.Keys.CONTROL_RIGHT;
                 case Keys.LeftAlt:
-                    return org.mini2Dx.gdx.Input.Keys.ALT_LEFT;
+                    return Org.Mini2Dx.Gdx.Input.Keys.ALT_LEFT;
                 case Keys.RightAlt:
-                    return org.mini2Dx.gdx.Input.Keys.ALT_RIGHT;
+                    return Org.Mini2Dx.Gdx.Input.Keys.ALT_RIGHT;
                 case Keys.BrowserBack:
-                    return org.mini2Dx.gdx.Input.Keys.BACK;
+                    return Org.Mini2Dx.Gdx.Input.Keys.BACK;
                 case Keys.VolumeMute:
-                    return org.mini2Dx.gdx.Input.Keys.MUTE;
+                    return Org.Mini2Dx.Gdx.Input.Keys.MUTE;
                 case Keys.VolumeDown:
-                    return org.mini2Dx.gdx.Input.Keys.VOLUME_DOWN;
+                    return Org.Mini2Dx.Gdx.Input.Keys.VOLUME_DOWN;
                 case Keys.VolumeUp:
-                    return org.mini2Dx.gdx.Input.Keys.VOLUME_UP;
+                    return Org.Mini2Dx.Gdx.Input.Keys.VOLUME_UP;
                 case Keys.MediaNextTrack: 
-                    return org.mini2Dx.gdx.Input.Keys.MEDIA_NEXT;
+                    return Org.Mini2Dx.Gdx.Input.Keys.MEDIA_NEXT;
                 case Keys.MediaPreviousTrack:
-                    return org.mini2Dx.gdx.Input.Keys.MEDIA_PREVIOUS;
+                    return Org.Mini2Dx.Gdx.Input.Keys.MEDIA_PREVIOUS;
                 case Keys.MediaStop:
-                    return org.mini2Dx.gdx.Input.Keys.MEDIA_STOP;
+                    return Org.Mini2Dx.Gdx.Input.Keys.MEDIA_STOP;
                 case Keys.MediaPlayPause:
-                    return org.mini2Dx.gdx.Input.Keys.MEDIA_PLAY_PAUSE;
+                    return Org.Mini2Dx.Gdx.Input.Keys.MEDIA_PLAY_PAUSE;
                 case Keys.OemSemicolon:
-                    return org.mini2Dx.gdx.Input.Keys.SEMICOLON;
+                    return Org.Mini2Dx.Gdx.Input.Keys.SEMICOLON;
                 case Keys.OemPlus:
-                    return org.mini2Dx.gdx.Input.Keys.PLUS;
+                    return Org.Mini2Dx.Gdx.Input.Keys.PLUS;
                 case Keys.OemComma:
-                    return org.mini2Dx.gdx.Input.Keys.COMMA;
+                    return Org.Mini2Dx.Gdx.Input.Keys.COMMA;
                 case Keys.OemMinus:
-                    return org.mini2Dx.gdx.Input.Keys.MINUS;
+                    return Org.Mini2Dx.Gdx.Input.Keys.MINUS;
                 case Keys.OemPeriod:
-                    return org.mini2Dx.gdx.Input.Keys.PERIOD;
+                    return Org.Mini2Dx.Gdx.Input.Keys.PERIOD;
                 case Keys.OemBackslash:
-                    return org.mini2Dx.gdx.Input.Keys.BACKSLASH;
+                    return Org.Mini2Dx.Gdx.Input.Keys.BACKSLASH;
                 default:
                     return 0;
             }

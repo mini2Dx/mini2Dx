@@ -17,15 +17,15 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using java.lang;
-using java.util.concurrent;
-using org.mini2Dx.core.executor;
+using Java.Lang;
+using Java.Util.Concurrent;
+using Org.Mini2Dx.Core.Executor;
 
 namespace monogame
 {
-    public class MonoGameTaskExecutor : org.mini2Dx.core.TaskExecutor
+    public class MonoGameTaskExecutor : Org.Mini2Dx.Core.TaskExecutor
     {
-        private class MonoGameAsyncFuture : org.mini2Dx.core.executor.AsyncFuture
+        private class MonoGameAsyncFuture : Org.Mini2Dx.Core.Executor.AsyncFuture
         {
             private Task _task;
 
@@ -40,7 +40,7 @@ namespace monogame
             }
         }
 
-        private class MonoGameAsyncResult : MonoGameAsyncFuture, org.mini2Dx.core.executor.AsyncResult
+        private class MonoGameAsyncResult : MonoGameAsyncFuture, Org.Mini2Dx.Core.Executor.AsyncResult
         {
             private TaskAwaiter<object> taskAwaiter;
             internal MonoGameAsyncResult(Task<object> task) : base(task)

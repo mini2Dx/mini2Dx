@@ -16,18 +16,19 @@
 
 using System;
 using System.Collections.Generic;
-using java.lang;
+using Java.Lang;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using monogame.Graphics;
-using org.mini2Dx.core;
-using org.mini2Dx.core.font;
-using org.mini2Dx.core.util;
-using Color = org.mini2Dx.core.graphics.Color;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Assets;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Util;
+using Color = Org.Mini2Dx.Core.Graphics.Color;
 
 namespace monogame.Font
 {
-    class MonoGameGameFontCache : org.mini2Dx.core.font.GameFontCache
+    class MonoGameGameFontCache : GameFontCache
     {
         private struct MonoGameGameFontCacheDrawingOperation
         {
@@ -50,9 +51,9 @@ namespace monogame.Font
         internal MonoGameGameFontCache(GameFont font)
         {
             _gameFont = (MonoGameGameFont) font;
-            _graphicsDevice = ((MonoGameGraphics) Mdx.graphicsContext)._graphicsDevice;
+            _graphicsDevice = ((MonoGameGraphics) Mdx.graphicsContext_)._graphicsDevice;
             _spriteBatch = new SpriteBatch(_graphicsDevice);
-            _gameFontCache = new MonoGameTexture(new RenderTarget2D(_graphicsDevice, Mdx.graphicsContext.getWindowWidth(), Mdx.graphicsContext.getWindowHeight(), false, SurfaceFormat.Color, _graphicsDevice.PresentationParameters.DepthStencilFormat, 0, RenderTargetUsage.PreserveContents));
+            _gameFontCache = new MonoGameTexture(new RenderTarget2D(_graphicsDevice, Mdx.graphicsContext_.getWindowWidth(), Mdx.graphicsContext_.getWindowHeight(), false, SurfaceFormat.Color, _graphicsDevice.PresentationParameters.DepthStencilFormat, 0, RenderTargetUsage.PreserveContents));
             beginSpriteBatch();
         }
 
@@ -60,16 +61,16 @@ namespace monogame.Font
         {
             _graphicsDevice.SetRenderTarget((RenderTarget2D) _gameFontCache.texture2D);
             _spriteBatch.Begin();
-            _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext)._currentRenderTarget);
-            ((MonoGameGraphics)Mdx.graphicsContext).updateClip();
+            _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext_)._currentRenderTarget);
+            ((MonoGameGraphics)Mdx.graphicsContext_).updateClip();
         }
 
         private void endSpriteBatch()
         {
             _graphicsDevice.SetRenderTarget((RenderTarget2D)_gameFontCache.texture2D);
             _spriteBatch.End();
-            _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext)._currentRenderTarget);
-            ((MonoGameGraphics)Mdx.graphicsContext).updateClip();
+            _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext_)._currentRenderTarget);
+            ((MonoGameGraphics)Mdx.graphicsContext_).updateClip();
         }
 
         public void clear()
@@ -110,10 +111,10 @@ namespace monogame.Font
 
         public void addText(CharSequence str, float x, float y)
         {
-            addText(str, x, y, _gameFont._spriteFont.MeasureString(str.toString()).X, Align.LEFT, true);
+            addText(str, x, y, _gameFont._spriteFont.MeasureString(str.toString()).X, Align.LEFT_, true);
         }
 
-        public void draw(org.mini2Dx.core.Graphics g)
+        public void draw(Org.Mini2Dx.Core._Graphics g)
         {
             endSpriteBatch();
             g.drawTexture(_gameFontCache, _position.X, _position.Y);

@@ -20,37 +20,42 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using org.mini2Dx.core;
-using org.mini2Dx.core.files;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Files;
 
 namespace monogame
 {
-    public class MonoGamePlayerData : org.mini2Dx.core.PlayerData
+    public class MonoGamePlayerData : Org.Mini2Dx.Core.PlayerData
     {
 
-        private static string joinPath(string[] filePath)
+        private static string joinPath(Java.Lang.String[] filePath)
         {
-            return string.Join(Path.DirectorySeparatorChar.ToString(), filePath);
+            string[] paths = new string[filePath.Length];
+            for(int i = 0; i < paths.Length; i++)
+            {
+                paths[i] = filePath[i];
+            }
+            return string.Join(Path.DirectorySeparatorChar.ToString(), paths);
         }
 
-        protected override FileHandle resolve(string[] filePath)
+        public override FileHandle resolve(Java.Lang.String[] filePath)
         {
-            return Mdx.files.external(joinPath(filePath));
+            return Mdx.files_.external(joinPath(filePath));
         }
 
-        protected override FileHandle resolveTmp(string[] filePath)
+        public override FileHandle resolveTmp(Java.Lang.String[] filePath)
         {
-            return Mdx.files.external(joinPath(filePath) + ".tmp");
+            return Mdx.files_.external(joinPath(filePath) + ".tmp");
         }
 
-        protected override void ensureDataDirectoryExists()
+        public override void ensureDataDirectoryExists()
         {
-            Mdx.files.external("").mkdirs();
+            Mdx.files_.external("").mkdirs();
         }
 
         public override void wipe()
         {
-            Mdx.files.external("").emptyDirectory(false);
+            Mdx.files_.external("").emptyDirectory(false);
         }
     }
 }

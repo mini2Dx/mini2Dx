@@ -18,11 +18,12 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework.Audio;
 using monogame.Files;
-using org.mini2Dx.core.files;
+using Org.Mini2Dx.Core.Audio;
+using Org.Mini2Dx.Core.Files;
 
 namespace monogame.Audio
 {
-    public class MonoGameSound : org.mini2Dx.core.audio.Sound
+    public class MonoGameSound : Sound
     {
         public static readonly List<SoundEffectInstance> instances;
         

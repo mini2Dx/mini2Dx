@@ -16,13 +16,18 @@
 
 using System;
 using Microsoft.Xna.Framework;
-using org.mini2Dx.core.graphics;
+using Java.Lang;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Assets;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Util;
 using Color = Microsoft.Xna.Framework.Color;
-using Texture = org.mini2Dx.core.graphics.Texture;
+using Texture = Org.Mini2Dx.Core.Graphics.Texture;
+using Org.Mini2Dx.Core.Graphics;
 
 namespace monogame.Graphics
 {
-    public class MonoGameTextureRegion : org.mini2Dx.core.graphics.TextureRegion
+    public class MonoGameTextureRegion : Org.Mini2Dx.Core.Graphics.TextureRegion
     {
         private Texture _texture;
         private float _u, _v, _u2, _v2;
@@ -35,13 +40,13 @@ namespace monogame.Graphics
         
         public MonoGameTextureRegion(Texture texture)
         {
-            _texture = texture ?? throw new java.lang.IllegalArgumentException();
+            _texture = texture ?? throw new Java.Lang.IllegalArgumentException();
             setRegion(0, 0, texture.getWidth(), texture.getHeight());
         }
 
         public MonoGameTextureRegion(Texture texture, int x, int y, int width, int height)
         {
-            _texture = texture ?? throw new java.lang.IllegalArgumentException();
+            _texture = texture ?? throw new Java.Lang.IllegalArgumentException();
             setRegion(x, y, width, height);
         }
 
@@ -69,15 +74,15 @@ namespace monogame.Graphics
             var invTexWidth = 1f / _texture.getWidth();
             var invTexHeight = 1f / _texture.getHeight();
             setRegion(x * invTexWidth, y * invTexHeight, (x + width) * invTexWidth, (y + height) * invTexHeight);
-            _regionWidth = Math.Abs(width);
-            _regionHeight = Math.Abs(height);
+            _regionWidth = System.Math.Abs(width);
+            _regionHeight = System.Math.Abs(height);
         }
 
         public void setRegion(float u, float v, float u2, float v2)
         {
             int texWidth = _texture.getWidth(), texHeight = _texture.getHeight();
-            _regionWidth = (int) Math.Round(Math.Abs(u2 - u) * texWidth);
-            _regionHeight = (int) Math.Round(Math.Abs(v2 - v) * texHeight);
+            _regionWidth = (int) System.Math.Round(System.Math.Abs(u2 - u) * texWidth);
+            _regionHeight = (int) System.Math.Round(System.Math.Abs(v2 - v) * texHeight);
 
             if (_regionWidth == 1 && _regionHeight == 1)
             {
@@ -125,7 +130,7 @@ namespace monogame.Graphics
         public void setU(float u)
         {
             _u = u;
-            _regionWidth = (int) Math.Round(Math.Abs(_u2 - _u) * _texture.getWidth());
+            _regionWidth = (int) System.Math.Round(System.Math.Abs(_u2 - _u) * _texture.getWidth());
         }
 
         public float getV()
@@ -136,7 +141,7 @@ namespace monogame.Graphics
         public void setV(float v)
         {
             _v = v;
-            _regionHeight = (int) Math.Round(Math.Abs(_v2 - _v) * _texture.getHeight());
+            _regionHeight = (int) System.Math.Round(System.Math.Abs(_v2 - _v) * _texture.getHeight());
         }
 
         public float getU2()
@@ -147,7 +152,7 @@ namespace monogame.Graphics
         public void setU2(float u2)
         {
             _u2 = u2;
-            _regionWidth = (int) Math.Round(Math.Abs(_u2 - _u) * _texture.getWidth());
+            _regionWidth = (int) System.Math.Round(System.Math.Abs(_u2 - _u) * _texture.getWidth());
         }
 
         public float getV2()
@@ -158,12 +163,12 @@ namespace monogame.Graphics
         public void setV2(float v2)
         {
             _v2 = v2;
-            _regionHeight = (int) Math.Round(Math.Abs(_v2 - _v) * _texture.getHeight());
+            _regionHeight = (int) System.Math.Round(System.Math.Abs(_v2 - _v) * _texture.getHeight());
         }
 
         public int getRegionX()
         {
-            return (int) Math.Round(Math.Min(_u, _u2) * _texture.getWidth());
+            return (int) System.Math.Round(System.Math.Min(_u, _u2) * _texture.getWidth());
         }
 
         public void setRegionX(int x)
@@ -173,7 +178,7 @@ namespace monogame.Graphics
 
         public int getRegionY()
         {
-            var result = (int) Math.Round(Math.Min(_v, _v2) * _texture.getHeight());
+            var result = (int) System.Math.Round(System.Math.Min(_v, _v2) * _texture.getHeight());
             return result;
         }
 

@@ -17,20 +17,20 @@ using System;
 using System.IO;
 using Microsoft.Xna.Framework.Content;
 using monogame.Files;
-using org.mini2Dx.core;
-using org.mini2Dx.core.files;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Files;
 
 namespace monogame
 {
-    public class MonoGameFiles : org.mini2Dx.core.Files
+    public class MonoGameFiles : Org.Mini2Dx.Core._Files
     {
-        private readonly string _internalFilePrefix, _externalFilePrefix = Mdx.gameIdentifier + Path.DirectorySeparatorChar;
+        private readonly string _internalFilePrefix, _externalFilePrefix = ((string) Mdx.gameIdentifier_) + Path.DirectorySeparatorChar;
         internal readonly MonoGameContentManager _contentManager;
 
         public MonoGameFiles(ContentManager contentManager)
         {
             _internalFilePrefix = contentManager.RootDirectory + Path.DirectorySeparatorChar;
-            if (Mdx.platform.isDesktop())
+            if (Mdx.platform_.isDesktop())
             {
                 _externalFilePrefix = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + Path.DirectorySeparatorChar + _externalFilePrefix;
             }
@@ -41,9 +41,9 @@ namespace monogame
             _contentManager = new MonoGameContentManager(contentManager.ServiceProvider, contentManager.RootDirectory);
         }
 
-        public FileHandle @internal(string path)
+        public FileHandle @internal(Java.Lang.String path)
         {
-            return new MonoGameFileHandle(_internalFilePrefix, path, FileType.INTERNAL);
+            return new MonoGameFileHandle(_internalFilePrefix, path, FileType.INTERNAL_);
         }
 
         public bool isExternalStorageAvailable()
@@ -51,9 +51,9 @@ namespace monogame
             return true;
         }
 
-        public FileHandle external(string path)
+        public FileHandle external(Java.Lang.String path)
         {
-            return new MonoGameFileHandle(_externalFilePrefix, path, FileType.EXTERNAL);
+            return new MonoGameFileHandle(_externalFilePrefix, path, FileType.EXTERNAL_);
         }
 
         public bool isLocalStorageAvailable()
@@ -61,7 +61,7 @@ namespace monogame
             return false;
         }
 
-        public FileHandle local(string path)
+        public FileHandle local(Java.Lang.String path)
         {
             throw new NotImplementedException();
         }

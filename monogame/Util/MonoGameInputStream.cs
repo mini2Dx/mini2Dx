@@ -16,12 +16,12 @@
 using System;
 using System.IO;
 using monogame.Files;
-using IOException = java.io.IOException;
+using IOException = Java.Io.IOException;
 
 namespace monogame.Util
 {
     //adapted from http://hg.openjdk.java.net/jdk10/jdk10/jdk/file/777356696811/src/java.base/share/classes/java/io/InputStream.java
-    public class MonoGameInputStream : java.io.InputStream
+    public class MonoGameInputStream : Java.Io.InputStream
     {
         private readonly Stream _stream;
         private const int MaxSkipBufferSize = 2048;
