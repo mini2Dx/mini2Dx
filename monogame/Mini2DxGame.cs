@@ -36,8 +36,10 @@ namespace monogame
         private const float _updateMaximumDelta = targetTimeStep;
         private float _timeAccumulator;
 
-        public Mini2DxGame(GameContainer game)
+        public Mini2DxGame(string gameIdentifier, GameContainer game)
         {
+            Mdx.gameIdentifier_ = gameIdentifier;
+
             Window.AllowUserResizing = true;
             IsMouseVisible = true;
             IsFixedTimeStep = false;

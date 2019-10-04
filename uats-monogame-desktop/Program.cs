@@ -21,7 +21,7 @@ namespace mini2Dx_common_uats
             GameContainer game = (UAT_APP ? new UATApplication() as GameContainer : new MonoGameUAT());
             game._init_();
 
-            using (var mini2DxGame = new Mini2DxGame(game))
+            using (var mini2DxGame = new Mini2DxGame("org.mini2Dx.uat", game))
                 mini2DxGame.Run();
         }
     }
