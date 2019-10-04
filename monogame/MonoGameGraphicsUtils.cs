@@ -37,7 +37,13 @@ namespace monogame
 
         public override Texture newTexture(sbyte[] barr)
         {
-            var texture = Texture2D.FromStream(_graphicsDevice, new MemoryStream(barr));
+            byte[] data = new byte[barr.Length];
+            for(int i = 0; i < barr.Length; i++)
+            {
+                data[i] = (byte) barr[i];
+            }
+
+            var texture = Texture2D.FromStream(_graphicsDevice, new MemoryStream(data));
             return new MonoGameTexture(texture);
         }
 
@@ -150,6 +156,12 @@ namespace monogame
 
         public override Sprite newSprite(TextureRegion texture)
         {
+            if(texture is Sprite)
+            {
+                Sprite sprite = new MonoGameSprite();
+                sprite.set((Sprite)texture);
+                return sprite;
+            }
             return new MonoGameSprite(texture);
         }
 
@@ -188,13 +200,6 @@ namespace monogame
         public override Sprite newSprite(TextureRegion texture, int x, int y, int width, int height)
         {
             return new MonoGameSprite(texture, x, y, width, height);
-        }
-
-        public override Sprite newSprite(Sprite s)
-        {
-            Sprite sprite = new MonoGameSprite();
-            sprite.set(s);
-            return sprite;
         }
 
         public override Texture newTexture(FileHandle fileHandle)

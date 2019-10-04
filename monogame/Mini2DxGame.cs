@@ -17,10 +17,10 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using monogame;
-using org.mini2Dx.core;
-using org.mini2Dx.core.game;
-using org.mini2Dx.core.reflect.jvm;
-using org.mini2Dx.core.serialization;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Game;
+using Org.Mini2Dx.Core.Reflect.Jvm;
+using Org.Mini2Dx.Core.Serialization;
 
 namespace monogame
 {
@@ -63,28 +63,28 @@ namespace monogame
         {
             if (Environment.OSVersion.Platform == PlatformID.Unix)
             {
-                Mdx.platform = Platform.LINUX;
+                Mdx.platform_ = Platform.LINUX_;
             }
             else if (Environment.OSVersion.Platform == PlatformID.MacOSX)
             {
-                Mdx.platform = Platform.MAC;
+                Mdx.platform_ = Platform.MAC_;
             }
             else if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
-                Mdx.platform = Platform.WINDOWS;
+                Mdx.platform_ = Platform.WINDOWS_;
             }
             else
             {
                 throw new PlatformNotSupportedException();
             }
-            Mdx.input = new MonoGameInput();
-            Mdx.files = new MonoGameFiles(Content);
-            Mdx.fonts = new MonoGameFonts();
-            Mdx.executor = new MonoGameTaskExecutor();
-            Mdx.log = new MonoGameLogger();
-            Mdx.playerData = new MonoGamePlayerData();
-            Mdx.reflect = new JvmReflection();
-            Mdx.platformUtils = new MonoGamePlatformUtils();
+            Mdx.input_ = new MonoGameInput();
+            Mdx.files_ = new MonoGameFiles(Content);
+            Mdx.fonts_ = new MonoGameFonts();
+            Mdx.executor_ = new MonoGameTaskExecutor();
+            Mdx.log_ = new MonoGameLogger();
+            Mdx.playerData_ = new MonoGamePlayerData();
+            Mdx.reflect_ = new JvmReflection();
+            Mdx.platformUtils_ = new MonoGamePlatformUtils();
             base.Initialize();
         }
 
@@ -94,10 +94,10 @@ namespace monogame
         /// </summary>
         protected override void LoadContent()
         {
-            Mdx.graphicsContext = new MonoGameGraphics(GraphicsDevice);
-            Mdx.graphics = new MonoGameGraphicsUtils(GraphicsDevice);
-            Mdx.audio = new MonoGameAudio();
-            game.start(Mdx.graphicsContext);
+            Mdx.graphicsContext_ = new MonoGameGraphics(GraphicsDevice);
+            Mdx.graphics_ = new MonoGameGraphicsUtils(GraphicsDevice);
+            Mdx.audio_ = new MonoGameAudio();
+            game.start(Mdx.graphicsContext_);
         }
 
         /// <summary>
@@ -126,12 +126,12 @@ namespace monogame
 
             while (_timeAccumulator >= targetTimeStep)
             {
-                Mdx.platformUtils.markUpdateBegin();
-                ((MonoGameInput)Mdx.input).update();
-                ((MonoGameAudio)Mdx.audio).update();
+                Mdx.platformUtils_.markUpdateBegin();
+                ((MonoGameInput)Mdx.input_).update();
+                ((MonoGameAudio)Mdx.audio_).update();
                 game.update(targetTimeStep);
                 _timeAccumulator -= targetTimeStep;
-                Mdx.platformUtils.markUpdateEnd();
+                Mdx.platformUtils_.markUpdateEnd();
             }
             game.interpolate(_timeAccumulator / targetTimeStep);
 
@@ -144,12 +144,12 @@ namespace monogame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            Mdx.platformUtils.markFrame();
-            Mdx.graphicsContext.preRender(Mdx.graphicsContext.getWindowWidth(), Mdx.graphicsContext.getWindowHeight());
-            Mdx.platformUtils.markRenderBegin();
-            game.render(Mdx.graphicsContext);
-            Mdx.platformUtils.markRenderEnd();
-            Mdx.graphicsContext.postRender();
+            Mdx.platformUtils_.markFrame();
+            Mdx.graphicsContext_.preRender(Mdx.graphicsContext_.getWindowWidth(), Mdx.graphicsContext_.getWindowHeight());
+            Mdx.platformUtils_.markRenderBegin();
+            game.render(Mdx.graphicsContext_);
+            Mdx.platformUtils_.markRenderEnd();
+            Mdx.graphicsContext_.postRender();
             base.Draw(gameTime);
         }
     }

@@ -96,12 +96,12 @@ namespace monogame.Graphics
             }
         }
 
-        public string getTexturePath()
+        public Java.Lang.String getTexturePath()
         {
             return texturePath;
         }
 
-        public string getName()
+        public Java.Lang.String getName()
         {
             return name;
         }

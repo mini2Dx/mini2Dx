@@ -31,15 +31,15 @@ namespace monogame.Util
     {
         public static Microsoft.Xna.Framework.Graphics.TextureAddressMode convertTextureAddressMode(TextureAddressMode mode)
         {
-            if (mode == TextureAddressMode.CLAMP)
+            if (mode == TextureAddressMode.CLAMP_)
             {
                 return Microsoft.Xna.Framework.Graphics.TextureAddressMode.Clamp;
             }
-            else if (mode == TextureAddressMode.MIRROR)
+            else if (mode == TextureAddressMode.MIRROR_)
             {
                 return Microsoft.Xna.Framework.Graphics.TextureAddressMode.Mirror;
             }
-            else if (mode == TextureAddressMode.WRAP)
+            else if (mode == TextureAddressMode.WRAP_)
             {
                 return Microsoft.Xna.Framework.Graphics.TextureAddressMode.Wrap;
             }
@@ -52,11 +52,11 @@ namespace monogame.Util
         public static Microsoft.Xna.Framework.Graphics.TextureFilter convertTextureFilter(TextureFilter minFilter, TextureFilter magFilter)
         {
             Microsoft.Xna.Framework.Graphics.TextureFilter newFilter;
-            if (minFilter == TextureFilter.LINEAR || minFilter == TextureFilter.LINEAR_MIP_POINT)
+            if (minFilter == TextureFilter.LINEAR_ || minFilter == TextureFilter.LINEAR_MIP_POINT_)
             {
-                if (magFilter == TextureFilter.LINEAR || magFilter == TextureFilter.LINEAR_MIP_POINT)
+                if (magFilter == TextureFilter.LINEAR_ || magFilter == TextureFilter.LINEAR_MIP_POINT_)
                 {
-                    if (minFilter == TextureFilter.LINEAR || magFilter == TextureFilter.LINEAR)
+                    if (minFilter == TextureFilter.LINEAR_ || magFilter == TextureFilter.LINEAR_)
                     {
                         newFilter = Microsoft.Xna.Framework.Graphics.TextureFilter.Linear;
                     }
@@ -67,7 +67,7 @@ namespace monogame.Util
                 }
                 else
                 {
-                    if (minFilter == TextureFilter.LINEAR || magFilter == TextureFilter.PIXEL)
+                    if (minFilter == TextureFilter.LINEAR_ || magFilter == TextureFilter.PIXEL_)
                     {
                         newFilter = Microsoft.Xna.Framework.Graphics.TextureFilter.MinLinearMagPointMipLinear;
                     }
@@ -79,9 +79,9 @@ namespace monogame.Util
             }
             else
             {
-                if (magFilter == TextureFilter.LINEAR || magFilter == TextureFilter.LINEAR_MIP_POINT)
+                if (magFilter == TextureFilter.LINEAR_ || magFilter == TextureFilter.LINEAR_MIP_POINT_)
                 {
-                    if (minFilter == TextureFilter.PIXEL || magFilter == TextureFilter.LINEAR)
+                    if (minFilter == TextureFilter.PIXEL_ || magFilter == TextureFilter.LINEAR_)
                     {
                         newFilter = Microsoft.Xna.Framework.Graphics.TextureFilter.MinPointMagLinearMipLinear;
                     }
@@ -92,7 +92,7 @@ namespace monogame.Util
                 }
                 else
                 {
-                    if (minFilter == TextureFilter.PIXEL || magFilter == TextureFilter.PIXEL)
+                    if (minFilter == TextureFilter.PIXEL_ || magFilter == TextureFilter.PIXEL_)
                     {
                         newFilter = Microsoft.Xna.Framework.Graphics.TextureFilter.PointMipLinear;
                     }
@@ -110,113 +110,113 @@ namespace monogame.Util
         {
             var convertedBlendState = new BlendState();
             
-            if (srcFunction == Mini2DxBlendFunction.ZERO)
+            if (srcFunction == Mini2DxBlendFunction.ZERO_)
             {
                 convertedBlendState.AlphaSourceBlend = Blend.Zero;
                 convertedBlendState.ColorSourceBlend = Blend.Zero;
             }
-            else if (srcFunction == Mini2DxBlendFunction.ONE)
+            else if (srcFunction == Mini2DxBlendFunction.ONE_)
             {
                 convertedBlendState.AlphaSourceBlend = Blend.One;
                 convertedBlendState.ColorSourceBlend = Blend.One;
             }
-            else if (srcFunction == Mini2DxBlendFunction.SRC_COLOR)
+            else if (srcFunction == Mini2DxBlendFunction.SRC_COLOR_)
             {
                 convertedBlendState.AlphaSourceBlend = Blend.SourceColor;
                 convertedBlendState.ColorSourceBlend = Blend.SourceColor;
             }
-            else if (srcFunction == Mini2DxBlendFunction.ONE_MINUS_SRC_COLOR)
+            else if (srcFunction == Mini2DxBlendFunction.ONE_MINUS_SRC_COLOR_)
             {
                 convertedBlendState.AlphaSourceBlend = Blend.InverseSourceColor;
                 convertedBlendState.ColorSourceBlend = Blend.InverseSourceColor;
             }
-            else if (srcFunction == Mini2DxBlendFunction.DST_COLOR)
+            else if (srcFunction == Mini2DxBlendFunction.DST_COLOR_)
             {
                 convertedBlendState.AlphaSourceBlend = Blend.DestinationColor;
                 convertedBlendState.ColorSourceBlend = Blend.DestinationColor;
             }
-            else if (srcFunction == Mini2DxBlendFunction.ONE_MINUS_DST_COLOR)
+            else if (srcFunction == Mini2DxBlendFunction.ONE_MINUS_DST_COLOR_)
             {
                 convertedBlendState.AlphaSourceBlend = Blend.InverseDestinationColor;
                 convertedBlendState.ColorSourceBlend = Blend.InverseDestinationColor;
             }
-            else if (srcFunction == Mini2DxBlendFunction.SRC_ALPHA)
+            else if (srcFunction == Mini2DxBlendFunction.SRC_ALPHA_)
             {
                 convertedBlendState.AlphaSourceBlend = Blend.SourceAlpha;
                 convertedBlendState.ColorSourceBlend = Blend.SourceAlpha;
             }
-            else if (srcFunction == Mini2DxBlendFunction.ONE_MINUS_SRC_ALPHA)
+            else if (srcFunction == Mini2DxBlendFunction.ONE_MINUS_SRC_ALPHA_)
             {
                 convertedBlendState.AlphaSourceBlend = Blend.InverseSourceAlpha;
                 convertedBlendState.ColorSourceBlend = Blend.InverseSourceAlpha;
             }
-            else if (srcFunction == Mini2DxBlendFunction.DST_ALPHA)
+            else if (srcFunction == Mini2DxBlendFunction.DST_ALPHA_)
             {
                 convertedBlendState.AlphaSourceBlend = Blend.DestinationAlpha;
                 convertedBlendState.ColorSourceBlend = Blend.DestinationAlpha;
             }
-            else if (srcFunction == Mini2DxBlendFunction.ONE_MINUS_DST_ALPHA)
+            else if (srcFunction == Mini2DxBlendFunction.ONE_MINUS_DST_ALPHA_)
             {
                 convertedBlendState.AlphaSourceBlend = Blend.InverseDestinationAlpha;
                 convertedBlendState.ColorSourceBlend = Blend.InverseDestinationAlpha;
             }
-            else if (srcFunction == Mini2DxBlendFunction.SRC_ALPHA_SATURATE)
+            else if (srcFunction == Mini2DxBlendFunction.SRC_ALPHA_SATURATE_)
             {
                 convertedBlendState.AlphaSourceBlend = Blend.SourceAlphaSaturation;
                 convertedBlendState.ColorSourceBlend = Blend.SourceAlphaSaturation;
             }
 
-            if (dstFunction == Mini2DxBlendFunction.ZERO)
+            if (dstFunction == Mini2DxBlendFunction.ZERO_)
             {
                 convertedBlendState.AlphaDestinationBlend = Blend.Zero;
                 convertedBlendState.ColorDestinationBlend = Blend.Zero;
             }
-            else if (dstFunction == Mini2DxBlendFunction.ONE)
+            else if (dstFunction == Mini2DxBlendFunction.ONE_)
             {
                 convertedBlendState.AlphaDestinationBlend = Blend.One;
                 convertedBlendState.ColorDestinationBlend = Blend.One;
             }
-            else if (dstFunction == Mini2DxBlendFunction.SRC_COLOR)
+            else if (dstFunction == Mini2DxBlendFunction.SRC_COLOR_)
             {
                 convertedBlendState.AlphaDestinationBlend = Blend.SourceColor;
                 convertedBlendState.ColorDestinationBlend = Blend.SourceColor;
             }
-            else if (dstFunction == Mini2DxBlendFunction.ONE_MINUS_SRC_COLOR)
+            else if (dstFunction == Mini2DxBlendFunction.ONE_MINUS_SRC_COLOR_)
             {
                 convertedBlendState.AlphaDestinationBlend = Blend.InverseSourceColor;
                 convertedBlendState.ColorDestinationBlend = Blend.InverseSourceColor;
             }
-            else if (dstFunction == Mini2DxBlendFunction.DST_COLOR)
+            else if (dstFunction == Mini2DxBlendFunction.DST_COLOR_)
             {
                 convertedBlendState.AlphaDestinationBlend = Blend.DestinationColor;
                 convertedBlendState.ColorDestinationBlend = Blend.DestinationColor;
             }
-            else if (dstFunction == Mini2DxBlendFunction.ONE_MINUS_DST_COLOR)
+            else if (dstFunction == Mini2DxBlendFunction.ONE_MINUS_DST_COLOR_)
             {
                 convertedBlendState.AlphaDestinationBlend = Blend.InverseDestinationColor;
                 convertedBlendState.ColorDestinationBlend = Blend.InverseDestinationColor;
             }
-            else if (dstFunction == Mini2DxBlendFunction.SRC_ALPHA)
+            else if (dstFunction == Mini2DxBlendFunction.SRC_ALPHA_)
             {
                 convertedBlendState.AlphaDestinationBlend = Blend.SourceAlpha;
                 convertedBlendState.ColorDestinationBlend = Blend.SourceAlpha;
             }
-            else if (dstFunction == Mini2DxBlendFunction.ONE_MINUS_SRC_ALPHA)
+            else if (dstFunction == Mini2DxBlendFunction.ONE_MINUS_SRC_ALPHA_)
             {
                 convertedBlendState.AlphaDestinationBlend = Blend.InverseSourceAlpha;
                 convertedBlendState.ColorDestinationBlend = Blend.InverseSourceAlpha;
             }
-            else if (dstFunction == Mini2DxBlendFunction.DST_ALPHA)
+            else if (dstFunction == Mini2DxBlendFunction.DST_ALPHA_)
             {
                 convertedBlendState.AlphaDestinationBlend = Blend.DestinationAlpha;
                 convertedBlendState.ColorDestinationBlend = Blend.DestinationAlpha;
             }
-            else if (dstFunction == Mini2DxBlendFunction.ONE_MINUS_DST_ALPHA)
+            else if (dstFunction == Mini2DxBlendFunction.ONE_MINUS_DST_ALPHA_)
             {
                 convertedBlendState.AlphaDestinationBlend = Blend.InverseDestinationAlpha;
                 convertedBlendState.ColorDestinationBlend = Blend.InverseDestinationAlpha;
             }
-            else if (dstFunction == Mini2DxBlendFunction.SRC_ALPHA_SATURATE)
+            else if (dstFunction == Mini2DxBlendFunction.SRC_ALPHA_SATURATE_)
             {
                 convertedBlendState.AlphaDestinationBlend = Blend.SourceAlphaSaturation;
                 convertedBlendState.ColorDestinationBlend = Blend.SourceAlphaSaturation;

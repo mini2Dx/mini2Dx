@@ -28,6 +28,7 @@ namespace monogame.Util
         
         public MonoGameInputStream(MonoGameFileHandle fileHandle)
         {
+            base._init_();
             if (!fileHandle.exists() || fileHandle.isDirectory())
             {
                 throw new IOException();
@@ -47,7 +48,7 @@ namespace monogame.Util
             return _stream.ReadByte();
         }
 
-        public override int read(byte[] b, int off, int len)
+        public override int read(sbyte[] b, int off, int len)
         {
             if (len == 0)
             {
@@ -60,7 +61,7 @@ namespace monogame.Util
                 return -1;
             }
 
-            b[off] = (byte) c;
+            b[off] = (sbyte) c;
             var i = 1;
             try
             {
@@ -72,7 +73,7 @@ namespace monogame.Util
                         break;
                     }
 
-                    b[off + i] = (byte) c;
+                    b[off + i] = (sbyte) c;
                 }
             }
             catch (IOException)
@@ -81,7 +82,7 @@ namespace monogame.Util
             return i;
         }
 
-        public override int read(byte[] b)
+        public override int read(sbyte[] b)
         {
             return read(b, 0, b.Length);
         }
@@ -95,7 +96,7 @@ namespace monogame.Util
             }
 
             var size = (int) Math.Min(MaxSkipBufferSize, remaining);
-            var skipBuffer = new byte[size];
+            var skipBuffer = new sbyte[size];
             while (remaining > 0)
             {
                 var nr = read(skipBuffer, 0, (int) Math.Min(size, remaining));
@@ -125,7 +126,9 @@ namespace monogame.Util
 
         public override void reset()
         {
-            throw new IOException("mark/reset aren't supported");
+            IOException exception = new IOException();
+            exception._init_("mark/reset aren't supported");
+            throw exception;
         }
 
         public override bool markSupported()

@@ -20,31 +20,35 @@ using Org.Mini2Dx.Core.Input;
 using Org.Mini2Dx.Core.Input.Button;
 using Org.Mini2Dx.Core.Input.Deadzone;
 using Org.Mini2Dx.Gdx.Math;
+using O_M_C_Input_GamePadListener = Org.Mini2Dx.Core.Input.GamePadListener;
+using O_M_C_Input_MappedGamePadListener = Org.Mini2Dx.Core.Input.MappedGamePadListener;
 using GamePad = Org.Mini2Dx.Core.Input.GamePad;
 
 namespace monogame.Input
 {
-    public class MonoGameXboxGamePad : Org.Mini2Dx.Core.Input.Xbox.XboxGamePad
+    public class MonoGameXboxGamePad : Org.Mini2Dx.Core.Input.Xbox.XboxGamePad, O_M_C_Input_GamePadListener
     {
         private PovState _prevPovState;
         
-        public MonoGameXboxGamePad(GamePad gamePad, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) : base(gamePad, leftStickDeadZone, rightStickDeadZone)
+        public MonoGameXboxGamePad(GamePad gamePad, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) : base()
         {
+            base._init_(gamePad, leftStickDeadZone, rightStickDeadZone);
             _prevPovState = gamePad.getPov(0);
+            
         }
 
         public MonoGameXboxGamePad(GamePad gamePad) : base()
         {
-            _prevPovState = gamePad.getPov(0);
             base._init_(gamePad);
+            _prevPovState = gamePad.getPov(0);
         }
 
-        public override void onConnect(GamePad gamePad)
+        void O_M_C_Input_GamePadListener.onConnect(GamePad gamePad)
         {
             notifyConnected();
         }
 
-        public override void onDisconnect(GamePad gamePad)
+        void O_M_C_Input_GamePadListener.onDisconnect(GamePad gamePad)
         {
             notifyDisconnected();
         }
@@ -80,7 +84,7 @@ namespace monogame.Input
             }
         }
 
-        public override void onButtonDown(GamePad gamePad, int buttonCode)
+        void O_M_C_Input_GamePadListener.onButtonDown(GamePad gamePad, int buttonCode)
         {
             var button = buttonCodeToXboxButton(buttonCode);
             if (button != null)
@@ -89,7 +93,7 @@ namespace monogame.Input
             }
         }
 
-        public override void onButtonUp(GamePad gamePad, int buttonCode)
+        void O_M_C_Input_GamePadListener.onButtonUp(GamePad gamePad, int buttonCode)
         {
             var button = buttonCodeToXboxButton(buttonCode);
             if (button != null)
@@ -98,7 +102,7 @@ namespace monogame.Input
             }
         }
 
-        public override void onPovChanged(GamePad gamePad, int povCode, PovState povState)
+        void O_M_C_Input_GamePadListener.onPovChanged(GamePad gamePad, int povCode, PovState povState)
         {
             if (povState.isPressed(PovState.NORTH_) != _prevPovState.isPressed(PovState.NORTH_))
             {
@@ -148,7 +152,7 @@ namespace monogame.Input
             _prevPovState = povState;
         }
 
-        public override void onAxisChanged(GamePad gamePad, int axisCode, float axisValue)
+        void O_M_C_Input_GamePadListener.onAxisChanged(GamePad gamePad, int axisCode, float axisValue)
         {
             switch ((MonoGameGamePad.AxisCodes) axisCode)
             {
@@ -173,7 +177,7 @@ namespace monogame.Input
             }
         }
 
-        public override void onAccelerometerChanged(GamePad gamePad, int accelerometerCode, Vector3 value)
+        void O_M_C_Input_GamePadListener.onAccelerometerChanged(GamePad gamePad, int accelerometerCode, Vector3 value)
         {
         }
     }

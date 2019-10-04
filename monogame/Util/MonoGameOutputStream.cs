@@ -27,6 +27,7 @@ namespace monogame.Util
         
         public MonoGameOutputStream(MonoGameFileHandle fileHandle, bool append)
         {
+            base._init_();
             if (!fileHandle.exists() || fileHandle.isDirectory()) throw new IOException();
             var fileInfo = new FileInfo(fileHandle.pathWithPrefix());
             _stream = append ? fileInfo.Open(FileMode.Append, FileAccess.Write) : fileInfo.Create();
@@ -42,7 +43,7 @@ namespace monogame.Util
             _stream.WriteByte((byte) b);
         }
 
-        public override void write(byte[] b, int off, int len)
+        public override void write(sbyte[] b, int off, int len)
         {
             if (b == null)
                 throw new NullPointerException();
@@ -56,7 +57,7 @@ namespace monogame.Util
             }
         }
 
-        public override void write(byte[] b)
+        public override void write(sbyte[] b)
         {
             write(b,0, b.Length);
         }
