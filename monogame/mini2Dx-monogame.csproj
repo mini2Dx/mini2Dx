@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="mini2Dx-all">
+      <HintPath>..\all\generated-src\bin\Debug\mini2Dx-all.dll</HintPath>
+    </Reference>
     <Reference Include="openjdk8">
       <HintPath>..\..\coffea\openjdk8\generated-src\bin\Debug\openjdk8.dll</HintPath>
     </Reference>
@@ -92,12 +95,6 @@
     <PackageReference Include="SpriteFontPlus.MonoGame">
       <Version>0.7.0.22</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\all\generated-src\mini2Dx.csproj">
-      <Project>{9b80a3ef-ec54-4f2c-9587-341ed39da58b}</Project>
-      <Name>mini2Dx</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

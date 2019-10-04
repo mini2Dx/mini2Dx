@@ -244,13 +244,78 @@ namespace monogame.Files
                 using (MemoryStream ms = new MemoryStream())
                 {
                     ((MonoGameFiles)Mdx.files_)._contentManager.OpenStream(path()).CopyTo(ms);
-                    return ms.ToArray();
+                    byte [] rawResult = ms.ToArray();
+                    sbyte[] result = new sbyte[rawResult.Length];
+                    for(int i = 0; i < rawResult.Length; i++)
+                    {
+                        result[i] = (sbyte) rawResult[i];
+                    }
+                    return result;
                 }
             }
 
             var fileBytes = new sbyte[_fileInfo.Length];
             readBytes(fileBytes, 0, (int) _fileInfo.Length);
             return fileBytes;
+        }
+
+        public byte[] readBytesAsByteArray()
+        {
+            if (_isDirectory)
+            {
+                IOException exception = new IOException();
+                exception._init_("Can't read bytes from a directory");
+                throw exception;
+            }
+
+            if (_fileType == FileType.INTERNAL_)
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    ((MonoGameFiles)Mdx.files_)._contentManager.OpenStream(path()).CopyTo(ms);
+                    return ms.ToArray();
+                }
+            }
+
+            var fileBytes = new byte[_fileInfo.Length];
+            readBytes(fileBytes, 0, (int)_fileInfo.Length);
+            return fileBytes;
+        }
+
+        public int readBytes(byte[] fileBytes, int offset, int size)
+        {
+            if (_isDirectory)
+            {
+                IOException exception = new IOException();
+                exception._init_("Can't read bytes from a directory");
+                throw exception;
+            }
+
+            var readBytesNumber = 0;
+            Stream byteStream;
+            if (_fileType == FileType.INTERNAL_)
+            {
+                byteStream = ((MonoGameFiles)Mdx.files_)._contentManager.OpenStream(path());
+            }
+            else
+            {
+                byteStream = _fileInfo.OpenRead();
+            }
+
+            for (var i = offset; i < offset + size; i++)
+            {
+                var readByte = byteStream.ReadByte();
+                if (readByte == -1)
+                {
+                    break;
+                }
+
+                fileBytes[i] = (byte) readByte;
+                readBytesNumber++;
+            }
+
+
+            return readBytesNumber;
         }
 
         public int readBytes(sbyte[] fileBytes, int offset, int size)
@@ -458,7 +523,7 @@ namespace monogame.Files
                 var child = childFiles[i];
                 if (child.Name.StartsWith(prefix))
                 {
-                    var path = this.path();
+                    string path = this.path();
                     var fileName = child.Name;
                     if (_fileType == FileType.INTERNAL_)
                     {

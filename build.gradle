@@ -29,11 +29,6 @@ def sdkPropertiesFile = project.rootProject.file('local.properties');
 if(sdkPropertiesFile.exists()) {
 	sdkProperties.load(sdkPropertiesFile.newDataInputStream())
 }
-if(sdkProperties.getProperty('sdk.ikvm.dir') == null) {
-	sdkProperties.setProperty('sdk.ikvm.dir', '../_tools/ikvm')
-}
-
-def ikvmDir = sdkProperties.getProperty('sdk.ikvm.dir')
 
 if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
 	apply plugin: "io.codearte.nexus-staging"
@@ -94,17 +89,7 @@ configure(docProjects()) {
 	group = 'org.mini2Dx'
 	version = projectVersion
 
-	if(project.name.contains("monogame")) {
-		if(ikvmDir.contains('_tools')) {
-			if(!project.file(ikvmDir).exists()) {
-				def ikvmZipFile = file('../_tools/ikvm.zip')
-				project.copy({
-					from zipTree(ikvmZipFile)
-					into '../_tools/'
-				})
-			}
-		}
-	} else if(project.name.contains("android")) {
+	if(project.name.contains("android")) {
 		apply plugin: "com.android.library"
 		
 		task javadoc(type: Javadoc) {
@@ -434,12 +419,16 @@ project(":" + rootProject.name + "-all") {
 		commandLine 'cmd', '/c', "${transpilerExe}",
 				'-i', project.name + '-desugarjar.jar',
 				'-o', project.file("generated-src").getAbsolutePath(),
-				'-p', 'mini2Dx',
+				'-p', 'mini2Dx-all',
 				'--desugar', "${desugarWorkarounds}",
 				'-r', "${jdkDll}"
 	}
 
-	build.dependsOn transpile
+	task buildSolution(type: Exec, dependsOn: transpile) {
+		commandLine 'cmd', '/c', 'msbuild.exe', '/m', '/clp:ErrorsOnly', 'mini2Dx-all.sln'
+	}
+
+	build.dependsOn buildSolution
 }
 
 project(":" + rootProject.name + "-uats") {
@@ -464,9 +453,29 @@ project(":" + rootProject.name + "-uats") {
 		dlls = files('../monogame-pipeline-ext/bin/Debug/monogame-pipeline-ext.dll')
 	}
 
+	task desugarJar(type: com.viridiansoftware.desugar.DesugarTask, dependsOn: jar) {
+		inputJar file('build/libs/' + project.name + '-' + project.version + '.jar')
+		outputJar file('build/libs/' + project.name + '-desugarjar.jar')
+		bootstrapClasspath files("${jdkJar}")
+		classpath files("../all/build/libs/mini2Dx-all-fatjar-" + project.version + '.jar')
+		coreLibrary false
+		minSdkVersion 19
+		verbose true
+	}
+
+	task transpile(type: Exec, dependsOn: [desugarJar, project(":" + rootProject.name + "-all").build]) {
+		workingDir 'build/libs'
+		commandLine 'cmd', '/c', "${transpilerExe}",
+				'-i', project.name + '-desugarjar.jar',
+				'-o', project.file("generated-src").getAbsolutePath(),
+				'-p', 'mini2Dx-uats',
+				'--desugar', "${desugarWorkarounds}",
+				'-r', "${jdkDll};..\\..\\..\\all\\generated-src\\bin\\Debug\\mini2Dx-all.dll"
+	}
+
 	processResources.dependsOn copyUatResources
     generateMonoGameContent.dependsOn processResources
-	build.dependsOn generateMonoGameContent
+	build.dependsOn generateMonoGameContent, transpile
 
 	if(!projectVersion.contains("SNAPSHOT")) {
 		def docDirectory = new File(project.parent.projectDir.getParentFile(), "mini2Dx-website/docs/javadoc/${projectVersion}");

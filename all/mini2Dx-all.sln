@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.779
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mini2Dx-all", "generated-src\mini2Dx-all.csproj", "{614DD142-D656-45AF-83A8-BBF3FBA3CA10}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{614DD142-D656-45AF-83A8-BBF3FBA3CA10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{614DD142-D656-45AF-83A8-BBF3FBA3CA10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{614DD142-D656-45AF-83A8-BBF3FBA3CA10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{614DD142-D656-45AF-83A8-BBF3FBA3CA10}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C9217CFC-4F7F-4E4E-B488-B4EE26DD13AE}
+	EndGlobalSection
+EndGlobal

@@ -50,20 +50,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="IKVM.OpenJDK.Core">
-      <HintPath>..\_tools\ikvm\bin\IKVM.OpenJDK.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Runtime, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
-      <HintPath>..\_tools\ikvm\bin\IKVM.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="mini2Dx-all">
-      <HintPath>..\all\build\libs\mini2Dx-all.dll</HintPath>
-    </Reference>
-    <Reference Include="mini2Dx-uats">
-      <HintPath>..\uats\build\libs\mini2Dx-uats.dll</HintPath>
+    <Reference Include="mini2Dx-all, Version=2.0.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\all\generated-src\bin\Debug\mini2Dx-all.dll</HintPath>
     </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="openjdk8">
+      <HintPath>..\all\generated-src\bin\Debug\openjdk8.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
@@ -129,6 +124,10 @@
     <ProjectReference Include="..\monogame\mini2Dx-monogame.csproj">
       <Project>{ac3ae86c-55ad-4f1e-97e8-12e6389137ad}</Project>
       <Name>mini2Dx-monogame</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\uats\generated-src\mini2Dx-uats.csproj">
+      <Project>{a1678519-56dc-47da-a6d3-c7ea773f55f1}</Project>
+      <Name>mini2Dx-uats</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

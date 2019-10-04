@@ -17,23 +17,23 @@
 using System;
 using Microsoft.Xna.Framework;
 using monogame.Graphics;
-using org.mini2Dx.core;
-using org.mini2Dx.core.audio;
-using org.mini2Dx.core.font;
-using org.mini2Dx.core.graphics;
-using org.mini2Dx.core.input;
-using org.mini2Dx.core.input.button;
-using org.mini2Dx.core.input.xbox;
-using org.mini2Dx.core.util;
-using org.mini2Dx.gdx;
-using org.mini2Dx.tiled;
+using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Audio;
+using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Graphics;
+using Org.Mini2Dx.Core.Input;
+using Org.Mini2Dx.Core.Input.Button;
+using Org.Mini2Dx.Core.Input.Xbox;
+using Org.Mini2Dx.Core.Util;
+using Org.Mini2Dx.Gdx;
+using Org.Mini2Dx.Tiled;
 using Color = Microsoft.Xna.Framework.Color;
-using Input = org.mini2Dx.gdx.Input;
-using Rectangle = org.mini2Dx.core.geom.Rectangle;
+using Input = Org.Mini2Dx.Gdx.Input;
+using Rectangle = Org.Mini2Dx.Core.Geom.Rectangle;
 
 namespace mini2Dx_common_uats
 {
-    class MonoGameUAT : org.mini2Dx.core.game.BasicGame, IDisposable
+    class MonoGameUAT : Org.Mini2Dx.Core.Game.BasicGame, IDisposable
     {
         private class UATInputProcessor : InputProcessor, XboxGamePadListener
         {
@@ -50,49 +50,49 @@ namespace mini2Dx_common_uats
             {
                 switch (keycode)
                 {
-                    case Input.Keys.ESCAPE:
+                    case Input_n_Keys.ESCAPE_:
                         Console.WriteLine("Exiting...");
                         game.exit();
                         break;
-                    case Input.Keys.S:
+                    case Input_n_Keys.S_:
                         if (isShaderApplied)
                         {
-                            Mdx.graphicsContext.clearShader();
+                            Mdx.graphicsContext_.clearShader();
                         }
                         else
                         {
-                            Mdx.graphicsContext.setShader(game.sampleShader);
+                            Mdx.graphicsContext_.setShader(game.sampleShader);
                         }
 
                         isShaderApplied = !isShaderApplied;
                         break;
 
-                    case Input.Keys.C:
+                    case Input_n_Keys.C_:
                         if (isClipApplied)
                         {
-                            Mdx.graphicsContext.removeClip();
+                            Mdx.graphicsContext_.removeClip();
                         }
                         else
                         {
-                            Mdx.graphicsContext.setClip(game.sampleClipRectangle);
+                            Mdx.graphicsContext_.setClip(game.sampleClipRectangle);
                         }
 
                         isClipApplied = !isClipApplied;
                         break;
 
-                    case Input.Keys.Z:
+                    case Input_n_Keys.Z_:
                         game.sampleFontCache.clear();
                         break;
-                    case Input.Keys.NUM_1:
-                        game.sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400, 165, 100, Align.LEFT, true);
+                    case Input_n_Keys.NUM_1_:
+                        game.sampleFontCache.addText((Java.Lang.String)"Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400, 165, 100, Align.LEFT_, true);
                         break;
-                    case Input.Keys.NUM_2:
-                        game.sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 165, 100, Align.CENTER, true);
+                    case Input_n_Keys.NUM_2_:
+                        game.sampleFontCache.addText((Java.Lang.String)"Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 165, 100, Align.CENTER_, true);
                         break;
-                    case Input.Keys.NUM_3:
-                        game.sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 165, 100, Align.RIGHT, true);
+                    case Input_n_Keys.NUM_3_:
+                        game.sampleFontCache.addText((Java.Lang.String)"Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 165, 100, Align.RIGHT_, true);
                         break;
-                    case Input.Keys.NUM_6:
+                    case Input_n_Keys.NUM_6_:
                         if (isAlphaChanged)
                         {
                             game.sampleFontCache.setAllAlphas(1);
@@ -124,7 +124,7 @@ namespace mini2Dx_common_uats
             {
                 switch (button)
                 {
-                    case Input.Buttons.LEFT:
+                    case Input_n_Buttons.LEFT_:
                         {
                             if (game.music.isPlaying())
                             {
@@ -138,12 +138,12 @@ namespace mini2Dx_common_uats
                             break;
                         }
 
-                    case Input.Buttons.RIGHT:
+                    case Input_n_Buttons.RIGHT_:
                         game.music.setLooping(!game.music.isLooping());
                         Console.WriteLine("isLooping: {0}", game.music.isLooping());
                         break;
 
-                    case Input.Buttons.MIDDLE:
+                    case Input_n_Buttons.MIDDLE_:
                         game.sound.play();
                         break;
                 }
@@ -261,7 +261,7 @@ namespace mini2Dx_common_uats
         private Music music;
         private Sound sound;
         private Shader sampleShader;
-        private Rectangle sampleClipRectangle = new Rectangle(100, 200, 250, 150);
+        private Rectangle sampleClipRectangle = new Rectangle();
         private Vector2 mousePosition;
         private GameFontCache sampleFontCache;
         private TiledMap sampleMap;
@@ -269,36 +269,39 @@ namespace mini2Dx_common_uats
 
         public override void initialise()
         {
-            sampleTexture = Mdx.graphics.newTexture(Mdx.files.@internal("mini2Dx.png"));
-            sampleRegion = Mdx.graphics.newTextureRegion(sampleTexture);
-            sampleRegion2 = Mdx.graphics.newTextureRegion(sampleTexture).split(16, 17)[1][1];
+            sampleClipRectangle._init_(100, 200, 250, 150);
+
+            sampleTexture = Mdx.graphics_.newTexture(Mdx.files_.@internal("mini2Dx.png"));
+            sampleRegion = Mdx.graphics_.newTextureRegion(sampleTexture);
+            sampleRegion2 = Mdx.graphics_.newTextureRegion(sampleTexture).split(16, 17)[1][1];
             sampleRegion2.flip(false, true);
-            sampleSprite = Mdx.graphics.newSprite(sampleTexture);
-            sampleNinePatch = Mdx.graphics.newNinePatch(Mdx.graphics.newTexture(Mdx.files.@internal("ninepatch.png")), 6, 6, 6, 6);
-            sampleAtlas = Mdx.graphics.newTextureAtlas(Mdx.files.@internal("packfile.atlas"));
+            sampleSprite = Mdx.graphics_.newSprite(sampleTexture);
+            sampleNinePatch = Mdx.graphics_.newNinePatch(Mdx.graphics_.newTexture(Mdx.files_.@internal("ninepatch.png")), 6, 6, 6, 6);
+            sampleAtlas = Mdx.graphics_.newTextureAtlas(Mdx.files_.@internal("packfile.atlas"));
             sampleAtlasRegion = sampleAtlas.findRegion("tileGreen", 47);
-            sampleTilingDrawable = Mdx.graphics.newTilingDrawable(Mdx.graphics.newTextureRegion(Mdx.graphics.newTexture(Mdx.files.@internal("background.png"))));
-            Mdx.graphicsContext.setColor(Mdx.graphics.newColor(1f, 1f, 1f, 1f));
-            Mdx.graphicsContext.setBackgroundColor(new MonoGameColor(Color.Blue));
+            sampleTilingDrawable = Mdx.graphics_.newTilingDrawable(Mdx.graphics_.newTextureRegion(Mdx.graphics_.newTexture(Mdx.files_.@internal("background.png"))));
+            Mdx.graphicsContext_.setColor(Mdx.graphics_.newColor(1f, 1f, 1f, 1f));
+            Mdx.graphicsContext_.setBackgroundColor(new MonoGameColor(Color.Blue));
             sampleSprite.setOriginCenter();
-            music = Mdx.audio.newMusic(Mdx.files.@internal("music.ogg"));
-            sound = Mdx.audio.newSound(Mdx.files.@internal("sound.wav"));
+            music = Mdx.audio_.newMusic(Mdx.files_.@internal("music.ogg"));
+            sound = Mdx.audio_.newSound(Mdx.files_.@internal("sound.wav"));
 
-            Mdx.audio.addMusicCompletionListener(new AudioCompletionListener());
-            Mdx.audio.addSoundCompletionListener(new AudioCompletionListener());
+            Mdx.audio_.addMusicCompletionListener(new AudioCompletionListener());
+            Mdx.audio_.addSoundCompletionListener(new AudioCompletionListener());
 
-            Mdx.input.newXboxGamePad((GamePad)Mdx.input.getGamePads().get(0)).addListener(new UATInputProcessor(this));
+            Mdx.input_.newXboxGamePad((GamePad)Mdx.input_.getGamePads().get(0)).addListener(new UATInputProcessor(this));
 
-            sampleShader = Mdx.graphics.newShader("grayscaleShader");
-            Mdx.graphicsContext.setFont(Mdx.fonts.newBitmapFont(Mdx.files.@internal("arial24.fnt")));
-            Mdx.graphicsContext.getFont().setColor(Mdx.graphics.newColor(255, 255, 255, 255));
-            sampleFontCache = Mdx.graphicsContext.getFont().newCache();
-            sampleFontCache.setColor(Mdx.graphics.newColor(255, 255, 255, 255));
-            sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400, 165, 100, Align.LEFT, true);
-            sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 165, 100, Align.CENTER, true);
-            sampleFontCache.addText("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 165, 100, Align.RIGHT, true);
-            sampleMap = new TiledMap(Mdx.files.@internal("orthogonal_no_cache.tmx"));
-            Mdx.input.setInputProcessor(new UATInputProcessor(this));
+            sampleShader = Mdx.graphics_.newShader("grayscaleShader");
+            Mdx.graphicsContext_.setFont(Mdx.fonts_.newBitmapFont(Mdx.files_.@internal("arial24.fnt")));
+            Mdx.graphicsContext_.getFont().setColor(Mdx.graphics_.newColor(255, 255, 255, 255));
+            sampleFontCache = Mdx.graphicsContext_.getFont().newCache();
+            sampleFontCache.setColor(Mdx.graphics_.newColor(255, 255, 255, 255));
+            sampleFontCache.addText((Java.Lang.String)"Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400, 165, 100, Align.LEFT_, true);
+            sampleFontCache.addText((Java.Lang.String)"Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 165, 100, Align.CENTER_, true);
+            sampleFontCache.addText((Java.Lang.String)"Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 165, 100, Align.RIGHT_, true);
+            sampleMap = new TiledMap();
+            sampleMap._init_(Mdx.files_.@internal("orthogonal_no_cache.tmx"));
+            Mdx.input_.setInputProcessor(new UATInputProcessor(this));
         }
 
         public override void update(float f)
@@ -317,19 +320,19 @@ namespace mini2Dx_common_uats
             throw new NotImplementedException();
         }
 
-        public override void render(Graphics g)
+        public override void render(_Graphics g)
         {
-            g.setColor(Mdx.graphics.newColor(255, 255, 255, 255));
+            g.setColor(Mdx.graphics_.newColor(255, 255, 255, 255));
             var gameWidth = g.getViewportWidth();
             var gameHeight = g.getViewportHeight();
-            g.setTint(Mdx.graphics.newColor(32, 32, 32, 255));
+            g.setTint(Mdx.graphics_.newColor(32, 32, 32, 255));
             g.drawTilingDrawable(sampleTilingDrawable, gameWidth / 8f, gameHeight / 8f, 3 * gameWidth / 4f, 3 * gameHeight / 4f);
-            g.setTint(Mdx.graphics.newColor(255, 255, 255, 255));
+            g.setTint(Mdx.graphics_.newColor(255, 255, 255, 255));
             g.drawRect(gameWidth / 8f, gameHeight / 8f, 3 * gameWidth / 4f, 3 * gameHeight / 4f);
             g.fillRect(400, 300, 32, 32);
             g.drawCircle(200, 200, 40);
             g.fillCircle(300, 300, 20);
-            g.setColor(Mdx.graphics.newColor(255, 0, 255, 255));
+            g.setColor(Mdx.graphics_.newColor(255, 0, 255, 255));
             g.drawLineSegment(100, 100, 260, 340);
             g.fillTriangle(250, 74, 222, 108, 314, 147);
             g.drawTriangle(150, 74, 122, 108, 214, 147);
@@ -341,16 +344,16 @@ namespace mini2Dx_common_uats
             g.setShader(prevShader);
             g.drawTextureRegion(sampleRegion2, 600, 150, 100, 100);
             g.drawSprite(sampleSprite);
-            g.setColor(Mdx.graphics.newColor(0, 255, 0, 255));
+            g.setColor(Mdx.graphics_.newColor(0, 255, 0, 255));
             g.drawNinePatch(sampleNinePatch, 150, 300, 100, 100);
             g.fillTriangle(mousePosition.X, mousePosition.Y, mousePosition.X + 10,
                 mousePosition.Y + 20, mousePosition.X, mousePosition.Y + 20);
             g.drawRect(400, 65, 100, 100);
             g.drawRect(500, 65, 100, 100);
             g.drawRect(600, 65, 100, 100);
-            g.drawString("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400, 65, 100, Align.LEFT);
-            g.drawString("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 65, 100, Align.CENTER);
-            g.drawString("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 65, 100, Align.RIGHT);
+            g.drawString("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 400, 65, 100, Align.LEFT_);
+            g.drawString("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 65, 100, Align.CENTER_);
+            g.drawString("Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 65, 100, Align.RIGHT_);
             g.drawRect(400, 165, 100, 100);
             g.drawRect(500, 165, 100, 100);
             g.drawRect(600, 165, 100, 100);

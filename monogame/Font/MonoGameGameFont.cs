@@ -66,7 +66,7 @@ namespace monogame.Font
         public MonoGameGameFont(MonoGameFileHandle ttfFileHandle, int size)
         {
             size++;
-            _spriteFont = TtfFontBaker.Bake(ttfFileHandle.readBytes(),
+            _spriteFont = TtfFontBaker.Bake(ttfFileHandle.readBytesAsByteArray(),
                 size,
                 1024,
                 1024,
@@ -114,8 +114,8 @@ namespace monogame.Font
 
         internal void draw(SpriteBatch spriteBatch, String str, float targetWidth, int horizontalAlignment, bool wrap, Vector2 position, Microsoft.Xna.Framework.Color renderColor)
         {
-
-            var strings = wrapText(str, targetWidth + 1).Split('\n');
+            var wrapStr = (string)wrapText(str, targetWidth + 1);
+            var strings = wrapStr.Split('\n');
             var origin = Vector2.Zero;
             if ((horizontalAlignment & Align.RIGHT_) != 0)
             {
