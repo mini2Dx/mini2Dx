@@ -512,7 +512,7 @@ public class JsonSerializer {
 							}
 							continue;
 						}
-						setField(result, field, value);
+						setField(result, currentClass, field, value);
 					}
 					currentClass = currentClass.getSuperclass();
 				}
@@ -558,7 +558,7 @@ public class JsonSerializer {
 		}
 	}
 
-	private <T> void setField(T targetObject, Field field, JsonValue value) throws SerializationException {
+	private <T> void setField(T targetObject, Class<?> ownerClass, Field field, JsonValue value) throws SerializationException {
 		try {
 			Class<?> clazz = field.getType();
 			if (Mdx.reflect.isArray(clazz)) {
@@ -579,11 +579,11 @@ public class JsonSerializer {
 					}
 					field.set(targetObject, value.asString());
 				} else {
-					DeserializedMap deserializedMap = DeserializedMap.getImplementation(field, clazz, targetObject);
+					DeserializedMap deserializedMap = DeserializedMap.getImplementation(ownerClass, field, clazz, targetObject);
 					if(deserializedMap != null) {
 						setSerializedMapField(deserializedMap, targetObject, field, clazz, value);
 					} else {
-						DeserializedCollection deserializedCollection = DeserializedCollection.getImplementation(field, clazz, targetObject);
+						DeserializedCollection deserializedCollection = DeserializedCollection.getImplementation(ownerClass, field, clazz, targetObject);
 						if(deserializedCollection != null) {
 							setSerializedCollectionField(deserializedCollection, targetObject, field, clazz, value);
 						} else if(field.isFinal()) {

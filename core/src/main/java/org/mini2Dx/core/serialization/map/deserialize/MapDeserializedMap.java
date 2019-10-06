@@ -17,6 +17,9 @@ package org.mini2Dx.core.serialization.map.deserialize;
 
 import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.reflect.Field;
+import org.mini2Dx.core.serialization.AotSerializationData;
+import org.mini2Dx.core.serialization.aot.AotSerializedClassData;
+import org.mini2Dx.core.serialization.aot.AotSerializedFieldData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +29,8 @@ import java.util.Map;
  */
 public class MapDeserializedMap extends DeserializedMap<Map> {
 
-	public MapDeserializedMap(Field field, Class<?> fieldClass, Object object) throws ReflectionException {
-		super(field, fieldClass, object);
+	public MapDeserializedMap(Class<?> ownerClass, Field field, Class<?> fieldClass, Object object) throws ReflectionException {
+		super(ownerClass, field, fieldClass, object);
 	}
 
 	@Override
@@ -37,11 +40,25 @@ public class MapDeserializedMap extends DeserializedMap<Map> {
 
 	@Override
 	public Class<?> getKeyClass() {
+		AotSerializedClassData aotClassData = AotSerializationData.getClassData(ownerClass);
+		if(aotClassData != null) {
+			AotSerializedFieldData aotFieldData = aotClassData.getFieldData(field.getName());
+			if(aotFieldData != null) {
+				return aotFieldData.getElementType(0);
+			}
+		}
 		return field.getElementType(0);
 	}
 
 	@Override
 	public Class<?> getValueClass() {
+		AotSerializedClassData aotClassData = AotSerializationData.getClassData(ownerClass);
+		if(aotClassData != null) {
+			AotSerializedFieldData aotFieldData = aotClassData.getFieldData(field.getName());
+			if(aotFieldData != null) {
+				return aotFieldData.getElementType(1);
+			}
+		}
 		return field.getElementType(1);
 	}
 

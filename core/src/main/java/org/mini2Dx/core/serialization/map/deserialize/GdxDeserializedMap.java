@@ -19,6 +19,9 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.reflect.Field;
 import org.mini2Dx.core.reflect.Method;
+import org.mini2Dx.core.serialization.AotSerializationData;
+import org.mini2Dx.core.serialization.aot.AotSerializedClassData;
+import org.mini2Dx.core.serialization.aot.AotSerializedFieldData;
 
 /**
  * Utility class used during JSON/XML deserialization
@@ -31,8 +34,8 @@ public class GdxDeserializedMap<T> extends DeserializedMap<T> {
 
 	private Method putMethod;
 
-	public GdxDeserializedMap(Field field, Class<T> fieldClass, Class<?> keyClass, Class<?> valueClass, Object object) throws ReflectionException {
-		super(field, fieldClass, object);
+	public GdxDeserializedMap(Class<?> ownerClass, Field field, Class<T> fieldClass, Class<?> keyClass, Class<?> valueClass, Object object) throws ReflectionException {
+		super(ownerClass, field, fieldClass, object);
 		this.fallbackClass = fieldClass;
 		this.keyClass = keyClass;
 		this.valueClass = valueClass;
@@ -52,11 +55,29 @@ public class GdxDeserializedMap<T> extends DeserializedMap<T> {
 
 	@Override
 	public Class<?> getKeyClass() {
+		if(keyClass == null) {
+			AotSerializedClassData aotClassData = AotSerializationData.getClassData(ownerClass);
+			if(aotClassData != null) {
+				AotSerializedFieldData aotFieldData = aotClassData.getFieldData(field.getName());
+				if(aotFieldData != null) {
+					return aotFieldData.getElementType(0);
+				}
+			}
+		}
 		return keyClass;
 	}
 
 	@Override
 	public Class<?> getValueClass() {
+		if(valueClass == null) {
+			AotSerializedClassData aotClassData = AotSerializationData.getClassData(ownerClass);
+			if(aotClassData != null) {
+				AotSerializedFieldData aotFieldData = aotClassData.getFieldData(field.getName());
+				if(aotFieldData != null) {
+					return aotFieldData.getElementType(1);
+				}
+			}
+		}
 		return valueClass;
 	}
 

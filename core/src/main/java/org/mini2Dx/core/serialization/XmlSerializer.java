@@ -283,11 +283,11 @@ public class XmlSerializer {
                     if (fieldClass.equals(String.class)) {
                         setPrimitiveField(currentField, fieldClass, result, child.getText());
                     } else {
-                        DeserializedMap deserializedMap = DeserializedMap.getImplementation(currentField, fieldClass, result);
+                        DeserializedMap deserializedMap = DeserializedMap.getImplementation(clazz, currentField, fieldClass, result);
                         if(deserializedMap != null) {
                             setSerializedMapField(child, deserializedMap);
                         } else {
-                            DeserializedCollection deserializedCollection = DeserializedCollection.getImplementation(currentField, fieldClass, result);
+                            DeserializedCollection deserializedCollection = DeserializedCollection.getImplementation(clazz, currentField, fieldClass, result);
                             if(deserializedCollection != null) {
                                 setSerializedCollectionField(child, deserializedCollection);
                             } else if(currentField.isFinal()) {

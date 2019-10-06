@@ -28,13 +28,15 @@ import java.util.Set;
  * Utility class used during JSON/XML deserialization
  */
 public abstract class DeserializedCollection<T> {
+	protected final Class<?> ownerClass;
 	protected final Field field;
 	protected final Class<?> fieldClass;
 
 	protected final T collection;
 
-	public DeserializedCollection(Field field, Class<?> fieldClass, Object object) throws ReflectionException {
+	public DeserializedCollection(Class<?> ownerClass, Field field, Class<?> fieldClass, Object object) throws ReflectionException {
 		super();
+		this.ownerClass = ownerClass;
 		this.field = field;
 		this.fieldClass = fieldClass;
 
@@ -53,37 +55,37 @@ public abstract class DeserializedCollection<T> {
 
 	public abstract void add(Object element);
 
-	public static DeserializedCollection getImplementation(Field field, Class<?> fieldClass, Object object) throws ReflectionException, NoSuchMethodException {
+	public static DeserializedCollection getImplementation(Class<?> ownerClass, Field field, Class<?> fieldClass, Object object) throws ReflectionException, NoSuchMethodException {
 		if(Mdx.reflect.isAssignableFrom(List.class, fieldClass)) {
-			return new ListDeserializedCollection(field, fieldClass, object);
+			return new ListDeserializedCollection(ownerClass, field, fieldClass, object);
 		} else if(Mdx.reflect.isAssignableFrom(Set.class, fieldClass)) {
-			return new SetDeserializedCollection(field, fieldClass, object);
+			return new SetDeserializedCollection(ownerClass, field, fieldClass, object);
 		} else if(Mdx.reflect.isAssignableFrom(Array.class, fieldClass)) {
-			return new GdxDeserializedCollection<Array, Object>(Array.class, field.getElementType(0), field, fieldClass, object);
+			return new GdxDeserializedCollection<Array, Object>(ownerClass, Array.class, field.getElementType(0), field, fieldClass, object);
 		} else if(Mdx.reflect.isAssignableFrom(BooleanArray.class, fieldClass)) {
-			return new GdxDeserializedCollection<BooleanArray, Boolean>(BooleanArray.class, Boolean.class, field, fieldClass, object);
+			return new GdxDeserializedCollection<BooleanArray, Boolean>(ownerClass, BooleanArray.class, Boolean.class, field, fieldClass, object);
 		} else if(Mdx.reflect.isAssignableFrom(ByteArray.class, fieldClass)) {
-			return new GdxDeserializedCollection<ByteArray, Byte>(ByteArray.class, Byte.class, field, fieldClass, object);
+			return new GdxDeserializedCollection<ByteArray, Byte>(ownerClass, ByteArray.class, Byte.class, field, fieldClass, object);
 		} else if(Mdx.reflect.isAssignableFrom(CharArray.class, fieldClass)) {
-			return new GdxDeserializedCollection<CharArray, Character>(CharArray.class, Character.class, field, fieldClass, object);
+			return new GdxDeserializedCollection<CharArray, Character>(ownerClass, CharArray.class, Character.class, field, fieldClass, object);
 		} else if(Mdx.reflect.isAssignableFrom(FloatArray.class, fieldClass)) {
-			return new GdxDeserializedCollection<FloatArray, Float>(FloatArray.class, Float.class, field, fieldClass, object);
+			return new GdxDeserializedCollection<FloatArray, Float>(ownerClass, FloatArray.class, Float.class, field, fieldClass, object);
 		} else if(Mdx.reflect.isAssignableFrom(IntArray.class, fieldClass)) {
-			return new GdxDeserializedCollection<IntArray, Integer>(IntArray.class, Integer.class, field, fieldClass, object);
+			return new GdxDeserializedCollection<IntArray, Integer>(ownerClass, IntArray.class, Integer.class, field, fieldClass, object);
 		} else if(Mdx.reflect.isAssignableFrom(IntSet.class, fieldClass)) {
-			return new GdxDeserializedCollection<IntSet, Integer>(IntSet.class, Integer.class, field, fieldClass, object);
+			return new GdxDeserializedCollection<IntSet, Integer>(ownerClass, IntSet.class, Integer.class, field, fieldClass, object);
 		} else if(Mdx.reflect.isAssignableFrom(LongArray.class, fieldClass)) {
-			return new GdxDeserializedCollection<LongArray, Long>(LongArray.class, Long.class, field, fieldClass, object);
+			return new GdxDeserializedCollection<LongArray, Long>(ownerClass, LongArray.class, Long.class, field, fieldClass, object);
 		} else if(Mdx.reflect.isAssignableFrom(OrderedSet.class, fieldClass)) {
-			return new GdxDeserializedCollection<OrderedSet, Object>(OrderedSet.class, field.getElementType(0), field, fieldClass, object);
+			return new GdxDeserializedCollection<OrderedSet, Object>(ownerClass, OrderedSet.class, field.getElementType(0), field, fieldClass, object);
 		} else if(Mdx.reflect.isAssignableFrom(ObjectSet.class, fieldClass)) {
-			return new GdxDeserializedCollection<ObjectSet, Object>(ObjectSet.class, field.getElementType(0), field, fieldClass, object);
+			return new GdxDeserializedCollection<ObjectSet, Object>(ownerClass, ObjectSet.class, field.getElementType(0), field, fieldClass, object);
 		} else if(Mdx.reflect.isAssignableFrom(ShortArray.class, fieldClass)) {
-			return new GdxDeserializedCollection<ShortArray, Short>(ShortArray.class, Short.class, field, fieldClass, object);
+			return new GdxDeserializedCollection<ShortArray, Short>(ownerClass, ShortArray.class, Short.class, field, fieldClass, object);
 		} else if(Mdx.reflect.isAssignableFrom(SortedIntList.class, fieldClass)) {
-			return new GdxDeserializedCollection<SortedIntList, Integer>(SortedIntList.class, Integer.class, field, fieldClass, object);
+			return new GdxDeserializedCollection<SortedIntList, Integer>(ownerClass, SortedIntList.class, Integer.class, field, fieldClass, object);
 		} else if(Mdx.reflect.isAssignableFrom(Collection.class, fieldClass)) {
-			return new ListDeserializedCollection(field, fieldClass, object);
+			return new ListDeserializedCollection(ownerClass, field, fieldClass, object);
 		} else {
 			return null;
 		}

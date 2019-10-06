@@ -17,6 +17,9 @@ package org.mini2Dx.core.serialization.collection;
 
 import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.reflect.Field;
+import org.mini2Dx.core.serialization.AotSerializationData;
+import org.mini2Dx.core.serialization.aot.AotSerializedClassData;
+import org.mini2Dx.core.serialization.aot.AotSerializedFieldData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +29,8 @@ import java.util.List;
  */
 public class ListDeserializedCollection extends DeserializedCollection<List> {
 
-	public ListDeserializedCollection(Field field, Class<?> fieldClass, Object object) throws ReflectionException {
-		super(field, fieldClass, object);
+	public ListDeserializedCollection(Class<?> ownerClass, Field field, Class<?> fieldClass, Object object) throws ReflectionException {
+		super(ownerClass, field, fieldClass, object);
 	}
 
 	@Override
@@ -37,6 +40,13 @@ public class ListDeserializedCollection extends DeserializedCollection<List> {
 
 	@Override
 	public Class<?> getValueClass() {
+		AotSerializedClassData aotClassData = AotSerializationData.getClassData(ownerClass);
+		if(aotClassData != null) {
+			AotSerializedFieldData aotFieldData = aotClassData.getFieldData(field.getName());
+			if(aotFieldData != null) {
+				return aotFieldData.getElementType(0);
+			}
+		}
 		return field.getElementType(0);
 	}
 

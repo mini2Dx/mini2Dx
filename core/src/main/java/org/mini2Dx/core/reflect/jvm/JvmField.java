@@ -124,6 +124,16 @@ public class JvmField implements Field {
 	}
 
 	@Override
+	public int getTotalElementTypes() {
+		Type genericType = field.getGenericType();
+		if (genericType instanceof ParameterizedType) {
+			Type[] actualTypes = ((ParameterizedType) genericType).getActualTypeArguments();
+			return actualTypes.length;
+		}
+		return 0;
+	}
+
+	@Override
 	public boolean isDefaultAccess () {
 		return !isPrivate() && !isProtected() && !isPublic();
 	}

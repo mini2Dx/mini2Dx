@@ -80,6 +80,12 @@ public interface Field {
 	public Class getElementType(int index);
 
 	/**
+	 * Returns the amount of generic element type parameters
+	 * @return 0 if this class is not generic
+	 */
+	public int getTotalElementTypes();
+
+	/**
 	 * Returns if the field is not public/private/protected
 	 */
 	public boolean isDefaultAccess();

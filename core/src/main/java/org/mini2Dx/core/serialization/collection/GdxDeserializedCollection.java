@@ -19,6 +19,9 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.reflect.Field;
 import org.mini2Dx.core.reflect.Method;
+import org.mini2Dx.core.serialization.AotSerializationData;
+import org.mini2Dx.core.serialization.aot.AotSerializedClassData;
+import org.mini2Dx.core.serialization.aot.AotSerializedFieldData;
 
 /**
  * Utility class used during JSON/XML deserialization
@@ -27,12 +30,12 @@ public class GdxDeserializedCollection<T, N> extends DeserializedCollection<T> {
 	private static final String LOGGING_TAG = GdxDeserializedCollection.class.getSimpleName();
 
 	private final Class<T> fallbackClass;
-	private final Class<N> valueClass;
+	private Class<N> valueClass;
 	private Method addMethod;
 
-	public GdxDeserializedCollection(Class<T> fallbackClass, Class<N> valueClass, Field field, Class<?> fieldClass, Object object)
+	public GdxDeserializedCollection(Class<?> ownerClass, Class<T> fallbackClass, Class<N> valueClass, Field field, Class<?> fieldClass, Object object)
 			throws ReflectionException, NoSuchMethodException {
-		super(field, fieldClass, object);
+		super(ownerClass, field, fieldClass, object);
 		this.fallbackClass = fallbackClass;
 		this.valueClass = valueClass;
 
@@ -55,6 +58,15 @@ public class GdxDeserializedCollection<T, N> extends DeserializedCollection<T> {
 
 	@Override
 	public Class<?> getValueClass() {
+		if(valueClass == null) {
+			AotSerializedClassData aotClassData = AotSerializationData.getClassData(ownerClass);
+			if(aotClassData != null) {
+				AotSerializedFieldData aotFieldData = aotClassData.getFieldData(field.getName());
+				if(aotFieldData != null) {
+					valueClass = aotFieldData.getElementType(0);
+				}
+			}
+		}
 		return valueClass;
 	}
 
