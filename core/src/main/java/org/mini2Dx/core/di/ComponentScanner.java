@@ -21,6 +21,8 @@ import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.gdx.utils.Array;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 
 /**
  * A common interface to component scanning implementations.
@@ -37,6 +39,18 @@ public interface ComponentScanner {
      * @throws MdxException Thrown if an exception occurs during scanning
      */
     public void scan(String[] packageNames) throws MdxException, IOException;
+
+    /**
+     * Saves the component class data in plain text format
+     * @param writer
+     */
+    public void saveTo(Writer writer);
+
+    /**
+     * Restores the component class data from plain text format
+     * @param reader
+     */
+    public void restoreFrom(Reader reader) throws ClassNotFoundException;
 
     public Array<Class<?>> getSingletonClasses();
 

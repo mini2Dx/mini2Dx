@@ -59,6 +59,7 @@ public class AotSerializationData {
 			AotSerializedClassData classData = new AotSerializedClassData(scanner);
 			AOT_DATA.put(classData.getQualifiedClassName(), classData);
 		}
+		scanner.close();
 	}
 
 	public static void clear() {

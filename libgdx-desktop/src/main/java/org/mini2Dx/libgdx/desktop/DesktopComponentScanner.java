@@ -22,6 +22,10 @@ import org.mini2Dx.gdx.utils.Array;
 import org.reflections.Reflections;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.Scanner;
 import java.util.Set;
 
 public class DesktopComponentScanner implements ComponentScanner {
@@ -47,6 +51,42 @@ public class DesktopComponentScanner implements ComponentScanner {
 		for (String packageName : packageNames) {
 			scan(packageName);
 		}
+	}
+
+	@Override
+	public void saveTo(Writer writer) {
+		final PrintWriter printWriter = new PrintWriter(writer);
+
+		printWriter.println("--- Singletons ---");
+		for(int i = 0; i < singletonClasses.size; i++) {
+			printWriter.println(singletonClasses.get(i).getName());
+		}
+		printWriter.println("--- Prototypes ---");
+		for(int i = 0; i < prototypeClasses.size; i++) {
+			printWriter.println(prototypeClasses.get(i).getName());
+		}
+
+		printWriter.flush();
+		printWriter.close();
+	}
+
+	@Override
+	public void restoreFrom(Reader reader) throws ClassNotFoundException {
+		final Scanner scanner = new Scanner(reader);
+		boolean singletons = true;
+
+		scanner.nextLine();
+		while (scanner.hasNext()) {
+			final String line = scanner.nextLine();
+			if(line.startsWith("---")) {
+				singletons = false;
+			} else if(singletons) {
+				singletonClasses.add(Class.forName(line));
+			} else {
+				prototypeClasses.add(Class.forName(line));
+			}
+		}
+		scanner.close();
 	}
 
 	/**

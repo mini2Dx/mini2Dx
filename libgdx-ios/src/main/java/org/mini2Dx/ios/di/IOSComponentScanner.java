@@ -74,6 +74,42 @@ public class IOSComponentScanner implements ComponentScanner {
         }
     }
 
+    @Override
+    public void saveTo(Writer writer) {
+        final PrintWriter printWriter = new PrintWriter(writer);
+
+        printWriter.println("--- Singletons ---");
+        for(int i = 0; i < singletonClasses.size; i++) {
+            printWriter.println(singletonClasses.get(i).getName());
+        }
+        printWriter.println("--- Prototypes ---");
+        for(int i = 0; i < prototypeClasses.size; i++) {
+            printWriter.println(prototypeClasses.get(i).getName());
+        }
+
+        printWriter.flush();
+        printWriter.close();
+    }
+
+    @Override
+    public void restoreFrom(Reader reader) throws ClassNotFoundException {
+        final Scanner scanner = new Scanner(reader);
+        boolean singletons = true;
+
+        scanner.nextLine();
+        while (scanner.hasNext()) {
+            final String line = scanner.nextLine();
+            if(line.startsWith("---")) {
+                singletons = false;
+            } else if(singletons) {
+                singletonClasses.add(Class.forName(line));
+            } else {
+                prototypeClasses.add(Class.forName(line));
+            }
+        }
+        scanner.close();
+    }
+
     public Array<Class<?>> getSingletonClasses() {
         return singletonClasses;
     }
