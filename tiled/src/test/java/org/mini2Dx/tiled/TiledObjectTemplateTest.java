@@ -20,6 +20,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.libgdx.LibgdxFiles;
 import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
+import org.mini2Dx.libgdx.LibgdxPlatformUtils;
 import org.mini2Dx.tiled.exception.TiledException;
 
 public class TiledObjectTemplateTest {
@@ -30,6 +31,12 @@ public class TiledObjectTemplateTest {
 		Gdx.files = new LwjglFiles();
 		Mdx.files = new LibgdxFiles();
 		Mdx.graphics = new LibgdxGraphicsUtils();
+		Mdx.platformUtils = new LibgdxPlatformUtils() {
+			@Override
+			public boolean isGameThread() {
+				return false;
+			}
+		};
 
 		FileHandle file = Mdx.files.internal(Thread.currentThread().getContextClassLoader()
 				.getResource("orthogonal_tsx.tmx").getFile().replaceAll("%20", " "));

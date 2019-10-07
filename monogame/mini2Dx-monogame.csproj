@@ -90,6 +90,7 @@
     <Compile Include="Util\MonoGameMathsUtil.cs" />
     <Compile Include="Util\MonoGameInputStream.cs" />
     <Compile Include="Util\MonoGameOutputStream.cs" />
+    <Compile Include="Util\MonoGameZlibStream.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.Portable">

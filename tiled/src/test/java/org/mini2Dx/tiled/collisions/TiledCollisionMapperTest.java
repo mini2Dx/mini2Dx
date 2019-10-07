@@ -32,6 +32,7 @@ import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.libgdx.LibgdxFiles;
 import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
+import org.mini2Dx.libgdx.LibgdxPlatformUtils;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.collisions.merger.AllCollisionMerger;
 import org.mini2Dx.tiled.exception.TiledException;
@@ -50,6 +51,12 @@ public class TiledCollisionMapperTest {
 		Mdx.files = new LibgdxFiles();
 		Mdx.graphics = new LibgdxGraphicsUtils();
 		Mdx.locks = new JvmLocks();
+		Mdx.platformUtils = new LibgdxPlatformUtils() {
+			@Override
+			public boolean isGameThread() {
+				return false;
+			}
+		};
 
 		FileHandle file = Mdx.files.internal(Thread.currentThread().getContextClassLoader()
 				.getResource("orthogonal.tmx").getFile().replaceAll("%20", " "));

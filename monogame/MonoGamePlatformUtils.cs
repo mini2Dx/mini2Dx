@@ -16,6 +16,8 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
+using monogame.Util;
+using Org.Mini2Dx.Core.Util;
 
 namespace monogame
 {
@@ -56,6 +58,11 @@ namespace monogame
         public override bool isGameThread()
         {
             return Thread.CurrentThread.ManagedThreadId == 1 && Thread.CurrentThread.Name == null;
+        }
+
+        public override ZlibStream decompress(sbyte[] arg0)
+        {
+            return new MonoGameZlibStream(arg0);
         }
     }
 }

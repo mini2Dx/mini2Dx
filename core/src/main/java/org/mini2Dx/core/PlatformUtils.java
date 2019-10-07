@@ -17,6 +17,7 @@ package org.mini2Dx.core;
 
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.util.RollingAverage;
+import org.mini2Dx.core.util.ZlibStream;
 
 public abstract class PlatformUtils {
 
@@ -168,4 +169,11 @@ public abstract class PlatformUtils {
     public double getAverageRenderDuration() {
         return averageRenderDuration.getAverage();
     }
+
+    /**
+     * Returns a {@link ZlibStream} to decompress data
+     * @param compressedData The compressed data as a byte array
+     * @return A new {@link ZlibStream} instance
+     */
+    public abstract ZlibStream decompress(byte [] compressedData);
 }

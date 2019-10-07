@@ -22,6 +22,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.libgdx.LibgdxFiles;
 import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
+import org.mini2Dx.libgdx.LibgdxPlatformUtils;
 import org.mini2Dx.tiled.exception.TiledException;
 
 import junit.framework.Assert;
@@ -37,6 +38,12 @@ public class SharedParserTiledMapTest {
 		Gdx.files = new LwjglFiles();
 		Mdx.files = new LibgdxFiles();
 		Mdx.graphics = new LibgdxGraphicsUtils();
+		Mdx.platformUtils = new LibgdxPlatformUtils() {
+			@Override
+			public boolean isGameThread() {
+				return false;
+			}
+		};
 
 		TiledParser parser = new TiledParser();
 

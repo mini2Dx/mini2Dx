@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.mini2Dx.core;
 
+import org.mini2Dx.core.util.JvmZlibStream;
+import org.mini2Dx.core.util.ZlibStream;
+
 public abstract class JvmPlatformUtils extends PlatformUtils {
     @Override
     public long nanoTime() {
@@ -39,5 +42,10 @@ public abstract class JvmPlatformUtils extends PlatformUtils {
     @Override
     public long getUsedMemory() {
         return getTotalMemory() - getAvailableMemory();
+    }
+
+    @Override
+    public ZlibStream decompress(byte[] compressedData) {
+        return new JvmZlibStream(compressedData);
     }
 }

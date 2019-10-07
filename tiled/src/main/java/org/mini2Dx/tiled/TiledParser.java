@@ -19,6 +19,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.Color;
+import org.mini2Dx.core.util.ZlibStream;
 import org.mini2Dx.gdx.Base64Coder;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.ObjectMap;
@@ -423,16 +424,14 @@ public class TiledParser implements TiledParserNotifier {
 							}
 						}
 					} else if (compression.equals("zlib")) {
-						Inflater zlib = new Inflater();
+						ZlibStream zlibStream = Mdx.platformUtils.decompress(bytes);
 
 						byte[] temp = new byte[4];
-
-						zlib.setInput(bytes, 0, bytes.length);
 
 						for (int y = 0; y < height; y++) {
 							for (int x = 0; x < width; x++) {
 								try {
-									zlib.inflate(temp, 0, 4);
+									zlibStream.read(temp);
 									int id = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
 											| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
 									boolean flipHorizontally = (id & FLAG_FLIP_HORIZONTALLY) != 0;
@@ -441,7 +440,7 @@ public class TiledParser implements TiledParserNotifier {
 									id = id & ~MASK_CLEAR;
 									layer.setTileId(x, y, id, flipHorizontally, flipVertically, flipDiagonally);
 
-								} catch (DataFormatException e) {
+								} catch (Exception e) {
 									throw new MdxException("Error Reading TMX Layer Data.", e);
 								}
 							}
