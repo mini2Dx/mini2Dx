@@ -16,6 +16,7 @@
 package org.mini2Dx.ui.render;
 
 import org.junit.Ignore;
+import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.Platform;
 import org.mini2Dx.core.util.InterpolationTracker;
@@ -38,6 +39,10 @@ import org.mini2Dx.ui.layout.LayoutState;
  * Unit tests for {@link RenderNode}
  */
 public class RenderNodeTest {
+	static {
+		Mdx.locks = new JvmLocks();
+	}
+
 	private static final int PARENT_WIDTH = 400;
 	private static final int PARENT_HEIGHT = 300;
 	private static final int ELEMENT_WIDTH = 200;

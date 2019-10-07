@@ -21,6 +21,8 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.JvmLocks;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.ui.dummy.DummyParentUiElement;
 import org.mini2Dx.ui.dummy.DummyUiElement;
 import org.mini2Dx.ui.element.UiElement;
@@ -37,6 +39,8 @@ public class PixelLayoutUtilsSnapToTest {
 
 	@Before
 	public void setUp() {
+		Mdx.locks = new JvmLocks();
+
 		mockery.setImposteriser(ClassImposteriser.INSTANCE);
 
 		parentElement = mockery.mock(DummyParentUiElement.class, "parentElement");

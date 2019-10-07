@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import org.mini2Dx.core.Graphics;
+import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.Platform;
 import org.mini2Dx.core.game.GameContainer;
@@ -58,6 +59,7 @@ public abstract class GameWrapper implements ApplicationListener {
 	public void create() {
 		Mdx.platform = getPlatform();
 		Mdx.gameIdentifier = gameIdentifier;
+		Mdx.locks = new JvmLocks();
 		initialise(gameIdentifier);
 
 		Mdx.audio = new LibgdxAudio();

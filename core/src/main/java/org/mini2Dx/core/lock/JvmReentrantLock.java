@@ -13,26 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.uats.util;
-
-import org.mini2Dx.core.screen.GameScreen;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+package org.mini2Dx.core.lock;
 
 /**
- * Auto-generate IDs for each {@link GameScreen} in the UAT project
+ * Default implementation of {@link ReentrantLock} for JVM environments
  */
-public class ScreenIds {
-	private static AtomicInteger counter = new AtomicInteger(2);
-	private static Map<String, Integer> screenIds = new HashMap<String, Integer>();
-	
-	public static int getScreenId(Class<?> clazz) {
-		String key = clazz.getName();
-		if(!screenIds.containsKey(key)) {
-			screenIds.put(key, counter.getAndIncrement());
-		}
-		return screenIds.get(clazz.getName());
+public class JvmReentrantLock implements ReentrantLock {
+	private final java.util.concurrent.locks.ReentrantLock lock = new java.util.concurrent.locks.ReentrantLock();
+
+	@Override
+	public boolean isHeldByCurrentThread() {
+		return lock.isHeldByCurrentThread();
+	}
+
+	@Override
+	public void lock() {
+		lock.lock();
+	}
+
+	@Override
+	public boolean tryLock() {
+		return lock.tryLock();
+	}
+
+	@Override
+	public void unlock() {
+		lock.unlock();
 	}
 }

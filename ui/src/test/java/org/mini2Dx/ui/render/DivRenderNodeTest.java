@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.mini2Dx.ui.render;
 
+import org.mini2Dx.core.JvmLocks;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.gdx.utils.Array;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -40,6 +42,10 @@ import java.util.List;
  * Unit tests for {@link DivRenderNode}
  */
 public class DivRenderNodeTest {
+	static {
+		Mdx.locks = new JvmLocks();
+	}
+
 	private Mockery mockery;
 	private UiContainerRenderTree renderTree;
 	private UiTheme theme;

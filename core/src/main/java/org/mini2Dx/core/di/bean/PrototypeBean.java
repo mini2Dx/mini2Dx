@@ -17,10 +17,7 @@ package org.mini2Dx.core.di.bean;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.MdxException;
-
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
+import org.mini2Dx.gdx.utils.Queue;
 
 /**
  * An implementation of {@link Bean} based on the
@@ -30,23 +27,26 @@ public class PrototypeBean extends Bean implements Runnable {
 	private static final int MAXIMUM_PREPARED_PROTOTYPES = 3;
 
 	private Object bean;
-	private BlockingQueue<Object> prototypes;
-	private ExecutorService executorService;
+	private Queue<Object> prototypes;
 
-	public PrototypeBean(Object bean, ExecutorService executorService) {
+	public PrototypeBean(Object bean) {
 		this.bean = bean;
-		this.executorService = executorService;
-		prototypes = new ArrayBlockingQueue<Object>(MAXIMUM_PREPARED_PROTOTYPES);
-		executorService.submit(this);
+		prototypes = new Queue<Object>(MAXIMUM_PREPARED_PROTOTYPES);
+		Mdx.executor.submit(this);
 	}
 
 	@Override
 	public Object getInstance() {
 		Object result = null;
 		try {
-			result = prototypes.take();
-			executorService.submit(this);
-		} catch (InterruptedException e) {
+			synchronized(prototypes) {
+				while(prototypes.size == 0) {
+					prototypes.wait();
+				}
+				result = prototypes.removeFirst();
+			}
+			Mdx.executor.submit(this);
+		} catch (Exception e) {
 			e.printStackTrace();
 			result = null;
 		}
@@ -61,8 +61,11 @@ public class PrototypeBean extends Bean implements Runnable {
 	@Override
 	public void run() {
 		try {
-			while (prototypes.size() < MAXIMUM_PREPARED_PROTOTYPES) {
-				prototypes.offer(PrototypeBean.duplicate(bean));
+			synchronized(prototypes) {
+				while (prototypes.size < MAXIMUM_PREPARED_PROTOTYPES) {
+					prototypes.addLast(PrototypeBean.duplicate(bean));
+				}
+				prototypes.notifyAll();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -21,6 +21,8 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.JvmLocks;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.collision.CollisionBox;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.ui.effect.SlideDirection;
@@ -35,6 +37,10 @@ import junit.framework.Assert;
  *
  */
 public class SlideInTest {
+	static {
+		Mdx.locks = new JvmLocks();
+	}
+
 	private static final float DELTA = 1f / 60f;
 	private static final int CONTAINER_WIDTH = 800;
 	private static final int CONTAINER_HEIGHT = 600;

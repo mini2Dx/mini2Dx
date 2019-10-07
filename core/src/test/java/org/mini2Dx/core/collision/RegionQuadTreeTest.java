@@ -18,6 +18,7 @@ package org.mini2Dx.core.collision;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.collision.util.QuadTreeAwareCollisionBox;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Point;
@@ -38,6 +39,7 @@ public class RegionQuadTreeTest {
 	@Before
 	public void setup() {
 		InterpolationTracker.deregisterAll();
+		Mdx.locks = new JvmLocks();
 
 		Mdx.graphics = null;
 

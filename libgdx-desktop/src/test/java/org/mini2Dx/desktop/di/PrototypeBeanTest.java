@@ -11,6 +11,8 @@
  */
 package org.mini2Dx.desktop.di;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -23,10 +25,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.DependencyInjection;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.TaskExecutor;
 import org.mini2Dx.core.di.bean.PrototypeBean;
 import org.mini2Dx.core.di.dummy.TestPrototypeBean;
+import org.mini2Dx.core.executor.AsyncFuture;
+import org.mini2Dx.core.executor.AsyncResult;
+import org.mini2Dx.core.executor.FrameSpreadTask;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
 import org.mini2Dx.libgdx.LibgdxFiles;
+import org.mini2Dx.libgdx.LibgdxTaskExecutor;
 import org.mini2Dx.libgdx.desktop.DesktopComponentScanner;
 import org.mini2Dx.libgdx.game.GameWrapper;
 
@@ -40,18 +47,57 @@ public class PrototypeBeanTest {
 
 	@Before
 	public void setup() {
+		executorService = Executors.newFixedThreadPool(1);
+
 		Gdx.files = new LwjglFiles();
 		Mdx.files = new LibgdxFiles();
 		Mdx.reflect = new JvmReflection();
 		Mdx.platform = GameWrapper.getPlatform();
 		Mdx.di = new DependencyInjection(new DesktopComponentScanner());
-		
-		executorService = Executors.newFixedThreadPool(1);
+		Mdx.executor = new TaskExecutor() {
+			@Override
+			public void dispose() {
+
+			}
+
+			@Override
+			public void update(float delta) {
+
+			}
+
+			@Override
+			public void execute(Runnable runnable) {
+				executorService.submit(runnable);
+			}
+
+			@Override
+			public AsyncFuture submit(Runnable runnable) {
+				executorService.submit(runnable);
+				return null;
+			}
+
+			@Override
+			public <T> AsyncResult<T> submit(Callable<T> callable) {
+				executorService.submit(callable);
+				return null;
+			}
+
+			@Override
+			public void submit(FrameSpreadTask task) {
+
+			}
+
+			@Override
+			public void setMaxFrameTasksPerFrame(int max) {
+
+			}
+		};
+
 
 		prototype = new TestPrototypeBean();
 		prototype.setIntField(100);
 
-		bean = new PrototypeBean(prototype, executorService);
+		bean = new PrototypeBean(prototype);
 		executorService.submit(bean);
 	}
 

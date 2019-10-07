@@ -71,6 +71,8 @@
     <Compile Include="Input\MonoGameGamePad.cs" />
     <Compile Include="Input\MonoGamePS4GamePad.cs" />
     <Compile Include="Input\MonoGameXboxGamePad.cs" />
+    <Compile Include="Locks\MonoGameReadWriteLock.cs" />
+    <Compile Include="Locks\MonoGameReentrantLock.cs" />
     <Compile Include="Mini2DxGame.cs" />
     <Compile Include="MonoGameAudio.cs" />
     <Compile Include="MonoGameFiles.cs" />
@@ -78,6 +80,7 @@
     <Compile Include="MonoGameGraphics.cs" />
     <Compile Include="MonoGameGraphicsUtils.cs" />
     <Compile Include="MonoGameInput.cs" />
+    <Compile Include="MonoGameLocks.cs" />
     <Compile Include="MonoGameLogger.cs" />
     <Compile Include="MonoGamePlatformUtils.cs" />
     <Compile Include="MonoGamePlayerData.cs" />

@@ -17,6 +17,7 @@ package org.mini2Dx.core.serialization.aot;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.reflect.Field;
+import org.mini2Dx.core.serialization.AotSerializationData;
 import org.mini2Dx.gdx.utils.Array;
 
 import java.io.PrintWriter;
@@ -31,12 +32,21 @@ public class AotSerializedFieldData {
 	private final Field field;
 	private final Array<Class> elementTypes = new Array<Class>();
 
-	public AotSerializedFieldData(Field field) {
+	public AotSerializedFieldData(Class ownerClass, Field field) {
 		this.fieldName = field.getName();
 		this.field = field;
 
+		if(!field.getType().equals(ownerClass)) {
+			AotSerializationData.registerClass(field.getType());
+		}
+
 		for(int i = 0; i < field.getTotalElementTypes(); i++) {
-			elementTypes.add(field.getElementType(i));
+			Class elementClass = field.getElementType(i);
+			elementTypes.add(elementClass);
+
+			if(!elementClass.equals(ownerClass)) {
+				AotSerializationData.registerClass(elementClass);
+			}
 		}
 	}
 

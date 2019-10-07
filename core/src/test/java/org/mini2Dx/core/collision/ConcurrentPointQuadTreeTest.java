@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.core.collision;
 
+import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.collision.util.QuadTreeAwareCollisionPoint;
 import org.mini2Dx.gdx.math.MathUtils;
 import junit.framework.Assert;
@@ -57,6 +58,7 @@ public class ConcurrentPointQuadTreeTest implements Runnable {
 	@Before
 	public void setup() {
 		InterpolationTracker.deregisterAll();
+		Mdx.locks = new JvmLocks();
 
 		Mdx.graphics = null;
 

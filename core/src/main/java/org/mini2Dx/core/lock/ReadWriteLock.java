@@ -13,26 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.uats.util;
-
-import org.mini2Dx.core.screen.GameScreen;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+package org.mini2Dx.core.lock;
 
 /**
- * Auto-generate IDs for each {@link GameScreen} in the UAT project
+ * A pair of locks; one for read-only operations and one for write operations.
+ * The read lock can be held by multiple threads as long as the write lock is held by zero threads.
  */
-public class ScreenIds {
-	private static AtomicInteger counter = new AtomicInteger(2);
-	private static Map<String, Integer> screenIds = new HashMap<String, Integer>();
-	
-	public static int getScreenId(Class<?> clazz) {
-		String key = clazz.getName();
-		if(!screenIds.containsKey(key)) {
-			screenIds.put(key, counter.getAndIncrement());
-		}
-		return screenIds.get(clazz.getName());
-	}
+public interface ReadWriteLock {
+
+	/**
+	 * Acquires the read lock
+	 */
+	public void lockRead();
+
+	/**
+	 * Attempts to acquire the read lock
+	 * @return False if the lock was not acquired
+	 */
+	public boolean tryLockRead();
+
+	/**
+	 * Releases the read lock
+	 */
+	public void unlockRead();
+
+	/**
+	 * Acquires the write lock
+	 */
+	public void lockWrite();
+
+	/**
+	 * Attempts to acquire the write lock
+	 * @return False if the lock was not acquired
+	 */
+	public boolean tryLockWrite();
+
+	/**
+	 * Releases the write lock
+	 */
+	public void unlockWrite();
 }

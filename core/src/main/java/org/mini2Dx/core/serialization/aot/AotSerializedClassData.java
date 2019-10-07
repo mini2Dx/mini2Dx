@@ -39,7 +39,10 @@ public class AotSerializedClassData {
 
 		Field[] fields = Mdx.reflect.getDeclaredFields(clazz);
 		for(int i = 0; i < fields.length; i++) {
-			fieldData.add(new AotSerializedFieldData(fields[i]));
+			if(!fields[i].isAnnotationPresent(org.mini2Dx.core.serialization.annotation.Field.class)) {
+				continue;
+			}
+			fieldData.add(new AotSerializedFieldData(clazz, fields[i]));
 		}
 	}
 

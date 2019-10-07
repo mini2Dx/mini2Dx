@@ -18,6 +18,8 @@ package org.mini2Dx.core.collision;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.JvmLocks;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.geom.Circle;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.PositionChangeListener;
@@ -33,6 +35,8 @@ public class CollisionCircleTest implements PositionChangeListener<CollisionCirc
 	
 	@Before
 	public void setup() {
+		Mdx.locks = new JvmLocks();
+
 		circle = new CollisionCircle(4);
 		receivedPositionNotification = false;
 		receivedSizeNotification = false;

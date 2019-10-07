@@ -18,6 +18,8 @@ package org.mini2Dx.core.collision;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.JvmLocks;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.geom.PositionChangeListener;
 
 
@@ -32,6 +34,8 @@ public class CollisionPointTest implements PositionChangeListener<CollisionPoint
 	
 	@Before
 	public void setup() {
+		Mdx.locks = new JvmLocks();
+
 		point1 = new CollisionPoint();
 		point2 = new CollisionPoint();
 		point3 = new CollisionPoint();

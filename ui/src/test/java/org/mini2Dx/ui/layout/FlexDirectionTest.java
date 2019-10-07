@@ -18,6 +18,8 @@ package org.mini2Dx.ui.layout;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mini2Dx.core.JvmLocks;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.gdx.utils.Array;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -53,6 +55,8 @@ public class FlexDirectionTest {
 	
 	@Before
 	public void setUp() {
+		Mdx.locks = new JvmLocks();
+
 		mockery = new Mockery();
 		mockery.setImposteriser(ClassImposteriser.INSTANCE);
 		

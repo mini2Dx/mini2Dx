@@ -30,8 +30,6 @@ import org.mini2Dx.core.reflect.Method;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.OrderedMap;
 
-import java.util.concurrent.ExecutorService;
-
 /**
  * Injects beans into each other
  */
@@ -78,7 +76,7 @@ public class BeanInjector {
 		}
 	}
 
-	public OrderedMap<String, Bean> getInjectionResult(ExecutorService prototypeExecutorService) {
+	public OrderedMap<String, Bean> getInjectionResult() {
 		OrderedMap<String, Bean> result = new OrderedMap<String, Bean>();
 
 		for (String key : singletons.keys()) {
@@ -88,8 +86,7 @@ public class BeanInjector {
 
 		for (String key : prototypes.keys()) {
 			Object object = prototypes.get(key);
-			PrototypeBean prototypeBean = new PrototypeBean(object, prototypeExecutorService);
-			prototypeExecutorService.submit(prototypeBean);
+			PrototypeBean prototypeBean = new PrototypeBean(object);
 			result.put(key, prototypeBean);
 		}
 

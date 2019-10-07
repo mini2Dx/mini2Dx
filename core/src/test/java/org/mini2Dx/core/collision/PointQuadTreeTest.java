@@ -18,12 +18,13 @@ package org.mini2Dx.core.collision;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.JvmLocks;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.collision.util.QuadTreeAwareCollisionPoint;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.utils.Array;
-import org.mini2Dx.core.Mdx;
 
 import java.util.Random;
 
@@ -39,6 +40,7 @@ public class PointQuadTreeTest {
 	@Before
 	public void setup() {
 		InterpolationTracker.deregisterAll();
+		Mdx.locks = new JvmLocks();
 
 		Mdx.graphics = null;
 

@@ -24,9 +24,6 @@ import org.mini2Dx.core.di.bean.Bean;
 import org.mini2Dx.core.di.injection.BeanInjector;
 import org.mini2Dx.gdx.utils.OrderedMap;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 /**
  * Provides cross-platform dependency injection
  */
@@ -38,7 +35,6 @@ public class DependencyInjection {
     private final ComponentScanner componentScanner;
 
     private OrderedMap<String, Bean> beans;
-    private ExecutorService prototypeService;
 
     public DependencyInjection(ComponentScanner componentScanner) {
         this.componentScanner = componentScanner;
@@ -113,12 +109,7 @@ public class DependencyInjection {
         BeanInjector injector = new BeanInjector(singletons, prototypes);
         injector.inject();
 
-        prototypeService = Executors.newFixedThreadPool(1);
-        beans = injector.getInjectionResult(prototypeService);
-    }
-
-    public void shutdown() {
-        prototypeService.shutdown();
+        beans = injector.getInjectionResult();
     }
 
     public <T> T getBean(Class<T> clazz) {

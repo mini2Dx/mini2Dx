@@ -39,6 +39,7 @@ namespace monogame
         public Mini2DxGame(string gameIdentifier, GameContainer game)
         {
             Mdx.gameIdentifier_ = gameIdentifier;
+            Mdx.locks_ = new MonoGameLocks();
 
             Window.AllowUserResizing = true;
             IsMouseVisible = true;

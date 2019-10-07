@@ -13,16 +13,22 @@ package org.mini2Dx.desktop.di;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.DependencyInjection;
+import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.di.dummy.*;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
 import org.mini2Dx.libgdx.LibgdxFiles;
+import org.mini2Dx.libgdx.LibgdxTaskExecutor;
 import org.mini2Dx.libgdx.desktop.DesktopComponentScanner;
 import org.mini2Dx.libgdx.game.GameWrapper;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Integration test for {@link GameContext} and {@link DesktopComponentScanner}
@@ -36,6 +42,13 @@ public class DesktopDependencyInjectionTest {
 		Mdx.reflect = new JvmReflection();
 		Mdx.platform = GameWrapper.getPlatform();
 		Mdx.di = new DependencyInjection(new DesktopComponentScanner());
+		Mdx.locks = new JvmLocks();
+		Mdx.executor = new LibgdxTaskExecutor(2);
+	}
+
+	@After
+	public void teardown() {
+		Mdx.executor.dispose();
 	}
 	
 	private void scanDependencies() throws Exception {

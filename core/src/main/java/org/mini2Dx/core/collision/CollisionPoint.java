@@ -20,12 +20,12 @@ import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.PositionChangeListener;
 import org.mini2Dx.core.geom.Positionable;
 import org.mini2Dx.core.geom.Shape;
+import org.mini2Dx.core.lock.ReadWriteLock;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
 
 import java.util.Objects;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * An implementation of {@link Point} that allows for interpolation. Game
@@ -34,7 +34,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class CollisionPoint extends Point implements CollisionObject, PositionChangeListener<CollisionPoint> {
 	private final int id;
-	private final ReentrantReadWriteLock positionChangeListenerLock;
+	private final ReadWriteLock positionChangeListenerLock;
 
 	private final Point previousPosition;
 	private final Point renderPosition;
@@ -58,7 +58,7 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 		super(x, y);
 		this.id = id;
 
-		positionChangeListenerLock = new ReentrantReadWriteLock();
+		positionChangeListenerLock = Mdx.locks.newReadWriteLock();
 		addPostionChangeListener(this);
 
 		InterpolationTracker.register(this);
@@ -141,12 +141,12 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 	@Override
 	public <T extends Positionable> void addPostionChangeListener(
 			PositionChangeListener<T> listener) {
-		positionChangeListenerLock.writeLock().lock();
+		positionChangeListenerLock.lockWrite();
 		if (positionChangeListeners == null) {
 			positionChangeListeners = new Array<PositionChangeListener>(true,1);
 		}
 		positionChangeListeners.add(listener);
-		positionChangeListenerLock.writeLock().unlock();
+		positionChangeListenerLock.unlockWrite();
 	}
 
 	@Override

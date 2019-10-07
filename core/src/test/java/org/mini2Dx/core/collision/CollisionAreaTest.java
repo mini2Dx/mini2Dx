@@ -16,7 +16,10 @@
 package org.mini2Dx.core.collision;
 
 import junit.framework.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.JvmLocks;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.geom.PositionChangeListener;
 
 /**
@@ -24,7 +27,12 @@ import org.mini2Dx.core.geom.PositionChangeListener;
  */
 public class CollisionAreaTest implements PositionChangeListener<CollisionArea> {
 	private boolean receivedPositionChangeNotification = false;
-	
+
+	@Before
+	public void setUp() {
+		Mdx.locks = new JvmLocks();
+	}
+
 	@Test
 	public void testCollisionBox() {
 		testCollisionShape(new CollisionBox());

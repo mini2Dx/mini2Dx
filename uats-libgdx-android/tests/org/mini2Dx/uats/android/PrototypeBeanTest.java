@@ -19,9 +19,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mini2Dx.android.di.AndroidDependencyInjection;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.TaskExecutor;
 import org.mini2Dx.core.di.bean.PrototypeBean;
 import org.mini2Dx.core.di.dummy.TestPrototypeBean;
+import org.mini2Dx.core.executor.AsyncFuture;
+import org.mini2Dx.core.executor.AsyncResult;
+import org.mini2Dx.core.executor.FrameSpreadTask;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,13 +42,51 @@ public class PrototypeBeanTest {
     @Before
     public void setup() {
         Mdx.di = new AndroidDependencyInjection(null);
+        Mdx.executor = new TaskExecutor() {
+            @Override
+            public void dispose() {
+
+            }
+
+            @Override
+            public void update(float delta) {
+
+            }
+
+            @Override
+            public void execute(Runnable runnable) {
+                executorService.submit(runnable);
+            }
+
+            @Override
+            public AsyncFuture submit(Runnable runnable) {
+                executorService.submit(runnable);
+                return null;
+            }
+
+            @Override
+            public <T> AsyncResult<T> submit(Callable<T> callable) {
+                executorService.submit(callable);
+                return null;
+            }
+
+            @Override
+            public void submit(FrameSpreadTask task) {
+
+            }
+
+            @Override
+            public void setMaxFrameTasksPerFrame(int max) {
+
+            }
+        };
 
         executorService = Executors.newFixedThreadPool(1);
 
         prototype = new TestPrototypeBean();
         prototype.setIntField(100);
 
-        bean = new PrototypeBean(prototype, executorService);
+        bean = new PrototypeBean(prototype);
         executorService.submit(bean);
     }
 

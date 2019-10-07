@@ -17,12 +17,12 @@ package org.mini2Dx.core.collision;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.geom.*;
+import org.mini2Dx.core.lock.ReadWriteLock;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
 
 import java.util.Objects;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * An implementation of {@link Circle} that allows for interpolation. Game
@@ -32,8 +32,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class CollisionCircle extends Circle implements CollisionArea,
 		PositionChangeListener<CollisionCircle>, SizeChangeListener<CollisionCircle> {
 	private final int id;
-	private final ReentrantReadWriteLock positionChangeListenerLock;
-	private final ReentrantReadWriteLock sizeChangeListenerLock;
+	private final ReadWriteLock positionChangeListenerLock;
+	private final ReadWriteLock sizeChangeListenerLock;
 
 	private final Circle previousCircle;
 	private final Circle renderCircle;
@@ -57,8 +57,8 @@ public class CollisionCircle extends Circle implements CollisionArea,
 		super(centerX, centerY, radius);
 		this.id = id;
 
-		positionChangeListenerLock = new ReentrantReadWriteLock();
-		sizeChangeListenerLock = new ReentrantReadWriteLock();
+		positionChangeListenerLock = Mdx.locks.newReadWriteLock();
+		sizeChangeListenerLock = Mdx.locks.newReadWriteLock();
 		addPostionChangeListener(this);
 		addSizeChangeListener(this);
 
@@ -185,12 +185,12 @@ public class CollisionCircle extends Circle implements CollisionArea,
 	@Override
 	public <T extends Positionable> void addPostionChangeListener(
 			PositionChangeListener<T> listener) {
-		positionChangeListenerLock.writeLock().lock();
+		positionChangeListenerLock.lockWrite();
 		if (positionChangeListeners == null) {
 			positionChangeListeners = new Array<PositionChangeListener>(true,1);
 		}
 		positionChangeListeners.add(listener);
-		positionChangeListenerLock.writeLock().unlock();
+		positionChangeListenerLock.unlockWrite();
 	}
 
 	@Override
@@ -201,12 +201,12 @@ public class CollisionCircle extends Circle implements CollisionArea,
 
 	@Override
 	public <T extends Sizeable> void addSizeChangeListener(SizeChangeListener<T> listener) {
-		sizeChangeListenerLock.writeLock().lock();
+		sizeChangeListenerLock.lockWrite();
 		if (sizeChangeListeners == null) {
 			sizeChangeListeners = new Array<SizeChangeListener>(true,1);
 		}
 		sizeChangeListeners.add(listener);
-		sizeChangeListenerLock.writeLock().unlock();
+		sizeChangeListenerLock.unlockWrite();
 	}
 
 	@Override

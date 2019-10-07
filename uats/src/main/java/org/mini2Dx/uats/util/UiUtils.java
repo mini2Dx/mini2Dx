@@ -18,13 +18,13 @@ package org.mini2Dx.uats.util;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.files.FileHandleResolver;
 import org.mini2Dx.core.graphics.Color;
+import org.mini2Dx.core.graphics.Colors;
 import org.mini2Dx.core.graphics.CustomCursor;
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.GamePadListener;
 import org.mini2Dx.core.input.deadzone.RadialDeadZone;
 import org.mini2Dx.core.input.ps4.PS4GamePad;
 import org.mini2Dx.core.input.xbox.XboxGamePad;
-import org.mini2Dx.core.graphics.Colors;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.animation.TextAnimation;
 import org.mini2Dx.ui.element.*;
@@ -34,15 +34,15 @@ import org.mini2Dx.ui.gamepad.XboxUiInput;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.navigation.UiNavigation;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
  */
 public class UiUtils {
-	private static Map<String, GamePadListener> MAPPED_CONTROLLERS = new ConcurrentHashMap<String, GamePadListener>();
-	private static Map<String, GamePadUiInput<?>> MAPPED_CONTROLLER_INPUT = new ConcurrentHashMap<String, GamePadUiInput<?>>();
+	private static Map<String, GamePadListener> MAPPED_CONTROLLERS = new HashMap<>();
+	private static Map<String, GamePadUiInput<?>> MAPPED_CONTROLLER_INPUT = new HashMap<String, GamePadUiInput<?>>();
 	private static CustomCursor customCursor;
 
 	public static CustomCursor getCustomCursor(FileHandleResolver fileHandleResolver) {

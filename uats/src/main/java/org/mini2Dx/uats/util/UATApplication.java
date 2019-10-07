@@ -15,29 +15,47 @@
  ******************************************************************************/
 package org.mini2Dx.uats.util;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.files.FallbackFileHandleResolver;
 import org.mini2Dx.core.files.InternalFileHandleResolver;
 import org.mini2Dx.core.files.LocalFileHandleResolver;
 import org.mini2Dx.core.game.ScreenBasedGame;
+import org.mini2Dx.core.serialization.AotSerializationData;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.TiledMapLoader;
 import org.mini2Dx.uats.*;
 import org.mini2Dx.ui.NavigationMode;
 import org.mini2Dx.ui.UiThemeLoader;
 import org.mini2Dx.ui.style.UiTheme;
+
+import java.io.IOException;
+
 /**
  *
  * @author Thomas Cashman
  */
 public class UATApplication extends ScreenBasedGame {
+	private static final String LOGGING_TAG = UATApplication.class.getSimpleName();
+
 	public static final NavigationMode NAVIGATION_MODE = NavigationMode.BUTTON_OR_POINTER;
+	public static boolean USE_AOT_DATA = false;
 
 	private AssetManager assetManager;
 
 	@Override
 	public void initialise() {
 		TiledMap.FAST_RENDER_EMPTY_LAYERS = true;
+
+		if(USE_AOT_DATA) {
+			try {
+				AotSerializationData.restoreFrom(Mdx.files.internal("aot-data.txt"));
+			} catch (IOException e) {
+				Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
+			} catch (ClassNotFoundException e) {
+				Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
+			}
+		}
 
 		FallbackFileHandleResolver fallbackFileHandleResolver = new FallbackFileHandleResolver(new InternalFileHandleResolver(),
 				new LocalFileHandleResolver());

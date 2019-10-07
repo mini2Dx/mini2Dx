@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.mini2Dx.ui.render;
 
+import org.mini2Dx.core.JvmLocks;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.gdx.utils.Array;
 import junit.framework.Assert;
 import org.jmock.Expectations;
@@ -39,6 +41,10 @@ import java.util.List;
  * Unit tests for {@link RenderLayer}
  */
 public class RenderLayerTest {
+	static {
+		Mdx.locks = new JvmLocks();
+	}
+
 	private Mockery mockery;
 	private LayoutState layoutState;
 	private UiContainerRenderTree renderTree;

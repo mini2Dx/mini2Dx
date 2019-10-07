@@ -145,7 +145,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 
 		Color tmp = g.getColor();
 
-		lock.readLock().lock();
+		lock.lockRead();
 		if (topLeft != null) {
 			topLeft.debugRender(g);
 			topRight.debugRender(g);
@@ -162,7 +162,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 		for (T element : elements) {
 			g.drawRect(element.getX(), element.getY(), element.getWidth(), element.getHeight());
 		}
-		lock.readLock().unlock();
+		lock.unlockRead();
 		g.setColor(tmp);
 	}
 	
@@ -179,11 +179,11 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 		}
 		clearTotalElementsCache();
 		
-		lock.writeLock().lock();
+		lock.lockWrite();
 		
 		if(topLeft != null) {
-			lock.readLock().lock();
-			lock.writeLock().unlock();
+			lock.lockRead();
+			lock.unlockWrite();
 			for(int i = elementsWithinQuad.size - 1; i >= 0; i--) {
 				T element = elementsWithinQuad.get(i);
 				if (topLeft.add(element)) {
@@ -203,11 +203,11 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 					continue;
 				}
 			}
-			lock.readLock().unlock();
+			lock.unlockRead();
 			if(elementsWithinQuad.size == 0) {
 				return;
 			}
-			lock.writeLock().lock();
+			lock.lockWrite();
 		}
 		
 		this.elements.addAll(elementsWithinQuad);
@@ -215,7 +215,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 			element.addPostionChangeListener(this);
 		}
 		int totalElements = this.elements.size;
-		lock.writeLock().unlock();
+		lock.unlockWrite();
 		
 		if (totalElements > elementLimitPerQuad && getWidth() >= 2f && getHeight() >= 2f) {
 			subdivide();
@@ -241,17 +241,17 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 	
 	@Override
 	protected boolean addElement(T element) {
-		lock.writeLock().lock();
+		lock.lockWrite();
 		
 		//Another write may occur concurrently before this one
 		if(topLeft != null) {
-			lock.readLock().lock();
-			lock.writeLock().unlock();
+			lock.lockRead();
+			lock.unlockWrite();
 			boolean result = addElementToChild(element);
 			if(result) {
 				return true;
 			}
-			lock.writeLock().lock();
+			lock.lockWrite();
 		}
 		
 		elements.add(element);
@@ -260,7 +260,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 		if (elements.size > elementLimitPerQuad && getWidth() >= 2f && getHeight() >= 2f) {
 			subdivide();
 		}
-		lock.writeLock().unlock();
+		lock.unlockWrite();
 		return true;
 	}
 
@@ -268,42 +268,42 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 	protected boolean addElementToChild(T element) {
 		if (topLeft.contains(element)) {
 			boolean result = topLeft.add(element);
-			lock.readLock().unlock();
+			lock.unlockRead();
 			return result;
 		}
 		if (topRight.contains(element)) {
 			boolean result = topRight.add(element);
-			lock.readLock().unlock();
+			lock.unlockRead();
 			return result;
 		}
 		if (bottomLeft.contains(element)) {
 			boolean result = bottomLeft.add(element);
-			lock.readLock().unlock();
+			lock.unlockRead();
 			return result;
 		}
 		if (bottomRight.contains(element)) {
 			boolean result = bottomRight.add(element);
-			lock.readLock().unlock();
+			lock.unlockRead();
 			return result;
 		}
-		lock.readLock().unlock();
+		lock.unlockRead();
 		return false;
 	}
 
 	@Override
 	protected void subdivide() {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (topLeft != null) {
-			lock.readLock().unlock();
+			lock.unlockRead();
 			return;
 		}
-		lock.readLock().unlock();
+		lock.unlockRead();
 
-		lock.writeLock().lock();
+		lock.lockWrite();
 		
 		//Another write may occur concurrently before this one
 		if (topLeft != null) {
-			lock.writeLock().unlock();
+			lock.unlockWrite();
 			return;
 		}
 
@@ -316,7 +316,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 		bottomRight = new ConcurrentRegionQuadTree<T>(this, getX() + halfWidth, getY() + halfHeight, halfWidth, halfHeight);
 
 		for (int i = elements.size - 1; i >= 0; i--) {
-			lock.readLock().lock();
+			lock.lockRead();
 			T element = elements.get(i);
 			if (addElementToChild(element)) {
 				elements.removeValue(element, false);
@@ -324,7 +324,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 			}
 		}
 
-		lock.writeLock().unlock();
+		lock.unlockWrite();
 	}
 	
 	@Override
@@ -341,7 +341,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 			}
 		}
 		
-		lock.readLock().lock();
+		lock.lockRead();
 		if(topLeft != null) {
 			for(int i = elementsWithinQuad.size - 1; i >= 0; i--) {
 				T element = elementsWithinQuad.get(i);
@@ -363,11 +363,11 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 				}
 			}
 		}
-		lock.readLock().unlock();
+		lock.unlockRead();
 		
-		lock.writeLock().lock();
+		lock.lockWrite();
 		elements.removeAll(elementsWithinQuad, false);
-		lock.writeLock().unlock();
+		lock.unlockWrite();
 		
 		for(T element : elementsWithinQuad) {
 			element.removePositionChangeListener(this);
@@ -395,21 +395,21 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 	
 	@Override
 	protected boolean removeElement(T element, boolean topDownInvocation) {
-		lock.writeLock().lock();
+		lock.lockWrite();
 		
 		//Another write may occur concurrently before this one
 		if(topLeft != null) {
-			lock.readLock().lock();
-			lock.writeLock().unlock();
+			lock.lockRead();
+			lock.unlockWrite();
 			boolean result = removeElementFromChild(element);
 			if(result) {
 				return true;
 			}
-			lock.writeLock().lock();
+			lock.lockWrite();
 		}
 		
 		boolean result = elements.removeValue(element, false);
-		lock.writeLock().unlock();
+		lock.unlockWrite();
 		element.removePositionChangeListener(this);
 
 		if (parent == null) {
@@ -418,11 +418,11 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 		if (result) {
 			if (parent.isMergable()) {
 				if (!topDownInvocation) {
-					parent.lock.readLock().lock();
+					parent.lock.lockRead();
 				}
 				parent.merge();
 				if (!topDownInvocation) {
-					parent.lock.readLock().unlock();
+					parent.lock.unlockRead();
 				}
 			}
 			QuadTreeAwareUtils.removeQuadTreeRef(element);
@@ -442,7 +442,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 
 	@Override
 	public void getElementsWithinArea(Array<T> result, Shape area) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (topLeft != null) {
 			if (topLeft.contains(area) || topLeft.intersects(area)) {
 				topLeft.getElementsWithinArea(result, area);
@@ -458,7 +458,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 			}
 		}
 		addElementsWithinArea(result, area);
-		lock.readLock().unlock();
+		lock.unlockRead();
 	}
 
 	@Override
@@ -474,7 +474,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 	}
 
 	private void getElementsWithinAreaUpwards(Array<T> result, Shape area, boolean firstInvocation) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (elements != null) {
 			addElementsWithinArea(result, area);
 		}
@@ -507,7 +507,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 			}
 			((ConcurrentRegionQuadTree<T>)parent).getElementsWithinAreaUpwards(result, area, false);
 		}
-		lock.readLock().unlock();
+		lock.unlockRead();
 	}
 
 	@Override
@@ -557,7 +557,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 
 	@Override
 	public void getElementsContainingArea(Array<T> result, Shape area, boolean entirelyContained) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (topLeft != null) {
 			if (topLeft.contains(area) || topLeft.intersects(area))
 				topLeft.getElementsContainingArea(result, area, entirelyContained);
@@ -569,7 +569,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 				bottomRight.getElementsContainingArea(result, area, entirelyContained);
 		}
 		addElementsContainingArea(result, area, entirelyContained);
-		lock.readLock().unlock();
+		lock.unlockRead();
 	}
 
 	@Override
@@ -585,7 +585,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 	}
 
 	protected void getElementsContainingAreaUpwards(Array<T> result, Shape area, boolean firstInvocation, boolean entirelyContained) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (elements != null) {
 			addElementsContainingArea(result, area, entirelyContained);
 		}
@@ -618,7 +618,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 			}
 			((ConcurrentRegionQuadTree<T>)parent).getElementsContainingAreaUpwards(result, area, false, entirelyContained);
 		}
-		lock.readLock().unlock();
+		lock.unlockRead();
 	}
 
 	protected void addElementsContainingPoint(Array<T> result, Point point) {
@@ -632,7 +632,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 
 	@Override
 	public void getElementsContainingPoint(Array<T> result, Point point) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (topLeft != null) {
 			if (topLeft.contains(point)) {
 				topLeft.getElementsContainingPoint(result, point);
@@ -648,7 +648,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 			}
 		}
 		addElementsContainingPoint(result, point);
-		lock.readLock().unlock();
+		lock.unlockRead();
 	}
 
 	@Override
@@ -664,7 +664,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 	}
 
 	private void getElementsContainingPointUpwards(Array<T> result, Point point, boolean firstInvocation) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (elements != null){
 			addElementsContainingPoint(result, point);
 		}
@@ -697,7 +697,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 			}
 			((ConcurrentRegionQuadTree<T>)parent).getElementsContainingPointUpwards(result, point, false);
 		}
-		lock.readLock().unlock();
+		lock.unlockRead();
 	}
 
 	@Override
@@ -712,7 +712,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 
 	@Override
 	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (topLeft != null) {
 			if (intersects(topLeft, lineSegment)) {
 				topLeft.getElementsIntersectingLineSegment(result, lineSegment);
@@ -728,7 +728,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 			}
 		}
 		addElementsIntersectingLineSegment(result, lineSegment);
-		lock.readLock().unlock();
+		lock.unlockRead();
 	}
 
 	@Override
@@ -745,7 +745,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 	}
 
 	private void addElementsIntersectingLineSegmentUpwards(Array<T> result, LineSegment lineSegment, boolean firstInvocation) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (elements != null) {
 			addElementsIntersectingLineSegment(result, lineSegment);
 		}
@@ -778,7 +778,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 			}
 			((ConcurrentRegionQuadTree<T>)parent).addElementsIntersectingLineSegmentUpwards(result, lineSegment, false);
 		}
-		lock.readLock().unlock();
+		lock.unlockRead();
 	}
 
 	@Override
@@ -790,7 +790,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 
 	@Override
 	public void getElements(Array<T> result) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (topLeft != null) {
 			((ConcurrentRegionQuadTree<T>) topLeft).getElements(result);
 			((ConcurrentRegionQuadTree<T>) topRight).getElements(result);
@@ -798,7 +798,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 			((ConcurrentRegionQuadTree<T>) bottomRight).getElements(result);
 		}
 		result.addAll(elements);
-		lock.readLock().unlock();
+		lock.unlockRead();
 	}
 
 	@Override
@@ -809,7 +809,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 
 		totalElementsCache = 0;
 
-		lock.readLock().lock();
+		lock.lockRead();
 		if (topLeft != null) {
 			totalElementsCache = topLeft.getTotalElements();
 			totalElementsCache += topRight.getTotalElements();
@@ -817,7 +817,7 @@ public class ConcurrentRegionQuadTree<T extends Sizeable> extends ConcurrentPoin
 			totalElementsCache += bottomRight.getTotalElements();
 		}
 		totalElementsCache += elements.size;
-		lock.readLock().unlock();
+		lock.unlockRead();
 		return totalElementsCache;
 	}
 

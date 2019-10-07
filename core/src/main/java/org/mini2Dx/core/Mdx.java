@@ -75,6 +75,11 @@ public class Mdx {
     public static Input input;
 
     /**
+     * {@link Locks} API
+     */
+    public static Locks locks;
+
+    /**
      * JSON Serialization API
      */
     public static final JsonSerializer json = new JsonSerializer();

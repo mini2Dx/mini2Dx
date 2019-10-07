@@ -21,6 +21,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.collision.CollisionBox;
 import org.mini2Dx.core.collision.PointQuadTree;
@@ -48,6 +49,7 @@ public class TiledCollisionMapperTest {
 		Gdx.files = new LwjglFiles();
 		Mdx.files = new LibgdxFiles();
 		Mdx.graphics = new LibgdxGraphicsUtils();
+		Mdx.locks = new JvmLocks();
 
 		FileHandle file = Mdx.files.internal(Thread.currentThread().getContextClassLoader()
 				.getResource("orthogonal.tmx").getFile().replaceAll("%20", " "));

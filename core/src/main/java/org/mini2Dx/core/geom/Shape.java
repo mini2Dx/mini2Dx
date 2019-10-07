@@ -18,11 +18,10 @@ package org.mini2Dx.core.geom;
 
 import org.mini2Dx.core.Geometry;
 import org.mini2Dx.core.Graphics;
+import org.mini2Dx.core.lock.ReadWriteLock;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
 import org.mini2Dx.gdx.utils.Array;
-
-import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  * Base class for shapes
@@ -302,16 +301,16 @@ public abstract class Shape implements Sizeable {
 	}
 
 	public static <T extends Positionable> void removePositionListener(ReadWriteLock lock, Array<PositionChangeListener> positionChangeListeners, PositionChangeListener listener) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (positionChangeListeners == null) {
-			lock.readLock().unlock();
+			lock.unlockRead();
 			return;
 		}
-		lock.readLock().unlock();
+		lock.unlockRead();
 
-		lock.writeLock().lock();
+		lock.lockWrite();
 		positionChangeListeners.removeValue(listener, false);
-		lock.writeLock().unlock();
+		lock.unlockWrite();
 	}
 
 	public static <T extends Positionable> void notifyPositionListeners(Array<PositionChangeListener> positionChangeListeners, T notifier) {
@@ -328,9 +327,9 @@ public abstract class Shape implements Sizeable {
 	}
 
 	public static <T extends Positionable> void notifyPositionListeners(ReadWriteLock lock, Array<PositionChangeListener> positionChangeListeners, T notifier) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (positionChangeListeners == null) {
-			lock.readLock().unlock();
+			lock.unlockRead();
 			return;
 		}
 		for (int i = positionChangeListeners.size - 1; i >= 0; i--) {
@@ -338,11 +337,11 @@ public abstract class Shape implements Sizeable {
 				i = positionChangeListeners.size - 1;
 			}
 			PositionChangeListener listener = positionChangeListeners.get(i);
-			lock.readLock().unlock();
+			lock.unlockRead();
 			listener.positionChanged(notifier);
-			lock.readLock().lock();
+			lock.lockRead();
 		}
-		lock.readLock().unlock();
+		lock.unlockRead();
 	}
 
 	public static <T extends Positionable> void clearPositionListeners(Array<PositionChangeListener> positionChangeListeners) {
@@ -353,16 +352,16 @@ public abstract class Shape implements Sizeable {
 	}
 
 	public static <T extends Positionable> void clearPositionListeners(ReadWriteLock lock, Array<PositionChangeListener> positionChangeListeners) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (positionChangeListeners == null) {
-			lock.readLock().unlock();
+			lock.unlockRead();
 			return;
 		}
-		lock.readLock().unlock();
+		lock.unlockRead();
 
-		lock.writeLock().lock();
+		lock.lockWrite();
 		positionChangeListeners.clear();
-		lock.writeLock().unlock();
+		lock.unlockWrite();
 	}
 
 	public static <T extends Sizeable> void removeSizeListener(Array<SizeChangeListener> sizeChangeListeners, SizeChangeListener listener) {
@@ -373,16 +372,16 @@ public abstract class Shape implements Sizeable {
 	}
 
 	public static <T extends Sizeable> void removeSizeListener(ReadWriteLock lock, Array<SizeChangeListener> sizeChangeListeners, SizeChangeListener listener) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (sizeChangeListeners == null) {
-			lock.readLock().unlock();
+			lock.unlockRead();
 			return;
 		}
-		lock.readLock().unlock();
+		lock.unlockRead();
 
-		lock.writeLock().lock();
+		lock.lockWrite();
 		sizeChangeListeners.removeValue(listener, false);
-		lock.writeLock().unlock();
+		lock.unlockWrite();
 	}
 
 	public static <T extends Sizeable> void notifySizeListeners(Array<SizeChangeListener> sizeChangeListeners, T notifier) {
@@ -399,9 +398,9 @@ public abstract class Shape implements Sizeable {
 	}
 
 	public static <T extends Sizeable> void notifySizeListeners(ReadWriteLock lock, Array<SizeChangeListener> sizeChangeListeners, T notifier) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (sizeChangeListeners == null) {
-			lock.readLock().unlock();
+			lock.unlockRead();
 			return;
 		}
 		for (int i = sizeChangeListeners.size - 1; i >= 0; i--) {
@@ -409,11 +408,11 @@ public abstract class Shape implements Sizeable {
 				i = sizeChangeListeners.size - 1;
 			}
 			SizeChangeListener listener = sizeChangeListeners.get(i);
-			lock.readLock().unlock();
+			lock.unlockRead();
 			listener.sizeChanged(notifier);
-			lock.readLock().lock();
+			lock.lockRead();
 		}
-		lock.readLock().unlock();
+		lock.unlockRead();
 	}
 
 	public static <T extends Sizeable> void clearSizeListeners(Array<SizeChangeListener> sizeChangeListeners) {
@@ -424,16 +423,16 @@ public abstract class Shape implements Sizeable {
 	}
 
 	public static <T extends Sizeable> void clearSizeListeners(ReadWriteLock lock, Array<SizeChangeListener> sizeChangeListeners) {
-		lock.readLock().lock();
+		lock.lockRead();
 		if (sizeChangeListeners == null) {
-			lock.readLock().unlock();
+			lock.unlockRead();
 			return;
 		}
-		lock.readLock().unlock();
+		lock.unlockRead();
 
-		lock.writeLock().lock();
+		lock.lockWrite();
 		sizeChangeListeners.clear();
-		lock.writeLock().unlock();
+		lock.unlockWrite();
 	}
 
 	@Override

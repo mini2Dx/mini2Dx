@@ -13,26 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.uats.util;
+package org.mini2Dx.core.lock;
 
-import org.mini2Dx.core.screen.GameScreen;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * Auto-generate IDs for each {@link GameScreen} in the UAT project
+ * Default implementation of {@link ReadWriteLock} for JVM environments
  */
-public class ScreenIds {
-	private static AtomicInteger counter = new AtomicInteger(2);
-	private static Map<String, Integer> screenIds = new HashMap<String, Integer>();
-	
-	public static int getScreenId(Class<?> clazz) {
-		String key = clazz.getName();
-		if(!screenIds.containsKey(key)) {
-			screenIds.put(key, counter.getAndIncrement());
-		}
-		return screenIds.get(clazz.getName());
+public class JvmReadWriteLock implements ReadWriteLock {
+	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+	@Override
+	public void lockRead() {
+		lock.readLock().lock();
+	}
+
+	@Override
+	public boolean tryLockRead() {
+		return lock.readLock().tryLock();
+	}
+
+	@Override
+	public void unlockRead() {
+		lock.readLock().unlock();
+	}
+
+	@Override
+	public void lockWrite() {
+		lock.writeLock().lock();
+	}
+
+	@Override
+	public boolean tryLockWrite() {
+		return lock.writeLock().tryLock();
+	}
+
+	@Override
+	public void unlockWrite() {
+		lock.writeLock().unlock();
 	}
 }

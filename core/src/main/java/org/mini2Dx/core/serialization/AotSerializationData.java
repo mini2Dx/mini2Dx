@@ -29,7 +29,20 @@ public class AotSerializationData {
 	private static final ObjectMap<String, AotSerializedClassData> AOT_DATA = new ObjectMap<String, AotSerializedClassData>();
 
 	public static void registerClass(Class clazz) {
-		AOT_DATA.put(clazz.getName(), new AotSerializedClassData(clazz));
+		if(clazz.isPrimitive()) {
+			return;
+		}
+		if(clazz.getName().equals("java.lang.String")) {
+			return;
+		}
+		if(AOT_DATA.containsKey(clazz.getName())) {
+			return;
+		}
+		final AotSerializedClassData classData = new AotSerializedClassData(clazz);
+		if(classData.getTotalFields() == 0) {
+			return;
+		}
+		AOT_DATA.put(clazz.getName(), classData);
 	}
 
 	public static AotSerializedClassData getClassData(Class clazz) {

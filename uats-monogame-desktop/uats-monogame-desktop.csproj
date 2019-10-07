@@ -50,8 +50,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="mini2Dx-all, Version=2.0.0.6, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="mini2Dx-all">
       <HintPath>..\all\generated-src\bin\Debug\mini2Dx-all.dll</HintPath>
     </Reference>
     <Reference Include="MonoGame.Framework">
@@ -126,7 +125,7 @@
       <Name>mini2Dx-monogame</Name>
     </ProjectReference>
     <ProjectReference Include="..\uats\generated-src\mini2Dx-uats.csproj">
-      <Project>{a1678519-56dc-47da-a6d3-c7ea773f55f1}</Project>
+      <Project>{09055c05-564d-4396-8647-3c163bd56e50}</Project>
       <Name>mini2Dx-uats</Name>
     </ProjectReference>
   </ItemGroup>
