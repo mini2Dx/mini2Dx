@@ -16,16 +16,15 @@
 package org.mini2Dx.ui.util;
 
 import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.gdx.utils.Queue;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Utility class for pooling deferred {@link Runnable} instances
  */
 public class DeferredRunnable implements Comparable<DeferredRunnable> {
-	private static final Queue<DeferredRunnable> POOL = new ConcurrentLinkedQueue<DeferredRunnable>();
+	private static final Queue<DeferredRunnable> POOL = new Queue<DeferredRunnable>();
 	private static final AtomicInteger DEFER_ID_ALLOCATOR = new AtomicInteger();
 
 	private Runnable runnable;
@@ -42,7 +41,9 @@ public class DeferredRunnable implements Comparable<DeferredRunnable> {
 	public boolean run() {
 		if(cancelled) {
 			if(!completed) {
-				POOL.offer(this);
+				synchronized (POOL) {
+					POOL.addLast(this);
+				}
 			}
 			return true;
 		}
@@ -52,7 +53,9 @@ public class DeferredRunnable implements Comparable<DeferredRunnable> {
 			return false;
 		}
 		runnable.run();
-		POOL.offer(this);
+		synchronized (POOL) {
+			POOL.addLast(this);
+		}
 		completed = true;
 		return true;
 	}
@@ -78,7 +81,12 @@ public class DeferredRunnable implements Comparable<DeferredRunnable> {
 	 * @return A {@link DeferredRunnable} instance
 	 */
 	public static DeferredRunnable allocate(Runnable runnable, float duration) {
-		DeferredRunnable result = POOL.poll();
+		DeferredRunnable result = null;
+		synchronized (POOL) {
+			if(POOL.size > 0) {
+				result = POOL.removeFirst();
+			}
+		}
 		if (result == null) {
 			result = new DeferredRunnable();
 		}

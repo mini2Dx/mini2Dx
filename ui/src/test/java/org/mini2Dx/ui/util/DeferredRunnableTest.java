@@ -18,6 +18,7 @@ package org.mini2Dx.ui.util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import org.junit.*;
+import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.Platform;
 import org.mini2Dx.core.assets.AssetManager;
@@ -32,6 +33,10 @@ import org.mini2Dx.ui.render.UiContainerRenderTree;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DeferredRunnableTest {
+    static {
+        Mdx.locks = new JvmLocks();
+    }
+
     private final Mockery mockery = new Mockery();
 
     private AssetManager assetManager;
