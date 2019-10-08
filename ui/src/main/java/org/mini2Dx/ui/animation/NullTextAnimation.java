@@ -21,14 +21,30 @@ import org.mini2Dx.core.font.GameFontCache;
  * A {@link TextAnimation} that just renders the text directly
  */
 public class NullTextAnimation extends BaseTextAnimation {
-	
+	private TextCacheState previousState = null;
+
 	@Override
 	public void skip() {}
 
 	@Override
 	public void onResize(GameFontCache cache, String text, float renderWidth, int hAlign) {
+		boolean previouslyNull = false;
+		if(previousState == null) {
+			previousState = TextCacheState.allocate(text, renderWidth, hAlign);
+			previouslyNull = true;
+		}
+
+		TextCacheState state = TextCacheState.allocate(text, renderWidth, hAlign);
+		if(!previouslyNull && previousState.equals(state)) {
+			state.dispose();
+			return;
+		}
+
 		cache.clear();
 		finished = false;
+
+		previousState.dispose();
+		previousState = state;
 	}
 
 	@Override

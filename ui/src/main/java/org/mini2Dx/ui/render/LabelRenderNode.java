@@ -153,19 +153,18 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 
 	@Override
 	protected LabelStyleRule determineStyleRule(LayoutState layoutState) {
-		if (fontCache != null) {
-			fontCache.clear();
-			fontCache = null;
-		}
-		bitmapCacheReset = true;
-
 		LabelStyleRule result = layoutState.getTheme().getStyleRule(element, layoutState.getScreenSize());
 		if (result.getGameFont() == null) {
 			font = Mdx.fonts.defaultFont();
-			fontCache = Mdx.fonts.defaultFont().newCache();
 		} else {
 			font = result.getGameFont();
-			fontCache = result.getGameFont().newCache();
+		}
+
+		if (fontCache == null || !fontCache.getFont().equals(font)) {
+			fontCache.clear();
+			fontCache = null;
+			fontCache = font.newCache();
+			bitmapCacheReset = true;
 		}
 
 		if (element.getColor() != null) {
