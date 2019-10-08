@@ -47,6 +47,7 @@ namespace monogame.Font
         private Vector2 _position = Vector2.Zero;
         private Microsoft.Xna.Framework.Color _setColor = Microsoft.Xna.Framework.Color.Black;
         private LinkedList<MonoGameGameFontCacheDrawingOperation> _previousDrawingOperations = new LinkedList<MonoGameGameFontCacheDrawingOperation>();
+        private uint[] emptyTextureData;
 
         internal MonoGameGameFontCache(GameFont font)
         {
@@ -83,8 +84,7 @@ namespace monogame.Font
 
         private void clearRenderTarget()
         {
-            uint[] textureData = new uint[_gameFontCache.getWidth() * _gameFontCache.getHeight()];
-            _gameFontCache.texture2D.SetData(textureData);
+            _spriteBatch.GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Transparent);
         }
 
         private void addText(MonoGameGameFontCacheDrawingOperation operation)
