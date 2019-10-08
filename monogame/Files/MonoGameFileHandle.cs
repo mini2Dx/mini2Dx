@@ -195,7 +195,10 @@ namespace monogame.Files
 
             if (_fileType == FileType.INTERNAL_)
             {
-                return new StreamReader(((MonoGameFiles)Mdx.files_)._contentManager.OpenStream(path())).ReadToEnd();
+                using(StreamReader reader = new StreamReader(((MonoGameFiles)Mdx.files_)._contentManager.OpenStream(path())))
+                {
+                    return reader.ReadToEnd();
+                }
             }
 
             return File.ReadAllText(pathWithPrefix());
@@ -313,7 +316,7 @@ namespace monogame.Files
                 fileBytes[i] = (byte) readByte;
                 readBytesNumber++;
             }
-
+            byteStream.Close();
 
             return readBytesNumber;
         }
@@ -349,7 +352,7 @@ namespace monogame.Files
                 fileBytes[i] = (sbyte) readByte;
                 readBytesNumber++;
             }
-            
+            byteStream.Close();
 
             return readBytesNumber;
         }
