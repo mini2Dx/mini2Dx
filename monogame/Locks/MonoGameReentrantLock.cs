@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace monogame.Locks
 {
-    public class MonoGameReentrantLock : ReentrantLock
+    public class MonoGameReentrantLock : global::Java.Lang.Object, ReentrantLock
     {
         object @object = new object();
 

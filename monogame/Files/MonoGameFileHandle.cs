@@ -28,7 +28,7 @@ using IOException = Java.Io.IOException;
 
 namespace monogame.Files
 {
-    public class MonoGameFileHandle : FileHandle
+    public class MonoGameFileHandle : global::Java.Lang.Object, FileHandle
     {
         private readonly FileType _fileType;
         private readonly FileInfo _fileInfo;

@@ -25,7 +25,7 @@ using Org.Mini2Dx.Core.Files;
 
 namespace monogame
 {
-    public class MonoGameAudio : _Audio
+    public class MonoGameAudio : global::Java.Lang.Object, _Audio
     {
         private static readonly LinkedList<MusicCompletionListener> _musicCompletionListeners;
         private static readonly LinkedList<SoundCompletionListener> _soundCompletionListeners;

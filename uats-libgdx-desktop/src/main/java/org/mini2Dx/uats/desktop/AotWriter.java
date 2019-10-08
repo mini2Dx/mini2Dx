@@ -22,6 +22,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
 import org.mini2Dx.core.serialization.AotSerializationData;
 import org.mini2Dx.libgdx.LibgdxFiles;
+import org.mini2Dx.ui.element.*;
 import org.mini2Dx.ui.style.UiTheme;
 
 import java.io.File;
@@ -36,6 +37,28 @@ public class AotWriter {
 		Mdx.files = new LibgdxFiles();
 
 		AotSerializationData.registerClass(UiTheme.class);
+		AotSerializationData.registerClass(AnimatedImage.class);
+		AotSerializationData.registerClass(Button.class);
+		AotSerializationData.registerClass(Checkbox.class);
+		AotSerializationData.registerClass(Container.class);
+		AotSerializationData.registerClass(CustomUiElement.class);
+		AotSerializationData.registerClass(Div.class);
+		AotSerializationData.registerClass(FlexRow.class);
+		AotSerializationData.registerClass(Image.class);
+		AotSerializationData.registerClass(ImageButton.class);
+		AotSerializationData.registerClass(Label.class);
+		AotSerializationData.registerClass(ParentUiElement.class);
+		AotSerializationData.registerClass(ProgressBar.class);
+		AotSerializationData.registerClass(RadioButton.class);
+		AotSerializationData.registerClass(ScrollBox.class);
+		AotSerializationData.registerClass(Select.class);
+		AotSerializationData.registerClass(Slider.class);
+		AotSerializationData.registerClass(Tab.class);
+		AotSerializationData.registerClass(TabButton.class);
+		AotSerializationData.registerClass(TabView.class);
+		AotSerializationData.registerClass(TextBox.class);
+		AotSerializationData.registerClass(TextButton.class);
+		AotSerializationData.registerClass(UiElement.class);
 
 		File file = new File("aot-data.txt");
 		FileWriter writer = new FileWriter(file);

@@ -23,7 +23,7 @@ using Org.Mini2Dx.Core.Files;
 
 namespace monogame.Audio
 {
-    public class MonoGameSound : Sound
+    public class MonoGameSound : global::Java.Lang.Object, Sound
     {
         public static readonly List<SoundEffectInstance> instances;
         

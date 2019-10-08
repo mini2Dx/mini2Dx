@@ -30,7 +30,7 @@ using Color = Org.Mini2Dx.Core.Graphics.Color;
 
 namespace monogame.Font
 {
-    public class MonoGameGameFont : GameFont
+    public class MonoGameGameFont : global::Java.Lang.Object, GameFont
     {
         internal SpriteFont _spriteFont;
         private FontGlyphLayout _sharedFontGlyphLayout;

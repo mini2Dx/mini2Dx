@@ -26,7 +26,7 @@ using Org.Mini2Dx.Core.Graphics;
 
 namespace monogame.Graphics
 {
-    public class MonoGameShader : Org.Mini2Dx.Core.Graphics.Shader
+    public class MonoGameShader : global::Java.Lang.Object, Org.Mini2Dx.Core.Graphics.Shader
     {
         private Microsoft.Xna.Framework.Vector2 tmpVector2 = new Microsoft.Xna.Framework.Vector2();
         private Microsoft.Xna.Framework.Vector3 tmpVector3 = new Microsoft.Xna.Framework.Vector3();

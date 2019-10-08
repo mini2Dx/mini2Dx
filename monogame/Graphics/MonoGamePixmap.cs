@@ -23,7 +23,7 @@ using Color = Org.Mini2Dx.Core.Graphics.Color;
 
 namespace monogame.Graphics
 {
-    class MonoGamePixmap : Org.Mini2Dx.Core.Graphics.Pixmap
+    class MonoGamePixmap : global::Java.Lang.Object, Org.Mini2Dx.Core.Graphics.Pixmap
     {
         private UInt32[,] _pixmap;
         private MonoGameColor _setColor;

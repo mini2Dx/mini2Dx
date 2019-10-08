@@ -22,7 +22,7 @@ using Org.Mini2Dx.Core.Files;
 
 namespace monogame
 {
-    public class MonoGameFiles : Org.Mini2Dx.Core._Files
+    public class MonoGameFiles : global::Java.Lang.Object, Org.Mini2Dx.Core._Files
     {
         private readonly string _internalFilePrefix, _externalFilePrefix = ((string) Mdx.gameIdentifier_) + Path.DirectorySeparatorChar;
         internal readonly MonoGameContentManager _contentManager;

@@ -29,7 +29,7 @@ using Texture = Org.Mini2Dx.Core.Graphics.Texture;
 namespace monogame.Graphics
 {
     
-    public class MonoGameSpriteCache : Org.Mini2Dx.Core.Graphics.SpriteCache
+    public class MonoGameSpriteCache : global::Java.Lang.Object, Org.Mini2Dx.Core.Graphics.SpriteCache
     {
         private struct SpriteCacheDrawingOperation
         {

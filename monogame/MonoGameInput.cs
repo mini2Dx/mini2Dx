@@ -29,7 +29,7 @@ using Math = System.Math;
 
 namespace monogame
 {
-    public class MonoGameInput : Org.Mini2Dx.Core._Input
+    public class MonoGameInput : global::Java.Lang.Object, Org.Mini2Dx.Core._Input
     {
         private InputProcessor _inputProcessor;
         

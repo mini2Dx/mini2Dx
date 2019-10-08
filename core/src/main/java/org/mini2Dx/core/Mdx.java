@@ -105,6 +105,11 @@ public class Mdx {
     public static Reflection reflect;
 
     /**
+     * Returns the current {@link ApiRuntime}
+     */
+    public static ApiRuntime runtime;
+
+    /**
      * XML serialization API
      */
     public static final XmlSerializer xml = new XmlSerializer();

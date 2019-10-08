@@ -20,10 +20,7 @@ import com.badlogic.gdx.graphics.g2d.LibgdxSpriteBatchWrapper;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import org.mini2Dx.core.Graphics;
-import org.mini2Dx.core.JvmLocks;
-import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.Platform;
+import org.mini2Dx.core.*;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
 import org.mini2Dx.libgdx.*;
@@ -58,6 +55,7 @@ public abstract class GameWrapper implements ApplicationListener {
 	@Override
 	public void create() {
 		Mdx.platform = getPlatform();
+		Mdx.runtime = ApiRuntime.LIBGDX;
 		Mdx.gameIdentifier = gameIdentifier;
 		Mdx.locks = new JvmLocks();
 		initialise(gameIdentifier);

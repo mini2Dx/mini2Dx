@@ -23,7 +23,7 @@ using Org.Mini2Dx.Core.Executor;
 
 namespace monogame
 {
-    public class MonoGameTaskExecutor : Org.Mini2Dx.Core.TaskExecutor
+    public class MonoGameTaskExecutor : global::Java.Lang.Object, Org.Mini2Dx.Core.TaskExecutor
     {
         private class MonoGameAsyncFuture : Org.Mini2Dx.Core.Executor.AsyncFuture
         {

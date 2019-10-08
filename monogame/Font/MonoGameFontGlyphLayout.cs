@@ -22,7 +22,7 @@ using Math = System.Math;
 
 namespace monogame.Font
 {
-    public class MonoGameFontGlyphLayout : FontGlyphLayout
+    public class MonoGameFontGlyphLayout : global::Java.Lang.Object, FontGlyphLayout
     {
         private readonly MonoGameGameFont _font;
         private static readonly Vector2 defaultValue = new Vector2(-1, -1);

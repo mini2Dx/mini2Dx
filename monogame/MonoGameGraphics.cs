@@ -34,7 +34,7 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace monogame
 {
-    public class MonoGameGraphics : Org.Mini2Dx.Core._Graphics
+    public class MonoGameGraphics : global::Java.Lang.Object, Org.Mini2Dx.Core._Graphics
     {
         private static readonly BlendState DefaultBlending = BlendState.NonPremultiplied;
         private static readonly RasterizerState RasterizerClipping = new RasterizerState{ScissorTestEnable = true};

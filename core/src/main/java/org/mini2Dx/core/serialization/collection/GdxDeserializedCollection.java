@@ -59,12 +59,9 @@ public class GdxDeserializedCollection<T, N> extends DeserializedCollection<T> {
 	@Override
 	public Class<?> getValueClass() {
 		if(valueClass == null) {
-			AotSerializedClassData aotClassData = AotSerializationData.getClassData(ownerClass);
-			if(aotClassData != null) {
-				AotSerializedFieldData aotFieldData = aotClassData.getFieldData(field.getName());
-				if(aotFieldData != null) {
-					valueClass = aotFieldData.getElementType(0);
-				}
+			AotSerializedFieldData aotFieldData = AotSerializationData.getFieldData(ownerClass, field.getName());
+			if(aotFieldData != null) {
+				valueClass = aotFieldData.getElementType(0);
 			}
 		}
 		return valueClass;

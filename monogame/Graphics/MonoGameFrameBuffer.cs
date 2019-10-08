@@ -24,7 +24,7 @@ using Texture = Org.Mini2Dx.Core.Graphics.Texture;
 
 namespace monogame.Graphics
 {
-    public class MonoGameFrameBuffer : Org.Mini2Dx.Core.Graphics.FrameBuffer
+    public class MonoGameFrameBuffer : global::Java.Lang.Object, Org.Mini2Dx.Core.Graphics.FrameBuffer
     {
         private GraphicsDevice _graphicsDevice;
         private RenderTarget2D _renderTarget;

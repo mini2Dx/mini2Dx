@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace monogame.Locks
 {
-    public class MonoGameReadWriteLock : ReadWriteLock
+    public class MonoGameReadWriteLock : global::Java.Lang.Object, ReadWriteLock
     {
         ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 

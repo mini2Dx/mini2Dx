@@ -26,7 +26,7 @@ using Vector3 = Org.Mini2Dx.Gdx.Math.Vector3;
 
 namespace monogame.Input
 {
-    public class MonoGameGamePad : Org.Mini2Dx.Core.Input.GamePad
+    public class MonoGameGamePad : global::Java.Lang.Object, Org.Mini2Dx.Core.Input.GamePad
     {
         public enum AxisCodes
         {

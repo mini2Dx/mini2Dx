@@ -27,7 +27,7 @@ using Org.Mini2Dx.Core.Graphics;
 
 namespace monogame.Graphics
 {
-    class MonoGameTexture : Org.Mini2Dx.Core.Graphics.Texture
+    class MonoGameTexture : global::Java.Lang.Object, Org.Mini2Dx.Core.Graphics.Texture
     {
         internal Texture2D texture2D;
         private TextureAddressMode _uMode = TextureAddressMode.CLAMP_, _vMode = TextureAddressMode.CLAMP_;

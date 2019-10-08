@@ -26,7 +26,7 @@ using Texture = Org.Mini2Dx.Core.Graphics.Texture;
 namespace monogame.Graphics
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public class MonoGameNinePatch : Org.Mini2Dx.Core.Graphics.NinePatch
+    public class MonoGameNinePatch : global::Java.Lang.Object, Org.Mini2Dx.Core.Graphics.NinePatch
     {
         private readonly TextureRegion _textureRegion;
         private readonly MonoGameTextureRegion _ninePatchRegion;

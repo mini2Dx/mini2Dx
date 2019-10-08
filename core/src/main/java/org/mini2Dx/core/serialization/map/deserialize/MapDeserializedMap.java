@@ -40,24 +40,18 @@ public class MapDeserializedMap extends DeserializedMap<Map> {
 
 	@Override
 	public Class<?> getKeyClass() {
-		AotSerializedClassData aotClassData = AotSerializationData.getClassData(ownerClass);
-		if(aotClassData != null) {
-			AotSerializedFieldData aotFieldData = aotClassData.getFieldData(field.getName());
-			if(aotFieldData != null) {
-				return aotFieldData.getElementType(0);
-			}
+		final AotSerializedFieldData aotFieldData = AotSerializationData.getFieldData(ownerClass, field.getName());
+		if(aotFieldData != null) {
+			return aotFieldData.getElementType(0);
 		}
 		return field.getElementType(0);
 	}
 
 	@Override
 	public Class<?> getValueClass() {
-		AotSerializedClassData aotClassData = AotSerializationData.getClassData(ownerClass);
-		if(aotClassData != null) {
-			AotSerializedFieldData aotFieldData = aotClassData.getFieldData(field.getName());
-			if(aotFieldData != null) {
-				return aotFieldData.getElementType(1);
-			}
+		final AotSerializedFieldData aotFieldData = AotSerializationData.getFieldData(ownerClass, field.getName());
+		if(aotFieldData != null) {
+			return aotFieldData.getElementType(1);
 		}
 		return field.getElementType(1);
 	}

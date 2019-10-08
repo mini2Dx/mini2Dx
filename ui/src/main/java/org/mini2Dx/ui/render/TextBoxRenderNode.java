@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.ui.render;
 
+import org.mini2Dx.core.ApiRuntime;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.font.FontGlyphLayout;
@@ -400,11 +401,13 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule> imp
 		if (c == '\b') {
 			return false;
 		}
-		if (Character.getName(c).equals("NULL")) {
-			return false;
-		}
-		if (Character.getName(c).contains("PRIVATE USE")) {
-			return false;
+		if(Mdx.runtime.equals(ApiRuntime.LIBGDX)) {
+			if (Character.getName(c).equals("NULL")) {
+				return false;
+			}
+			if (Character.getName(c).contains("PRIVATE USE")) {
+				return false;
+			}
 		}
 		return true;
 	}

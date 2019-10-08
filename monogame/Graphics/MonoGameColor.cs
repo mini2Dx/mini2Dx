@@ -19,7 +19,7 @@ using Org.Mini2Dx.Core.Graphics;
 
 namespace monogame.Graphics
 {
-    public class MonoGameColor : Color
+    public class MonoGameColor : global::Java.Lang.Object, Color
     {
         internal Microsoft.Xna.Framework.Color _color;
 

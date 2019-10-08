@@ -22,7 +22,7 @@ using Org.Mini2Dx.Core.Files;
 
 namespace monogame.Audio
 {
-    public class MonoGameMusic : Music
+    public class MonoGameMusic : global::Java.Lang.Object, Music
     {
         private static int _songNum;
         private readonly int _songId;

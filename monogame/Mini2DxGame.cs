@@ -80,6 +80,7 @@ namespace monogame
             {
                 throw new PlatformNotSupportedException();
             }
+            Mdx.runtime_ = ApiRuntime.MONOGAME_;
             Mdx.input_ = new MonoGameInput();
             Mdx.files_ = new MonoGameFiles(Content);
             Mdx.fonts_ = new MonoGameFonts();

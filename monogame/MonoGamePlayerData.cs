@@ -27,6 +27,10 @@ namespace monogame
 {
     public class MonoGamePlayerData : Org.Mini2Dx.Core.PlayerData
     {
+        public MonoGamePlayerData() : base()
+        {
+            base._init_();
+        }
 
         private static string joinPath(Java.Lang.String[] filePath)
         {

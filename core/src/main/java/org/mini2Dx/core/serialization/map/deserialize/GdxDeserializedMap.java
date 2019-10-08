@@ -56,12 +56,9 @@ public class GdxDeserializedMap<T> extends DeserializedMap<T> {
 	@Override
 	public Class<?> getKeyClass() {
 		if(keyClass == null) {
-			AotSerializedClassData aotClassData = AotSerializationData.getClassData(ownerClass);
-			if(aotClassData != null) {
-				AotSerializedFieldData aotFieldData = aotClassData.getFieldData(field.getName());
-				if(aotFieldData != null) {
-					return aotFieldData.getElementType(0);
-				}
+			final AotSerializedFieldData aotFieldData = AotSerializationData.getFieldData(ownerClass, field.getName());
+			if(aotFieldData != null) {
+				return aotFieldData.getElementType(0);
 			}
 		}
 		return keyClass;
@@ -70,12 +67,9 @@ public class GdxDeserializedMap<T> extends DeserializedMap<T> {
 	@Override
 	public Class<?> getValueClass() {
 		if(valueClass == null) {
-			AotSerializedClassData aotClassData = AotSerializationData.getClassData(ownerClass);
-			if(aotClassData != null) {
-				AotSerializedFieldData aotFieldData = aotClassData.getFieldData(field.getName());
-				if(aotFieldData != null) {
-					return aotFieldData.getElementType(1);
-				}
+			final AotSerializedFieldData aotFieldData = AotSerializationData.getFieldData(ownerClass, field.getName());
+			if(aotFieldData != null) {
+				return aotFieldData.getElementType(1);
 			}
 		}
 		return valueClass;

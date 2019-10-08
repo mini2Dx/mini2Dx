@@ -23,7 +23,7 @@ using Org.Mini2Dx.Core.Lock;
 
 namespace monogame
 {
-    public class MonoGameLocks : global::Org.Mini2Dx.Core.Locks
+    public class MonoGameLocks : global::Java.Lang.Object, global::Org.Mini2Dx.Core.Locks
     {
         public ReadWriteLock newReadWriteLock()
         {

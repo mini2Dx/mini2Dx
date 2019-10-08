@@ -17,6 +17,7 @@ package org.mini2Dx.core.serialization;
 
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.serialization.aot.AotSerializedClassData;
+import org.mini2Dx.core.serialization.aot.AotSerializedFieldData;
 import org.mini2Dx.gdx.utils.ObjectMap;
 
 import java.io.*;
@@ -38,15 +39,33 @@ public class AotSerializationData {
 		if(AOT_DATA.containsKey(clazz.getName())) {
 			return;
 		}
-		final AotSerializedClassData classData = new AotSerializedClassData(clazz);
-		if(classData.getTotalFields() == 0) {
-			return;
+		AotSerializedClassData classData = null;
+		while(clazz != null && !clazz.equals(Object.class)) {
+			classData = new AotSerializedClassData(clazz);
+			if(classData.getTotalFields() > 0) {
+				AOT_DATA.put(clazz.getName(), classData);
+			}
+			clazz = clazz.getSuperclass();
 		}
-		AOT_DATA.put(clazz.getName(), classData);
 	}
 
 	public static AotSerializedClassData getClassData(Class clazz) {
 		return AOT_DATA.get(clazz.getName(), null);
+	}
+
+	public static AotSerializedFieldData getFieldData(Class clazz, String fieldName) {
+		AotSerializedFieldData result = null;
+		while(result == null && clazz != null && !clazz.equals(Object.class)) {
+			AotSerializedClassData classData = getClassData(clazz);
+			if(classData != null) {
+				result = classData.getFieldData(fieldName);
+				if(result != null) {
+					break;
+				}
+			}
+			clazz = clazz.getSuperclass();
+		}
+		return result;
 	}
 
 	public static void saveTo(FileHandle fileHandle) throws IOException {

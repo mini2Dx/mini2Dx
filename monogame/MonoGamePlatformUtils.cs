@@ -23,6 +23,11 @@ namespace monogame
 {
     public class MonoGamePlatformUtils : Org.Mini2Dx.Core.PlatformUtils
     {
+        public MonoGamePlatformUtils() : base()
+        {
+            base._init_();
+        }
+
         public override void exit(bool b)
         {
             Mini2DxGame.instance.Exit();

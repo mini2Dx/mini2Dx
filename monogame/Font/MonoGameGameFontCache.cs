@@ -28,7 +28,7 @@ using Color = Org.Mini2Dx.Core.Graphics.Color;
 
 namespace monogame.Font
 {
-    class MonoGameGameFontCache : GameFontCache
+    class MonoGameGameFontCache : global::Java.Lang.Object, GameFontCache
     {
         private struct MonoGameGameFontCacheDrawingOperation
         {

@@ -40,12 +40,9 @@ public class SetDeserializedCollection extends DeserializedCollection<Set> {
 
 	@Override
 	public Class<?> getValueClass() {
-		AotSerializedClassData aotClassData = AotSerializationData.getClassData(ownerClass);
-		if(aotClassData != null) {
-			AotSerializedFieldData aotFieldData = aotClassData.getFieldData(field.getName());
-			if(aotFieldData != null) {
-				return aotFieldData.getElementType(0);
-			}
+		final AotSerializedFieldData aotFieldData = AotSerializationData.getFieldData(ownerClass, field.getName());
+		if(aotFieldData != null) {
+			return aotFieldData.getElementType(0);
 		}
 		return field.getElementType(0);
 	}

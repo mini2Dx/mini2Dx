@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace monogame.Util
 {
-    public class MonoGameZlibStream : ZlibStream
+    public class MonoGameZlibStream : global::Java.Lang.Object, ZlibStream
     {
         private MonoGame.Utilities.ZlibStream zlibStream;
         private byte[] buffer = null;

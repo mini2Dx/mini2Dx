@@ -30,8 +30,9 @@ namespace monogame
     {
         private readonly GraphicsDevice _graphicsDevice;
 
-        public MonoGameGraphicsUtils(GraphicsDevice graphicsDevice)
+        public MonoGameGraphicsUtils(GraphicsDevice graphicsDevice) : base()
         {
+            base._init_();
             _graphicsDevice = graphicsDevice;
         }
 

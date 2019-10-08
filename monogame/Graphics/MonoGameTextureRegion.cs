@@ -27,7 +27,7 @@ using Org.Mini2Dx.Core.Graphics;
 
 namespace monogame.Graphics
 {
-    public class MonoGameTextureRegion : Org.Mini2Dx.Core.Graphics.TextureRegion
+    public class MonoGameTextureRegion : global::Java.Lang.Object, Org.Mini2Dx.Core.Graphics.TextureRegion
     {
         private Texture _texture;
         private float _u, _v, _u2, _v2;
