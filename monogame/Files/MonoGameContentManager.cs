@@ -20,7 +20,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace monogame.Files
 {
-    class MonoGameContentManager : ContentManager
+    public class MonoGameContentManager : ContentManager
     {
         public MonoGameContentManager(IServiceProvider serviceProvider, string rootDirectory) : base(serviceProvider, rootDirectory)
         {
@@ -28,7 +28,9 @@ namespace monogame.Files
 
         public new Stream OpenStream(string assetName)
         {
-            return new MemoryStream(Load<mini2DxFileContent>(assetName).content);
+            ContentManager contentManager = this;
+            mini2DxFileContent fileContent = contentManager.Load<mini2DxFileContent>(assetName);
+            return new MemoryStream(fileContent.content);
         }
     }
 }

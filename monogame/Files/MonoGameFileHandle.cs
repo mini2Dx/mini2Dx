@@ -14,6 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 using Java.Io;
+using Microsoft.Xna.Framework.Content;
 using monogame.Util;
 using Org.Mini2Dx.Core;
 using Org.Mini2Dx.Core.Audio;
@@ -52,14 +53,15 @@ namespace monogame.Files
             }
         }
 
-        internal T loadFromContentManager<T>()
+        public virtual T loadFromContentManager<T>()
         {
             if (_fileType != FileType.INTERNAL_)
             {
                 throw new NotSupportedException("You can load from contentManager only INTERNAL files");
             }
 
-            return ((MonoGameFiles) Mdx.files_)._contentManager.Load<T>(path());
+            ContentManager contentManager = ((MonoGameFiles)Mdx.files_)._contentManager;
+            return contentManager.Load<T>(path());
         }
 
         public Java.Lang.String pathWithPrefix()

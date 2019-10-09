@@ -23,6 +23,7 @@ using Color = Org.Mini2Dx.Core.Graphics.Color;
 using System;
 using Org.Mini2Dx.Gdx.Math;
 using Org.Mini2Dx.Core.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace monogame.Graphics
 {
@@ -33,7 +34,7 @@ namespace monogame.Graphics
         private Microsoft.Xna.Framework.Vector4 tmpVector4 = new Microsoft.Xna.Framework.Vector4();
         private Microsoft.Xna.Framework.Matrix tmpMatrix = new Microsoft.Xna.Framework.Matrix();
 
-        internal Effect shader;
+        public Effect shader;
         
         public MonoGameShader(string name)
         {
@@ -41,7 +42,9 @@ namespace monogame.Graphics
             {
                 name += ".fx";
             }
-            shader = ((MonoGameFiles) Mdx.files_)._contentManager.Load<Effect>(name);
+
+            ContentManager contentManager = ((MonoGameFiles)Mdx.files_)._contentManager;
+            shader = contentManager.Load<Effect>(name);
             shader.CurrentTechnique = shader.Techniques[0];
         }
 
