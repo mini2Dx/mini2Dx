@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("uats-monogame-desktop")]
-[assembly: AssemblyProduct("uats-monogame-desktop")]
+[assembly: AssemblyTitle("mini2Dx-common-uats")]
+[assembly: AssemblyProduct("mini2Dx-common-uats")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("eceec0f0-b2c3-418c-8d54-c5a37d2d3c01")]
+[assembly: Guid("aeb4c4b8-22da-4295-b54d-f62f7de998ab")]
 
 // Version information for an assembly consists of the following four values:
 //

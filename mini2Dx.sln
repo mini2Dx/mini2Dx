@@ -9,46 +9,30 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "monogame-pipeline-ext", "mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uats-monogame-desktop", "uats-monogame-desktop\uats-monogame-desktop.csproj", "{EC789EA9-7450-46D2-A4FB-08A5E9ABD902}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mini2Dx-uats", "uats\generated-src\mini2Dx-uats.csproj", "{DCD4BA14-D29C-40E2-B4FD-AF2E1090C31C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mini2Dx-uats", "uats\generated-src\mini2Dx-uats.csproj", "{A1678519-56DC-47DA-A6D3-C7EA773F55F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{AC3AE86C-55AD-4F1E-97E8-12E6389137AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AC3AE86C-55AD-4F1E-97E8-12E6389137AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC3AE86C-55AD-4F1E-97E8-12E6389137AD}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{AC3AE86C-55AD-4F1E-97E8-12E6389137AD}.Debug|x86.Build.0 = Debug|Any CPU
 		{AC3AE86C-55AD-4F1E-97E8-12E6389137AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC3AE86C-55AD-4F1E-97E8-12E6389137AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC3AE86C-55AD-4F1E-97E8-12E6389137AD}.Release|x86.ActiveCfg = Release|Any CPU
-		{AC3AE86C-55AD-4F1E-97E8-12E6389137AD}.Release|x86.Build.0 = Release|Any CPU
 		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Debug|x86.Build.0 = Debug|Any CPU
 		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Release|x86.ActiveCfg = Release|Any CPU
-		{6F98E109-6222-4843-B89A-22CDAE2FE514}.Release|x86.Build.0 = Release|Any CPU
-		{EC789EA9-7450-46D2-A4FB-08A5E9ABD902}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{EC789EA9-7450-46D2-A4FB-08A5E9ABD902}.Debug|x86.ActiveCfg = Debug|x86
-		{EC789EA9-7450-46D2-A4FB-08A5E9ABD902}.Debug|x86.Build.0 = Debug|x86
-		{EC789EA9-7450-46D2-A4FB-08A5E9ABD902}.Release|Any CPU.ActiveCfg = Release|x86
-		{EC789EA9-7450-46D2-A4FB-08A5E9ABD902}.Release|x86.ActiveCfg = Release|x86
-		{EC789EA9-7450-46D2-A4FB-08A5E9ABD902}.Release|x86.Build.0 = Release|x86
-		{DCD4BA14-D29C-40E2-B4FD-AF2E1090C31C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DCD4BA14-D29C-40E2-B4FD-AF2E1090C31C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DCD4BA14-D29C-40E2-B4FD-AF2E1090C31C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{DCD4BA14-D29C-40E2-B4FD-AF2E1090C31C}.Debug|x86.Build.0 = Debug|Any CPU
-		{DCD4BA14-D29C-40E2-B4FD-AF2E1090C31C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DCD4BA14-D29C-40E2-B4FD-AF2E1090C31C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DCD4BA14-D29C-40E2-B4FD-AF2E1090C31C}.Release|x86.ActiveCfg = Release|Any CPU
-		{DCD4BA14-D29C-40E2-B4FD-AF2E1090C31C}.Release|x86.Build.0 = Release|Any CPU
+		{EC789EA9-7450-46D2-A4FB-08A5E9ABD902}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC789EA9-7450-46D2-A4FB-08A5E9ABD902}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC789EA9-7450-46D2-A4FB-08A5E9ABD902}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC789EA9-7450-46D2-A4FB-08A5E9ABD902}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1678519-56DC-47DA-A6D3-C7EA773F55F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1678519-56DC-47DA-A6D3-C7EA773F55F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1678519-56DC-47DA-A6D3-C7EA773F55F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1678519-56DC-47DA-A6D3-C7EA773F55F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
