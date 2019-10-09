@@ -40,13 +40,21 @@ namespace monogame.Graphics
         
         public MonoGameTextureRegion(Texture texture)
         {
-            _texture = texture ?? throw new Java.Lang.IllegalArgumentException();
+            if(texture == null)
+            {
+                throw new Java.Lang.IllegalArgumentException();
+            }
+            _texture = texture;
             setRegion(0, 0, texture.getWidth(), texture.getHeight());
         }
 
         public MonoGameTextureRegion(Texture texture, int x, int y, int width, int height)
         {
-            _texture = texture ?? throw new Java.Lang.IllegalArgumentException();
+            if (texture == null)
+            {
+                throw new Java.Lang.IllegalArgumentException();
+            }
+            _texture = texture;
             setRegion(x, y, width, height);
         }
 

@@ -51,13 +51,12 @@ namespace monogame.Font
 
         public static MonoGameGameFont loadBitmapFont(MonoGameFileHandle fntFileHandle)
         { 
-            Texture2D textureGetter(string textureFileName)
-            {
-                return ((MonoGameTexture) Mdx.graphics_.newTexture(fntFileHandle.parent().child(textureFileName)))
-                    .texture2D;
-            }
             var font = new MonoGameGameFont();
-            font._spriteFont = BMFontLoader.LoadXml(fntFileHandle.readString(), textureGetter);
+            font._spriteFont = BMFontLoader.LoadXml(fntFileHandle.readString(), textureFileName =>
+            {
+                return ((MonoGameTexture)Mdx.graphics_.newTexture(fntFileHandle.parent().child(textureFileName)))
+                    .texture2D;
+            });
             font._sharedFontGlyphLayout = font.newGlyphLayout();
             font._capHeight = font._spriteFont.GetGlyphs()['A'].BoundsInTexture.Height;
             return font;
@@ -232,12 +231,12 @@ namespace monogame.Font
             var spaceWidth = _spriteFont.MeasureString(" ").X;
             
             for(var i = 0; i < words.Length; ++i) {
-                var (x, _) = _spriteFont.MeasureString(words[i]);
-                if(lineWidth + x < maxLineWidth) {
-                    lineWidth += x + spaceWidth;
+                Vector2 v = _spriteFont.MeasureString(words[i]);
+                if(lineWidth + v.X < maxLineWidth) {
+                    lineWidth += v.X + spaceWidth;
                 } else {
                     wrappedText.Append("\n");
-                    lineWidth = x + spaceWidth;
+                    lineWidth = v.X + spaceWidth;
                 }
                 wrappedText.Append(words[i]);
                 wrappedText.Append(" ");

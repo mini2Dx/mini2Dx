@@ -23,22 +23,22 @@ namespace monogame
     {
         public void debug(Java.Lang.String tag, Java.Lang.String msg)
         {
-            Debug.WriteLine($"D/[{tag}] {msg}");
+            Debug.WriteLine("[" + ((string)tag) + "] " + ((string)msg));
         }
 
         public void error(Java.Lang.String tag, Java.Lang.String msg, Exception e)
         {
-            Console.Error.WriteLine($"E/[{tag}] {msg}\n{e.StackTrace}");
+            Console.Error.WriteLine("[" + ((string)tag) + "] " + ((string)msg) + " " + e.ToString());
         }
 
         public void error(Java.Lang.String tag, Java.Lang.String msg)
         {
-            Console.Error.WriteLine($"E/[{tag}] {msg}");
+            Console.Error.WriteLine("[" + ((string)tag) + "] " + ((string)msg));
         }
 
         public void info(Java.Lang.String tag, Java.Lang.String msg)
         {
-            Console.WriteLine($"I/[{tag}] {msg}");
+            Console.WriteLine("[" + ((string) tag) + "] " + ((string) msg));
         }
     }
 }

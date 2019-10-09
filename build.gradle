@@ -420,6 +420,7 @@ project(":" + rootProject.name + "-all") {
 				'-i', project.name + '-desugarjar.jar',
 				'-o', project.file("generated-src").getAbsolutePath(),
 				'-p', 'mini2Dx-all',
+				'-b',
 				'--desugar', "${desugarWorkarounds}",
 				'-r', "${jdkDll}"
 	}
@@ -469,6 +470,7 @@ project(":" + rootProject.name + "-uats") {
 				'-i', project.name + '-desugarjar.jar',
 				'-o', project.file("generated-src").getAbsolutePath(),
 				'-p', 'mini2Dx-uats',
+				'-b',
 				'--desugar', "${desugarWorkarounds}",
 				'-r', "${jdkDll};..\\..\\..\\all\\generated-src\\bin\\Debug\\mini2Dx-all.dll"
 	}

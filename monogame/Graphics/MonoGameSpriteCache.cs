@@ -84,7 +84,7 @@ namespace monogame.Graphics
         private void beginSpriteBatch()
         {
             _graphicsDevice.SetRenderTarget((RenderTarget2D)_caches[_currentCache].texture.texture2D);
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, effect: ((MonoGameShader) _customShader)?.shader);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, effect: (_customShader == null ? null : ((MonoGameShader) _customShader).shader));
             _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext_)._currentRenderTarget);
             ((MonoGameGraphics)Mdx.graphicsContext_).updateClip();
         }
