@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
 using System;
-using System.IO;
-using Microsoft.Xna.Framework.Content;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace monogame.Files
+namespace monogame
 {
-    public class MonoGameContentManager : ContentManager
+    public class MonoGameConfig
     {
-        public MonoGameContentManager(IServiceProvider serviceProvider, string rootDirectory) : base(serviceProvider, rootDirectory)
-        {
-        }
-
-        public new Stream OpenStream(string assetName)
-        {
-            mini2DxFileContent fileContent = base.Load<mini2DxFileContent>(assetName);
-            return new MemoryStream(fileContent.content);
-        }
+        public bool? AllowUserResizing = null;
+        public bool? IsMouseVisible = null;
+        public bool IsFixedTimeStep = false;
+        public int? PreferredBackBufferWidth = null;
+        public int? PreferredBackBufferHeight = null;
+        public bool? IsFullScreen = null;
+        public Org.Mini2Dx.Core.Platform OverridePlatform = null;
     }
 }

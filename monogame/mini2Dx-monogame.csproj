@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-   <LangVersion>5</LangVersion>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mini2Dx-all">
@@ -42,6 +42,10 @@
     </Reference>
     <Reference Include="openjdk8">
       <HintPath>..\..\coffea\openjdk8\generated-src\bin\Debug\openjdk8.dll</HintPath>
+    </Reference>
+    <Reference Include="SpriteFontPlus, Version=0.7.0.22, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SpriteFontPlus\ZipPackage\MonoGame\SpriteFontPlus.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -78,6 +82,7 @@
     <Compile Include="Locks\MonoGameReentrantLock.cs" />
     <Compile Include="Mini2DxGame.cs" />
     <Compile Include="MonoGameAudio.cs" />
+    <Compile Include="MonoGameConfig.cs" />
     <Compile Include="MonoGameFiles.cs" />
     <Compile Include="MonoGameFonts.cs" />
     <Compile Include="MonoGameGraphics.cs" />
@@ -98,9 +103,6 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.Portable">
       <Version>3.7.1.189</Version>
-    </PackageReference>
-    <PackageReference Include="SpriteFontPlus.MonoGame">
-      <Version>0.7.0.22</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

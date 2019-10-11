@@ -35,23 +35,40 @@ namespace monogame
 
         private const float _updateMaximumDelta = targetTimeStep;
         private float _timeAccumulator;
+        private MonoGameConfig config;
 
-        public Mini2DxGame(string gameIdentifier, GameContainer game)
+        public Mini2DxGame(string gameIdentifier, GameContainer game, MonoGameConfig config)
         {
             Mdx.gameIdentifier_ = gameIdentifier;
             Mdx.locks_ = new MonoGameLocks();
 
-            Window.AllowUserResizing = true;
-            IsMouseVisible = true;
-            IsFixedTimeStep = false;
+            if(config.AllowUserResizing.HasValue)
+            {
+                Window.AllowUserResizing = config.AllowUserResizing.Value;
+            }
+            if (config.IsMouseVisible.HasValue)
+            {
+                IsMouseVisible = config.IsMouseVisible.Value;
+            }
+
+            IsFixedTimeStep = config.IsFixedTimeStep;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreparingDeviceSettings += (object s, PreparingDeviceSettingsEventArgs args) =>
             {
                 args.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
             };
             Content.RootDirectory = "Content";
-            graphics.PreferredBackBufferWidth = 800;
-            graphics.PreferredBackBufferHeight = 720;
+
+            if(config.PreferredBackBufferWidth.HasValue && config.PreferredBackBufferHeight.HasValue)
+            {
+                graphics.PreferredBackBufferWidth = config.PreferredBackBufferWidth.Value;
+                graphics.PreferredBackBufferHeight = config.PreferredBackBufferHeight.Value;
+            }
+            if(config.IsFullScreen.HasValue)
+            {
+                graphics.IsFullScreen = config.IsFullScreen.Value;
+            }
+            
             this.game = game;
             instance = this;
         }
@@ -64,7 +81,11 @@ namespace monogame
         /// </summary>
         protected override void Initialize()
         {
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            if (config.OverridePlatform != null)
+            {
+                Mdx.platform_ = config.OverridePlatform;
+            }
+            else if (Environment.OSVersion.Platform == PlatformID.Unix)
             {
                 Mdx.platform_ = Platform.LINUX_;
             }

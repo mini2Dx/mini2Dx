@@ -23,8 +23,15 @@ namespace mini2Dx_common_uats
 
             UATApplication.USE_AOT_DATA_ = true;
 
-            using (var mini2DxGame = new Mini2DxGame("org.mini2Dx.uat", game))
+            MonoGameConfig config = new MonoGameConfig();
+            config.IsMouseVisible = true;
+            config.PreferredBackBufferWidth = 800;
+            config.PreferredBackBufferHeight = 720;
+
+            using (var mini2DxGame = new Mini2DxGame("org.mini2Dx.uat", game, config))
                 mini2DxGame.Run();
+
+            Java.Lang.System.exit(0);
         }
     }
 }
