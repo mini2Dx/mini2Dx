@@ -59,6 +59,7 @@
     <Compile Include="Files\mini2DxFileReader.cs" />
     <Compile Include="Files\MonoGameContentManager.cs" />
     <Compile Include="Files\MonoGameFileHandle.cs" />
+    <Compile Include="Font\MonoGameFontCacheTexture.cs" />
     <Compile Include="Font\MonoGameGameFont.cs" />
     <Compile Include="Font\MonoGameFontGlyphLayout.cs" />
     <Compile Include="Font\MonoGameGameFontCache.cs" />
