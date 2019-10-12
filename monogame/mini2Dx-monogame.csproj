@@ -43,9 +43,9 @@
     <Reference Include="openjdk8">
       <HintPath>..\..\coffea\openjdk8\generated-src\bin\Debug\openjdk8.dll</HintPath>
     </Reference>
-    <Reference Include="SpriteFontPlus, Version=0.7.0.22, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SpriteFontPlus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\SpriteFontPlus\ZipPackage\MonoGame\SpriteFontPlus.dll</HintPath>
+      <HintPath>libs\SpriteFontPlus.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
