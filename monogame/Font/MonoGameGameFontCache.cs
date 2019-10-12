@@ -28,107 +28,108 @@ using Color = Org.Mini2Dx.Core.Graphics.Color;
 
 namespace monogame.Font
 {
-    class MonoGameGameFontCache : global::Java.Lang.Object, GameFontCache
+    public class MonoGameGameFontCache : global::Java.Lang.Object, GameFontCache
     {
-        private struct MonoGameGameFontCacheDrawingOperation
-        {
-            public string text;
-            public float x, y, targetWidth;
-            public int horizontalAlign;
-            public bool wrap;
-            public Microsoft.Xna.Framework.Color color;
-            public float alpha;
-        }
+        private static MonoGameFontCacheTexture GLOBAL_CACHE = null;
 
-        private readonly MonoGameGameFont _gameFont;
-        private GraphicsDevice _graphicsDevice;
-        private MonoGameTexture _gameFontCache;
-        private SpriteBatch _spriteBatch;
+        public readonly MonoGameGameFont _gameFont;
+        public readonly List<MonoGameGameFontCacheDrawingOperation> _previousDrawingOperations = new List<MonoGameGameFontCacheDrawingOperation>();
+
         private Vector2 _position = Vector2.Zero;
-        private Microsoft.Xna.Framework.Color _setColor = Microsoft.Xna.Framework.Color.Black;
-        private LinkedList<MonoGameGameFontCacheDrawingOperation> _previousDrawingOperations = new LinkedList<MonoGameGameFontCacheDrawingOperation>();
-        private uint[] emptyTextureData;
+        public Microsoft.Xna.Framework.Color _setColor = Microsoft.Xna.Framework.Color.Black;
+        public int cacheId;
 
         internal MonoGameGameFontCache(GameFont font)
         {
             _gameFont = (MonoGameGameFont) font;
-            _graphicsDevice = ((MonoGameGraphics) Mdx.graphicsContext_)._graphicsDevice;
-            _spriteBatch = new SpriteBatch(_graphicsDevice);
-            _gameFontCache = new MonoGameTexture(new RenderTarget2D(_graphicsDevice, Mdx.graphicsContext_.getWindowWidth(), Mdx.graphicsContext_.getWindowHeight(), false, SurfaceFormat.Color, _graphicsDevice.PresentationParameters.DepthStencilFormat, 0, RenderTargetUsage.PreserveContents));
-            beginSpriteBatch();
-        }
 
-        private void beginSpriteBatch()
-        {
-            _graphicsDevice.SetRenderTarget((RenderTarget2D) _gameFontCache.texture2D);
-            _spriteBatch.Begin();
-            _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext_)._currentRenderTarget);
-            ((MonoGameGraphics)Mdx.graphicsContext_).updateClip();
-        }
+            if(GLOBAL_CACHE == null)
+            {
+                GLOBAL_CACHE = new MonoGameFontCacheTexture();
+            }
 
-        private void endSpriteBatch()
-        {
-            _graphicsDevice.SetRenderTarget((RenderTarget2D)_gameFontCache.texture2D);
-            _spriteBatch.End();
-            _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext_)._currentRenderTarget);
-            ((MonoGameGraphics)Mdx.graphicsContext_).updateClip();
+            cacheId = GLOBAL_CACHE.allocateId();
+            GLOBAL_CACHE.begin();
         }
 
         public void clear()
         {
-            endSpriteBatch();
-            clearRenderTarget();
+            GLOBAL_CACHE.clear(cacheId);
             _previousDrawingOperations.Clear();
-            beginSpriteBatch();
         }
 
-        private void clearRenderTarget()
+        private void updateCache()
         {
-            _spriteBatch.GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Transparent);
-        }
-
-        private void addText(MonoGameGameFontCacheDrawingOperation operation)
-        {
-            _gameFont.draw(_spriteBatch, operation.text, operation.targetWidth, operation.horizontalAlign, operation.wrap, new Vector2(operation.x, operation.y), operation.color * operation.alpha);
+            GLOBAL_CACHE.setText(this);
         }
 
         public void addText(CharSequence str, float x, float y, float targetWidth, int horizontalAlign, bool wrap)
         {
+            Vector2 v2 = _gameFont._spriteFont.MeasureString(str.toString());
+            addText(str, x, y, targetWidth, v2.Y, horizontalAlign, wrap);
+        }
+
+        public void addText(CharSequence str, float x, float y, float targetWidth, float targetHeight, int horizontalAlign, bool wrap)
+        {
+            Vector2 v2 = _gameFont._spriteFont.MeasureString(str.toString());
             var operation = new MonoGameGameFontCacheDrawingOperation()
             {
                 text = str.toString(),
                 x = x,
                 y = y,
                 targetWidth = targetWidth,
+                targetHeight = targetHeight,
                 horizontalAlign = horizontalAlign,
                 wrap = wrap,
                 color = _setColor,
                 alpha = 1
             };
-            _previousDrawingOperations.AddLast(operation);
-            addText(operation);
+            _previousDrawingOperations.Add(operation);
+            updateCache();
         }
 
         public void addText(CharSequence str, float x, float y)
         {
-            addText(str, x, y, _gameFont._spriteFont.MeasureString(str.toString()).X, Align.LEFT_, true);
+            Vector2 v2 = _gameFont._spriteFont.MeasureString(str.toString());
+            addText(str, x, y, v2.X, v2.Y, Align.LEFT_, true);
         }
 
         public void draw(Org.Mini2Dx.Core._Graphics g)
         {
-            endSpriteBatch();
-            g.drawTexture(_gameFontCache, _position.X, _position.Y);
-            beginSpriteBatch();
+            GLOBAL_CACHE.draw(g, this, _position);
         }
 
         public void setText(CharSequence str, float x, float y)
         {
+            if(_previousDrawingOperations.Count == 1)
+            {
+                MonoGameGameFontCacheDrawingOperation previousOperation = _previousDrawingOperations[0];
+                if (previousOperation.text.Equals((string)str.toString()) &&
+                    previousOperation.x == x && previousOperation.y == y &&
+                    previousOperation.color.Equals(_setColor))
+                {
+                    return;
+                }
+            }
             clear();
             addText(str, x, y);
         }
 
         public void setText(CharSequence str, float x, float y, float targetWidth, int horizontalAlign, bool wrap)
         {
+            if (_previousDrawingOperations.Count == 1)
+            {
+                MonoGameGameFontCacheDrawingOperation previousOperation = _previousDrawingOperations[0];
+                if (previousOperation.text.Equals((string)str.toString()) &&
+                    previousOperation.x == x && previousOperation.y == y &&
+                    previousOperation.color.Equals(_setColor) &&
+                    previousOperation.targetWidth.Equals(targetWidth) &&
+                    previousOperation.horizontalAlign == horizontalAlign &&
+                    previousOperation.wrap == wrap)
+                {
+                    return;
+                }
+            }
             clear();
             addText(str, x, y, targetWidth, horizontalAlign, wrap);
         }
@@ -147,34 +148,24 @@ namespace monogame.Font
 
         public void setAllColors(Color color)
         {
-            endSpriteBatch();
-            clearRenderTarget();
-            beginSpriteBatch();
-            var node = _previousDrawingOperations.First;
-            while (node != null)
+            GLOBAL_CACHE.clear(cacheId);
+            for(int i = 0; i < _previousDrawingOperations.Count; i++)
             {
-                var operation = node.Value;
-                operation.color = ((MonoGameColor)color)._color;
-                addText(operation);
-                node.Value = operation;
-                node = node.Next;
+                MonoGameGameFontCacheDrawingOperation op = _previousDrawingOperations[i];
+                op.color = ((MonoGameColor)color)._color;
             }
+            updateCache();
         }
 
         public void setAllAlphas(float alpha)
         {
-            endSpriteBatch();
-            clearRenderTarget();
-            beginSpriteBatch();
-            var node = _previousDrawingOperations.First;
-            while (node != null)
+            GLOBAL_CACHE.clear(cacheId);
+            for (int i = 0; i < _previousDrawingOperations.Count; i++)
             {
-                var operation = node.Value;
-                operation.alpha = alpha;
-                addText(operation);
-                node.Value = operation;
-                node = node.Next;
+                MonoGameGameFontCacheDrawingOperation op = _previousDrawingOperations[i];
+                op.alpha = alpha;
             }
+            updateCache();
         }
 
         public void setColor(Color color)
@@ -191,5 +182,15 @@ namespace monogame.Font
         {
             return _gameFont;
         }
+    }
+
+    public struct MonoGameGameFontCacheDrawingOperation
+    {
+        public string text;
+        public float x, y, targetWidth, targetHeight;
+        public int horizontalAlign;
+        public bool wrap;
+        public Microsoft.Xna.Framework.Color color;
+        public float alpha;
     }
 }
