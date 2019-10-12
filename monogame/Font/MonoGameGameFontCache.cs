@@ -49,7 +49,6 @@ namespace monogame.Font
             }
 
             cacheId = GLOBAL_CACHE.allocateId();
-            GLOBAL_CACHE.begin();
         }
 
         public void clear()
@@ -101,35 +100,12 @@ namespace monogame.Font
 
         public void setText(CharSequence str, float x, float y)
         {
-            if(_previousDrawingOperations.Count == 1)
-            {
-                MonoGameGameFontCacheDrawingOperation previousOperation = _previousDrawingOperations[0];
-                if (previousOperation.text.Equals((string)str.toString()) &&
-                    previousOperation.x == x && previousOperation.y == y &&
-                    previousOperation.color.Equals(_setColor))
-                {
-                    return;
-                }
-            }
             clear();
             addText(str, x, y);
         }
 
         public void setText(CharSequence str, float x, float y, float targetWidth, int horizontalAlign, bool wrap)
         {
-            if (_previousDrawingOperations.Count == 1)
-            {
-                MonoGameGameFontCacheDrawingOperation previousOperation = _previousDrawingOperations[0];
-                if (previousOperation.text.Equals((string)str.toString()) &&
-                    previousOperation.x == x && previousOperation.y == y &&
-                    previousOperation.color.Equals(_setColor) &&
-                    previousOperation.targetWidth.Equals(targetWidth) &&
-                    previousOperation.horizontalAlign == horizontalAlign &&
-                    previousOperation.wrap == wrap)
-                {
-                    return;
-                }
-            }
             clear();
             addText(str, x, y, targetWidth, horizontalAlign, wrap);
         }
