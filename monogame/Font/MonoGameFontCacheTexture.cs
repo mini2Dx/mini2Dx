@@ -70,14 +70,13 @@ namespace monogame.Font
 
         public void begin()
         {
-            _graphicsDevice.SetRenderTarget((RenderTarget2D)_texture.texture2D);
-            _spriteBatch.Begin();
             _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext_)._currentRenderTarget);
+            _spriteBatch.Begin();
+            _graphicsDevice.SetRenderTarget((RenderTarget2D)_texture.texture2D);
         }
 
         public void end()
         {
-            _graphicsDevice.SetRenderTarget((RenderTarget2D)_texture.texture2D);
             _spriteBatch.End();
             _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext_)._currentRenderTarget);
         }
@@ -85,9 +84,7 @@ namespace monogame.Font
         public void clear()
         {
             begin();
-            _graphicsDevice.SetRenderTarget((RenderTarget2D)_texture.texture2D);
             _spriteBatch.GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Transparent);
-            _graphicsDevice.SetRenderTarget(((MonoGameGraphics)Mdx.graphicsContext_)._currentRenderTarget);
             end();
 
             _gc.Clear();
