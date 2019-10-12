@@ -70,6 +70,7 @@ namespace monogame
             }
             
             this.game = game;
+            this.config = config;
             instance = this;
         }
 
