@@ -33,7 +33,10 @@ namespace monogame.Graphics
             _color = new Microsoft.Xna.Framework.Color(r, g, b, a);
         }
 
-        public MonoGameColor(int r, int g, int b, int a) : this((sbyte) r, (sbyte) g, (sbyte) b, (sbyte) a) {}
+        public MonoGameColor(int r, int g, int b, int a)
+        {
+            _color = new Microsoft.Xna.Framework.Color(r, g, b, a);
+        }
 
         public MonoGameColor(UInt32 rgba8888)
         {
@@ -281,7 +284,10 @@ namespace monogame.Graphics
 
         public UInt32 toRGB888()
         {
-            return (UInt32) (getRAsByte() << 16 | getGAsByte() << 8 | getBAsByte());
+            byte r = (byte)getRAsByte();
+            byte g = (byte)getGAsByte();
+            byte b = (byte)getBAsByte();
+            return (UInt32) (r << 16 | g << 8 | b);
         }
 
         public static UInt32 toRGB888(UInt32 rgba8888)
@@ -296,12 +302,20 @@ namespace monogame.Graphics
 
         public static UInt32 toRGBA8888(sbyte r, sbyte g, sbyte b, sbyte a)
         {
-            return (uint) (r << 24 | g << 16 | b << 8 | a);
+            byte r1 = (byte)r;
+            byte g1 = (byte)g;
+            byte b1 = (byte)b;
+            byte a1 = (byte)a;
+            return (uint) (r1 << 24 | g1 << 16 | b1 << 8 | a1);
         }
 
         public static UInt32 toARGB8888(sbyte r, sbyte g, sbyte b, sbyte a)
         {
-            return (uint) (a << 24 | r << 16 | g << 8 | b);
+            byte r1 = (byte)r;
+            byte g1 = (byte)g;
+            byte b1 = (byte)b;
+            byte a1 = (byte)a;
+            return (uint) (a1 << 24 | r1 << 16 | g1 << 8 | b1);
         }
 
         public static UInt32 toRGBA8888(Microsoft.Xna.Framework.Color color)
@@ -313,7 +327,8 @@ namespace monogame.Graphics
         {
             //luminance is defined as the average of the largest and the smallest color components
             var luminance = Math.Max(Math.Max(getRAsByte(rgba8888), getGAsByte(rgba8888)), getBAsByte(rgba8888));
-            return (UInt16) (luminance << 8 | getAAsByte(rgba8888));
+            byte a = (byte)getAAsByte(rgba8888);
+            return (UInt16) (luminance << 8 | a);
         }
 
         public static UInt32 rgbaToArgb(UInt32 rgba8888)

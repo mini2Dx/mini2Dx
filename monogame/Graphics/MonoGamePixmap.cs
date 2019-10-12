@@ -143,7 +143,7 @@ namespace monogame.Graphics
             var colorAlpha = MonoGameColor.getAAsByte(color);
             if (x < getWidth() && y < getHeight() && x >= 0 && y >= 0 && colorAlpha > 0)
             {
-                if (colorAlpha == 255 || !blend)
+                if (((byte) colorAlpha) == 255 || !blend)
                 {
                     _pixmap[x, y] = color;
                 }
