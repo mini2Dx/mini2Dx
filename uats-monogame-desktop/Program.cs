@@ -27,6 +27,7 @@ namespace mini2Dx_common_uats
             config.IsMouseVisible = true;
             config.PreferredBackBufferWidth = 800;
             config.PreferredBackBufferHeight = 720;
+            config.AllowUserResizing = true;
 
             using (var mini2DxGame = new Mini2DxGame("org.mini2Dx.uat", game, config))
                 mini2DxGame.Run();

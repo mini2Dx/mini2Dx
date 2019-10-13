@@ -140,10 +140,10 @@ namespace monogame.Graphics
 
         public void drawPixel(int x, int y, UInt32 color, bool blend = false)
         {
-            var colorAlpha = MonoGameColor.getAAsByte(color);
+            byte colorAlpha = (byte)MonoGameColor.getAAsByte(color);
             if (x < getWidth() && y < getHeight() && x >= 0 && y >= 0 && colorAlpha > 0)
             {
-                if (((byte) colorAlpha) == 255 || !blend)
+                if (colorAlpha == 255 || !blend)
                 {
                     _pixmap[x, y] = color;
                 }
@@ -152,7 +152,7 @@ namespace monogame.Graphics
                     var newR = (sbyte)(MonoGameColor.getRAsByte(color) * colorAlpha + MonoGameColor.getAAsByte((uint) getPixel(x, y)) * (255 - colorAlpha));
                     var newG = (sbyte)(MonoGameColor.getRAsByte(color) * colorAlpha + MonoGameColor.getAAsByte((uint) getPixel(x, y)) * (255 - colorAlpha));
                     var newB = (sbyte)(MonoGameColor.getRAsByte(color) * colorAlpha + MonoGameColor.getAAsByte((uint) getPixel(x, y)) * (255 - colorAlpha));
-                    _pixmap[x, y] = MonoGameColor.toRGBA8888(newR, newG, newB, colorAlpha);
+                    _pixmap[x, y] = MonoGameColor.toRGBA8888(newR, newG, newB, (sbyte)colorAlpha);
                 }
             }
         }
