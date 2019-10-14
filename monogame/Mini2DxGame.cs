@@ -178,5 +178,10 @@ namespace monogame
             Mdx.graphicsContext_.postRender();
             base.Draw(gameTime);
         }
+
+        public MonoGameConfig getConfig()
+        {
+            return config;
+        }
     }
 }

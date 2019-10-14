@@ -27,9 +27,37 @@ namespace monogame
 {
     public class MonoGamePlayerData : Org.Mini2Dx.Core.PlayerData
     {
+        private readonly string dataDirectoryPrefix;
+
         public MonoGamePlayerData() : base()
         {
             base._init_();
+
+            if(Mini2DxGame.instance.getConfig().OverrideSaveDataPathPrefix != null)
+            {
+                dataDirectoryPrefix = Mini2DxGame.instance.getConfig().OverrideSaveDataPathPrefix;
+            }
+            else
+            {
+                string currentPath = Environment.CurrentDirectory;
+                if(!currentPath.EndsWith("/"))
+                {
+                    currentPath += "/";
+                }
+                currentPath += "data/";
+                dataDirectoryPrefix = currentPath;
+            }
+        }
+
+        private static string joinPath(string prefix, Java.Lang.String[] filePath)
+        {
+            string[] paths = new string[filePath.Length + 1];
+            paths[0] = prefix;
+            for (int i = 0; i < paths.Length; i++)
+            {
+                paths[i + 1] = filePath[i];
+            }
+            return string.Join(Path.DirectorySeparatorChar.ToString(), paths);
         }
 
         private static string joinPath(Java.Lang.String[] filePath)
@@ -44,22 +72,26 @@ namespace monogame
 
         public override FileHandle resolve(Java.Lang.String[] filePath)
         {
-            return Mdx.files_.external(joinPath(filePath));
+            return Mdx.files_.external(joinPath(dataDirectoryPrefix, filePath));
         }
 
         public override FileHandle resolveTmp(Java.Lang.String[] filePath)
         {
-            return Mdx.files_.external(joinPath(filePath) + ".tmp");
+            return Mdx.files_.external(joinPath(dataDirectoryPrefix, filePath) + ".tmp");
         }
 
         public override void ensureDataDirectoryExists()
         {
-            Mdx.files_.external("").mkdirs();
+            if(Mdx.platform_.isConsole())
+            {
+                return;
+            }
+            Mdx.files_.external(dataDirectoryPrefix).mkdirs();
         }
 
         public override void wipe()
         {
-            Mdx.files_.external("").emptyDirectory(false);
+            Mdx.files_.external(dataDirectoryPrefix).emptyDirectory(false);
         }
     }
 }

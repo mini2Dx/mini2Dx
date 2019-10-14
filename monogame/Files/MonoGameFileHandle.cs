@@ -32,24 +32,57 @@ namespace monogame.Files
     public class MonoGameFileHandle : global::Java.Lang.Object, FileHandle
     {
         private readonly FileType _fileType;
-        private readonly FileInfo _fileInfo;
-        private DirectoryInfo _directoryInfo;
         private bool _isDirectory;
         private string _prefix;
-        
+        private readonly string _filename;
+        private int _totalBytes;
+        private DirectoryInfo _directoryInfo;
+        private FileInfo _fileInfo;
+
         public MonoGameFileHandle(string prefix, string path, FileType fileType)
         {
             _fileType = fileType;
             _prefix = prefix;
             path = prefix + path;
-            _isDirectory = (File.Exists(path) || Directory.Exists(path)) && (File.GetAttributes(path) & FileAttributes.Directory) != 0;
-            if (_isDirectory)
+
+            if(Mdx.platform_.isDesktop())
             {
-                _directoryInfo = new DirectoryInfo(path);
+                _isDirectory = (File.Exists(path) || Directory.Exists(path)) && (File.GetAttributes(path) & FileAttributes.Directory) != 0;
+                if (_isDirectory)
+                {
+                    _directoryInfo = new DirectoryInfo(path);
+                    _filename = _directoryInfo.Name;
+                    _totalBytes = -1;
+                }
+                else
+                {
+                    _fileInfo = new FileInfo(path);
+                    _filename = _fileInfo.Name;
+                    _totalBytes = (int) _fileInfo.Length;
+                }
+            }
+            else if(Mdx.platform_.isConsole())
+            {
+                _isDirectory = path.EndsWith("/");
+
+                if (_isDirectory)
+                {
+                    _directoryInfo = new DirectoryInfo(path);
+                    _totalBytes = -1;
+
+                    string dirWithoutTrailingSlash = path.Substring(0, path.Length - 1);
+                    _filename = dirWithoutTrailingSlash.Substring(dirWithoutTrailingSlash.LastIndexOf('/'));
+                }
+                else
+                {
+                    _fileInfo = new FileInfo(path);
+                    _filename = path.Substring(path.LastIndexOf('/') + 1);
+                    _totalBytes = _fileType.Equals(FileType.INTERNAL_) ? -1 : (int)_fileInfo.Length;
+                }
             }
             else
             {
-                _fileInfo = new FileInfo(path);
+                throw new PlatformNotSupportedException();
             }
         }
 
@@ -61,12 +94,14 @@ namespace monogame.Files
             }
 
             ContentManager contentManager = ((MonoGameFiles)Mdx.files_)._contentManager;
-            return contentManager.Load<T>(path());
+            string resolvedPath = path();
+            global::System.Console.WriteLine(resolvedPath);
+            return contentManager.Load<T>(resolvedPath);
         }
 
         public Java.Lang.String pathWithPrefix()
         {
-            return (isDirectory() ? (object) _directoryInfo : _fileInfo).ToString();
+            return _prefix + _filename;
         }
         
         public Java.Lang.String path()
@@ -106,7 +141,7 @@ namespace monogame.Files
 
         public Java.Lang.String name()
         {
-            return _isDirectory ? _directoryInfo.Name : _fileInfo.Name;
+            return _filename;
         }
 
         public Java.Lang.String extension()
@@ -123,7 +158,7 @@ namespace monogame.Files
             {
                 return name;
             }
-            return _isDirectory ? _directoryInfo.Name : name.Substring(0, dotIndex);
+            return _isDirectory ? _filename : name.Substring(0, dotIndex);
         }
 
         public Java.Lang.String pathWithoutExtension()
@@ -134,7 +169,7 @@ namespace monogame.Files
             {
                 return path;
             }
-            return _isDirectory ? _directoryInfo.ToString() : path.Substring(0, dotIndex);
+            return _isDirectory ? _filename : path.Substring(0, dotIndex);
         }
 
         public FileType type()
@@ -259,8 +294,8 @@ namespace monogame.Files
                 }
             }
 
-            var fileBytes = new sbyte[_fileInfo.Length];
-            readBytes(fileBytes, 0, (int) _fileInfo.Length);
+            var fileBytes = new sbyte[_totalBytes];
+            readBytes(fileBytes, 0, _totalBytes);
             return fileBytes;
         }
 
@@ -282,8 +317,8 @@ namespace monogame.Files
                 }
             }
 
-            var fileBytes = new byte[_fileInfo.Length];
-            readBytes(fileBytes, 0, (int)_fileInfo.Length);
+            var fileBytes = new byte[_totalBytes];
+            readBytes(fileBytes, 0, (int)_totalBytes);
             return fileBytes;
         }
 
@@ -466,6 +501,7 @@ namespace monogame.Files
                     streamWriter.Write(bytes[i]);
                 }
             }
+            _totalBytes = bytes.Length;
         }
 
         public FileHandle[] list()
@@ -773,12 +809,16 @@ namespace monogame.Files
 
         public long length()
         {
-            return _isDirectory ? 0 : _fileInfo.Length;
+            return _isDirectory ? 0 : _totalBytes;
         }
 
         public long lastModified()
         {
             if (_fileType == FileType.INTERNAL_ || !exists())
+            {
+                return 0;
+            }
+            if (Mdx.platform_.isConsole())
             {
                 return 0;
             }

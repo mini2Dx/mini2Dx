@@ -30,5 +30,6 @@ namespace monogame
         public int? PreferredBackBufferHeight = null;
         public bool? IsFullScreen = null;
         public Org.Mini2Dx.Core.Platform OverridePlatform = null;
+        public string OverrideSaveDataPathPrefix = null;
     }
 }

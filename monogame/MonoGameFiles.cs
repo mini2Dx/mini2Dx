@@ -34,6 +34,10 @@ namespace monogame
             {
                 _externalFilePrefix = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + Path.DirectorySeparatorChar + _externalFilePrefix;
             }
+            else if(Mdx.platform_.isConsole())
+            {
+                _externalFilePrefix = "";
+            }
             else
             {
                 throw new NotSupportedException("Files aren't yet supported on this platform");
