@@ -34,6 +34,7 @@ public class XmlSerializationTest {
 	@Before
 	public void setUp() {
 		Mdx.reflect = new JvmReflection();
+		AotSerializationData.clear();
 
 		xmlSerializer = new XmlSerializer();
 		parentObject = createTestParentObject();
@@ -140,6 +141,14 @@ public class XmlSerializationTest {
 	public void testXmlSerializationWithNullField() throws SerializationException {
 		parentObject.getFinalStringMap().put("test", null);
 		String xml = xmlSerializer.toXml(parentObject);
+		xmlSerializer.fromXml(xml, TestParentObject.class);
+	}
+
+	@Test
+	public void testXmlSerializationWithAotData() throws SerializationException {
+		String xml = xmlSerializer.toXml(parentObject);
+		Assert.assertEquals(true, xml.length() > 2);
+		System.out.println(xml);
 		xmlSerializer.fromXml(xml, TestParentObject.class);
 	}
 

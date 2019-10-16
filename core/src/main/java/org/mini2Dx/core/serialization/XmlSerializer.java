@@ -26,6 +26,8 @@ import org.mini2Dx.core.reflect.Method;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.NonConcrete;
 import org.mini2Dx.core.serialization.annotation.PostDeserialize;
+import org.mini2Dx.core.serialization.aot.AotSerializedClassData;
+import org.mini2Dx.core.serialization.aot.AotSerializedConstructorData;
 import org.mini2Dx.core.serialization.collection.DeserializedCollection;
 import org.mini2Dx.core.serialization.collection.SerializedCollection;
 import org.mini2Dx.core.serialization.map.deserialize.DeserializedMap;
@@ -213,7 +215,15 @@ public class XmlSerializer {
                 if(!fieldCache.containsKey(className)) {
                     fieldCache.put(className, Mdx.reflect.getDeclaredFields(currentClass));
                 }
-                final Field [] fields = fieldCache.get(className);
+
+                final AotSerializedClassData classData = AotSerializationData.getClassData(currentClass);
+                final Field [] fields;
+
+                if(classData != null) {
+                    fields = classData.getFieldDataAsFieldArray();
+                } else {
+                    fields = Mdx.reflect.getDeclaredFields(currentClass);
+                }
 
                 for (Field field : fields) {
                     Annotation annotation = field
@@ -320,15 +330,31 @@ public class XmlSerializer {
             }
             final Method [] methods = methodCache.get(className);
 
-            for(Method method : methods) {
-                if(method.isAnnotationPresent(PostDeserialize.class)) {
-                    try {
-                        method.invoke(object);
-                    } catch (ReflectionException e) {
-                        throw new SerializationException(e);
+            final AotSerializedClassData classData = AotSerializationData.getClassData(currentClass);
+            if(classData != null) {
+                if(classData.getPostDeserializeMethodName() != null) {
+                    for(Method method : methods) {
+                        if(method.getName().equals(classData.getPostDeserializeMethodName())) {
+                            try {
+                                method.invoke(object);
+                            } catch (ReflectionException e) {
+                                throw new SerializationException(e);
+                            }
+                        }
+                    }
+                }
+            } else {
+                for(Method method : methods) {
+                    if(method.isAnnotationPresent(PostDeserialize.class)) {
+                        try {
+                            method.invoke(object);
+                        } catch (ReflectionException e) {
+                            throw new SerializationException(e);
+                        }
                     }
                 }
             }
+
             currentClass = currentClass.getSuperclass();
         }
     }
@@ -352,68 +378,113 @@ public class XmlSerializer {
         }
         final int attributesCountModifier = element.getAttributes() != null && element.getAttributes().containsKey("class") ? 1 : 0;
 
-        Constructor bestMatchedConstructor = null;
-        Array<ConstructorArg> detectedAnnotations = new Array<ConstructorArg>(1);
+        final AotSerializedClassData classData = AotSerializationData.getClassData(clazz);
+        if(classData != null) {
+            AotSerializedConstructorData bestMatchedConstructor = null;
+            for (int i = 0; i < classData.getTotalConstructors(); i++) {
+                final AotSerializedConstructorData constructorData = classData.getConstructorData(i);
 
-        for (int i = 0; i < constructors.length; i++) {
-            detectedAnnotations.clear();
-            boolean allAnnotated = constructors[i].getParameterAnnotations().length > 0;
+                boolean allMatched = true;
+                for(int j = 0; j < constructorData.getTotalArgs(); j++) {
+                    final String argName = constructorData.getConstructorArgName(j);
 
-            for (int j = 0; j < constructors[i].getParameterAnnotations().length; j++) {
-                Annotation[] annotations = constructors[i].getParameterAnnotations()[j];
-                if (annotations.length == 0) {
-                    allAnnotated = false;
+                    if (element.getAttributes() != null && element.getAttributes().containsKey(argName)) {
+                        continue;
+                    }
+                    allMatched = false;
                     break;
                 }
 
-                boolean hasConstructorArgAnnotation = false;
-                for (int k = 0; k < annotations.length; k++) {
-                    if (!annotations[k].getAnnotationType().isAssignableFrom(ConstructorArg.class)) {
-                        continue;
-                    }
-                    Annotation annotation = annotations[k];
-                    if(annotation == null) {
-                        continue;
-                    }
-                    ConstructorArg constructorArg = (ConstructorArg) annotation.getAnnotation(ConstructorArg.class);
-                    if (element.getAttributes() == null || !element.getAttributes().containsKey(constructorArg.name())) {
-                        continue;
-                    }
-                    detectedAnnotations.add(constructorArg);
-                    hasConstructorArgAnnotation = true;
-                    break;
+                if(!allMatched) {
+                    continue;
                 }
-                if (!hasConstructorArgAnnotation) {
-                    allAnnotated = false;
+
+                if(bestMatchedConstructor == null) {
+                    bestMatchedConstructor = constructorData;
+                } else if(constructorData.getTotalArgs() > bestMatchedConstructor.getTotalArgs()) {
+                    bestMatchedConstructor = constructorData;
                 }
             }
-            if (!allAnnotated) {
-                continue;
+
+            if(bestMatchedConstructor == null) {
+                return (T) Mdx.reflect.newInstance(clazz);
             }
-            if (detectedAnnotations.size == element.getAttributes().size - attributesCountModifier) {
-                //Found exact match
-                bestMatchedConstructor = constructors[i];
-                break;
+
+            final Object[] constructorParameters = new Object[bestMatchedConstructor.getTotalArgs()];
+            for (int i = 0; i < bestMatchedConstructor.getTotalArgs(); i++) {
+                constructorParameters[i] = parsePrimitive(element.getAttributes().get(bestMatchedConstructor.getConstructorArgName(i)), bestMatchedConstructor.getConstructorArgTypes()[i]);
             }
-            if (bestMatchedConstructor == null) {
-                bestMatchedConstructor = constructors[i];
-            } else if (detectedAnnotations.size > bestMatchedConstructor.getParameterAnnotations().length) {
-                bestMatchedConstructor = constructors[i];
-            }
-        }
-        if (bestMatchedConstructor == null || detectedAnnotations.size == 0) {
-            if(detectedAnnotations.size > 0) {
-                Mdx.log.error(LOGGING_TAG, "Could not find suitable constructor for " + clazz.getSimpleName() + ". Falling back to default constructor.");
+
+            try {
+                return (T) clazz.getConstructor(bestMatchedConstructor.getConstructorArgTypes()).newInstance(constructorParameters);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             return (T) Mdx.reflect.newInstance(clazz);
-        }
+        } else {
+            Constructor bestMatchedConstructor = null;
+            Array<ConstructorArg> detectedAnnotations = new Array<ConstructorArg>(1);
 
-        final Object[] constructorParameters = new Object[detectedAnnotations.size];
-        for (int i = 0; i < detectedAnnotations.size; i++) {
-            ConstructorArg constructorArg = detectedAnnotations.get(i);
-            constructorParameters[i] = parsePrimitive(element.getAttributes().get(constructorArg.name()), constructorArg.clazz());
+            for (int i = 0; i < constructors.length; i++) {
+                detectedAnnotations.clear();
+                boolean allAnnotated = constructors[i].getParameterAnnotations().length > 0;
+
+                for (int j = 0; j < constructors[i].getParameterAnnotations().length; j++) {
+                    Annotation[] annotations = constructors[i].getParameterAnnotations()[j];
+                    if (annotations.length == 0) {
+                        allAnnotated = false;
+                        break;
+                    }
+
+                    boolean hasConstructorArgAnnotation = false;
+                    for (int k = 0; k < annotations.length; k++) {
+                        if (!annotations[k].getAnnotationType().isAssignableFrom(ConstructorArg.class)) {
+                            continue;
+                        }
+                        Annotation annotation = annotations[k];
+                        if(annotation == null) {
+                            continue;
+                        }
+                        ConstructorArg constructorArg = (ConstructorArg) annotation.getAnnotation(ConstructorArg.class);
+                        if (element.getAttributes() == null || !element.getAttributes().containsKey(constructorArg.name())) {
+                            continue;
+                        }
+                        detectedAnnotations.add(constructorArg);
+                        hasConstructorArgAnnotation = true;
+                        break;
+                    }
+                    if (!hasConstructorArgAnnotation) {
+                        allAnnotated = false;
+                    }
+                }
+                if (!allAnnotated) {
+                    continue;
+                }
+                if (detectedAnnotations.size == element.getAttributes().size - attributesCountModifier) {
+                    //Found exact match
+                    bestMatchedConstructor = constructors[i];
+                    break;
+                }
+                if (bestMatchedConstructor == null) {
+                    bestMatchedConstructor = constructors[i];
+                } else if (detectedAnnotations.size > bestMatchedConstructor.getParameterAnnotations().length) {
+                    bestMatchedConstructor = constructors[i];
+                }
+            }
+            if (bestMatchedConstructor == null || detectedAnnotations.size == 0) {
+                if(detectedAnnotations.size > 0) {
+                    Mdx.log.error(LOGGING_TAG, "Could not find suitable constructor for " + clazz.getSimpleName() + ". Falling back to default constructor.");
+                }
+                return (T) Mdx.reflect.newInstance(clazz);
+            }
+
+            final Object[] constructorParameters = new Object[detectedAnnotations.size];
+            for (int i = 0; i < detectedAnnotations.size; i++) {
+                ConstructorArg constructorArg = detectedAnnotations.get(i);
+                constructorParameters[i] = parsePrimitive(element.getAttributes().get(constructorArg.name()), constructorArg.clazz());
+            }
+            return (T) bestMatchedConstructor.newInstance(constructorParameters);
         }
-        return (T) bestMatchedConstructor.newInstance(constructorParameters);
     }
 
     private Field findField(Class<?> clazz, String fieldName) throws ReflectionException {

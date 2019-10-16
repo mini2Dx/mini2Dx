@@ -33,8 +33,12 @@ public class JsonSerializationTest {
 
 	private TestParentObject parentObject;
 
+
+
 	@Before
 	public void setUp() {
+		AotSerializationData.clear();
+
 		Mdx.reflect = new JvmReflection();
 		serializer = new JsonSerializer();
 
@@ -126,6 +130,13 @@ public class JsonSerializationTest {
 		String json = serializer.toJson(parentObject);
 		json = json.replace("intValue", "fintValue");
 		serializer.fromJson(json, TestParentObject.class);
+	}
+
+	@Test
+	public void testJsonSerializationWithAotData() throws SerializationException {
+		AotSerializationData.registerClass(TestParentObject.class);
+
+		testJsonSerialization(false);
 	}
 
 	private void testJsonSerialization(boolean prettyPrint) throws SerializationException {

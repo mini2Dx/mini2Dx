@@ -42,7 +42,8 @@ public class AotSerializationData {
 		AotSerializedClassData classData = null;
 		while(clazz != null && !clazz.equals(Object.class)) {
 			classData = new AotSerializedClassData(clazz);
-			if(classData.getTotalFields() > 0) {
+			if(classData.getTotalFields() > 0 || classData.getTotalConstructors() > 0 ||
+					classData.getPostDeserializeMethodName() != null || classData.isNonConcrete()) {
 				AOT_DATA.put(clazz.getName(), classData);
 			}
 			clazz = clazz.getSuperclass();

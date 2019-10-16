@@ -15,8 +15,17 @@
  ******************************************************************************/
 package org.mini2Dx.core.serialization.aot;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.exception.ReflectionException;
+import org.mini2Dx.core.exception.SerializationException;
+import org.mini2Dx.core.reflect.Annotation;
+import org.mini2Dx.core.reflect.Constructor;
 import org.mini2Dx.core.reflect.Field;
+import org.mini2Dx.core.reflect.Method;
+import org.mini2Dx.core.serialization.annotation.ConstructorArg;
+import org.mini2Dx.core.serialization.annotation.NonConcrete;
+import org.mini2Dx.core.serialization.annotation.PostDeserialize;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.ObjectMap;
 
@@ -28,14 +37,70 @@ import java.util.Scanner;
  * Utility class for storing class field information ahead of time
  */
 public class AotSerializedClassData {
-	private final String qualifiedClassName;
+	private final String qualifiedClassName, postDeserializeMethodName;
+	private final boolean nonConcrete;
 	private final Class clazz;
+	private final Array<AotSerializedConstructorData> constructorData = new Array<AotSerializedConstructorData>();
 	private final Array<AotSerializedFieldData> fieldData = new Array<AotSerializedFieldData>();
 	private final ObjectMap<String, AotSerializedFieldData> fieldDataByFieldName = new ObjectMap<>();
+
+	private Field [] fieldDataAsFieldArray;
 
 	public AotSerializedClassData(Class clazz) {
 		this.clazz = clazz;
 		this.qualifiedClassName = clazz.getName();
+
+		if(Mdx.reflect.isAnnotationPresent(clazz, NonConcrete.class)) {
+			nonConcrete = true;
+		} else {
+			nonConcrete = false;
+		}
+
+		String postDeserializeMethod = null;
+		for(Method method : Mdx.reflect.getDeclaredMethods(clazz)) {
+			if(method.isAnnotationPresent(PostDeserialize.class)) {
+				postDeserializeMethod = method.getName();
+				break;
+			}
+		}
+		this.postDeserializeMethodName = postDeserializeMethod;
+
+		Constructor[] constructors = Mdx.reflect.getConstructors(clazz);
+		final Array<ConstructorArg> constructorArgs = new Array<ConstructorArg>();
+
+		for(int i = 0; i < constructors.length; i++) {
+			constructorArgs.clear();
+
+			for (int j = 0; j < constructors[i].getParameterAnnotations().length; j++) {
+				ConstructorArg constructorArg = null;
+				final Annotation[] annotations = constructors[i].getParameterAnnotations()[j];
+				for (int k = 0; k < annotations.length; k++) {
+					if (!annotations[k].getAnnotationType().isAssignableFrom(ConstructorArg.class)) {
+						continue;
+					}
+					Annotation annotation = annotations[k];
+					if(annotation == null) {
+						continue;
+					}
+					constructorArg = (ConstructorArg) annotation.getAnnotation(ConstructorArg.class);
+					break;
+				}
+				if(constructorArg == null) {
+					constructorArgs.clear();
+					break;
+				}
+				constructorArgs.add(constructorArg);
+			}
+
+			if(constructorArgs.size == 0) {
+				continue;
+			}
+			if(constructorArgs.size != constructors[i].getParameterTypes().length) {
+				continue;
+			}
+
+			constructorData.add(new AotSerializedConstructorData(clazz, constructors[i], constructorArgs));
+		}
 
 		Field[] fields = Mdx.reflect.getDeclaredFields(clazz);
 		for(int i = 0; i < fields.length; i++) {
@@ -48,7 +113,21 @@ public class AotSerializedClassData {
 
 	public AotSerializedClassData(Scanner scanner) throws ClassNotFoundException {
 		this.qualifiedClassName = scanner.nextLine();
+		this.nonConcrete = Boolean.parseBoolean(scanner.nextLine());
+
+		final String postDeserializeMethod = scanner.nextLine();
+		if(postDeserializeMethod.equals("null")) {
+			postDeserializeMethodName = null;
+		} else {
+			postDeserializeMethodName = postDeserializeMethod;
+		}
+
 		this.clazz = Class.forName(qualifiedClassName);
+
+		int totalConstructors = Integer.parseInt(scanner.nextLine().trim());
+		for(int i = 0; i < totalConstructors; i++) {
+			constructorData.add(new AotSerializedConstructorData(scanner));
+		}
 
 		int totalFields = Integer.parseInt(scanner.nextLine().trim());
 		for(int i = 0; i < totalFields; i++) {
@@ -58,8 +137,14 @@ public class AotSerializedClassData {
 
 	public void saveTo(PrintWriter writer) {
 		writer.println(qualifiedClassName);
-		writer.println(fieldData.size);
+		writer.println(nonConcrete);
+		writer.println(postDeserializeMethodName);
+		writer.println(constructorData.size);
+		for(int i = 0; i < constructorData.size; i++) {
+			constructorData.get(i).saveTo(writer);
+		}
 
+		writer.println(fieldData.size);
 		for(int i = 0; i < fieldData.size; i++) {
 			fieldData.get(i).saveTo(writer);
 		}
@@ -67,6 +152,10 @@ public class AotSerializedClassData {
 
 	public String getQualifiedClassName() {
 		return qualifiedClassName;
+	}
+
+	public String getPostDeserializeMethodName() {
+		return postDeserializeMethodName;
 	}
 
 	public Class getClazz() {
@@ -79,6 +168,20 @@ public class AotSerializedClassData {
 
 	public AotSerializedFieldData getFieldData(int fieldIndex) {
 		return fieldData.get(fieldIndex);
+	}
+
+	public Field getFieldDataAsField(int fieldIndex) {
+		return fieldData.get(fieldIndex).getField();
+	}
+
+	public Field[] getFieldDataAsFieldArray() {
+		if(fieldDataAsFieldArray == null) {
+			fieldDataAsFieldArray = new Field[getTotalFields()];
+			for(int i = 0; i < fieldDataAsFieldArray.length; i++) {
+				fieldDataAsFieldArray[i] = getFieldData(i).getField();
+			}
+		}
+		return fieldDataAsFieldArray;
 	}
 
 	public AotSerializedFieldData getFieldData(String fieldName) {
@@ -96,17 +199,32 @@ public class AotSerializedClassData {
 		return null;
 	}
 
+	public int getTotalConstructors() {
+		return constructorData.size;
+	}
+
+	public AotSerializedConstructorData getConstructorData(int index) {
+		return constructorData.get(index);
+	}
+
+	public boolean isNonConcrete() {
+		return nonConcrete;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (!(o instanceof AotSerializedClassData)) return false;
 		AotSerializedClassData classData = (AotSerializedClassData) o;
-		return Objects.equals(qualifiedClassName, classData.qualifiedClassName) &&
+		return nonConcrete == classData.nonConcrete &&
+				Objects.equals(qualifiedClassName, classData.qualifiedClassName) &&
+				Objects.equals(postDeserializeMethodName, classData.postDeserializeMethodName) &&
+				Objects.equals(constructorData, classData.constructorData) &&
 				Objects.equals(fieldData, classData.fieldData);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(qualifiedClassName, fieldData);
+		return Objects.hash(qualifiedClassName, postDeserializeMethodName, nonConcrete, constructorData, fieldData);
 	}
 }
