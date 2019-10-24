@@ -22,7 +22,7 @@ import org.mini2Dx.core.graphics.CustomCursor;
 import org.mini2Dx.core.graphics.Pixmap;
 
 public class LibgdxCustomCursor extends CustomCursor {
-	private final Cursor upCursor, downCursor;
+	private final Cursor upCursor, downCursor, emptyCursor;
 
 	/**
 	 * Constructor
@@ -41,16 +41,24 @@ public class LibgdxCustomCursor extends CustomCursor {
 		case LINUX:
 			final LibgdxPixmap gdxUpPixmap = (LibgdxPixmap) upPixmap;
 			final LibgdxPixmap gdxDownPixmap = (LibgdxPixmap) downPixmap;
+			final LibgdxPixmap gdxEmptyPixmap = (LibgdxPixmap) emptyPixmap;
 
 			upCursor = Gdx.graphics.newCursor(gdxUpPixmap.pixmap, xHotspot, yHotspot);
 			downCursor = Gdx.graphics.newCursor(gdxDownPixmap.pixmap, xHotspot, yHotspot);
+			emptyCursor = Gdx.graphics.newCursor(gdxEmptyPixmap.pixmap, xHotspot, yHotspot);
 			Gdx.graphics.setCursor(upCursor);
 			break;
 		default:
 			upCursor = null;
 			downCursor = null;
+			emptyCursor = null;
 			break;
 		}
+	}
+
+	@Override
+	protected void updateCursorVisibility() {
+		Gdx.graphics.setCursor(visible ? upCursor : emptyCursor);
 	}
 
 	@Override
@@ -71,7 +79,7 @@ public class LibgdxCustomCursor extends CustomCursor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if(downCursor != null) {
-			Gdx.graphics.setCursor(downCursor);
+			Gdx.graphics.setCursor(visible ? downCursor : emptyCursor);
 		}
 		return false;
 	}
@@ -79,7 +87,7 @@ public class LibgdxCustomCursor extends CustomCursor {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		if(upCursor != null) {
-			Gdx.graphics.setCursor(upCursor);
+			Gdx.graphics.setCursor(visible ? upCursor : emptyCursor);
 		}
 		return false;
 	}

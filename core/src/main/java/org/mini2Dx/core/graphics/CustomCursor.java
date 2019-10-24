@@ -15,14 +15,17 @@
  ******************************************************************************/
 package org.mini2Dx.core.graphics;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.gdx.InputProcessor;
 
 /**
  * Base class for implementing an {@link InputProcessor} that sets a custom mouse cursor image based on the mouse state.
  */
 public abstract class CustomCursor implements InputProcessor {
-	protected final Pixmap upPixmap, downPixmap;
+	protected final Pixmap upPixmap, downPixmap, emptyPixmap;
 	protected final int xHotspot, yHotspot;
+
+	protected boolean visible;
 
 	/**
 	 * Constructor
@@ -35,9 +38,13 @@ public abstract class CustomCursor implements InputProcessor {
 		super();
 		this.upPixmap = upPixmap;
 		this.downPixmap = downPixmap;
+		this.emptyPixmap = Mdx.graphics.newPixmap(upPixmap.getWidth(), upPixmap.getHeight(), upPixmap.getFormat());
 		this.xHotspot = xHotspot;
 		this.yHotspot = yHotspot;
+		this.visible = true;
 	}
+
+	protected abstract void updateCursorVisibility();
 
 	public Pixmap getUpPixmap() {
 		return upPixmap;
@@ -47,11 +54,24 @@ public abstract class CustomCursor implements InputProcessor {
 		return downPixmap;
 	}
 
+	public Pixmap getEmptyPixmap() {
+		return emptyPixmap;
+	}
+
 	public int getxHotspot() {
 		return xHotspot;
 	}
 
 	public int getyHotspot() {
 		return yHotspot;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+		updateCursorVisibility();
 	}
 }
