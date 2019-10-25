@@ -17,6 +17,7 @@ package org.mini2Dx.core.geom;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mini2Dx.core.Geometry;
 import org.mini2Dx.gdx.math.MathUtils;
 
 import java.util.Random;
@@ -443,5 +444,25 @@ public class RectangleTest {
 
 		rectangle2 = new Rectangle(0.001f, 0, 50, 50);
 		Assert.assertFalse(rectangle1.equals(rectangle2));
+	}
+
+	@Test
+	public void testDispose() {
+		Geometry.DEFAULT_POOL_SIZE = 1;
+		Geometry geometry = new Geometry();
+		Assert.assertEquals(1, geometry.getTotalRectanglesAvailable());
+		rectangle1 = geometry.rectangle();
+		Assert.assertEquals(0, geometry.getTotalRectanglesAvailable());
+
+		rectangle1.dispose();
+		Assert.assertEquals(1, geometry.getTotalRectanglesAvailable());
+		rectangle1.dispose();
+		Assert.assertEquals(1, geometry.getTotalRectanglesAvailable());
+
+		//Test re-allocate and re-dispose
+		rectangle1 = geometry.rectangle();
+		Assert.assertEquals(0, geometry.getTotalRectanglesAvailable());
+		rectangle1.dispose();
+		Assert.assertEquals(1, geometry.getTotalRectanglesAvailable());
 	}
 }

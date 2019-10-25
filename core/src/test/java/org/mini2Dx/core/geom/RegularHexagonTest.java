@@ -15,9 +15,10 @@
  ******************************************************************************/
 package org.mini2Dx.core.geom;
 
+import org.junit.Assert;
 import org.junit.Test;
 
-import junit.framework.Assert;
+import org.mini2Dx.core.Geometry;
 import org.mini2Dx.gdx.math.MathUtils;
 
 /**
@@ -51,5 +52,25 @@ public class RegularHexagonTest {
 	public void testNumberOfSides() {
 		RegularHexagon hexagon = new RegularHexagon(0f, 0f, 100f);
 		Assert.assertEquals(6, hexagon.getNumberOfSides());
+	}
+
+	@Test
+	public void testDispose() {
+		Geometry.DEFAULT_POOL_SIZE = 1;
+		Geometry geometry = new Geometry();
+		org.junit.Assert.assertEquals(1, geometry.getTotalRegularHexagonsAvailable());
+		RegularHexagon hexagon = geometry.regularHexagon();
+		org.junit.Assert.assertEquals(0, geometry.getTotalRegularHexagonsAvailable());
+
+		hexagon.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalRegularHexagonsAvailable());
+		hexagon.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalRegularHexagonsAvailable());
+
+		//Test re-allocate and re-dispose
+		hexagon = geometry.regularHexagon();
+		org.junit.Assert.assertEquals(0, geometry.getTotalRegularHexagonsAvailable());
+		hexagon.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalRegularHexagonsAvailable());
 	}
 }

@@ -95,6 +95,11 @@ public class Triangle extends Shape {
 
 	@Override
 	public void dispose() {
+		if(disposed) {
+			return;
+		}
+		disposed = true;
+
 		clearPositionChangeListeners();
 		clearSizeChangeListeners();
 

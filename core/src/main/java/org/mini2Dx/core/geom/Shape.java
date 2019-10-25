@@ -22,17 +22,19 @@ import org.mini2Dx.core.lock.ReadWriteLock;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.gdx.utils.Disposable;
 
 /**
  * Base class for shapes
  */
-public abstract class Shape implements Sizeable {
+public abstract class Shape implements Sizeable, Disposable {
 	private static final Vector2 TMP_VECTOR = new Vector2();
 
 	private static final Vector2 TMP_SOURCE_VECTOR = new Vector2();
 	private static final Vector2 TMP_TARGET_VECTOR = new Vector2();
 
 	protected final Geometry geometry;
+	protected boolean disposed = false;
 
 	protected Array<PositionChangeListener> positionChangeListeners;
 	protected Array<SizeChangeListener> sizeChangeListeners;
@@ -52,6 +54,14 @@ public abstract class Shape implements Sizeable {
 	public Shape(Geometry geometry) {
 		super();
 		this.geometry = geometry;
+	}
+
+	/**
+	 * INTERNAL USE ONLY
+	 * @param disposed
+	 */
+	public void setDisposed(boolean disposed) {
+		this.disposed = disposed;
 	}
 
 	/**

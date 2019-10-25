@@ -93,6 +93,11 @@ public class Polygon extends Shape {
 
 	@Override
 	public void dispose() {
+		if(disposed) {
+			return;
+		}
+		disposed = true;
+
 		clearPositionChangeListeners();
 		clearSizeChangeListeners();
 

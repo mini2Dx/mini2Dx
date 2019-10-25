@@ -15,9 +15,9 @@
  ******************************************************************************/
 package org.mini2Dx.core.geom;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
+import org.mini2Dx.core.Geometry;
 
 /**
  * Unit tests for {@link LineSegment}
@@ -36,10 +36,10 @@ public class LineSegmentTest {
 		
 		segment1.set(15, 17, 25, 27);
 		
-		Assert.assertEquals(15f, segment1.getPointA().x);
-		Assert.assertEquals(17f, segment1.getPointA().y);
-		Assert.assertEquals(25f, segment1.getPointB().x);
-		Assert.assertEquals(27f, segment1.getPointB().y);
+		Assert.assertEquals(15f, segment1.getPointA().x, 0f);
+		Assert.assertEquals(17f, segment1.getPointA().y, 0f);
+		Assert.assertEquals(25f, segment1.getPointB().x, 0f);
+		Assert.assertEquals(27f, segment1.getPointB().y, 0f);
 	}
 
 	@Test
@@ -70,5 +70,25 @@ public class LineSegmentTest {
 		
 		Assert.assertEquals(false, segment1.intersects(segment2));
 		Assert.assertEquals(false, segment2.intersects(segment1));
+	}
+
+	@Test
+	public void testDispose() {
+		Geometry.DEFAULT_POOL_SIZE = 1;
+		Geometry geometry = new Geometry();
+		org.junit.Assert.assertEquals(1, geometry.getTotalLineSegmentsAvailable());
+		segment1 = geometry.lineSegment();
+		org.junit.Assert.assertEquals(0, geometry.getTotalLineSegmentsAvailable());
+
+		segment1.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalLineSegmentsAvailable());
+		segment1.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalLineSegmentsAvailable());
+
+		//Test re-allocate and re-dispose
+		segment1 = geometry.lineSegment();
+		org.junit.Assert.assertEquals(0, geometry.getTotalLineSegmentsAvailable());
+		segment1.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalLineSegmentsAvailable());
 	}
 }

@@ -16,14 +16,17 @@
 package org.mini2Dx.core.geom;
 
 import org.mini2Dx.core.Geometry;
+import org.mini2Dx.gdx.utils.Disposable;
 
 /**
  * Represents a segment of a line (the space between two points)
  */
-public class LineSegment {
+public class LineSegment implements Disposable {
     private static final Point TMP_INTERSECTION = new Point();
 
     protected final Geometry geometry;
+    protected boolean disposed = false;
+
     protected Point pointA, pointB;
 
     /**
@@ -71,11 +74,24 @@ public class LineSegment {
     /**
      * Releases this {@link LineSegment} back to the {@link Geometry} pool (if it was created from the pool)
      */
-    public void release() {
+    public void dispose() {
+        if(disposed) {
+            return;
+        }
+        disposed = true;
+
         if(geometry == null) {
             return;
         }
         geometry.release(this);
+    }
+
+    /**
+     * INTERNAL USE ONLY
+     * @param disposed
+     */
+    public void setDisposed(boolean disposed) {
+        this.disposed = disposed;
     }
 
     /**

@@ -15,10 +15,11 @@
  ******************************************************************************/
 package org.mini2Dx.core.geom;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 
-import junit.framework.Assert;
+import org.mini2Dx.core.Geometry;
 import org.mini2Dx.gdx.math.MathUtils;
 
 /**
@@ -49,5 +50,25 @@ public class RegularPentagonTest {
 	public void testNumberOfSides() {
 		RegularPentagon pentagon = new RegularPentagon(0f, 0f, 100f);
 		Assert.assertEquals(5, pentagon.getNumberOfSides());
+	}
+
+	@Test
+	public void testDispose() {
+		Geometry.DEFAULT_POOL_SIZE = 1;
+		Geometry geometry = new Geometry();
+		org.junit.Assert.assertEquals(1, geometry.getTotalRegularPentagonsAvailable());
+		RegularPentagon pentagon = geometry.regularPentagon();
+		org.junit.Assert.assertEquals(0, geometry.getTotalRegularPentagonsAvailable());
+
+		pentagon.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalRegularPentagonsAvailable());
+		pentagon.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalRegularPentagonsAvailable());
+
+		//Test re-allocate and re-dispose
+		pentagon = geometry.regularPentagon();
+		org.junit.Assert.assertEquals(0, geometry.getTotalRegularPentagonsAvailable());
+		pentagon.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalRegularPentagonsAvailable());
 	}
 }

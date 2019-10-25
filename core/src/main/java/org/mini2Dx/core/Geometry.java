@@ -73,7 +73,9 @@ public class Geometry {
         if(circles.size == 0) {
             return new Circle(this);
         }
-        return circles.removeFirst();
+        final Circle result = circles.removeFirst();
+        result.setDisposed(false);
+        return result;
     }
 
     /**
@@ -92,7 +94,9 @@ public class Geometry {
         if(equilateralTriangles.size == 0) {
             return new EquilateralTriangle(this);
         }
-        return equilateralTriangles.removeFirst();
+        final EquilateralTriangle result = equilateralTriangles.removeFirst();
+        result.setDisposed(false);
+        return result;
     }
 
     /**
@@ -111,7 +115,9 @@ public class Geometry {
         if(lines.size == 0) {
             return new Line(this);
         }
-        return lines.removeFirst();
+        final Line result = lines.removeFirst();
+        result.setDisposed(false);
+        return result;
     }
 
     /**
@@ -130,7 +136,9 @@ public class Geometry {
         if(lineSegments.size == 0) {
             return new LineSegment(this);
         }
-        return lineSegments.removeFirst();
+        final LineSegment result = lineSegments.removeFirst();
+        result.setDisposed(false);
+        return result;
     }
 
     /**
@@ -149,7 +157,9 @@ public class Geometry {
         if(points.size == 0) {
             return new Point(this);
         }
-        return points.removeFirst();
+        final Point result = points.removeFirst();
+        result.setDisposed(false);
+        return result;
     }
 
     /**
@@ -168,7 +178,9 @@ public class Geometry {
         if(polygons.size == 0) {
             return polygon(new float[]{0f, 0f, 1f, 0f, 1f, 1f, 0f, 1f});
         }
-        return polygons.removeFirst();
+        final Polygon result = polygons.removeFirst();
+        result.setDisposed(false);
+        return result;
     }
 
     /**
@@ -182,6 +194,7 @@ public class Geometry {
         }
         final Polygon result = polygons.removeFirst();
         result.setVertices(vertices);
+        result.setDisposed(false);
         return result;
     }
 
@@ -201,7 +214,9 @@ public class Geometry {
         if(rectangles.size == 0) {
             return new Rectangle(this);
         }
-        return rectangles.removeFirst();
+        final Rectangle result = rectangles.removeFirst();
+        result.setDisposed(false);
+        return result;
     }
 
     /**
@@ -220,7 +235,9 @@ public class Geometry {
         if(regularHexagons.size == 0) {
             return new RegularHexagon(this);
         }
-        return regularHexagons.removeFirst();
+        final RegularHexagon result = regularHexagons.removeFirst();
+        result.setDisposed(false);
+        return result;
     }
 
     /**
@@ -239,7 +256,9 @@ public class Geometry {
         if(regularPentagons.size == 0) {
             return new RegularPentagon(this);
         }
-        return regularPentagons.removeFirst();
+        final RegularPentagon result = regularPentagons.removeFirst();
+        result.setDisposed(false);
+        return result;
     }
 
     /**
@@ -260,6 +279,7 @@ public class Geometry {
         }
         final Triangle result = triangles.removeFirst();
         result.setPosition(x1, y1, x2, y2, x3, y3);
+        result.setDisposed(false);
         return result;
     }
 
@@ -269,5 +289,85 @@ public class Geometry {
      */
     public void release(Triangle triangle) {
         triangles.addLast(triangle);
+    }
+
+    /**
+     * Returns the total {@link Circle} instances currently in the pool
+     * @return Total available {@link Circle} instances excluding {@link Circle} instances already allocated
+     */
+    public int getTotalCirclesAvailable() {
+        return circles.size;
+    }
+
+    /**
+     * Returns the total {@link EquilateralTriangle} instances currently in the pool
+     * @return Total available {@link EquilateralTriangle} instances excluding {@link EquilateralTriangle} instances already allocated
+     */
+    public int getTotalEquilateralTrianglesAvailable() {
+        return equilateralTriangles.size;
+    }
+
+    /**
+     * Returns the total {@link Line} instances currently in the pool
+     * @return Total available lines excluding {@link Line} instances already allocated
+     */
+    public int getTotalLinesAvailable() {
+        return lines.size;
+    }
+
+    /**
+     * Returns the total {@link LineSegment} instances currently in the pool
+     * @return Total available {@link LineSegment} instances excluding {@link LineSegment} instances already allocated
+     */
+    public int getTotalLineSegmentsAvailable() {
+        return lineSegments.size;
+    }
+
+    /**
+     * Returns the total {@link Point} instances currently in the pool
+     * @return Total available {@link Point} instances excluding {@link Point} instances already allocated
+     */
+    public int getTotalPointsAvailable() {
+        return points.size;
+    }
+
+    /**
+     * Returns the total {@link Polygon} instances currently in the pool
+     * @return Total available {@link Polygon} instances excluding {@link Polygon} instances already allocated
+     */
+    public int getTotalPolygonsAvailable() {
+        return polygons.size;
+    }
+
+    /**
+     * Returns the total {@link Rectangle} instances currently in the pool
+     * @return Total available {@link Rectangle} instances excluding {@link Rectangle} instances already allocated
+     */
+    public int getTotalRectanglesAvailable() {
+        return rectangles.size;
+    }
+
+    /**
+     * Returns the total {@link RegularHexagon} instances currently in the pool
+     * @return Total available {@link RegularHexagon} instances excluding {@link RegularHexagon} instances already allocated
+     */
+    public int getTotalRegularHexagonsAvailable() {
+        return regularHexagons.size;
+    }
+
+    /**
+     * Returns the total {@link RegularPentagon} instances currently in the pool
+     * @return Total available {@link RegularPentagon} instances excluding {@link RegularPentagon} instances already allocated
+     */
+    public int getTotalRegularPentagonsAvailable() {
+        return regularPentagons.size;
+    }
+
+    /**
+     * Returns the total {@link Triangle} instances currently in the pool
+     * @return Total available {@link Triangle} instances excluding {@link Triangle} instances already allocated
+     */
+    public int getTotalTrianglesAvailable() {
+        return triangles.size;
     }
 }

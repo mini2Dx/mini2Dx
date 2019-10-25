@@ -102,6 +102,11 @@ public class Rectangle extends Shape {
 
 	@Override
 	public void dispose() {
+		if(disposed) {
+			return;
+		}
+		disposed = true;
+
 		clearPositionChangeListeners();
 		clearSizeChangeListeners();
 

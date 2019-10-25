@@ -15,10 +15,10 @@
  ******************************************************************************/
 package org.mini2Dx.core.geom;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.Geometry;
 import org.mini2Dx.gdx.math.Vector2;
 
 /**
@@ -35,9 +35,9 @@ public class CircleTest {
 	@Test
 	public void testXY() {
 		circle1 = new Circle(100f, 50f, 25f);
-		Assert.assertEquals(100f, circle1.getX());
-		Assert.assertEquals(50f, circle1.getY());
-		Assert.assertEquals(25f, circle1.getRadius());
+		Assert.assertEquals(100f, circle1.getX(), 0f);
+		Assert.assertEquals(50f, circle1.getY(), 0f);
+		Assert.assertEquals(25f, circle1.getRadius(), 0f);
 	}
 
 	@Test
@@ -63,34 +63,34 @@ public class CircleTest {
 	@Test
 	public void testGetDistanceToPositionable() {
 		Point point = new Point(3f, 0f);
-		Assert.assertEquals(0f, circle1.getDistanceTo(point));
+		Assert.assertEquals(0f, circle1.getDistanceTo(point), 0.00001f);
 
 		point.set(5f, 0f);
-		Assert.assertEquals(1f, circle1.getDistanceTo(point));
+		Assert.assertEquals(1f, circle1.getDistanceTo(point), 0.00001f);
 	}
 
 	@Test
 	public void testSetCenter() {
 		circle1.setXY(20f, 25f);
 
-		Assert.assertEquals(20f, circle1.getX());
-		Assert.assertEquals(25f, circle1.getY());
+		Assert.assertEquals(20f, circle1.getX(), 0f);
+		Assert.assertEquals(25f, circle1.getY(), 0f);
 	}
 
 	@Test
 	public void testSetX() {
 		circle1.setX(25f);
 
-		Assert.assertEquals(25f, circle1.getX());
-		Assert.assertEquals(0f, circle1.getY());
+		Assert.assertEquals(25f, circle1.getX(), 0f);
+		Assert.assertEquals(0f, circle1.getY(), 0f);
 	}
 
 	@Test
 	public void testSetY() {
 		circle1.setY(25f);
 
-		Assert.assertEquals(0f, circle1.getX());
-		Assert.assertEquals(25f, circle1.getY());
+		Assert.assertEquals(0f, circle1.getX(), 0f);
+		Assert.assertEquals(25f, circle1.getY(), 0f);
 	}
 
 	@Test
@@ -141,17 +141,17 @@ public class CircleTest {
 	@Test
 	public void testGetBoundingBox() {
 		Rectangle boundingBox = circle1.getBoundingBox();
-		Assert.assertEquals(-4f, boundingBox.getX());
-		Assert.assertEquals(-4f, boundingBox.getY());
-		Assert.assertEquals(8f, boundingBox.getWidth());
-		Assert.assertEquals(8f, boundingBox.getHeight());
+		Assert.assertEquals(-4f, boundingBox.getX(), 0f);
+		Assert.assertEquals(-4f, boundingBox.getY(), 0f);
+		Assert.assertEquals(8f, boundingBox.getWidth(), 0f);
+		Assert.assertEquals(8f, boundingBox.getHeight(), 0f);
 	}
 
 	@Test
 	public void testTranslate() {
 		circle1.translate(1f,-1f);
-		Assert.assertEquals(1f,circle1.getCenterX());
-		Assert.assertEquals(-1f,circle1.getCenterY());
+		Assert.assertEquals(1f,circle1.getCenterX(), 0f);
+		Assert.assertEquals(-1f,circle1.getCenterY(), 0f);
 	}
 	
 	@Test
@@ -170,5 +170,26 @@ public class CircleTest {
 		circle2 = new Circle(4.00001f);
 		
 		Assert.assertEquals(false, circle1.equals(circle2));
+	}
+
+	@Test
+	public void testDispose() {
+		Geometry.DEFAULT_POOL_SIZE = 1;
+		Geometry geometry = new Geometry();
+		org.junit.Assert.assertEquals(1, geometry.getTotalCirclesAvailable());
+		circle1 = geometry.circle();
+		org.junit.Assert.assertEquals(0, geometry.getTotalCirclesAvailable());
+
+		circle1.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalCirclesAvailable());
+		circle1.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalCirclesAvailable());
+
+		//Test re-allocate and re-dispose
+		circle1 = geometry.circle();
+		org.junit.Assert.assertEquals(0, geometry.getTotalCirclesAvailable());
+
+		circle1.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalCirclesAvailable());
 	}
 }

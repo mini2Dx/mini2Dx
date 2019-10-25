@@ -20,17 +20,19 @@ import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Matrix3;
 import org.mini2Dx.gdx.math.Vector2;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.gdx.utils.Disposable;
 
 /**
  * Extends {@link Vector2} with additional functionality
  */
-public class Point extends Vector2 implements Positionable {
+public class Point extends Vector2 implements Positionable, Disposable {
     private static final long serialVersionUID = 3773673953486445831L;
 
     private static final Vector2 TMP_SOURCE_VECTOR = new Vector2();
     private static final Vector2 TMP_TARGET_VECTOR = new Vector2();
 
     private final Geometry geometry;
+    private boolean disposed = false;
 
     protected Array<PositionChangeListener> positionChangeListeners;
 
@@ -74,12 +76,25 @@ public class Point extends Vector2 implements Positionable {
      * Releases this {@link Point} back to the {@link Geometry} pool (if it was created from the pool)
      */
     public void dispose() {
+        if(disposed) {
+            return;
+        }
+        disposed = true;
+
         clearPositionChangeListeners();
 
         if(geometry == null) {
             return;
         }
         geometry.release(this);
+    }
+
+    /**
+     * INTERNAL USE ONLY
+     * @param disposed
+     */
+    public void setDisposed(boolean disposed) {
+        this.disposed = disposed;
     }
 
     public float getDistanceTo(float x, float y) {

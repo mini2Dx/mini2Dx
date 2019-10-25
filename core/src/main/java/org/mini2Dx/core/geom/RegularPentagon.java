@@ -45,6 +45,11 @@ public class RegularPentagon extends RegularPolygon {
 
     @Override
     public void dispose() {
+        if(disposed) {
+            return;
+        }
+        disposed = true;
+
         clearPositionChangeListeners();
         clearSizeChangeListeners();
 

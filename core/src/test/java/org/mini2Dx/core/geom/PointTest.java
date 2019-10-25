@@ -15,10 +15,10 @@
  ******************************************************************************/
 package org.mini2Dx.core.geom;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.Geometry;
 
 /**
  * Implements unit tests for {@link Point}
@@ -107,12 +107,32 @@ public class PointTest {
 		point2.set(10, 0);
 		
 		point2.rotateAround(point1, 90f);
-		Assert.assertEquals(10f, point2.getY());
+		Assert.assertEquals(10f, point2.getY(), 0.001f);
 		
 		point1.set(10, 0);
 		point2.set(20, 0);
 		
 		point2.rotateAround(point1, 90f);
-		Assert.assertEquals(10f, point2.getY());
+		Assert.assertEquals(10f, point2.getY(), 0.001f);
+	}
+
+	@Test
+	public void testDispose() {
+		Geometry.DEFAULT_POOL_SIZE = 1;
+		Geometry geometry = new Geometry();
+		org.junit.Assert.assertEquals(1, geometry.getTotalPointsAvailable());
+		point1 = geometry.point();
+		org.junit.Assert.assertEquals(0, geometry.getTotalPointsAvailable());
+
+		point1.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalPointsAvailable());
+		point1.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalPointsAvailable());
+
+		//Test re-allocate and re-dispose
+		point1 = geometry.point();
+		org.junit.Assert.assertEquals(0, geometry.getTotalPointsAvailable());
+		point1.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalPointsAvailable());
 	}
 }

@@ -64,4 +64,9 @@ public interface CollisionObject extends Positionable, Interpolatable {
 	 * @return
 	 */
 	public int getRenderY();
+
+	/**
+	 * Disposes of this object, returning any pooled references to their corresponding pools
+	 */
+	public void dispose();
 }

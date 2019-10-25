@@ -18,6 +18,7 @@ package org.mini2Dx.core.geom;
 import org.junit.Assert;
 import org.junit.Test;
 
+import org.mini2Dx.core.Geometry;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
 
@@ -813,6 +814,26 @@ public class PolygonTest {
 				new Point(0f, 10f)
 			});
 		Assert.assertEquals(false, polygon1.equals(polygon2));
+	}
+
+	@Test
+	public void testDispose() {
+		Geometry.DEFAULT_POOL_SIZE = 1;
+		Geometry geometry = new Geometry();
+
+		Polygon polygon1 = geometry.polygon();
+		org.junit.Assert.assertEquals(0, geometry.getTotalPolygonsAvailable());
+
+		polygon1.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalPolygonsAvailable());
+		polygon1.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalPolygonsAvailable());
+
+		//Test re-allocate and re-dispose
+		polygon1 = geometry.polygon();
+		org.junit.Assert.assertEquals(0, geometry.getTotalPolygonsAvailable());
+		polygon1.dispose();
+		org.junit.Assert.assertEquals(1, geometry.getTotalPolygonsAvailable());
 	}
 	
 	private void clearDirtyBit(Polygon polygon) {
