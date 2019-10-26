@@ -68,7 +68,7 @@ public class CollisionCircle extends Circle implements CollisionArea,
 		previousCircle.setXY(centerX, centerY);
 		previousCircle.setRadius(radius);
 
-		renderCircle = new Circle(centerX, centerY, radius);
+		renderCircle = Mdx.geom.circle();
 		renderCircle.setXY(centerX, centerY);
 		renderCircle.setRadius(radius);
 

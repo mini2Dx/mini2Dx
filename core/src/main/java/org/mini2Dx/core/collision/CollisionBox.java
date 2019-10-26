@@ -67,7 +67,7 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 		previousRectangle = Mdx.geom.rectangle();
 		previousRectangle.set(x, y, width, height);
 
-		renderRectangle = new Rectangle();
+		renderRectangle = Mdx.geom.rectangle();
 		renderRectangle.set(x, y, width, height);
 
 		storeRenderCoordinates();
