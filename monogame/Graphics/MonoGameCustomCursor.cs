@@ -17,9 +17,14 @@ namespace monogame.Graphics
         public MonoGameCustomCursor(Pixmap upPixmap, Pixmap downPixmap, int xHotspot, int yHotspot) : base()
         {
             base._init_(upPixmap, downPixmap, xHotspot, yHotspot);
-            upCursor = MouseCursor.FromTexture2D(((MonoGameTexture)Mdx.graphics_.newTexture(upPixmap)).texture2D, xHotspot, yHotspot);
-            downCursor = MouseCursor.FromTexture2D(((MonoGameTexture)Mdx.graphics_.newTexture(downPixmap)).texture2D, xHotspot, yHotspot);
-            Mouse.SetCursor(upCursor);
+
+            if(Mini2DxGame.instance.getConfig().IsMouseVisible.HasValue &&
+                Mini2DxGame.instance.getConfig().IsMouseVisible.Value)
+            {
+                upCursor = MouseCursor.FromTexture2D(((MonoGameTexture)Mdx.graphics_.newTexture(upPixmap)).texture2D, xHotspot, yHotspot);
+                downCursor = MouseCursor.FromTexture2D(((MonoGameTexture)Mdx.graphics_.newTexture(downPixmap)).texture2D, xHotspot, yHotspot);
+                Mouse.SetCursor(upCursor);
+            }
         }
 
 
@@ -40,15 +45,27 @@ namespace monogame.Graphics
 
         bool InputProcessor.touchDown(int obj0, int obj1, int obj2, int obj3)
         {
-            Mouse.SetCursor(downCursor);
-            Mdx.log_.debug(DEBUG_TAG, "touchDown");
+            if (Mini2DxGame.instance.getConfig().IsMouseVisible.HasValue &&
+                Mini2DxGame.instance.getConfig().IsMouseVisible.Value)
+            {
+                if (isVisible())
+                {
+                    Mouse.SetCursor(downCursor);
+                }  
+            }
             return false;
         }
 
         bool InputProcessor.touchUp(int obj0, int obj1, int obj2, int obj3)
         {
-            Mouse.SetCursor(upCursor);
-            Mdx.log_.debug(DEBUG_TAG, "touchUp");
+            if (Mini2DxGame.instance.getConfig().IsMouseVisible.HasValue &&
+                Mini2DxGame.instance.getConfig().IsMouseVisible.Value)
+            {
+                if(isVisible())
+                {
+                    Mouse.SetCursor(upCursor);
+                }
+            }
             return false;
         }
 
