@@ -50,7 +50,7 @@ public class TiledParser implements TiledParserNotifier {
 	protected static final int MASK_CLEAR = 0xE0000000;
 
 	private XmlReader xmlReader;
-	private Array<TiledParserListener> listeners;
+	private TiledParserListener listener;
 	private final ObjectMap<String, TiledObjectTemplate> objectTemplates;
 
 	/**
@@ -65,7 +65,6 @@ public class TiledParser implements TiledParserNotifier {
 		this.objectTemplates = objectTemplates;
 
 		xmlReader = new XmlReader();
-		listeners = new Array<TiledParserListener>();
 	}
 
 	/**
@@ -108,11 +107,11 @@ public class TiledParser implements TiledParserNotifier {
 			Element element = root.getChild(i);
 			String name = element.getName();
 			if (name.equals("layer")) {
-				loadTileLayer(element);
+				loadTileLayer(listener, element);
 			} else if (name.equals("objectgroup")) {
-				loadObjectGroup(element, tmxFileHandle);
+				loadObjectGroup(listener, element, tmxFileHandle);
 			} else if (name.equals("group")) {
-				loadGroupLayer(element, tmxFileHandle);
+				loadGroupLayer(listener, element, tmxFileHandle);
 			}
 		}
 	}
@@ -306,7 +305,7 @@ public class TiledParser implements TiledParserNotifier {
 		}
 	}
 
-	protected GroupLayer loadGroupLayer(Element layerElement, FileHandle tmxFileHandle) throws IOException {
+	protected GroupLayer loadGroupLayer(TiledLayerParserListener parserListener, Element layerElement, FileHandle tmxFileHandle) throws IOException {
 		if (!layerElement.getName().equals("group")) {
 			return null;
 		}
@@ -334,26 +333,20 @@ public class TiledParser implements TiledParserNotifier {
 			Element element = layerElement.getChild(i);
 			String name = element.getName();
 
-			final Layer layer;
 			if (name.equals("layer")) {
-				layer = loadTileLayer(element);
+				loadTileLayer(groupLayer, element);
 			} else if (name.equals("objectgroup")) {
-				layer = loadObjectGroup(element, tmxFileHandle);
+				loadObjectGroup(groupLayer, element, tmxFileHandle);
 			} else if (name.equals("group")) {
-				layer = loadGroupLayer(element, tmxFileHandle);
-			} else {
-				layer = null;
-			}
-			if(layer != null) {
-				groupLayer.getLayers().add(layer);
+				loadGroupLayer(groupLayer, element, tmxFileHandle);
 			}
 		}
 
-		notifyGroupLayerParsed(groupLayer);
+		notifyGroupLayerParsed(parserListener, groupLayer);
 		return groupLayer;
 	}
 
-	protected TileLayer loadTileLayer(Element element) {
+	protected TileLayer loadTileLayer(TiledLayerParserListener parserListener, Element element) {
 		if (element.getName().equals("layer")) {
 			String name = element.getAttribute("name", null);
 			int width = element.getIntAttribute("width", 0);
@@ -463,13 +456,13 @@ public class TiledParser implements TiledParserNotifier {
 					layer.setProperty(propertyName, propertyValue);
 				}
 			}
-			notifyTileLayerParsed(layer);
+			notifyTileLayerParsed(parserListener, layer);
 			return layer;
 		}
 		return null;
 	}
 
-	protected TiledObjectGroup loadObjectGroup(Element element, FileHandle tmxFile) throws IOException {
+	protected TiledObjectGroup loadObjectGroup(TiledLayerParserListener parserListener, Element element, FileHandle tmxFile) throws IOException {
 		if (element.getName().equals("objectgroup")) {
 			String name = element.getAttribute("name", null);
 			TiledObjectGroup tiledObjectGroup = new TiledObjectGroup();
@@ -492,7 +485,7 @@ public class TiledParser implements TiledParserNotifier {
 					tiledObjectGroup.getObjects().add(tiledObject);
 				}
 			}
-			notifyObjectGroupParsed(tiledObjectGroup);
+			notifyObjectGroupParsed(parserListener, tiledObjectGroup);
 			return tiledObjectGroup;
 		}
 		return null;
@@ -652,84 +645,96 @@ public class TiledParser implements TiledParserNotifier {
 		return (int) b & 0xFF;
 	}
 
-	/**
-	 * Adds a listener to be notified of parsing results
-	 * 
-	 * @param tiledParserListener
-	 *            The {@link TiledParserListener} to be added
-	 */
 	@Override
-	public void addListener(TiledParserListener tiledParserListener) {
-		listeners.add(tiledParserListener);
-	}
-
-	/**
-	 * Removes a listener from being notified of parsing results
-	 * 
-	 * @param tiledParserListener
-	 *            The {@link TiledParserListener} to be removed
-	 */
-	@Override
-	public void removeListener(TiledParserListener tiledParserListener) {
-		listeners.removeValue(tiledParserListener, false);
+	public void setListener(TiledParserListener tiledParserListener) {
+		this.listener = tiledParserListener;
 	}
 
 	@Override
 	public void notifyBeginParsing(String orientation, String staggerAxis, String staggerIndex, Color backgroundColor,
 			int width, int height, int tileWidth, int tileHeight, int sideLength) {
-		for (TiledParserListener tiledParserListener : listeners) {
-			tiledParserListener.onBeginParsing(orientation, staggerAxis, staggerIndex, backgroundColor, width, height,
-					tileWidth, tileHeight, sideLength);
+		if (listener == null) {
+			return;
 		}
+		listener.onBeginParsing(orientation, staggerAxis, staggerIndex, backgroundColor, width, height,
+				tileWidth, tileHeight, sideLength);
 	}
 
 	@Override
 	public void notifyMapPropertyParsed(String propertyName, String value) {
-		for (TiledParserListener tiledParserListener : listeners) {
-			tiledParserListener.onMapPropertyParsed(propertyName, value);
+		if (listener == null) {
+			return;
 		}
+		listener.onMapPropertyParsed(propertyName, value);
 	}
 
 	@Override
 	public void notifyTilePropertyParsed(Tile tile) {
-		for (TiledParserListener tiledParserListener : listeners) {
-			tiledParserListener.onTilePropertiesParsed(tile);
+		if (listener == null) {
+			return;
 		}
+		listener.onTilePropertiesParsed(tile);
 	}
 
 	@Override
 	public void notifyTilesetParsed(Tileset parsedTileset) {
-		for (TiledParserListener tiledParserListener : listeners) {
-			tiledParserListener.onTilesetParsed(parsedTileset);
+		if (listener == null) {
+			return;
 		}
+		listener.onTilesetParsed(parsedTileset);
+	}
+
+	public void notifyTileLayerParsed(TiledLayerParserListener listener, TileLayer parsedLayer) {
+		if (listener == null) {
+			return;
+		}
+		listener.onTileLayerParsed(parsedLayer);
 	}
 
 	@Override
 	public void notifyTileLayerParsed(TileLayer parsedLayer) {
-		for (TiledParserListener tiledParserListener : listeners) {
-			tiledParserListener.onTileLayerParsed(parsedLayer);
+		if (listener == null) {
+			return;
 		}
+		listener.onTileLayerParsed(parsedLayer);
+	}
+
+	public void notifyObjectGroupParsed(TiledLayerParserListener listener, TiledObjectGroup parsedObjectGroup) {
+		if (listener == null) {
+			return;
+		}
+		listener.onObjectGroupParsed(parsedObjectGroup);
 	}
 
 	@Override
 	public void notifyObjectGroupParsed(TiledObjectGroup parsedObjectGroup) {
-		for (TiledParserListener tiledParserListener : listeners) {
-			tiledParserListener.onObjectGroupParsed(parsedObjectGroup);
+		if (listener == null) {
+			return;
 		}
+		listener.onObjectGroupParsed(parsedObjectGroup);
+	}
+
+	public void notifyGroupLayerParsed(TiledLayerParserListener listener, GroupLayer parsedGroupLayer) {
+		if (listener == null) {
+			return;
+		}
+		listener.onGroupLayerParsed(parsedGroupLayer);
 	}
 
 	@Override
 	public void notifyGroupLayerParsed(GroupLayer parsedGroupLayer) {
-		for (TiledParserListener tiledParserListener : listeners) {
-			tiledParserListener.onGroupLayerParsed(parsedGroupLayer);
+		if (listener == null) {
+			return;
 		}
+		listener.onGroupLayerParsed(parsedGroupLayer);
 	}
 
 	@Override
 	public void notifyObjectTemplateParsed(TiledObjectTemplate parsedObjectTemplate) {
-		for (TiledParserListener tiledParserListener : listeners) {
-			tiledParserListener.onObjectTemplateParsed(parsedObjectTemplate);
+		if (listener == null) {
+			return;
 		}
+		listener.onObjectTemplateParsed(parsedObjectTemplate);
 	}
 
 	private Color convertHexColorToColor(String hexColor) {

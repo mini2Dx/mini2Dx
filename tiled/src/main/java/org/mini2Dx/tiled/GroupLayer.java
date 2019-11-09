@@ -12,15 +12,124 @@
 package org.mini2Dx.tiled;
 
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.gdx.utils.ObjectMap;
 
 /**
  * Represents a group layer per the Tiled specification
  */
-public class GroupLayer extends Layer {
+public class GroupLayer extends Layer implements TiledLayerParserListener {
 	protected final Array<Layer> layers = new Array<Layer>(true, 2, Layer.class);
+	protected final ObjectMap<String, TiledObjectGroup> objectGroups = new ObjectMap<String, TiledObjectGroup>();
 
 	public GroupLayer() {
 		super(LayerType.GROUP);
+	}
+
+	/**
+	 * Returns the {@link TileLayer} with the given name
+	 *
+	 * @param name The name to search for
+	 * @return Null if there is no such {@link TileLayer}
+	 */
+	public TileLayer getTileLayer(String name) {
+		return getTileLayer(name, true);
+	}
+
+	/**
+	 * Returns the {@link TileLayer} with the given name
+	 *
+	 * @param name The name to search for
+	 * @param recursive False if only the group's immediate child layers should be searched (ignoring descendants)
+	 * @return Null if there is no such {@link TileLayer}
+	 */
+	public TileLayer getTileLayer(String name, boolean recursive) {
+		return TiledMapData.getTileLayer(layers, name, recursive);
+	}
+
+	/**
+	 * Returns the {@link GroupLayer} with the given name
+	 * @param name The name of the layer
+	 * @return Null if the layer does not exist
+	 */
+	public GroupLayer getGroupLayer(String name) {
+		return getGroupLayer(name, true);
+	}
+
+	/**
+	 * Returns the {@link GroupLayer} with the given name
+	 * @param name The name of the layer
+	 * @param recursive False if only the group's immediate child layers should be searched (ignoring descendants)
+	 * @return Null if the layer does not exist
+	 */
+	public GroupLayer getGroupLayer(String name, boolean recursive) {
+		return TiledMapData.getGroupLayer(layers, name, recursive);
+	}
+
+	/**
+	 * Returns the {@link TiledObjectGroup} with the given name
+	 *
+	 * @param name
+	 *            The name to search for
+	 * @return Null if there is no such {@link TiledObjectGroup}
+	 */
+	public TiledObjectGroup getObjectGroup(String name) {
+		return getObjectGroup(name, true);
+	}
+
+	/**
+	 * Returns the {@link TiledObjectGroup} with the given name
+	 *
+	 * @param name The name to search for
+	 * @param recursive False if only the immediate layers should be searched (ignoring descendants)
+	 * @return Null if there is no such {@link TiledObjectGroup}
+	 */
+	public TiledObjectGroup getObjectGroup(String name, boolean recursive) {
+		return TiledMapData.getObjectGroup(layers, objectGroups, name, recursive);
+	}
+
+	/**
+	 * Returns the {@link TileLayer} at the given index
+	 *
+	 * @param index
+	 *            The index of the layer
+	 * @return Null if the index is out of bounds
+	 */
+	public TileLayer getTileLayer(int index) {
+		if (index < 0 || index >= layers.size) {
+			return null;
+		}
+		return (TileLayer) layers.get(index);
+	}
+
+	/**
+	 * Returns the {@link GroupLayer} at the given index
+	 * @param index The index of the layer
+	 * @return Null if the index is out of bounds
+	 */
+	public GroupLayer getGroupLayer(int index) {
+		if (index < 0 || index >= layers.size) {
+			return null;
+		}
+		return (GroupLayer) layers.get(index);
+	}
+
+	@Override
+	public void onTileLayerParsed(TileLayer parsedLayer) {
+		parsedLayer.setIndex(layers.size);
+		layers.add(parsedLayer);
+	}
+
+	@Override
+	public void onObjectGroupParsed(TiledObjectGroup parsedObjectGroup) {
+		parsedObjectGroup.setIndex(layers.size);
+		layers.add(parsedObjectGroup);
+		objectGroups.put(parsedObjectGroup.getName(), parsedObjectGroup);
+	}
+
+	@Override
+	public void onGroupLayerParsed(GroupLayer parsedLayer) {
+		parsedLayer.setIndex(layers.size);
+		layers.add(parsedLayer);
 	}
 
 	public Array<Layer> getLayers() {

@@ -22,20 +22,12 @@ import org.mini2Dx.core.graphics.Color;
  */
 public interface TiledParserNotifier {
 	/**
-	 * Adds a listener to be notified of parsing results
+	 * Sets the listener to be notified of parsing results
 	 * 
 	 * @param tiledParserListener
 	 *            The {@link TiledParserListener} to be added
 	 */
-	public void addListener(TiledParserListener tiledParserListener);
-
-	/**
-	 * Removes a listener from being notified of parsing results
-	 * 
-	 * @param tiledParserListener
-	 *            The {@link TiledParserListener} to be removed
-	 */
-	public void removeListener(TiledParserListener tiledParserListener);
+	public void setListener(TiledParserListener tiledParserListener);
 
 	public void notifyBeginParsing(String orientation, String staggerAxis, String staggerIndex, Color backgroundColor,
 			int width, int height, int tileWidth, int tileHeight, int sideLength);

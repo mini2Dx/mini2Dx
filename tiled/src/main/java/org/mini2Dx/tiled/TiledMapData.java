@@ -70,14 +70,14 @@ public class TiledMapData implements TiledParserListener {
 		super();
 		this.fileHandle = fileHandle;
 
-		tiledParser.addListener(this);
+		tiledParser.setListener(this);
 		try {
 			tiledParser.parseTmx(fileHandle);
 		} catch (IOException e) {
-			tiledParser.removeListener(this);
+			tiledParser.setListener(null);
 			throw new TiledParsingException(e);
 		}
-		tiledParser.removeListener(this);
+		tiledParser.setListener(null);
 	}
 
 	public Array<AssetDescriptor> getDependencies() {
@@ -290,19 +290,45 @@ public class TiledMapData implements TiledParserListener {
 	/**
 	 * Returns the {@link TileLayer} with the given name
 	 * 
-	 * @param name
-	 *            The name to search for
+	 * @param name The name to search for
 	 * @return Null if there is no such {@link TileLayer}
 	 */
 	public TileLayer getTileLayer(String name) {
+		return getTileLayer(name, true);
+	}
+
+	/**
+	 * Returns the {@link TileLayer} with the given name
+	 *
+	 * @param name The name to search for
+	 * @param recursive False if only the root's immediate child layers should be searched (ignoring descendants)
+	 * @return Null if there is no such {@link TileLayer}
+	 */
+	public TileLayer getTileLayer(String name, boolean recursive) {
+		return getTileLayer(layers, name, recursive);
+	}
+
+	/**
+	 * Returns the {@link TileLayer} with the given name
+	 *
+	 * @param layers The layers to search through
+	 * @param name The name to search for
+	 * @param recursive False if only the immediate layers should be searched (ignoring descendants)
+	 * @return Null if there is no such {@link TileLayer}
+	 */
+	public static TileLayer getTileLayer(final Array<Layer> layers, String name, boolean recursive) {
 		for (Layer layer : layers) {
-			if (layer.getName().compareTo(name) != 0) {
-				continue;
+			if (layer.getLayerType().equals(LayerType.TILE)) {
+				if (layer.getName().compareTo(name) == 0) {
+					return (TileLayer) layer;
+				}
+			} else if(recursive && layer.getLayerType().equals(LayerType.GROUP)) {
+				GroupLayer groupLayer = (GroupLayer) layer;
+				TileLayer result = getTileLayer(groupLayer.layers, name, recursive);
+				if(result != null) {
+					return result;
+				}
 			}
-			if (!layer.getLayerType().equals(LayerType.TILE)) {
-				continue;
-			}
-			return (TileLayer) layer;
 		}
 		return null;
 	}
@@ -329,7 +355,49 @@ public class TiledMapData implements TiledParserListener {
 	 * @return Null if there is no such {@link TiledObjectGroup}
 	 */
 	public TiledObjectGroup getObjectGroup(String name) {
-		return objectGroups.get(name);
+		return getObjectGroup(name, true);
+	}
+
+	/**
+	 * Returns the {@link TiledObjectGroup} with the given name
+	 *
+	 * @param name The name to search for
+	 * @param recursive False if only the immediate layers should be searched (ignoring descendants)
+	 * @return Null if there is no such {@link TiledObjectGroup}
+	 */
+	public TiledObjectGroup getObjectGroup(String name, boolean recursive) {
+		return getObjectGroup(layers, objectGroups, name, recursive);
+	}
+
+	/**
+	 * Returns the {@link TiledObjectGroup} with the given name
+	 *
+	 * @param layers The layers to search through
+	 * @param objectGroups A map of layer names to object groups
+	 * @param name The name to search for
+	 * @param recursive False if only the immediate layers should be searched (ignoring descendants)
+	 * @return Null if there is no such {@link TiledObjectGroup}
+	 */
+	public static TiledObjectGroup getObjectGroup(final Array<Layer> layers, final ObjectMap<String, TiledObjectGroup> objectGroups,
+	                                       String name, boolean recursive) {
+		TiledObjectGroup result = objectGroups.get(name, null);
+		if(result != null) {
+			return result;
+		}
+		if(!recursive) {
+			return null;
+		}
+		for (Layer layer : layers) {
+			if (!layer.getLayerType().equals(LayerType.GROUP)) {
+				continue;
+			}
+			final GroupLayer groupLayer = (GroupLayer) layer;
+			result = getObjectGroup(groupLayer.layers, groupLayer.objectGroups, name, recursive);
+			if(result != null) {
+				return result;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -338,14 +406,39 @@ public class TiledMapData implements TiledParserListener {
 	 * @return Null if the layer does not exist
 	 */
 	public GroupLayer getGroupLayer(String name) {
+		return getGroupLayer(name, true);
+	}
+
+	/**
+	 * Returns the {@link GroupLayer} with the given name
+	 * @param name The name of the layer
+	 * @param recursive False if only the root's immediate child layers should be searched (ignoring descendants)
+	 * @return Null if the layer does not exist
+	 */
+	public GroupLayer getGroupLayer(String name, boolean recursive) {
+		return getGroupLayer(layers, name, recursive);
+	}
+
+	/**
+	 * Returns the {@link GroupLayer} with the given name
+	 * @param layers The layers to search through
+	 * @param name The name of the layer
+	 * @param recursive False if only the immediate layers should be searched (ignoring descendants)
+	 * @return Null if the layer does not exist
+	 */
+	public static GroupLayer getGroupLayer(final Array<Layer> layers, String name, boolean recursive) {
 		for (Layer layer : layers) {
-			if (layer.getName().compareTo(name) != 0) {
-				continue;
-			}
 			if (!layer.getLayerType().equals(LayerType.GROUP)) {
 				continue;
 			}
-			return (GroupLayer) layer;
+			if (layer.getName().compareTo(name) == 0) {
+				return (GroupLayer) layer;
+			} else if(recursive) {
+				GroupLayer result = getGroupLayer(((GroupLayer) layer).layers, name, recursive);
+				if(result != null) {
+					return result;
+				}
+			}
 		}
 		return null;
 	}

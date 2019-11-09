@@ -219,7 +219,7 @@ public class TiledMap {
 	 * @param y
 	 *            The y coordinate to render at
 	 * @param layer
-	 *            The layer index to render
+	 *            The layer index to render (Note: The indicies only represent the root layers)
 	 */
 	public void draw(Graphics g, int x, int y, int layer) {
 		draw(g, x, y, 0, 0, tiledMapData.getWidth(), tiledMapData.getHeight(), layer);
@@ -250,8 +250,7 @@ public class TiledMap {
 	}
 
 	/**
-	 * Draws a section of a specified layer of the map at the specified
-	 * coordinates
+	 * Draws a section of a specified layer of the map at the specified coordinates
 	 * 
 	 * @param g
 	 *            The {@link Graphics} context available for rendering
@@ -268,11 +267,15 @@ public class TiledMap {
 	 * @param heightInTiles
 	 *            The amount of tiles across the y axis to render
 	 * @param layer
-	 *            The layer index to render
+	 *            The layer index to render (Note: The indicies only represent the root layers)
 	 */
 	public void draw(Graphics g, int x, int y, int startTileX, int startTileY, int widthInTiles, int heightInTiles,
 			int layer) {
 		Layer tiledLayer = tiledMapData.getLayers().get(layer);
+		drawLayer(g, tiledLayer, x, y, startTileX, startTileY, widthInTiles, heightInTiles);
+	}
+
+	private void drawLayer(Graphics g, Layer tiledLayer, int x, int y, int startTileX, int startTileY, int widthInTiles, int heightInTiles) {
 		switch (tiledLayer.getLayerType()) {
 		case IMAGE:
 			break;
@@ -282,6 +285,9 @@ public class TiledMap {
 			break;
 		case TILE:
 			drawTileLayer(g, (TileLayer) tiledLayer, x, y, startTileX, startTileY, widthInTiles, heightInTiles);
+			break;
+		case GROUP:
+			drawGroupLayer(g, (GroupLayer) tiledLayer, x, y, startTileX, startTileY, widthInTiles, heightInTiles);
 			break;
 		default:
 			break;
@@ -308,8 +314,8 @@ public class TiledMap {
 	 *            The amount of tiles that were rendered along the Y axis
 	 * @return True if the layer should be rendered
 	 */
-	protected boolean preLayerRendered(Graphics g, TileLayer layer, int startTileX, int startTileY, int widthInTiles,
-			int heightInTiles) {
+	protected boolean preTileLayerRendered(Graphics g, TileLayer layer, int startTileX, int startTileY, int widthInTiles,
+	                                       int heightInTiles) {
 		return true;
 	}
 
@@ -329,12 +335,56 @@ public class TiledMap {
 	 * @param heightInTiles
 	 *            The amount of tiles that were rendered along the Y axis
 	 */
-	protected void onLayerRendered(Graphics g, TileLayer layer, int startTileX, int startTileY, int widthInTiles,
-			int heightInTiles) {
-
+	protected void onTileLayerRendered(Graphics g, TileLayer layer, int startTileX, int startTileY, int widthInTiles,
+	                                   int heightInTiles) {
 	}
 
-	private void drawTileLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX, int startTileY,
+	/**
+	 * Developers can override this method which is called before a layer is
+	 * rendered
+	 *
+	 * To prevent the layer from rendering, return false from this method.
+	 *
+	 * @param g
+	 *            The {@link Graphics} context used for rendering
+	 * @param layer
+	 *            The {@link GroupLayer} which was just rendered
+	 * @param startTileX
+	 *            The x coordinate in tiles where rendering started
+	 * @param startTileY
+	 *            The y coordinate in tiles where rendering started
+	 * @param widthInTiles
+	 *            The amount of tiles that were rendered along the X axis
+	 * @param heightInTiles
+	 *            The amount of tiles that were rendered along the Y axis
+	 * @return True if the layer should be rendered
+	 */
+	protected boolean preGroupLayerRendered(Graphics g, GroupLayer layer, int startTileX, int startTileY, int widthInTiles,
+	                                       int heightInTiles) {
+		return true;
+	}
+
+	/**
+	 * Developers can override this method to implement sprite rendering
+	 *
+	 * @param g
+	 *            The {@link Graphics} context used for rendering
+	 * @param layer
+	 *            The {@link GroupLayer} which was just rendered
+	 * @param startTileX
+	 *            The x coordinate in tiles where rendering started
+	 * @param startTileY
+	 *            The y coordinate in tiles where rendering started
+	 * @param widthInTiles
+	 *            The amount of tiles that were rendered along the X axis
+	 * @param heightInTiles
+	 *            The amount of tiles that were rendered along the Y axis
+	 */
+	protected void onGroupLayerRendered(Graphics g, GroupLayer layer, int startTileX, int startTileY, int widthInTiles,
+	                                    int heightInTiles) {
+	}
+
+	public void drawTileLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX, int startTileY,
 			int widthInTiles, int heightInTiles) {
 		if (!isTilesetTexturesLoaded(true)) {
 			Mdx.log.error(TiledMap.class.getSimpleName(), "Attempting to render TiledMap without its tilesets loaded");
@@ -347,12 +397,12 @@ public class TiledMap {
 			}
 		}
 
-		if (!preLayerRendered(g, layer, startTileX, startTileY, widthInTiles, heightInTiles))
+		if (!preTileLayerRendered(g, layer, startTileX, startTileY, widthInTiles, heightInTiles))
 			return;
 
 		tileLayerRenderer.drawLayer(g, layer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles);
 
-		onLayerRendered(g, layer, startTileX, startTileY, widthInTiles, heightInTiles);
+		onTileLayerRendered(g, layer, startTileX, startTileY, widthInTiles, heightInTiles);
 	}
 
 	private void drawTiledObjectGroup(Graphics g, TiledObjectGroup objectGroup, int renderX, int renderY,
@@ -362,6 +412,29 @@ public class TiledMap {
 		}
 		tiledObjectGroupRenderer.drawObjectGroup(g, objectGroup, renderX, renderY, startTileX, startTileY, widthInTiles,
 				heightInTiles);
+	}
+
+	public void drawGroupLayer(Graphics g, GroupLayer layer, int renderX, int renderY, int startTileX, int startTileY,
+	                          int widthInTiles, int heightInTiles) {
+		if (!isTilesetTexturesLoaded(true)) {
+			Mdx.log.error(TiledMap.class.getSimpleName(), "Attempting to render TiledMap without its tilesets loaded");
+			return;
+		}
+
+		if(STRICT_LAYER_VISIBILITY) {
+			if(!layer.isVisible()) {
+				return;
+			}
+		}
+
+		if (!preGroupLayerRendered(g, layer, startTileX, startTileY, widthInTiles, heightInTiles))
+			return;
+
+		for(Layer childLayer : layer.layers) {
+			drawLayer(g, childLayer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles);
+		}
+
+		onGroupLayerRendered(g, layer, startTileX, startTileY, widthInTiles, heightInTiles);
 	}
 
 	/**
@@ -410,6 +483,17 @@ public class TiledMap {
 	}
 
 	/**
+	 * Returns the {@link TileLayer} with the given name
+	 *
+	 * @param name The name to search for
+	 * @param recursive False if only the root's immediate child layers should be searched (ignoring descendants)
+	 * @return Null if there is no such {@link TileLayer}
+	 */
+	public TileLayer getTileLayer(String name, boolean recursive) {
+		return tiledMapData.getTileLayer(name, recursive);
+	}
+
+	/**
 	 * Returns the {@link TileLayer} at the given index
 	 * 
 	 * @param index
@@ -429,6 +513,15 @@ public class TiledMap {
 		return tiledMapData.getGroupLayer(name);
 	}
 
+	/**
+	 * Returns the {@link GroupLayer} with the given name
+	 * @param name The name of the layer
+	 * @param recursive False if only the root's immediate child layers should be searched (ignoring descendants)
+	 * @return Null if the layer does not exist
+	 */
+	public GroupLayer getGroupLayer(String name, boolean recursive) {
+		return tiledMapData.getGroupLayer(name, recursive);
+	}
 
 	/**
 	 * Returns the {@link GroupLayer} at the given index
@@ -448,6 +541,17 @@ public class TiledMap {
 	 */
 	public TiledObjectGroup getObjectGroup(String name) {
 		return tiledMapData.getObjectGroup(name);
+	}
+
+	/**
+	 * Returns the {@link TiledObjectGroup} with the given name
+	 *
+	 * @param name The name to search for
+	 * @param recursive False if only the root's immediate layers should be searched (ignoring descendants)
+	 * @return Null if there is no such {@link TiledObjectGroup}
+	 */
+	public TiledObjectGroup getObjectGroup(String name, boolean recursive) {
+		return tiledMapData.getObjectGroup(name, recursive);
 	}
 
 	/**

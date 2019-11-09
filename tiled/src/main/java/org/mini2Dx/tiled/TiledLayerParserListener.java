@@ -15,21 +15,10 @@
  ******************************************************************************/
 package org.mini2Dx.tiled;
 
-import org.mini2Dx.core.graphics.Color;
+public interface TiledLayerParserListener {
+	public void onTileLayerParsed(TileLayer parsedLayer);
 
-/**
- * An common interface to parser listeners
- */
-public interface TiledParserListener extends TiledLayerParserListener {
+	public void onObjectGroupParsed(TiledObjectGroup parsedObjectGroup);
 
-	public void onBeginParsing(String orientation, String staggerAxis, String staggerIndex, Color backgroundColor,
-			int width, int height, int tileWidth, int tileHeight, int sideLength);
-
-	public void onMapPropertyParsed(String propertyName, String value);
-
-	public void onTilePropertiesParsed(Tile tile);
-
-	public void onTilesetParsed(Tileset parsedTileset);
-
-	public void onObjectTemplateParsed(TiledObjectTemplate parsedObjectTemplate);
+	public void onGroupLayerParsed(GroupLayer parsedLayer);
 }

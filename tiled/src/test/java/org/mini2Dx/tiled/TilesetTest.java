@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.tiled;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.mini2Dx.tiled.tileset.ImageTilesetSource;
 

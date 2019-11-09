@@ -17,8 +17,8 @@ package org.mini2Dx.tiled;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
-import junit.framework.Assert;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mini2Dx.core.Mdx;
@@ -121,10 +121,10 @@ public class TiledMapTest {
 		Assert.assertEquals(0, tiledMap.getTileLayer("Ground").getIndex());
 
 		Assert.assertEquals(true, tiledMap.getTileLayer("Collisions") != null);
-		Assert.assertEquals(3, tiledMap.getTileLayer("Collisions").getIndex());
+		Assert.assertEquals(1, tiledMap.getTileLayer("Collisions").getIndex());
 
 		Assert.assertEquals(true, tiledMap.getTileLayer("Higher") != null);
-		Assert.assertEquals(6, tiledMap.getTileLayer("Higher").getIndex());
+		Assert.assertEquals(4, tiledMap.getTileLayer("Higher").getIndex());
 	}
 
 	@Test
@@ -181,24 +181,24 @@ public class TiledMapTest {
 			case "test1":
 				Assert.assertEquals(true, obj.containsProperty("testProperty"));
 				Assert.assertEquals("SUCCESS", obj.getProperty("testProperty"));
-				Assert.assertEquals(32f, obj.getX());
-				Assert.assertEquals(64f, obj.getY());
-				Assert.assertEquals(16f, obj.getWidth());
-				Assert.assertEquals(24f, obj.getHeight());
+				Assert.assertEquals(32f, obj.getX(), 0f);
+				Assert.assertEquals(64f, obj.getY(), 0f);
+				Assert.assertEquals(16f, obj.getWidth(), 0f);
+				Assert.assertEquals(24f, obj.getHeight(), 0f);
 				break;
 			case "test2":
 				Assert.assertEquals(true, obj.containsProperty("testProperty"));
 				Assert.assertEquals("SUCCESS2", obj.getProperty("testProperty"));
-				Assert.assertEquals(260f, obj.getX());
-				Assert.assertEquals(192f, obj.getY());
-				Assert.assertEquals(24f, obj.getWidth());
-				Assert.assertEquals(16f, obj.getHeight());
+				Assert.assertEquals(260f, obj.getX(), 0f);
+				Assert.assertEquals(192f, obj.getY(), 0f);
+				Assert.assertEquals(24f, obj.getWidth(), 0f);
+				Assert.assertEquals(16f, obj.getHeight(), 0f);
 				break;
 			case "flipped_tile_object":
-				Assert.assertEquals(288f, obj.getX());
-				Assert.assertEquals(96f, obj.getY());
-				Assert.assertEquals(32f, obj.getWidth());
-				Assert.assertEquals(32f, obj.getHeight());
+				Assert.assertEquals(288f, obj.getX(), 0f);
+				Assert.assertEquals(96f, obj.getY(), 0f);
+				Assert.assertEquals(32f, obj.getWidth(), 0f);
+				Assert.assertEquals(32f, obj.getHeight(), 0f);
 				Assert.assertEquals(156, obj.getGid());
 				Assert.assertEquals(false, obj.isGidFlipDiagonally());
 				Assert.assertEquals(true, obj.isGidFlipHorizontally());
@@ -211,13 +211,26 @@ public class TiledMapTest {
 	@Test
 	public void testParsedIndices() {
 		GroupLayer groupLayer = tiledMap.getGroupLayer("Group 1");
-		Assert.assertEquals(2, groupLayer.getIndex());
+		Assert.assertEquals(0, groupLayer.getIndex());
 
 		TiledObjectGroup group = tiledMap.getObjectGroup("Objects");
-		Assert.assertEquals(4, group.getIndex());
+		Assert.assertEquals(2, group.getIndex());
 		Assert.assertEquals(group.getIndex(), tiledMap.getLayerIndex(group.getName()));
 
 		TileLayer tileLayer = tiledMap.getTileLayer("Higher");
-		Assert.assertEquals(6, tileLayer.getIndex());
+		Assert.assertEquals(4, tileLayer.getIndex());
+	}
+
+	@Test
+	public void testGroupLayers() {
+		GroupLayer groupLayer = tiledMap.getGroupLayer("Group 1");
+		Assert.assertEquals(0, groupLayer.getIndex());
+		Assert.assertEquals(2, groupLayer.getLayers().size);
+
+		TileLayer animatedLayer = tiledMap.getTileLayer("Animated");
+		Assert.assertEquals(1, animatedLayer.getIndex());
+
+		TileLayer tileLayer = tiledMap.getTileLayer("Ground");
+		Assert.assertEquals(0, tileLayer.getIndex());
 	}
 }
