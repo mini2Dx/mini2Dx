@@ -103,6 +103,7 @@ public class ProgressBar extends UiElement implements FlexUiElement {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode.dispose();
 		renderNode = null;
 	}
 

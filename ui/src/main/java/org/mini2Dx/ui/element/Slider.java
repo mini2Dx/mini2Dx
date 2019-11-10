@@ -108,6 +108,7 @@ public class Slider extends UiElement implements Actionable {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode.dispose();
 		renderNode = null;
 	}
 

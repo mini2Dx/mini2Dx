@@ -117,6 +117,7 @@ public class Select<V> extends UiElement implements Actionable, FlexUiElement {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode.dispose();
 		renderNode = null;
 	}
 

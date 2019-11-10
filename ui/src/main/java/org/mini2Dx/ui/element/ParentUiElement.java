@@ -235,6 +235,7 @@ public abstract class ParentUiElement extends UiElement implements FlexUiElement
 			children.get(i).detach(renderNode);
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode.dispose();
 		renderNode = null;
 	}
 

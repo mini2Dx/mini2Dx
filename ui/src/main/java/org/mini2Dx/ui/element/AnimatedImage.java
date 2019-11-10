@@ -201,6 +201,7 @@ public class AnimatedImage extends UiElement {
 			return;
 		}
 		parentRenderNode.removeChild(renderNode);
+		renderNode.dispose();
 		renderNode = null;
 	}
 

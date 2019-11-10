@@ -62,6 +62,10 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		setDirty();
 	}
 
+	public void dispose() {
+		outerArea.dispose();
+	}
+
 	public void update(UiContainerRenderTree uiContainer, float delta) {
 		if (!initialLayoutOccurred) {
 			if (element.isDebugEnabled()) {
