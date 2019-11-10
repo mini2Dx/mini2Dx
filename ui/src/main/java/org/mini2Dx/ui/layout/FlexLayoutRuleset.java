@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.core.collections.LruObjectMap;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.input.GamePadType;
 import org.mini2Dx.gdx.math.MathUtils;
@@ -360,7 +361,17 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 		return flexLayout;
 	}
 
+	private static LruObjectMap<String, String> X_CACHE = new LruObjectMap<String, String>();
+	private static LruObjectMap<String, String> Y_CACHE = new LruObjectMap<String, String>();
+	private static LruObjectMap<String, String> WIDTH_CACHE = new LruObjectMap<String, String>();
+	private static LruObjectMap<String, String> HEIGHT_CACHE = new LruObjectMap<String, String>();
+
 	public static String setX(String flexLayout, float x) {
+		final String key = flexLayout + "__" + x;
+		if(X_CACHE.containsKey(key)) {
+			return X_CACHE.get(key);
+		}
+
 		final int valueIndex = flexLayout.indexOf(':') + 1;
 		final String flexComponent = flexLayout.substring(0, valueIndex);
 
@@ -387,10 +398,18 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 		} else {
 			yResult.append(flexLayout.substring(flexLayout.lastIndexOf(',') + 1));
 		}
-		return flexComponent + xResult.toString().trim() + ',' + yResult.toString().trim();
+
+		final String result = flexComponent + xResult.toString().trim() + ',' + yResult.toString().trim();
+		X_CACHE.put(key, result);
+		return result;
 	}
 
 	public static String setY(String flexLayout, float y) {
+		final String key = flexLayout + "__" + y;
+		if(Y_CACHE.containsKey(key)) {
+			return Y_CACHE.get(key);
+		}
+
 		final int valueIndex = flexLayout.indexOf(':') + 1;
 		final String flexComponent = flexLayout.substring(0, valueIndex);
 
@@ -423,10 +442,17 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 		yResult.append(MathUtils.round(y));
 		yResult.append("px");
 
-		return flexComponent + xResult.toString().trim() + ',' + yResult.toString().trim();
+		final String result = flexComponent + xResult.toString().trim() + ',' + yResult.toString().trim();
+		Y_CACHE.put(key, result);
+		return result;
 	}
 
 	public static String setWidth(String flexLayout, float width) {
+		final String key = flexLayout + "__" + width;
+		if(WIDTH_CACHE.containsKey(key)) {
+			return WIDTH_CACHE.get(key);
+		}
+
 		final int valueIndex = flexLayout.indexOf(':') + 1;
 		final String flexComponent = flexLayout.substring(0, valueIndex);
 
@@ -453,10 +479,18 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 		} else {
 			yResult.append(flexLayout.substring(flexLayout.lastIndexOf(',') + 1));
 		}
-		return flexComponent + xResult.toString().trim() + ',' + yResult.toString().trim();
+
+		final String result = flexComponent + xResult.toString().trim() + ',' + yResult.toString().trim();
+		WIDTH_CACHE.put(key, result);
+		return result;
 	}
 
 	public static String setHeight(String flexLayout, float height) {
+		final String key = flexLayout + "__" + height;
+		if(HEIGHT_CACHE.containsKey(key)) {
+			return HEIGHT_CACHE.get(key);
+		}
+
 		final int valueIndex = flexLayout.indexOf(':') + 1;
 		final String flexComponent = flexLayout.substring(0, valueIndex);
 
@@ -485,6 +519,8 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 		yResult.append(MathUtils.round(height));
 		yResult.append("px");
 
-		return flexComponent + xResult.toString().trim() + ',' + yResult.toString().trim();
+		final String result = flexComponent + xResult.toString().trim() + ',' + yResult.toString().trim();
+		HEIGHT_CACHE.put(key, result);
+		return result;
 	}
 }
