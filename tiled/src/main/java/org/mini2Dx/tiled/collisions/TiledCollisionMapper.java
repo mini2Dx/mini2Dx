@@ -113,7 +113,19 @@ public class TiledCollisionMapper<T extends Positionable> {
 		return mapCollisionsByLayer(tiledMap, tiledMap.getTileLayer(layerIndex));
 	}
 
-	private static byte[][] mapCollisionsByLayer(TiledMap tiledMap, TileLayer layer) {
+	/**
+	 * Creates a 2D byte array representing the collisions in a {@link TiledMap}
+	 * layer
+	 *
+	 * @param tiledMap
+	 *            The {@link TiledMap} to extract collisions from
+	 * @param layer
+	 *            The {@link TileLayer} to extract collisions from. Each tile drawn
+	 *            in the layer is treated as a collision.
+	 * @return A 2D byte array with the same width and height as the layer. [x][y]
+	 *         will be set to 1 if there is a collision.
+	 */
+	public static byte[][] mapCollisionsByLayer(TiledMap tiledMap, TileLayer layer) {
 		byte[][] result = new byte[layer.getWidth()][layer.getHeight()];
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = 0; y < layer.getHeight(); y++) {
@@ -818,7 +830,7 @@ public class TiledCollisionMapper<T extends Positionable> {
 		}
 	}
 
-	private T mergeCollisions(final int startX, final int startY, final int maxColumns, final int maxRows,
+	protected T mergeCollisions(final int startX, final int startY, final int maxColumns, final int maxRows,
 			byte[][] collisions, TileLayer layer, TiledMap tiledMap) {
 		return mergeMode.merge(collisionFactory, collisionMerger, startX, startY, maxColumns, maxRows, collisions,
 				layer, tiledMap);
