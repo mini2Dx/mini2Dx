@@ -244,6 +244,7 @@ public class Label extends UiElement {
 		if(renderNode == null) {
 			return;
 		}
+		((LabelRenderNode) renderNode).updateBitmapFontCache();
 		renderNode.setDirty();
 	}
 	
@@ -281,6 +282,7 @@ public class Label extends UiElement {
 		if(renderNode == null) {
 			return;
 		}
+		((LabelRenderNode) renderNode).updateBitmapFontCache();
 		renderNode.setDirty();
 	}
 	
@@ -302,6 +304,7 @@ public class Label extends UiElement {
 		if(renderNode == null) {
 			return;
 		}
+		((LabelRenderNode) renderNode).updateBitmapFontCache();
 		renderNode.setDirty();
 	}
 
@@ -323,6 +326,7 @@ public class Label extends UiElement {
 		if(renderNode == null) {
 			return;
 		}
+		((LabelRenderNode) renderNode).updateBitmapFontCache();
 		renderNode.setDirty();
 	}
 
