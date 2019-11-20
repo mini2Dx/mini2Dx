@@ -1,9 +1,66 @@
 import org.apache.tools.ant.taskdefs.condition.Os
 
-include "core", "libgdx", "libgdx-desktop", "libgdx-android", "tiled", "ui", "artemis-odb", "all", "monogame", "uats", "uats-libgdx-desktop", "uats-libgdx-android"
+boolean hasConsoleSdk() {
+	try {
+		def rootDir = "$rootDir"
+		def localProperties = new File(rootDir, "local.properties")
+		if (localProperties.exists()) {
+			Properties properties = new Properties()
+			localProperties.withInputStream { instr ->
+				properties.load(instr)
+			}
+			def transpilerHome = properties.getProperty('transpilerExe')
+			if(transpilerHome != null && transpilerHome.length() > 0) {
+				return true;
+			}
+		}
+	} catch (all) {
+		println all
+	}
+	return false;
+}
 
+boolean hasAndroidSdk() {
+	try {
+		def rootDir = "$rootDir"
+		def localProperties = new File(rootDir, "local.properties")
+		if (localProperties.exists()) {
+			Properties properties = new Properties()
+			localProperties.withInputStream { instr ->
+				properties.load(instr)
+			}
+			def androidHome = properties.getProperty('sdk.dir')
+			if(androidHome != null && androidHome.length() > 0) {
+				println androidHome
+				return true;
+			}
+		}
+	} catch (all) {
+		println all
+	}
+	try {
+		def androidHome = "$System.env.ANDROID_HOME"
+		if(androidHome != null && androidHome.length() > 0 && !androidHome.contains('null')) {
+			println androidHome
+			return true;
+		}
+	} catch (all) {
+		println all
+	}
+	return false
+}
+
+
+include "core", "libgdx", "libgdx-desktop", "tiled", "ui", "artemis-odb", "all", "uats", "uats-libgdx-desktop"
+
+if (hasAndroidSdk()) {
+	include "libgdx-android", "uats-libgdx-android"
+}
 if (Os.isFamily(Os.FAMILY_MAC)) {
 	include "libgdx-ios", "uats-libgdx-ios"
+}
+if (hasConsoleSdk()) {
+	include "monogame"
 }
 
 rootProject.name = 'mini2Dx'
