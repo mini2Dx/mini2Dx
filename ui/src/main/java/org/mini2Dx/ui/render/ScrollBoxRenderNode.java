@@ -39,23 +39,23 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 		implements ActionableRenderNode {
 	private static final String LOGGING_TAG = ScrollBoxRenderNode.class.getSimpleName();
 
-	private final CollisionBox topScrollButton = new CollisionBox();
-	private final CollisionBox bottomScrollButton = new CollisionBox();
-	private final CollisionBox scrollThumb = new CollisionBox();
-	private final CollisionBox scrollTrack = new CollisionBox();
+	protected final CollisionBox topScrollButton = new CollisionBox();
+    protected final CollisionBox bottomScrollButton = new CollisionBox();
+    protected final CollisionBox scrollThumb = new CollisionBox();
+    protected final CollisionBox scrollTrack = new CollisionBox();
 
-	private ScrollTo scrollTo = null;
+    protected ScrollTo scrollTo = null;
 
-	private ButtonStyleRule topScrollButtonStyleRule, bottomScrollButtonStyleRule;
-	private float contentHeight, boxHeight;
-	private float scrollThumbPosition;
+    protected ButtonStyleRule topScrollButtonStyleRule, bottomScrollButtonStyleRule;
+    protected float contentHeight, boxHeight;
+    protected float scrollThumbPosition;
 
-	private NodeState topScrollButtonState = NodeState.NORMAL;
-	private NodeState bottomScrollButtonState = NodeState.NORMAL;
-	private NodeState scrollThumbState = NodeState.NORMAL;
+    protected NodeState topScrollButtonState = NodeState.NORMAL;
+    protected NodeState bottomScrollButtonState = NodeState.NORMAL;
+    protected NodeState scrollThumbState = NodeState.NORMAL;
 
-	private int scrollTranslationY;
-	private float thumbDragStartY;
+    protected int scrollTranslationY;
+    protected float thumbDragStartY;
 
 	public ScrollBoxRenderNode(ParentRenderNode<?, ?> parent, ScrollBox row) {
 		super(parent, row);
@@ -114,6 +114,72 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 		}
 	}
 
+	protected void renderScrollbar(Graphics g) {
+		style.getScrollTrackRenderer().render(g, scrollTrack.getRenderX(), scrollTrack.getRenderY(),
+				scrollTrack.getRenderWidth(), scrollTrack.getRenderHeight());
+
+		if(isScrollThumbAtTop()) {
+			topScrollButtonStyleRule.getDisabledBackgroundRenderer().render(g, topScrollButton.getRenderX(),
+					topScrollButton.getRenderY(), topScrollButton.getRenderWidth(), topScrollButton.getRenderHeight());
+		} else {
+			switch (topScrollButtonState) {
+				case ACTION:
+					topScrollButtonStyleRule.getActionBackgroundRenderer().render(g, topScrollButton.getRenderX(),
+							topScrollButton.getRenderY(), topScrollButton.getRenderWidth(), topScrollButton.getRenderHeight());
+					break;
+				case HOVER:
+					topScrollButtonStyleRule.getHoverBackgroundRenderer().render(g, topScrollButton.getRenderX(),
+							topScrollButton.getRenderY(), topScrollButton.getRenderWidth(), topScrollButton.getRenderHeight());
+					break;
+				case NORMAL:
+				default:
+					topScrollButtonStyleRule.getNormalBackgroundRenderer().render(g, topScrollButton.getRenderX(),
+							topScrollButton.getRenderY(), topScrollButton.getRenderWidth(), topScrollButton.getRenderHeight());
+					break;
+			}
+		}
+
+		switch (scrollThumbState) {
+			case ACTION:
+				style.getScrollThumbActiveRenderer().render(g, scrollThumb.getRenderX(), scrollThumb.getRenderY(),
+						scrollThumb.getRenderWidth(), scrollThumb.getRenderHeight());
+				break;
+			case HOVER:
+				style.getScrollThumbHoverRenderer().render(g, scrollThumb.getRenderX(), scrollThumb.getRenderY(),
+						scrollThumb.getRenderWidth(), scrollThumb.getRenderHeight());
+				break;
+			default:
+				style.getScrollThumbNormalRenderer().render(g, scrollThumb.getRenderX(), scrollThumb.getRenderY(),
+						scrollThumb.getRenderWidth(), scrollThumb.getRenderHeight());
+				break;
+		}
+
+		if(isScrollThumbAtBottom()) {
+			bottomScrollButtonStyleRule.getDisabledBackgroundRenderer().render(g, bottomScrollButton.getRenderX(),
+					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(),
+					bottomScrollButton.getRenderHeight());
+		} else {
+			switch (bottomScrollButtonState) {
+				case ACTION:
+					bottomScrollButtonStyleRule.getActionBackgroundRenderer().render(g, bottomScrollButton.getRenderX(),
+							bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(),
+							bottomScrollButton.getRenderHeight());
+					break;
+				case HOVER:
+					bottomScrollButtonStyleRule.getHoverBackgroundRenderer().render(g, bottomScrollButton.getRenderX(),
+							bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(),
+							bottomScrollButton.getRenderHeight());
+					break;
+				case NORMAL:
+				default:
+					bottomScrollButtonStyleRule.getNormalBackgroundRenderer().render(g, bottomScrollButton.getRenderX(),
+							bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(),
+							bottomScrollButton.getRenderHeight());
+					break;
+			}
+		}
+	}
+
 	@Override
 	protected void renderElement(Graphics g) {
 		renderBackground(g);
@@ -142,69 +208,7 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 			return;
 		}
 
-		style.getScrollTrackRenderer().render(g, scrollTrack.getRenderX(), scrollTrack.getRenderY(),
-				scrollTrack.getRenderWidth(), scrollTrack.getRenderHeight());
-
-		if(isScrollThumbAtTop()) {
-			topScrollButtonStyleRule.getDisabledBackgroundRenderer().render(g, topScrollButton.getRenderX(),
-					topScrollButton.getRenderY(), topScrollButton.getRenderWidth(), topScrollButton.getRenderHeight());
-		} else {
-			switch (topScrollButtonState) {
-			case ACTION:
-				topScrollButtonStyleRule.getActionBackgroundRenderer().render(g, topScrollButton.getRenderX(),
-						topScrollButton.getRenderY(), topScrollButton.getRenderWidth(), topScrollButton.getRenderHeight());
-				break;
-			case HOVER:
-				topScrollButtonStyleRule.getHoverBackgroundRenderer().render(g, topScrollButton.getRenderX(),
-						topScrollButton.getRenderY(), topScrollButton.getRenderWidth(), topScrollButton.getRenderHeight());
-				break;
-			case NORMAL:
-			default:
-				topScrollButtonStyleRule.getNormalBackgroundRenderer().render(g, topScrollButton.getRenderX(),
-						topScrollButton.getRenderY(), topScrollButton.getRenderWidth(), topScrollButton.getRenderHeight());
-				break;
-			}
-		}
-
-		switch (scrollThumbState) {
-		case ACTION:
-			style.getScrollThumbActiveRenderer().render(g, scrollThumb.getRenderX(), scrollThumb.getRenderY(),
-					scrollThumb.getRenderWidth(), scrollThumb.getRenderHeight());
-			break;
-		case HOVER:
-			style.getScrollThumbHoverRenderer().render(g, scrollThumb.getRenderX(), scrollThumb.getRenderY(),
-					scrollThumb.getRenderWidth(), scrollThumb.getRenderHeight());
-			break;
-		default:
-			style.getScrollThumbNormalRenderer().render(g, scrollThumb.getRenderX(), scrollThumb.getRenderY(),
-					scrollThumb.getRenderWidth(), scrollThumb.getRenderHeight());
-			break;
-		}
-
-		if(isScrollThumbAtBottom()) {
-			bottomScrollButtonStyleRule.getDisabledBackgroundRenderer().render(g, bottomScrollButton.getRenderX(),
-					bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(),
-					bottomScrollButton.getRenderHeight());
-		} else {
-			switch (bottomScrollButtonState) {
-			case ACTION:
-				bottomScrollButtonStyleRule.getActionBackgroundRenderer().render(g, bottomScrollButton.getRenderX(),
-						bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(),
-						bottomScrollButton.getRenderHeight());
-				break;
-			case HOVER:
-				bottomScrollButtonStyleRule.getHoverBackgroundRenderer().render(g, bottomScrollButton.getRenderX(),
-						bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(),
-						bottomScrollButton.getRenderHeight());
-				break;
-			case NORMAL:
-			default:
-				bottomScrollButtonStyleRule.getNormalBackgroundRenderer().render(g, bottomScrollButton.getRenderX(),
-						bottomScrollButton.getRenderY(), bottomScrollButton.getRenderWidth(),
-						bottomScrollButton.getRenderHeight());
-				break;
-			}
-		}
+		renderScrollbar(g);
 	}
 
 	private void updateScrollTo(float delta) {
