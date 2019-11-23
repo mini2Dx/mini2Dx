@@ -172,7 +172,7 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 			fontCache.setColor(element.getColor());
 		} else if (result.getColor() != null) {
 			fontCache.setAllColors(result.getColor());
-			fontCache.setColor(element.getColor());
+			fontCache.setColor(result.getColor());
 		} else {
 			throw new MdxException("Could not determine color for Label " + element.getId()
 					+ ". Please use Label#setColor or set a Color on the label style rule");
