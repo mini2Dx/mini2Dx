@@ -646,6 +646,9 @@ public class PixelLayoutUtils {
 					if(uiElement == null) {
 						continue;
 					}
+					if(uiElement.getVisibility().equals(Visibility.HIDDEN)) {
+						continue;
+					}
 					maxY = Math.max(maxY, uiElement.getY() + uiElement.getHeight());
 				}
 				scrollBox.setScrollContentHeight(maxY);

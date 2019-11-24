@@ -432,7 +432,12 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 		scrollTrack.setHeight(scrollTrackHeight);
 
 		scrollThumb.setWidth(style.getScrollBarWidth());
-		scrollThumb.setHeight(scrollTrackHeight * scrollThumbHeightPercentage);
+
+		if(scrollThumbHeightPercentage >= 1f) {
+			scrollThumb.setHeight(scrollTrackHeight);
+		} else {
+			scrollThumb.setHeight(scrollTrackHeight * scrollThumbHeightPercentage);
+		}
 
 		boxHeight = result;
 		return result;
