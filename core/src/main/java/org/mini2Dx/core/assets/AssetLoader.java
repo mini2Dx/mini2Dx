@@ -15,12 +15,28 @@
  ******************************************************************************/
 package org.mini2Dx.core.assets;
 
-import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.gdx.utils.Array;
 
+/**
+ * Interface for implementing asset loading via {@link AssetManager}
+ * @param <T> The resulting type that this loader will load
+ */
 public interface AssetLoader<T> {
+	/**
+	 * Loads an asset on the main game thread
+	 * @param assetManager The {@link AssetManager} executing the loading
+	 * @param assetDescriptor A descriptor of the asset to be loaded
+	 * @param asyncLoadingCache Stores values loaded on other threads
+	 * @param resultHolder Stores the resulting object
+	 * @return True if loading is complete
+	 */
+	public boolean loadOnGameThread(AssetManager assetManager, AssetDescriptor<T> assetDescriptor, AsyncLoadingCache asyncLoadingCache, AssetLoaderResult<T> resultHolder);
 
-	public T loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache);
-
-	public Array<AssetDescriptor> getDependencies(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache);
+	/**
+	 * Returns an {@link Array} of assets that the requested asset depends on
+	 * @param assetDescriptor A descriptor of the asset to be loaded
+	 * @param asyncLoadingCache Stores values loaded on other threads
+	 * @return An empty instance of {@link Array} or null if there's no dependencies
+	 */
+	public Array<AssetDescriptor> getDependencies(AssetDescriptor<T> assetDescriptor, AsyncLoadingCache asyncLoadingCache);
 }

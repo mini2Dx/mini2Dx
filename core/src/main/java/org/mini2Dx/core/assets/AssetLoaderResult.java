@@ -13,24 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.assets.loader;
+package org.mini2Dx.core.assets;
 
-import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.assets.*;
-import org.mini2Dx.core.graphics.Pixmap;
-import org.mini2Dx.gdx.utils.Array;
+public class AssetLoaderResult<T> {
+	private T result;
 
-public class PixmapLoader implements AssetLoader<Pixmap> {
-
-	@Override
-	public boolean loadOnGameThread(AssetManager assetManager, AssetDescriptor<Pixmap> assetDescriptor,
-	                                AsyncLoadingCache asyncLoadingCache, AssetLoaderResult<Pixmap> resultHolder) {
-		resultHolder.setResult(Mdx.graphics.newPixmap(assetDescriptor.getResolvedFileHandle()));
-		return true;
+	public T getResult() {
+		return result;
 	}
 
-	@Override
-	public Array<AssetDescriptor> getDependencies(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
-		return null;
+	public void setResult(T result) {
+		this.result = result;
 	}
 }

@@ -116,7 +116,7 @@ public class TiledMap {
 	/**
 	 * Returns if the {@link Tileset} images have been loaded
 	 * 
-	 * @return True if they have been loaded
+	 * @return True if all tilesets + textures have been loaded, otherwise false
 	 */
 	public boolean isTilesetTexturesLoaded() {
 		return tiledMapData.isTilesetTexturesLoaded();
@@ -125,59 +125,71 @@ public class TiledMap {
 	/**
 	 * Returns if the {@link Tileset} images have been loaded
 	 * @param ignoreObjectTemplateTilesets True if tilesets referenced by object templates should be ignored
-	 * @return True if they have been loaded
+	 * @return True if all tilesets + textures have been loaded, otherwise false
 	 */
 	public boolean isTilesetTexturesLoaded(boolean ignoreObjectTemplateTilesets) {
 		return tiledMapData.isTilesetTexturesLoaded(ignoreObjectTemplateTilesets);
 	}
 
 	/**
-	 * Loads all {@link Tileset} textures for this map if they are not already loaded
+	 * Loads all {@link Tileset} textures for this map if they are not already loaded<br>
+	 *     Note: Depending on the texture sizes, this may need to be called over several frames
+	 * @return True if all tilesets + textures have been loaded, otherwise false
 	 */
-	public void loadTilesetTextures() {
-		tiledMapData.loadTilesetTextures();
+	public boolean loadTilesetTextures() {
+		return tiledMapData.loadTilesetTextures();
 	}
 	
 	/**
 	 * Loads all {@link Tileset} textures for this map if they are not already loaded
+	 * <br>Note: Depending on the texture sizes, this may need to be called over several frames
 	 * @param assetManager The {@link AssetManager} to use
+	 * @return True if all tilesets + textures have been loaded, otherwise false
 	 */
-	public void loadTilesetTextures(AssetManager assetManager) {
-		tiledMapData.loadTilesetTextures(assetManager);
+	public boolean loadTilesetTextures(AssetManager assetManager) {
+		return tiledMapData.loadTilesetTextures(assetManager);
 	}
 
 	/**
 	 * Loads all {@link Tileset} textures for this map if they are not already loaded
+	 * <br>Note: Depending on the texture sizes, this may need to be called over several frames
 	 * @param textureAtlas The {@link TextureAtlas} to load textures from
+	 * @return True if all tilesets + textures have been loaded, otherwise false
 	 */
-	public void loadTilesetTextures(TextureAtlas textureAtlas) {
-		tiledMapData.loadTilesetTextures(textureAtlas);
+	public boolean loadTilesetTextures(TextureAtlas textureAtlas) {
+		return tiledMapData.loadTilesetTextures(textureAtlas);
 	}
 
 	/**
 	 * Loads all {@link Tileset} textures for this map if they are not already loaded
+	 * <br>Note: Depending on the texture sizes, this may need to be called over several frames
 	 * @param loadObjectTemplateTilesets True if tilesets used by object templates should be loaded
+	 * @return True if all tilesets + textures have been loaded, otherwise false
 	 */
-	public void loadTilesetTextures(boolean loadObjectTemplateTilesets) {
-		tiledMapData.loadTilesetTextures(loadObjectTemplateTilesets);
+	public boolean loadTilesetTextures(boolean loadObjectTemplateTilesets) {
+		return tiledMapData.loadTilesetTextures(loadObjectTemplateTilesets);
 	}
 
 	/**
 	 * Loads all {@link Tileset} textures for this map if they are not already loaded
+	 * <br>Note: Depending on the texture sizes, this may need to be called over several frames
 	 * @param loadObjectTemplateTilesets True if tilesets used by object templates should be loaded
 	 * @param assetManager The {@link AssetManager} to use
+	 * @return True if all tilesets + textures have been loaded, otherwise false
 	 */
-	public void loadTilesetTextures(AssetManager assetManager, boolean loadObjectTemplateTilesets) {
-		tiledMapData.loadTilesetTextures(assetManager, loadObjectTemplateTilesets);
+	public boolean loadTilesetTextures(AssetManager assetManager, boolean loadObjectTemplateTilesets) {
+		return tiledMapData.loadTilesetTextures(assetManager, loadObjectTemplateTilesets);
 	}
 
 	/**
 	 * Loads all {@link Tileset} textures for this map if they are not already loaded
+	 * <br>Note: Depending on the texture sizes, this may need to be called over several frames
 	 * @param loadObjectTemplateTilesets True if tilesets used by object templates should be loaded
 	 * @param textureAtlas The {@link TextureAtlas} to load textures from
+	 * @return True if all tilesets + textures have been loaded, otherwise false
 	 */
-	public void loadTilesetTextures(TextureAtlas textureAtlas, boolean loadObjectTemplateTilesets) {
-		tiledMapData.loadTilesetTextures(textureAtlas, loadObjectTemplateTilesets);
+	public boolean loadTilesetTextures(TextureAtlas textureAtlas, boolean loadObjectTemplateTilesets) {
+		return tiledMapData.loadTilesetTextures(textureAtlas, loadObjectTemplateTilesets);
 	}
 
 	/**

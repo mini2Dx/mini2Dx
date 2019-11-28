@@ -17,7 +17,6 @@ package org.mini2Dx.core.assets.loader;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.*;
-import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.Texture;
 import org.mini2Dx.gdx.utils.Array;
 
@@ -28,8 +27,10 @@ public class TextureLoader implements AsyncAssetLoader<Texture> {
 	private static final String CACHE_TEXTURE_DATA_KEY = "textureData";
 
 	@Override
-	public Texture loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
-		return Mdx.graphics.newTexture(asyncLoadingCache.getCache(CACHE_TEXTURE_DATA_KEY, byte[].class));
+	public boolean loadOnGameThread(AssetManager assetManager, AssetDescriptor<Texture> assetDescriptor,
+	                                AsyncLoadingCache asyncLoadingCache, AssetLoaderResult<Texture> resultHolder) {
+		resultHolder.setResult(Mdx.graphics.newTexture(asyncLoadingCache.getCache(CACHE_TEXTURE_DATA_KEY, byte[].class)));
+		return true;
 	}
 
 	@Override

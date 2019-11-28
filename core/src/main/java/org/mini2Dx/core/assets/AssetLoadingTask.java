@@ -17,16 +17,13 @@ package org.mini2Dx.core.assets;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.executor.AsyncFuture;
-import org.mini2Dx.core.executor.FrameSpreadTask;
-import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AssetLoadingTask<T> implements Runnable, Comparable<AssetLoadingTask>, Disposable {
 	private static final String LOGGING_TAG = AssetLoadingTask.class.getSimpleName();
 
+	private final AssetLoaderResult<T> assetLoaderResult = new AssetLoaderResult<T>();
 	private final AssetLoader<T> assetLoader;
 	private final AssetDescriptor<T> assetDescriptor;
 
@@ -85,9 +82,11 @@ public class AssetLoadingTask<T> implements Runnable, Comparable<AssetLoadingTas
 			return false;
 		}
 
-		final T result = assetLoader.loadOnGameThread(assetManager, assetDescriptor, asyncLoadingCache);
-		assetManager.getAssets().put(assetDescriptor.getFilePath(), new ReferenceCountedObject(result));
-		return true;
+		if(assetLoader.loadOnGameThread(assetManager, assetDescriptor, asyncLoadingCache, assetLoaderResult)) {
+			assetManager.getAssets().put(assetDescriptor.getFilePath(), new ReferenceCountedObject(assetLoaderResult.getResult()));
+			return true;
+		}
+		return false;
 	}
 
 	@Override

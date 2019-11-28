@@ -16,13 +16,11 @@
 package org.mini2Dx.ui;
 
 import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.assets.AssetDescriptor;
-import org.mini2Dx.core.assets.AssetManager;
-import org.mini2Dx.core.assets.AsyncAssetLoader;
-import org.mini2Dx.core.assets.AsyncLoadingCache;
+import org.mini2Dx.core.assets.*;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.exception.SerializationException;
 import org.mini2Dx.core.files.FileHandleResolver;
+import org.mini2Dx.core.graphics.Texture;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.ui.style.UiTheme;
 
@@ -63,10 +61,12 @@ public class UiThemeLoader implements AsyncAssetLoader<UiTheme> {
 	}
 
 	@Override
-	public UiTheme loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
+	public boolean loadOnGameThread(AssetManager assetManager, AssetDescriptor<UiTheme> assetDescriptor,
+	                                AsyncLoadingCache asyncLoadingCache, AssetLoaderResult<UiTheme> resultHolder) {
 		final UiTheme theme = asyncLoadingCache.getCache(CACHE_THEME_KEY, UiTheme.class);
 		theme.prepareAssets(fileHandleResolver, assetManager);
-		return theme;
+		resultHolder.setResult(theme);
+		return true;
 	}
 
 	@Override

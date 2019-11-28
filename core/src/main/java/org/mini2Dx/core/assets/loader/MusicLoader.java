@@ -18,7 +18,6 @@ package org.mini2Dx.core.assets.loader;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.*;
 import org.mini2Dx.core.audio.Music;
-import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.gdx.utils.Array;
 
 import java.io.IOException;
@@ -28,8 +27,9 @@ public class MusicLoader implements AsyncAssetLoader<Music> {
 	private static final String CACHE_MUSIC_KEY = "music";
 
 	@Override
-	public Music loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
-		return asyncLoadingCache.getCache(CACHE_MUSIC_KEY, Music.class);
+	public boolean loadOnGameThread(AssetManager assetManager, AssetDescriptor<Music> assetDescriptor, AsyncLoadingCache asyncLoadingCache, AssetLoaderResult<Music> resultHolder) {
+		resultHolder.setResult(asyncLoadingCache.getCache(CACHE_MUSIC_KEY, Music.class));
+		return true;
 	}
 
 	@Override

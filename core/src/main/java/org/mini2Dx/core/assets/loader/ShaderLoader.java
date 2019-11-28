@@ -17,14 +17,15 @@ package org.mini2Dx.core.assets.loader;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.*;
-import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.Shader;
 import org.mini2Dx.gdx.utils.Array;
 
 public class ShaderLoader implements AssetLoader<Shader> {
 	@Override
-	public Shader loadOnGameThread(AssetManager assetManager, AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache) {
-		return Mdx.graphics.newShader(assetDescriptor.getResolvedFileHandle().path());
+	public boolean loadOnGameThread(AssetManager assetManager, AssetDescriptor<Shader> assetDescriptor,
+	                                AsyncLoadingCache asyncLoadingCache, AssetLoaderResult<Shader> resultHolder) {
+		resultHolder.setResult(Mdx.graphics.newShader(assetDescriptor.getResolvedFileHandle().path()));
+		return true;
 	}
 
 	@Override

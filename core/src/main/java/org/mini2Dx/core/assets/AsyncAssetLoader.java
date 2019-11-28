@@ -15,9 +15,16 @@
  ******************************************************************************/
 package org.mini2Dx.core.assets;
 
-import org.mini2Dx.core.files.FileHandle;
-
+/**
+ * Interface for implement {@link AssetLoader}s that can load (or partially load) asset data via non-main threads
+ * @param <T> The resulting type that this loader will load
+ */
 public interface AsyncAssetLoader<T> extends AssetLoader<T> {
 
+	/**
+	 * Loads an asset (or partial data) via a non-main thread
+	 * @param assetDescriptor A descriptor of the asset to be loaded
+	 * @param asyncLoadingCache Stores data in this cache to pass to the game thread loading
+	 */
 	public void loadOnAsyncThread(AssetDescriptor assetDescriptor, AsyncLoadingCache asyncLoadingCache);
 }

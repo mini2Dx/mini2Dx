@@ -15,8 +15,6 @@
  ******************************************************************************/
 package org.mini2Dx.core.assets;
 
-import org.mini2Dx.gdx.utils.ObjectMap;
-
 public interface AssetProperties<T> {
 
 }

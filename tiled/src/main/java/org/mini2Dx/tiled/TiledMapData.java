@@ -34,8 +34,10 @@ import java.io.IOException;
  * Data parsed from a TMX file created with Tiled
  */
 public class TiledMapData implements TiledParserListener {
-	protected final FileHandle fileHandle;
+	public static long MAX_TILESET_LOAD_TIMESLICE_MILLIS = 2L;
+
 	static final ObjectSet<String> OBJECT_TEMPLATE_TILESET_SOURCES = new ObjectSet<String>();
+	protected final FileHandle fileHandle;
 
 	protected final Array<Tileset> tilesets = new Array<Tileset>(true, 2, Tileset.class);
 	protected final IntSet tilesetGids = new IntSet();
@@ -88,19 +90,44 @@ public class TiledMapData implements TiledParserListener {
 		return dependencies;
 	}
 
-	public void loadTilesetTextures() {
-		loadTilesetTextures(true);
+	/**
+	 * Loads all {@link Tileset} textures for this map if they are not already loaded<br>
+	 *     Note: Depending on the texture sizes, this may need to be called over several frames
+	 * @return True if all tilesets + textures have been loaded, otherwise false
+	 */
+	public boolean loadTilesetTextures() {
+		return loadTilesetTextures(true);
 	}
 
-	public void loadTilesetTextures(AssetManager assetManager) {
-		loadTilesetTextures(assetManager, true);
+	/**
+	 * Loads all {@link Tileset} textures for this map if they are not already loaded
+	 * <br>Note: Depending on the texture sizes, this may need to be called over several frames
+	 * @param assetManager The {@link AssetManager} to use
+	 * @return True if all tilesets + textures have been loaded, otherwise false
+	 */
+	public boolean loadTilesetTextures(AssetManager assetManager) {
+		return loadTilesetTextures(assetManager, true);
 	}
 
-	public void loadTilesetTextures(TextureAtlas textureAtlas) {
-		loadTilesetTextures(textureAtlas, true);
+	/**
+	 * Loads all {@link Tileset} textures for this map if they are not already loaded
+	 * <br>Note: Depending on the texture sizes, this may need to be called over several frames
+	 * @param textureAtlas The {@link TextureAtlas} to load textures from
+	 * @return True if all tilesets + textures have been loaded, otherwise false
+	 */
+	public boolean loadTilesetTextures(TextureAtlas textureAtlas) {
+		return loadTilesetTextures(textureAtlas, true);
 	}
 
-	public void loadTilesetTextures(boolean loadObjectTemplateTilesets) {
+	/**
+	 * Loads all {@link Tileset} textures for this map if they are not already loaded
+	 * <br>Note: Depending on the texture sizes, this may need to be called over several frames
+	 * @param loadObjectTemplateTilesets True if tilesets used by object templates should be loaded
+	 * @return True if all tilesets + textures have been loaded, otherwise false
+	 */
+	public boolean loadTilesetTextures(boolean loadObjectTemplateTilesets) {
+		final long startTime = System.currentTimeMillis();
+
 		for (int i = 0; i < tilesets.size; i++) {
 			final Tileset tileset = tilesets.get(i);
 			if(tileset.isTextureLoaded()) {
@@ -110,10 +137,24 @@ public class TiledMapData implements TiledParserListener {
 				continue;
 			}
 			tileset.loadTexture(fileHandle);
+
+			if(System.currentTimeMillis() - startTime >= MAX_TILESET_LOAD_TIMESLICE_MILLIS) {
+				return false;
+			}
 		}
+		return true;
 	}
 
-	public void loadTilesetTextures(AssetManager assetManager, boolean loadObjectTemplateTilesets) {
+	/**
+	 * Loads all {@link Tileset} textures for this map if they are not already loaded
+	 * <br>Note: Depending on the texture sizes, this may need to be called over several frames
+	 * @param loadObjectTemplateTilesets True if tilesets used by object templates should be loaded
+	 * @param assetManager The {@link AssetManager} to use
+	 * @return True if all tilesets + textures have been loaded, otherwise false
+	 */
+	public boolean loadTilesetTextures(AssetManager assetManager, boolean loadObjectTemplateTilesets) {
+		final long startTime = System.currentTimeMillis();
+
 		for (int i = 0; i < tilesets.size; i++) {
 			final Tileset tileset = tilesets.get(i);
 			if(tileset.isTextureLoaded()) {
@@ -123,10 +164,24 @@ public class TiledMapData implements TiledParserListener {
 				continue;
 			}
 			tileset.loadTexture(assetManager, fileHandle);
+
+			if(System.currentTimeMillis() - startTime >= MAX_TILESET_LOAD_TIMESLICE_MILLIS) {
+				return false;
+			}
 		}
+		return true;
 	}
 
-	public void loadTilesetTextures(TextureAtlas textureAtlas, boolean loadObjectTemplateTilesets) {
+	/**
+	 * Loads all {@link Tileset} textures for this map if they are not already loaded
+	 * <br>Note: Depending on the texture sizes, this may need to be called over several frames
+	 * @param loadObjectTemplateTilesets True if tilesets used by object templates should be loaded
+	 * @param textureAtlas The {@link TextureAtlas} to load textures from
+	 * @return True if all tilesets + textures have been loaded, otherwise false
+	 */
+	public boolean loadTilesetTextures(TextureAtlas textureAtlas, boolean loadObjectTemplateTilesets) {
+		final long startTime = System.currentTimeMillis();
+
 		for (int i = 0; i < tilesets.size; i++) {
 			final Tileset tileset = tilesets.get(i);
 			if(tileset.isTextureLoaded()) {
@@ -136,7 +191,12 @@ public class TiledMapData implements TiledParserListener {
 				continue;
 			}
 			tileset.loadTexture(textureAtlas);
+
+			if(System.currentTimeMillis() - startTime >= MAX_TILESET_LOAD_TIMESLICE_MILLIS) {
+				return false;
+			}
 		}
+		return true;
 	}
 
 	@Override
