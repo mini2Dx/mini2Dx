@@ -20,7 +20,6 @@ import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.gdx.math.EarClippingTriangulator;
-import org.mini2Dx.gdx.math.GeometryUtils;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
 import org.mini2Dx.gdx.utils.ShortArray;
@@ -37,7 +36,13 @@ public class Polygon extends Shape {
 	private static final Vector2 TMP_VECTOR1 = new Vector2();
 	private static final Vector2 TMP_VECTOR2 = new Vector2();
 
-	private final EarClippingTriangulator triangulator;
+	private static final ThreadLocal<EarClippingTriangulator> TRIANGULATOR = new ThreadLocal<EarClippingTriangulator>(){
+		@Override
+		protected EarClippingTriangulator initialValue() {
+			return new EarClippingTriangulator();
+		}
+	};
+
 	private final PolygonEdgeIterator edgeIterator = new PolygonEdgeIterator();
 	private final PolygonEdgeIterator internalEdgeIterator = new PolygonEdgeIterator(INTERNAL_EDGE_LINE_SEGMENT);
 
@@ -61,7 +66,6 @@ public class Polygon extends Shape {
 		super(geometry);
 		this.vertices = vertices;
 
-		triangulator = new EarClippingTriangulator();
 		getNumberOfSides();
 	}
 
@@ -76,7 +80,6 @@ public class Polygon extends Shape {
 		super();
 		this.vertices = vertices;
 
-		triangulator = new EarClippingTriangulator();
 		getNumberOfSides();
 	}
 
@@ -982,7 +985,7 @@ public class Polygon extends Shape {
 	}
 
 	private void computeTriangles(float[] vertices) {
-		triangles = triangulator.computeTriangles(vertices);
+		triangles = TRIANGULATOR.get().computeTriangles(vertices);
 	}
 
 	private void calculateMinMaxXY(float[] vertices) {
