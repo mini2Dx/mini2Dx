@@ -18,7 +18,7 @@ public class DivTest extends AbstractUiElementXmlTest<Div> {
 
     @Test
     public void div_with_flex_layout() {
-        String xml = "<div flex-layout=\"text\"/>";
+        String xml = "<div layout=\"text\"/>";
 
         assertEquals("text", loadFileWithContainer(xml).getFlexLayout());
     }
@@ -33,9 +33,9 @@ public class DivTest extends AbstractUiElementXmlTest<Div> {
                 "     height=\"100\"" +
                 "     x=\"10\"" +
                 "     y=\"20\"" +
-                "     style-id=\"test-style\"" +
+                "     style=\"test-style\"" +
                 "     z-index=\"100\"" +
-                "     flex-layout=\"flex-row:xs-12c\"" +
+                "     layout=\"flex-row:xs-12c\"" +
                 "     overflow-clipped=\"true\">" +
                 "" +
                 "    <text-button id=\"x\" text=\"hello\"/>" +

@@ -18,7 +18,7 @@ public class TextButtonTest extends AbstractUiElementXmlTest<TextButton> {
 
     @Test
     public void text_button_with_flex_layout() {
-        TextButton element = loadFile("<text-button flex-layout=\"blah\"/>");
+        TextButton element = loadFile("<text-button layout=\"blah\"/>");
 
         assertEquals("blah", element.getFlexLayout());
     }
@@ -56,7 +56,7 @@ public class TextButtonTest extends AbstractUiElementXmlTest<TextButton> {
                 "<container xmlns=\"https://github.com/mini2Dx/mini2Dx\">" +
                 "    <text-button id=\"test\"" +
                 "                 z-index=\"100\"" +
-                "                 style-id=\"test-style\"" +
+                "                 style=\"test-style\"" +
                 "                 y=\"100\"" +
                 "                 x=\"200\"" +
                 "                 width=\"2\"" +

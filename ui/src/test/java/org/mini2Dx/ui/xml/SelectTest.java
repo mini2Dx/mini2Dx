@@ -30,7 +30,7 @@ public class SelectTest extends AbstractUiElementXmlTest<Select<String>> {
 
     @Test
     public void flex_layout_is_provided() {
-        String xml = "<select flex-layout=\"blah\" />";
+        String xml = "<select layout=\"blah\" />";
 
         Select element = loadFile(xml);
 
@@ -53,14 +53,14 @@ public class SelectTest extends AbstractUiElementXmlTest<Select<String>> {
                 "    <select" +
                 "            id=\"test\"" +
                 "            z-index=\"100\"" +
-                "            style-id=\"test-style\"" +
+                "            style=\"test-style\"" +
                 "            y=\"100\"" +
                 "            x=\"200\"" +
                 "            width=\"2\"" +
                 "            height=\"1\"" +
                 "            visibility=\"HIDDEN\"" +
                 "            enabled=\"false\"" +
-                "            flex-layout=\"blah\"" +
+                "            layout=\"blah\"" +
                 "            left-button-text=\"foo\"" +
                 "            right-button-text=\"bar\"" +
                 "    >" +

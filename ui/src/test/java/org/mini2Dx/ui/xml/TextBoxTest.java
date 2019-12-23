@@ -25,7 +25,7 @@ public class TextBoxTest extends AbstractUiElementXmlTest<TextBox> {
 
     @Test
     public void text_box_flex_layout_provided() {
-        TextBox element = loadFile("<text-box id=\"x\" flex-layout=\"test\"/>");
+        TextBox element = loadFile("<text-box id=\"x\" layout=\"test\"/>");
 
         assertEquals("test", element.getFlexLayout());
     }
@@ -53,7 +53,7 @@ public class TextBoxTest extends AbstractUiElementXmlTest<TextBox> {
                 "<container xmlns=\"https://github.com/mini2Dx/mini2Dx\">" +
                 "    <text-box id=\"test\"" +
                 "              z-index=\"100\"" +
-                "              style-id=\"test-style\"" +
+                "              style=\"test-style\"" +
                 "              y=\"100\"" +
                 "              x=\"200\"" +
                 "              width=\"2\"" +
@@ -62,7 +62,7 @@ public class TextBoxTest extends AbstractUiElementXmlTest<TextBox> {
                 "              password=\"true\"" +
                 "              value=\"hello\"" +
                 "              enabled=\"false\"" +
-                "              flex-layout=\"blah\"" +
+                "              layout=\"blah\"" +
                 "    />" +
                 "</container>";
 

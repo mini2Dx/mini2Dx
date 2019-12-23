@@ -83,7 +83,7 @@
 
                     <xsd:attribute name="id" type="xsd:string" use="required"/>
                     <xsd:attribute name="enabled" type="xsd:boolean"/>
-                    <xsd:attribute name="flex-layout" type="xsd:string"/>
+                    <xsd:attribute name="layout" type="xsd:string"/>
                     <xsd:attribute name="left-button-text" type="xsd:string"/>
                     <xsd:attribute name="right-button-text" type="xsd:string"/>
                 </xsd:extension>
@@ -140,7 +140,7 @@
             <xsd:complexContent>
                 <xsd:extension base="ui-element">
                     <xsd:attribute name="id" type="xsd:string" use="required"/>
-                    <xsd:attribute name="flex-layout" type="xsd:string"/>
+                    <xsd:attribute name="layout" type="xsd:string"/>
                     <xsd:attribute name="min" type="xsd:integer" default="0"/>
                     <xsd:attribute name="max" type="xsd:integer" default="1"/>
                 </xsd:extension>
@@ -174,7 +174,7 @@
                     <xsd:attribute name="id" type="xsd:string" use="required"/>
                     <xsd:attribute name="text" type="xsd:string" use="required"/>
                     <xsd:attribute name="enabled" type="xsd:boolean" default="true"/>
-                    <xsd:attribute name="flex-layout" type="xsd:string" default="flex-column:xs-12c"/>
+                    <xsd:attribute name="layout" type="xsd:string" default="flex-column:xs-12c"/>
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
@@ -207,7 +207,7 @@
                     <xsd:attribute name="value" type="xsd:string"/>
                     <xsd:attribute name="password" type="xsd:boolean" default="false"/>
                     <xsd:attribute name="enabled" type="xsd:boolean" default="true"/>
-                    <xsd:attribute name="flex-layout" type="xsd:string"/>
+                    <xsd:attribute name="layout" type="xsd:string"/>
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
@@ -241,7 +241,7 @@
                         <xsd:element ref="select"/>
                     </xsd:choice>
                 </xsd:sequence>
-                <xsd:attribute name="flex-layout" type="xsd:string"/>
+                <xsd:attribute name="layout" type="xsd:string"/>
                 <xsd:attribute name="overflow-clipped" type="xsd:boolean" default="false"/>
                 <!--
                                 todo - shrinkToContents
@@ -258,7 +258,7 @@
         <xsd:attribute name="height" type="xsd:float"/>
         <xsd:attribute name="x" type="xsd:float"/>
         <xsd:attribute name="y" type="xsd:float"/>
-        <xsd:attribute name="style-id" type="xsd:string"/>
+        <xsd:attribute name="style" type="xsd:string"/>
         <xsd:attribute name="z-index" type="xsd:integer"/>
         <xsd:attribute name="visibility" type="visibility" default="VISIBLE"/>
     </xsd:complexType>

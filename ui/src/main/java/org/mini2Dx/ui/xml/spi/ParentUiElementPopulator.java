@@ -7,8 +7,8 @@ import org.mini2Dx.ui.xml.UiElementPopulator;
 public class ParentUiElementPopulator implements UiElementPopulator<ParentUiElement> {
     @Override
     public void populate(XmlReader.Element xmlTag, ParentUiElement uiElement) {
-        if (xmlTag.hasAttribute("flex-layout")) {
-            uiElement.setFlexLayout(xmlTag.getAttribute("flex-layout"));
+        if (xmlTag.hasAttribute("layout")) {
+            uiElement.setFlexLayout(xmlTag.getAttribute("layout"));
         }
 
         uiElement.setOverflowClipped(xmlTag.getBoolean("overflow-clipped", false));

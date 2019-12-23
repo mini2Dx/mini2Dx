@@ -40,7 +40,7 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
     public void with_a_style_id() {
         String xml = "<" + getUiElementTagName()
                 + NAMESPACE
-                + " style-id=\"blah\"/>";
+                + " style=\"blah\"/>";
 
         UiElement element = loadFile(xml);
 

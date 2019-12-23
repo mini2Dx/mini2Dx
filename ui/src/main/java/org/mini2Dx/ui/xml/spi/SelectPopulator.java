@@ -8,7 +8,7 @@ public class SelectPopulator implements UiElementPopulator<Select> {
     @Override
     public void populate(XmlReader.Element xmlTag, Select uiElement) {
         uiElement.setEnabled(xmlTag.getBooleanAttribute("enabled", true));
-        uiElement.setFlexLayout(xmlTag.getAttribute("flex-layout", null));
+        uiElement.setFlexLayout(xmlTag.getAttribute("layout", null));
         uiElement.setLeftButtonText(xmlTag.getAttribute("left-button-text", null));
         uiElement.setRightButtonText(xmlTag.getAttribute("right-button-text", null));
 

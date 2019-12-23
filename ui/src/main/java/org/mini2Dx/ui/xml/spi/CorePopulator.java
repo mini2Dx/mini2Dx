@@ -28,12 +28,8 @@ public class CorePopulator implements UiElementPopulator<UiElement> {
             uiElement.setZIndex(xmlElement.getIntAttribute("z-index"));
         }
 
-        if (xmlElement.hasAttribute("style-id")) {
-            uiElement.setStyleId(xmlElement.getAttribute("style-id"));
-        }
-
-        if (xmlElement.hasAttribute("flex-layout")) {
-            uiElement.setStyleId(xmlElement.getAttribute("flex-layout"));
+        if (xmlElement.hasAttribute("style")) {
+            uiElement.setStyleId(xmlElement.getAttribute("style"));
         }
 
         String providedValue = xmlElement.getAttribute("visibility", "VISIBLE");

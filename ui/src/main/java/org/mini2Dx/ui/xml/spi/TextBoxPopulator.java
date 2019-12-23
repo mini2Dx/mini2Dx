@@ -10,6 +10,6 @@ public class TextBoxPopulator implements UiElementPopulator<TextBox> {
         uiElement.setValue(xmlTag.getAttribute("value", null));
         uiElement.setEnabled(xmlTag.getBoolean("enabled", true));
         uiElement.setPasswordField(xmlTag.getBoolean("password", false));
-        uiElement.setFlexLayout(xmlTag.getAttribute("flex-layout", null));
+        uiElement.setFlexLayout(xmlTag.getAttribute("layout", null));
     }
 }

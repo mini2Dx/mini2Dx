@@ -48,7 +48,7 @@ public class LabelTest extends AbstractUiElementXmlTest<Label> {
                 "<container xmlns=\"https://github.com/mini2Dx/mini2Dx\">" +
                 "    <label id=\"test\"" +
                 "           z-index=\"100\"" +
-                "           style-id=\"test-style\"" +
+                "           style=\"test-style\"" +
                 "           y=\"100\"" +
                 "           x=\"200\"" +
                 "           width=\"2\"" +

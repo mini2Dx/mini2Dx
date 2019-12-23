@@ -9,6 +9,6 @@ public class TextButtonPopulator implements UiElementPopulator<TextButton> {
     public void populate(XmlReader.Element xmlTag, TextButton uiElement) {
         uiElement.setText(xmlTag.getAttribute("text", ""));
         uiElement.setEnabled(xmlTag.getBoolean("enabled", true));
-        uiElement.setFlexLayout(xmlTag.getAttribute("flex-layout", "flex-column:xs-12c"));
+        uiElement.setFlexLayout(xmlTag.getAttribute("layout", "flex-column:xs-12c"));
     }
 }

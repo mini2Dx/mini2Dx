@@ -19,7 +19,7 @@ public class ContainerTest extends AbstractUiElementXmlTest<Container> {
 
     @Test
     public void container_with_flex_layout() {
-        String xml = "<container flex-layout=\"text\"/>";
+        String xml = "<container layout=\"text\"/>";
 
         assertEquals("text", loadFileWithContainer(xml).getFlexLayout());
     }
@@ -30,13 +30,13 @@ public class ContainerTest extends AbstractUiElementXmlTest<Container> {
                 "<container xmlns=\"https://github.com/mini2Dx/mini2Dx\"" +
                 "           id=\"test\"" +
                 "           z-index=\"100\"" +
-                "           style-id=\"test-style\"" +
+                "           style=\"test-style\"" +
                 "           y=\"100\"" +
                 "           x=\"200\"" +
                 "           width=\"2\"" +
                 "           height=\"1\"" +
                 "           visibility=\"HIDDEN\"" +
-                "           flex-layout=\"flex-row:xs-12c\"" +
+                "           layout=\"flex-row:xs-12c\"" +
                 "           overflow-clipped=\"true\">" +
                 "" +
                 "    <text-button id=\"x\" text=\"hello\"/>" +

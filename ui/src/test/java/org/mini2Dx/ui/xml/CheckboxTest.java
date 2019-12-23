@@ -46,7 +46,7 @@ public class CheckboxTest extends AbstractUiElementXmlTest<Checkbox> {
                 "    <check-box" +
                 "            id=\"test\"" +
                 "            z-index=\"100\"" +
-                "            style-id=\"test-style\"" +
+                "            style=\"test-style\"" +
                 "            y=\"100\"" +
                 "            x=\"200\"" +
                 "            width=\"2\"" +

@@ -10,7 +10,7 @@ public class ProgressBarTest extends AbstractUiElementXmlTest<ProgressBar> {
 
     @Test
     public void set_flex_layout() {
-        ProgressBar element = loadFile("<progress-bar flex-layout=\"blah\" />");
+        ProgressBar element = loadFile("<progress-bar layout=\"blah\" />");
 
         assertEquals("blah", element.getFlexLayout());
     }
@@ -30,7 +30,7 @@ public class ProgressBarTest extends AbstractUiElementXmlTest<ProgressBar> {
                 "    <progress-bar" +
                 "            id=\"test\"" +
                 "            z-index=\"100\"" +
-                "            style-id=\"test-style\"" +
+                "            style=\"test-style\"" +
                 "            y=\"100\"" +
                 "            x=\"200\"" +
                 "            width=\"2\"" +
@@ -38,7 +38,7 @@ public class ProgressBarTest extends AbstractUiElementXmlTest<ProgressBar> {
                 "            visibility=\"HIDDEN\"" +
                 "            min=\"1\"" +
                 "            max=\"1000\"" +
-                "            flex-layout=\"does-not-matter\"" +
+                "            layout=\"does-not-matter\"" +
                 "    />" +
                 "</container>";
 
