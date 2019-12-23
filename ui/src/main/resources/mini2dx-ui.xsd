@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="https://github.com/mini2Dx/mini2Dx"
+            xmlns="https://github.com/mini2Dx/mini2Dx"
+            elementFormDefault="qualified">
+
+<!--
+
+todo - UI elements left:
+ - AnimatedImage
+ - Button
+ - Image
+ - ImageButton
+ - Radio Button
+ - ScrollBox
+ - Select
+ - Slider
+ - Tab
+ - TabButton
+ - TabView
+
+-->
+
+
+    <xsd:element name="container">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.Container"/>
+        </xsd:annotation>
+
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="div-base">
+                    <xsd:attribute name="id" type="xsd:string"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="div">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.Div"/>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="div-base">
+                    <xsd:attribute name="id" type="xsd:string"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="flex-row">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.FlexRow"/>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="div-base">
+                    <xsd:attribute name="id" type="xsd:string"/>
+                    <xsd:attribute name="flex-direction" type="flexDirection" default="COLUMN"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="progress-bar">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.ProgressBar"/>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="ui-element">
+                    <xsd:attribute name="id" type="xsd:string" use="required"/>
+                    <xsd:attribute name="flex-layout" type="xsd:string"/>
+                    <xsd:attribute name="min" type="xsd:integer" default="0"/>
+                    <xsd:attribute name="max" type="xsd:integer" default="1"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="check-box">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.CheckBox"/>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="ui-element">
+                    <xsd:attribute name="id" type="xsd:string" use="required"/>
+                    <xsd:attribute name="checked" type="xsd:boolean" default="false"/>
+                    <xsd:attribute name="enabled" type="xsd:boolean" default="true"/>
+                    <xsd:attribute name="responsive" type="xsd:boolean" default="false"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="text-button">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.TextButton"/>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="ui-element">
+                    <xsd:attribute name="id" type="xsd:string" use="required"/>
+                    <xsd:attribute name="text" type="xsd:string" use="required"/>
+                    <xsd:attribute name="enabled" type="xsd:boolean" default="true"/>
+                    <xsd:attribute name="flex-layout" type="xsd:string" default="flex-column:xs-12c"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="label">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.Label"/>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="ui-element">
+                    <xsd:attribute name="id" type="xsd:string"/>
+                    <xsd:attribute name="text" type="xsd:string" use="required"/>
+                    <xsd:attribute name="horizontal-alignment" type="horizontalAlignment" default="LEFT"/>
+                    <xsd:attribute name="responsive" type="xsd:boolean" default="false"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="text-box">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.TextBox"/>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="ui-element">
+                    <xsd:attribute name="id" type="xsd:string" use="required"/>
+                    <xsd:attribute name="value" type="xsd:string"/>
+                    <xsd:attribute name="password" type="xsd:boolean" default="false"/>
+                    <xsd:attribute name="enabled" type="xsd:boolean" default="true"/>
+                    <xsd:attribute name="flex-layout" type="xsd:string"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:complexType name="div-base" abstract="true">
+        <xsd:complexContent>
+            <xsd:extension base="parent-ui-element">
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="parent-ui-element" abstract="true">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.ParentUiElement"/>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="ui-element">
+                <xsd:sequence>
+                    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                        <xsd:element ref="container"/>
+                        <xsd:element ref="div"/>
+                        <xsd:element ref="flex-row"/>
+                        <xsd:element ref="text-button"/>
+                        <xsd:element ref="label"/>
+                        <xsd:element ref="text-box"/>
+                        <xsd:element ref="check-box"/>
+                        <xsd:element ref="progress-bar"/>
+                    </xsd:choice>
+                </xsd:sequence>
+                <xsd:attribute name="flex-layout" type="xsd:string"/>
+                <xsd:attribute name="overflow-clipped" type="xsd:boolean" default="false"/>
+                <!--
+                                todo - shrinkToContents
+                -->
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="ui-element" abstract="true">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.UiElement"/>
+        </xsd:annotation>
+        <xsd:attribute name="width" type="xsd:float"/>
+        <xsd:attribute name="height" type="xsd:float"/>
+        <xsd:attribute name="x" type="xsd:float"/>
+        <xsd:attribute name="y" type="xsd:float"/>
+        <xsd:attribute name="style-id" type="xsd:string"/>
+        <xsd:attribute name="z-index" type="xsd:integer"/>
+        <xsd:attribute name="visibility" type="visibility" default="VISIBLE"/>
+    </xsd:complexType>
+
+    <xsd:simpleType name="visibility">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="VISIBLE"/>
+            <xsd:enumeration value="HIDDEN"/>
+            <xsd:enumeration value="NO_RENDER"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="horizontalAlignment">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="LEFT"/>
+            <xsd:enumeration value="RIGHT"/>
+            <xsd:enumeration value="CENTER"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="flexDirection">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="COLUMN"/>
+            <xsd:enumeration value="COLUMN_REVERSE"/>
+            <xsd:enumeration value="ROW"/>
+            <xsd:enumeration value="ROW_REVERSE"/>
+            <xsd:enumeration value="CENTER"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+</xsd:schema>
