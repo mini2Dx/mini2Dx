@@ -1,22 +1,22 @@
-<container>
-	<flexRow>
+<container xmlns="https://github.com/mini2Dx/mini2Dx">
+	<flex-row>
 		<div id="firstColumn" layout="xs-12 sm-10 sm-offset-1 md-3" style="">
-			<label style="" text="Label text" />
+			<label style="" text="Label text"/>
 		</div>
 		<div layout="xs-12 sm-10 sm-offset-2 md-3">
 			<select id="" style="">
-				<option value="1" text="Option 1" />
-				<option value="2" text="Option 2" />
-				<option value="3" text="Option 3" />
-				<option value="4" text="Option 4" />
+				<option value="1">Option 1</option>
+				<option value="2">Option 2</option>
+				<option value="3">Option 3</option>
+				<option value="4">Option 4</option>
 			</select>
 		</div>
 		<div layout="xs-12 sm-10 sm-offset-2 md-3">
-			<textButton id="" text="" style="" />
-			<imageButton id="" image="" style="" />
+			<text-button id="" text="" style=""/>
+			<imageButton id="" image="" style=""/>
 		</div>
 		<div layout="xs-12 sm-10 sm-offset-2 md-3">
-			<textbox id="" style="" />
+			<text-box id="" style=""/>
 		</div>
-	</flexRow>
+	</flex-row>
 </container>
