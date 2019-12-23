@@ -133,7 +133,7 @@ public class SelectTest extends AbstractUiElementXmlTest<Select<String>> {
     @Override
     protected void assertDefaultValues(Select<String> element) {
         assertTrue(element.isEnabled());
-        assertNull(element.getFlexLayout());
+        assertEquals("flex-column:xs-12c", element.getFlexLayout());
         assertNull(element.getLeftButtonText());
         assertNull(element.getRightButtonText());
     }

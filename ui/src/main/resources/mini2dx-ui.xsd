@@ -83,7 +83,7 @@
 
                     <xsd:attribute name="id" type="xsd:string" use="required"/>
                     <xsd:attribute name="enabled" type="xsd:boolean"/>
-                    <xsd:attribute name="layout" type="xsd:string"/>
+                    <xsd:attribute name="layout" type="xsd:string" default="flex-column:xs-12c"/>
                     <xsd:attribute name="left-button-text" type="xsd:string"/>
                     <xsd:attribute name="right-button-text" type="xsd:string"/>
                 </xsd:extension>
@@ -207,7 +207,7 @@
                     <xsd:attribute name="value" type="xsd:string"/>
                     <xsd:attribute name="password" type="xsd:boolean" default="false"/>
                     <xsd:attribute name="enabled" type="xsd:boolean" default="true"/>
-                    <xsd:attribute name="layout" type="xsd:string"/>
+                    <xsd:attribute name="layout" type="xsd:string" default="flex-column:xs-12c"/>
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>

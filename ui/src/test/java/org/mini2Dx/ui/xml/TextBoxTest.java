@@ -79,6 +79,7 @@ public class TextBoxTest extends AbstractUiElementXmlTest<TextBox> {
         assertFalse(element.isPasswordField());
         assertTrue(element.isEnabled());
         assertEquals("", element.getValue());
+        assertEquals("flex-column:xs-12c", element.getFlexLayout());
     }
 
 }
