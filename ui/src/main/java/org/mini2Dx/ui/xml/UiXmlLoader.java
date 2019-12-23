@@ -20,6 +20,8 @@ import org.mini2Dx.ui.xml.spi.ProgressBarFactory;
 import org.mini2Dx.ui.xml.spi.ProgressBarPopulator;
 import org.mini2Dx.ui.xml.spi.RadioButtonFactory;
 import org.mini2Dx.ui.xml.spi.RadioButtonPopulator;
+import org.mini2Dx.ui.xml.spi.SliderFactory;
+import org.mini2Dx.ui.xml.spi.SliderPopulator;
 import org.mini2Dx.ui.xml.spi.TextBoxFactory;
 import org.mini2Dx.ui.xml.spi.TextBoxPopulator;
 import org.mini2Dx.ui.xml.spi.TextButtonFactory;
@@ -47,6 +49,7 @@ public class UiXmlLoader {
         addTagHandler("label", new LabelFactory(), corePopulator, new LabelPopulator());
         addTagHandler("progress-bar", new ProgressBarFactory(), corePopulator, new ProgressBarPopulator());
         addTagHandler("radio-button", new RadioButtonFactory(), corePopulator, new RadioButtonPopulator());
+        addTagHandler("slider", new SliderFactory(), corePopulator, new SliderPopulator());
     }
 
     /**

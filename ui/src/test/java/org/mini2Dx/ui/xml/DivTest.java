@@ -50,6 +50,7 @@ public class DivTest extends AbstractUiElementXmlTest<Div> {
                 "      <option>1</option>" +
                 "      <option>2</option>" +
                 "    </radio-button>" +
+                "    <slider id=\"x\"/>" +
                 "</div>";
 
         assertXmlIsValid(xml);

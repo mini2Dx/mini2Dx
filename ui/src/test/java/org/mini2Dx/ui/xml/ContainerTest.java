@@ -51,6 +51,7 @@ public class ContainerTest extends AbstractUiElementXmlTest<Container> {
                 "      <option>1</option>" +
                 "      <option>2</option>" +
                 "    </radio-button>" +
+                "    <slider id=\"x\"/>" +
                 "</container>";
 
         assertXmlIsValid(xml);

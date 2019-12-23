@@ -13,7 +13,6 @@ todo - UI elements left:
  - ImageButton
  - ScrollBox
  - Select
- - Slider
  - Tab
  - TabButton
  - TabView
@@ -57,6 +56,23 @@ todo - UI elements left:
                 <xsd:extension base="div-base">
                     <xsd:attribute name="id" type="xsd:string"/>
                     <xsd:attribute name="flex-direction" type="flexDirection" default="COLUMN"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="slider">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.Slider"/>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="ui-element">
+                    <xsd:attribute name="id" type="xsd:string" use="required"/>
+                    <xsd:attribute name="enabled" type="xsd:boolean" default="true"/>
+                    <xsd:attribute name="value" type="zeroToOneFloat"/>
+                    <xsd:attribute name="value-step" type="xsd:float"/>
+                    <xsd:attribute name="changed-on-begin-event" type="xsd:boolean" default="false"/>
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
@@ -191,6 +207,7 @@ todo - UI elements left:
                         <xsd:element ref="check-box"/>
                         <xsd:element ref="progress-bar"/>
                         <xsd:element ref="radio-button"/>
+                        <xsd:element ref="slider"/>
                     </xsd:choice>
                 </xsd:sequence>
                 <xsd:attribute name="flex-layout" type="xsd:string"/>
@@ -238,6 +255,13 @@ todo - UI elements left:
             <xsd:enumeration value="ROW"/>
             <xsd:enumeration value="ROW_REVERSE"/>
             <xsd:enumeration value="CENTER"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="zeroToOneFloat">
+        <xsd:restriction base="xsd:float">
+            <xsd:minInclusive value="0"/>
+            <xsd:maxInclusive value="1"/>
         </xsd:restriction>
     </xsd:simpleType>
 
