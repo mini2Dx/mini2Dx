@@ -58,6 +58,10 @@ public class FlexRowTest extends AbstractUiElementXmlTest<FlexRow> {
                 "      <option>2</option>" +
                 "    </radio-button>" +
                 "    <slider id=\"x\"/>" +
+                "    <select id=\"x\">" +
+                "      <option>1</option>" +
+                "      <option>2</option>" +
+                "    </select>" +
                 "</flex-row>";
 
         assertXmlIsValid(xml);

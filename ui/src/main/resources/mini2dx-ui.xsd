@@ -4,20 +4,19 @@
             xmlns="https://github.com/mini2Dx/mini2Dx"
             elementFormDefault="qualified">
 
-<!--
+    <!--
 
-todo - UI elements left:
- - AnimatedImage
- - Button
- - Image
- - ImageButton
- - ScrollBox
- - Select
- - Tab
- - TabButton
- - TabView
+    todo - UI elements left:
+     - AnimatedImage
+     - Button
+     - Image
+     - ImageButton
+     - ScrollBox
+     - Tab
+     - TabButton
+     - TabView
 
--->
+    -->
 
 
     <xsd:element name="container">
@@ -61,6 +60,38 @@ todo - UI elements left:
         </xsd:complexType>
     </xsd:element>
 
+    <xsd:element name="select">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.Select"/>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="ui-element">
+                    <xsd:sequence>
+                        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                            <xsd:element name="option">
+                                <xsd:complexType>
+                                    <xsd:simpleContent>
+                                        <xsd:extension base="xsd:string">
+                                            <xsd:attribute name="value" type="xsd:string"/>
+                                        </xsd:extension>
+                                    </xsd:simpleContent>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:choice>
+                    </xsd:sequence>
+
+                    <xsd:attribute name="id" type="xsd:string" use="required"/>
+                    <xsd:attribute name="enabled" type="xsd:boolean"/>
+                    <xsd:attribute name="flex-layout" type="xsd:string"/>
+                    <xsd:attribute name="left-button-text" type="xsd:string"/>
+                    <xsd:attribute name="right-button-text" type="xsd:string"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+
     <xsd:element name="slider">
         <xsd:annotation>
             <xsd:documentation source="org.mini2Dx.ui.element.Slider"/>
@@ -87,8 +118,7 @@ todo - UI elements left:
                 <xsd:extension base="ui-element">
                     <xsd:sequence>
                         <xsd:choice minOccurs="2" maxOccurs="unbounded">
-                            <xsd:element name="option">
-                            </xsd:element>
+                            <xsd:element name="option"/>
                         </xsd:choice>
                     </xsd:sequence>
 
@@ -208,6 +238,7 @@ todo - UI elements left:
                         <xsd:element ref="progress-bar"/>
                         <xsd:element ref="radio-button"/>
                         <xsd:element ref="slider"/>
+                        <xsd:element ref="select"/>
                     </xsd:choice>
                 </xsd:sequence>
                 <xsd:attribute name="flex-layout" type="xsd:string"/>
