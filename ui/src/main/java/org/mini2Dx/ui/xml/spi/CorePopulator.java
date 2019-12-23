@@ -1,11 +1,11 @@
 package org.mini2Dx.ui.xml.spi;
 
-import org.mini2Dx.ui.xml.UiXmlLoader;
 import org.mini2Dx.gdx.xml.XmlReader;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.element.Visibility;
+import org.mini2Dx.ui.xml.UiElementPopulator;
 
-public class CorePopulator implements UiXmlLoader.UiElementPopulator<UiElement> {
+public class CorePopulator implements UiElementPopulator<UiElement> {
     @Override
     public void populate(XmlReader.Element xmlElement, UiElement uiElement) {
         if (xmlElement.hasAttribute("x")) {

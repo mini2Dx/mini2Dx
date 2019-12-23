@@ -1,10 +1,10 @@
 package org.mini2Dx.ui.xml.spi;
 
-import org.mini2Dx.ui.xml.UiXmlLoader;
 import org.mini2Dx.gdx.xml.XmlReader;
 import org.mini2Dx.ui.element.TextBox;
+import org.mini2Dx.ui.xml.UiElementPopulator;
 
-public class TextBoxPopulator implements UiXmlLoader.UiElementPopulator<TextBox> {
+public class TextBoxPopulator implements UiElementPopulator<TextBox> {
     @Override
     public void populate(XmlReader.Element xmlTag, TextBox uiElement) {
         uiElement.setValue(xmlTag.getAttribute("value", null));

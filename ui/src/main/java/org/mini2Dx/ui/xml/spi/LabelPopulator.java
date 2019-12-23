@@ -1,11 +1,11 @@
 package org.mini2Dx.ui.xml.spi;
 
-import org.mini2Dx.ui.xml.UiXmlLoader;
 import org.mini2Dx.gdx.xml.XmlReader;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
+import org.mini2Dx.ui.xml.UiElementPopulator;
 
-public class LabelPopulator implements UiXmlLoader.UiElementPopulator<Label> {
+public class LabelPopulator implements UiElementPopulator<Label> {
     @Override
     public void populate(XmlReader.Element xmlTag, Label uiElement) {
         if (xmlTag.hasAttribute("text")) {

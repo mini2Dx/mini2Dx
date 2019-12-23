@@ -11,7 +11,6 @@ todo - UI elements left:
  - Button
  - Image
  - ImageButton
- - Radio Button
  - ScrollBox
  - Select
  - Slider
@@ -58,6 +57,30 @@ todo - UI elements left:
                 <xsd:extension base="div-base">
                     <xsd:attribute name="id" type="xsd:string"/>
                     <xsd:attribute name="flex-direction" type="flexDirection" default="COLUMN"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="radio-button">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.RadioButton"/>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="ui-element">
+                    <xsd:sequence>
+                        <xsd:choice minOccurs="2" maxOccurs="unbounded">
+                            <xsd:element name="option">
+                            </xsd:element>
+                        </xsd:choice>
+                    </xsd:sequence>
+
+                    <xsd:attribute name="id" type="xsd:string" use="required"/>
+                    <xsd:attribute name="flex-direction" type="flexDirection" default="ROW"/>
+                    <xsd:attribute name="enabled" type="xsd:boolean" default="true"/>
+                    <xsd:attribute name="responsive" type="xsd:boolean" default="false"/>
+                    <xsd:attribute name="default-selected-index" type="xsd:integer" default="0"/>
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
@@ -167,6 +190,7 @@ todo - UI elements left:
                         <xsd:element ref="text-box"/>
                         <xsd:element ref="check-box"/>
                         <xsd:element ref="progress-bar"/>
+                        <xsd:element ref="radio-button"/>
                     </xsd:choice>
                 </xsd:sequence>
                 <xsd:attribute name="flex-layout" type="xsd:string"/>

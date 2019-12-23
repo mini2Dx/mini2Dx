@@ -11,13 +11,15 @@ import org.mini2Dx.ui.xml.spi.CheckboxPopulator;
 import org.mini2Dx.ui.xml.spi.ContainerFactory;
 import org.mini2Dx.ui.xml.spi.CorePopulator;
 import org.mini2Dx.ui.xml.spi.DivFactory;
-import org.mini2Dx.ui.xml.spi.FlexDirectionPopulator;
 import org.mini2Dx.ui.xml.spi.FlexRowFactory;
+import org.mini2Dx.ui.xml.spi.FlexRowPopulator;
 import org.mini2Dx.ui.xml.spi.LabelFactory;
 import org.mini2Dx.ui.xml.spi.LabelPopulator;
 import org.mini2Dx.ui.xml.spi.ParentUiElementPopulator;
 import org.mini2Dx.ui.xml.spi.ProgressBarFactory;
 import org.mini2Dx.ui.xml.spi.ProgressBarPopulator;
+import org.mini2Dx.ui.xml.spi.RadioButtonFactory;
+import org.mini2Dx.ui.xml.spi.RadioButtonPopulator;
 import org.mini2Dx.ui.xml.spi.TextBoxFactory;
 import org.mini2Dx.ui.xml.spi.TextBoxPopulator;
 import org.mini2Dx.ui.xml.spi.TextButtonFactory;
@@ -38,12 +40,13 @@ public class UiXmlLoader {
 
         addTagHandler("container", new ContainerFactory(), corePopulator, parentUiElementPopulator);
         addTagHandler("div", new DivFactory(), corePopulator, parentUiElementPopulator);
-        addTagHandler("flex-row", new FlexRowFactory(), corePopulator, new FlexDirectionPopulator(), parentUiElementPopulator);
+        addTagHandler("flex-row", new FlexRowFactory(), corePopulator, new FlexRowPopulator(), parentUiElementPopulator);
         addTagHandler("text-button", new TextButtonFactory(), corePopulator, new TextButtonPopulator());
         addTagHandler("text-box", new TextBoxFactory(), corePopulator, new TextBoxPopulator());
         addTagHandler("check-box", new CheckBoxFactory(), corePopulator, new CheckboxPopulator());
         addTagHandler("label", new LabelFactory(), corePopulator, new LabelPopulator());
         addTagHandler("progress-bar", new ProgressBarFactory(), corePopulator, new ProgressBarPopulator());
+        addTagHandler("radio-button", new RadioButtonFactory(), corePopulator, new RadioButtonPopulator());
     }
 
     /**
@@ -53,7 +56,7 @@ public class UiXmlLoader {
      * @param factory    - the factory the creates a new instance of the UI element
      * @param populators - a collection of populators to populate the properties on the UI element
      */
-    public void addTagHandler(String tagName, UiXmlLoader.UiElementFactory factory, UiElementPopulator... populators) {
+    public void addTagHandler(String tagName, UiElementFactory factory, UiElementPopulator... populators) {
         tagNameToHandler.put(tagName, new UiElementHandler(factory, populators));
     }
 
@@ -93,29 +96,6 @@ public class UiXmlLoader {
             populator.populate(root, uiElement);
         }
         return uiElement;
-    }
-
-    public interface UiElementFactory<T extends UiElement> {
-        /**
-         * Simply instantiate an instance of the UiElement
-         * <p>
-         * This is intended to help handle scenarios where there is NO default constructor
-         * for an UiElement
-         *
-         * @param xmlTag - the tag that triggered this element to be created
-         * @return a new instance of the UiElement
-         */
-        T build(XmlReader.Element xmlTag);
-    }
-
-    public interface UiElementPopulator<T extends UiElement> {
-        /**
-         * Populate properties on the UiElement
-         *
-         * @param xmlTag    - the tag to pull values off of
-         * @param uiElement - the UiElement to be populated
-         */
-        void populate(XmlReader.Element xmlTag, T uiElement);
     }
 
     private static class UiElementHandler {

@@ -2,9 +2,9 @@ package org.mini2Dx.ui.xml.spi;
 
 import org.mini2Dx.gdx.xml.XmlReader;
 import org.mini2Dx.ui.element.ProgressBar;
-import org.mini2Dx.ui.xml.UiXmlLoader;
+import org.mini2Dx.ui.xml.UiElementPopulator;
 
-public class ProgressBarPopulator implements UiXmlLoader.UiElementPopulator<ProgressBar> {
+public class ProgressBarPopulator implements UiElementPopulator<ProgressBar> {
     @Override
     public void populate(XmlReader.Element xmlTag, ProgressBar uiElement) {
         uiElement.setFlexLayout(xmlTag.getAttribute("flex-layout", null));
