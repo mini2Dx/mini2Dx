@@ -1,0 +1,109 @@
+<container xmlns="https://github.com/mini2Dx/mini2Dx" layout="flex-column:xs-12c">
+    <flex-row>
+        <label text="Name:"/>
+        <text-box id="name"/>
+    </flex-row>
+    <flex-row>
+        <flex-row layout="flex-row:xs-1c">
+            <label text="Race:" horizontal-alignment="RIGHT"/>
+        </flex-row>
+        <flex-row layout="flex-row:xs-1c"/>
+        <flex-row layout="flex-row:xs-10c">
+            <select id="race">
+                <option value="HUMAN">Human</option>
+                <option value="DWARF">Dwarf</option>
+                <option value="ELF">Elf</option>
+                <option value="ORC">Orc</option>
+            </select>
+        </flex-row>
+    </flex-row>
+    <flex-row>
+        <flex-row layout="flex-row:xs-1c">
+            <label text="Age:" horizontal-alignment="RIGHT"/>
+        </flex-row>
+        <flex-row layout="flex-row:xs-1c"/>
+        <flex-row layout="flex-row:xs-9c">
+            <slider id="ageModifier"/>
+        </flex-row>
+        <flex-row layout="flex-row:xs-1c">
+            <label text="" id="age"/>
+        </flex-row>
+    </flex-row>
+    <flex-row>
+        <flex-row layout="flex-row:xs-1c">
+            <label text="Class:"/>
+        </flex-row>
+        <flex-row layout="flex-row:xs-1c"/>
+        <flex-row layout="flex-row:xs-10c">
+            <radio-button id="class" flex-direction="COLUMN">
+                <option>Barbarian</option>
+                <option>Wizard</option>
+                <option>Rogue</option>
+            </radio-button>
+        </flex-row>
+    </flex-row>
+    <flex-row>
+        <flex-row layout="flex-row:xs-1c">
+            <check-box id="goodOrEvil" checked="true"/>
+        </flex-row>
+        <flex-row layout="flex-row:xs-11c">
+            <label text="Good/Evil"/>
+        </flex-row>
+    </flex-row>
+    <flex-row>
+        <flex-row layout="flex-row:xs-1c">
+            <label text="Gender:"/>
+        </flex-row>
+        <flex-row layout="flex-row:xs-1c"/>
+        <flex-row layout="flex-row:xs-10c">
+            <radio-button id="class" flex-direction="COLUMN">
+                <option>Female</option>
+                <option>Male</option>
+            </radio-button>
+        </flex-row>
+    </flex-row>
+    <flex-row>
+        <flex-row layout="flex-column:xs-2c">
+            <label text="Strength:"/>
+        </flex-row>
+        <flex-row layout="flex-row:xs-1c"/>
+        <text-box id="strength" layout="flex-column:xs-1c"/>
+        <flex-row layout="flex-row:xs-4c"/>
+        <flex-row layout="flex-column:xs-2c">
+            <label text="Dexterity:"/>
+        </flex-row>
+        <flex-row layout="flex-row:xs-1c"/>
+        <text-box id="dexterity" layout="flex-column:xs-1c"/>
+    </flex-row>
+    <flex-row>
+        <flex-row layout="flex-column:xs-2c">
+            <label text="Intelligence:"/>
+        </flex-row>
+        <flex-row layout="flex-row:xs-1c"/>
+        <text-box id="intelligence" layout="flex-column:xs-1c"/>
+        <flex-row layout="flex-row:xs-4c"/>
+        <flex-row layout="flex-column:xs-2c">
+            <label text="Wisdom:"/>
+        </flex-row>
+        <flex-row layout="flex-row:xs-1c"/>
+        <text-box id="wisdom" layout="flex-column:xs-1c"/>
+    </flex-row>
+    <flex-row>
+        <flex-row layout="flex-column:xs-2c">
+            <label text="Charisma:"/>
+        </flex-row>
+        <flex-row layout="flex-row:xs-1c"/>
+        <text-box id="charisma" layout="flex-column:xs-1c"/>
+        <flex-row layout="flex-row:xs-4c"/>
+        <flex-row layout="flex-column:xs-2c">
+            <label text="Constitution:"/>
+        </flex-row>
+        <flex-row layout="flex-row:xs-1c"/>
+        <text-box id="constitution" layout="flex-column:xs-1c"/>
+    </flex-row>
+    <flex-row/>
+    <flex-row>
+        <text-button id="create-character" text="Create"/>
+        <progress-bar id="create-character-progress" visibility="HIDDEN"/>
+    </flex-row>
+</container>
