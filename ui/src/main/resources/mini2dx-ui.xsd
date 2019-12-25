@@ -140,7 +140,7 @@
             <xsd:complexContent>
                 <xsd:extension base="ui-element">
                     <xsd:attribute name="id" type="xsd:string" use="required"/>
-                    <xsd:attribute name="layout" type="xsd:string"/>
+                    <xsd:attribute name="layout" type="xsd:string" default="flex-column:xs-12c"/>
                     <xsd:attribute name="min" type="xsd:integer" default="0"/>
                     <xsd:attribute name="max" type="xsd:integer" default="1"/>
                 </xsd:extension>

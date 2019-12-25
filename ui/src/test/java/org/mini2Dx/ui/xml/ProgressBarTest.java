@@ -19,7 +19,6 @@ import org.junit.Test;
 import org.mini2Dx.ui.element.ProgressBar;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class ProgressBarTest extends AbstractUiElementXmlTest<ProgressBar> {
 
@@ -77,7 +76,7 @@ public class ProgressBarTest extends AbstractUiElementXmlTest<ProgressBar> {
 
     @Override
     protected void assertDefaultValues(ProgressBar element) {
-        assertNull(element.getFlexLayout());
+        assertEquals("flex-column:xs-12c", element.getFlexLayout());
         assertEquals(0, element.getValue(), 0.01);
         assertEquals(0, element.getMin(), 0.01);
         assertEquals(1, element.getMax(), 0.01);
