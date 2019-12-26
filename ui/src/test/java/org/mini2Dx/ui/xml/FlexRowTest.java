@@ -77,6 +77,7 @@ public class FlexRowTest extends AbstractUiElementXmlTest<FlexRow> {
                 "      <option>1</option>" +
                 "      <option>2</option>" +
                 "    </select>" +
+                "    <image texture-path=\"x\"/>" +
                 "</flex-row>";
 
         assertXmlIsValid(xml);

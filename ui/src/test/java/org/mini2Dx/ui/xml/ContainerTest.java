@@ -71,6 +71,7 @@ public class ContainerTest extends AbstractUiElementXmlTest<Container> {
                 "      <option>1</option>" +
                 "      <option>2</option>" +
                 "    </select>" +
+                "    <image texture-path=\"x\"/>" +
                 "</container>";
 
         assertXmlIsValid(xml);

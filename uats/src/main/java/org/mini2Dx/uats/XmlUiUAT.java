@@ -23,6 +23,7 @@ import org.mini2Dx.core.files.FileHandleResolver;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.game.GameResizeListener;
 import org.mini2Dx.core.graphics.Colors;
+import org.mini2Dx.core.graphics.TextureAtlas;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
@@ -67,6 +68,9 @@ public class XmlUiUAT extends BasicGameScreen implements GameResizeListener {
 
     @Override
     public void initialise(GameContainer gc) {
+        assetManager.load("texture-region-uat.atlas", TextureAtlas.class);
+        assetManager.finishLoading();
+
         uiContainer = new UiContainer(gc, assetManager);
         uiContainer.setNavigationMode(UATApplication.NAVIGATION_MODE);
         gc.addResizeListener(this);

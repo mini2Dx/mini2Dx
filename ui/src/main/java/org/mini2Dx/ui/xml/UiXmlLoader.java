@@ -28,6 +28,8 @@ import org.mini2Dx.ui.xml.spi.CorePopulator;
 import org.mini2Dx.ui.xml.spi.DivFactory;
 import org.mini2Dx.ui.xml.spi.FlexRowFactory;
 import org.mini2Dx.ui.xml.spi.FlexRowPopulator;
+import org.mini2Dx.ui.xml.spi.ImageFactory;
+import org.mini2Dx.ui.xml.spi.ImagePopulator;
 import org.mini2Dx.ui.xml.spi.LabelFactory;
 import org.mini2Dx.ui.xml.spi.LabelPopulator;
 import org.mini2Dx.ui.xml.spi.ParentUiElementPopulator;
@@ -68,6 +70,7 @@ public class UiXmlLoader {
         addTagHandler("radio-button", new RadioButtonFactory(), corePopulator, new RadioButtonPopulator());
         addTagHandler("slider", new SliderFactory(), corePopulator, new SliderPopulator());
         addTagHandler("select", new SelectFactory(), corePopulator, new SelectPopulator());
+        addTagHandler("image", new ImageFactory(), corePopulator, new ImagePopulator());
     }
 
     /**

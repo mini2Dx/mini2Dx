@@ -106,4 +106,13 @@
         <text-button id="create-character" text="Create"/>
         <progress-bar id="create-character-progress" visibility="HIDDEN"/>
     </flex-row>
+    <div layout="flex-column:xs-12c">
+        <flex-row layout="flex-column:xs-12c">
+            <label text="Image"/>
+        </flex-row>
+        <image texture-path="cardDiamondsA" atlas="texture-region-uat.atlas"/>
+        <image texture-path="cardDiamondsJ" atlas="texture-region-uat.atlas" flip-x="true" flip-y="true"/>
+        <image texture-path="cardDiamondsQ" atlas="texture-region-uat.atlas" flip-x="true"/>
+        <image texture-path="cardDiamondsK" atlas="texture-region-uat.atlas" flip-y="true"/>
+    </div>
 </container>

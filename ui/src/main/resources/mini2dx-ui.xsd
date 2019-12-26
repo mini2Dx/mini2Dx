@@ -213,6 +213,24 @@
         </xsd:complexType>
     </xsd:element>
 
+    <xsd:element name="image">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.Image"/>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="ui-element">
+                    <xsd:attribute name="id" type="xsd:string"/>
+                    <xsd:attribute name="responsive" type="xsd:boolean" default="false"/>
+                    <xsd:attribute name="flip-x" type="xsd:boolean" default="false"/>
+                    <xsd:attribute name="flip-y" type="xsd:boolean" default="false"/>
+                    <xsd:attribute name="atlas" type="xsd:string"/>
+                    <xsd:attribute name="texture-path" type="xsd:string" use="required"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
     <xsd:complexType name="div-base" abstract="true">
         <xsd:complexContent>
             <xsd:extension base="parent-ui-element">
@@ -238,6 +256,7 @@
                     <xsd:element ref="radio-button"/>
                     <xsd:element ref="slider"/>
                     <xsd:element ref="select"/>
+                    <xsd:element ref="image"/>
                 </xsd:choice>
                 <xsd:attribute name="layout" type="xsd:string"/>
                 <xsd:attribute name="overflow-clipped" type="xsd:boolean" default="false"/>

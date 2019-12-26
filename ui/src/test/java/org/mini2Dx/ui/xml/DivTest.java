@@ -70,6 +70,7 @@ public class DivTest extends AbstractUiElementXmlTest<Div> {
                 "      <option>1</option>" +
                 "      <option>2</option>" +
                 "    </select>" +
+                "    <image texture-path=\"x\"/>" +
                 "</div>";
 
         assertXmlIsValid(xml);
