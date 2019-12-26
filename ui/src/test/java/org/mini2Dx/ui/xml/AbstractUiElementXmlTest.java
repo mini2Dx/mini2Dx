@@ -16,6 +16,7 @@
 package org.mini2Dx.ui.xml;
 
 import org.junit.Test;
+import org.mini2Dx.gdx.utils.ObjectMap;
 import org.mini2Dx.ui.element.UiElement;
 
 import static org.junit.Assert.assertEquals;
@@ -32,11 +33,13 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
 
     protected abstract void assertDefaultValues(T element);
 
+    protected ObjectMap<String, String> requiredAttributesForDefaultTestCases() {
+        return new ObjectMap<>(0);
+    }
+
     @Test
     public void defaults() {
-        T element = loadFile("<" + getUiElementTagName()
-                + NAMESPACE
-                + " />");
+        T element = loadFile(createXmlSample());
 
         assertNotNull(element.getId());
         assertEquals(VISIBLE, element.getVisibility());
@@ -45,18 +48,16 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
 
     @Test
     public void id_provided() {
-        UiElement element = loadFile("<" + getUiElementTagName()
-                + NAMESPACE
-                + " id =\"10\"/>");
+        String xml = createXmlSample("id", "10");
+
+        UiElement element = loadFile(xml);
 
         assertEquals("10", element.getId());
     }
 
     @Test
     public void with_a_style_id() {
-        String xml = "<" + getUiElementTagName()
-                + NAMESPACE
-                + " style=\"blah\"/>";
+        String xml = createXmlSample("style", "blah");
 
         UiElement element = loadFile(xml);
 
@@ -65,9 +66,7 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
 
     @Test
     public void with_a_zindex() {
-        String xml = "<" + getUiElementTagName()
-                + NAMESPACE
-                + " z-index=\"1\"/>";
+        String xml = createXmlSample("z-index", "1");
 
         UiElement element = loadFile(xml);
 
@@ -76,9 +75,10 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
 
     @Test
     public void with_width_and_height() {
-        String xml = "<" + getUiElementTagName()
-                + NAMESPACE
-                + " width=\"1\" height=\"2\"/>";
+        String xml = createXmlSample(
+                "width", "1",
+                "height", "2"
+        );
 
         UiElement element = loadFile(xml);
 
@@ -88,14 +88,42 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
 
     @Test
     public void with_x_and_y() {
-        String xml = "<" + getUiElementTagName()
-                + NAMESPACE
-                + " x=\"1\" y=\"2\"/>";
+        String xml = createXmlSample(
+                "x", "1",
+                "y", "2"
+        );
 
         UiElement element = loadFile(xml);
 
         assertEquals(1.0, element.getX(), 0.0);
         assertEquals(2.0, element.getY(), 0.0);
+    }
+
+    private String createXmlSample(String... attributes) {
+        assertEquals("Please provide an even number of attributes", 0, attributes.length % 2);
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("<")
+                .append(getUiElementTagName())
+                .append(NAMESPACE);
+
+        for (ObjectMap.Entry<String, String> entry : requiredAttributesForDefaultTestCases()) {
+            builder.append(" ")
+                    .append(entry.key)
+                    .append("=")
+                    .append("\"" + entry.value + "\"");
+        }
+
+        for (int i = 0; i < attributes.length; i += 2) {
+            builder.append(" ")
+                    .append(attributes[i])
+                    .append("=")
+                    .append("\"" + attributes[i + 1] + "\"");
+        }
+
+        builder.append(" />");
+
+        return builder.toString();
     }
 
     protected void assertAttributeRequired(String expectedAttributeName, String actualXml) {
