@@ -18,7 +18,11 @@ package org.mini2Dx.ui.xml;
 import org.jmock.Expectations;
 import org.junit.Test;
 import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.ui.element.Container;
+
+import java.io.IOException;
+import java.io.StringReader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -65,10 +69,17 @@ public class UiXmlLoaderTest extends AbstractUiXmlLoaderTest {
     @Test
     public void fail_to_parse_file_contents() {
         String badFileFormat = "{\"hello\": \"world\"}";
+
+        FileHandle fileHandle = mockery.mock(FileHandle.class);
         mockery.checking(new Expectations() {
             {
                 oneOf(fileHandleResolver).resolve(filename);
-                will(returnValue(new InMemoryFileHandler(badFileFormat)));
+                try {
+                    oneOf(fileHandle).reader();
+                    will(returnValue(new StringReader(badFileFormat)));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 

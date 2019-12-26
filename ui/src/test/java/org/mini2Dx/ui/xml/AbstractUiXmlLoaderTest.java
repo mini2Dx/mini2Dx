@@ -19,10 +19,14 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Before;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.files.FileHandleResolver;
 import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
 import org.mini2Dx.ui.element.ParentUiElement;
 import org.mini2Dx.ui.element.UiElement;
+
+import java.io.IOException;
+import java.io.StringReader;
 
 public abstract class AbstractUiXmlLoaderTest {
     protected final Mockery mockery = new Mockery();
@@ -45,10 +49,18 @@ public abstract class AbstractUiXmlLoaderTest {
     protected <T extends UiElement> T loadFile(String xml) {
         final String realXml = "<?xml version=\"1.0\"?>\n" + xml;
 
+        FileHandle fileHandle = mockery.mock(FileHandle.class);
+
         mockery.checking(new Expectations() {
             {
                 oneOf(fileHandleResolver).resolve(filename);
-                will(returnValue(new InMemoryFileHandler(realXml)));
+                will(returnValue(fileHandle));
+                try {
+                    oneOf(fileHandle).reader();
+                    will(returnValue(new StringReader(realXml)));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         return (T) loader.load(filename);
