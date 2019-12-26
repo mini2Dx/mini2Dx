@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.mini2Dx.ui.element.UiElement;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mini2Dx.ui.element.Visibility.VISIBLE;
@@ -109,6 +110,8 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
 
     protected void assertXmlIsInvalid(String xml, String expectedMessage) {
         Exception exception = uiXmlValidator.invalidXml(xml);
+        assertFalse("It looks like you forgot to include the XML schema in your XML",
+                exception.getMessage().contains("Cannot find the declaration of element"));
         assertTrue("Actual message: [" + exception.getMessage() + "]", exception.getMessage().contains(expectedMessage));
     }
 }
