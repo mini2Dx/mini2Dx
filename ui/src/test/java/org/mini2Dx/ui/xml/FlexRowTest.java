@@ -20,23 +20,8 @@ import org.mini2Dx.ui.element.FlexRow;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
-public class FlexRowTest extends AbstractUiElementXmlTest<FlexRow> {
-    @Test
-    public void flex_row_with_overflow_clipped() {
-        String xml = "<flex-row overflow-clipped=\"true\"/>";
-
-        assertTrue(loadFileWithContainer(xml).isOverflowClipped());
-    }
-
-    @Test
-    public void flex_row_with_flex_layout() {
-        String xml = "<flex-row layout=\"text\"/>";
-
-        assertEquals("text", loadFileWithContainer(xml).getFlexLayout());
-    }
-
+public class FlexRowTest extends AbstractParentUiElementXmlTest<FlexRow> {
     @Test
     public void flex_row_with_flex_direction() {
         String xml = "<flex-row flex-direction=\"COLUMN_REVERSE\"/>";
@@ -58,27 +43,8 @@ public class FlexRowTest extends AbstractUiElementXmlTest<FlexRow> {
                 "          z-index=\"100\"" +
                 "          flex-direction=\"CENTER\"" +
                 "          layout=\"flex-row:xs-12c\"" +
-                "          overflow-clipped=\"true\">" +
-                "" +
-                "    <text-button id=\"x\" text=\"hello\" />" +
-                "    <label text=\"blah\"/>" +
-                "    <text-box id=\"x\"/>" +
-                "    <container/>" +
-                "    <flex-row/>" +
-                "    <div/>" +
-                "    <check-box id=\"x\"/>" +
-                "    <progress-bar id=\"x\"/>" +
-                "    <radio-button id=\"x\">" +
-                "      <option>1</option>" +
-                "      <option>2</option>" +
-                "    </radio-button>" +
-                "    <slider id=\"x\"/>" +
-                "    <select id=\"x\">" +
-                "      <option>1</option>" +
-                "      <option>2</option>" +
-                "    </select>" +
-                "    <image texture-path=\"x\"/>" +
-                "</flex-row>";
+                "          overflow-clipped=\"true\"" +
+                "/>";
 
         assertXmlIsValid(xml);
     }

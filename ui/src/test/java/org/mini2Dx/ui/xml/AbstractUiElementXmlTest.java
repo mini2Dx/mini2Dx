@@ -26,7 +26,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mini2Dx.ui.element.Visibility.VISIBLE;
 
 public abstract class AbstractUiElementXmlTest<T extends UiElement> extends AbstractUiXmlLoaderTest {
-    private static final String NAMESPACE = " xmlns=\"https://github.com/mini2Dx/mini2Dx\"";
     private UiXmlValidator uiXmlValidator = new UiXmlValidator();
 
     protected abstract String getUiElementTagName();
@@ -39,7 +38,9 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
 
     @Test
     public void defaults() {
-        T element = loadFile(createXmlSample());
+        String xml = newBuilder().build();
+
+        T element = loadFile(xml);
 
         assertNotNull(element.getId());
         assertEquals(VISIBLE, element.getVisibility());
@@ -48,7 +49,9 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
 
     @Test
     public void id_provided() {
-        String xml = createXmlSample("id", "10");
+        String xml = newBuilder()
+                .withAttribute("id", "10")
+                .build();
 
         UiElement element = loadFile(xml);
 
@@ -57,7 +60,9 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
 
     @Test
     public void with_a_style_id() {
-        String xml = createXmlSample("style", "blah");
+        String xml = newBuilder()
+                .withAttribute("style", "blah")
+                .build();
 
         UiElement element = loadFile(xml);
 
@@ -65,8 +70,10 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
     }
 
     @Test
-    public void with_a_zindex() {
-        String xml = createXmlSample("z-index", "1");
+    public void with_a_z_index() {
+        String xml = newBuilder()
+                .withAttribute("z-index", "1")
+                .build();
 
         UiElement element = loadFile(xml);
 
@@ -75,10 +82,10 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
 
     @Test
     public void with_width_and_height() {
-        String xml = createXmlSample(
-                "width", "1",
-                "height", "2"
-        );
+        String xml = newBuilder()
+                .withAttribute("width", "1")
+                .withAttribute("height", "2")
+                .build();
 
         UiElement element = loadFile(xml);
 
@@ -88,10 +95,10 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
 
     @Test
     public void with_x_and_y() {
-        String xml = createXmlSample(
-                "x", "1",
-                "y", "2"
-        );
+        String xml = newBuilder()
+                .withAttribute("x", "1")
+                .withAttribute("y", "2")
+                .build();
 
         UiElement element = loadFile(xml);
 
@@ -99,31 +106,12 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
         assertEquals(2.0, element.getY(), 0.0);
     }
 
-    private String createXmlSample(String... attributes) {
-        assertEquals("Please provide an even number of attributes", 0, attributes.length % 2);
-
-        StringBuilder builder = new StringBuilder();
-        builder.append("<")
-                .append(getUiElementTagName())
-                .append(NAMESPACE);
-
+    protected TestXmlUiBuilder newBuilder() {
+        TestXmlUiBuilder builder = new TestXmlUiBuilder(getUiElementTagName());
         for (ObjectMap.Entry<String, String> entry : requiredAttributesForDefaultTestCases()) {
-            builder.append(" ")
-                    .append(entry.key)
-                    .append("=")
-                    .append("\"" + entry.value + "\"");
+            builder.withAttribute(entry.key, entry.value);
         }
-
-        for (int i = 0; i < attributes.length; i += 2) {
-            builder.append(" ")
-                    .append(attributes[i])
-                    .append("=")
-                    .append("\"" + attributes[i + 1] + "\"");
-        }
-
-        builder.append(" />");
-
-        return builder.toString();
+        return builder;
     }
 
     protected void assertAttributeRequired(String expectedAttributeName, String actualXml) {

@@ -18,25 +18,10 @@ package org.mini2Dx.ui.xml;
 import org.junit.Test;
 import org.mini2Dx.ui.element.Div;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
-public class DivTest extends AbstractUiElementXmlTest<Div> {
-    @Test
-    public void div_with_overflow_clipped() {
-        String xml = "<div overflow-clipped=\"true\"/>";
-
-        assertTrue(loadFileWithContainer(xml).isOverflowClipped());
-    }
-
-    @Test
-    public void div_with_flex_layout() {
-        String xml = "<div layout=\"text\"/>";
-
-        assertEquals("text", loadFileWithContainer(xml).getFlexLayout());
-    }
+public class DivTest extends AbstractParentUiElementXmlTest<Div> {
 
     @Test
     public void all_values() {
@@ -51,27 +36,8 @@ public class DivTest extends AbstractUiElementXmlTest<Div> {
                 "     style=\"test-style\"" +
                 "     z-index=\"100\"" +
                 "     layout=\"flex-row:xs-12c\"" +
-                "     overflow-clipped=\"true\">" +
-                "" +
-                "    <text-button id=\"x\" text=\"hello\"/>" +
-                "    <label text=\"blah\"/>" +
-                "    <text-box id=\"x\"/>" +
-                "    <container/>" +
-                "    <flex-row/>" +
-                "    <div/>" +
-                "    <check-box id=\"x\"/>" +
-                "    <progress-bar id=\"x\"/>" +
-                "    <radio-button id=\"x\">" +
-                "      <option>1</option>" +
-                "      <option>2</option>" +
-                "    </radio-button>" +
-                "    <slider id=\"x\"/>" +
-                "    <select id=\"x\">" +
-                "      <option>1</option>" +
-                "      <option>2</option>" +
-                "    </select>" +
-                "    <image texture-path=\"x\"/>" +
-                "</div>";
+                "     overflow-clipped=\"true\"" +
+                "/>";
 
         assertXmlIsValid(xml);
     }
