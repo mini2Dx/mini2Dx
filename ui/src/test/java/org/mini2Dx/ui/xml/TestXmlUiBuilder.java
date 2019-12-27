@@ -62,7 +62,11 @@ public class TestXmlUiBuilder {
                     "      <option>2</option>" +
                     "    </select>" +
                     "    <image texture-path=\"x\"/>" +
-                    "    <scroll-box />";
+                    "    <scroll-box />" +
+                    "    <animated-image>" +
+                    "      <texture duration=\"1\">foo</texture>" +
+                    "      <texture duration=\"2\">bar</texture>" +
+                    "    </animated-image>";
 
         });
     }

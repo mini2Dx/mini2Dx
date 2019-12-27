@@ -21,6 +21,8 @@ import org.mini2Dx.gdx.utils.ObjectMap;
 import org.mini2Dx.gdx.xml.XmlReader;
 import org.mini2Dx.ui.element.ParentUiElement;
 import org.mini2Dx.ui.element.UiElement;
+import org.mini2Dx.ui.xml.spi.AnimatedImageFactory;
+import org.mini2Dx.ui.xml.spi.AnimatedImagePopulator;
 import org.mini2Dx.ui.xml.spi.CheckBoxFactory;
 import org.mini2Dx.ui.xml.spi.CheckboxPopulator;
 import org.mini2Dx.ui.xml.spi.ContainerFactory;
@@ -74,6 +76,7 @@ public class UiXmlLoader {
         addTagHandler("select", new SelectFactory(), corePopulator, new SelectPopulator());
         addTagHandler("image", new ImageFactory(), corePopulator, new ImagePopulator());
         addTagHandler("scroll-box", new ScrollBoxFactory(), corePopulator, parentUiElementPopulator, new ScrollBoxPopulator());
+        addTagHandler("animated-image", new AnimatedImageFactory(), corePopulator, new AnimatedImagePopulator());
     }
 
     /**

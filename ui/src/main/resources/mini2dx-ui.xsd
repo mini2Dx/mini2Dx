@@ -7,7 +7,6 @@
     <!--
 
     todo - UI elements left:
-     - AnimatedImage
      - ImageButton
      - Tab
      - TabView
@@ -42,6 +41,36 @@
                     <xsd:attribute name="min-height" type="xsd:float"/>
                     <xsd:attribute name="max-height" type="xsd:float"/>
                     <xsd:attribute name="scroll-track-visibility" type="xsd:string"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="animated-image">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.AnimatedImage"/>
+        </xsd:annotation>
+
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="ui-element">
+                    <xsd:choice minOccurs="2" maxOccurs="unbounded">
+                        <xsd:element name="texture">
+                            <xsd:complexType>
+                                <xsd:simpleContent>
+                                    <xsd:extension base="xsd:string">
+                                        <xsd:attribute name="duration" type="xsd:float" use="required"/>
+                                    </xsd:extension>
+                                </xsd:simpleContent>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:choice>
+
+                    <xsd:attribute name="id" type="xsd:string"/>
+                    <xsd:attribute name="responsive" type="xsd:boolean" default="false"/>
+                    <xsd:attribute name="flip-x" type="xsd:boolean" default="false"/>
+                    <xsd:attribute name="flip-y" type="xsd:boolean" default="false"/>
+                    <xsd:attribute name="atlas" type="xsd:string"/>
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
@@ -272,6 +301,7 @@
                     <xsd:element ref="select"/>
                     <xsd:element ref="image"/>
                     <xsd:element ref="scroll-box"/>
+                    <xsd:element ref="animated-image"/>
                 </xsd:choice>
                 <xsd:attribute name="layout" type="xsd:string"/>
                 <xsd:attribute name="overflow-clipped" type="xsd:boolean" default="false"/>

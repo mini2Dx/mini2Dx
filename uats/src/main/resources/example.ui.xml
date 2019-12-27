@@ -115,6 +115,17 @@
         <image texture-path="cardDiamondsQ" atlas="texture-region-uat.atlas" flip-x="true"/>
         <image texture-path="cardDiamondsK" atlas="texture-region-uat.atlas" flip-y="true"/>
     </div>
+    <div layout="flex-column:xs-12c">
+        <flex-row layout="flex-column:xs-12c">
+            <label text="Animated Image"/>
+        </flex-row>
+        <animated-image atlas="texture-region-uat.atlas">
+            <texture duration="0.1">cardDiamondsA</texture>
+            <texture duration="0.1">cardDiamondsJ</texture>
+            <texture duration="0.1">cardDiamondsQ</texture>
+            <texture duration="0.1">cardDiamondsK</texture>
+        </animated-image>
+    </div>
     <flex-row>
         <scroll-box layout="flex-column:xs-12c" max-height="100">
             <label text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis libero orci, molestie
