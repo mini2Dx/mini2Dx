@@ -16,26 +16,17 @@
 package org.mini2Dx.ui.xml.spi;
 
 import org.mini2Dx.gdx.xml.XmlReader;
+import org.mini2Dx.ui.element.ScrollBox;
 import org.mini2Dx.ui.element.Visibility;
-import org.mini2Dx.ui.layout.FlexDirection;
+import org.mini2Dx.ui.xml.UiElementPopulator;
 
-public class XmlAttributeMapper {
-    public static FlexDirection mapToFlexDirection(XmlReader.Element element) {
-        String value = element.getAttribute("flex-direction");
-
-        try {
-            return FlexDirection.valueOf(value.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidFlexDirectionException(element, value);
-        }
-    }
-
-    public static Visibility mapToVisibility(XmlReader.Element element, String attributeName) {
-        String providedValue = element.getAttribute(attributeName, "VISIBLE");
-        try {
-            return Visibility.valueOf(providedValue.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidVisibilityException(element, providedValue);
-        }
+public class ScrollBoxPopulator implements UiElementPopulator<ScrollBox> {
+    @Override
+    public void populate(XmlReader.Element xmlTag, ScrollBox uiElement) {
+        uiElement.setScrollFactor(xmlTag.getFloatAttribute("scroll-factor", 0.005f));
+        uiElement.setMinHeight(xmlTag.getFloatAttribute("min-height", Float.MIN_VALUE));
+        uiElement.setMaxHeight(xmlTag.getFloatAttribute("max-height", Float.MAX_VALUE));
+        String value = xmlTag.getAttribute("scroll-track-visibility", "VISIBLE");
+        uiElement.setScrollTrackVisibility(Visibility.valueOf(value));
     }
 }

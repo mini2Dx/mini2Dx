@@ -8,9 +8,7 @@
 
     todo - UI elements left:
      - AnimatedImage
-     - Button
      - ImageButton
-     - ScrollBox
      - Tab
      - TabView
 
@@ -26,6 +24,24 @@
             <xsd:complexContent>
                 <xsd:extension base="div-base">
                     <xsd:attribute name="id" type="xsd:string"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="scroll-box">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.ScrollBox"/>
+        </xsd:annotation>
+
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="div-base">
+                    <xsd:attribute name="id" type="xsd:string"/>
+                    <xsd:attribute name="scroll-factor" type="xsd:float"/>
+                    <xsd:attribute name="min-height" type="xsd:float"/>
+                    <xsd:attribute name="max-height" type="xsd:float"/>
+                    <xsd:attribute name="scroll-track-visibility" type="xsd:string"/>
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
@@ -255,6 +271,7 @@
                     <xsd:element ref="slider"/>
                     <xsd:element ref="select"/>
                     <xsd:element ref="image"/>
+                    <xsd:element ref="scroll-box"/>
                 </xsd:choice>
                 <xsd:attribute name="layout" type="xsd:string"/>
                 <xsd:attribute name="overflow-clipped" type="xsd:boolean" default="false"/>

@@ -18,6 +18,7 @@ package org.mini2Dx.ui.xml;
 import org.junit.Test;
 import org.mini2Dx.gdx.utils.ObjectMap;
 import org.mini2Dx.ui.element.UiElement;
+import org.mini2Dx.ui.element.Visibility;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -105,6 +106,17 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
 
         assertEquals(1.0, element.getX(), 0.0);
         assertEquals(2.0, element.getY(), 0.0);
+    }
+
+    @Test
+    public void with_visibility() {
+        String xml = newBuilder()
+                .withAttribute("visibility", "HIDDEN")
+                .build();
+
+        UiElement element = loadFile(xml);
+
+        assertEquals(Visibility.HIDDEN, element.getVisibility());
     }
 
     @Test

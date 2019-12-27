@@ -17,7 +17,6 @@ package org.mini2Dx.ui.xml.spi;
 
 import org.mini2Dx.gdx.xml.XmlReader;
 import org.mini2Dx.ui.element.UiElement;
-import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.xml.UiElementPopulator;
 
 public class CorePopulator implements UiElementPopulator<UiElement> {
@@ -49,11 +48,6 @@ public class CorePopulator implements UiElementPopulator<UiElement> {
             uiElement.setStyleId(xmlElement.getAttribute("style"));
         }
 
-        String providedValue = xmlElement.getAttribute("visibility", "VISIBLE");
-        try {
-            uiElement.setVisibility(Visibility.valueOf(providedValue.toUpperCase()));
-        } catch (IllegalArgumentException e) {
-            throw new InvalidVisibilityException(xmlElement, providedValue);
-        }
+        uiElement.setVisibility(XmlAttributeMapper.mapToVisibility(xmlElement, "visibility"));
     }
 }

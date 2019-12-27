@@ -37,6 +37,8 @@ import org.mini2Dx.ui.xml.spi.ProgressBarFactory;
 import org.mini2Dx.ui.xml.spi.ProgressBarPopulator;
 import org.mini2Dx.ui.xml.spi.RadioButtonFactory;
 import org.mini2Dx.ui.xml.spi.RadioButtonPopulator;
+import org.mini2Dx.ui.xml.spi.ScrollBoxFactory;
+import org.mini2Dx.ui.xml.spi.ScrollBoxPopulator;
 import org.mini2Dx.ui.xml.spi.SelectFactory;
 import org.mini2Dx.ui.xml.spi.SelectPopulator;
 import org.mini2Dx.ui.xml.spi.SliderFactory;
@@ -71,6 +73,7 @@ public class UiXmlLoader {
         addTagHandler("slider", new SliderFactory(), corePopulator, new SliderPopulator());
         addTagHandler("select", new SelectFactory(), corePopulator, new SelectPopulator());
         addTagHandler("image", new ImageFactory(), corePopulator, new ImagePopulator());
+        addTagHandler("scroll-box", new ScrollBoxFactory(), corePopulator, parentUiElementPopulator, new ScrollBoxPopulator());
     }
 
     /**
