@@ -23,6 +23,8 @@ import org.mini2Dx.ui.xml.UiElementPopulator;
 public class CorePopulator implements UiElementPopulator<UiElement> {
     @Override
     public void populate(XmlReader.Element xmlElement, UiElement uiElement) {
+        uiElement.setDebugEnabled(xmlElement.getBooleanAttribute("debug", false));
+
         if (xmlElement.hasAttribute("x")) {
             uiElement.setX(xmlElement.getFloatAttribute("x"));
         }

@@ -276,6 +276,7 @@
         <xsd:attribute name="style" type="xsd:string"/>
         <xsd:attribute name="z-index" type="xsd:integer"/>
         <xsd:attribute name="visibility" type="visibility" default="VISIBLE"/>
+        <xsd:attribute name="debug" type="xsd:boolean" default="false"/>
     </xsd:complexType>
 
     <xsd:simpleType name="visibility">

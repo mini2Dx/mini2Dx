@@ -44,6 +44,7 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
 
         assertNotNull(element.getId());
         assertEquals(VISIBLE, element.getVisibility());
+        assertFalse(element.isDebugEnabled());
         assertDefaultValues(element);
     }
 
@@ -104,6 +105,17 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
 
         assertEquals(1.0, element.getX(), 0.0);
         assertEquals(2.0, element.getY(), 0.0);
+    }
+
+    @Test
+    public void with_debug() {
+        String xml = newBuilder()
+                .withAttribute("debug", "true")
+                .build();
+
+        UiElement element = loadFile(xml);
+
+        assertTrue(element.isDebugEnabled());
     }
 
     protected TestXmlUiBuilder newBuilder() {
