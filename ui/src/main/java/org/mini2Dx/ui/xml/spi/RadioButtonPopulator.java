@@ -23,7 +23,7 @@ import static org.mini2Dx.ui.xml.spi.XmlAttributeMapper.mapToFlexDirection;
 
 public class RadioButtonPopulator implements UiElementPopulator<RadioButton> {
     @Override
-    public void populate(XmlReader.Element xmlTag, RadioButton uiElement) {
+    public boolean populate(XmlReader.Element xmlTag, RadioButton uiElement) {
         uiElement.setEnabled(xmlTag.getBoolean("enabled", true));
         uiElement.setResponsive(xmlTag.getBoolean("responsive", false));
 
@@ -37,5 +37,6 @@ public class RadioButtonPopulator implements UiElementPopulator<RadioButton> {
         }
 
         uiElement.setSelectedOptionIndex(xmlTag.getIntAttribute("default-selected-index", 0));
+        return true;
     }
 }

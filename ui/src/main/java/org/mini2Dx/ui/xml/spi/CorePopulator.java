@@ -21,7 +21,7 @@ import org.mini2Dx.ui.xml.UiElementPopulator;
 
 public class CorePopulator implements UiElementPopulator<UiElement> {
     @Override
-    public void populate(XmlReader.Element xmlElement, UiElement uiElement) {
+    public boolean populate(XmlReader.Element xmlElement, UiElement uiElement) {
         uiElement.setDebugEnabled(xmlElement.getBooleanAttribute("debug", false));
 
         if (xmlElement.hasAttribute("x")) {
@@ -49,5 +49,6 @@ public class CorePopulator implements UiElementPopulator<UiElement> {
         }
 
         uiElement.setVisibility(XmlAttributeMapper.mapToVisibility(xmlElement, "visibility"));
+        return false;
     }
 }

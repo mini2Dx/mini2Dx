@@ -23,9 +23,10 @@ import static org.mini2Dx.ui.xml.spi.XmlAttributeMapper.mapToFlexDirection;
 
 public class FlexRowPopulator implements UiElementPopulator<FlexRow> {
     @Override
-    public void populate(XmlReader.Element xmlTag, FlexRow uiElement) {
+    public boolean populate(XmlReader.Element xmlTag, FlexRow uiElement) {
         if (xmlTag.hasAttribute("flex-direction")) {
             uiElement.setFlexDirection(mapToFlexDirection(xmlTag));
         }
+        return false;
     }
 }

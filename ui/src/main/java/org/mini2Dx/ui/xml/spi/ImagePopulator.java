@@ -21,11 +21,12 @@ import org.mini2Dx.ui.xml.UiElementPopulator;
 
 public class ImagePopulator implements UiElementPopulator<Image> {
     @Override
-    public void populate(XmlReader.Element xmlTag, Image uiElement) {
+    public boolean populate(XmlReader.Element xmlTag, Image uiElement) {
         uiElement.setTexturePath(xmlTag.getAttribute("texture-path"));
         uiElement.setAtlas(xmlTag.getAttribute("atlas", null));
         uiElement.setResponsive(xmlTag.getBooleanAttribute("responsive", false));
         uiElement.setFlipY(xmlTag.getBooleanAttribute("flip-y", false));
         uiElement.setFlipX(xmlTag.getBooleanAttribute("flip-x", false));
+        return false;
     }
 }

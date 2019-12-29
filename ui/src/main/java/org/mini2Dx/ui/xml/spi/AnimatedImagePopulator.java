@@ -21,7 +21,7 @@ import org.mini2Dx.ui.xml.UiElementPopulator;
 
 public class AnimatedImagePopulator implements UiElementPopulator<AnimatedImage> {
     @Override
-    public void populate(XmlReader.Element xmlTag, AnimatedImage uiElement) {
+    public boolean populate(XmlReader.Element xmlTag, AnimatedImage uiElement) {
         uiElement.setResponsive(xmlTag.getBooleanAttribute("responsive", false));
         uiElement.setFlipX(xmlTag.getBooleanAttribute("flip-x", false));
         uiElement.setFlipY(xmlTag.getBooleanAttribute("flip-y", false));
@@ -36,5 +36,6 @@ public class AnimatedImagePopulator implements UiElementPopulator<AnimatedImage>
         }
 
         uiElement.setTexturePaths(textures, durations);
+        return false;
     }
 }

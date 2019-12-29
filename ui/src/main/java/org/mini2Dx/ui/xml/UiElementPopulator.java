@@ -24,6 +24,8 @@ public interface UiElementPopulator<T extends UiElement> {
      *
      * @param xmlTag    - the tag to pull values off of
      * @param uiElement - the UiElement to be populated
+     * @return true - implies this populator will handle processing the child tags
+     * false - implies the UiXmlLoader will handle the processing of the child tags
      */
-    void populate(XmlReader.Element xmlTag, T uiElement);
+    boolean populate(XmlReader.Element xmlTag, T uiElement);
 }

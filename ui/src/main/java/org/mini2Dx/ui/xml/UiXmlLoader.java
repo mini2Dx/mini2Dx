@@ -108,23 +108,21 @@ public class UiXmlLoader {
             throw new UnknownUiTagException(root.getName());
         }
 
-        UiElement uiElement = buildAndPopulateUiElement(root, handler);
+        boolean childTagsAlreadyProcessed = false;
+        UiElement uiElement = handler.factory.build(root);
+        for (UiElementPopulator populator : handler.populators) {
+            if (populator.populate(root, uiElement)) {
+                childTagsAlreadyProcessed = true;
+            }
+        }
 
-        if (uiElement instanceof ParentUiElement) {
+        if (!childTagsAlreadyProcessed && uiElement instanceof ParentUiElement) {
             ParentUiElement parentUiElement = (ParentUiElement) uiElement;
             for (int i = 0; i < root.getChildCount(); i++) {
                 parentUiElement.add(processXmlTag(root.getChild(i)));
             }
         }
 
-        return uiElement;
-    }
-
-    private UiElement buildAndPopulateUiElement(XmlReader.Element root, UiElementHandler handler) {
-        UiElement uiElement = handler.factory.build(root);
-        for (UiElementPopulator populator : handler.populators) {
-            populator.populate(root, uiElement);
-        }
         return uiElement;
     }
 

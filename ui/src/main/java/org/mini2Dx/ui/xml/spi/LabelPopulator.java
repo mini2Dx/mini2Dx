@@ -22,7 +22,7 @@ import org.mini2Dx.ui.xml.UiElementPopulator;
 
 public class LabelPopulator implements UiElementPopulator<Label> {
     @Override
-    public void populate(XmlReader.Element xmlTag, Label uiElement) {
+    public boolean populate(XmlReader.Element xmlTag, Label uiElement) {
         if (xmlTag.hasAttribute("text")) {
             uiElement.setText(xmlTag.getAttribute("text"));
         }
@@ -31,5 +31,7 @@ public class LabelPopulator implements UiElementPopulator<Label> {
 
         String providedHorizontalAlignment = xmlTag.get("horizontal-alignment", "LEFT").toUpperCase();
         uiElement.setHorizontalAlignment(HorizontalAlignment.valueOf(providedHorizontalAlignment));
+
+        return false;
     }
 }

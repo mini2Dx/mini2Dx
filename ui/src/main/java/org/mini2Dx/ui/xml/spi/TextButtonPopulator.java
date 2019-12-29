@@ -21,9 +21,10 @@ import org.mini2Dx.ui.xml.UiElementPopulator;
 
 public class TextButtonPopulator implements UiElementPopulator<TextButton> {
     @Override
-    public void populate(XmlReader.Element xmlTag, TextButton uiElement) {
+    public boolean populate(XmlReader.Element xmlTag, TextButton uiElement) {
         uiElement.setText(xmlTag.getAttribute("text", ""));
         uiElement.setEnabled(xmlTag.getBoolean("enabled", true));
         uiElement.setFlexLayout(xmlTag.getAttribute("layout", "flex-column:xs-12c"));
+        return false;
     }
 }

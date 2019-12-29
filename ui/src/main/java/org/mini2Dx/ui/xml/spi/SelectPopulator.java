@@ -21,7 +21,7 @@ import org.mini2Dx.ui.xml.UiElementPopulator;
 
 public class SelectPopulator implements UiElementPopulator<Select> {
     @Override
-    public void populate(XmlReader.Element xmlTag, Select uiElement) {
+    public boolean populate(XmlReader.Element xmlTag, Select uiElement) {
         uiElement.setEnabled(xmlTag.getBooleanAttribute("enabled", true));
         uiElement.setFlexLayout(xmlTag.getAttribute("layout", "flex-column:xs-12c"));
         uiElement.setLeftButtonText(xmlTag.getAttribute("left-button-text", null));
@@ -32,5 +32,6 @@ public class SelectPopulator implements UiElementPopulator<Select> {
             String value = child.getAttribute("value", child.getText());
             uiElement.addOption(child.getText(), value);
         }
+        return true;
     }
 }
