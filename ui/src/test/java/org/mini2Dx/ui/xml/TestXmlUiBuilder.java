@@ -1,11 +1,3 @@
-package org.mini2Dx.ui.xml;
-
-import org.mini2Dx.gdx.utils.ObjectMap;
-
-import java.util.function.Supplier;
-
-import static org.junit.Assert.assertNotNull;
-
 /*******************************************************************************
  * Copyright 2019 See AUTHORS file
  *
@@ -21,6 +13,14 @@ import static org.junit.Assert.assertNotNull;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+package org.mini2Dx.ui.xml;
+
+import org.mini2Dx.gdx.utils.ObjectMap;
+
+import java.util.function.Supplier;
+
+import static org.junit.Assert.assertNotNull;
+
 public class TestXmlUiBuilder {
     private static final String NAMESPACE = " xmlns=\"https://github.com/mini2Dx/mini2Dx\"";
     private final String tagName;
@@ -66,7 +66,8 @@ public class TestXmlUiBuilder {
                     "    <animated-image>" +
                     "      <texture duration=\"1\">foo</texture>" +
                     "      <texture duration=\"2\">bar</texture>" +
-                    "    </animated-image>";
+                    "    </animated-image>" +
+                    "    <image-button id=\"1\" />";
 
         });
     }

@@ -1,11 +1,3 @@
-package org.mini2Dx.ui.xml;
-
-import org.junit.Test;
-import org.mini2Dx.ui.element.ParentUiElement;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 /*******************************************************************************
  * Copyright 2019 See AUTHORS file
  *
@@ -21,6 +13,15 @@ import static org.junit.Assert.assertTrue;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
+package org.mini2Dx.ui.xml;
+
+import org.junit.Test;
+import org.mini2Dx.ui.element.ParentUiElement;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public abstract class AbstractParentUiElementXmlTest<T extends ParentUiElement> extends AbstractUiElementXmlTest<T> {
 
     @Test

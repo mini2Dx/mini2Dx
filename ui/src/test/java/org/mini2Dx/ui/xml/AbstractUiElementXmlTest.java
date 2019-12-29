@@ -38,7 +38,7 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
     }
 
     @Test
-    public void defaults() {
+    public void with_defaults() {
         String xml = newBuilder().build();
 
         T element = loadFile(xml);
@@ -50,7 +50,7 @@ public abstract class AbstractUiElementXmlTest<T extends UiElement> extends Abst
     }
 
     @Test
-    public void id_provided() {
+    public void with_id_provided() {
         String xml = newBuilder()
                 .withAttribute("id", "10")
                 .build();
