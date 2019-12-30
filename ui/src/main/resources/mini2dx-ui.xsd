@@ -4,12 +4,6 @@
             xmlns="https://github.com/mini2Dx/mini2Dx"
             elementFormDefault="qualified">
 
-    <!--
-    todo - considerations:
-     - should Image and the AnimatedImage's Texture tag be very similar?
-
-    -->
-
     <xsd:element name="tab-view">
         <xsd:annotation>
             <xsd:documentation source="org.mini2Dx.ui.element.TabView"/>
