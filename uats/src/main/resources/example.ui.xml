@@ -1,144 +1,117 @@
 <container xmlns="https://github.com/mini2Dx/mini2Dx" layout="flex-column:xs-12c">
-    <flex-row>
-        <label text="Name:"/>
-        <text-box id="name"/>
-    </flex-row>
-    <flex-row>
-        <flex-row layout="flex-row:xs-1c">
-            <label text="Race:" horizontal-alignment="RIGHT"/>
-        </flex-row>
-        <flex-row layout="flex-row:xs-1c"/>
-        <flex-row layout="flex-row:xs-10c">
-            <select id="race">
-                <option value="HUMAN">Human</option>
-                <option value="DWARF">Dwarf</option>
-                <option value="ELF">Elf</option>
-                <option value="ORC">Orc</option>
-            </select>
-        </flex-row>
-    </flex-row>
-    <flex-row>
-        <flex-row layout="flex-row:xs-1c">
-            <label text="Age:" horizontal-alignment="RIGHT"/>
-        </flex-row>
-        <flex-row layout="flex-row:xs-1c"/>
-        <flex-row layout="flex-row:xs-9c">
-            <slider id="ageModifier"/>
-        </flex-row>
-        <flex-row layout="flex-row:xs-1c">
-            <label text="" id="age"/>
-        </flex-row>
-    </flex-row>
-    <flex-row>
-        <flex-row layout="flex-row:xs-1c">
-            <label text="Class:"/>
-        </flex-row>
-        <flex-row layout="flex-row:xs-1c"/>
-        <flex-row layout="flex-row:xs-10c">
-            <radio-button id="class" flex-direction="COLUMN">
-                <option>Barbarian</option>
-                <option>Wizard</option>
-                <option>Rogue</option>
-            </radio-button>
-        </flex-row>
-    </flex-row>
-    <flex-row>
-        <flex-row layout="flex-row:xs-1c">
-            <check-box id="goodOrEvil" checked="true"/>
-        </flex-row>
-        <flex-row layout="flex-row:xs-11c">
-            <label text="Good/Evil"/>
-        </flex-row>
-    </flex-row>
-    <flex-row>
-        <flex-row layout="flex-row:xs-1c">
-            <label text="Gender:"/>
-        </flex-row>
-        <flex-row layout="flex-row:xs-1c"/>
-        <flex-row layout="flex-row:xs-10c">
-            <radio-button id="class" flex-direction="COLUMN">
-                <option>Female</option>
-                <option>Male</option>
-            </radio-button>
-        </flex-row>
-    </flex-row>
-    <flex-row>
-        <flex-row layout="flex-column:xs-2c">
-            <label text="Strength:"/>
-        </flex-row>
-        <flex-row layout="flex-row:xs-1c"/>
-        <text-box id="strength" layout="flex-column:xs-1c"/>
-        <flex-row layout="flex-row:xs-4c"/>
-        <flex-row layout="flex-column:xs-2c">
-            <label text="Dexterity:"/>
-        </flex-row>
-        <flex-row layout="flex-row:xs-1c"/>
-        <text-box id="dexterity" layout="flex-column:xs-1c"/>
-    </flex-row>
-    <flex-row>
-        <flex-row layout="flex-column:xs-2c">
-            <label text="Intelligence:"/>
-        </flex-row>
-        <flex-row layout="flex-row:xs-1c"/>
-        <text-box id="intelligence" layout="flex-column:xs-1c"/>
-        <flex-row layout="flex-row:xs-4c"/>
-        <flex-row layout="flex-column:xs-2c">
-            <label text="Wisdom:"/>
-        </flex-row>
-        <flex-row layout="flex-row:xs-1c"/>
-        <text-box id="wisdom" layout="flex-column:xs-1c"/>
-    </flex-row>
-    <flex-row>
-        <flex-row layout="flex-column:xs-2c">
-            <label text="Charisma:"/>
-        </flex-row>
-        <flex-row layout="flex-row:xs-1c"/>
-        <text-box id="charisma" layout="flex-column:xs-1c"/>
-        <flex-row layout="flex-row:xs-4c"/>
-        <flex-row layout="flex-column:xs-2c">
-            <label text="Constitution:"/>
-        </flex-row>
-        <flex-row layout="flex-row:xs-1c"/>
-        <text-box id="constitution" layout="flex-column:xs-1c"/>
-    </flex-row>
-    <flex-row/>
-    <flex-row>
-        <text-button id="create-character" text="Create"/>
-        <progress-bar id="create-character-progress" visibility="HIDDEN"/>
-    </flex-row>
-    <div layout="flex-column:xs-12c">
-        <flex-row layout="flex-column:xs-12c">
-            <label text="Image"/>
-        </flex-row>
-        <image texture-path="cardDiamondsA" atlas="texture-region-uat.atlas"/>
-        <image texture-path="cardDiamondsJ" atlas="texture-region-uat.atlas" flip-x="true" flip-y="true"/>
-        <image texture-path="cardDiamondsQ" atlas="texture-region-uat.atlas" flip-x="true"/>
-        <image texture-path="cardDiamondsK" atlas="texture-region-uat.atlas" flip-y="true"/>
-    </div>
-    <div layout="flex-column:xs-12c">
-        <flex-row layout="flex-column:xs-12c">
-            <label text="Animated Image"/>
-        </flex-row>
-        <animated-image atlas="texture-region-uat.atlas">
-            <texture duration="0.1">cardDiamondsA</texture>
-            <texture duration="0.1">cardDiamondsJ</texture>
-            <texture duration="0.1">cardDiamondsQ</texture>
-            <texture duration="0.1">cardDiamondsK</texture>
-        </animated-image>
-    </div>
-    <div layout="flex-column:xs-12c">
-        <flex-row layout="flex-column:xs-12c">
-            <label text="Image Button"/>
-        </flex-row>
-        <image-button id="imageButton" atlas="default-mdx-theme.atlas" layout="flex-column:xs-12c">
-            <normal-texture>button_default_normal</normal-texture>
-            <hover-texture>button_default_hover</hover-texture>
-            <action-texture>button_default_action</action-texture>
-        </image-button>
-    </div>
-    <flex-row>
-        <scroll-box layout="flex-column:xs-12c" max-height="100">
-            <label text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis libero orci, molestie
+    <tab-view>
+        <tab title="Character Generator">
+            <flex-row>
+                <label text="Name:"/>
+                <text-box id="name"/>
+            </flex-row>
+            <flex-row>
+                <flex-row layout="flex-row:xs-1c">
+                    <label text="Race:" horizontal-alignment="RIGHT"/>
+                </flex-row>
+                <flex-row layout="flex-row:xs-1c"/>
+                <flex-row layout="flex-row:xs-10c">
+                    <select id="race">
+                        <option value="HUMAN">Human</option>
+                        <option value="DWARF">Dwarf</option>
+                        <option value="ELF">Elf</option>
+                        <option value="ORC">Orc</option>
+                    </select>
+                </flex-row>
+            </flex-row>
+            <flex-row>
+                <flex-row layout="flex-row:xs-1c">
+                    <label text="Age:" horizontal-alignment="RIGHT"/>
+                </flex-row>
+                <flex-row layout="flex-row:xs-1c"/>
+                <flex-row layout="flex-row:xs-9c">
+                    <slider id="ageModifier"/>
+                </flex-row>
+                <flex-row layout="flex-row:xs-1c">
+                    <label text="" id="age"/>
+                </flex-row>
+            </flex-row>
+            <flex-row>
+                <flex-row layout="flex-row:xs-1c">
+                    <label text="Class:"/>
+                </flex-row>
+                <flex-row layout="flex-row:xs-1c"/>
+                <flex-row layout="flex-row:xs-10c">
+                    <radio-button id="class" flex-direction="COLUMN">
+                        <option>Barbarian</option>
+                        <option>Wizard</option>
+                        <option>Rogue</option>
+                    </radio-button>
+                </flex-row>
+            </flex-row>
+            <flex-row>
+                <flex-row layout="flex-row:xs-1c">
+                    <check-box id="goodOrEvil" checked="true"/>
+                </flex-row>
+                <flex-row layout="flex-row:xs-11c">
+                    <label text="Good/Evil"/>
+                </flex-row>
+            </flex-row>
+            <flex-row>
+                <flex-row layout="flex-row:xs-1c">
+                    <label text="Gender:"/>
+                </flex-row>
+                <flex-row layout="flex-row:xs-1c"/>
+                <flex-row layout="flex-row:xs-10c">
+                    <radio-button id="class" flex-direction="COLUMN">
+                        <option>Female</option>
+                        <option>Male</option>
+                    </radio-button>
+                </flex-row>
+            </flex-row>
+            <flex-row>
+                <flex-row layout="flex-column:xs-2c">
+                    <label text="Strength:"/>
+                </flex-row>
+                <flex-row layout="flex-row:xs-1c"/>
+                <text-box id="strength" layout="flex-column:xs-1c"/>
+                <flex-row layout="flex-row:xs-4c"/>
+                <flex-row layout="flex-column:xs-2c">
+                    <label text="Dexterity:"/>
+                </flex-row>
+                <flex-row layout="flex-row:xs-1c"/>
+                <text-box id="dexterity" layout="flex-column:xs-1c"/>
+            </flex-row>
+            <flex-row>
+                <flex-row layout="flex-column:xs-2c">
+                    <label text="Intelligence:"/>
+                </flex-row>
+                <flex-row layout="flex-row:xs-1c"/>
+                <text-box id="intelligence" layout="flex-column:xs-1c"/>
+                <flex-row layout="flex-row:xs-4c"/>
+                <flex-row layout="flex-column:xs-2c">
+                    <label text="Wisdom:"/>
+                </flex-row>
+                <flex-row layout="flex-row:xs-1c"/>
+                <text-box id="wisdom" layout="flex-column:xs-1c"/>
+            </flex-row>
+            <flex-row>
+                <flex-row layout="flex-column:xs-2c">
+                    <label text="Charisma:"/>
+                </flex-row>
+                <flex-row layout="flex-row:xs-1c"/>
+                <text-box id="charisma" layout="flex-column:xs-1c"/>
+                <flex-row layout="flex-row:xs-4c"/>
+                <flex-row layout="flex-column:xs-2c">
+                    <label text="Constitution:"/>
+                </flex-row>
+                <flex-row layout="flex-row:xs-1c"/>
+                <text-box id="constitution" layout="flex-column:xs-1c"/>
+            </flex-row>
+            <flex-row/>
+            <flex-row>
+                <text-button id="create-character" text="Create"/>
+                <progress-bar id="create-character-progress" visibility="HIDDEN"/>
+            </flex-row>
+        </tab>
+        <tab title="Scroll">
+            <scroll-box layout="flex-column:xs-12c" max-height="100">
+                <label text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis libero orci, molestie
                 in tincidunt consequat, euismod non leo. Phasellus viverra erat nec mi lobortis convallis.
                 Nunc dictum massa ut augue sodales iaculis. In hac habitasse platea dictumst.
                 Donec convallis dui ac maximus euismod. Proin bibendum metus lorem, in blandit felis
@@ -159,7 +132,40 @@
                 hendrerit mi eros non sapien. Fusce at eros eros. Donec tortor nibh, luctus eget lorem non,
                 tincidunt rhoncus tortor. Sed blandit, leo id tempor faucibus, diam nisl pharetra nisi,
                 a egestas lorem lectus id velit."
-            />
-        </scroll-box>
-    </flex-row>
+                />
+            </scroll-box>
+        </tab>
+        <tab title="Misc">
+            <div layout="flex-column:xs-12c">
+                <flex-row layout="flex-column:xs-12c">
+                    <label text="Image"/>
+                </flex-row>
+                <image texture-path="cardDiamondsA" atlas="texture-region-uat.atlas"/>
+                <image texture-path="cardDiamondsJ" atlas="texture-region-uat.atlas" flip-x="true" flip-y="true"/>
+                <image texture-path="cardDiamondsQ" atlas="texture-region-uat.atlas" flip-x="true"/>
+                <image texture-path="cardDiamondsK" atlas="texture-region-uat.atlas" flip-y="true"/>
+            </div>
+            <div layout="flex-column:xs-12c">
+                <flex-row layout="flex-column:xs-12c">
+                    <label text="Animated Image"/>
+                </flex-row>
+                <animated-image atlas="texture-region-uat.atlas">
+                    <texture duration="0.1">cardDiamondsA</texture>
+                    <texture duration="0.1">cardDiamondsJ</texture>
+                    <texture duration="0.1">cardDiamondsQ</texture>
+                    <texture duration="0.1">cardDiamondsK</texture>
+                </animated-image>
+            </div>
+            <div layout="flex-column:xs-12c">
+                <flex-row layout="flex-column:xs-12c">
+                    <label text="Image Button"/>
+                </flex-row>
+                <image-button id="imageButton" atlas="texture-region-uat.atlas" layout="flex-column:xs-12c">
+                    <normal-texture>cardDiamondsA</normal-texture>
+                    <hover-texture flip-x="true">cardDiamondsJ</hover-texture>
+                    <action-texture flip-y="true">cardDiamondsQ</action-texture>
+                </image-button>
+            </div>
+        </tab>
+    </tab-view>
 </container>

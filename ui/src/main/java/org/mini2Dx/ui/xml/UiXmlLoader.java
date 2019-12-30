@@ -20,6 +20,8 @@ import org.mini2Dx.core.files.FileHandleResolver;
 import org.mini2Dx.gdx.utils.ObjectMap;
 import org.mini2Dx.gdx.xml.XmlReader;
 import org.mini2Dx.ui.element.ParentUiElement;
+import org.mini2Dx.ui.element.Tab;
+import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.xml.spi.AnimatedImageFactory;
 import org.mini2Dx.ui.xml.spi.AnimatedImagePopulator;
@@ -47,6 +49,10 @@ import org.mini2Dx.ui.xml.spi.SelectFactory;
 import org.mini2Dx.ui.xml.spi.SelectPopulator;
 import org.mini2Dx.ui.xml.spi.SliderFactory;
 import org.mini2Dx.ui.xml.spi.SliderPopulator;
+import org.mini2Dx.ui.xml.spi.TabFactory;
+import org.mini2Dx.ui.xml.spi.TabPopulator;
+import org.mini2Dx.ui.xml.spi.TabViewFactory;
+import org.mini2Dx.ui.xml.spi.TabViewPopulator;
 import org.mini2Dx.ui.xml.spi.TextBoxFactory;
 import org.mini2Dx.ui.xml.spi.TextBoxPopulator;
 import org.mini2Dx.ui.xml.spi.TextButtonFactory;
@@ -80,6 +86,8 @@ public class UiXmlLoader {
         addTagHandler("scroll-box", new ScrollBoxFactory(), corePopulator, parentUiElementPopulator, new ScrollBoxPopulator());
         addTagHandler("animated-image", new AnimatedImageFactory(), corePopulator, new AnimatedImagePopulator());
         addTagHandler("image-button", new ImageButtonFactory(), corePopulator, new ImageButtonPopulator());
+        addTagHandler("tab-view", new TabViewFactory(), corePopulator, new TabViewPopulator());
+        addTagHandler("tab", new TabFactory(), new TabPopulator());
     }
 
     /**
@@ -122,7 +130,13 @@ public class UiXmlLoader {
         if (!childTagsAlreadyProcessed && uiElement instanceof ParentUiElement) {
             ParentUiElement parentUiElement = (ParentUiElement) uiElement;
             for (int i = 0; i < root.getChildCount(); i++) {
-                parentUiElement.add(processXmlTag(root.getChild(i)));
+                UiElement childElement = processXmlTag(root.getChild(i));
+                if (parentUiElement instanceof TabView) {
+                    TabView tabView = (TabView) parentUiElement;
+                    tabView.add((Tab) childElement);
+                } else {
+                    parentUiElement.add(childElement);
+                }
             }
         }
 

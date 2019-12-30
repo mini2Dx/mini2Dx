@@ -5,16 +5,40 @@
             elementFormDefault="qualified">
 
     <!--
-
-    todo - UI elements left:
-     - Tab
-     - TabView
-
     todo - considerations:
      - should Image and the AnimatedImage's Texture tag be very similar?
 
     -->
 
+    <xsd:element name="tab-view">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.TabView"/>
+        </xsd:annotation>
+
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="ui-element">
+                    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                        <xsd:element name="tab">
+                            <xsd:complexType>
+                                <xsd:complexContent>
+                                    <xsd:extension base="parent-ui-element">
+                                        <xsd:attribute name="title" type="xsd:string"/>
+                                        <xsd:attribute name="icon-path" type="xsd:string"/>
+                                    </xsd:extension>
+                                </xsd:complexContent>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:choice>
+                    <xsd:attribute name="id" type="xsd:string"/>
+                    <xsd:attribute name="layout" type="xsd:string"/>
+                    <xsd:attribute name="overflow-clipped" type="xsd:boolean" default="false"/>
+                    <xsd:attribute name="tab-button-layout" type="xsd:string"
+                                   default="flex-column:xs-3c sm-4c md-2c lg-2c"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
 
     <xsd:element name="container">
         <xsd:annotation>
@@ -338,12 +362,10 @@
                     <xsd:element ref="scroll-box"/>
                     <xsd:element ref="animated-image"/>
                     <xsd:element ref="image-button"/>
+                    <xsd:element ref="tab-view"/>
                 </xsd:choice>
                 <xsd:attribute name="layout" type="xsd:string"/>
                 <xsd:attribute name="overflow-clipped" type="xsd:boolean" default="false"/>
-                <!--
-                                todo - shrinkToContents
-                -->
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>

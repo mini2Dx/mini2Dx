@@ -69,7 +69,9 @@ public class TestXmlUiBuilder {
                     "    </animated-image>" +
                     "    <image-button id=\"1\">" +
                     "      <normal-texture>blah</normal-texture>" +
-                    "    </image-button>";
+                    "    </image-button>" +
+                    "    <tab-view>" +
+                    "    </tab-view>";
 
         });
     }
