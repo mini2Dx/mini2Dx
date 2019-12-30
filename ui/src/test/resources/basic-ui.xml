@@ -13,7 +13,9 @@
 		</div>
 		<div layout="xs-12 sm-10 sm-offset-2 md-3">
 			<text-button id="" text="" style=""/>
-			<imageButton id="" image="" style=""/>
+			<image-button id="" style="">
+				<normal-texture>button.png</normal-texture>
+			</image-button>
 		</div>
 		<div layout="xs-12 sm-10 sm-offset-2 md-3">
 			<text-box id="" style=""/>
