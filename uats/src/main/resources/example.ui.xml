@@ -170,7 +170,7 @@
                 <flex-row layout="flex-column:xs-12c">
                     <label text="Button"/>
                 </flex-row>
-                <button id="imageButton" layout="flex-column:xs-12c">
+                <button id="genericButton" layout="flex-column:xs-12c">
                     <flex-row layout="flex-column:xs-2c">
                         <animated-image atlas="texture-region-uat.atlas">
                             <texture duration="0.1">cardDiamondsA</texture>
