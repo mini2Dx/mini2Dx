@@ -30,6 +30,8 @@ import org.mini2Dx.ui.xml.spi.CorePopulator;
 import org.mini2Dx.ui.xml.spi.DivFactory;
 import org.mini2Dx.ui.xml.spi.FlexRowFactory;
 import org.mini2Dx.ui.xml.spi.FlexRowPopulator;
+import org.mini2Dx.ui.xml.spi.ImageButtonFactory;
+import org.mini2Dx.ui.xml.spi.ImageButtonPopulator;
 import org.mini2Dx.ui.xml.spi.ImageFactory;
 import org.mini2Dx.ui.xml.spi.ImagePopulator;
 import org.mini2Dx.ui.xml.spi.LabelFactory;
@@ -77,6 +79,7 @@ public class UiXmlLoader {
         addTagHandler("image", new ImageFactory(), corePopulator, new ImagePopulator());
         addTagHandler("scroll-box", new ScrollBoxFactory(), corePopulator, parentUiElementPopulator, new ScrollBoxPopulator());
         addTagHandler("animated-image", new AnimatedImageFactory(), corePopulator, new AnimatedImagePopulator());
+        addTagHandler("image-button", new ImageButtonFactory(), corePopulator, new ImageButtonPopulator());
     }
 
     /**

@@ -67,7 +67,9 @@ public class TestXmlUiBuilder {
                     "      <texture duration=\"1\">foo</texture>" +
                     "      <texture duration=\"2\">bar</texture>" +
                     "    </animated-image>" +
-                    "    <image-button id=\"1\" />";
+                    "    <image-button id=\"1\">" +
+                    "      <normal-texture>blah</normal-texture>" +
+                    "    </image-button>";
 
         });
     }

@@ -126,6 +126,16 @@
             <texture duration="0.1">cardDiamondsK</texture>
         </animated-image>
     </div>
+    <div layout="flex-column:xs-12c">
+        <flex-row layout="flex-column:xs-12c">
+            <label text="Image Button"/>
+        </flex-row>
+        <image-button id="imageButton" atlas="default-mdx-theme.atlas" layout="flex-column:xs-12c">
+            <normal-texture>button_default_normal</normal-texture>
+            <hover-texture>button_default_hover</hover-texture>
+            <action-texture>button_default_action</action-texture>
+        </image-button>
+    </div>
     <flex-row>
         <scroll-box layout="flex-column:xs-12c" max-height="100">
             <label text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis libero orci, molestie
