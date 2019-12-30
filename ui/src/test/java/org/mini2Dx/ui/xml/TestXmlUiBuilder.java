@@ -71,7 +71,8 @@ public class TestXmlUiBuilder {
                     "      <normal-texture>blah</normal-texture>" +
                     "    </image-button>" +
                     "    <tab-view>" +
-                    "    </tab-view>";
+                    "    </tab-view>" +
+                    "    <button id=\"x\" />";
 
         });
     }

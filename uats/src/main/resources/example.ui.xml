@@ -166,6 +166,25 @@
                     <action-texture flip-y="true">cardDiamondsQ</action-texture>
                 </image-button>
             </div>
+            <div layout="flex-column:xs-12c">
+                <flex-row layout="flex-column:xs-12c">
+                    <label text="Button"/>
+                </flex-row>
+                <button id="imageButton" layout="flex-column:xs-12c">
+                    <flex-row layout="flex-column:xs-2c">
+                        <animated-image atlas="texture-region-uat.atlas">
+                            <texture duration="0.1">cardDiamondsA</texture>
+                            <texture duration="0.1">cardDiamondsJ</texture>
+                            <texture duration="0.1">cardDiamondsQ</texture>
+                            <texture duration="0.1">cardDiamondsK</texture>
+                        </animated-image>
+                    </flex-row>
+                    <flex-row layout="flex-column:xs-1c"/>
+                    <flex-row layout="flex-column:xs-9c">
+                        <label text="Pick a card"/>
+                    </flex-row>
+                </button>
+            </div>
         </tab>
     </tab-view>
 </container>

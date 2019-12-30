@@ -25,6 +25,8 @@ import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.xml.spi.AnimatedImageFactory;
 import org.mini2Dx.ui.xml.spi.AnimatedImagePopulator;
+import org.mini2Dx.ui.xml.spi.ButtonFactory;
+import org.mini2Dx.ui.xml.spi.ButtonPopulator;
 import org.mini2Dx.ui.xml.spi.CheckBoxFactory;
 import org.mini2Dx.ui.xml.spi.CheckboxPopulator;
 import org.mini2Dx.ui.xml.spi.ContainerFactory;
@@ -71,23 +73,24 @@ public class UiXmlLoader {
         CorePopulator corePopulator = new CorePopulator();
         ParentUiElementPopulator parentUiElementPopulator = new ParentUiElementPopulator();
 
+        addTagHandler("animated-image", new AnimatedImageFactory(), corePopulator, new AnimatedImagePopulator());
+        addTagHandler("button", new ButtonFactory(), corePopulator, parentUiElementPopulator, new ButtonPopulator());
+        addTagHandler("check-box", new CheckBoxFactory(), corePopulator, new CheckboxPopulator());
         addTagHandler("container", new ContainerFactory(), corePopulator, parentUiElementPopulator);
         addTagHandler("div", new DivFactory(), corePopulator, parentUiElementPopulator);
         addTagHandler("flex-row", new FlexRowFactory(), corePopulator, new FlexRowPopulator(), parentUiElementPopulator);
-        addTagHandler("text-button", new TextButtonFactory(), corePopulator, new TextButtonPopulator());
-        addTagHandler("text-box", new TextBoxFactory(), corePopulator, new TextBoxPopulator());
-        addTagHandler("check-box", new CheckBoxFactory(), corePopulator, new CheckboxPopulator());
+        addTagHandler("image", new ImageFactory(), corePopulator, new ImagePopulator());
+        addTagHandler("image-button", new ImageButtonFactory(), corePopulator, new ImageButtonPopulator());
         addTagHandler("label", new LabelFactory(), corePopulator, new LabelPopulator());
         addTagHandler("progress-bar", new ProgressBarFactory(), corePopulator, new ProgressBarPopulator());
         addTagHandler("radio-button", new RadioButtonFactory(), corePopulator, new RadioButtonPopulator());
-        addTagHandler("slider", new SliderFactory(), corePopulator, new SliderPopulator());
-        addTagHandler("select", new SelectFactory(), corePopulator, new SelectPopulator());
-        addTagHandler("image", new ImageFactory(), corePopulator, new ImagePopulator());
         addTagHandler("scroll-box", new ScrollBoxFactory(), corePopulator, parentUiElementPopulator, new ScrollBoxPopulator());
-        addTagHandler("animated-image", new AnimatedImageFactory(), corePopulator, new AnimatedImagePopulator());
-        addTagHandler("image-button", new ImageButtonFactory(), corePopulator, new ImageButtonPopulator());
-        addTagHandler("tab-view", new TabViewFactory(), corePopulator, new TabViewPopulator());
+        addTagHandler("select", new SelectFactory(), corePopulator, new SelectPopulator());
+        addTagHandler("slider", new SliderFactory(), corePopulator, new SliderPopulator());
         addTagHandler("tab", new TabFactory(), new TabPopulator());
+        addTagHandler("tab-view", new TabViewFactory(), corePopulator, new TabViewPopulator());
+        addTagHandler("text-button", new TextButtonFactory(), corePopulator, new TextButtonPopulator());
+        addTagHandler("text-box", new TextBoxFactory(), corePopulator, new TextBoxPopulator());
     }
 
     /**

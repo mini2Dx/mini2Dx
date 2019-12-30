@@ -34,6 +34,21 @@
         </xsd:complexType>
     </xsd:element>
 
+    <xsd:element name="button">
+        <xsd:annotation>
+            <xsd:documentation source="org.mini2Dx.ui.element.Button"/>
+        </xsd:annotation>
+
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="div-base">
+                    <xsd:attribute name="id" type="xsd:string" use="required"/>
+                    <xsd:attribute name="enabled" type="xsd:boolean" default="true"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
     <xsd:element name="container">
         <xsd:annotation>
             <xsd:documentation source="org.mini2Dx.ui.element.Container"/>
@@ -357,6 +372,7 @@
                     <xsd:element ref="animated-image"/>
                     <xsd:element ref="image-button"/>
                     <xsd:element ref="tab-view"/>
+                    <xsd:element ref="button"/>
                 </xsd:choice>
                 <xsd:attribute name="layout" type="xsd:string"/>
                 <xsd:attribute name="overflow-clipped" type="xsd:boolean" default="false"/>
