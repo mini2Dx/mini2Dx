@@ -105,6 +105,10 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		}
 		includeInRender = visible;
 
+		if(parent != null) {
+			includeInRender &= parent.isIncludedInRender();
+		}
+
 		if (element.isDebugEnabled()) {
 			Mdx.log.debug(element.getId(), "UPDATE - outerArea: " + outerArea + ", targetArea: " + targetOuterArea
 					+ ", visibility: " + element.getVisibility());
@@ -185,13 +189,11 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public void beginHover() {
-		state = NodeState.HOVER;
-		element.notifyHoverListenersOnBeginHover();
+		setState(NodeState.HOVER);
 	}
 
 	public void endHover() {
-		state = NodeState.NORMAL;
-		element.notifyHoverListenersOnEndHover();
+		setState(NodeState.NORMAL);
 	}
 
 	protected abstract void renderElement(Graphics g);
@@ -487,6 +489,9 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public void setState(NodeState state) {
+		if (state == NodeState.HOVER && !includeInRender) {
+			return;
+		}
 		NodeState previousState = this.state;
 		this.state = state;
 		if (previousState != state) {
