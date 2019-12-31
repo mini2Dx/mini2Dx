@@ -11,6 +11,10 @@ android {
             renderscript.srcDirs = ['src/main/java']     
 		}
     }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'

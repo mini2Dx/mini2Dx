@@ -27,6 +27,10 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'rebel.xml'
     }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
     adbOptions {
         timeOutInMs 10 * 60 * 1000
         installOptions "-d","-t"
