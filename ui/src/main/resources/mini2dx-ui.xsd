@@ -356,7 +356,7 @@
         <xsd:complexContent>
             <xsd:extension base="ui-element">
                 <xsd:choice minOccurs="0" maxOccurs="unbounded">
-                    <xsd:any namespace="##targetNamespace" minOccurs="0"/>
+                    <xsd:any namespace="##any" minOccurs="0"/>
                 </xsd:choice>
                 <xsd:attribute name="layout" type="xsd:string"/>
                 <xsd:attribute name="overflow-clipped" type="xsd:boolean" default="false"/>
