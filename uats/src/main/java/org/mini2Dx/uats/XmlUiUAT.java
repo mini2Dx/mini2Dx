@@ -31,20 +31,29 @@ import org.mini2Dx.core.screen.Transition;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import org.mini2Dx.gdx.InputMultiplexer;
+import org.mini2Dx.gdx.xml.XmlReader;
 import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATApplication;
 import org.mini2Dx.uats.util.UiUtils;
 import org.mini2Dx.ui.UiContainer;
+import org.mini2Dx.ui.element.Container;
+import org.mini2Dx.ui.element.Image;
 import org.mini2Dx.ui.element.Label;
 import org.mini2Dx.ui.element.ProgressBar;
 import org.mini2Dx.ui.element.Slider;
 import org.mini2Dx.ui.element.TextButton;
+import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.event.ActionEvent;
 import org.mini2Dx.ui.gamepad.GamePadUiInput;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.style.UiTheme;
 import org.mini2Dx.ui.xml.UiXmlLoader;
+import org.mini2Dx.ui.xml.spi.CorePopulator;
+import org.mini2Dx.ui.xml.spi.ParentUiElementPopulator;
+
+import static org.mini2Dx.ui.element.Visibility.VISIBLE;
+import static org.mini2Dx.ui.layout.HorizontalAlignment.CENTER;
 
 /**
  * User acceptance test for the mini2Dx UI xml
@@ -64,6 +73,9 @@ public class XmlUiUAT extends BasicGameScreen implements GameResizeListener {
         this.assetManager = assetManager;
         this.fileHandleResolver = fileHandleResolver;
         this.uiXmlLoader = new UiXmlLoader(fileHandleResolver);
+
+        this.uiXmlLoader.addTagHandler("custom:player-label", this::newPlayerLabel,
+                new CorePopulator(), new ParentUiElementPopulator(), this::playerLabelPopulator);
     }
 
     @Override
@@ -107,7 +119,7 @@ public class XmlUiUAT extends BasicGameScreen implements GameResizeListener {
             @Override
             public void onActionEnd(ActionEvent event) {
                 createCharacter.setEnabled(false);
-                createProgress.setVisibility(Visibility.VISIBLE);
+                createProgress.setVisibility(VISIBLE);
 
                 AsyncFuture future = Mdx.executor.submit(() -> {
                     for (int i = 0; i < 100; i += 10) {
@@ -195,4 +207,33 @@ public class XmlUiUAT extends BasicGameScreen implements GameResizeListener {
     }
 
 
+    private UiElement newPlayerLabel(XmlReader.Element element) {
+        return new PlayerLabel();
+    }
+
+    private boolean playerLabelPopulator(XmlReader.Element element, UiElement uiElement) {
+        PlayerLabel playerLabel = (PlayerLabel) uiElement;
+        playerLabel.avatar.setTexturePath(element.getAttribute("texture-path"));
+        playerLabel.avatar.setAtlas(element.getAttribute("atlas", null));
+        playerLabel.name.setText(element.getAttribute("name"));
+        return false;
+    }
+
+    private static class PlayerLabel extends Container {
+        private final Label name;
+        private final Image avatar;
+
+        public PlayerLabel() {
+            name = new Label();
+            name.setVisibility(VISIBLE);
+            name.setHorizontalAlignment(CENTER);
+
+            avatar = new Image();
+            avatar.setVisibility(VISIBLE);
+
+            add(avatar);
+            add(name);
+            setFlexLayout("flex-row:xs-2c");
+        }
+    }
 }
