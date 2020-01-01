@@ -1,5 +1,13 @@
-<container xmlns="https://github.com/mini2Dx/mini2Dx" layout="flex-column:xs-12c">
+<container xmlns:custom="my-custom-schema"
+           xmlns="https://github.com/mini2Dx/mini2Dx"
+           layout="flex-column:xs-12c">
     <tab-view>
+        <tab title="Custom Component">
+            <custom:player-label
+                    name="Ace" texture-path="cardDiamondsA" atlas="texture-region-uat.atlas"/>
+            <custom:player-label
+                    name="King" texture-path="cardDiamondsK" atlas="texture-region-uat.atlas"/>
+        </tab>
         <tab title="Character Generator">
             <flex-row>
                 <label text="Name:"/>

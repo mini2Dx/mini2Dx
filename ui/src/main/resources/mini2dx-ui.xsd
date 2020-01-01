@@ -356,23 +356,7 @@
         <xsd:complexContent>
             <xsd:extension base="ui-element">
                 <xsd:choice minOccurs="0" maxOccurs="unbounded">
-                    <xsd:element ref="container"/>
-                    <xsd:element ref="div"/>
-                    <xsd:element ref="flex-row"/>
-                    <xsd:element ref="text-button"/>
-                    <xsd:element ref="label"/>
-                    <xsd:element ref="text-box"/>
-                    <xsd:element ref="check-box"/>
-                    <xsd:element ref="progress-bar"/>
-                    <xsd:element ref="radio-button"/>
-                    <xsd:element ref="slider"/>
-                    <xsd:element ref="select"/>
-                    <xsd:element ref="image"/>
-                    <xsd:element ref="scroll-box"/>
-                    <xsd:element ref="animated-image"/>
-                    <xsd:element ref="image-button"/>
-                    <xsd:element ref="tab-view"/>
-                    <xsd:element ref="button"/>
+                    <xsd:any namespace="##any" minOccurs="0"/>
                 </xsd:choice>
                 <xsd:attribute name="layout" type="xsd:string"/>
                 <xsd:attribute name="overflow-clipped" type="xsd:boolean" default="false"/>
