@@ -471,8 +471,8 @@ public class LibgdxGraphics implements Graphics {
 	public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height,
 	                              float rotation) {
 		beginRendering(RenderState.SPRITEBATCH);
-		final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) textureRegion;
-		spriteBatch.draw(gdxTextureRegion.textureRegion, x, y, 0f, 0f, width, height, 1f, 1f, rotation);
+		final GdxTextureRegion gdxTextureRegion = (GdxTextureRegion) textureRegion;
+		spriteBatch.draw(gdxTextureRegion.asGdxTextureRegion(), x, y, 0f, 0f, width, height, 1f, 1f, rotation);
 	}
 
 	@Override

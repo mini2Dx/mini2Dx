@@ -28,6 +28,7 @@ import org.mini2Dx.core.graphics.TextureRegion;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.libgdx.LibgdxGraphics;
 import org.mini2Dx.libgdx.files.LibgdxFileHandle;
+import org.mini2Dx.libgdx.graphics.GdxTextureRegion;
 import org.mini2Dx.libgdx.graphics.LibgdxColor;
 import org.mini2Dx.libgdx.graphics.LibgdxTextureRegion;
 
@@ -144,8 +145,8 @@ public class LibgdxBitmapFont implements GameFont {
 	private static com.badlogic.gdx.utils.Array<com.badlogic.gdx.graphics.g2d.TextureRegion> convert(Array<TextureRegion> pageRegions) {
 		final com.badlogic.gdx.utils.Array<com.badlogic.gdx.graphics.g2d.TextureRegion>	 result = new  com.badlogic.gdx.utils.Array<com.badlogic.gdx.graphics.g2d.TextureRegion>();
 		for(int i = 0; i < pageRegions.size; i++) {
-			final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) pageRegions.get(i);
-			result.add(gdxTextureRegion.textureRegion);
+			final GdxTextureRegion gdxTextureRegion = (GdxTextureRegion) pageRegions.get(i);
+			result.add(gdxTextureRegion.asGdxTextureRegion());
 		}
 		return result;
 	}

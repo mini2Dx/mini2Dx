@@ -19,7 +19,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.*;
 
-public class LibgdxSprite implements Sprite {
+public class LibgdxSprite implements Sprite, GdxTextureRegion {
 	public final com.badlogic.gdx.graphics.g2d.Sprite sprite;
 	private final LibgdxColor color;
 	private final Rectangle boundingRectangle = new Rectangle();
@@ -87,8 +87,8 @@ public class LibgdxSprite implements Sprite {
 	 */
 	public LibgdxSprite(TextureRegion region) {
 		super();
-		final LibgdxTextureRegion libgdxTextureRegion = (LibgdxTextureRegion) region;
-		sprite = new com.badlogic.gdx.graphics.g2d.Sprite(libgdxTextureRegion.textureRegion);
+		final GdxTextureRegion libgdxTextureRegion = (GdxTextureRegion) region;
+		sprite = new com.badlogic.gdx.graphics.g2d.Sprite(libgdxTextureRegion.asGdxTextureRegion());
 		color = new LibgdxColor(sprite.getColor());
 		setFlip(region.isFlipX(), region.isFlipY());
 		setBoundingRectangle();
@@ -109,8 +109,8 @@ public class LibgdxSprite implements Sprite {
 	 */
 	public LibgdxSprite(TextureRegion region, int srcX, int srcY, int srcWidth,
 	              int srcHeight) {
-		final LibgdxTextureRegion libgdxTextureRegion = (LibgdxTextureRegion) region;
-		sprite = new com.badlogic.gdx.graphics.g2d.Sprite(libgdxTextureRegion.textureRegion, srcX, srcY, srcWidth, srcHeight);
+		final GdxTextureRegion libgdxTextureRegion = (GdxTextureRegion) region;
+		sprite = new com.badlogic.gdx.graphics.g2d.Sprite(libgdxTextureRegion.asGdxTextureRegion(), srcX, srcY, srcWidth, srcHeight);
 		color = new LibgdxColor(sprite.getColor());
 		setFlip(region.isFlipX(), region.isFlipY());
 		setBoundingRectangle();
@@ -316,12 +316,12 @@ public class LibgdxSprite implements Sprite {
 
 	@Override
 	public void setRegion(TextureRegion region) {
-		sprite.setRegion(((LibgdxTextureRegion) region).textureRegion);
+		sprite.setRegion(((GdxTextureRegion) region).asGdxTextureRegion());
 	}
 
 	@Override
 	public void setRegion(TextureRegion region, int x, int y, int width, int height) {
-		sprite.setRegion(((LibgdxTextureRegion) region).textureRegion, x, y, width, height);
+		sprite.setRegion(((GdxTextureRegion) region).asGdxTextureRegion(), x, y, width, height);
 	}
 
 	@Override
@@ -509,5 +509,10 @@ public class LibgdxSprite implements Sprite {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public com.badlogic.gdx.graphics.g2d.TextureRegion asGdxTextureRegion() {
+		return sprite;
 	}
 }

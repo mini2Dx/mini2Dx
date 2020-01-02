@@ -22,20 +22,20 @@ import org.mini2Dx.core.graphics.PixmapFormat;
 import org.mini2Dx.core.graphics.Texture;
 import org.mini2Dx.core.graphics.TextureRegion;
 
-public class LibgdxTextureRegion implements TextureRegion {
-	public final LibgdxTextureRegionWrapper textureRegion;
+public class LibgdxTextureRegion implements GdxTextureRegion {
+	private final LibgdxTextureRegionWrapper textureRegion;
 
 	public LibgdxTextureRegion(LibgdxTextureRegionWrapper textureRegion) {
 		this.textureRegion = textureRegion;
 		setFlip(false, false);
 	}
 
-	public LibgdxTextureRegion(LibgdxTextureRegion textureRegion) {
-		this.textureRegion = new LibgdxTextureRegionWrapper(textureRegion.textureRegion);
+	public LibgdxTextureRegion(GdxTextureRegion textureRegion) {
+		this.textureRegion = new LibgdxTextureRegionWrapper(textureRegion.asGdxTextureRegion());
 	}
 
-	public LibgdxTextureRegion(LibgdxTextureRegion textureRegion, int x, int y, int width, int height) {
-		this.textureRegion = new LibgdxTextureRegionWrapper(textureRegion.textureRegion, x, y, width, height);
+	public LibgdxTextureRegion(GdxTextureRegion textureRegion, int x, int y, int width, int height) {
+		this.textureRegion = new LibgdxTextureRegionWrapper(textureRegion.asGdxTextureRegion(), x, y, width, height);
 	}
 
 	@Override
@@ -56,14 +56,14 @@ public class LibgdxTextureRegion implements TextureRegion {
 
 	@Override
 	public void setRegion(TextureRegion region) {
-		final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) region;
-		textureRegion.setRegion(gdxTextureRegion.textureRegion);
+		final GdxTextureRegion gdxTextureRegion = (GdxTextureRegion) region;
+		textureRegion.setRegion(gdxTextureRegion.asGdxTextureRegion());
 	}
 
 	@Override
 	public void setRegion(TextureRegion region, int x, int y, int width, int height) {
-		final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) region;
-		textureRegion.setRegion(gdxTextureRegion.textureRegion, x, y, width, height);
+		final GdxTextureRegion gdxTextureRegion = (GdxTextureRegion) region;
+		textureRegion.setRegion(gdxTextureRegion.asGdxTextureRegion(), x, y, width, height);
 	}
 
 	@Override
@@ -224,5 +224,10 @@ public class LibgdxTextureRegion implements TextureRegion {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public com.badlogic.gdx.graphics.g2d.TextureRegion asGdxTextureRegion() {
+		return textureRegion;
 	}
 }

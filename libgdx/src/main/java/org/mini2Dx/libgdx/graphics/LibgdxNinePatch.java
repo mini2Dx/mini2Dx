@@ -16,6 +16,7 @@
 package org.mini2Dx.libgdx.graphics;
 
 import com.badlogic.gdx.graphics.LibgdxNinePatchWrapper;
+import com.badlogic.gdx.graphics.LibgdxTextureRegionWrapper;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.graphics.Color;
@@ -31,8 +32,8 @@ public class LibgdxNinePatch implements NinePatch {
 		ninepatch = new LibgdxNinePatchWrapper(texture, left, right, top, bottom);
 	}
 
-	public LibgdxNinePatch(LibgdxTextureRegion textureRegion, int left, int right, int top, int bottom) {
-		ninepatch = new LibgdxNinePatchWrapper(textureRegion.textureRegion, left, right, top, bottom);
+	public LibgdxNinePatch(GdxTextureRegion textureRegion, int left, int right, int top, int bottom) {
+		ninepatch = new LibgdxNinePatchWrapper(new LibgdxTextureRegionWrapper(textureRegion.asGdxTextureRegion()), left, right, top, bottom);
 	}
 
 	public LibgdxNinePatch(LibgdxNinePatch ninepatch) {

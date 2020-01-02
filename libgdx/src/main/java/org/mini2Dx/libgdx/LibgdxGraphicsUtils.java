@@ -136,7 +136,7 @@ public class LibgdxGraphicsUtils extends GraphicsUtils {
 
 	@Override
 	public TextureRegion newTextureRegion(TextureRegion textureRegion) {
-		final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) textureRegion;
+		final GdxTextureRegion gdxTextureRegion = (GdxTextureRegion) textureRegion;
 		return new LibgdxTextureRegion(gdxTextureRegion);
 	}
 
@@ -147,7 +147,7 @@ public class LibgdxGraphicsUtils extends GraphicsUtils {
 
 	@Override
 	public TextureRegion newTextureRegion(TextureRegion textureRegion, int x, int y, int width, int height) {
-		final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) textureRegion;
+		final GdxTextureRegion gdxTextureRegion = (GdxTextureRegion) textureRegion;
 		return new LibgdxTextureRegion(gdxTextureRegion, x, y, width, height);
 	}
 
@@ -235,7 +235,7 @@ public class LibgdxGraphicsUtils extends GraphicsUtils {
 
 	@Override
 	public NinePatch newNinePatch(TextureRegion region, int left, int right, int top, int bottom) {
-		final LibgdxTextureRegion gdxTextureRegion = (LibgdxTextureRegion) region;
+		final GdxTextureRegion gdxTextureRegion = (GdxTextureRegion) region;
 		return new LibgdxNinePatch(gdxTextureRegion, left, right, top, bottom);
 	}
 

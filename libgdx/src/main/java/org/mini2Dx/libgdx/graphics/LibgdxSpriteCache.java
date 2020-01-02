@@ -68,7 +68,7 @@ public class LibgdxSpriteCache implements SpriteCache {
     @Override
     public int add(TextureRegion region, float x, float y, float scaleX, float scaleY, float originX, float originY, float rotation, boolean flipX, boolean flipY) {
         region.flip(flipX, flipY);
-        gdxCache.add(((LibgdxTextureRegion) region).textureRegion, x, y, originX, originY, region.getRegionWidth() * scaleX, region.getRegionHeight() * scaleY, scaleX, scaleY, rotation);
+        gdxCache.add(((GdxTextureRegion) region).asGdxTextureRegion(), x, y, originX, originY, region.getRegionWidth() * scaleX, region.getRegionHeight() * scaleY, scaleX, scaleY, rotation);
         region.flip(flipX, flipY);
         return indexCounter++;
     }
