@@ -29,6 +29,22 @@ import static org.junit.Assert.assertTrue;
 public class ImageButtonTest extends AbstractUiElementXmlTest<ImageButton> {
 
     @Test
+    public void with_tag_prefix() {
+        String xml = "<?xml version=\"1.0\"?>" +
+                "<ui:container xmlns:ui=\"https://github.com/mini2Dx/mini2Dx\">" +
+                "    <ui:image-button id=\"test\">" +
+                "       <ui:normal-texture>blah</ui:normal-texture>" +
+                "       <ui:hover-texture>blah</ui:hover-texture>" +
+                "       <ui:action-texture>blah</ui:action-texture>" +
+                "       <ui:disabled-texture>blah</ui:disabled-texture>" +
+                "   </ui:image-button>" +
+                "</ui:container>";
+
+
+        loadFile(xml);
+    }
+
+    @Test
     public void with_disabled_texture_flipped_y() {
         ImageButton element = loadFile("" +
                 "<image-button responsive=\"true\">" +

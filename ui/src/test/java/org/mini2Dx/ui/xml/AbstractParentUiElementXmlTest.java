@@ -25,6 +25,18 @@ import static org.junit.Assert.assertTrue;
 public abstract class AbstractParentUiElementXmlTest<T extends ParentUiElement> extends AbstractUiElementXmlTest<T> {
 
     @Test
+    public void supports_all_components_as_child_tags_with_namespace_prefix() {
+        String xml = newBuilder()
+                .withNamespacePrefix("ui")
+                .withAllComponentTagsAsChildren()
+                .build();
+
+        System.out.println(xml);
+
+        assertXmlIsValid(xml);
+    }
+
+    @Test
     public void supports_all_components_as_child_tags() {
         String xml = newBuilder()
                 .withAllComponentTagsAsChildren()

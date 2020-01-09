@@ -22,10 +22,10 @@ import java.util.function.Supplier;
 import static org.junit.Assert.assertNotNull;
 
 public class TestXmlUiBuilder {
-    private static final String NAMESPACE = " xmlns=\"https://github.com/mini2Dx/mini2Dx\"";
     private final String tagName;
     private ObjectMap<String, String> attributes = new ObjectMap<>();
     private Supplier<String> childTagSupplier = () -> "";
+    private String prefix;
 
     public TestXmlUiBuilder(String tagName) {
         this.tagName = tagName;
@@ -44,44 +44,56 @@ public class TestXmlUiBuilder {
 
     public TestXmlUiBuilder withAllComponentTagsAsChildren() {
         return withChildTagSupplier(() -> {
-            return "    <text-button id=\"x\" text=\"hello\"/>" +
-                    "    <label text=\"blah\"/>" +
-                    "    <text-box id=\"x\"/>" +
-                    "    <container/>" +
-                    "    <flex-row/>" +
-                    "    <div/>" +
-                    "    <check-box id=\"x\"/>" +
-                    "    <progress-bar id=\"x\"/>" +
-                    "    <radio-button id=\"x\">" +
-                    "      <option>1</option>" +
-                    "      <option>2</option>" +
-                    "    </radio-button>" +
-                    "    <slider id=\"x\"/>" +
-                    "    <select id=\"x\">" +
-                    "      <option>1</option>" +
-                    "      <option>2</option>" +
-                    "    </select>" +
-                    "    <image texture-path=\"x\"/>" +
-                    "    <scroll-box />" +
-                    "    <animated-image>" +
-                    "      <texture duration=\"1\">foo</texture>" +
-                    "      <texture duration=\"2\">bar</texture>" +
-                    "    </animated-image>" +
-                    "    <image-button id=\"1\">" +
-                    "      <normal-texture>blah</normal-texture>" +
-                    "    </image-button>" +
-                    "    <tab-view>" +
-                    "    </tab-view>" +
-                    "    <button id=\"x\" />";
+            return "    <" + getTagPrefix() + "text-button id=\"x\" text=\"hello\"/>" +
+                    "    <" + getTagPrefix() + "label text=\"blah\"/>" +
+                    "    <" + getTagPrefix() + "text-box id=\"x\"/>" +
+                    "    <" + getTagPrefix() + "container/>" +
+                    "    <" + getTagPrefix() + "flex-row/>" +
+                    "    <" + getTagPrefix() + "div/>" +
+                    "    <" + getTagPrefix() + "check-box id=\"x\"/>" +
+                    "    <" + getTagPrefix() + "progress-bar id=\"x\"/>" +
+                    "    <" + getTagPrefix() + "radio-button id=\"x\">" +
+                    "      <" + getTagPrefix() + "option>1</" + getTagPrefix() + "option>" +
+                    "      <" + getTagPrefix() + "option>2</" + getTagPrefix() + "option>" +
+                    "    </" + getTagPrefix() + "radio-button>" +
+                    "    <" + getTagPrefix() + "slider id=\"x\"/>" +
+                    "    <" + getTagPrefix() + "select id=\"x\">" +
+                    "      <" + getTagPrefix() + "option>1</" + getTagPrefix() + "option>" +
+                    "      <" + getTagPrefix() + "option>2</" + getTagPrefix() + "option>" +
+                    "    </" + getTagPrefix() + "select>" +
+                    "    <" + getTagPrefix() + "image texture-path=\"x\"/>" +
+                    "    <" + getTagPrefix() + "scroll-box />" +
+                    "    <" + getTagPrefix() + "animated-image>" +
+                    "      <" + getTagPrefix() + "texture duration=\"1\">foo</" + getTagPrefix() + "texture>" +
+                    "      <" + getTagPrefix() + "texture duration=\"2\">bar</" + getTagPrefix() + "texture>" +
+                    "    </" + getTagPrefix() + "animated-image>" +
+                    "    <" + getTagPrefix() + "image-button id=\"1\">" +
+                    "      <" + getTagPrefix() + "normal-texture>blah</" + getTagPrefix() + "normal-texture>" +
+                    "    </" + getTagPrefix() + "image-button>" +
+                    "    <" + getTagPrefix() + "tab-view>" +
+                    "    </" + getTagPrefix() + "tab-view>" +
+                    "    <" + getTagPrefix() + "button id=\"x\" />";
 
         });
+    }
+
+    public TestXmlUiBuilder withNamespacePrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
     }
 
     public String build() {
         StringBuilder builder = new StringBuilder();
         builder.append("<")
+                .append(getTagPrefix())
                 .append(tagName)
-                .append(NAMESPACE);
+                .append(" xmlns");
+
+        if (applyPrefix()) {
+            builder.append(":").append(prefix);
+        }
+
+        builder.append("=\"https://github.com/mini2Dx/mini2Dx\"");
 
         for (ObjectMap.Entry<String, String> entry : attributes) {
             builder.append(" ")
@@ -94,7 +106,15 @@ public class TestXmlUiBuilder {
         builder.append(">");
 
         builder.append(childTagSupplier.get());
-        builder.append("</").append(tagName).append(">");
+        builder.append("</").append(getTagPrefix()).append(tagName).append(">");
         return builder.toString();
+    }
+
+    private String getTagPrefix() {
+        return applyPrefix() ? prefix + ":" : "";
+    }
+
+    private boolean applyPrefix() {
+        return prefix != null && prefix.trim().length() > 0;
     }
 }

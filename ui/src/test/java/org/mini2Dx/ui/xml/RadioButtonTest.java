@@ -26,6 +26,20 @@ import static org.junit.Assert.assertTrue;
 public class RadioButtonTest extends AbstractUiElementXmlTest<RadioButton> {
 
     @Test
+    public void with_namespace_prefix() {
+        String xml =
+                "<ui:radio-button id=\"blah\" xmlns:ui=\"https://github.com/mini2Dx/mini2Dx\">" +
+                        "  <ui:option>0</ui:option>" +
+                        "  <ui:option>1</ui:option>" +
+                        "  <ui:option>2</ui:option>" +
+                        "</ui:radio-button>";
+
+        RadioButton element = loadFile(xml);
+
+        assertEquals(3, element.getTotalOptions());
+    }
+
+    @Test
     public void responsive_provided() {
         RadioButton element = loadFile("<radio-button id=\"x\" responsive=\"true\" />");
 

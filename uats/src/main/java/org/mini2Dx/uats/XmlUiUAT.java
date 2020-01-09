@@ -74,7 +74,7 @@ public class XmlUiUAT extends BasicGameScreen implements GameResizeListener {
         this.fileHandleResolver = fileHandleResolver;
         this.uiXmlLoader = new UiXmlLoader(fileHandleResolver);
 
-        this.uiXmlLoader.addTagHandler("custom:player-label", this::newPlayerLabel,
+        this.uiXmlLoader.addTagHandler("player-label", this::newPlayerLabel,
                 new CorePopulator(), new ParentUiElementPopulator(), this::playerLabelPopulator);
     }
 

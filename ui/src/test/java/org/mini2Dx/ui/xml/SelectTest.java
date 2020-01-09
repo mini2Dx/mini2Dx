@@ -26,6 +26,20 @@ import static org.junit.Assert.assertTrue;
 
 public class SelectTest extends AbstractUiElementXmlTest<Select<String>> {
     @Test
+    public void with_namespace_prefix() {
+        String xml = "<?xml version=\"1.0\"?>" +
+                "<ui:select xmlns:ui=\"https://github.com/mini2Dx/mini2Dx\">" +
+                "   <ui:option value=\"0\">text-0</ui:option>" +
+                "   <ui:option value=\"1\">text-1</ui:option>" +
+                "   <ui:option value=\"2\">text-2</ui:option>" +
+                "</ui:select>";
+
+        Select element = loadFile(xml);
+
+        assertEquals(3, element.getTotalOptions());
+    }
+
+    @Test
     public void right_button_text_is_provided() {
         String xml = "<select right-button-text=\"blah\" />";
 

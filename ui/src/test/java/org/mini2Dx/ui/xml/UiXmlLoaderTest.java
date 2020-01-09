@@ -45,13 +45,23 @@ public class UiXmlLoaderTest extends AbstractUiXmlLoaderTest {
     }
 
     @Test
+    public void namespace_can_be_aliased() {
+        String xml =
+                "<ui:container xmlns:ui=\"https://github.com/mini2Dx/mini2Dx\">" +
+                        "</ui:container>";
+
+        Container container = loadFile(xml);
+        assertNotNull(container);
+    }
+
+    @Test
     public void nested_containers() {
         String xml =
                 "<container id=\"1\">" +
-                "  <container id=\"2\">" +
-                "    <container id=\"3\"/>" +
-                "  </container>" +
-                "</container>";
+                        "  <container id=\"2\">" +
+                        "    <container id=\"3\"/>" +
+                        "  </container>" +
+                        "</container>";
 
         Container container = loadFile(xml);
         assertEquals("1", container.getId());

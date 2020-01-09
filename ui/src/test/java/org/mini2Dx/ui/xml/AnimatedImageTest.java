@@ -24,6 +24,18 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class AnimatedImageTest extends AbstractUiElementXmlTest<AnimatedImage> {
+    @Test
+    public void with_namespace_prefix() {
+        String xml = "<?xml version=\"1.0\"?>" +
+                "<ui:animated-image xmlns:ui=\"https://github.com/mini2Dx/mini2Dx\">" +
+                "   <ui:texture duration=\"100\">blah</ui:texture>" +
+                "   <ui:texture duration=\"100\">blah</ui:texture>" +
+                "</ui:animated-image>";
+
+        AnimatedImage element = loadFile(xml);
+
+        assertEquals(2, element.getFrameDurations().length);
+    }
 
     @Test
     public void with_atlas() {
