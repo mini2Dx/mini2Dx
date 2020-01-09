@@ -20,6 +20,8 @@ import org.mini2Dx.ui.element.Image;
 import org.mini2Dx.ui.element.ImageButton;
 import org.mini2Dx.ui.xml.UiElementPopulator;
 
+import static org.mini2Dx.ui.xml.XmlTagUtil.getTagNameWithoutPrefix;
+
 public class ImageButtonPopulator implements UiElementPopulator<ImageButton> {
     @Override
     public boolean populate(XmlReader.Element xmlTag, ImageButton uiElement) {
@@ -42,7 +44,7 @@ public class ImageButtonPopulator implements UiElementPopulator<ImageButton> {
     private Image determineImage(ImageButton uiElement, XmlReader.Element child) {
         Image image;
 
-        switch (child.getName()) {
+        switch (getTagNameWithoutPrefix(child)) {
             case "normal-texture":
                 image = uiElement.getNormalImage();
                 break;

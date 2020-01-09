@@ -24,6 +24,22 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class TabViewTest extends AbstractUiElementXmlTest<TabView> {
+    @Test
+    public void with_namespace_prefix() {
+        String xml =
+                "<ui:tab-view xmlns:ui=\"https://github.com/mini2Dx/mini2Dx\" >" +
+                        " <ui:tab title=\"1\">" +
+                        "   <ui:container/>" +
+                        " </ui:tab>" +
+                        " <ui:tab title=\"2\">" +
+                        "   <ui:container/>" +
+                        " </ui:tab>" +
+                        "</ui:tab-view>";
+
+        TabView element = loadFile(xml);
+
+        assertEquals(2, element.getTotalTabs());
+    }
 
     @Test
     public void with_layout() {
