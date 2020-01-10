@@ -21,6 +21,8 @@ import org.mini2Dx.gdx.xml.XmlReader;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import static org.mini2Dx.ui.xml.XmlTagUtil.getTagNameWithoutPrefix;
+
 public class AbstractInvalidValueException extends MdxException {
     public AbstractInvalidValueException(XmlReader.Element tag, String invalidValue, Object[] availableValues) {
         super(buildMessage(tag, invalidValue, availableValues));
@@ -34,8 +36,8 @@ public class AbstractInvalidValueException extends MdxException {
                 .collect(Collectors.joining("\n"));
 
         String prefix = tag.hasAttribute("id") ?
-                tag.getName() + " with id (" + tag.getAttribute("id") + ")"
-                : tag.getName();
+                getTagNameWithoutPrefix(tag) + " with id (" + tag.getAttribute("id") + ")"
+                : getTagNameWithoutPrefix(tag);
 
         StringBuilder builder = new StringBuilder()
                 .append(prefix)

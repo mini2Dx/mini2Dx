@@ -117,9 +117,10 @@ public class UiXmlLoader {
     }
 
     private UiElement processXmlTag(XmlReader.Element root) {
-        UiElementHandler handler = tagNameToHandler.get(root.getName());
+        String tagName = XmlTagUtil.getTagNameWithoutPrefix(root);
+        UiElementHandler handler = tagNameToHandler.get(tagName);
         if (handler == null) {
-            throw new UnknownUiTagException(root.getName());
+            throw new UnknownUiTagException(tagName);
         }
 
         boolean childTagsAlreadyProcessed = false;
