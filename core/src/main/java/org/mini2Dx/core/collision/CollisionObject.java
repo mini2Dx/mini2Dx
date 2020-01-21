@@ -66,6 +66,18 @@ public interface CollisionObject extends Positionable, Interpolatable {
 	public int getRenderY();
 
 	/**
+	 * Returns the mode used for calculating render coordinates
+	 * @return Defaults to {@link RenderCoordMode#GLOBAL_DEFAULT}
+	 */
+	public RenderCoordMode getRenderCoordMode();
+
+	/**
+	 * Sets the mode used for calculating render coordinates
+	 * @param mode The {@link RenderCoordMode} value
+	 */
+	public void setRenderCoordMode(RenderCoordMode mode);
+
+	/**
 	 * Disposes of this object, returning any pooled references to their corresponding pools
 	 */
 	public void dispose();

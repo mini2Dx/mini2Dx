@@ -39,6 +39,7 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 	private final Point previousPosition;
 	private final Point renderPosition;
 
+	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 	private int renderX, renderY;
 	private boolean interpolateRequired = false;
 
@@ -73,8 +74,8 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 	}
 
 	private void storeRenderCoordinates() {
-		renderX = MathUtils.round(renderPosition.getX());
-		renderY = MathUtils.round(renderPosition.getY());
+		renderX = renderCoordMode.apply(renderPosition.getX());
+		renderY = renderCoordMode.apply(renderPosition.getY());
 	}
 
 	@Override
@@ -123,6 +124,19 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 	@Override
 	public int getRenderY() {
 		return renderY;
+	}
+
+	@Override
+	public RenderCoordMode getRenderCoordMode() {
+		return renderCoordMode;
+	}
+
+	@Override
+	public void setRenderCoordMode(RenderCoordMode mode) {
+		if(mode == null) {
+			return;
+		}
+		this.renderCoordMode = mode;
 	}
 
 	@Override

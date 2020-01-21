@@ -38,6 +38,7 @@ public class CollisionCircle extends Circle implements CollisionArea,
 	private final Circle previousCircle;
 	private final Circle renderCircle;
 
+	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 	private int renderX, renderY, renderRadius;
 	private boolean interpolateRequired = false;
 
@@ -76,9 +77,9 @@ public class CollisionCircle extends Circle implements CollisionArea,
 	}
 
 	private void storeRenderCoordinates() {
-		renderX = MathUtils.round(renderCircle.getX());
-		renderY = MathUtils.round(renderCircle.getY());
-		renderRadius = MathUtils.round(renderCircle.getRadius());
+		renderX = renderCoordMode.apply(renderCircle.getX());
+		renderY = renderCoordMode.apply(renderCircle.getY());
+		renderRadius = renderCoordMode.apply(renderCircle.getRadius());
 	}
 
 	@Override
@@ -150,6 +151,19 @@ public class CollisionCircle extends Circle implements CollisionArea,
 	@Override
 	public int getRenderY() {
 		return renderY;
+	}
+
+	@Override
+	public RenderCoordMode getRenderCoordMode() {
+		return renderCoordMode;
+	}
+
+	@Override
+	public void setRenderCoordMode(RenderCoordMode mode) {
+		if(mode == null) {
+			return;
+		}
+		this.renderCoordMode = mode;
 	}
 
 	@Override

@@ -41,6 +41,7 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 	private final Polygon previousPolygon;
 	private final Polygon renderPolygon;
 
+	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 	private int renderX, renderY, renderWidth, renderHeight;
 	private boolean interpolateRequired = false;
 
@@ -84,10 +85,10 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 	}
 
 	private void storeRenderCoordinates() {
-		renderX = MathUtils.round(renderPolygon.getX());
-		renderY = MathUtils.round(renderPolygon.getY());
-		renderWidth = MathUtils.round(renderPolygon.getWidth());
-		renderHeight = MathUtils.round(renderPolygon.getHeight());
+		renderX = renderCoordMode.apply(renderPolygon.getX());
+		renderY = renderCoordMode.apply(renderPolygon.getY());
+		renderWidth = renderCoordMode.apply(renderPolygon.getWidth());
+		renderHeight = renderCoordMode.apply(renderPolygon.getHeight());
 	}
 
 	@Override
@@ -240,6 +241,19 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 	@Override
 	protected void clearSizeChangeListeners() {
 		clearSizeListeners(sizeChangeListenerLock, sizeChangeListeners);
+	}
+
+	@Override
+	public RenderCoordMode getRenderCoordMode() {
+		return renderCoordMode;
+	}
+
+	@Override
+	public void setRenderCoordMode(RenderCoordMode mode) {
+		if(mode == null) {
+			return;
+		}
+		this.renderCoordMode = mode;
 	}
 
 	@Override

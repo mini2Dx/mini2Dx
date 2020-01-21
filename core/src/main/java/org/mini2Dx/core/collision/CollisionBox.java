@@ -38,6 +38,7 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 	private final Rectangle previousRectangle;
 	private final Rectangle renderRectangle;
 
+	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 	private int renderX, renderY, renderWidth, renderHeight;
 	private boolean interpolateRequired = false;
 
@@ -74,10 +75,10 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 	}
 
 	private void storeRenderCoordinates() {
-		renderX = MathUtils.round(renderRectangle.getX());
-		renderY = MathUtils.round(renderRectangle.getY());
-		renderWidth = MathUtils.round(renderRectangle.getWidth());
-		renderHeight = MathUtils.round(renderRectangle.getHeight());
+		renderX = renderCoordMode.apply(renderRectangle.getX());
+		renderY = renderCoordMode.apply(renderRectangle.getY());
+		renderWidth = renderCoordMode.apply(renderRectangle.getWidth());
+		renderHeight = renderCoordMode.apply(renderRectangle.getHeight());
 	}
 
 	@Override
@@ -177,6 +178,19 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 	@Override
 	public int getRenderY() {
 		return renderY;
+	}
+
+	@Override
+	public RenderCoordMode getRenderCoordMode() {
+		return renderCoordMode;
+	}
+
+	@Override
+	public void setRenderCoordMode(RenderCoordMode mode) {
+		if(mode == null) {
+			return;
+		}
+		this.renderCoordMode = mode;
 	}
 
 	@Override
