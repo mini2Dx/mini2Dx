@@ -63,6 +63,7 @@ public abstract class UiElement implements Hoverable {
 	private Array<UiEffectListener> effectListeners;
 	private Array<HoverListener> hoverListeners;
 	private boolean debugEnabled = false;
+	private boolean isHoverEnabled = true;
 
 	/**
 	 * Constructor. Generates a unique ID for this element.
@@ -846,5 +847,21 @@ public abstract class UiElement implements Hoverable {
 	 */
 	public boolean isFlexLayout() {
 		return false;
+	}
+	
+
+	/*
+	 * 
+	 */
+	@Override
+	public boolean isHoverEnabled() {
+		return this.isHoverEnabled ;
+	}
+	/*
+	 * 
+	 */
+	@Override
+	public void setHoverEnabled(boolean hoverEnabled) {
+		this.isHoverEnabled = hoverEnabled;
 	}
 }
