@@ -17,6 +17,7 @@ package org.mini2Dx.core.collision.util;
 
 import org.mini2Dx.core.collision.CollisionArea;
 import org.mini2Dx.core.collision.CollisionIdSequence;
+import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.geom.Polygon;
 import org.mini2Dx.gdx.math.MathUtils;
@@ -28,6 +29,8 @@ import org.mini2Dx.gdx.math.Vector2;
  */
 public class StaticCollisionPolygon extends Polygon implements CollisionArea {
 	private final int id;
+
+	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 
 	public StaticCollisionPolygon(float[] vertices) {
 		this(CollisionIdSequence.nextId(), vertices);
@@ -72,21 +75,34 @@ public class StaticCollisionPolygon extends Polygon implements CollisionArea {
 
 	@Override
 	public int getRenderX() {
-		return MathUtils.round(getX());
+		return renderCoordMode.apply(getX());
 	}
 
 	@Override
 	public int getRenderY() {
-		return MathUtils.round(getY());
+		return renderCoordMode.apply(getY());
 	}
 
 	@Override
 	public int getRenderWidth() {
-		return MathUtils.round(getWidth());
+		return renderCoordMode.apply(getWidth());
 	}
 
 	@Override
 	public int getRenderHeight() {
-		return MathUtils.round(getHeight());
+		return renderCoordMode.apply(getHeight());
+	}
+
+	@Override
+	public RenderCoordMode getRenderCoordMode() {
+		return renderCoordMode;
+	}
+
+	@Override
+	public void setRenderCoordMode(RenderCoordMode mode) {
+		if(mode == null) {
+			return;
+		}
+		this.renderCoordMode = mode;
 	}
 }

@@ -17,6 +17,7 @@ package org.mini2Dx.core.collision.util;
 
 import org.mini2Dx.core.collision.CollisionIdSequence;
 import org.mini2Dx.core.collision.CollisionObject;
+import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.gdx.math.MathUtils;
 
@@ -26,6 +27,8 @@ import org.mini2Dx.gdx.math.MathUtils;
  */
 public class StaticCollisionPoint extends Point implements CollisionObject {
 	private final int id;
+
+	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 
 	public StaticCollisionPoint() {
 		this(CollisionIdSequence.nextId());
@@ -73,11 +76,24 @@ public class StaticCollisionPoint extends Point implements CollisionObject {
 
 	@Override
 	public int getRenderX() {
-		return MathUtils.round(x);
+		return renderCoordMode.apply(x);
 	}
 
 	@Override
 	public int getRenderY() {
-		return MathUtils.round(y);
+		return renderCoordMode.apply(y);
+	}
+
+	@Override
+	public RenderCoordMode getRenderCoordMode() {
+		return renderCoordMode;
+	}
+
+	@Override
+	public void setRenderCoordMode(RenderCoordMode mode) {
+		if(mode == null) {
+			return;
+		}
+		this.renderCoordMode = mode;
 	}
 }
