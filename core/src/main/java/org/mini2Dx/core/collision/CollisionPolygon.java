@@ -158,6 +158,16 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 	}
 
 	@Override
+	public float getRawRenderX() {
+		return renderPolygon.getX();
+	}
+
+	@Override
+	public float getRawRenderY() {
+		return renderPolygon.getY();
+	}
+
+	@Override
 	public int getRenderWidth() {
 		return renderWidth;
 	}
@@ -165,6 +175,16 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 	@Override
 	public int getRenderHeight() {
 		return renderHeight;
+	}
+
+	@Override
+	public float getRawRenderWidth() {
+		return renderPolygon.getWidth();
+	}
+
+	@Override
+	public float getRawRenderHeight() {
+		return renderPolygon.getHeight();
 	}
 
 	public int getRenderX(int index) {

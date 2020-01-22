@@ -144,6 +144,16 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 	}
 
 	@Override
+	public float getRawRenderWidth() {
+		return renderRectangle.getWidth();
+	}
+
+	@Override
+	public float getRawRenderHeight() {
+		return renderRectangle.getHeight();
+	}
+
+	@Override
 	public void preUpdate() {
 		previousRectangle.set(this);
 	}
@@ -178,6 +188,16 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 	@Override
 	public int getRenderY() {
 		return renderY;
+	}
+
+	@Override
+	public float getRawRenderX() {
+		return renderRectangle.getX();
+	}
+
+	@Override
+	public float getRawRenderY() {
+		return renderRectangle.getY();
 	}
 
 	@Override

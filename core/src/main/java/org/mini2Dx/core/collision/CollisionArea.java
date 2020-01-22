@@ -34,16 +34,28 @@ public interface CollisionArea extends CollisionObject, Sizeable {
 	public void forceTo(float x, float y, float width, float height);
 
 	/**
-	 * Returns the render width of this object
+	 * Returns the render width of this object using the set {@link RenderCoordMode}
 	 *
 	 * @return
 	 */
 	public int getRenderWidth();
 
 	/**
-	 * Returns the render height of this object
+	 * Returns the render height of this object using the set {@link RenderCoordMode}
 	 *
 	 * @return
 	 */
 	public int getRenderHeight();
+
+	/**
+	 * Returns the raw float value used for the render width coordinate
+	 * @return
+	 */
+	public float getRawRenderWidth();
+
+	/**
+	 * Returns the raw float value used for the render height coordinate
+	 * @return
+	 */
+	public float getRawRenderHeight();
 }

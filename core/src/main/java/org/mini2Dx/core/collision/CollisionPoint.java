@@ -127,6 +127,16 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 	}
 
 	@Override
+	public float getRawRenderX() {
+		return renderPosition.getX();
+	}
+
+	@Override
+	public float getRawRenderY() {
+		return renderPosition.getY();
+	}
+
+	@Override
 	public RenderCoordMode getRenderCoordMode() {
 		return renderCoordMode;
 	}

@@ -52,18 +52,30 @@ public interface CollisionObject extends Positionable, Interpolatable {
 	public void forceTo(float x, float y);
 
 	/**
-	 * Returns the render x coordinate of this object
+	 * Returns the render x coordinate of this object using the set {@link RenderCoordMode}
 	 *
 	 * @return
 	 */
 	public int getRenderX();
 
 	/**
-	 * Returns the render y coordinate of this object
+	 * Returns the render y coordinate of this object using the set {@link RenderCoordMode}
 	 *
 	 * @return
 	 */
 	public int getRenderY();
+
+	/**
+	 * Returns the raw float value used for the render x coordinate
+	 * @return
+	 */
+	public float getRawRenderX();
+
+	/**
+	 * Returns the raw float value used for the render y coordinate
+	 * @return
+	 */
+	public float getRawRenderY();
 
 	/**
 	 * Returns the mode used for calculating render coordinates

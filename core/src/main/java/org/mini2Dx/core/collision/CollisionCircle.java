@@ -154,6 +154,16 @@ public class CollisionCircle extends Circle implements CollisionArea,
 	}
 
 	@Override
+	public float getRawRenderX() {
+		return renderCircle.getX();
+	}
+
+	@Override
+	public float getRawRenderY() {
+		return renderCircle.getY();
+	}
+
+	@Override
 	public RenderCoordMode getRenderCoordMode() {
 		return renderCoordMode;
 	}
@@ -176,8 +186,22 @@ public class CollisionCircle extends Circle implements CollisionArea,
 		return renderRadius * 2;
 	}
 
+	@Override
+	public float getRawRenderWidth() {
+		return renderCircle.getRadius() * 2f;
+	}
+
+	@Override
+	public float getRawRenderHeight() {
+		return renderCircle.getRadius() * 2f;
+	}
+
 	public int getRenderRadius() {
 		return renderRadius;
+	}
+
+	public float getRawRenderRadius() {
+		return renderCircle.getRadius();
 	}
 
 	@Override

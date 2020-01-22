@@ -92,6 +92,16 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 	}
 
 	@Override
+	public float getRawRenderX() {
+		return getX();
+	}
+
+	@Override
+	public float getRawRenderY() {
+		return getY();
+	}
+
+	@Override
 	public int getRenderWidth() {
 		return renderCoordMode.apply(getWidth());
 	}
@@ -99,6 +109,16 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 	@Override
 	public int getRenderHeight() {
 		return renderCoordMode.apply(getHeight());
+	}
+
+	@Override
+	public float getRawRenderWidth() {
+		return getWidth();
+	}
+
+	@Override
+	public float getRawRenderHeight() {
+		return getHeight();
 	}
 
 	@Override

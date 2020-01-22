@@ -85,6 +85,16 @@ public class StaticCollisionPoint extends Point implements CollisionObject {
 	}
 
 	@Override
+	public float getRawRenderX() {
+		return x;
+	}
+
+	@Override
+	public float getRawRenderY() {
+		return y;
+	}
+
+	@Override
 	public RenderCoordMode getRenderCoordMode() {
 		return renderCoordMode;
 	}
