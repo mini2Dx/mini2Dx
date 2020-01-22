@@ -207,6 +207,8 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 	public void setState(NodeState state) {
 		switch (state) {
 		case HOVER:
+			if (!element.isHoverEnabled())
+				break;
 			if (leftButtonState != NodeState.ACTION) {
 				leftButtonState = NodeState.HOVER;
 			}

@@ -489,7 +489,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public void setState(NodeState state) {
-		if (state == NodeState.HOVER && !includeInRender) {
+		if (state == NodeState.HOVER && (!includeInRender || !element.isHoverEnabled()) ) {
 			return;
 		}
 		NodeState previousState = this.state;

@@ -754,4 +754,17 @@ public class TabView extends ParentUiElement implements Navigatable {
 			tabView.setCurrentTabIndex(index);
 		}
 	}
+
+
+	/*
+	 * 
+	 */
+	@Override
+	public void setHoverEnabled(boolean hoverEnabled) {
+		super.setHoverEnabled(hoverEnabled);
+		this.previousTabButton.setHoverEnabled(hoverEnabled);
+		this.nextTabButton.setHoverEnabled(hoverEnabled);
+		for (TabButton tb : this.tabButtons)
+			tb.setEnabled(hoverEnabled);
+	}
 }

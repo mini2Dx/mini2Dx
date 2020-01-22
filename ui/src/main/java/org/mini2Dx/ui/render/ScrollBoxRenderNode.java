@@ -290,7 +290,7 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 		case NORMAL:
 		default:
 			if (innerAreaContains) {
-				if (scrollThumb.contains(screenX, screenY)) {
+				if (scrollThumb.contains(screenX, screenY) && element.isHoverEnabled()) {
 					scrollThumbState = NodeState.HOVER;
 				} else {
 					scrollThumbState = NodeState.NORMAL;
@@ -314,7 +314,7 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 		case HOVER:
 		case NORMAL:
 		default:
-			if (topScrollButton.contains(screenX, screenY)) {
+			if (topScrollButton.contains(screenX, screenY) && element.isHoverEnabled()) {
 				topScrollButtonState = NodeState.HOVER;
 			} else {
 				topScrollButtonState = NodeState.NORMAL;
@@ -333,7 +333,7 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 		case HOVER:
 		case NORMAL:
 		default:
-			if (bottomScrollButton.contains(screenX, screenY)) {
+			if (bottomScrollButton.contains(screenX, screenY) && element.isHoverEnabled()) {
 				bottomScrollButtonState = NodeState.HOVER;
 			} else {
 				bottomScrollButtonState = NodeState.NORMAL;

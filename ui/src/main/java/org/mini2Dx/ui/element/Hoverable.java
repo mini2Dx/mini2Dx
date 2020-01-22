@@ -58,4 +58,12 @@ public interface Hoverable {
 	 * Triggers the end hover event
 	 */
 	public void invokeEndHover();
+	/*
+	 * 
+	 */
+	public boolean isHoverEnabled();
+	/*
+	 * 
+	 */
+	public void setHoverEnabled(boolean hoverEnabled);
 }
