@@ -478,11 +478,13 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		receivedKeyDowns.add(keycode);
 		if (activeTextInput != null && activeTextInput.isReceivingInput()) {
+			receivedKeyDowns.add(keycode);
 			return true;
 		}
 		if (actionKeys.contains(keycode) && activeAction != null) {
+			receivedKeyDowns.add(keycode);
+
 			KeyboardEventTriggerParams params = EventTriggerParamsPool.allocateKeyboardParams();
 			params.setKey(keycode);
 			activeAction.setState(NodeState.ACTION);
@@ -495,6 +497,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			return true;
 		}
 		if (handleModalKeyDown(keycode)) {
+			receivedKeyDowns.add(keycode);
 			return true;
 		}
 		receivedKeyDowns.remove(keycode);
