@@ -70,12 +70,14 @@ public class Geometry {
      * @return A {@link Circle} instance
      */
     public Circle circle() {
-        if(circles.size == 0) {
-            return new Circle(this);
+        synchronized (circles) {
+            if (circles.size == 0) {
+                return new Circle(this);
+            }
+            final Circle result = circles.removeFirst();
+            result.setDisposed(false);
+            return result;
         }
-        final Circle result = circles.removeFirst();
-        result.setDisposed(false);
-        return result;
     }
 
     /**
@@ -83,7 +85,9 @@ public class Geometry {
      * @param circle The {@link Circle} instance
      */
     public void release(Circle circle) {
-        circles.addLast(circle);
+        synchronized (circles) {
+            circles.addLast(circle);
+        }
     }
 
     /**
@@ -91,12 +95,14 @@ public class Geometry {
      * @return A {@link EquilateralTriangle} instance
      */
     public EquilateralTriangle equilateralTriangle() {
-        if(equilateralTriangles.size == 0) {
-            return new EquilateralTriangle(this);
+        synchronized (equilateralTriangles) {
+            if (equilateralTriangles.size == 0) {
+                return new EquilateralTriangle(this);
+            }
+            final EquilateralTriangle result = equilateralTriangles.removeFirst();
+            result.setDisposed(false);
+            return result;
         }
-        final EquilateralTriangle result = equilateralTriangles.removeFirst();
-        result.setDisposed(false);
-        return result;
     }
 
     /**
@@ -104,7 +110,9 @@ public class Geometry {
      * @param equilateralTriangle The {@link EquilateralTriangle} instance
      */
     public void release(EquilateralTriangle equilateralTriangle) {
-        equilateralTriangles.addLast(equilateralTriangle);
+        synchronized (equilateralTriangles) {
+            equilateralTriangles.addLast(equilateralTriangle);
+        }
     }
 
     /**
@@ -112,12 +120,14 @@ public class Geometry {
      * @return A {@link Line} instance
      */
     public Line line() {
-        if(lines.size == 0) {
-            return new Line(this);
+        synchronized (lines) {
+            if (lines.size == 0) {
+                return new Line(this);
+            }
+            final Line result = lines.removeFirst();
+            result.setDisposed(false);
+            return result;
         }
-        final Line result = lines.removeFirst();
-        result.setDisposed(false);
-        return result;
     }
 
     /**
@@ -125,7 +135,9 @@ public class Geometry {
      * @param line The {@link Line} instance
      */
     public void release(Line line) {
-        lines.addLast(line);
+        synchronized (lines) {
+            lines.addLast(line);
+        }
     }
 
     /**
@@ -133,12 +145,14 @@ public class Geometry {
      * @return A {@link LineSegment} instance
      */
     public LineSegment lineSegment() {
-        if(lineSegments.size == 0) {
-            return new LineSegment(this);
+        synchronized (lineSegments) {
+            if (lineSegments.size == 0) {
+                return new LineSegment(this);
+            }
+            final LineSegment result = lineSegments.removeFirst();
+            result.setDisposed(false);
+            return result;
         }
-        final LineSegment result = lineSegments.removeFirst();
-        result.setDisposed(false);
-        return result;
     }
 
     /**
@@ -146,7 +160,9 @@ public class Geometry {
      * @param lineSegment The {@link LineSegment} instance
      */
     public void release(LineSegment lineSegment) {
-        lineSegments.addLast(lineSegment);
+        synchronized (lineSegments) {
+            lineSegments.addLast(lineSegment);
+        }
     }
 
     /**
@@ -154,12 +170,14 @@ public class Geometry {
      * @return A {@link Point} instance
      */
     public Point point() {
-        if(points.size == 0) {
-            return new Point(this);
+        synchronized (points) {
+            if (points.size == 0) {
+                return new Point(this);
+            }
+            final Point result = points.removeFirst();
+            result.setDisposed(false);
+            return result;
         }
-        final Point result = points.removeFirst();
-        result.setDisposed(false);
-        return result;
     }
 
     /**
@@ -167,7 +185,9 @@ public class Geometry {
      * @param point The {@link Point} instance
      */
     public void release(Point point) {
-        points.addLast(point);
+        synchronized (points) {
+            points.addLast(point);
+        }
     }
 
     /**
@@ -175,12 +195,14 @@ public class Geometry {
      * @return A {@link Polygon} instance
      */
     public Polygon polygon() {
-        if(polygons.size == 0) {
-            return polygon(new float[]{0f, 0f, 1f, 0f, 1f, 1f, 0f, 1f});
+        synchronized (polygons) {
+            if (polygons.size == 0) {
+                return polygon(new float[]{0f, 0f, 1f, 0f, 1f, 1f, 0f, 1f});
+            }
+            final Polygon result = polygons.removeFirst();
+            result.setDisposed(false);
+            return result;
         }
-        final Polygon result = polygons.removeFirst();
-        result.setDisposed(false);
-        return result;
     }
 
     /**
@@ -189,13 +211,15 @@ public class Geometry {
      * @return A {@link Polygon} instance
      */
     public Polygon polygon(float [] vertices) {
-        if(polygons.size == 0) {
-            return new Polygon(this, vertices);
+        synchronized (polygons) {
+            if (polygons.size == 0) {
+                return new Polygon(this, vertices);
+            }
+            final Polygon result = polygons.removeFirst();
+            result.setVertices(vertices);
+            result.setDisposed(false);
+            return result;
         }
-        final Polygon result = polygons.removeFirst();
-        result.setVertices(vertices);
-        result.setDisposed(false);
-        return result;
     }
 
     /**
@@ -203,7 +227,9 @@ public class Geometry {
      * @param polygon The {@link Polygon} instance
      */
     public void release(Polygon polygon) {
-        polygons.addLast(polygon);
+        synchronized (polygons) {
+            polygons.addLast(polygon);
+        }
     }
 
     /**
@@ -211,12 +237,14 @@ public class Geometry {
      * @return A {@link Rectangle} instance
      */
     public Rectangle rectangle() {
-        if(rectangles.size == 0) {
-            return new Rectangle(this);
+        synchronized (rectangles) {
+            if (rectangles.size == 0) {
+                return new Rectangle(this);
+            }
+            final Rectangle result = rectangles.removeFirst();
+            result.setDisposed(false);
+            return result;
         }
-        final Rectangle result = rectangles.removeFirst();
-        result.setDisposed(false);
-        return result;
     }
 
     /**
@@ -224,7 +252,9 @@ public class Geometry {
      * @param rectangle The {@link Rectangle} instance
      */
     public void release(Rectangle rectangle) {
-        rectangles.addLast(rectangle);
+        synchronized (rectangles) {
+            rectangles.addLast(rectangle);
+        }
     }
 
     /**
@@ -232,12 +262,14 @@ public class Geometry {
      * @return A {@link RegularHexagon} instance
      */
     public RegularHexagon regularHexagon() {
-        if(regularHexagons.size == 0) {
-            return new RegularHexagon(this);
+        synchronized (regularHexagons) {
+            if (regularHexagons.size == 0) {
+                return new RegularHexagon(this);
+            }
+            final RegularHexagon result = regularHexagons.removeFirst();
+            result.setDisposed(false);
+            return result;
         }
-        final RegularHexagon result = regularHexagons.removeFirst();
-        result.setDisposed(false);
-        return result;
     }
 
     /**
@@ -245,7 +277,9 @@ public class Geometry {
      * @param regularHexagon The {@link RegularHexagon} instance
      */
     public void release(RegularHexagon regularHexagon) {
-        regularHexagons.addLast(regularHexagon);
+        synchronized (regularHexagons) {
+            regularHexagons.addLast(regularHexagon);
+        }
     }
 
     /**
@@ -253,12 +287,14 @@ public class Geometry {
      * @return A {@link RegularPentagon} instance
      */
     public RegularPentagon regularPentagon() {
-        if(regularPentagons.size == 0) {
-            return new RegularPentagon(this);
+        synchronized (regularPentagons) {
+            if (regularPentagons.size == 0) {
+                return new RegularPentagon(this);
+            }
+            final RegularPentagon result = regularPentagons.removeFirst();
+            result.setDisposed(false);
+            return result;
         }
-        final RegularPentagon result = regularPentagons.removeFirst();
-        result.setDisposed(false);
-        return result;
     }
 
     /**
@@ -266,7 +302,9 @@ public class Geometry {
      * @param regularPentagon The {@link RegularPentagon} instance
      */
     public void release(RegularPentagon regularPentagon) {
-        regularPentagons.addLast(regularPentagon);
+        synchronized (regularPentagons) {
+            regularPentagons.addLast(regularPentagon);
+        }
     }
 
     /**
@@ -274,13 +312,15 @@ public class Geometry {
      * @return A {@link Triangle} instance
      */
     public Triangle triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
-        if(triangles.size == 0) {
-            return new Triangle(this, x1, y1, x2, y2, x3, y3);
+        synchronized (triangles) {
+            if (triangles.size == 0) {
+                return new Triangle(this, x1, y1, x2, y2, x3, y3);
+            }
+            final Triangle result = triangles.removeFirst();
+            result.setPosition(x1, y1, x2, y2, x3, y3);
+            result.setDisposed(false);
+            return result;
         }
-        final Triangle result = triangles.removeFirst();
-        result.setPosition(x1, y1, x2, y2, x3, y3);
-        result.setDisposed(false);
-        return result;
     }
 
     /**
@@ -288,7 +328,9 @@ public class Geometry {
      * @param triangle The {@link Triangle} instance
      */
     public void release(Triangle triangle) {
-        triangles.addLast(triangle);
+        synchronized (triangles) {
+            triangles.addLast(triangle);
+        }
     }
 
     /**
