@@ -26,9 +26,24 @@ import org.mini2Dx.gdx.math.Vector2;
 public class Circle extends Shape {
 	private static final long serialVersionUID = 7900371446650127192L;
 
-	private static final Vector2 TMP_VECTOR1 = new Vector2();
-	private static final Vector2 TMP_VECTOR2 = new Vector2();
-	private static final Vector2 CENTER_TMP = new Vector2();
+	private static final ThreadLocal<Vector2> TMP_VECTOR1 = new ThreadLocal<Vector2>() {
+		@Override
+		protected Vector2 initialValue() {
+			return new Vector2();
+		}
+	};
+	private static final ThreadLocal<Vector2> TMP_VECTOR2 = new ThreadLocal<Vector2>() {
+		@Override
+		protected Vector2 initialValue() {
+			return new Vector2();
+		}
+	};
+	private static final ThreadLocal<Vector2> CENTER_TMP = new ThreadLocal<Vector2>() {
+		@Override
+		protected Vector2 initialValue() {
+			return new Vector2();
+		}
+	};
 
 	private final Geometry geometry;
 	private final Rectangle boundingBox = new Rectangle();
@@ -191,16 +206,20 @@ public class Circle extends Shape {
 	
 	@Override
 	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
-		CENTER_TMP.set(circle.x, circle.y);
-		return org.mini2Dx.gdx.math.Intersector.intersectSegmentCircle(pointA, pointB, CENTER_TMP, circle.radius * circle.radius);
+		final Vector2 centerTmp = CENTER_TMP.get();
+		centerTmp.set(circle.x, circle.y);
+		return org.mini2Dx.gdx.math.Intersector.intersectSegmentCircle(pointA, pointB, centerTmp, circle.radius * circle.radius);
 	}
 
 	@Override
 	public boolean intersectsLineSegment(float x1, float y1, float x2, float y2) {
-		TMP_VECTOR1.set(x1, y1);
-		TMP_VECTOR2.set(x2, y2);
-		CENTER_TMP.set(circle.x, circle.y);
-		return org.mini2Dx.gdx.math.Intersector.intersectSegmentCircle(TMP_VECTOR1, TMP_VECTOR2, CENTER_TMP, circle.radius * circle.radius);
+		final Vector2 tmpVector1 = TMP_VECTOR1.get();
+		final Vector2 tmpVector2 = TMP_VECTOR2.get();
+		final Vector2 centerTmp = CENTER_TMP.get();
+		tmpVector1.set(x1, y1);
+		tmpVector2.set(x2, y2);
+		centerTmp.set(circle.x, circle.y);
+		return org.mini2Dx.gdx.math.Intersector.intersectSegmentCircle(tmpVector1, tmpVector2, centerTmp, circle.radius * circle.radius);
 	}
 
 	@Override

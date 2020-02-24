@@ -28,8 +28,18 @@ import org.mini2Dx.gdx.utils.Disposable;
 public class Point extends Vector2 implements Positionable, Disposable {
     private static final long serialVersionUID = 3773673953486445831L;
 
-    private static final Vector2 TMP_SOURCE_VECTOR = new Vector2();
-    private static final Vector2 TMP_TARGET_VECTOR = new Vector2();
+    private static final ThreadLocal<Vector2> TMP_SOURCE_VECTOR = new ThreadLocal<Vector2>() {
+        @Override
+        protected Vector2 initialValue() {
+            return new Vector2();
+        }
+    };
+    private static final ThreadLocal<Vector2> TMP_TARGET_VECTOR = new ThreadLocal<Vector2>() {
+        @Override
+        protected Vector2 initialValue() {
+            return new Vector2();
+        }
+    };
 
     private final Geometry geometry;
     private boolean disposed = false;
@@ -108,15 +118,18 @@ public class Point extends Vector2 implements Positionable, Disposable {
 
     @Override
     public void moveTowards(float x, float y, float speed) {
-        TMP_SOURCE_VECTOR.set(getX(), getY());
-        TMP_TARGET_VECTOR.set(x, y);
-        Vector2 direction = TMP_TARGET_VECTOR.sub(TMP_SOURCE_VECTOR).nor();
+        final Vector2 tmpSourceVector = TMP_SOURCE_VECTOR.get();
+        final Vector2 tmpTargetVector = TMP_TARGET_VECTOR.get();
+
+        tmpSourceVector.set(getX(), getY());
+        tmpTargetVector.set(x, y);
+        Vector2 direction = tmpTargetVector.sub(tmpSourceVector).nor();
 
         float xComponent = speed * MathUtils.cosDeg(direction.angle());
         float yComponent = speed * MathUtils.sinDeg(direction.angle());
-        TMP_SOURCE_VECTOR.add(xComponent, yComponent);
+        tmpSourceVector.add(xComponent, yComponent);
 
-        set(TMP_SOURCE_VECTOR.x, TMP_SOURCE_VECTOR.y);
+        set(tmpSourceVector.x, tmpSourceVector.y);
     }
 
     @Override

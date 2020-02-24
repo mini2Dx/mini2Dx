@@ -25,10 +25,20 @@ import org.mini2Dx.gdx.math.Vector2;
 public class Rectangle extends Shape {
 	private static final long serialVersionUID = 4016090439885217620L;
 
-	private static final Vector2 [] TMP_VERTICES = new Vector2[] {
-			new Vector2(), new Vector2(), new Vector2(), new Vector2()
+	private static final ThreadLocal<Vector2[]> TMP_VERTICES = new ThreadLocal<Vector2[]>() {
+		@Override
+		protected Vector2[] initialValue() {
+			return new Vector2[] {
+					new Vector2(), new Vector2(), new Vector2(), new Vector2()
+			};
+		}
 	};
-	private static final Rectangle TMP_RECTANGLE = new Rectangle();
+	private static final ThreadLocal<Rectangle> TMP_RECTANGLE = new ThreadLocal<Rectangle>() {
+		@Override
+		protected Rectangle initialValue() {
+			return new Rectangle();
+		}
+	};
 
 	final Polygon polygon;
 	private float width, height;
@@ -122,11 +132,12 @@ public class Rectangle extends Shape {
 	}
 	
 	private Vector2 [] determineVertices(float x, float y, float width, float height) {
-		TMP_VERTICES[0].set(x, y);
-		TMP_VERTICES[1].set(x + width, y);
-		TMP_VERTICES[2].set(x + width, y + height);
-		TMP_VERTICES[3].set(x, y + height);
-		return TMP_VERTICES;
+		final Vector2 [] result = TMP_VERTICES.get();
+		result[0].set(x, y);
+		result[1].set(x + width, y);
+		result[2].set(x + width, y + height);
+		result[3].set(x, y + height);
+		return result;
 	}
 	
 	@Override
@@ -179,9 +190,10 @@ public class Rectangle extends Shape {
 	}
 
 	public boolean intersects(float x, float y, float width, float height) {
-		TMP_RECTANGLE.set(x, y, width, height);
-		TMP_RECTANGLE.setRotation(0f);
-		return intersects(TMP_RECTANGLE);
+		final Rectangle tmpRectangle = TMP_RECTANGLE.get();
+		tmpRectangle.set(x, y, width, height);
+		tmpRectangle.setRotation(0f);
+		return intersects(tmpRectangle);
 	}
 	
 	/**
