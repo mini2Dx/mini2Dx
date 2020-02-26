@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.core.collision;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.JvmLocks;
@@ -116,6 +116,19 @@ public class RegionQuadTreeTest {
 		rootQuad.addAll(rects);
 		Assert.assertEquals(rects.size, rootQuad.getTotalElements());
 		rootQuad.removeAll(rects);
+		Assert.assertEquals(0, rootQuad.getTotalElements());
+	}
+
+	@Test
+	public void testClear() {
+		Random random = new Random();
+		Array<CollisionBox> rects = new Array<CollisionBox>();
+		for(int i = 0; i < 100; i++) {
+			rects.add(new CollisionBox(random.nextInt(96), random.nextInt(96), random.nextInt(32), random.nextInt(32)));
+		}
+		rootQuad.addAll(rects);
+		Assert.assertEquals(rects.size, rootQuad.getTotalElements());
+		rootQuad.clear();
 		Assert.assertEquals(0, rootQuad.getTotalElements());
 	}
 	

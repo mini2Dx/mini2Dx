@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.core.collision;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.JvmLocks;
@@ -105,6 +105,19 @@ public class PointQuadTreeTest {
 		rootQuad.addAll(points);
 		Assert.assertEquals(points.size, rootQuad.getTotalElements());
 		rootQuad.removeAll(points);
+		Assert.assertEquals(0, rootQuad.getTotalElements());
+	}
+
+	@Test
+	public void testClear() {
+		Random random = new Random();
+		Array<CollisionPoint> points = new Array<CollisionPoint>();
+		for(int i = 0; i < 100; i++) {
+			points.add(new CollisionPoint(random.nextInt(128), random.nextInt(128)));
+		}
+		rootQuad.addAll(points);
+		Assert.assertEquals(points.size, rootQuad.getTotalElements());
+		rootQuad.clear();
 		Assert.assertEquals(0, rootQuad.getTotalElements());
 	}
 	

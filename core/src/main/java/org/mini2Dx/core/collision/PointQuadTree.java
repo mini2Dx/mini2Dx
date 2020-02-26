@@ -395,9 +395,12 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			topRight = null;
 			bottomLeft = null;
 			bottomRight = null;
+
+			elements = new Array<T>(true, elementLimitPerQuad);
 		} else {
 			elements.clear();
 		}
+		clearTotalElementsCache();
 	}
 
 	protected boolean removeElementFromChild(T element) {

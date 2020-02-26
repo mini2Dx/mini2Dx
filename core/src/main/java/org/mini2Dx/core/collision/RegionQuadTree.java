@@ -277,6 +277,7 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			bottomRight = null;
 		}
 		elements.clear();
+		clearTotalElementsCache();
 	}
 
 	@Override
