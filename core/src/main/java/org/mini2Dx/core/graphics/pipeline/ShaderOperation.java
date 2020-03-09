@@ -17,7 +17,6 @@ package org.mini2Dx.core.graphics.pipeline;
 
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Shader;
 

@@ -16,7 +16,6 @@
 package org.mini2Dx.core.input.nswitch;
 
 import org.mini2Dx.core.input.GamePad;
-import org.mini2Dx.core.input.GamePadListener;
 import org.mini2Dx.core.input.GamePadMapping;
 import org.mini2Dx.core.input.button.SwitchDualJoyConButton;
 import org.mini2Dx.core.input.deadzone.DeadZone;

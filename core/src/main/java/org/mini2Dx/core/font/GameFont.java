@@ -16,9 +16,7 @@
 package org.mini2Dx.core.font;
 
 import org.mini2Dx.core.Graphics;
-import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.AssetManager;
-import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.core.util.Align;
 

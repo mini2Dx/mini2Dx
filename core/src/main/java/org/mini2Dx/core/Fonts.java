@@ -19,8 +19,6 @@ import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.font.GameFont;
 import org.mini2Dx.core.font.MonospaceGameFont;
-import org.mini2Dx.core.graphics.Texture;
-import org.mini2Dx.core.graphics.TextureRegion;
 
 public abstract class Fonts {
 	/**

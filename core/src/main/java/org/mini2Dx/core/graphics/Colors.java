@@ -17,7 +17,6 @@ package org.mini2Dx.core.graphics;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.MdxException;
-import org.mini2Dx.core.graphics.Color;
 
 /**
  * Static utility methods for {@link Color}s

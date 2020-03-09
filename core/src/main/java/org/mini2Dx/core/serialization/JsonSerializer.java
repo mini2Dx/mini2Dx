@@ -41,7 +41,6 @@ import org.mini2Dx.gdx.utils.ObjectMap;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
 

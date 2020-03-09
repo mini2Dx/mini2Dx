@@ -18,7 +18,6 @@ package org.mini2Dx.core.reflect.jvm;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.reflect.Annotation;
-import org.mini2Dx.core.reflect.Constructor;
 import org.mini2Dx.core.reflect.Field;
 
 import java.lang.reflect.GenericArrayType;

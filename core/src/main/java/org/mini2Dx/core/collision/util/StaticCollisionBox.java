@@ -19,7 +19,6 @@ import org.mini2Dx.core.collision.CollisionArea;
 import org.mini2Dx.core.collision.CollisionIdSequence;
 import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.geom.Rectangle;
-import org.mini2Dx.gdx.math.MathUtils;
 
 /**
  * An implementation of a collision box that will not move between updates/frames, thus, does not register as an interpolating collision. Due to this,

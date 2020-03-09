@@ -16,7 +16,6 @@
 package org.mini2Dx.core;
 
 import org.mini2Dx.core.files.FileHandle;
-import org.mini2Dx.core.files.FileHandleResolver;
 import org.mini2Dx.core.graphics.*;
 
 public abstract class GraphicsUtils {

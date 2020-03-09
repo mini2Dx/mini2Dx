@@ -18,7 +18,6 @@ package org.mini2Dx.core.serialization.collection;
 import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.reflect.Field;
 import org.mini2Dx.core.serialization.AotSerializationData;
-import org.mini2Dx.core.serialization.aot.AotSerializedClassData;
 import org.mini2Dx.core.serialization.aot.AotSerializedFieldData;
 
 import java.util.ArrayList;

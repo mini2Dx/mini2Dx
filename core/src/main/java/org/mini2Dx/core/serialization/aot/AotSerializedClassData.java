@@ -15,10 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.core.serialization.aot;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.exception.ReflectionException;
-import org.mini2Dx.core.exception.SerializationException;
 import org.mini2Dx.core.reflect.Annotation;
 import org.mini2Dx.core.reflect.Constructor;
 import org.mini2Dx.core.reflect.Field;

@@ -18,9 +18,9 @@ package org.mini2Dx.core.screen.transition;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Color;
+import org.mini2Dx.core.graphics.Colors;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.Transition;
-import org.mini2Dx.core.graphics.Colors;
 
 /**
  * Implements a fade out transition

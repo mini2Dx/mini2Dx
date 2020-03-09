@@ -20,7 +20,6 @@ import org.mini2Dx.core.collision.CollisionIdSequence;
 import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.geom.Polygon;
-import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
 
 /**
