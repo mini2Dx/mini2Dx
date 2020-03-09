@@ -57,6 +57,13 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 	}
 
 	@Override
+	public CollisionArea setTo(float x, float y, float width, float height) {
+		setXY(x, y);
+		setRadius(width * 0.5f);
+		return this;
+	}
+
+	@Override
 	public void forceTo(float x, float y, float width, float height) {
 		setXY(x, y);
 		setRadius(width * 0.5f);

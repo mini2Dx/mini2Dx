@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.ui.effect;
 
-import org.mini2Dx.core.collision.CollisionBox;
+import org.mini2Dx.core.collision.CollisionArea;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.ui.element.UiElement;
@@ -53,8 +53,8 @@ public interface UiEffect {
 	 *            The frame delta
 	 * @return True if the {@link UiElement} should be rendered
 	 */
-	public boolean update(UiContainerRenderTree uiContainer, CollisionBox currentArea, Rectangle targetArea,
-			float delta);
+	public boolean update(UiContainerRenderTree uiContainer, CollisionArea currentArea, Rectangle targetArea,
+	                      float delta);
 
 	/**
 	 * Called before rendering the {@link UiElement}

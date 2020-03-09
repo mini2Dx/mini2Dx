@@ -95,6 +95,12 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 	}
 
 	@Override
+	public CollisionArea setTo(float x, float y, float width, float height) {
+		set(x, y, width, height);
+		return this;
+	}
+
+	@Override
 	public void forceTo(float x, float y, float width, float height) {
 		super.set(x, y, width, height);
 		previousRectangle.set(x, y, width, height);

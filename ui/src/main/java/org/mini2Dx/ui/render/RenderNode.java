@@ -17,7 +17,9 @@ package org.mini2Dx.ui.render;
 
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.collision.CollisionArea;
 import org.mini2Dx.core.collision.CollisionBox;
+import org.mini2Dx.core.collision.util.StaticCollisionBox;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.gdx.math.MathUtils;
@@ -36,7 +38,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	private static final String LOGGING_TAG = RenderNode.class.getSimpleName();
 
 	protected final Array<UiEffect> effects = new Array<UiEffect>(true, 1, UiEffect.class);
-	protected final CollisionBox outerArea = new CollisionBox();
+	protected final CollisionArea outerArea;
 	protected final Rectangle innerArea = new Rectangle();
 	protected final Rectangle targetOuterArea = new Rectangle();
 	protected final ParentRenderNode<?, ?> parent;
@@ -58,6 +60,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		this.parent = parent;
 		this.element = element;
 		this.zIndex = element.getZIndex();
+		this.outerArea = element.isContainer() ? new CollisionBox() : new StaticCollisionBox();
 
 		setDirty();
 	}

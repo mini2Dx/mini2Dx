@@ -23,6 +23,19 @@ import org.mini2Dx.core.geom.Sizeable;
 public interface CollisionArea extends CollisionObject, Sizeable {
 
 	/**
+	 * Sets the current x, y, width and height
+	 *
+	 * @param x
+	 *            The x coordinate to set
+	 * @param y
+	 *            The y coordinate to set
+	 * @param width The width to set
+	 * @param height The height to set
+	 * @return This object
+	 */
+	public CollisionArea setTo(float x, float y, float width, float height);
+
+	/**
 	 * Sets the current x, y, width and height and force updates the
 	 * rendering state to match
 	 *
@@ -30,6 +43,10 @@ public interface CollisionArea extends CollisionObject, Sizeable {
 	 *            The x coordinate to set
 	 * @param y
 	 *            The y coordinate to set
+	 * @param width
+	 *            The width to set
+	 * @param height
+	 *            The height to set
 	 */
 	public void forceTo(float x, float y, float width, float height);
 

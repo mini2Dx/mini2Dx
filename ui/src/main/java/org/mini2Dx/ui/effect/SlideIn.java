@@ -15,15 +15,13 @@
  ******************************************************************************/
 package org.mini2Dx.ui.effect;
 
-import org.mini2Dx.core.collision.CollisionBox;
+import org.mini2Dx.core.collision.CollisionArea;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.ui.element.UiElement;
 import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.render.UiContainerRenderTree;
-
-import org.mini2Dx.gdx.math.MathUtils;
 
 /**
  * A {@link UiEffect} that moves a {@link UiElement} from off-screen to its
@@ -90,8 +88,8 @@ public class SlideIn implements UiEffect {
 	}
 
 	@Override
-	public boolean update(UiContainerRenderTree uiContainer, CollisionBox currentArea, Rectangle targetArea,
-			float delta) {
+	public boolean update(UiContainerRenderTree uiContainer, CollisionArea currentArea, Rectangle targetArea,
+	                      float delta) {
 		if (finished) {
 			return true;
 		}
@@ -117,10 +115,8 @@ public class SlideIn implements UiEffect {
 				speed = Math.abs(currentArea.getY() - targetY) / remainingDuration;
 				speedCalculated = true;
 			}
-			currentArea.setWidth(targetArea.getWidth());
-			currentArea.setHeight(targetArea.getHeight());
-			currentArea.setX(targetX);
-			currentArea.setY(Math.max(targetY, currentArea.getY() - (speed * delta)));
+			currentArea.setTo(targetX, Math.max(targetY, currentArea.getY() - (speed * delta)),
+					targetArea.getWidth(), targetArea.getHeight());
 
 			if (MathUtils.isEqual(currentArea.getY(), targetY, 0.1f)) {
 				finished = true;
@@ -137,10 +133,8 @@ public class SlideIn implements UiEffect {
 				speed = Math.abs(targetY - currentArea.getY()) / remainingDuration;
 				speedCalculated = true;
 			}
-			currentArea.setWidth(targetArea.getWidth());
-			currentArea.setHeight(targetArea.getHeight());
-			currentArea.setX(targetX);
-			currentArea.setY(Math.min(targetY, currentArea.getY() + (speed * delta)));
+			currentArea.setTo(targetX, Math.min(targetY, currentArea.getY() + (speed * delta)),
+					targetArea.getWidth(), targetArea.getHeight());
 
 			if (MathUtils.isEqual(currentArea.getY(), targetY, 0.1f)) {
 				finished = true;
@@ -157,10 +151,8 @@ public class SlideIn implements UiEffect {
 				speed = Math.abs(currentArea.getX() - targetX) / remainingDuration;
 				speedCalculated = true;
 			}
-			currentArea.setWidth(targetArea.getWidth());
-			currentArea.setHeight(targetArea.getHeight());
-			currentArea.setX(Math.max(targetX, currentArea.getX() - (speed * delta)));
-			currentArea.setY(targetY);
+			currentArea.setTo(Math.max(targetX, currentArea.getX() - (speed * delta)), targetY,
+					targetArea.getWidth(), targetArea.getHeight());
 
 			if (MathUtils.isEqual(currentArea.getX(), targetX, 0.1f)) {
 				finished = true;
@@ -177,10 +169,8 @@ public class SlideIn implements UiEffect {
 				speed = Math.abs(targetX - currentArea.getX()) / remainingDuration;
 				speedCalculated = true;
 			}
-			currentArea.setWidth(targetArea.getWidth());
-			currentArea.setHeight(targetArea.getHeight());
-			currentArea.setX(Math.min(targetX, currentArea.getX() + (speed * delta)));
-			currentArea.setY(targetY);
+			currentArea.setTo(Math.min(targetX, currentArea.getX() + (speed * delta)), targetY,
+					targetArea.getWidth(), targetArea.getHeight());
 
 			if (MathUtils.isEqual(currentArea.getX(), targetX, 0.1f)) {
 				finished = true;

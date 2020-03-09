@@ -50,6 +50,11 @@ public class StaticCollisionPolygon extends Polygon implements CollisionArea {
 	}
 
 	@Override
+	public CollisionArea setTo(float x, float y, float width, float height) {
+		throw new MdxException("#setTo(x, y, width, height) not supported on CollisionPolygon");
+	}
+
+	@Override
 	public void forceTo(float x, float y, float width, float height) {
 		throw new MdxException("#forceTo(x, y, width, height) not supported on CollisionPolygon");
 	}

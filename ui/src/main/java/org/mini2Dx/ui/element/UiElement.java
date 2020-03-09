@@ -864,4 +864,12 @@ public abstract class UiElement implements Hoverable {
 	public void setHoverEnabled(boolean hoverEnabled) {
 		this.isHoverEnabled = hoverEnabled;
 	}
+
+	/**
+	 * Returns true if the element is a container (i.e. child elements should snap relative to its position)
+	 * @return False if the element is a standard UI element
+	 */
+	public boolean isContainer() {
+		return false;
+	}
 }

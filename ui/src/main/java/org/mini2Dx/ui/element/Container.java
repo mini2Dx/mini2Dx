@@ -172,4 +172,9 @@ public class Container extends Div implements Navigatable {
 		}
 		return UiContainer.getTheme().getContainerStyleRule(styleId, ScreenSize.XS);
 	}
+
+	@Override
+	public boolean isContainer() {
+		return true;
+	}
 }

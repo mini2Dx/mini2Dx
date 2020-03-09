@@ -99,7 +99,7 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 			}
 			g.peekClip(cachedClip);
 			if(effects.size == 0) {
-				g.setClip(outerArea);
+				g.setClip(outerArea.getX(), outerArea.getY(), outerArea.getWidth(), outerArea.getHeight());
 			} else {
 				g.setClip(outerArea.getRenderX(), outerArea.getRenderY(), outerArea.getRenderWidth(), outerArea.getRenderHeight());
 			}

@@ -79,6 +79,12 @@ public class StaticCollisionBox extends Rectangle implements CollisionArea {
 	}
 
 	@Override
+	public CollisionArea setTo(float x, float y, float width, float height) {
+		set(x, y, width, height);
+		return this;
+	}
+
+	@Override
 	public int getRenderX() {
 		return renderCoordMode.apply(getX());
 	}
