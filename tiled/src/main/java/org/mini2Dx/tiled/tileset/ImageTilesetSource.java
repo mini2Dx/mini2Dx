@@ -19,6 +19,7 @@ import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.AssetDescriptor;
 import org.mini2Dx.core.assets.AssetManager;
+import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.*;
 import org.mini2Dx.gdx.utils.Array;
@@ -137,8 +138,12 @@ public class ImageTilesetSource extends TilesetSource {
 		}
 		final TextureAtlasRegion atlasRegion = textureAtlas.findRegion(tilesetImagePath);
 		if(atlasRegion == null && tilesetImagePath.lastIndexOf('.') > -1) {
-			loadTileImages(Mdx.graphics.newTextureRegion(textureAtlas.findRegion(
-					tilesetImagePath.substring(0, tilesetImagePath.lastIndexOf('.')))));
+			final TextureAtlasRegion textureAtlasRegion = textureAtlas.findRegion(
+					tilesetImagePath.substring(0, tilesetImagePath.lastIndexOf('.')));
+			if(textureAtlasRegion == null) {
+				throw new MdxException("Could not resolve " + tilesetImagePath + " tileset");
+			}
+			loadTileImages(Mdx.graphics.newTextureRegion(textureAtlasRegion));
 		} else {
 			loadTileImages(Mdx.graphics.newTextureRegion(atlasRegion));
 		}
