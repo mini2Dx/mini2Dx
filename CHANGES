@@ -3,8 +3,10 @@
 - De-coupled LibGDX to allow for other runtime implementations
 - Interpolation is now automatically handled by framework
 - Added MonoGame runtime for consoles
+- Added LibGDX LWJGL3 runtime for desktop
 - Added task executor API to use platform-specific thread implementations
 - Added (optional) object pooling for geometry classes
+- Added more collection classes such as LruObjectMap, ByteMap, etc.
 - Added new GamePad API with improved controller/feature support (third-party controllers, rumble, player index, etc.)
 - Simplified geometry class hierarchy
 - Optimised shape rendering under LibGDX

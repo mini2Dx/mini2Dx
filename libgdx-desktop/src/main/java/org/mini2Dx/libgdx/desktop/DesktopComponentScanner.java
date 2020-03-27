@@ -21,7 +21,6 @@ import org.mini2Dx.core.di.annotation.Singleton;
 import org.mini2Dx.gdx.utils.Array;
 import org.reflections.Reflections;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;

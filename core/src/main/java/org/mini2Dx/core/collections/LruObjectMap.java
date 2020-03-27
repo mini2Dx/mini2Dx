@@ -76,7 +76,7 @@ public class LruObjectMap<K, V> extends ObjectMap<K, V> {
 	}
 
 	@Override
-	public void putAll(ObjectMap<K, V> map) {
+	public void putAll(ObjectMap<? extends K, ? extends V> map) {
 		while(super.size >= maxCapacity) {
 			purge();
 		}

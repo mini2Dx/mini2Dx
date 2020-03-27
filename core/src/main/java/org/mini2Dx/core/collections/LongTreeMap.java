@@ -57,7 +57,7 @@ public class LongTreeMap<V> extends LongMap<V> {
     }
 
     @Override
-    public void putAll(LongMap<V> map) {
+    public void putAll(LongMap<? extends V> map) {
         super.putAll(map);
 
         LongMap.Keys keys = map.keys();

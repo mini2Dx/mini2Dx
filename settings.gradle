@@ -51,7 +51,7 @@ boolean hasAndroidSdk() {
 }
 
 
-include "core", "libgdx", "libgdx-desktop", "tiled", "ui", "artemis-odb", "all", "uats", "uats-libgdx-desktop"
+include "core", "libgdx", "libgdx-desktop", "libgdx-desktop-lwjgl2", "libgdx-desktop-lwjgl3", "tiled", "ui", "artemis-odb", "all", "uats", "uats-libgdx-desktop-lwjgl2", "uats-libgdx-desktop-lwjgl3"
 
 if (hasAndroidSdk()) {
 	include "libgdx-android", "uats-libgdx-android"

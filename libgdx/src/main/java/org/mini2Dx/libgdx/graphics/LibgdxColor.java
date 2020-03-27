@@ -21,7 +21,7 @@ import org.mini2Dx.gdx.math.MathUtils;
 import java.util.Objects;
 
 public class LibgdxColor implements Color {
-	public com.badlogic.gdx.graphics.Color color;
+	public final com.badlogic.gdx.graphics.Color color;
 
 	public LibgdxColor(int rgba8888) {
 		this(new com.badlogic.gdx.graphics.Color(rgba8888));
@@ -36,7 +36,7 @@ public class LibgdxColor implements Color {
 	}
 
 	public LibgdxColor(byte r, byte g, byte b, byte a) {
-		this.color = new com.badlogic.gdx.graphics.Color(r / 255f, g / 255f, b / 255f, a / 255f);
+		this.color = new com.badlogic.gdx.graphics.Color((r + 128) / 255f, (g + 128) / 255f, (b + 128) / 255f, (a + 128) / 255f);
 	}
 
 	public LibgdxColor(com.badlogic.gdx.graphics.Color color) {
@@ -61,7 +61,7 @@ public class LibgdxColor implements Color {
 
 	@Override
 	public Color set(byte r, byte g, byte b, byte a) {
-		return set(r / 255f, g / 255f, b / 255f, a / 255f);
+		return set((r + 128) / 255f, (g + 128) / 255f, (b + 128) / 255f, (a + 128) / 255f);
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class LibgdxColor implements Color {
 
 	@Override
 	public Color add(byte r, byte g, byte b, byte a) {
-		return add(r / 255f, g / 255f, b / 255f, a / 255f);
+		return add((r + 128) / 255f, (g + 128) / 255f, (b + 128) / 255f, (a + 128) / 255f);
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class LibgdxColor implements Color {
 
 	@Override
 	public Color multiply(byte r, byte g, byte b, byte a) {
-		return multiply(r / 255f, g / 255f, b / 255f, a / 255f);
+		return multiply((r + 128) / 255f, (g + 128) / 255f, (b + 128) / 255f, (a + 128) / 255f);
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class LibgdxColor implements Color {
 
 	@Override
 	public Color subtract(byte r, byte g, byte b, byte a) {
-		return subtract(r / 255f, g / 255f, b / 255f, a / 255f);
+		return subtract((r + 128) / 255f, (g + 128) / 255f, (b + 128) / 255f, (a + 128) / 255f);
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class LibgdxColor implements Color {
 
 	@Override
 	public Color lerp(byte r, byte g, byte b, byte a, float t) {
-		return lerp(r / 255f, g / 255f, b / 255f, a / 255f, t);
+		return lerp((r + 128) / 255f, (g + 128) / 255f, (b + 128) / 255f, (a + 128) / 255f, t);
 	}
 
 	@Override
@@ -156,22 +156,22 @@ public class LibgdxColor implements Color {
 
 	@Override
 	public byte getRAsByte() {
-		return (byte) MathUtils.round(color.r * 255f);
+		return (byte) (MathUtils.round(color.r * 255f) - 128);
 	}
 
 	@Override
 	public byte getGAsByte() {
-		return (byte) MathUtils.round(color.g * 255f);
+		return (byte) (MathUtils.round(color.g * 255f) - 128);
 	}
 
 	@Override
 	public byte getBAsByte() {
-		return (byte) MathUtils.round(color.b * 255f);
+		return (byte) (MathUtils.round(color.b * 255f) - 128);
 	}
 
 	@Override
 	public byte getAAsByte() {
-		return (byte) MathUtils.round(color.a * 255f);
+		return (byte) (MathUtils.round(color.a * 255f) - 128);
 	}
 
 	@Override
@@ -196,22 +196,22 @@ public class LibgdxColor implements Color {
 
 	@Override
 	public void setR(byte r) {
-		color.r = r / 255f;
+		color.r = (r + 128) / 255f;
 	}
 
 	@Override
 	public void setG(byte g) {
-		color.g = g / 255f;
+		color.g = (g + 128) / 255f;
 	}
 
 	@Override
 	public void setB(byte b) {
-		color.b = b / 255f;
+		color.b = (b + 128) / 255f;
 	}
 
 	@Override
 	public void setA(byte a) {
-		color.a = a / 255f;
+		color.a = (a + 128) / 255f;
 	}
 
 	@Override
@@ -256,22 +256,22 @@ public class LibgdxColor implements Color {
 	}
 
 	@Override
-	public float rb() {
+	public byte rb() {
 		return getRAsByte();
 	}
 
 	@Override
-	public float gb() {
+	public byte gb() {
 		return getGAsByte();
 	}
 
 	@Override
-	public float bb() {
+	public byte bb() {
 		return getBAsByte();
 	}
 
 	@Override
-	public float ab() {
+	public byte ab() {
 		return getAAsByte();
 	}
 

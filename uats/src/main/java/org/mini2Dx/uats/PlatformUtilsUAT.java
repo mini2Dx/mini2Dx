@@ -19,6 +19,7 @@ import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.PerformanceTracker;
 import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.core.graphics.Colors;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
@@ -71,6 +72,8 @@ public class PlatformUtilsUAT extends BasicGameScreen {
 
     @Override
     public void render(GameContainer gc, Graphics g) {
+        g.setColor(Colors.BLUE());
+        
         int renderX, renderY;
         renderX = renderY = 16;
         g.drawString("PlatformUtils.isGameThread() test: " + gameThreadTestStatus, renderX, renderY);

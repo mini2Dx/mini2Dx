@@ -56,7 +56,7 @@ public class LibgdxGraphics implements Graphics {
 	private final PolygonSpriteBatch polygonSpriteBatch;
 	private final EarClippingTriangulator triangulator = new EarClippingTriangulator();
 
-	private LibgdxColor color, backgroundColor;
+	private LibgdxColor color, defaultColor, backgroundColor;
 	private LibgdxColor tint, defaultTint;
 	private OrthographicCamera camera;
 	private GameFont font;
@@ -87,12 +87,13 @@ public class LibgdxGraphics implements Graphics {
 		this.windowWidth = Gdx.graphics.getWidth();
 		this.windowHeight = Gdx.graphics.getHeight();
 
-		defaultTint = new LibgdxColor(spriteBatch.getColor());
+		defaultTint = new LibgdxReadOnlyColor(spriteBatch.getColor().cpy());
 		font = Mdx.fonts.defaultFont();
 		tint = defaultTint;
 
 		lineHeight = 1;
 		color = new LibgdxColor(1f, 1f, 1f, 1f);
+		defaultColor = new LibgdxReadOnlyColor(1f, 1f, 1f, 1f);
 		backgroundColor = new LibgdxColor(0f, 0f, 0f, 1f);
 		colorTextureCache = new ShapeTextureCache();
 
@@ -114,6 +115,7 @@ public class LibgdxGraphics implements Graphics {
 		this.windowHeight = gameHeight;
 
 		tint = defaultTint;
+		color = defaultColor;
 		spriteBatch.setColor(tint.rf(), tint.gf(), tint.bf(), tint.af());
 
 		Gdx.gl.glClearColor(backgroundColor.rf(), backgroundColor.gf(), backgroundColor.bf(), 1f);
@@ -589,7 +591,7 @@ public class LibgdxGraphics implements Graphics {
 	@Override
 	public void setTint(Color tint) {
 		this.tint = (LibgdxColor) tint;
-		spriteBatch.setColor(this.tint.color);
+		spriteBatch.setColor(tint.rf(), tint.gf(), tint.bf(), tint.af());
 	}
 
 	@Override

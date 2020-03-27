@@ -96,7 +96,7 @@ public class MonospaceFontUAT extends BasicGameScreen implements MonospaceGameFo
 		final GameFont defaultFont = g.getFont();
 
 		g.setFont(font);
-		font.setColor(Colors.RED());
+		g.setColor(Colors.RED());
 
 		float renderY = 4f;
 

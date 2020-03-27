@@ -16,6 +16,7 @@
 package org.mini2Dx.libgdx;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.LibgdxSpriteBatchWrapper;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -73,7 +74,7 @@ public class LibgdxGraphicsTest {
 				one(gdxGraphics).getHeight();
 				will(returnValue(600));
 				one(spriteBatch).getColor();
-				will(returnValue(null));
+				will(returnValue(new Color()));
 			}
 		});
 		
