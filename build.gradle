@@ -49,7 +49,7 @@ ext {
 	artemisVersion="2.1.0"
 	beanutilsVersion="1.8.3"
 	gdxVersion="1.9.10"
-	gdxAdvancedControllersVersion="0.3.0"
+	gdxAdvancedControllersVersion="1.0.0"
 	langVersion="3.1"
 	multiDexVersion="1.0.1"
 	nativesLoaderVersion="1.0.0"

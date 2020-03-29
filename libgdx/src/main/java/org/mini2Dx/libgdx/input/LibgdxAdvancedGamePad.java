@@ -19,6 +19,8 @@ import com.badlogic.gdx.controllers.AdvancedController;
 import org.mini2Dx.gdx.math.MathUtils;
 
 public class LibgdxAdvancedGamePad extends LibgdxGamePad {
+	private static final int VIBRATE_DURATION = 1000 * 60 * 60;
+
 	public final AdvancedController advancedController;
 
 	protected float vibrateStrength = 0f;
@@ -69,12 +71,12 @@ public class LibgdxAdvancedGamePad extends LibgdxGamePad {
 	@Override
 	public void startVibration(float strength) {
 		vibrateStrength = MathUtils.clamp(strength, 0f, 1f);
-		advancedController.startVibration(vibrateStrength);
+		advancedController.startVibration(VIBRATE_DURATION, vibrateStrength);
 	}
 
 	@Override
 	public void stopVibration() {
 		vibrateStrength = 0f;
-		advancedController.stopVibration();
+		advancedController.cancelVibration();
 	}
 }
