@@ -130,7 +130,7 @@ public class LibgdxSprite implements Sprite, GdxTextureRegion {
 	@Override
 	public void set(Sprite sprite) {
 		this.sprite.set(((LibgdxSprite) sprite).sprite);
-		this.color.color = ((LibgdxSprite) sprite).sprite.getColor();
+		this.color.color.set(((LibgdxSprite) sprite).sprite.getColor());
 		setBoundingRectangle();
 	}
 

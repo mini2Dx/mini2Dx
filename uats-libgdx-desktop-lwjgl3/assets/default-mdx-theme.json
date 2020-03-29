@@ -1,0 +1,387 @@
+{
+  "id": "default-mdx-theme",
+  "atlas": "default-mdx-theme.atlas",
+  "buttons": {
+    "default": {
+      "rules": {
+        "XS": {
+          "background": "button_default_normal ninepatch:12,12,12,12",
+          "hoverBackground": "button_default_hover ninepatch:12,12,12,12",
+          "actionBackground": "button_default_action ninepatch:12,12,12,12",
+          "disabledBackground": "button_default_disabled ninepatch:12,12,12,12",
+          "paddingTop": 12,
+          "paddingBottom": 12,
+          "paddingLeft": 12,
+          "paddingRight": 12
+        }
+      }
+    },
+    "noop": {
+      "rules": {
+        "XS": {
+        }
+      }
+    },
+    "success": {
+      "rules": {
+        "XS": {
+          "background": "button_success_normal ninepatch:12,12,12,12",
+          "hoverBackground": "button_success_hover ninepatch:12,12,12,12",
+          "actionBackground": "button_success_action ninepatch:12,12,12,12",
+          "disabledBackground": "button_default_disabled ninepatch:12,12,12,12",
+          "paddingTop": 12,
+          "paddingBottom": 12,
+          "paddingLeft": 12,
+          "paddingRight": 12
+        }
+      }
+    },
+    "danger": {
+      "rules": {
+        "XS": {
+          "background": "button_danger_normal ninepatch:12,12,12,12",
+          "hoverBackground": "button_danger_hover ninepatch:12,12,12,12",
+          "actionBackground": "button_danger_action ninepatch:12,12,12,12",
+          "disabledBackground": "button_default_disabled ninepatch:12,12,12,12",
+          "paddingTop": 12,
+          "paddingBottom": 12,
+          "paddingLeft": 12,
+          "paddingRight": 12
+        }
+      }
+    },
+    "list-item-button": {
+      "rules": {
+        "XS": {
+          "actionBackground": "button_list_item_disabled ninepatch:2,2,2,2",
+          "disabledBackground": "button_list_item_disabled ninepatch:2,2,2,2",
+          "paddingTop": 2,
+          "paddingBottom": 2,
+          "paddingLeft": 2,
+          "paddingRight": 2
+        }
+      }
+    },
+    "select-left": {
+      "rules": {
+        "XS": {
+          "background": "select_left_normal ninepatch:14,8,12,16",
+          "hoverBackground": "select_left_hover ninepatch:14,8,12,16",
+          "actionBackground": "select_left_action ninepatch:14,8,12,16",
+          "disabledBackground": "select_left_disabled ninepatch:14,8,12,16",
+          "paddingTop": 12,
+          "paddingBottom": 16,
+          "paddingLeft": 14,
+          "paddingRight": 8
+        }
+      }
+    },
+    "select-right": {
+      "rules": {
+        "XS": {
+          "background": "select_right_normal ninepatch:8,14,12,16",
+          "hoverBackground": "select_right_hover",
+          "actionBackground": "select_right_action",
+          "disabledBackground": "select_right_disabled",
+          "paddingTop": 12,
+          "paddingBottom": 16,
+          "paddingLeft": 8,
+          "paddingRight": 14
+        }
+      }
+    },
+    "tab-button": {
+      "rules": {
+        "XS": {
+          "background": "button_tab_normal ninepatch:12,12,12,12",
+          "hoverBackground": "button_tab_hover ninepatch:12,12,12,12",
+          "actionBackground": "button_tab_active ninepatch:12,12,12,12",
+          "disabledBackground": "button_tab_disabled ninepatch:12,12,12,12",
+          "paddingTop": 12,
+          "paddingBottom": 12,
+          "paddingLeft": 12,
+          "paddingRight": 12
+        }
+      }
+    }
+  },
+  "checkboxes": {
+    "default": {
+      "rules": {
+        "XS": {
+          "disabledBox": "checkbox_disabled ninepatch:12,12,12,12",
+          "disabledCheck": "checkicon_disabled",
+          "enabledBox": "checkbox_normal ninepatch:12,12,12,12",
+          "enabledCheck": "checkicon_normal",
+          "paddingTop": 4,
+          "paddingBottom": 4,
+          "paddingLeft": 4,
+          "paddingRight": 4
+        }
+      }
+    }
+  },
+  "columns": {
+    "default": {
+      "rules": {
+        "XS": {
+        }
+      }
+    },
+    "frame": {
+      "rules": {
+        "XS": {
+          "background": "frame ninepatch:24,24,24,24",
+          "paddingTop": 4,
+          "paddingBottom": 4,
+          "paddingLeft": 4,
+          "paddingRight": 4
+        }
+      }
+    },
+    "tab-menu": {
+      "rules": {
+        "XS": {
+          "background": "tab_menu_bg ninepatch:12,12,12,12",
+          "paddingTop": 12,
+          "paddingBottom": 0,
+          "paddingLeft": 12,
+          "paddingRight": 12
+        }
+      }
+    },
+    "tab-content": {
+      "rules": {
+        "XS": {
+          "background": "tab_bg ninepatch:12,12,12,12",
+          "paddingTop": 12,
+          "paddingBottom": 12,
+          "paddingLeft": 12,
+          "paddingRight": 12
+        }
+      }
+    }
+  },
+  "containers": {
+    "default": {
+      "rules": {
+        "XS": {
+          "background": "frame ninepatch:24,24,24,24",
+          "paddingTop": 24,
+          "paddingBottom": 24,
+          "paddingLeft": 24,
+          "paddingRight": 24
+        }
+      }
+    },
+    "no-background": {
+      "rules": {
+        "XS": {
+          "paddingTop": 24,
+          "paddingBottom": 24,
+          "paddingLeft": 24,
+          "paddingRight": 24,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    },
+    "no-background-no-padding": {
+      "rules": {
+        "XS": {
+        }
+      }
+    }
+  },
+  "fonts": {
+    "default": {
+      "path": "kenvector_future.ttf",
+      "fontSize": 12
+    },
+    "header": {
+      "path": "kenvector_future.ttf",
+      "fontSize": 18
+    }
+  },
+  "images": {
+    "default": {
+      "rules": {
+        "XS": {
+          "paddingTop": 0,
+          "paddingBottom": 0,
+          "paddingLeft": 0,
+          "paddingRight": 0,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    }
+  },
+  "labels": {
+    "default": {
+      "rules": {
+        "XS": {
+          "font": "default",
+          "textColor": "1,1,1",
+          "marginTop": 4,
+          "marginBottom": 4,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    },
+    "header": {
+      "rules": {
+        "XS": {
+          "font": "header",
+          "textColor": "1,1,1",
+          "marginTop": 4,
+          "marginBottom": 4,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    },
+    "tab-button-label": {
+      "rules": {
+        "XS": {
+          "font": "default",
+          "textColor": "1,1,1",
+          "paddingTop": 0,
+          "paddingBottom": 0,
+          "paddingLeft": 0,
+          "paddingRight": 0,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    }
+  },
+  "progressBars": {
+    "default": {
+      "rules": {
+        "XS": {
+          "minHeight": 20,
+          "background": "progress_bar_background ninepatch:12,12,12,12",
+          "fill": "progress_bar_fill ninepatch:8,8,8,8",
+          "paddingTop": 2,
+          "paddingBottom": 2,
+          "paddingLeft": 2,
+          "paddingRight": 2
+        }
+      }
+    }
+  },
+  "radioButtons": {
+  	"default": {
+      "rules": {
+        "XS": {
+          "font": "default",
+          "textColor": "1,1,1",
+          "optionsSpacing": 2,
+          "labelIndent": 4,
+		  "active": "radiobutton_active",
+		  "inactive": "radiobutton",
+		  "disabledActive": "radiobutton_disabled_active",
+		  "disabledInactive": "radiobutton"
+      	}
+      }
+    }
+  },
+  "scrollBoxes": {
+    "default": {
+      "rules": {
+        "XS": {
+          "minHeight": 32,
+          "topScrollButtonStyle": "default",
+          "bottomScrollButtonStyle": "default",
+          "scrollButtonHeight": "16",
+          "scrollBarWidth": "16",
+          "scrollTrack": "scrolltrack ninepatch:4,4,5,5",
+          "scrollThumbNormal": "button_default_normal ninepatch:12,12,12,12",
+          "scrollThumbHover": "button_default_action ninepatch:12,12,12,12",
+          "scrollThumbAction": "button_default_action ninepatch:12,12,12,12"
+        }
+      }
+    }
+  },
+  "selects": {
+    "default": {
+      "rules": {
+        "XS": {
+          "buttonWidth": 38,
+          "minHeight": 40,
+          "enabledLabelStyle": "default",
+          "disabledLabelStyle": "default",
+          "leftButtonStyle": "select-left",
+          "rightButtonStyle": "select-right",
+          "leftButtonLabelStyle": "default",
+          "rightButtonLabelStyle": "default",
+          "marginTop": 4,
+          "marginBottom": 4,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    }
+  },
+  "sliders": {
+    "default": {
+      "rules": {
+        "XS": {
+          "normal": "slider_normal",
+          "active": "slider_active",
+          "hover": "slider_active",
+          "disabled": "slider_disabled",
+          "sliderBar": "slider_background ninepatch:2,2,0,0",
+          "sliderBarMaxHeight": 4,
+          "marginLeft": 14,
+          "marginRight": 14
+        }
+      }
+    }
+  },
+  "textboxes": {
+    "default": {
+      "rules": {
+        "XS": {
+          "font": "default",
+          "textColor": "1,1,1",
+          "background": "textbox_normal ninepatch:12,12,12,12",
+          "hoverBackground": "textbox_hover ninepatch:12,12,12,12",
+          "actionBackground": "textbox_normal ninepatch:12,12,12,12",
+          "disabledBackground": "textbox_disabled ninepatch:12,12,12,12",
+          "paddingTop": 12,
+          "paddingBottom": 12,
+          "paddingLeft": 12,
+          "paddingRight": 12,
+          "marginTop": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "marginRight": 0
+        }
+      }
+    }
+  },
+  "tabs": {
+    "default": {
+      "rules": {
+        "XS": {
+          "tabButtonStyle": "tab-button",
+          "previousTabButtonStyle": "tab-button",
+          "nextTabButtonStyle": "tab-button",
+          "buttonLabelStyle": "tab-button-label",
+          "buttonImageStyle": "default",
+          "menuStyle": "tab-menu",
+          "tabStyle": "tab-content"
+        }
+      }
+    }
+  }
+}

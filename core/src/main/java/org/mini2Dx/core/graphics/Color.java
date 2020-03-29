@@ -44,10 +44,10 @@ public interface Color {
 
 	/**
 	 * Sets the RGBA components
-	 * @param r The red component (between 0 and 255)
-	 * @param g The green component (between 0 and 255)
-	 * @param b The blue component (between 0 and 255)
-	 * @param a The alpha component (between 0 and 255)
+	 * @param r The red component (between -128 and 127 (inclusive))
+	 * @param g The green component (between -128 and 127 (inclusive))
+	 * @param b The blue component (between -128 and 127 (inclusive))
+	 * @param a The alpha component (between -128 and 127 (inclusive))
 	 * @return This {@link Color} for chaining
 	 */
 	public Color set(byte r, byte g, byte b, byte a);
@@ -71,10 +71,10 @@ public interface Color {
 
 	/**
 	 * Adds RGBA components to this {@link Color}
-	 * @param r The red component (between 0 and 255)
-	 * @param g The green component (between 0 and 255)
-	 * @param b The blue component (between 0 and 255)
-	 * @param a The alpha component (between 0 and 255)
+	 * @param r The red component (between -128 and 127 (inclusive))
+	 * @param g The green component (between -128 and 127 (inclusive))
+	 * @param b The blue component (between -128 and 127 (inclusive))
+	 * @param a The alpha component (between -128 and 127 (inclusive))
 	 * @return This {@link Color} for chaining
 	 */
 	public Color add(byte r, byte g, byte b, byte a);
@@ -98,10 +98,10 @@ public interface Color {
 
 	/**
 	 * Multiplies this {@link Color} by the given RGBA components
-	 * @param r The red component (between 0 and 255)
-	 * @param g The green component (between 0 and 255)
-	 * @param b The blue component (between 0 and 255)
-	 * @param a The alpha component (between 0 and 255)
+	 * @param r The red component (between -128 and 127 (inclusive))
+	 * @param g The green component (between -128 and 127 (inclusive))
+	 * @param b The blue component (between -128 and 127 (inclusive))
+	 * @param a The alpha component (between -128 and 127 (inclusive))
 	 * @return This {@link Color} for chaining
 	 */
 	public Color multiply(byte r, byte g, byte b, byte a);
@@ -132,10 +132,10 @@ public interface Color {
 
 	/**
 	 * Subtracts RGBA components from this {@link Color}
-	 * @param r The red component (between 0 and 255)
-	 * @param g The green component (between 0 and 255)
-	 * @param b The blue component (between 0 and 255)
-	 * @param a The alpha component (between 0 and 255)
+	 * @param r The red component (between -128 and 127 (inclusive))
+	 * @param g The green component (between -128 and 127 (inclusive))
+	 * @param b The blue component (between -128 and 127 (inclusive))
+	 * @param a The alpha component (between -128 and 127 (inclusive))
 	 * @return This {@link Color} for chaining
 	 */
 	public Color subtract(byte r, byte g, byte b, byte a);
@@ -161,10 +161,10 @@ public interface Color {
 
 	/**
 	 * Linearly interpolates between this color and the target color by t
-	 * @param r The red component of the target {@link Color} (A value between 0 and 255)
-	 * @param g The green component of the target {@link Color} (A value between 0 and 255)
-	 * @param b The blue component of the target {@link Color} (A value between 0 and 255)
-	 * @param a The alpha component of the target {@link Color} (A value between 0 and 255)
+	 * @param r The red component of the target {@link Color} (A value between -128 and 127 (inclusive))
+	 * @param g The green component of the target {@link Color} (A value between -128 and 127 (inclusive))
+	 * @param b The blue component of the target {@link Color} (A value between -128 and 127 (inclusive))
+	 * @param a The alpha component of the target {@link Color} (A value between -128 and 127 (inclusive))
 	 * @param t The interpolation coefficient
 	 * @return This {@link Color} for chaining
 	 */
@@ -196,25 +196,25 @@ public interface Color {
 
 	/**
 	 * Returns the red component of this {@link Color}
-	 * @return A value between 0 and 255
+	 * @return A value between -128 and 127 (inclusive)
 	 */
 	public byte getRAsByte();
 
 	/**
 	 * Returns the green component of this {@link Color}
-	 * @return A value between 0 and 255
+	 * @return A value between -128 and 127 (inclusive)
 	 */
 	public byte getGAsByte();
 
 	/**
 	 * Returns the blue component of this {@link Color}
-	 * @return A value between 0 and 255
+	 * @return A value between -128 and 127 (inclusive)
 	 */
 	public byte getBAsByte();
 
 	/**
 	 * Returns the alpha component of this {@link Color}
-	 * @return A value between 0 and 255
+	 * @return A value between -128 and 127 (inclusive)
 	 */
 	public byte getAAsByte();
 
@@ -280,22 +280,22 @@ public interface Color {
 	/**
 	 * @see #getRAsByte()
 	 */
-	public float rb();
+	public byte rb();
 
 	/**
 	 * @see #getGAsByte()
 	 */
-	public float gb();
+	public byte gb();
 
 	/**
 	 * @see #getBAsByte()
 	 */
-	public float bb();
+	public byte bb();
 
 	/**
 	 * @see #getAAsByte()
 	 */
-	public float ab();
+	public byte ab();
 
 	/**
 	 * Returns the color value in ARGB8888 format
