@@ -53,7 +53,7 @@ ext {
 	langVersion="3.1"
 	multiDexVersion="1.0.1"
 	nativesLoaderVersion="1.0.0"
-	reflectionsVersion="0.9.10"
+	reflectionsVersion="0.9.12"
 	roboVMVersion="2.3.8"
 	
 	junitVersion="4.12"
