@@ -19,6 +19,7 @@ import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.files.FileHandleResolver;
 import org.mini2Dx.gdx.utils.ObjectMap;
 import org.mini2Dx.gdx.xml.XmlReader;
+import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.element.ParentUiElement;
 import org.mini2Dx.ui.element.Tab;
 import org.mini2Dx.ui.element.TabView;
@@ -62,6 +63,8 @@ import org.mini2Dx.ui.xml.spi.TextButtonPopulator;
 import org.mini2Dx.ui.xml.spi.UnknownUiTagException;
 
 import java.io.Reader;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 
 public class UiXmlLoader {
     private final FileHandleResolver fileHandleResolver;
@@ -113,6 +116,39 @@ public class UiXmlLoader {
             return (T) processXmlTag(root);
         } catch (Exception e) {
             throw new MdxException("Failed to load UI file: " + filename, e);
+        }
+    }
+
+    public <T> T load(String filename, Class<T> model) {
+        UiElement container = load(filename);
+        if (container != null) {
+            return populateModel(container, model);
+        } else {
+            throw new MdxException("Failed to populate Ui file" + filename, new Exception("container is null"));
+        }
+    }
+
+    private <T extends UiElement, M> M populateModel(T container, Class<M> model) {
+        try {
+            M newInstance = model.getConstructor().newInstance();
+            for (Field field : model.getDeclaredFields()) {
+                if (field.isAnnotationPresent(org.mini2Dx.ui.annotation.UiElement.class)) {
+                    String fieldName = field.getName();
+                    String annotationId = field.getAnnotation(org.mini2Dx.ui.annotation.UiElement.class).id();
+                    String id = annotationId.length() > 0 ? annotationId : fieldName;
+                    UiElement element = container.getElementById(id);
+                    try {
+                        field.set(newInstance, field.getType().cast(element));
+                    } catch (IllegalAccessException ex) {
+                        field.setAccessible(true);
+                        field.set(newInstance, field.getType().cast(element));
+                        field.setAccessible(false);
+                    }
+                }
+            }
+            return newInstance;
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            throw new MdxException("could not populate fields", e);
         }
     }
 
