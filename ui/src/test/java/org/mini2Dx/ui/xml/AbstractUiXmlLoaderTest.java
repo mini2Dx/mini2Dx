@@ -22,6 +22,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.files.FileHandleResolver;
 import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
+import org.mini2Dx.ui.element.Container;
 import org.mini2Dx.ui.element.ParentUiElement;
 import org.mini2Dx.ui.element.UiElement;
 
@@ -34,6 +35,13 @@ public abstract class AbstractUiXmlLoaderTest {
     protected FileHandleResolver fileHandleResolver;
     protected UiXmlLoader loader;
 
+    public static final class UiModel {
+        @org.mini2Dx.ui.annotation.UiElement
+        Container testContainer;
+        @org.mini2Dx.ui.annotation.UiElement(id = "testContainer")
+        Container testContainerCustom;
+    }
+
     @Before
     public void setUpLoader() {
         Mdx.graphics = new LibgdxGraphicsUtils();
@@ -42,8 +50,34 @@ public abstract class AbstractUiXmlLoaderTest {
         loader = new UiXmlLoader(fileHandleResolver);
     }
 
+    @Before
+    public void setUpReflection() {
+        Mdx.reflect = new org.mini2Dx.core.reflect.jvm.JvmReflection();
+
+    }
+
     protected <T extends ParentUiElement> T loadFileWithContainer(String xml) {
         return (T) loadFile(xml);
+    }
+
+    protected <T> T loadFileWithModel(String xml, Class<T> model) {
+        final String realXml = "<?xml version=\"1.0\"?>\n" + xml;
+
+        FileHandle fileHandle = mockery.mock(FileHandle.class);
+
+        mockery.checking(new Expectations() {
+            {
+                oneOf(fileHandleResolver).resolve(filename);
+                will(returnValue(fileHandle));
+                try {
+                    oneOf(fileHandle).reader();
+                    will(returnValue(new StringReader(realXml)));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        return loader.load(filename, model);
     }
 
     protected <T extends UiElement> T loadFile(String xml) {
