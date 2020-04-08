@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.ui.element.Container;
+import org.mini2Dx.ui.element.Visibility;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -125,6 +126,8 @@ public class UiXmlLoaderTest extends AbstractUiXmlLoaderTest {
 
         assertNotNull(model.testContainer);
         assertNotNull(model.testContainerCustom);
+        assertEquals(model.testContainer.getVisibility(), Visibility.HIDDEN);
+        assertEquals(model.testContainerCustom.getVisibility(), Visibility.HIDDEN);
     }
 
     @Test
