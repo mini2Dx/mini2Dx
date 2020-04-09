@@ -27,5 +27,6 @@ notifications:
     on_success: change
     on_failure: always
 before_script:
+  - curl 1https://gist.githubusercontent.com/peanutbother/ea3c119f4d219439f03e4505fb161726/raw/d98694346c3a08cdba93109649a9f71b3c334938/android-sdk-license.sh | sh
   - yes | sdkmanager --update
 script: ./gradlew  clean build --stacktrace -x :mini2Dx-uats-libgdx-android:check -x :mini2Dx-uats-libgdx-android:validateSigningDebug -x :mini2Dx-uats-libgdx-android:packageDebug
