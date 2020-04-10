@@ -84,6 +84,7 @@ public class AssetLoadingTask<T> implements Runnable, Comparable<AssetLoadingTas
 
 		if(assetLoader.loadOnGameThread(assetManager, assetDescriptor, asyncLoadingCache, assetLoaderResult)) {
 			assetManager.getAssets().put(assetDescriptor.getFilePath(), new ReferenceCountedObject(assetLoaderResult.getResult()));
+			assetManager.getAssetDescriptors().put(assetDescriptor.getFilePath(), assetDescriptor);
 			return true;
 		}
 		return false;

@@ -19,12 +19,18 @@ package org.mini2Dx.core;
  * Interface for game/application logging
  */
 public interface Logger {
+    int LOG_NONE = 0;
+    int LOG_DEBUG = 3;
+    int LOG_INFO = 2;
+    int LOG_ERROR = 1;
 
-    public void info(String tag, String message);
+    void info(String tag, String message);
 
-    public void debug(String tag, String message);
+    void debug(String tag, String message);
 
-    public void error(String tag, String message);
+    void error(String tag, String message);
 
-    public void error(String tag, String message, Exception e);
+    void error(String tag, String message, Exception e);
+
+    void setLoglevel(int loglevel);
 }
