@@ -80,6 +80,27 @@ public abstract class AbstractUiXmlLoaderTest {
         return loader.load(filename, model);
     }
 
+
+    protected <T> T loadFileWithModel(String xml, T model) {
+        final String realXml = "<?xml version=\"1.0\"?>\n" + xml;
+
+        FileHandle fileHandle = mockery.mock(FileHandle.class);
+
+        mockery.checking(new Expectations() {
+            {
+                oneOf(fileHandleResolver).resolve(filename);
+                will(returnValue(fileHandle));
+                try {
+                    oneOf(fileHandle).reader();
+                    will(returnValue(new StringReader(realXml)));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        return loader.load(filename, model);
+    }
+
     protected <T extends UiElement> T loadFile(String xml) {
         final String realXml = "<?xml version=\"1.0\"?>\n" + xml;
 

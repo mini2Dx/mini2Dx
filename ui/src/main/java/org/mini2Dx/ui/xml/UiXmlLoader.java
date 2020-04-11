@@ -91,9 +91,35 @@ public class UiXmlLoader {
         }
     }
 
+    public <T> T load(String filename, T model) {
+        UiElement container = load(filename);
+        if (container != null && model != null) {
+            return populateModel(container, model);
+        } else {
+            throw new MdxException("Failed to populate Ui file " + filename, new Exception("container or model is null"));
+        }
+    }
+
     private <T extends UiElement, M> M populateModel(T container, Class<M> model) {
         M newInstance = (M) Mdx.reflect.newInstance(model);
         for (Field field : Mdx.reflect.getDeclaredFields(model)) {
+            if (field.isAnnotationPresent(org.mini2Dx.ui.annotation.UiElement.class)) {
+                String fieldName = field.getName();
+                String annotationId = field
+                        .getDeclaredAnnotation(org.mini2Dx.ui.annotation.UiElement.class)
+                        .getAnnotation(org.mini2Dx.ui.annotation.UiElement.class)
+                        .id();
+                String id = annotationId.length() > 0 ? annotationId : fieldName;
+                UiElement element = container.getElementById(id);
+                field.set(newInstance, field.getType().cast(element));
+            }
+        }
+        return newInstance;
+    }
+
+    private <T extends UiElement, M> M populateModel(T container, M model) {
+        M newInstance = model;
+        for (Field field : Mdx.reflect.getDeclaredFields(model.getClass())) {
             if (field.isAnnotationPresent(org.mini2Dx.ui.annotation.UiElement.class)) {
                 String fieldName = field.getName();
                 String annotationId = field

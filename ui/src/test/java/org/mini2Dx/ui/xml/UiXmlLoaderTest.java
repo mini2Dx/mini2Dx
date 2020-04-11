@@ -141,4 +141,27 @@ public class UiXmlLoaderTest extends AbstractUiXmlLoaderTest {
             assertEquals("container or model is null", e.getCause().getMessage());
         }
     }
+
+    @Test
+    public void load_with_model_instance() {
+        String xml = "<container id=\"testContainer\" visibility=\"HIDDEN\" />";
+        UiModel model = loadFileWithModel(xml, new UiModel());
+
+        assertNotNull(model.testContainer);
+        assertNotNull(model.testContainerCustom);
+        assertEquals(model.testContainer.getVisibility(), Visibility.HIDDEN);
+        assertEquals(model.testContainerCustom.getVisibility(), Visibility.HIDDEN);
+    }
+
+    @Test
+    public void fail_to_load_with_model_instance_null() {
+        String xml = "<container id=\"testContainer\" visibility=\"HIDDEN\" />";
+
+        try {
+            loadFileWithModel(xml, null);
+        } catch (MdxException e) {
+            assertEquals("Failed to populate Ui file " + filename, e.getMessage());
+            assertEquals("container or model is null", e.getCause().getMessage());
+        }
+    }
 }
