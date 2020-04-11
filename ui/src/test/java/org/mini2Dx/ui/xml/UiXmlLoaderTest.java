@@ -20,14 +20,12 @@ import org.junit.Test;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.ui.element.Container;
+import org.mini2Dx.ui.element.Visibility;
 
 import java.io.IOException;
 import java.io.StringReader;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class UiXmlLoaderTest extends AbstractUiXmlLoaderTest {
 
@@ -121,5 +119,26 @@ public class UiXmlLoaderTest extends AbstractUiXmlLoaderTest {
         }
     }
 
+    @Test
+    public void load_with_model() {
+        String xml = "<container id=\"testContainer\" visibility=\"HIDDEN\" />";
+        UiModel model = loadFileWithModel(xml, UiModel.class);
 
+        assertNotNull(model.testContainer);
+        assertNotNull(model.testContainerCustom);
+        assertEquals(model.testContainer.getVisibility(), Visibility.HIDDEN);
+        assertEquals(model.testContainerCustom.getVisibility(), Visibility.HIDDEN);
+    }
+
+    @Test
+    public void fail_to_load_with_model_null() {
+        String xml = "<container id=\"testContainer\" visibility=\"HIDDEN\" />";
+
+        try {
+            loadFileWithModel(xml, null);
+        } catch (MdxException e) {
+            assertEquals("Failed to populate Ui file " + filename, e.getMessage());
+            assertEquals("container or model is null", e.getCause().getMessage());
+        }
+    }
 }

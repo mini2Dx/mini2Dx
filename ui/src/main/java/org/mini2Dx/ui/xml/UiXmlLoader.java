@@ -15,51 +15,17 @@
  ******************************************************************************/
 package org.mini2Dx.ui.xml;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.files.FileHandleResolver;
+import org.mini2Dx.core.reflect.Field;
 import org.mini2Dx.gdx.utils.ObjectMap;
 import org.mini2Dx.gdx.xml.XmlReader;
 import org.mini2Dx.ui.element.ParentUiElement;
 import org.mini2Dx.ui.element.Tab;
 import org.mini2Dx.ui.element.TabView;
 import org.mini2Dx.ui.element.UiElement;
-import org.mini2Dx.ui.xml.spi.AnimatedImageFactory;
-import org.mini2Dx.ui.xml.spi.AnimatedImagePopulator;
-import org.mini2Dx.ui.xml.spi.ButtonFactory;
-import org.mini2Dx.ui.xml.spi.ButtonPopulator;
-import org.mini2Dx.ui.xml.spi.CheckBoxFactory;
-import org.mini2Dx.ui.xml.spi.CheckboxPopulator;
-import org.mini2Dx.ui.xml.spi.ContainerFactory;
-import org.mini2Dx.ui.xml.spi.CorePopulator;
-import org.mini2Dx.ui.xml.spi.DivFactory;
-import org.mini2Dx.ui.xml.spi.FlexRowFactory;
-import org.mini2Dx.ui.xml.spi.FlexRowPopulator;
-import org.mini2Dx.ui.xml.spi.ImageButtonFactory;
-import org.mini2Dx.ui.xml.spi.ImageButtonPopulator;
-import org.mini2Dx.ui.xml.spi.ImageFactory;
-import org.mini2Dx.ui.xml.spi.ImagePopulator;
-import org.mini2Dx.ui.xml.spi.LabelFactory;
-import org.mini2Dx.ui.xml.spi.LabelPopulator;
-import org.mini2Dx.ui.xml.spi.ParentUiElementPopulator;
-import org.mini2Dx.ui.xml.spi.ProgressBarFactory;
-import org.mini2Dx.ui.xml.spi.ProgressBarPopulator;
-import org.mini2Dx.ui.xml.spi.RadioButtonFactory;
-import org.mini2Dx.ui.xml.spi.RadioButtonPopulator;
-import org.mini2Dx.ui.xml.spi.ScrollBoxFactory;
-import org.mini2Dx.ui.xml.spi.ScrollBoxPopulator;
-import org.mini2Dx.ui.xml.spi.SelectFactory;
-import org.mini2Dx.ui.xml.spi.SelectPopulator;
-import org.mini2Dx.ui.xml.spi.SliderFactory;
-import org.mini2Dx.ui.xml.spi.SliderPopulator;
-import org.mini2Dx.ui.xml.spi.TabFactory;
-import org.mini2Dx.ui.xml.spi.TabPopulator;
-import org.mini2Dx.ui.xml.spi.TabViewFactory;
-import org.mini2Dx.ui.xml.spi.TabViewPopulator;
-import org.mini2Dx.ui.xml.spi.TextBoxFactory;
-import org.mini2Dx.ui.xml.spi.TextBoxPopulator;
-import org.mini2Dx.ui.xml.spi.TextButtonFactory;
-import org.mini2Dx.ui.xml.spi.TextButtonPopulator;
-import org.mini2Dx.ui.xml.spi.UnknownUiTagException;
+import org.mini2Dx.ui.xml.spi.*;
 
 import java.io.Reader;
 
@@ -114,6 +80,32 @@ public class UiXmlLoader {
         } catch (Exception e) {
             throw new MdxException("Failed to load UI file: " + filename, e);
         }
+    }
+
+    public <T> T load(String filename, Class<T> model) {
+        UiElement container = load(filename);
+        if (container != null && model != null) {
+            return populateModel(container, model);
+        } else {
+            throw new MdxException("Failed to populate Ui file " + filename, new Exception("container or model is null"));
+        }
+    }
+
+    private <T extends UiElement, M> M populateModel(T container, Class<M> model) {
+        M newInstance = (M) Mdx.reflect.newInstance(model);
+        for (Field field : Mdx.reflect.getDeclaredFields(model)) {
+            if (field.isAnnotationPresent(org.mini2Dx.ui.annotation.UiElement.class)) {
+                String fieldName = field.getName();
+                String annotationId = field
+                        .getDeclaredAnnotation(org.mini2Dx.ui.annotation.UiElement.class)
+                        .getAnnotation(org.mini2Dx.ui.annotation.UiElement.class)
+                        .id();
+                String id = annotationId.length() > 0 ? annotationId : fieldName;
+                UiElement element = container.getElementById(id);
+                field.set(newInstance, field.getType().cast(element));
+            }
+        }
+        return newInstance;
     }
 
     private UiElement processXmlTag(XmlReader.Element root) {
