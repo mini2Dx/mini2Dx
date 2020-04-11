@@ -56,6 +56,7 @@ public class AssetManager implements Disposable {
 
 	private final ObjectMap<Class, AssetLoader> assetLoaders = new ObjectMap<Class, AssetLoader>();
 	private final ObjectMap<String, ReferenceCountedObject> assets = new ObjectMap<String, ReferenceCountedObject>();
+	private final ObjectMap<String, AssetDescriptor> assetDescriptors = new ObjectMap<String, AssetDescriptor>();
 
 	private final Array<AssetDescriptor> loadingQueue = new Array<AssetDescriptor>(false, 32);
 	private final Array<AssetLoadingTask> loadingTasks = new Array<AssetLoadingTask>(false, 32);
@@ -85,6 +86,18 @@ public class AssetManager implements Disposable {
 			throw new MdxException(filePath + " not yet loaded");
 		}
  		return assets.get(filePath).getObject(clazz);
+	}
+
+	public <T> ObjectMap<String, T> getAll(Class<T> clazz) {
+		final ObjectMap<String, T> assetsOfType = new ObjectMap<>();
+
+		assetDescriptors.entries().forEach(assetDescriptorEntry -> {
+			if(assetDescriptorEntry.value.getClazz().equals(clazz)) {
+				assetsOfType.put(assetDescriptorEntry.key, assets.get(assetDescriptorEntry.key).getObject(clazz));
+			}
+		});
+
+		return assetsOfType;
 	}
 
 	public boolean isLoaded(String filePath) {
@@ -126,6 +139,7 @@ public class AssetManager implements Disposable {
 
 	public void unload(String filePath) {
 		assets.remove(filePath);
+		assetDescriptors.remove(filePath);
 	}
 
 	public boolean update() {
@@ -196,7 +210,35 @@ public class AssetManager implements Disposable {
 		return completedTasks / queuedAssets;
 	}
 
+	/**
+	 * Returns the number of all assets (both loaded and not loaded) ever queued
+	 * @return A value more than or equal zero
+	 */
+	public float getQueuedAssets() {
+		return queuedAssets;
+	}
+
+	/**
+	 * Returns the number of already loaded assets
+	 * @return A value more than or equal zero
+	 */
+	public float getCompletedTasks() {
+		return completedTasks;
+	}
+
+	/**
+	 * Returns the number of currently queued assets
+	 * @return A value more than or equal zero
+	 */
+	public float getUnfinishedTasks() {
+		return queuedAssets - completedTasks;
+	}
+
 	ObjectMap<String, ReferenceCountedObject> getAssets() {
 		return assets;
+	}
+
+	ObjectMap<String, AssetDescriptor> getAssetDescriptors() {
+		return assetDescriptors;
 	}
 }

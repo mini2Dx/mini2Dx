@@ -38,4 +38,9 @@ public class LibgdxLogger implements Logger {
 	public void error(String tag, String message, Exception e) {
 		Gdx.app.error(tag, message, e);
 	}
+
+	@Override
+	public void setLoglevel(int loglevel) {
+		Gdx.app.setLogLevel(loglevel);
+	}
 }
