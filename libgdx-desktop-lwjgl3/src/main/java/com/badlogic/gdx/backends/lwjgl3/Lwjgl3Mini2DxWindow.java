@@ -46,7 +46,7 @@ public class Lwjgl3Mini2DxWindow implements Disposable {
 	Lwjgl3Mini2DxWindowListener windowListener;
 	private Lwjgl3Mini2DxGraphics graphics;
 	private Lwjgl3Mini2DxInput input;
-	private final Lwjgl3ApplicationConfiguration config;
+	private final Lwjgl3Mini2DxConfig config;
 	private final Array<Runnable> runnables = new Array<Runnable>();
 	private final Array<Runnable> executedRunnables = new Array<Runnable>();
 	private final IntBuffer tmpBuffer;
@@ -438,7 +438,7 @@ public class Lwjgl3Mini2DxWindow implements Disposable {
 		return GLFW.glfwWindowShouldClose(windowHandle);
 	}
 
-	Lwjgl3ApplicationConfiguration getConfig() {
+	Lwjgl3Mini2DxConfig getConfig() {
 		return config;
 	}
 

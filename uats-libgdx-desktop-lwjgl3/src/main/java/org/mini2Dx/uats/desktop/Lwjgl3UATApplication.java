@@ -15,7 +15,9 @@
  ******************************************************************************/
 package org.mini2Dx.uats.desktop;
 
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.DesktopMini2DxGame;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Mini2DxConfig;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import org.mini2Dx.uats.util.UATApplication;
@@ -28,6 +30,10 @@ public class Lwjgl3UATApplication {
         Lwjgl3Mini2DxConfig cfg = new Lwjgl3Mini2DxConfig("org.mini2Dx.uats");
         cfg.setTitle("mini2Dx - User Acceptance Tests");
         cfg.setWindowedMode(800, 720);
+
+        //final Graphics.Monitor primaryMonitor = Lwjgl3ApplicationConfiguration.getPrimaryMonitor();
+        //cfg.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode(primaryMonitor));
+
         new DesktopMini2DxGame(new UATApplication(), cfg);
     }
 }
