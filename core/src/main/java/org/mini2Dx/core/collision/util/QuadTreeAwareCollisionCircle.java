@@ -16,6 +16,7 @@
 package org.mini2Dx.core.collision.util;
 
 import org.mini2Dx.core.collision.CollisionCircle;
+import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.QuadTree;
 import org.mini2Dx.core.collision.QuadTreeAware;
 
@@ -44,6 +45,15 @@ public class QuadTreeAwareCollisionCircle extends CollisionCircle implements Qua
 
     public QuadTreeAwareCollisionCircle(CollisionCircle circle){
         super(circle.getCenterX(), circle.getCenterY(), circle.getRadius());
+    }
+
+    public QuadTreeAwareCollisionCircle(Collisions collisions) {
+        super(collisions);
+    }
+
+    @Override
+    protected void release() {
+        collisions.release(this);
     }
 
     @Override

@@ -114,6 +114,8 @@ public class Polygon extends Shape {
 		clearSizeChangeListeners();
 
 		if(geometry == null) {
+			vertices = null;
+			triangles = null;
 			return;
 		}
 		geometry.release(this);

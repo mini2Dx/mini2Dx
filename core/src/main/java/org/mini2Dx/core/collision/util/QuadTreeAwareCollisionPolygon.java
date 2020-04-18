@@ -16,6 +16,7 @@
 package org.mini2Dx.core.collision.util;
 
 import org.mini2Dx.core.collision.CollisionPolygon;
+import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.QuadTree;
 import org.mini2Dx.core.collision.QuadTreeAware;
 import org.mini2Dx.gdx.math.Vector2;
@@ -44,6 +45,19 @@ public class QuadTreeAwareCollisionPolygon extends CollisionPolygon implements Q
 
     public QuadTreeAwareCollisionPolygon(CollisionPolygon polygon){
         super(polygon.getVertices());
+    }
+
+    public QuadTreeAwareCollisionPolygon(Collisions collisions, float[] vertices) {
+        super(collisions, vertices);
+    }
+
+    public QuadTreeAwareCollisionPolygon(Collisions collisions, Vector2[] vectors) {
+        super(collisions, vectors);
+    }
+
+    @Override
+    protected void release() {
+        collisions.release(this);
     }
 
     @Override

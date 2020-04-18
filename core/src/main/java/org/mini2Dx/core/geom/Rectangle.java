@@ -115,6 +115,7 @@ public class Rectangle extends Shape {
 		if(disposed) {
 			return;
 		}
+		
 		disposed = true;
 
 		clearPositionChangeListeners();

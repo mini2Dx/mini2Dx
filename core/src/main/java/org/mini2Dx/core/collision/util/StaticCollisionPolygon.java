@@ -17,6 +17,7 @@ package org.mini2Dx.core.collision.util;
 
 import org.mini2Dx.core.collision.CollisionArea;
 import org.mini2Dx.core.collision.CollisionIdSequence;
+import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.geom.Polygon;
@@ -27,7 +28,8 @@ import org.mini2Dx.gdx.math.Vector2;
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionPolygon} implementation.
  */
 public class StaticCollisionPolygon extends Polygon implements CollisionArea {
-	private final int id;
+	private int id;
+	private Collisions collisions = null;
 
 	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 
@@ -41,12 +43,50 @@ public class StaticCollisionPolygon extends Polygon implements CollisionArea {
 
 	public StaticCollisionPolygon(int id, float[] vertices) {
 		super(vertices);
-		this.id = id;
+		init(id, vertices);
 	}
 
 	public StaticCollisionPolygon(int id, Vector2[] points) {
 		super(points);
+		init(id, points);
+	}
+
+	public StaticCollisionPolygon(Collisions collisions, float [] vertices) {
+		this(vertices);
+		this.collisions = collisions;
+	}
+
+	public StaticCollisionPolygon(Collisions collisions, Vector2[] points) {
+		this(points);
+		this.collisions = collisions;
+	}
+
+	public void init(int id, float [] vertices) {
 		this.id = id;
+
+		disposed = false;
+		setVertices(vertices);
+	}
+
+	public void init(int id, Vector2[] points) {
+		this.id = id;
+
+		disposed = false;
+		setVertices(points);
+	}
+
+	@Override
+	public void dispose() {
+		if(disposed) {
+			return;
+		}
+
+		if(collisions != null) {
+			disposed = true;
+			collisions.release(this);
+			return;
+		}
+		super.dispose();
 	}
 
 	@Override

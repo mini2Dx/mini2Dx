@@ -17,6 +17,7 @@ package org.mini2Dx.core.collision.util;
 
 import org.mini2Dx.core.collision.CollisionArea;
 import org.mini2Dx.core.collision.CollisionIdSequence;
+import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.geom.Circle;
 
@@ -25,7 +26,8 @@ import org.mini2Dx.core.geom.Circle;
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionCircle} implementation.
  */
 public class StaticCollisionCircle extends Circle implements CollisionArea {
-	private final int id;
+	private int id;
+	private Collisions collisions = null;
 
 	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 
@@ -42,18 +44,42 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 	}
 
 	public StaticCollisionCircle(int id, float radius) {
-		super(radius);
-		this.id = id;
+		this(id, 0f, 0f, radius);
+	}
+
+	public StaticCollisionCircle(int id, Circle circle) {
+		this(id, circle.getX(), circle.getY(), circle.getRadius());
+	}
+
+	public StaticCollisionCircle(Collisions collisions) {
+		this(0f, 0f, 1f);
+		this.collisions = collisions;
 	}
 
 	public StaticCollisionCircle(int id, float centerX, float centerY, float radius) {
 		super(centerX, centerY, radius);
-		this.id = id;
+		init(id, centerX, centerY, radius);
 	}
 
-	public StaticCollisionCircle(int id, Circle circle) {
-		super(circle);
+	public void init(int id, float centerX, float centerY, float radius) {
 		this.id = id;
+		disposed = false;
+		setXY(centerX, centerY);
+		setRadius(radius);
+	}
+
+	@Override
+	public void dispose() {
+		if(disposed) {
+			return;
+		}
+
+		if(collisions != null) {
+			disposed = true;
+			collisions.release(this);
+			return;
+		}
+		super.dispose();
 	}
 
 	@Override
@@ -95,6 +121,10 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 	@Override
 	public int getRenderY() {
 		return renderCoordMode.apply(getY());
+	}
+
+	public int getRenderRadius() {
+		return renderCoordMode.apply(getRadius());
 	}
 
 	@Override

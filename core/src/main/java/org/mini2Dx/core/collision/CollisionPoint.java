@@ -33,11 +33,13 @@ import java.util.Objects;
  * appropriate rendering coordinates during render phase.
  */
 public class CollisionPoint extends Point implements CollisionObject, PositionChangeListener<CollisionPoint> {
-	private final int id;
 	private final ReadWriteLock positionChangeListenerLock;
 
 	private final Point previousPosition;
 	private final Point renderPosition;
+
+	protected Collisions collisions = null;
+	private int id;
 
 	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 	private int renderX, renderY;
@@ -57,20 +59,28 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 
 	public CollisionPoint(int id, float x, float y) {
 		super(x, y);
-		this.id = id;
 
 		positionChangeListenerLock = Mdx.locks.newReadWriteLock();
 		addPostionChangeListener(this);
 
+		previousPosition = Mdx.geom.point();
+		renderPosition = Mdx.geom.point();
+
+		init(id, x, y);
+	}
+
+	public CollisionPoint(Collisions collisions) {
+		this();
+		this.collisions = collisions;
+	}
+
+	protected void init(int id, float x, float y) {
+		this.id = id;
+
+		disposed = false;
 		InterpolationTracker.register(this);
 
-		previousPosition = Mdx.geom.point();
-		previousPosition.set(x, y);
-
-		renderPosition = Mdx.geom.point();
-		renderPosition.set(x, y);
-
-		storeRenderCoordinates();
+		forceTo(x, y);
 	}
 
 	private void storeRenderCoordinates() {
@@ -78,9 +88,26 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 		renderY = renderCoordMode.apply(renderPosition.getY());
 	}
 
+	protected void release() {
+		collisions.release(this);
+	}
+
 	@Override
 	public void dispose() {
+		if(disposed) {
+			return;
+		}
+
 		InterpolationTracker.deregister(this);
+
+		if(collisions != null) {
+			clearPositionChangeListeners();
+
+			disposed = true;
+			release();
+			return;
+		}
+
 		super.dispose();
 		previousPosition.dispose();
 		renderPosition.dispose();

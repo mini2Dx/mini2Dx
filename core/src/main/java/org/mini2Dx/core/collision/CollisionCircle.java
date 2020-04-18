@@ -31,12 +31,14 @@ import java.util.Objects;
  */
 public class CollisionCircle extends Circle implements CollisionArea,
 		PositionChangeListener<CollisionCircle>, SizeChangeListener<CollisionCircle> {
-	private final int id;
 	private final ReadWriteLock positionChangeListenerLock;
 	private final ReadWriteLock sizeChangeListenerLock;
 
 	private final Circle previousCircle;
 	private final Circle renderCircle;
+
+	protected Collisions collisions = null;
+	private int id;
 
 	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 	private int renderX, renderY, renderRadius;
@@ -56,20 +58,35 @@ public class CollisionCircle extends Circle implements CollisionArea,
 
 	public CollisionCircle(int id, float centerX, float centerY, float radius) {
 		super(centerX, centerY, radius);
-		this.id = id;
 
 		positionChangeListenerLock = Mdx.locks.newReadWriteLock();
 		sizeChangeListenerLock = Mdx.locks.newReadWriteLock();
 		addPostionChangeListener(this);
 		addSizeChangeListener(this);
 
+		previousCircle = Mdx.geom.circle();
+		renderCircle = Mdx.geom.circle();
+
+		init(id, centerX, centerY, radius);
+	}
+
+	public CollisionCircle(Collisions collisions) {
+		this(1f);
+		this.collisions = collisions;
+	}
+
+	protected void init(int id, float centerX, float centerY, float radius) {
+		this.id = id;
+
+		disposed = false;
 		InterpolationTracker.register(this);
 
-		previousCircle = Mdx.geom.circle();
+		setXY(centerX, centerY);
+		setRadius(radius);
+
 		previousCircle.setXY(centerX, centerY);
 		previousCircle.setRadius(radius);
 
-		renderCircle = Mdx.geom.circle();
 		renderCircle.setXY(centerX, centerY);
 		renderCircle.setRadius(radius);
 
@@ -82,9 +99,27 @@ public class CollisionCircle extends Circle implements CollisionArea,
 		renderRadius = renderCoordMode.apply(renderCircle.getRadius());
 	}
 
+	protected void release() {
+		collisions.release(this);
+	}
+
 	@Override
 	public void dispose() {
+		if(disposed) {
+			return;
+		}
+
 		InterpolationTracker.deregister(this);
+
+		if(collisions != null) {
+			clearPositionChangeListeners();
+			clearSizeChangeListeners();
+
+			disposed = true;
+			release();
+			return;
+		}
+
 		super.dispose();
 		previousCircle.dispose();
 		renderCircle.dispose();

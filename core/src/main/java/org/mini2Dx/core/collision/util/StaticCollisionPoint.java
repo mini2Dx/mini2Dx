@@ -17,6 +17,7 @@ package org.mini2Dx.core.collision.util;
 
 import org.mini2Dx.core.collision.CollisionIdSequence;
 import org.mini2Dx.core.collision.CollisionObject;
+import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.geom.Point;
 
@@ -25,7 +26,8 @@ import org.mini2Dx.core.geom.Point;
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionPoint} implementation.
  */
 public class StaticCollisionPoint extends Point implements CollisionObject {
-	private final int id;
+	private int id;
+	private Collisions collisions = null;
 
 	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 
@@ -42,17 +44,42 @@ public class StaticCollisionPoint extends Point implements CollisionObject {
 	}
 
 	public StaticCollisionPoint(int id) {
-		this.id = id;
+		this(id, 0f, 0f);
+	}
+
+	public StaticCollisionPoint(int id, Point point) {
+		this(id, point.getX(), point.getY());
 	}
 
 	public StaticCollisionPoint(int id, float x, float y) {
 		super(x, y);
-		this.id = id;
+		init(id, x, y);
 	}
 
-	public StaticCollisionPoint(int id, Point point) {
-		super(point);
+	public StaticCollisionPoint(Collisions collisions) {
+		this();
+		this.collisions = collisions;
+	}
+
+	public void init(int id, float x, float y) {
 		this.id = id;
+
+		disposed = false;
+		forceTo(x, y);
+	}
+
+	@Override
+	public void dispose() {
+		if(disposed) {
+			return;
+		}
+
+		if(collisions != null) {
+			disposed = true;
+			collisions.release(this);
+			return;
+		}
+		super.dispose();
 	}
 
 	@Override
