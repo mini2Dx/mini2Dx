@@ -21,6 +21,8 @@ import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.geom.Circle;
 
+import java.util.Objects;
+
 /**
  * An implementation of a collision circle that does not move between updates/frames, thus, does not register as an interpolating collision. Due to this,
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionCircle} implementation.
@@ -51,8 +53,8 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 		this(id, circle.getX(), circle.getY(), circle.getRadius());
 	}
 
-	public StaticCollisionCircle(Collisions collisions) {
-		this(0f, 0f, 1f);
+	public StaticCollisionCircle(int id, Collisions collisions) {
+		this(id, 0f, 0f, 1f);
 		this.collisions = collisions;
 	}
 
@@ -75,6 +77,9 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 		}
 
 		if(collisions != null) {
+			clearPositionChangeListeners();
+			clearSizeChangeListeners();
+
 			disposed = true;
 			collisions.release(this);
 			return;
@@ -178,5 +183,19 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 			return;
 		}
 		this.renderCoordMode = mode;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		StaticCollisionCircle that = (StaticCollisionCircle) o;
+		return id == that.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

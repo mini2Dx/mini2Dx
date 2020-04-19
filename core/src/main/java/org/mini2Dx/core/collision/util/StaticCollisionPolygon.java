@@ -23,6 +23,8 @@ import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.geom.Polygon;
 import org.mini2Dx.gdx.math.Vector2;
 
+import java.util.Objects;
+
 /**
  * An implementation of a collision polygon that will not move between updates/frames, thus, does not register as an interpolating collision. Due to this,
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionPolygon} implementation.
@@ -51,13 +53,13 @@ public class StaticCollisionPolygon extends Polygon implements CollisionArea {
 		init(id, points);
 	}
 
-	public StaticCollisionPolygon(Collisions collisions, float [] vertices) {
-		this(vertices);
+	public StaticCollisionPolygon(int id, Collisions collisions, float [] vertices) {
+		this(id, vertices);
 		this.collisions = collisions;
 	}
 
-	public StaticCollisionPolygon(Collisions collisions, Vector2[] points) {
-		this(points);
+	public StaticCollisionPolygon(int id, Collisions collisions, Vector2[] points) {
+		this(id, points);
 		this.collisions = collisions;
 	}
 
@@ -82,6 +84,9 @@ public class StaticCollisionPolygon extends Polygon implements CollisionArea {
 		}
 
 		if(collisions != null) {
+			clearPositionChangeListeners();
+			clearSizeChangeListeners();
+
 			disposed = true;
 			collisions.release(this);
 			return;
@@ -178,5 +183,19 @@ public class StaticCollisionPolygon extends Polygon implements CollisionArea {
 			return;
 		}
 		this.renderCoordMode = mode;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		StaticCollisionPolygon that = (StaticCollisionPolygon) o;
+		return id == that.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

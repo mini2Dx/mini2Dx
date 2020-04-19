@@ -21,6 +21,8 @@ import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.geom.Point;
 
+import java.util.Objects;
+
 /**
  * An implementation of a collision point that will not move between updates/frames, thus, does not register as an interpolating collision. Due to this,
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionPoint} implementation.
@@ -56,8 +58,8 @@ public class StaticCollisionPoint extends Point implements CollisionObject {
 		init(id, x, y);
 	}
 
-	public StaticCollisionPoint(Collisions collisions) {
-		this();
+	public StaticCollisionPoint(int id, Collisions collisions) {
+		this(id);
 		this.collisions = collisions;
 	}
 
@@ -75,6 +77,8 @@ public class StaticCollisionPoint extends Point implements CollisionObject {
 		}
 
 		if(collisions != null) {
+			clearPositionChangeListeners();
+
 			disposed = true;
 			collisions.release(this);
 			return;
@@ -131,5 +135,19 @@ public class StaticCollisionPoint extends Point implements CollisionObject {
 			return;
 		}
 		this.renderCoordMode = mode;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		StaticCollisionPoint that = (StaticCollisionPoint) o;
+		return id == that.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

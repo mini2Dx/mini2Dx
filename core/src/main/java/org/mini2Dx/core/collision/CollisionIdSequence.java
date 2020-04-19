@@ -26,4 +26,9 @@ public class CollisionIdSequence {
 	public static int nextId() {
 		return ID_SEQUENCE.incrementAndGet();
 	}
+
+	public static int offset(int value) {
+		ID_SEQUENCE.set(value);
+		return value;
+	}
 }

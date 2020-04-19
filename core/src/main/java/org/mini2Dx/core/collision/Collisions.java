@@ -16,6 +16,7 @@
 package org.mini2Dx.core.collision;
 
 import org.mini2Dx.core.collision.util.*;
+import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.Vector2;
 import org.mini2Dx.gdx.utils.Queue;
 
@@ -57,17 +58,26 @@ public class Collisions {
 			return;
 		}
 		for(int i = 0; i < DEFAULT_POOL_SIZE; i++) {
-			collisionBoxes.addLast(new CollisionBox(this));
-			collisionCircles.addLast(new CollisionCircle(this));
-			collisionPoints.addLast(new CollisionPoint(this));
+			collisionBoxes.addLast(new CollisionBox(CollisionIdSequence.nextId(), this));
+			collisionBoxes.removeLast().dispose();
+			collisionCircles.addLast(new CollisionCircle(CollisionIdSequence.nextId(),this));
+			collisionCircles.removeLast().dispose();
+			collisionPoints.addLast(new CollisionPoint(CollisionIdSequence.nextId(),this));
+			collisionPoints.removeLast().dispose();
 
-			quadTreeAwareCollisionBoxes.addLast(new QuadTreeAwareCollisionBox(this));
-			quadTreeAwareCollisionCircles.addLast(new QuadTreeAwareCollisionCircle(this));
-			quadTreeAwareCollisionPoints.addLast(new QuadTreeAwareCollisionPoint(this));
+			quadTreeAwareCollisionBoxes.addLast(new QuadTreeAwareCollisionBox(CollisionIdSequence.nextId(),this));
+			quadTreeAwareCollisionBoxes.removeLast().dispose();
+			quadTreeAwareCollisionCircles.addLast(new QuadTreeAwareCollisionCircle(CollisionIdSequence.nextId(),this));
+			quadTreeAwareCollisionCircles.removeLast().dispose();
+			quadTreeAwareCollisionPoints.addLast(new QuadTreeAwareCollisionPoint(CollisionIdSequence.nextId(),this));
+			quadTreeAwareCollisionPoints.removeLast().dispose();
 
-			staticCollisionBoxes.addLast(new StaticCollisionBox(this));
-			staticCollisionCircles.addLast(new StaticCollisionCircle(this));
-			staticCollisionPoints.addLast(new StaticCollisionPoint(this));
+			staticCollisionBoxes.addLast(new StaticCollisionBox(CollisionIdSequence.nextId(),this));
+			staticCollisionBoxes.removeLast().dispose();
+			staticCollisionCircles.addLast(new StaticCollisionCircle(CollisionIdSequence.nextId(),this));
+			staticCollisionCircles.removeLast().dispose();
+			staticCollisionPoints.addLast(new StaticCollisionPoint(CollisionIdSequence.nextId(),this));
+			staticCollisionPoints.removeLast().dispose();
 		}
 		initialised = true;
 	}
@@ -86,7 +96,8 @@ public class Collisions {
 		final CollisionBox result;
 		synchronized (collisionBoxes) {
 			if(collisionBoxes.size == 0) {
-				result = new CollisionBox(this);
+				result = new CollisionBox(CollisionIdSequence.offset(id), this);
+				InterpolationTracker.deregister(result);
 			} else {
 				result = collisionBoxes.removeFirst();
 			}
@@ -109,7 +120,8 @@ public class Collisions {
 		final CollisionCircle result;
 		synchronized (collisionCircles) {
 			if(collisionCircles.size == 0) {
-				result = new CollisionCircle(this);
+				result = new CollisionCircle(CollisionIdSequence.offset(id),this);
+				InterpolationTracker.deregister(result);
 			} else {
 				result = collisionCircles.removeFirst();
 			}
@@ -132,7 +144,8 @@ public class Collisions {
 		final CollisionPoint result;
 		synchronized (collisionPoints) {
 			if(collisionPoints.size == 0) {
-				result = new CollisionPoint(this);
+				result = new CollisionPoint(CollisionIdSequence.offset(id),this);
+				InterpolationTracker.deregister(result);
 			} else {
 				result = collisionPoints.removeFirst();
 			}
@@ -151,7 +164,8 @@ public class Collisions {
 		final CollisionPolygon result;
 		synchronized (collisionPolygons) {
 			if(collisionPolygons.size == 0) {
-				result = new CollisionPolygon(this, vertices);
+				result = new CollisionPolygon(CollisionIdSequence.offset(id), this, vertices);
+				InterpolationTracker.deregister(result);
 			} else {
 				result = collisionPolygons.removeFirst();
 			}
@@ -170,7 +184,8 @@ public class Collisions {
 		final CollisionPolygon result;
 		synchronized (collisionPolygons) {
 			if(collisionPolygons.size == 0) {
-				result = new CollisionPolygon(this, vectors);
+				result = new CollisionPolygon(CollisionIdSequence.offset(id), this, vectors);
+				InterpolationTracker.deregister(result);
 			} else {
 				result = collisionPolygons.removeFirst();
 			}
@@ -193,7 +208,8 @@ public class Collisions {
 		final QuadTreeAwareCollisionBox result;
 		synchronized (quadTreeAwareCollisionBoxes) {
 			if(quadTreeAwareCollisionBoxes.size == 0) {
-				result = new QuadTreeAwareCollisionBox(this);
+				result = new QuadTreeAwareCollisionBox(CollisionIdSequence.offset(id), this);
+				InterpolationTracker.deregister(result);
 			} else {
 				result = quadTreeAwareCollisionBoxes.removeFirst();
 			}
@@ -216,7 +232,8 @@ public class Collisions {
 		final QuadTreeAwareCollisionCircle result;
 		synchronized (quadTreeAwareCollisionCircles) {
 			if(quadTreeAwareCollisionCircles.size == 0) {
-				result = new QuadTreeAwareCollisionCircle(this);
+				result = new QuadTreeAwareCollisionCircle(CollisionIdSequence.offset(id), this);
+				InterpolationTracker.deregister(result);
 			} else {
 				result = quadTreeAwareCollisionCircles.removeFirst();
 			}
@@ -239,7 +256,8 @@ public class Collisions {
 		final QuadTreeAwareCollisionPoint result;
 		synchronized (quadTreeAwareCollisionPoints) {
 			if(quadTreeAwareCollisionPoints.size == 0) {
-				result = new QuadTreeAwareCollisionPoint(this);
+				result = new QuadTreeAwareCollisionPoint(CollisionIdSequence.offset(id), this);
+				InterpolationTracker.deregister(result);
 			} else {
 				result = quadTreeAwareCollisionPoints.removeFirst();
 			}
@@ -258,7 +276,8 @@ public class Collisions {
 		final QuadTreeAwareCollisionPolygon result;
 		synchronized (quadTreeAwareCollisionPolygons) {
 			if(quadTreeAwareCollisionPolygons.size == 0) {
-				result = new QuadTreeAwareCollisionPolygon(this, vertices);
+				result = new QuadTreeAwareCollisionPolygon(CollisionIdSequence.offset(id), this, vertices);
+				InterpolationTracker.deregister(result);
 			} else {
 				result = quadTreeAwareCollisionPolygons.removeFirst();
 			}
@@ -277,7 +296,8 @@ public class Collisions {
 		final QuadTreeAwareCollisionPolygon result;
 		synchronized (quadTreeAwareCollisionPolygons) {
 			if(quadTreeAwareCollisionPolygons.size == 0) {
-				result = new QuadTreeAwareCollisionPolygon(this, vectors);
+				result = new QuadTreeAwareCollisionPolygon(CollisionIdSequence.offset(id), this, vectors);
+				InterpolationTracker.deregister(result);
 			} else {
 				result = quadTreeAwareCollisionPolygons.removeFirst();
 			}
@@ -300,7 +320,7 @@ public class Collisions {
 		final StaticCollisionBox result;
 		synchronized (staticCollisionBoxes) {
 			if(staticCollisionBoxes.size == 0) {
-				result = new StaticCollisionBox(this);
+				result = new StaticCollisionBox(CollisionIdSequence.offset(id), this);
 			} else {
 				result = staticCollisionBoxes.removeFirst();
 			}
@@ -323,7 +343,7 @@ public class Collisions {
 		final StaticCollisionCircle result;
 		synchronized (staticCollisionCircles) {
 			if(staticCollisionCircles.size == 0) {
-				result = new StaticCollisionCircle(this);
+				result = new StaticCollisionCircle(CollisionIdSequence.offset(id),this);
 			} else {
 				result = staticCollisionCircles.removeFirst();
 			}
@@ -346,7 +366,7 @@ public class Collisions {
 		final StaticCollisionPoint result;
 		synchronized (staticCollisionPoints) {
 			if(staticCollisionPoints.size == 0) {
-				result = new StaticCollisionPoint(this);
+				result = new StaticCollisionPoint(CollisionIdSequence.offset(id), this);
 			} else {
 				result = staticCollisionPoints.removeFirst();
 			}
@@ -365,7 +385,7 @@ public class Collisions {
 		final StaticCollisionPolygon result;
 		synchronized (staticCollisionPolygons) {
 			if(staticCollisionPolygons.size == 0) {
-				result = new StaticCollisionPolygon(this, vertices);
+				result = new StaticCollisionPolygon(CollisionIdSequence.offset(id), this, vertices);
 			} else {
 				result = staticCollisionPolygons.removeFirst();
 			}
@@ -384,7 +404,7 @@ public class Collisions {
 		final StaticCollisionPolygon result;
 		synchronized (staticCollisionPolygons) {
 			if(staticCollisionPolygons.size == 0) {
-				result = new StaticCollisionPolygon(this, vectors);
+				result = new StaticCollisionPolygon(CollisionIdSequence.offset(id), this, vectors);
 			} else {
 				result = staticCollisionPolygons.removeFirst();
 			}

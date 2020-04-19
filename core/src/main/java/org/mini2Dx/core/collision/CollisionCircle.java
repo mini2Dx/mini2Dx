@@ -70,8 +70,8 @@ public class CollisionCircle extends Circle implements CollisionArea,
 		init(id, centerX, centerY, radius);
 	}
 
-	public CollisionCircle(Collisions collisions) {
-		this(1f);
+	public CollisionCircle(int id, Collisions collisions) {
+		this(id, 1f);
 		this.collisions = collisions;
 	}
 
@@ -114,6 +114,9 @@ public class CollisionCircle extends Circle implements CollisionArea,
 		if(collisions != null) {
 			clearPositionChangeListeners();
 			clearSizeChangeListeners();
+
+			addPostionChangeListener(this);
+			addSizeChangeListener(this);
 
 			disposed = true;
 			release();

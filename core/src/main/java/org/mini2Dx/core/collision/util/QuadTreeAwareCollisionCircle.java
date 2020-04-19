@@ -47,8 +47,8 @@ public class QuadTreeAwareCollisionCircle extends CollisionCircle implements Qua
         super(circle.getCenterX(), circle.getCenterY(), circle.getRadius());
     }
 
-    public QuadTreeAwareCollisionCircle(Collisions collisions) {
-        super(collisions);
+    public QuadTreeAwareCollisionCircle(int id, Collisions collisions) {
+        super(id, collisions);
     }
 
     @Override

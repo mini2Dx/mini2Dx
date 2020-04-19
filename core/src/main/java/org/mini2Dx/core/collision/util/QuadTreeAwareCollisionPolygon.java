@@ -47,12 +47,12 @@ public class QuadTreeAwareCollisionPolygon extends CollisionPolygon implements Q
         super(polygon.getVertices());
     }
 
-    public QuadTreeAwareCollisionPolygon(Collisions collisions, float[] vertices) {
-        super(collisions, vertices);
+    public QuadTreeAwareCollisionPolygon(int id, Collisions collisions, float[] vertices) {
+        super(id, collisions, vertices);
     }
 
-    public QuadTreeAwareCollisionPolygon(Collisions collisions, Vector2[] vectors) {
-        super(collisions, vectors);
+    public QuadTreeAwareCollisionPolygon(int id, Collisions collisions, Vector2[] vectors) {
+        super(id, collisions, vectors);
     }
 
     @Override

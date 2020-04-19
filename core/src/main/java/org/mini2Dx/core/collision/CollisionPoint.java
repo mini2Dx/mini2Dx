@@ -69,7 +69,7 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 		init(id, x, y);
 	}
 
-	public CollisionPoint(Collisions collisions) {
+	public CollisionPoint(int id, Collisions collisions) {
 		this();
 		this.collisions = collisions;
 	}
@@ -102,6 +102,8 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 
 		if(collisions != null) {
 			clearPositionChangeListeners();
+
+			addPostionChangeListener(this);
 
 			disposed = true;
 			release();

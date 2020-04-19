@@ -83,13 +83,13 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 		init(id, vectors);
 	}
 
-	public CollisionPolygon(Collisions collisions, float [] vertices) {
-		this(vertices);
+	public CollisionPolygon(int id, Collisions collisions, float [] vertices) {
+		this(id, vertices);
 		this.collisions = collisions;
 	}
 
-	public CollisionPolygon(Collisions collisions, Vector2[] vectors) {
-		this(vectors);
+	public CollisionPolygon(int id, Collisions collisions, Vector2[] vectors) {
+		this(id, vectors);
 		this.collisions = collisions;
 	}
 
@@ -135,6 +135,9 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 		if(collisions != null) {
 			clearPositionChangeListeners();
 			clearSizeChangeListeners();
+
+			addPostionChangeListener(this);
+			addSizeChangeListener(this);
 
 			disposed = true;
 			release();

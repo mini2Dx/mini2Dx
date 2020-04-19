@@ -20,8 +20,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mini2Dx.core.JvmLocks;
+import org.mini2Dx.core.Logger;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.collision.util.*;
+import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.Vector2;
 
 public class CollisionsTest {
@@ -33,11 +35,44 @@ public class CollisionsTest {
 	public static void beforeClass() {
 		Mdx.locks = new JvmLocks();
 		Collisions.DEFAULT_POOL_SIZE = DEFAULT_POOL_SIZE;
+
+		Mdx.log = new Logger() {
+			@Override
+			public void info(String tag, String message) {
+				System.out.println(tag + " - " + message);
+			}
+
+			@Override
+			public void debug(String tag, String message) {
+				System.out.println(tag + " - " + message);
+			}
+
+			@Override
+			public void error(String tag, String message) {
+				System.out.println(tag + " - " + message);
+			}
+
+			@Override
+			public void error(String tag, String message, Exception e) {
+				System.out.println(tag + " - " + message);
+				e.printStackTrace();
+			}
+
+			@Override
+			public void setLoglevel(int loglevel) {
+			}
+		};
+	}
+
+	@Before
+	public void setUp() {
+		InterpolationTracker.deregisterAll();
 	}
 
 	@Test
 	public void testCollisionBox() {
 		Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalCollisionBoxesAvailable());
+		Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 
 		for(int i = 0; i < 10; i++) {
 			final int id = 7 + i;
@@ -48,6 +83,7 @@ public class CollisionsTest {
 
 			final CollisionBox collisionBox = collisions.collisionBox(id, x, y, width, height);
 			Assert.assertEquals(0, collisions.getTotalCollisionBoxesAvailable());
+			Assert.assertEquals(1, InterpolationTracker.getTotalObjects());
 
 			Assert.assertEquals(id, collisionBox.getId());
 			Assert.assertEquals(x, collisionBox.getX(), 0f);
@@ -59,10 +95,21 @@ public class CollisionsTest {
 			Assert.assertEquals(width, collisionBox.getRenderWidth(), 0f);
 			Assert.assertEquals(height, collisionBox.getRenderHeight(), 0f);
 
+			for(int offsetX = 1; offsetX < 10; offsetX++) {
+				for(int offsetY = 1; offsetY < 10; offsetY++) {
+					collisionBox.setXY(x + offsetX, y + offsetY);
+					collisionBox.interpolate(1f);
+					Assert.assertEquals(x + offsetX, collisionBox.getRenderX(), 0f);
+					Assert.assertEquals(y + offsetY, collisionBox.getRenderY(), 0f);
+				}
+			}
+
 			collisionBox.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalCollisionBoxesAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 			collisionBox.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalCollisionBoxesAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 		}
 	}
 
@@ -78,6 +125,7 @@ public class CollisionsTest {
 
 			final CollisionCircle collisionCircle = collisions.collisionCircle(id, x, y, radius);
 			Assert.assertEquals(0, collisions.getTotalCollisionCirclesAvailable());
+			Assert.assertEquals(1, InterpolationTracker.getTotalObjects());
 
 			Assert.assertEquals(id, collisionCircle.getId());
 			Assert.assertEquals(x, collisionCircle.getX(), 0f);
@@ -87,16 +135,28 @@ public class CollisionsTest {
 			Assert.assertEquals(y, collisionCircle.getRenderY(), 0f);
 			Assert.assertEquals(radius, collisionCircle.getRenderRadius(), 0f);
 
+			for(int offsetX = 1; offsetX < 10; offsetX++) {
+				for(int offsetY = 1; offsetY < 10; offsetY++) {
+					collisionCircle.setXY(x + offsetX, y + offsetY);
+					collisionCircle.interpolate(1f);
+					Assert.assertEquals(x + offsetX, collisionCircle.getRenderX(), 0f);
+					Assert.assertEquals(y + offsetY, collisionCircle.getRenderY(), 0f);
+				}
+			}
+
 			collisionCircle.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalCollisionCirclesAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 			collisionCircle.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalCollisionCirclesAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 		}
 	}
 
 	@Test
 	public void testCollisionPoint() {
 		Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalCollisionPointsAvailable());
+		Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 
 		for(int i = 0; i < 10; i++) {
 			final int id = 103 + i;
@@ -105,20 +165,34 @@ public class CollisionsTest {
 
 			final CollisionPoint collisionPoint = collisions.collisionPoint(id, x, y);
 			Assert.assertEquals(0, collisions.getTotalCollisionPointsAvailable());
+			Assert.assertEquals(1, InterpolationTracker.getTotalObjects());
 
 			Assert.assertEquals(id, collisionPoint.getId());
 			Assert.assertEquals(x, collisionPoint.getX(), 0f);
 			Assert.assertEquals(y, collisionPoint.getY(), 0f);
 
+			for(int offsetX = 1; offsetX < 10; offsetX++) {
+				for(int offsetY = 1; offsetY < 10; offsetY++) {
+					collisionPoint.setXY(x + offsetX, y + offsetY);
+					collisionPoint.interpolate(1f);
+					Assert.assertEquals(x + offsetX, collisionPoint.getRenderX(), 0f);
+					Assert.assertEquals(y + offsetY, collisionPoint.getRenderY(), 0f);
+				}
+			}
+
 			collisionPoint.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalCollisionPointsAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 			collisionPoint.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalCollisionPointsAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 		}
 	}
 
 	@Test
 	public void testCollisionPolygon() {
+		Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
+
 		for(int i = 0; i < 10; i++) {
 			final int id = 97 + i;
 			final Vector2 [] vectors = new Vector2[] {
@@ -128,6 +202,7 @@ public class CollisionsTest {
 
 			final CollisionPolygon collisionPolygon = collisions.collisionPolygon(id, vectors);
 			Assert.assertEquals(0, collisions.getTotalCollisionPolygonsAvailable());
+			Assert.assertEquals(1, InterpolationTracker.getTotalObjects());
 
 			Assert.assertEquals(id, collisionPolygon.getId());
 			Assert.assertEquals(vectors[0].x, collisionPolygon.getX(), 0f);
@@ -139,8 +214,10 @@ public class CollisionsTest {
 
 			collisionPolygon.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalCollisionPolygonsAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 			collisionPolygon.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalCollisionPolygonsAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 		}
 	}
 
@@ -157,6 +234,7 @@ public class CollisionsTest {
 
 			final QuadTreeAwareCollisionBox collisionBox = collisions.quadTreeAwareCollisionBox(id, x, y, width, height);
 			Assert.assertEquals(0, collisions.getTotalQuadTreeAwareCollisionBoxesAvailable());
+			Assert.assertEquals(1, InterpolationTracker.getTotalObjects());
 
 			Assert.assertEquals(id, collisionBox.getId());
 			Assert.assertEquals(x, collisionBox.getX(), 0f);
@@ -168,10 +246,21 @@ public class CollisionsTest {
 			Assert.assertEquals(width, collisionBox.getRenderWidth(), 0f);
 			Assert.assertEquals(height, collisionBox.getRenderHeight(), 0f);
 
+			for(int offsetX = 1; offsetX < 10; offsetX++) {
+				for(int offsetY = 1; offsetY < 10; offsetY++) {
+					collisionBox.setXY(x + offsetX, y + offsetY);
+					collisionBox.interpolate(1f);
+					Assert.assertEquals(x + offsetX, collisionBox.getRenderX(), 0f);
+					Assert.assertEquals(y + offsetY, collisionBox.getRenderY(), 0f);
+				}
+			}
+
 			collisionBox.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalQuadTreeAwareCollisionBoxesAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 			collisionBox.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalQuadTreeAwareCollisionBoxesAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 		}
 	}
 
@@ -187,6 +276,7 @@ public class CollisionsTest {
 
 			final QuadTreeAwareCollisionCircle collisionCircle = collisions.quadTreeAwareCollisionCircle(id, x, y, radius);
 			Assert.assertEquals(0, collisions.getTotalQuadTreeAwareCollisionCirclesAvailable());
+			Assert.assertEquals(1, InterpolationTracker.getTotalObjects());
 
 			Assert.assertEquals(id, collisionCircle.getId());
 			Assert.assertEquals(x, collisionCircle.getX(), 0f);
@@ -196,10 +286,21 @@ public class CollisionsTest {
 			Assert.assertEquals(y, collisionCircle.getRenderY(), 0f);
 			Assert.assertEquals(radius, collisionCircle.getRenderRadius(), 0f);
 
+			for(int offsetX = 1; offsetX < 10; offsetX++) {
+				for(int offsetY = 1; offsetY < 10; offsetY++) {
+					collisionCircle.setXY(x + offsetX, y + offsetY);
+					collisionCircle.interpolate(1f);
+					Assert.assertEquals(x + offsetX, collisionCircle.getRenderX(), 0f);
+					Assert.assertEquals(y + offsetY, collisionCircle.getRenderY(), 0f);
+				}
+			}
+
 			collisionCircle.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalQuadTreeAwareCollisionCirclesAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 			collisionCircle.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalQuadTreeAwareCollisionCirclesAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 		}
 	}
 
@@ -214,15 +315,27 @@ public class CollisionsTest {
 
 			final CollisionPoint collisionPoint = collisions.quadTreeAwareCollisionPoint(id, x, y);
 			Assert.assertEquals(0, collisions.getTotalQuadTreeAwareCollisionPointsAvailable());
+			Assert.assertEquals(1, InterpolationTracker.getTotalObjects());
 
 			Assert.assertEquals(id, collisionPoint.getId());
 			Assert.assertEquals(x, collisionPoint.getX(), 0f);
 			Assert.assertEquals(y, collisionPoint.getY(), 0f);
 
+			for(int offsetX = 1; offsetX < 10; offsetX++) {
+				for(int offsetY = 1; offsetY < 10; offsetY++) {
+					collisionPoint.setXY(x + offsetX, y + offsetY);
+					collisionPoint.interpolate(1f);
+					Assert.assertEquals(x + offsetX, collisionPoint.getRenderX(), 0f);
+					Assert.assertEquals(y + offsetY, collisionPoint.getRenderY(), 0f);
+				}
+			}
+
 			collisionPoint.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalQuadTreeAwareCollisionPointsAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 			collisionPoint.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalQuadTreeAwareCollisionPointsAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 		}
 	}
 
@@ -237,6 +350,7 @@ public class CollisionsTest {
 
 			final CollisionPolygon collisionPolygon = collisions.quadTreeAwareCollisionPolygon(id, vectors);
 			Assert.assertEquals(0, collisions.getTotalQuadTreeAwareCollisionPolygonsAvailable());
+			Assert.assertEquals(1, InterpolationTracker.getTotalObjects());
 
 			Assert.assertEquals(id, collisionPolygon.getId());
 			Assert.assertEquals(vectors[0].x, collisionPolygon.getX(), 0f);
@@ -248,8 +362,10 @@ public class CollisionsTest {
 
 			collisionPolygon.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalQuadTreeAwareCollisionPolygonsAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 			collisionPolygon.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalQuadTreeAwareCollisionPolygonsAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 		}
 	}
 
@@ -266,6 +382,7 @@ public class CollisionsTest {
 
 			final StaticCollisionBox collisionBox = collisions.staticCollisionBox(id, x, y, width, height);
 			Assert.assertEquals(0, collisions.getTotalStaticCollisionBoxesAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 
 			Assert.assertEquals(id, collisionBox.getId());
 			Assert.assertEquals(x, collisionBox.getX(), 0f);
@@ -277,10 +394,21 @@ public class CollisionsTest {
 			Assert.assertEquals(width, collisionBox.getRenderWidth(), 0f);
 			Assert.assertEquals(height, collisionBox.getRenderHeight(), 0f);
 
+			for(int offsetX = 1; offsetX < 10; offsetX++) {
+				for(int offsetY = 1; offsetY < 10; offsetY++) {
+					collisionBox.setXY(x + offsetX, y + offsetY);
+					collisionBox.interpolate(1f);
+					Assert.assertEquals(x + offsetX, collisionBox.getRenderX(), 0f);
+					Assert.assertEquals(y + offsetY, collisionBox.getRenderY(), 0f);
+				}
+			}
+
 			collisionBox.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalStaticCollisionBoxesAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 			collisionBox.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalStaticCollisionBoxesAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 		}
 	}
 
@@ -296,6 +424,7 @@ public class CollisionsTest {
 
 			final StaticCollisionCircle collisionCircle = collisions.staticCollisionCircle(id, x, y, radius);
 			Assert.assertEquals(0, collisions.getTotalStaticCollisionCirclesAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 
 			Assert.assertEquals(id, collisionCircle.getId());
 			Assert.assertEquals(x, collisionCircle.getX(), 0f);
@@ -305,10 +434,21 @@ public class CollisionsTest {
 			Assert.assertEquals(y, collisionCircle.getRenderY(), 0f);
 			Assert.assertEquals(radius, collisionCircle.getRenderRadius(), 0f);
 
+			for(int offsetX = 1; offsetX < 10; offsetX++) {
+				for(int offsetY = 1; offsetY < 10; offsetY++) {
+					collisionCircle.setXY(x + offsetX, y + offsetY);
+					collisionCircle.interpolate(1f);
+					Assert.assertEquals(x + offsetX, collisionCircle.getRenderX(), 0f);
+					Assert.assertEquals(y + offsetY, collisionCircle.getRenderY(), 0f);
+				}
+			}
+
 			collisionCircle.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalStaticCollisionCirclesAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 			collisionCircle.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalStaticCollisionCirclesAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 		}
 	}
 
@@ -323,15 +463,27 @@ public class CollisionsTest {
 
 			final StaticCollisionPoint collisionPoint = collisions.staticCollisionPoint(id, x, y);
 			Assert.assertEquals(0, collisions.getTotalStaticCollisionPointsAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 
 			Assert.assertEquals(id, collisionPoint.getId());
 			Assert.assertEquals(x, collisionPoint.getX(), 0f);
 			Assert.assertEquals(y, collisionPoint.getY(), 0f);
 
+			for(int offsetX = 1; offsetX < 10; offsetX++) {
+				for(int offsetY = 1; offsetY < 10; offsetY++) {
+					collisionPoint.setXY(x + offsetX, y + offsetY);
+					collisionPoint.interpolate(1f);
+					Assert.assertEquals(x + offsetX, collisionPoint.getRenderX(), 0f);
+					Assert.assertEquals(y + offsetY, collisionPoint.getRenderY(), 0f);
+				}
+			}
+
 			collisionPoint.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalStaticCollisionPointsAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 			collisionPoint.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalStaticCollisionPointsAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 		}
 	}
 
@@ -346,6 +498,7 @@ public class CollisionsTest {
 
 			final StaticCollisionPolygon collisionPolygon = collisions.staticCollisionPolygon(id, vectors);
 			Assert.assertEquals(0, collisions.getTotalStaticCollisionPolygonsAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 
 			Assert.assertEquals(id, collisionPolygon.getId());
 			Assert.assertEquals(vectors[0].x, collisionPolygon.getX(), 0f);
@@ -357,8 +510,10 @@ public class CollisionsTest {
 
 			collisionPolygon.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalStaticCollisionPolygonsAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 			collisionPolygon.dispose();
 			Assert.assertEquals(DEFAULT_POOL_SIZE, collisions.getTotalStaticCollisionPolygonsAvailable());
+			Assert.assertEquals(0, InterpolationTracker.getTotalObjects());
 		}
 	}
 }

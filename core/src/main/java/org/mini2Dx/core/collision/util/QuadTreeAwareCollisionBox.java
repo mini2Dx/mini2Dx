@@ -47,8 +47,8 @@ public class QuadTreeAwareCollisionBox extends CollisionBox implements QuadTreeA
         super();
     }
 
-    public QuadTreeAwareCollisionBox(Collisions collisions) {
-        super(collisions);
+    public QuadTreeAwareCollisionBox(int id, Collisions collisions) {
+        super(id, collisions);
     }
 
     @Override

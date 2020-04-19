@@ -70,8 +70,8 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 		init(id, x, y, width, height);
 	}
 
-	public CollisionBox(Collisions collisions) {
-		this();
+	public CollisionBox(int id, Collisions collisions) {
+		this(id);
 		this.collisions = collisions;
 	}
 
@@ -106,6 +106,9 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 		if(collisions != null) {
 			clearPositionChangeListeners();
 			clearSizeChangeListeners();
+
+			addPostionChangeListener(this);
+			addSizeChangeListener(this);
 
 			disposed = true;
 			release();

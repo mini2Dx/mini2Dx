@@ -47,8 +47,8 @@ public class QuadTreeAwareCollisionPoint extends CollisionPoint implements QuadT
         super();
     }
 
-    public QuadTreeAwareCollisionPoint(Collisions collisions) {
-        super(collisions);
+    public QuadTreeAwareCollisionPoint(int id, Collisions collisions) {
+        super(id, collisions);
     }
 
     @Override

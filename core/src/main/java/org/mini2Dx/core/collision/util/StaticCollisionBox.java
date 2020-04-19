@@ -21,6 +21,8 @@ import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.geom.Rectangle;
 
+import java.util.Objects;
+
 /**
  * An implementation of a collision box that will not move between updates/frames, thus, does not register as an interpolating collision. Due to this,
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionBox} implementation.
@@ -58,8 +60,8 @@ public class StaticCollisionBox extends Rectangle implements CollisionArea {
 		init(id, x, y, width, height);
 	}
 
-	public StaticCollisionBox(Collisions collisions) {
-		this();
+	public StaticCollisionBox(int id, Collisions collisions) {
+		this(id);
 		this.collisions = collisions;
 	}
 
@@ -76,6 +78,9 @@ public class StaticCollisionBox extends Rectangle implements CollisionArea {
 		}
 
 		if(collisions != null) {
+			clearPositionChangeListeners();
+			clearSizeChangeListeners();
+
 			disposed = true;
 			collisions.release(this);
 			return;
@@ -173,5 +178,19 @@ public class StaticCollisionBox extends Rectangle implements CollisionArea {
 			return;
 		}
 		this.renderCoordMode = mode;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		StaticCollisionBox that = (StaticCollisionBox) o;
+		return id == that.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }
