@@ -20,29 +20,53 @@ import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
 
-public class TextureAtlas implements Disposable {
+import java.util.concurrent.TimeUnit;
 
-	private Array<TextureAtlasRegion> atlasRegions = new Array<>();
+public class TextureAtlas implements Disposable {
+	public static final long MAX_ATLAS_LOAD_TIME_NANOS = TimeUnit.MILLISECONDS.toNanos(2);
+
+	private final TextureAtlasConfig config;
+
+	private Array<TextureAtlasRegion> atlasRegions;
+	private int loadedAtlasRegions;
 
 	public TextureAtlas(FileHandle packFile, FileHandle imagesDir){
-		TextureAtlasConfig config = new TextureAtlasConfig(packFile, imagesDir);
+		config = new TextureAtlasConfig(packFile, imagesDir);
 		for (String texturePath : config.getDependencies()){
 			config.textures.replace(texturePath, Mdx.graphics.newTexture(Mdx.files.internal(texturePath)));
 		}
-		initFromConfig(config);
-
+		initFromConfig(config, true);
 	}
 
 	public TextureAtlas(TextureAtlasConfig config){
-		initFromConfig(config);
+		this(config, true);
 	}
 
-	private void initFromConfig(TextureAtlasConfig config) {
+	public TextureAtlas(TextureAtlasConfig config, boolean loadAtlasRegions){
+		this.config = config;
+		initFromConfig(config, loadAtlasRegions);
+	}
+
+	private void initFromConfig(TextureAtlasConfig config, boolean loadAtlasRegions) {
 		atlasRegions = config.atlasRegions;
-		for (int i = 0; i < atlasRegions.size; i++){
-			TextureAtlasRegion region = atlasRegions.get(i);
-			region.setTexture(config.textures.get(region.getTexturePath()));
+
+		if(!loadAtlasRegions) {
+			return;
 		}
+		while(!loadAtlasRegionTextures()) {}
+	}
+
+	public boolean loadAtlasRegionTextures() {
+		final long startTime = System.nanoTime();
+		for (; loadedAtlasRegions < atlasRegions.size; loadedAtlasRegions++){
+			TextureAtlasRegion region = atlasRegions.get(loadedAtlasRegions);
+			region.setTexture(config.textures.get(region.getTexturePath()));
+
+			if(System.nanoTime() - startTime >= MAX_ATLAS_LOAD_TIME_NANOS) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**

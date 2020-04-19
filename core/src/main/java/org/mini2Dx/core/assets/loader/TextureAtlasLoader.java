@@ -28,13 +28,15 @@ public class TextureAtlasLoader implements AsyncAssetLoader<TextureAtlas> {
 	@Override
 	public boolean loadOnGameThread(AssetManager assetManager, AssetDescriptor<TextureAtlas> assetDescriptor,
 	                                AsyncLoadingCache asyncLoadingCache, AssetLoaderResult<TextureAtlas> resultHolder) {
-		FileHandle resolvedFileHandle = assetDescriptor.getResolvedFileHandle();
-		TextureAtlasConfig atlasConfig = asyncLoadingCache.getCache(resolvedFileHandle.path(), TextureAtlasConfig.class);
-		for (String path : atlasConfig.textures.keySet()){
-			atlasConfig.textures.replace(path, assetManager.get(path, Texture.class));
+		if(resultHolder.getResult() == null) {
+			FileHandle resolvedFileHandle = assetDescriptor.getResolvedFileHandle();
+			TextureAtlasConfig atlasConfig = asyncLoadingCache.getCache(resolvedFileHandle.path(), TextureAtlasConfig.class);
+			for (String path : atlasConfig.textures.keySet()) {
+				atlasConfig.textures.replace(path, assetManager.get(path, Texture.class));
+			}
+			resultHolder.setResult(new TextureAtlas(atlasConfig));
 		}
-		resultHolder.setResult(new TextureAtlas(atlasConfig));
-		return true;
+		return resultHolder.getResult().loadAtlasRegionTextures();
 	}
 
 	@Override

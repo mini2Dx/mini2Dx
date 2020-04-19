@@ -15,11 +15,14 @@
  ******************************************************************************/
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.core.collections.LruIntMap;
 import org.mini2Dx.core.collections.LruObjectMap;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.input.GamePadType;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.gdx.utils.ObjectMap;
+import org.mini2Dx.gdx.utils.ObjectSet;
 import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.render.ParentRenderNode;
 import org.mini2Dx.ui.render.RenderNode;
@@ -35,12 +38,12 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 	protected static final String EMPTY_STRING = "";
 
 	protected final String rules;
-	protected final Map<ScreenSize, SizeRule> widthRules = new HashMap<ScreenSize, SizeRule>();
-	protected final Map<ScreenSize, SizeRule> heightRules = new HashMap<ScreenSize, SizeRule>();
-	protected final Set<InputSource> hiddenByInput = new HashSet<InputSource>();
-	protected final Set<GamePadType> hiddenByGamePadType = new HashSet<GamePadType>();
-	protected final Map<ScreenSize, OffsetRule> offsetXRules = new HashMap<ScreenSize, OffsetRule>();
-	protected final Map<ScreenSize, OffsetRule> offsetYRules = new HashMap<ScreenSize, OffsetRule>();
+	protected final ObjectMap<ScreenSize, SizeRule> widthRules = new ObjectMap<ScreenSize, SizeRule>();
+	protected final ObjectMap<ScreenSize, SizeRule> heightRules = new ObjectMap<ScreenSize, SizeRule>();
+	protected final ObjectSet<InputSource> hiddenByInput = new ObjectSet<InputSource>();
+	protected final ObjectSet<GamePadType> hiddenByGamePadType = new ObjectSet<GamePadType>();
+	protected final ObjectMap<ScreenSize, OffsetRule> offsetXRules = new ObjectMap<ScreenSize, OffsetRule>();
+	protected final ObjectMap<ScreenSize, OffsetRule> offsetYRules = new ObjectMap<ScreenSize, OffsetRule>();
 
 	private final FlexDirection flexDirection;
 	private boolean hiddenByInputSource = false;
@@ -135,7 +138,7 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 		finaliseRuleset(heightRules, offsetYRules);
 	}
 
-	private void storeSizeRule(boolean horizontalRuleset, Map<ScreenSize, SizeRule> sizeRules, String[] ruleDetails) {
+	private void storeSizeRule(boolean horizontalRuleset, ObjectMap<ScreenSize, SizeRule> sizeRules, String[] ruleDetails) {
 		switch (ruleDetails[0].toLowerCase()) {
 		case "hidden": {
 			if(!horizontalRuleset) {
@@ -177,7 +180,7 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 		}
 	}
 
-	private void storeOffsetRule(boolean horizontalRuleset, Map<ScreenSize, OffsetRule> offsetRules, String[] ruleDetails) {
+	private void storeOffsetRule(boolean horizontalRuleset, ObjectMap<ScreenSize, OffsetRule> offsetRules, String[] ruleDetails) {
 		switch (ruleDetails[0].toLowerCase()) {
 		case "hidden": {
 			if(!horizontalRuleset) {
@@ -216,7 +219,7 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 		}
 	}
 
-	private void finaliseRuleset(Map<ScreenSize, SizeRule> sizeRules, Map<ScreenSize, OffsetRule> offsetRules) {
+	private void finaliseRuleset(ObjectMap<ScreenSize, SizeRule> sizeRules, ObjectMap<ScreenSize, OffsetRule> offsetRules) {
 		Iterator<ScreenSize> screenSizes = ScreenSize.smallestToLargest();
 		SizeRule lastSizeRule = new ResponsiveSizeRule(12);
 		OffsetRule lastOffsetRule = new AbsoluteOffsetRule(0);
@@ -361,13 +364,13 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 		return flexLayout;
 	}
 
-	private static LruObjectMap<String, String> X_CACHE = new LruObjectMap<String, String>();
-	private static LruObjectMap<String, String> Y_CACHE = new LruObjectMap<String, String>();
-	private static LruObjectMap<String, String> WIDTH_CACHE = new LruObjectMap<String, String>();
-	private static LruObjectMap<String, String> HEIGHT_CACHE = new LruObjectMap<String, String>();
+	private static LruIntMap<String> X_CACHE = new LruIntMap<String>();
+	private static LruIntMap<String> Y_CACHE = new LruIntMap<String>();
+	private static LruIntMap<String> WIDTH_CACHE = new LruIntMap<String>();
+	private static LruIntMap<String> HEIGHT_CACHE = new LruIntMap<String>();
 
 	public static String setX(String flexLayout, float x) {
-		final String key = flexLayout + "__" + x;
+		final int key = Objects.hash(flexLayout, x);
 		if(X_CACHE.containsKey(key)) {
 			return X_CACHE.get(key);
 		}
@@ -405,7 +408,7 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 	}
 
 	public static String setY(String flexLayout, float y) {
-		final String key = flexLayout + "__" + y;
+		final int key = Objects.hash(flexLayout, y);
 		if(Y_CACHE.containsKey(key)) {
 			return Y_CACHE.get(key);
 		}
@@ -448,7 +451,7 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 	}
 
 	public static String setWidth(String flexLayout, float width) {
-		final String key = flexLayout + "__" + width;
+		final int key = Objects.hash(flexLayout, width);
 		if(WIDTH_CACHE.containsKey(key)) {
 			return WIDTH_CACHE.get(key);
 		}
@@ -486,7 +489,7 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 	}
 
 	public static String setHeight(String flexLayout, float height) {
-		final String key = flexLayout + "__" + height;
+		final int key = Objects.hash(flexLayout, height);
 		if(HEIGHT_CACHE.containsKey(key)) {
 			return HEIGHT_CACHE.get(key);
 		}
