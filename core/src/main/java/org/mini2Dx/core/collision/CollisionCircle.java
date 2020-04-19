@@ -172,6 +172,24 @@ public class CollisionCircle extends Circle implements CollisionArea,
 	}
 
 	@Override
+	public void forceToWidth(float width) {
+		setRadius(width * 0.5f);
+		previousCircle.set(this);
+		renderCircle.set(this);
+		storeRenderCoordinates();
+		interpolateRequired = false;
+	}
+
+	@Override
+	public void forceToHeight(float height) {
+		setRadius(height * 0.5f);
+		previousCircle.set(this);
+		renderCircle.set(this);
+		storeRenderCoordinates();
+		interpolateRequired = false;
+	}
+
+	@Override
 	public void forceTo(float x, float y) {
 		super.setXY(x, y);
 		previousCircle.setXY(x, y);

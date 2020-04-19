@@ -89,6 +89,16 @@ public class StaticCollisionBox extends Rectangle implements CollisionArea {
 	}
 
 	@Override
+	public void forceToWidth(float width) {
+		setWidth(width);
+	}
+
+	@Override
+	public void forceToHeight(float height) {
+		setHeight(height);
+	}
+
+	@Override
 	public int getId() {
 		return id;
 	}

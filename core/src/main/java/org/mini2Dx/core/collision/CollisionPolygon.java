@@ -186,6 +186,16 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 		throw new MdxException("#forceTo(x, y, width, height) not supported on CollisionPolygon");
 	}
 
+	@Override
+	public void forceToWidth(float width) {
+		throw new MdxException("#forceToWidth(width) not supported on CollisionPolygon");
+	}
+
+	@Override
+	public void forceToHeight(float height) {
+		throw new MdxException("#forceToHeight(float height) not supported on CollisionPolygon");
+	}
+
 	public void forceTo(float [] vertices) {
 		setVertices(vertices);
 		previousPolygon.set(this);

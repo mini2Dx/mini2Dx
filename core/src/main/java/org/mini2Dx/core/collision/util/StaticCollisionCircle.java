@@ -114,6 +114,16 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 	}
 
 	@Override
+	public void forceToWidth(float width) {
+		setRadius(width * 0.5f);
+	}
+
+	@Override
+	public void forceToHeight(float height) {
+		setRadius(height * 0.5f);
+	}
+
+	@Override
 	public int getRenderX() {
 		return renderCoordMode.apply(getX());
 	}
