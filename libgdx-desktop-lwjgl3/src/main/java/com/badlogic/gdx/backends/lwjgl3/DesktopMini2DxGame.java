@@ -132,9 +132,6 @@ public class DesktopMini2DxGame implements Application {
 
 		Array<Lwjgl3Mini2DxWindow> closedWindows = new Array<Lwjgl3Mini2DxWindow>();
 
-		float maximumDelta = 1f / config.targetFPS;
-		float targetTimestep = config.targetTimestep;
-
 		while (running && windows.size > 0) {
 			if(Mdx.platformUtils != null) {
 				Mdx.platformUtils.markFrame();
@@ -151,7 +148,7 @@ public class DesktopMini2DxGame implements Application {
 				window.makeCurrent();
 				currentWindow = window;
 				synchronized (lifecycleListeners) {
-					haveWindowsRendered |= window.update(maximumDelta, targetTimestep);
+					haveWindowsRendered |= window.update(config);
 				}
 				if (window.shouldClose()) {
 					closedWindows.add(window);

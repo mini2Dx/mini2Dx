@@ -22,13 +22,20 @@ public class Lwjgl3Mini2DxConfig extends Lwjgl3ApplicationConfiguration {
 	 */
 	public int targetFPS = 60;
 	/**
-	 * The target timestep. Typically 1 / targetFPS
+	 * True if there should be no more updates than the target FPS
 	 */
-	public float targetTimestep = (1f / targetFPS);
+	public boolean capUpdatesPerSecond = true;
+	/**
+	 * True if an error should be logged when frames a dropped
+	 */
+	public boolean errorOnFrameDrop = false;
 	/**
 	 * The window listener
 	 */
 	public Lwjgl3Mini2DxWindowListener windowListener;
+
+	private long targetTimestepNanos = -1L;
+	private float targetTimestepSeconds;
 
 	public Lwjgl3Mini2DxConfig(String gameIdentifier) {
 		this.gameIdentifier = gameIdentifier;
@@ -43,6 +50,33 @@ public class Lwjgl3Mini2DxConfig extends Lwjgl3ApplicationConfiguration {
 	void set(Lwjgl3Mini2DxConfig config) {
 		super.set(config);
 		targetFPS = config.targetFPS;
-		targetTimestep = config.targetTimestep;
+		capUpdatesPerSecond = config.capUpdatesPerSecond;
+		errorOnFrameDrop = config.errorOnFrameDrop;
+	}
+
+	private void setTargetTimestep() {
+		if(targetTimestepNanos > -1L) {
+			return;
+		}
+		targetTimestepSeconds = 1f / targetFPS;
+		targetTimestepNanos = 1000000000L / targetFPS;
+	}
+
+	public long targetTimestepNanos() {
+		setTargetTimestep();
+		return targetTimestepNanos;
+	}
+
+	public float targetTimestepSeconds() {
+		setTargetTimestep();
+		return targetTimestepSeconds;
+	}
+
+	public long maximumTimestepNanos() {
+		return targetTimestepNanos() * 2L;
+	}
+
+	public float maximumTimestepSeconds() {
+		return targetTimestepSeconds() * 2f;
 	}
 }
