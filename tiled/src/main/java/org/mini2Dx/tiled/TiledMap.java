@@ -38,6 +38,10 @@ public class TiledMap {
 	 * Set to true to optimise CPU time (at cost of memory usage) for rendering tile layers that are mostly empty
 	 */
 	public static boolean FAST_RENDER_EMPTY_LAYERS = false;
+	/**
+	 * Set to true if mini2Dx should check the viewport bounds while rendering a tile and avoid rendering it if it is outside of the bounds
+	 */
+	public static boolean CLIP_TILES_OUTSIDE_GRAPHICS_VIEWPORT = false;
 
 	private final TiledMapData tiledMapData;
 
