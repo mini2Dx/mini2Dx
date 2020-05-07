@@ -138,33 +138,42 @@ public class Polygon extends Shape {
 	}
 
 	public Polygon lerp(Polygon target, float alpha) {
+		lerp(this, target, alpha);
+		return this;
+	}
+
+	public void lerp(Polygon result, Polygon target, float alpha) {
+		lerp(result, this, target, alpha);
+	}
+
+	public static void lerp(Polygon result, Polygon from, Polygon target, float alpha) {
 		final float inverseAlpha = 1.0f - alpha;
 
-		float[] currentVertices = vertices;
+		float[] currentVertices = from.vertices;
 		float[] targetVertices = target.vertices;
+		float[] resultVertices = result.vertices;
 
 		if (currentVertices.length != targetVertices.length) {
 			throw new MdxException("Cannot lerp polygons with different vertice amounts");
 		}
-		if (getRotation() != target.getRotation()) {
-			float newRotation = (rotation * inverseAlpha) + (target.getRotation() * alpha);
-			if (getX() == target.getX() && getY() == target.getY()) {
+		if (from.getRotation() != target.getRotation()) {
+			float newRotation = (from.rotation * inverseAlpha) + (target.getRotation() * alpha);
+			if (from.getX() == target.getX() && from.getY() == target.getY()) {
 				// Same origin, only rotational change
-				setRotation(newRotation);
+				result.setRotation(newRotation);
 			} else {
-				setRotationAround((currentVertices[0] * inverseAlpha) + (targetVertices[0] * alpha),
+				result.setRotationAround((currentVertices[0] * inverseAlpha) + (targetVertices[0] * alpha),
 						(currentVertices[1] * inverseAlpha) + (targetVertices[1] * alpha), newRotation);
 			}
-		} else if (!isSameAs(target)) {
+		} else if (!from.isSameAs(target)) {
 			for (int i = 0; i < currentVertices.length; i += 2) {
-				currentVertices[i] = (currentVertices[i] * inverseAlpha) + (targetVertices[i] * alpha);
-				currentVertices[i + 1] = (currentVertices[i + 1] * inverseAlpha) + (targetVertices[i + 1] * alpha);
+				resultVertices[i] = (currentVertices[i] * inverseAlpha) + (targetVertices[i] * alpha);
+				resultVertices[i + 1] = (currentVertices[i + 1] * inverseAlpha) + (targetVertices[i + 1] * alpha);
 			}
-			this.vertices = currentVertices;
-			setDirty();
-			notifyPositionChangeListeners();
+			result.vertices = resultVertices;
+			result.setDirty();
+			result.notifyPositionChangeListeners();
 		}
-		return this;
 	}
 
 	@Override

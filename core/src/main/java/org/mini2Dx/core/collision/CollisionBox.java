@@ -200,7 +200,7 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 		if(!interpolateRequired) {
 			return;
 		}
-		renderRectangle.set(previousRectangle.lerp(this, alpha));
+		previousRectangle.lerp(renderRectangle, this, alpha);
 		storeRenderCoordinates();
 		if(renderX != MathUtils.round(this.getX())) {
 			return;

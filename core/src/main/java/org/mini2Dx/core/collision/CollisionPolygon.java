@@ -159,7 +159,7 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 		if(!interpolateRequired) {
 			return;
 		}
-		renderPolygon.set(previousPolygon.lerp(this, alpha));
+		previousPolygon.lerp(renderPolygon,this, alpha);
 		storeRenderCoordinates();
 		if(renderX != MathUtils.round(this.getX())) {
 			return;

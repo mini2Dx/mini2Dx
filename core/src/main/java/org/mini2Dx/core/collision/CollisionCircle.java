@@ -138,7 +138,7 @@ public class CollisionCircle extends Circle implements CollisionArea,
 		if(!interpolateRequired) {
 			return;
 		}
-		renderCircle.set(previousCircle.lerp(this, alpha));
+		previousCircle.lerp(renderCircle, this, alpha);
 		storeRenderCoordinates();
 		if(renderX != MathUtils.round(getX())) {
 			return;
