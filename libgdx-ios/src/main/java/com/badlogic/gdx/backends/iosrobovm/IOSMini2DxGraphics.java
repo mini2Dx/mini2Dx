@@ -16,7 +16,6 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
 import org.mini2Dx.core.Mdx;
-import org.mini2Dx.ios.IOSMini2DxConfig;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.glkit.GLKView;
@@ -174,7 +173,7 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 	private float accumulator = 0f;
 	private int lastFrameDropWarning = -1;
 
-	IOSApplicationConfiguration config;
+	IOSMini2DxConfig config;
 	EAGLContext context;
 	GLVersion glVersion;
 	GLKView view;
@@ -271,7 +270,7 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 
 		String machineString = HWMachine.getMachineString();
-		IOSDevice device = IOSDevice.getDevice(machineString);
+		IOSDevice device = config.knownDevices.get(machineString);
 		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
 		int ppi = device != null ? device.ppi : 163;
 		density = device != null ? device.ppi/160f : scale;
