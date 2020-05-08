@@ -50,6 +50,8 @@ public class DesktopMini2DxGame implements Application {
 	protected ApplicationLogger applicationLogger;
 	protected String preferencesdir;
 
+	private int lastFrameDropWarning = -1;
+
 	public DesktopMini2DxGame(GameContainer game, Lwjgl2Mini2DxConfig config) {
 		this(game, config, new LwjglGraphics(config));
 	}
@@ -136,9 +138,9 @@ public class DesktopMini2DxGame implements Application {
 
 		graphics.lastTime = System.nanoTime();
 
-		float maximumDelta = 1f / config.targetFPS;
+		float maximumDeltaSeconds = config.maximumTimestepSeconds();
 		float accumulator = 0f;
-		float targetTimestep = config.targetTimestep;
+		float targetTimestepSeconds = config.targetTimestepSeconds();
 
 		boolean wasPaused = false;
 		while (running) {
@@ -225,25 +227,36 @@ public class DesktopMini2DxGame implements Application {
 				graphics.frameId++;
 
 				float delta = graphics.getDeltaTime();
-				if (delta > maximumDelta) {
-					delta = maximumDelta;
+				if (delta > maximumDeltaSeconds) {
+					delta = maximumDeltaSeconds;
 				}
 
 				accumulator += delta;
 
-				while (accumulator >= targetTimestep) {
+				while (accumulator >= targetTimestepSeconds) {
 					Mdx.platformUtils.markUpdateBegin();
 					input.update();
 					input.processEvents();
-					listener.update(targetTimestep);
+					listener.update(targetTimestepSeconds);
 					Mdx.platformUtils.markUpdateEnd();
-					accumulator -= targetTimestep;
+					accumulator -= targetTimestepSeconds;
 				}
-				listener.interpolate(accumulator / targetTimestep);
+				listener.interpolate(accumulator / targetTimestepSeconds);
 				Mdx.platformUtils.markRenderBegin();
 				listener.render();
 				Mdx.platformUtils.markRenderEnd();
 				Display.update(false);
+
+				if(config.errorOnFrameDrop) {
+					if(Mdx.platformUtils.getUpdatesPerSecond() < config.targetFPS) {
+						if(lastFrameDropWarning != Mdx.platformUtils.getUpdatesPerSecond()) {
+							lastFrameDropWarning = Mdx.platformUtils.getUpdatesPerSecond();
+							Mdx.log.error("mini2Dx", "WARN: " + (config.targetFPS - Mdx.platformUtils.getUpdatesPerSecond()) + " frames dropped.");
+						}
+					} else {
+						lastFrameDropWarning = -1;
+					}
+				}
 			} else {
 				// Sleeps to avoid wasting CPU in an empty loop.
 				if (frameRate == -1) {

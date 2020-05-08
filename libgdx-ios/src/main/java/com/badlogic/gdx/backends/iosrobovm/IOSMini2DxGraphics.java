@@ -172,6 +172,7 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 	private final float maximumDelta;
 	private final float targetTimestep;
 	private float accumulator = 0f;
+	private int lastFrameDropWarning = -1;
 
 	IOSApplicationConfiguration config;
 	EAGLContext context;
@@ -182,8 +183,8 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 	public IOSMini2DxGraphics (float scale, IOSMini2DxGame app, IOSMini2DxConfig config, IOSMini2DxInput input, boolean useGLES30) {
 		this.config = config;
 		
-		maximumDelta = 1f / config.targetFPS;
-		targetTimestep = config.targetTimestep;
+		maximumDelta = config.maximumTimestepSeconds();
+		targetTimestep = config.targetTimestepSeconds();
 
 		final CGRect bounds = app.getBounds();
 		// setup view and OpenGL
@@ -369,6 +370,17 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 		Mdx.platformUtils.markRenderBegin();
 		app.listener.render();
 		Mdx.platformUtils.markRenderEnd();
+
+		if(config.errorOnFrameDrop) {
+			if(Mdx.platformUtils.getUpdatesPerSecond() < config.targetFPS) {
+				if(lastFrameDropWarning != Mdx.platformUtils.getUpdatesPerSecond()) {
+					lastFrameDropWarning = Mdx.platformUtils.getUpdatesPerSecond();
+					Mdx.log.error("mini2Dx", "WARN: " + (config.targetFPS - Mdx.platformUtils.getUpdatesPerSecond()) + " frames dropped.");
+				}
+			} else {
+				lastFrameDropWarning = -1;
+			}
+		}
 	}
 
 	void makeCurrent () {

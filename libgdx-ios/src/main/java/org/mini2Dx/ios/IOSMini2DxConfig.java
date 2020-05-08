@@ -22,11 +22,14 @@ public class IOSMini2DxConfig extends IOSApplicationConfiguration {
 	/**
 	 * The target framerate
 	 */
-	public int targetFPS = 60;
+	public int targetFPS = 30;
 	/**
-	 * The target timestep
+	 * True if an error should be logged when frames a dropped
 	 */
-	public float targetTimestep = (1f / targetFPS);
+	public boolean errorOnFrameDrop = false;
+
+	private long targetTimestepNanos = -1L;
+	private float targetTimestepSeconds;
 
 	/** Edges where app gestures must be fired over system gestures.
 	 * Prior to iOS 11, UIRectEdge.All was default behaviour if status bar hidden, see https://github.com/libgdx/libgdx/issues/5110 **/
@@ -34,5 +37,31 @@ public class IOSMini2DxConfig extends IOSApplicationConfiguration {
 	
 	public IOSMini2DxConfig(String gameIdentifier) {
 		this.gameIdentifier = gameIdentifier;
+	}
+
+	private void setTargetTimestep() {
+		if(targetTimestepNanos > -1L) {
+			return;
+		}
+		targetTimestepSeconds = 1f / targetFPS;
+		targetTimestepNanos = 1000000000L / targetFPS;
+	}
+
+	public long targetTimestepNanos() {
+		setTargetTimestep();
+		return targetTimestepNanos;
+	}
+
+	public float targetTimestepSeconds() {
+		setTargetTimestep();
+		return targetTimestepSeconds;
+	}
+
+	public long maximumTimestepNanos() {
+		return targetTimestepNanos() * 2L;
+	}
+
+	public float maximumTimestepSeconds() {
+		return targetTimestepSeconds() * 2f;
 	}
 }

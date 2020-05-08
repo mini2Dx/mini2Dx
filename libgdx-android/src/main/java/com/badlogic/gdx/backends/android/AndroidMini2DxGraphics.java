@@ -33,6 +33,7 @@ public class AndroidMini2DxGraphics extends AndroidGraphics {
 	private final float maximumDelta;
 	private final float targetTimestep;
 	private float accumulator = 0f;
+	private int lastFrameDropWarning = -1;
 
 	public AndroidMini2DxGraphics(AndroidMini2DxGame application, AndroidMini2DxConfig config,
 			ResolutionStrategy resolutionStrategy) {
@@ -42,13 +43,15 @@ public class AndroidMini2DxGraphics extends AndroidGraphics {
 	public AndroidMini2DxGraphics(AndroidMini2DxGame application, AndroidMini2DxConfig config,
 			ResolutionStrategy resolutionStrategy, boolean focusableView) {
 		super(application, config, resolutionStrategy, focusableView);
-		maximumDelta = 1f / config.targetFPS;
-		targetTimestep = config.targetTimestep;
+		maximumDelta = config.maximumTimestepSeconds();
+		targetTimestep = config.targetTimestepSeconds();
 		game = application;
 	}
 
 	@Override
 	public void onDrawFrame(javax.microedition.khronos.opengles.GL10 gl) {
+		final AndroidMini2DxConfig config = (AndroidMini2DxConfig) super.config;
+
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
@@ -134,6 +137,17 @@ public class AndroidMini2DxGraphics extends AndroidGraphics {
 			Mdx.platformUtils.markRenderBegin();
 			app.getApplicationListener().render();
 			Mdx.platformUtils.markRenderEnd();
+
+			if(config.errorOnFrameDrop) {
+				if(Mdx.platformUtils.getUpdatesPerSecond() < config.targetFPS) {
+					if(lastFrameDropWarning != Mdx.platformUtils.getUpdatesPerSecond()) {
+						lastFrameDropWarning = Mdx.platformUtils.getUpdatesPerSecond();
+						Mdx.log.error("mini2Dx", "WARN: " + (config.targetFPS - Mdx.platformUtils.getUpdatesPerSecond()) + " frames dropped.");
+					}
+				} else {
+					lastFrameDropWarning = -1;
+				}
+			}
 		}
 
 		if (lpause) {
