@@ -20,7 +20,7 @@ public class Lwjgl3Mini2DxConfig extends Lwjgl3ApplicationConfiguration {
 	/**
 	 * The target framerate
 	 */
-	public int targetFPS = 60;
+	public int targetFPS = 30;
 	/**
 	 * True if there should be no more updates than the target FPS (i.e. avoids fluctuations between 60 and 61 FPS)
 	 */
