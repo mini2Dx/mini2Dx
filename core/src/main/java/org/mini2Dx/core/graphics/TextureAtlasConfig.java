@@ -28,6 +28,10 @@ public class TextureAtlasConfig {
     public HashMap<String, Texture> textures = new HashMap<>();
     public Array<TextureAtlasRegion> atlasRegions = new Array<>();
 
+    public TextureAtlasConfig(FileHandle packFile){
+        this(packFile, packFile.parent());
+    }
+
     public TextureAtlasConfig(FileHandle packFile, FileHandle imagesDir){
         String[] lines;
         try {
@@ -35,6 +39,11 @@ public class TextureAtlasConfig {
         } catch (IOException e) {
             throw new MdxException(e.toString());
         }
+        final int [] xyTuple = new int[2];
+        final int [] whTuple = new int[2];
+        final int [] originalWhTuple = new int[2];
+        final int [] offsetTuple = new int[2];
+
         int i = 1;
         while (i < lines.length){
             String texturePath = imagesDir.child(lines[i]).path();
@@ -44,16 +53,16 @@ public class TextureAtlasConfig {
                 int index, x, y, width, height, originalWidth, originalHeight, offsetX, offsetY;
                 String name = lines[i];
                 boolean rotate = Boolean.parseBoolean(lines[i + 1].split(":")[1].trim());
-                int[] xyTuple = readTuple(lines[i + 2]);
+                readTuple(xyTuple, lines[i + 2]);
                 x = xyTuple[0];
                 y = xyTuple[1];
-                int[] whTuple = readTuple(lines[i + 3]);
+                readTuple(whTuple, lines[i + 3]);
                 width = whTuple[0];
                 height = whTuple[1];
-                int[] originalWhTuple = readTuple(lines[i + 4]);
+                readTuple(originalWhTuple, lines[i + 4]);
                 originalWidth = originalWhTuple[0];
                 originalHeight = originalWhTuple[1];
-                int[] offsetTuple = readTuple(lines[i + 5]);
+                readTuple(offsetTuple, lines[i + 5]);
                 offsetX = offsetTuple[0];
                 offsetY = offsetTuple[1];
                 index = Integer.parseInt(lines[i + 6].split(":")[1].trim());
@@ -65,13 +74,10 @@ public class TextureAtlasConfig {
         }
     }
 
-    private static int[] readTuple(String s){
+    private static void readTuple(int [] result, String s){
         String[] tuple = s.split(":")[1].split(",");
-        return new int[]{Integer.parseInt(tuple[0].trim()), Integer.parseInt(tuple[1].trim())};
-    }
-
-    public TextureAtlasConfig(FileHandle packFile){
-        this(packFile, packFile.parent());
+        result[0] = Integer.parseInt(tuple[0].trim());
+        result[1] = Integer.parseInt(tuple[1].trim());
     }
 
     public String[] getDependencies(){

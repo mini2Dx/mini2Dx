@@ -18,6 +18,7 @@ package org.mini2Dx.core.geom;
 import org.mini2Dx.core.Geometry;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.gdx.math.Vector2;
+import org.w3c.dom.css.Rect;
 
 /**
  * Implements a rectangle.
@@ -115,6 +116,7 @@ public class Rectangle extends Shape {
 		if(disposed) {
 			return;
 		}
+		
 		disposed = true;
 
 		clearPositionChangeListeners();
@@ -258,26 +260,35 @@ public class Rectangle extends Shape {
 	}
 	
 	public Rectangle lerp(Rectangle target, float alpha) {
-		final float inverseAlpha = 1.0f - alpha;
-		float x = (getX() * inverseAlpha) + (target.getX() * alpha);
-		float y = (getY() * inverseAlpha) + (target.getY() * alpha);
-		float width = this.width;
-		float height = this.height;
-		
-		if(getWidth() != target.getWidth()) {
-			width = (getWidth() * inverseAlpha) + (target.getWidth() * alpha);
-		}
-		
-		if(getHeight() != target.getHeight()) {
-			height = (getHeight() * inverseAlpha) + (target.getHeight() * alpha);
-		}
-		
-		if(getRotation() != target.getRotation()) {
-			float rotation = (getRotation() * inverseAlpha) + (target.getRotation() * alpha);
-			setRotation(rotation);
-		}
-		set(x, y, width, height);
+		lerp(this, this, target, alpha);
 		return this;
+	}
+
+	public Rectangle lerp(Rectangle result, Rectangle target, float alpha) {
+		lerp(result, this, target, alpha);
+		return this;
+	}
+
+	public static void lerp(Rectangle result, Rectangle from, Rectangle target, float alpha) {
+		final float inverseAlpha = 1.0f - alpha;
+		float x = (from.getX() * inverseAlpha) + (target.getX() * alpha);
+		float y = (from.getY() * inverseAlpha) + (target.getY() * alpha);
+		float width = from.width;
+		float height = from.height;
+
+		if(from.getWidth() != target.getWidth()) {
+			width = (from.getWidth() * inverseAlpha) + (target.getWidth() * alpha);
+		}
+
+		if(from.getHeight() != target.getHeight()) {
+			height = (from.getHeight() * inverseAlpha) + (target.getHeight() * alpha);
+		}
+
+		if(from.getRotation() != target.getRotation()) {
+			float rotation = (from.getRotation() * inverseAlpha) + (target.getRotation() * alpha);
+			result.setRotation(rotation);
+		}
+		result.set(x, y, width, height);
 	}
 	
 	public float getDistanceTo(float x, float y) {

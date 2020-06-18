@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2019 Viridian Software Limited
+ * Copyright 2020 See AUTHORS file
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.collision;
+package com.badlogic.gdx.backends.lwjgl3;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.Assert;
+import org.junit.Test;
+import org.mini2Dx.gdx.math.MathUtils;
 
-/**
- * Generates IDs for collision objects (e.g. {@link CollisionBox}, {@link CollisionPoint}, etc.)
- */
-public class CollisionIdSequence {
-	private static final AtomicInteger ID_SEQUENCE = new AtomicInteger();
+public class Lwjgl3Mini2DxConfigTest {
 
-	public static int nextId() {
-		return ID_SEQUENCE.incrementAndGet();
-	}
+	@Test
+	public void testTargetTimestep() {
+		final Lwjgl3Mini2DxConfig config = new Lwjgl3Mini2DxConfig("com.test");
+		config.targetFPS = 60;
 
-	public static int offset(int value) {
-		ID_SEQUENCE.set(value);
-		return value;
+		Assert.assertEquals(16666666L, config.targetTimestepNanos());
+		Assert.assertEquals(1f / 60f, config.targetTimestepSeconds(), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 }

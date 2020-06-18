@@ -17,15 +17,19 @@ package org.mini2Dx.core.collision.util;
 
 import org.mini2Dx.core.collision.CollisionArea;
 import org.mini2Dx.core.collision.CollisionIdSequence;
+import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.geom.Rectangle;
+
+import java.util.Objects;
 
 /**
  * An implementation of a collision box that will not move between updates/frames, thus, does not register as an interpolating collision. Due to this,
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionBox} implementation.
  */
 public class StaticCollisionBox extends Rectangle implements CollisionArea {
-	private final int id;
+	private Collisions collisions = null;
+	private int id;
 
 	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 
@@ -42,22 +46,61 @@ public class StaticCollisionBox extends Rectangle implements CollisionArea {
 	}
 
 	public StaticCollisionBox(int id) {
-		this.id = id;
+		this(id, 0f, 0f, 1f, 1f);
+	}
+
+	public StaticCollisionBox(int id, Rectangle rectangle) {
+		this(id, rectangle.getX(), rectangle.getY(),
+				rectangle.getWidth(), rectangle.getHeight());
 	}
 
 	public StaticCollisionBox(int id, float x, float y, float width, float height) {
 		super(x, y, width, height);
 		this.id = id;
+		init(id, x, y, width, height);
 	}
 
-	public StaticCollisionBox(int id, Rectangle rectangle) {
-		super(rectangle);
+	public StaticCollisionBox(int id, Collisions collisions) {
+		this(id);
+		this.collisions = collisions;
+	}
+
+	public void init(int id, float x, float y, float width, float height) {
 		this.id = id;
+		disposed = false;
+		forceTo(x, y, width, height);
+	}
+
+	@Override
+	public void dispose() {
+		if(disposed) {
+			return;
+		}
+
+		if(collisions != null) {
+			clearPositionChangeListeners();
+			clearSizeChangeListeners();
+
+			disposed = true;
+			collisions.release(this);
+			return;
+		}
+		super.dispose();
 	}
 
 	@Override
 	public void forceTo(float x, float y, float width, float height) {
 		set(x, y, width, height);
+	}
+
+	@Override
+	public void forceToWidth(float width) {
+		setWidth(width);
+	}
+
+	@Override
+	public void forceToHeight(float height) {
+		setHeight(height);
 	}
 
 	@Override
@@ -135,5 +178,19 @@ public class StaticCollisionBox extends Rectangle implements CollisionArea {
 			return;
 		}
 		this.renderCoordMode = mode;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		StaticCollisionBox that = (StaticCollisionBox) o;
+		return id == that.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

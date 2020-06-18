@@ -31,12 +31,14 @@ import java.util.Objects;
  */
 public class CollisionBox extends Rectangle implements CollisionArea,
 		PositionChangeListener<CollisionBox>, SizeChangeListener<CollisionBox> {
-	private final int id;
 	private final ReadWriteLock positionChangeListenerLock;
 	private final ReadWriteLock sizeChangeListenerLock;
 
 	private final Rectangle previousRectangle;
 	private final Rectangle renderRectangle;
+
+	protected Collisions collisions = null;
+	private int id;
 
 	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 	private int renderX, renderY, renderWidth, renderHeight;
@@ -56,22 +58,30 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 
 	public CollisionBox(int id, float x, float y, float width, float height) {
 		super(x, y, width, height);
-		this.id = id;
 
 		positionChangeListenerLock = Mdx.locks.newReadWriteLock();
 		sizeChangeListenerLock = Mdx.locks.newReadWriteLock();
 		addPostionChangeListener(this);
 		addSizeChangeListener(this);
 
-		InterpolationTracker.register(this);
-
 		previousRectangle = Mdx.geom.rectangle();
-		previousRectangle.set(x, y, width, height);
-
 		renderRectangle = Mdx.geom.rectangle();
-		renderRectangle.set(x, y, width, height);
 
-		storeRenderCoordinates();
+		init(id, x, y, width, height);
+	}
+
+	public CollisionBox(int id, Collisions collisions) {
+		this(id);
+		this.collisions = collisions;
+	}
+
+	protected void init(int id, float x, float y, float width, float height) {
+		this.id = id;
+
+		disposed = false;
+
+		InterpolationTracker.register(this);
+		forceTo(x, y, width, height);
 	}
 
 	private void storeRenderCoordinates() {
@@ -81,9 +91,30 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 		renderHeight = renderCoordMode.apply(renderRectangle.getHeight());
 	}
 
+	protected void release() {
+		collisions.release(this);
+	}
+
 	@Override
 	public void dispose() {
+		if(disposed) {
+			return;
+		}
+
 		InterpolationTracker.deregister(this);
+
+		if(collisions != null) {
+			clearPositionChangeListeners();
+			clearSizeChangeListeners();
+
+			addPostionChangeListener(this);
+			addSizeChangeListener(this);
+
+			disposed = true;
+			release();
+			return;
+		}
+
 		super.dispose();
 		previousRectangle.dispose();
 		renderRectangle.dispose();
@@ -169,7 +200,7 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 		if(!interpolateRequired) {
 			return;
 		}
-		renderRectangle.set(previousRectangle.lerp(this, alpha));
+		previousRectangle.lerp(renderRectangle, this, alpha);
 		storeRenderCoordinates();
 		if(renderX != MathUtils.round(this.getX())) {
 			return;

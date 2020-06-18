@@ -17,17 +17,21 @@ package org.mini2Dx.core.collision.util;
 
 import org.mini2Dx.core.collision.CollisionArea;
 import org.mini2Dx.core.collision.CollisionIdSequence;
+import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.geom.Polygon;
 import org.mini2Dx.gdx.math.Vector2;
+
+import java.util.Objects;
 
 /**
  * An implementation of a collision polygon that will not move between updates/frames, thus, does not register as an interpolating collision. Due to this,
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionPolygon} implementation.
  */
 public class StaticCollisionPolygon extends Polygon implements CollisionArea {
-	private final int id;
+	private int id;
+	private Collisions collisions = null;
 
 	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 
@@ -41,22 +45,73 @@ public class StaticCollisionPolygon extends Polygon implements CollisionArea {
 
 	public StaticCollisionPolygon(int id, float[] vertices) {
 		super(vertices);
-		this.id = id;
+		init(id, vertices);
 	}
 
 	public StaticCollisionPolygon(int id, Vector2[] points) {
 		super(points);
+		init(id, points);
+	}
+
+	public StaticCollisionPolygon(int id, Collisions collisions, float [] vertices) {
+		this(id, vertices);
+		this.collisions = collisions;
+	}
+
+	public StaticCollisionPolygon(int id, Collisions collisions, Vector2[] points) {
+		this(id, points);
+		this.collisions = collisions;
+	}
+
+	public void init(int id, float [] vertices) {
 		this.id = id;
+
+		disposed = false;
+		setVertices(vertices);
+	}
+
+	public void init(int id, Vector2[] points) {
+		this.id = id;
+
+		disposed = false;
+		setVertices(points);
+	}
+
+	@Override
+	public void dispose() {
+		if(disposed) {
+			return;
+		}
+
+		if(collisions != null) {
+			clearPositionChangeListeners();
+			clearSizeChangeListeners();
+
+			disposed = true;
+			collisions.release(this);
+			return;
+		}
+		super.dispose();
 	}
 
 	@Override
 	public CollisionArea setTo(float x, float y, float width, float height) {
-		throw new MdxException("#setTo(x, y, width, height) not supported on CollisionPolygon");
+		throw new MdxException("#setTo(x, y, width, height) not supported on StaticCollisionPolygon");
 	}
 
 	@Override
 	public void forceTo(float x, float y, float width, float height) {
-		throw new MdxException("#forceTo(x, y, width, height) not supported on CollisionPolygon");
+		throw new MdxException("#forceTo(x, y, width, height) not supported on StaticCollisionPolygon");
+	}
+
+	@Override
+	public void forceToWidth(float width) {
+		throw new MdxException("#forceToWidth(width) not supported on StaticCollisionPolygon");
+	}
+
+	@Override
+	public void forceToHeight(float height) {
+		throw new MdxException("#forceToHeight(float height) not supported on StaticCollisionPolygon");
 	}
 
 	@Override
@@ -128,5 +183,19 @@ public class StaticCollisionPolygon extends Polygon implements CollisionArea {
 			return;
 		}
 		this.renderCoordMode = mode;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		StaticCollisionPolygon that = (StaticCollisionPolygon) o;
+		return id == that.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

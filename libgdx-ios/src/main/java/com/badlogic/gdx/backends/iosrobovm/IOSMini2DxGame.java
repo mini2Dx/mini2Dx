@@ -22,7 +22,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.ios.IOSGameWrapper;
-import org.mini2Dx.ios.IOSMini2DxConfig;
 import org.mini2Dx.libgdx.game.ApplicationListener;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.*;

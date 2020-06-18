@@ -34,12 +34,14 @@ import java.util.Objects;
 public class CollisionPolygon extends Polygon implements CollisionArea,
 		PositionChangeListener<CollisionPolygon>, SizeChangeListener<CollisionPolygon> {
 
-	private final int id;
 	private final ReadWriteLock positionChangeListenerLock;
 	private final ReadWriteLock sizeChangeListenerLock;
 
 	private final Polygon previousPolygon;
 	private final Polygon renderPolygon;
+
+	protected Collisions collisions = null;
+	private int id;
 
 	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 	private int renderX, renderY, renderWidth, renderHeight;
@@ -55,7 +57,6 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 
 	public CollisionPolygon(int id, float[] vertices) {
 		super(vertices);
-		this.id = id;
 
 		positionChangeListenerLock = Mdx.locks.newReadWriteLock();
 		sizeChangeListenerLock = Mdx.locks.newReadWriteLock();
@@ -64,23 +65,51 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 
 		previousPolygon = Mdx.geom.polygon(vertices);
 		renderPolygon = Mdx.geom.polygon(vertices);
+
+		init(id, vertices);
 	}
 
 	public CollisionPolygon(int id, Vector2[] vectors) {
 		super(vectors);
-		this.id = id;
 
 		positionChangeListenerLock = Mdx.locks.newReadWriteLock();
 		sizeChangeListenerLock = Mdx.locks.newReadWriteLock();
 		addPostionChangeListener(this);
 		addSizeChangeListener(this);
 
+		previousPolygon = Mdx.geom.polygon();
+		renderPolygon = Mdx.geom.polygon();
+
+		init(id, vectors);
+	}
+
+	public CollisionPolygon(int id, Collisions collisions, float [] vertices) {
+		this(id, vertices);
+		this.collisions = collisions;
+	}
+
+	public CollisionPolygon(int id, Collisions collisions, Vector2[] vectors) {
+		this(id, vectors);
+		this.collisions = collisions;
+	}
+
+	protected void init(int id, float[] vertices) {
+		this.id = id;
+
+		disposed = false;
+
+		InterpolationTracker.register(this);
+		forceTo(vertices);
+	}
+
+	protected void init(int id, Vector2[] vectors) {
+		this.id = id;
+
+		disposed = false;
 		InterpolationTracker.register(this);
 
-		previousPolygon = Mdx.geom.polygon();
+		setVertices(vectors);
 		previousPolygon.setVertices(vectors);
-
-		renderPolygon = Mdx.geom.polygon();
 		renderPolygon.setVertices(vectors);
 	}
 
@@ -91,9 +120,30 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 		renderHeight = renderCoordMode.apply(renderPolygon.getHeight());
 	}
 
+	protected void release() {
+		collisions.release(this);
+	}
+
 	@Override
 	public void dispose() {
+		if(disposed) {
+			return;
+		}
+
 		InterpolationTracker.deregister(this);
+
+		if(collisions != null) {
+			clearPositionChangeListeners();
+			clearSizeChangeListeners();
+
+			addPostionChangeListener(this);
+			addSizeChangeListener(this);
+
+			disposed = true;
+			release();
+			return;
+		}
+
 		super.dispose();
 		previousPolygon.dispose();
 		renderPolygon.dispose();
@@ -109,7 +159,7 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 		if(!interpolateRequired) {
 			return;
 		}
-		renderPolygon.set(previousPolygon.lerp(this, alpha));
+		previousPolygon.lerp(renderPolygon,this, alpha);
 		storeRenderCoordinates();
 		if(renderX != MathUtils.round(this.getX())) {
 			return;
@@ -137,6 +187,16 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 	@Override
 	public void forceTo(float x, float y, float width, float height) {
 		throw new MdxException("#forceTo(x, y, width, height) not supported on CollisionPolygon");
+	}
+
+	@Override
+	public void forceToWidth(float width) {
+		throw new MdxException("#forceToWidth(width) not supported on CollisionPolygon");
+	}
+
+	@Override
+	public void forceToHeight(float height) {
+		throw new MdxException("#forceToHeight(float height) not supported on CollisionPolygon");
 	}
 
 	public void forceTo(float [] vertices) {

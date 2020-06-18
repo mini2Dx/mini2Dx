@@ -16,6 +16,7 @@
 package org.mini2Dx.core.collision.util;
 
 import org.mini2Dx.core.collision.CollisionBox;
+import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.QuadTree;
 import org.mini2Dx.core.collision.QuadTreeAware;
 
@@ -44,6 +45,15 @@ public class QuadTreeAwareCollisionBox extends CollisionBox implements QuadTreeA
 
     public QuadTreeAwareCollisionBox() {
         super();
+    }
+
+    public QuadTreeAwareCollisionBox(int id, Collisions collisions) {
+        super(id, collisions);
+    }
+
+    @Override
+    protected void release() {
+        collisions.release(this);
     }
 
     @Override

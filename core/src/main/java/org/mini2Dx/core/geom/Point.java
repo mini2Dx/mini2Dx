@@ -42,7 +42,7 @@ public class Point extends Vector2 implements Positionable, Disposable {
     };
 
     private final Geometry geometry;
-    private boolean disposed = false;
+    protected boolean disposed = false;
 
     protected Array<PositionChangeListener> positionChangeListeners;
 

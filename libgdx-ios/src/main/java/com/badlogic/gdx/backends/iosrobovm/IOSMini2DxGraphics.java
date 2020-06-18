@@ -16,7 +16,6 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
 import org.mini2Dx.core.Mdx;
-import org.mini2Dx.ios.IOSMini2DxConfig;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.glkit.GLKView;
@@ -172,8 +171,9 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 	private final float maximumDelta;
 	private final float targetTimestep;
 	private float accumulator = 0f;
+	private int lastFrameDropWarning = -1;
 
-	IOSApplicationConfiguration config;
+	IOSMini2DxConfig config;
 	EAGLContext context;
 	GLVersion glVersion;
 	GLKView view;
@@ -182,8 +182,8 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 	public IOSMini2DxGraphics (float scale, IOSMini2DxGame app, IOSMini2DxConfig config, IOSMini2DxInput input, boolean useGLES30) {
 		this.config = config;
 		
-		maximumDelta = 1f / config.targetFPS;
-		targetTimestep = config.targetTimestep;
+		maximumDelta = config.maximumTimestepSeconds();
+		targetTimestep = config.targetTimestepSeconds();
 
 		final CGRect bounds = app.getBounds();
 		// setup view and OpenGL
@@ -270,7 +270,7 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 
 		String machineString = HWMachine.getMachineString();
-		IOSDevice device = IOSDevice.getDevice(machineString);
+		IOSDevice device = config.knownDevices.get(machineString);
 		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
 		int ppi = device != null ? device.ppi : 163;
 		density = device != null ? device.ppi/160f : scale;
@@ -369,6 +369,17 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 		Mdx.platformUtils.markRenderBegin();
 		app.listener.render();
 		Mdx.platformUtils.markRenderEnd();
+
+		if(config.errorOnFrameDrop) {
+			if(Mdx.platformUtils.getUpdatesPerSecond() < config.targetFPS) {
+				if(lastFrameDropWarning != Mdx.platformUtils.getUpdatesPerSecond()) {
+					lastFrameDropWarning = Mdx.platformUtils.getUpdatesPerSecond();
+					Mdx.log.error("mini2Dx", "WARN: " + (config.targetFPS - Mdx.platformUtils.getUpdatesPerSecond()) + " frames dropped.");
+				}
+			} else {
+				lastFrameDropWarning = -1;
+			}
+		}
 	}
 
 	void makeCurrent () {

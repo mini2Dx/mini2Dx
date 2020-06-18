@@ -48,7 +48,7 @@ public class DeferredRunnable implements Comparable<DeferredRunnable> {
 			return true;
 		}
 		
-		timer -= GameContainer.MAXIMUM_DELTA;
+		timer -= (1f / 60f);
 		if (timer > 0f) {
 			return false;
 		}

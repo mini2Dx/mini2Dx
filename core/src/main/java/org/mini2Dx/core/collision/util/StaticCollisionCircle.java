@@ -17,15 +17,19 @@ package org.mini2Dx.core.collision.util;
 
 import org.mini2Dx.core.collision.CollisionArea;
 import org.mini2Dx.core.collision.CollisionIdSequence;
+import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.geom.Circle;
+
+import java.util.Objects;
 
 /**
  * An implementation of a collision circle that does not move between updates/frames, thus, does not register as an interpolating collision. Due to this,
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionCircle} implementation.
  */
 public class StaticCollisionCircle extends Circle implements CollisionArea {
-	private final int id;
+	private int id;
+	private Collisions collisions = null;
 
 	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 
@@ -42,18 +46,45 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 	}
 
 	public StaticCollisionCircle(int id, float radius) {
-		super(radius);
-		this.id = id;
+		this(id, 0f, 0f, radius);
+	}
+
+	public StaticCollisionCircle(int id, Circle circle) {
+		this(id, circle.getX(), circle.getY(), circle.getRadius());
+	}
+
+	public StaticCollisionCircle(int id, Collisions collisions) {
+		this(id, 0f, 0f, 1f);
+		this.collisions = collisions;
 	}
 
 	public StaticCollisionCircle(int id, float centerX, float centerY, float radius) {
 		super(centerX, centerY, radius);
-		this.id = id;
+		init(id, centerX, centerY, radius);
 	}
 
-	public StaticCollisionCircle(int id, Circle circle) {
-		super(circle);
+	public void init(int id, float centerX, float centerY, float radius) {
 		this.id = id;
+		disposed = false;
+		setXY(centerX, centerY);
+		setRadius(radius);
+	}
+
+	@Override
+	public void dispose() {
+		if(disposed) {
+			return;
+		}
+
+		if(collisions != null) {
+			clearPositionChangeListeners();
+			clearSizeChangeListeners();
+
+			disposed = true;
+			collisions.release(this);
+			return;
+		}
+		super.dispose();
 	}
 
 	@Override
@@ -88,6 +119,16 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 	}
 
 	@Override
+	public void forceToWidth(float width) {
+		setRadius(width * 0.5f);
+	}
+
+	@Override
+	public void forceToHeight(float height) {
+		setRadius(height * 0.5f);
+	}
+
+	@Override
 	public int getRenderX() {
 		return renderCoordMode.apply(getX());
 	}
@@ -95,6 +136,10 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 	@Override
 	public int getRenderY() {
 		return renderCoordMode.apply(getY());
+	}
+
+	public int getRenderRadius() {
+		return renderCoordMode.apply(getRadius());
 	}
 
 	@Override
@@ -138,5 +183,19 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 			return;
 		}
 		this.renderCoordMode = mode;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		StaticCollisionCircle that = (StaticCollisionCircle) o;
+		return id == that.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

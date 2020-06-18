@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.core.collision;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.JvmLocks;
@@ -75,29 +75,29 @@ public class CollisionAreaTest implements PositionChangeListener<CollisionArea> 
 		shape.addPostionChangeListener(this);
 		
 		shape.setCenter(5f, 1f);
-		Assert.assertEquals(5f, shape.getCenterX());
-		Assert.assertEquals(1f, shape.getCenterY());
+		Assert.assertEquals(5f, shape.getCenterX(), 0f);
+		Assert.assertEquals(1f, shape.getCenterY(), 0f);
 		assertReceivedPositionChange();
 		
 		shape.setCenterX(10f);
-		Assert.assertEquals(10f, shape.getCenterX());
+		Assert.assertEquals(10f, shape.getCenterX(), 0f);
 		assertReceivedPositionChange();
 		
 		shape.setCenterY(15f);
-		Assert.assertEquals(15f, shape.getCenterY());
+		Assert.assertEquals(15f, shape.getCenterY(), 0f);
 		assertReceivedPositionChange();
 		
 		shape.setX(20f);
-		Assert.assertEquals(20f, shape.getX());
+		Assert.assertEquals(20f, shape.getX(), 0f);
 		assertReceivedPositionChange();
 		
 		shape.setY(25f);
-		Assert.assertEquals(25f, shape.getY());
+		Assert.assertEquals(25f, shape.getY(), 0f);
 		assertReceivedPositionChange();
 		
 		shape.setXY(25f, 30f);
-		Assert.assertEquals(25f, shape.getX());
-		Assert.assertEquals(30f, shape.getY());
+		Assert.assertEquals(25f, shape.getX(), 0f);
+		Assert.assertEquals(30f, shape.getY(), 0f);
 		assertReceivedPositionChange();
 	}
 
