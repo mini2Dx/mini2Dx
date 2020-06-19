@@ -19,7 +19,7 @@ import org.mini2Dx.core.geom.*;
 import org.mini2Dx.gdx.utils.Queue;
 
 /**
- * Provides pooled geometry classes. Note that this is not a thread-safe API.
+ * Provides pooled geometry classes.
  */
 public class Geometry {
     /**
@@ -27,16 +27,16 @@ public class Geometry {
      */
     public static int DEFAULT_POOL_SIZE = 8;
 
-    final Queue<Circle> circles = new Queue<Circle>();
-    final Queue<EquilateralTriangle> equilateralTriangles = new Queue<EquilateralTriangle>();
-    final Queue<Line> lines = new Queue<Line>();
-    final Queue<LineSegment> lineSegments = new Queue<LineSegment>();
-    final Queue<Point> points = new Queue<Point>();
-    final Queue<Polygon> polygons = new Queue<Polygon>();
-    final Queue<Rectangle> rectangles = new Queue<Rectangle>();
-    final Queue<RegularHexagon> regularHexagons = new Queue<RegularHexagon>();
-    final Queue<RegularPentagon> regularPentagons = new Queue<RegularPentagon>();
-    final Queue<Triangle> triangles = new Queue<Triangle>();
+    final Queue<Circle> circles = new Queue<Circle>(DEFAULT_POOL_SIZE * 2);
+    final Queue<EquilateralTriangle> equilateralTriangles = new Queue<EquilateralTriangle>(DEFAULT_POOL_SIZE * 2);
+    final Queue<Line> lines = new Queue<Line>(DEFAULT_POOL_SIZE * 2);
+    final Queue<LineSegment> lineSegments = new Queue<LineSegment>(DEFAULT_POOL_SIZE * 2);
+    final Queue<Point> points = new Queue<Point>(DEFAULT_POOL_SIZE * 2);
+    final Queue<Polygon> polygons = new Queue<Polygon>(DEFAULT_POOL_SIZE * 2);
+    final Queue<Rectangle> rectangles = new Queue<Rectangle>(DEFAULT_POOL_SIZE * 2);
+    final Queue<RegularHexagon> regularHexagons = new Queue<RegularHexagon>(DEFAULT_POOL_SIZE * 2);
+    final Queue<RegularPentagon> regularPentagons = new Queue<RegularPentagon>(DEFAULT_POOL_SIZE * 2);
+    final Queue<Triangle> triangles = new Queue<Triangle>(DEFAULT_POOL_SIZE * 2);
 
     private boolean initialised = false;
 
@@ -338,7 +338,9 @@ public class Geometry {
      * @return Total available {@link Circle} instances excluding {@link Circle} instances already allocated
      */
     public int getTotalCirclesAvailable() {
-        return circles.size;
+        synchronized (circles) {
+            return circles.size;
+        }
     }
 
     /**
@@ -346,7 +348,9 @@ public class Geometry {
      * @return Total available {@link EquilateralTriangle} instances excluding {@link EquilateralTriangle} instances already allocated
      */
     public int getTotalEquilateralTrianglesAvailable() {
-        return equilateralTriangles.size;
+        synchronized (equilateralTriangles) {
+            return equilateralTriangles.size;
+        }
     }
 
     /**
@@ -354,7 +358,9 @@ public class Geometry {
      * @return Total available lines excluding {@link Line} instances already allocated
      */
     public int getTotalLinesAvailable() {
-        return lines.size;
+        synchronized (lines) {
+            return lines.size;
+        }
     }
 
     /**
@@ -362,7 +368,9 @@ public class Geometry {
      * @return Total available {@link LineSegment} instances excluding {@link LineSegment} instances already allocated
      */
     public int getTotalLineSegmentsAvailable() {
-        return lineSegments.size;
+        synchronized (lineSegments) {
+            return lineSegments.size;
+        }
     }
 
     /**
@@ -370,7 +378,9 @@ public class Geometry {
      * @return Total available {@link Point} instances excluding {@link Point} instances already allocated
      */
     public int getTotalPointsAvailable() {
-        return points.size;
+        synchronized (points) {
+            return points.size;
+        }
     }
 
     /**
@@ -378,7 +388,9 @@ public class Geometry {
      * @return Total available {@link Polygon} instances excluding {@link Polygon} instances already allocated
      */
     public int getTotalPolygonsAvailable() {
-        return polygons.size;
+        synchronized (polygons) {
+            return polygons.size;
+        }
     }
 
     /**
@@ -386,7 +398,9 @@ public class Geometry {
      * @return Total available {@link Rectangle} instances excluding {@link Rectangle} instances already allocated
      */
     public int getTotalRectanglesAvailable() {
-        return rectangles.size;
+        synchronized (rectangles) {
+            return rectangles.size;
+        }
     }
 
     /**
@@ -394,7 +408,9 @@ public class Geometry {
      * @return Total available {@link RegularHexagon} instances excluding {@link RegularHexagon} instances already allocated
      */
     public int getTotalRegularHexagonsAvailable() {
-        return regularHexagons.size;
+        synchronized (regularHexagons) {
+            return regularHexagons.size;
+        }
     }
 
     /**
@@ -402,7 +418,9 @@ public class Geometry {
      * @return Total available {@link RegularPentagon} instances excluding {@link RegularPentagon} instances already allocated
      */
     public int getTotalRegularPentagonsAvailable() {
-        return regularPentagons.size;
+        synchronized (regularPentagons) {
+            return regularPentagons.size;
+        }
     }
 
     /**
@@ -410,6 +428,8 @@ public class Geometry {
      * @return Total available {@link Triangle} instances excluding {@link Triangle} instances already allocated
      */
     public int getTotalTrianglesAvailable() {
-        return triangles.size;
+        synchronized (triangles) {
+            return triangles.size;
+        }
     }
 }

@@ -153,6 +153,14 @@ public abstract class PlatformUtils {
     }
 
     /**
+     * Returns the number of frames that have occurred so far this second
+     * @return
+     */
+    public int getUpdatesThisSecond() {
+        return updates;
+    }
+
+    /**
      * Returns the average duration of update()
      *
      * @return The average duration in nanoseconds

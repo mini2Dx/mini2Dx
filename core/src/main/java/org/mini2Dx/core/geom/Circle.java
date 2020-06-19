@@ -112,16 +112,25 @@ public class Circle extends Shape {
 	}
 	
 	public Circle lerp(Circle target, float alpha) {
-		final float inverseAlpha = 1.0f - alpha;
-		circle.x = (circle.x * inverseAlpha) + (target.getX() * alpha);
-		circle.y = (circle.y * inverseAlpha) + (target.getY() * alpha);
-		circle.radius = (circle.radius * inverseAlpha) + (target.getRadius() * alpha);
-		notifyPositionChangeListeners();
-		notifySizeChangeListeners();
-		setDirty();
+		lerp(this, target, alpha);
 		return this;
 	}
-	
+
+	public void lerp(Circle result, Circle target, float alpha) {
+		lerp(result, this, target, alpha);
+	}
+
+	public static void lerp(Circle result, Circle from, Circle target, float alpha) {
+		final float inverseAlpha = 1.0f - alpha;
+		result.circle.x = (from.circle.x * inverseAlpha) + (target.getX() * alpha);
+		result.circle.y = (from.circle.y * inverseAlpha) + (target.getY() * alpha);
+		result.circle.radius = (from.circle.radius * inverseAlpha) + (target.getRadius() * alpha);
+		result.notifyPositionChangeListeners();
+		result.notifyPositionChangeListeners();
+		result.notifySizeChangeListeners();
+		result.setDirty();
+	}
+
 	@Override
 	public boolean contains(Vector2 point) {
 		return contains(point.x, point.y);

@@ -51,6 +51,24 @@ public interface CollisionArea extends CollisionObject, Sizeable {
 	public void forceTo(float x, float y, float width, float height);
 
 	/**
+	 * Sets the current width to the specified width and force updates the
+	 * rendering bounds to match
+	 *
+	 * @param width
+	 *            The width to set
+	 */
+	public void forceToWidth(float width);
+
+	/**
+	 * Sets the current height to the specified height and force updates the
+	 * rendering bounds to match
+	 *
+	 * @param height
+	 *            The height to set
+	 */
+	public void forceToHeight(float height);
+
+	/**
 	 * Returns the render width of this object using the set {@link RenderCoordMode}
 	 *
 	 * @return

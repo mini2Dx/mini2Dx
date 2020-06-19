@@ -25,8 +25,7 @@ import org.mini2Dx.gdx.utils.Array;
  * this.
  */
 public abstract class GameContainer {
-    public static final int TARGET_FPS = 60;
-    public static final float MAXIMUM_DELTA = (1f / TARGET_FPS);
+    public static int TARGET_FPS = 60;
 
     protected int width, height;
     protected Graphics graphics;

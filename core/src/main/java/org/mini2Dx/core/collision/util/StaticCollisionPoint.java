@@ -17,15 +17,19 @@ package org.mini2Dx.core.collision.util;
 
 import org.mini2Dx.core.collision.CollisionIdSequence;
 import org.mini2Dx.core.collision.CollisionObject;
+import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.geom.Point;
+
+import java.util.Objects;
 
 /**
  * An implementation of a collision point that will not move between updates/frames, thus, does not register as an interpolating collision. Due to this,
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionPoint} implementation.
  */
 public class StaticCollisionPoint extends Point implements CollisionObject {
-	private final int id;
+	private int id;
+	private Collisions collisions = null;
 
 	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 
@@ -42,17 +46,44 @@ public class StaticCollisionPoint extends Point implements CollisionObject {
 	}
 
 	public StaticCollisionPoint(int id) {
-		this.id = id;
+		this(id, 0f, 0f);
+	}
+
+	public StaticCollisionPoint(int id, Point point) {
+		this(id, point.getX(), point.getY());
 	}
 
 	public StaticCollisionPoint(int id, float x, float y) {
 		super(x, y);
-		this.id = id;
+		init(id, x, y);
 	}
 
-	public StaticCollisionPoint(int id, Point point) {
-		super(point);
+	public StaticCollisionPoint(int id, Collisions collisions) {
+		this(id);
+		this.collisions = collisions;
+	}
+
+	public void init(int id, float x, float y) {
 		this.id = id;
+
+		disposed = false;
+		forceTo(x, y);
+	}
+
+	@Override
+	public void dispose() {
+		if(disposed) {
+			return;
+		}
+
+		if(collisions != null) {
+			clearPositionChangeListeners();
+
+			disposed = true;
+			collisions.release(this);
+			return;
+		}
+		super.dispose();
 	}
 
 	@Override
@@ -104,5 +135,19 @@ public class StaticCollisionPoint extends Point implements CollisionObject {
 			return;
 		}
 		this.renderCoordMode = mode;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		StaticCollisionPoint that = (StaticCollisionPoint) o;
+		return id == that.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

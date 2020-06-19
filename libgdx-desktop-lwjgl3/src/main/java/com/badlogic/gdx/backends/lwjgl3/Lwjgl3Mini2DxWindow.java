@@ -53,7 +53,10 @@ public class Lwjgl3Mini2DxWindow implements Disposable {
 	private final IntBuffer tmpBuffer2;
 	boolean iconified = false;
 	private boolean requestRendering = false;
-	private float accumulator = 0f;
+
+	private long lastFrameTime = -1L;
+	private long accumulator = 0L;
+	private int lastFrameDropWarning = -1;
 
 	private final GLFWWindowFocusCallback focusCallback = new GLFWWindowFocusCallback() {
 		@Override
@@ -377,7 +380,7 @@ public class Lwjgl3Mini2DxWindow implements Disposable {
 		input.windowHandleChanged(windowHandle);
 	}
 
-	boolean update(float maximumDelta, float targetTimestep) {
+	boolean update(Lwjgl3Mini2DxConfig config) {
 		if(!listenerInitialized) {
 			initializeListener();
 		}
@@ -396,30 +399,57 @@ public class Lwjgl3Mini2DxWindow implements Disposable {
 			requestRendering = false;
 		}
 
+		final float targetTimestepSeconds = config.targetTimestepSeconds();
+		final long targetTimestepNanos = config.targetTimestepNanos();
+
+		final long time = System.nanoTime();
+		if(lastFrameTime == -1L) {
+			lastFrameTime = time;
+		}
+
 		if (shouldRender) {
 			graphics.update();
 
-			float delta = graphics.getDeltaTime();
-			if (delta > maximumDelta) {
-				delta = maximumDelta;
+			long deltaNanos = time - lastFrameTime;
+
+			if(deltaNanos > config.maximumTimestepNanos()) {
+				deltaNanos = config.maximumTimestepNanos();
 			}
 
-			accumulator += delta;
+			accumulator += deltaNanos;
 
-			while (accumulator >= targetTimestep) {
+			while (accumulator >= targetTimestepNanos) {
+				if(config.capUpdatesPerSecond &&
+						Mdx.platformUtils.getUpdatesThisSecond() >= config.targetFPS) {
+					Mdx.platformUtils.markUpdateBegin();
+					accumulator -= targetTimestepNanos;
+					continue;
+				}
 				Mdx.platformUtils.markUpdateBegin();
 				input.update();
 				if (!iconified)
 					input.update();
-				listener.update(targetTimestep);
+				listener.update(targetTimestepSeconds);
 				Mdx.platformUtils.markUpdateEnd();
-				accumulator -= targetTimestep;
+				accumulator -= targetTimestepNanos;
 			}
-			listener.interpolate(accumulator / targetTimestep);
+			listener.interpolate((accumulator * 1f) / (targetTimestepNanos * 1f));
 			Mdx.platformUtils.markRenderBegin();
 			listener.render();
 			Mdx.platformUtils.markRenderEnd();
 			GLFW.glfwSwapBuffers(windowHandle);
+		}
+		lastFrameTime = time;
+
+		if(config.errorOnFrameDrop) {
+			if(Mdx.platformUtils.getUpdatesPerSecond() < config.targetFPS) {
+				if(lastFrameDropWarning != Mdx.platformUtils.getUpdatesPerSecond()) {
+					lastFrameDropWarning = Mdx.platformUtils.getUpdatesPerSecond();
+					Mdx.log.error("mini2Dx", "WARN: " + (config.targetFPS - Mdx.platformUtils.getUpdatesPerSecond()) + " frames dropped.");
+				}
+			} else {
+				lastFrameDropWarning = -1;
+			}
 		}
 
 		if (!iconified)

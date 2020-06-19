@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.iosrobovm;
 
-import org.mini2Dx.ios.IOSMini2DxConfig;
 import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
@@ -263,8 +262,23 @@ public class IOSMini2DxInput implements Input {
 	}
 
 	@Override
+	public float getPressure() {
+		return 0;
+	}
+
+	@Override
+	public float getPressure(int pointer) {
+		return 0;
+	}
+
+	@Override
 	public boolean isButtonPressed(int button) {
 		return button == Buttons.LEFT && numTouched > 0;
+	}
+
+	@Override
+	public boolean isButtonJustPressed(int button) {
+		return false;
 	}
 
 	@Override
@@ -471,10 +485,21 @@ public class IOSMini2DxInput implements Input {
 
 	@Override
 	public void setCatchBackKey(boolean catchBack) {
+
 	}
 
 	@Override
 	public boolean isCatchBackKey() {
+		return false;
+	}
+
+	@Override
+	public void setCatchKey (int keycode, boolean catchKey) {
+
+	}
+
+	@Override
+	public boolean isCatchKey (int keycode) {
 		return false;
 	}
 
@@ -695,5 +720,10 @@ public class IOSMini2DxInput implements Input {
 	public float getGyroscopeZ() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public int getMaxPointers () {
+		return MAX_TOUCHES;
 	}
 }

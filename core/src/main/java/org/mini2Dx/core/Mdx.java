@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.core;
 
+import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.serialization.JsonSerializer;
 import org.mini2Dx.core.serialization.XmlSerializer;
 
@@ -28,6 +29,11 @@ public class Mdx {
      * {@link Audio} API
      */
     public static Audio audio;
+
+    /**
+     * Object pool for {@link org.mini2Dx.core.collision.CollisionObject} classes
+     */
+    public static final Collisions collisions = new Collisions();
 
     /**
      * {@link DependencyInjection} API

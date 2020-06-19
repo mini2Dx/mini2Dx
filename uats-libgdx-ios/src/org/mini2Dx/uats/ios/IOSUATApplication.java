@@ -11,7 +11,7 @@
  */
 package org.mini2Dx.uats.ios;
 
-import org.mini2Dx.ios.IOSMini2DxConfig;
+import com.badlogic.gdx.backends.iosrobovm.IOSMini2DxConfig;
 import org.mini2Dx.uats.util.UATApplication;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.uikit.UIApplication;

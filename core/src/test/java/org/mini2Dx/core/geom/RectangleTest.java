@@ -373,6 +373,29 @@ public class RectangleTest {
 		Assert.assertEquals(0f, rectangle1.getRotation(), 0);
 	}
 
+	@Test
+	public void testStaticLerp() {
+		rectangle1 = new Rectangle(0, 0, 50, 50);
+		rectangle2 = new Rectangle(50, 50, 100f, 100f);
+
+		final Rectangle result = new Rectangle();
+
+		rectangle1.lerp(result, rectangle2, 0.5f);
+		Assert.assertEquals(25f, result.getX(), 0);
+		Assert.assertEquals(25f, result.getY(), 0);
+		Assert.assertEquals(75f, result.getWidth(), 0);
+		Assert.assertEquals(75f, result.getHeight(), 0);
+		Assert.assertEquals(0f, result.getRotation(), 0);
+
+		rectangle1.lerp(result, rectangle2, 1f);
+		Assert.assertEquals(rectangle2.getX(), result.getX(), 0);
+		Assert.assertEquals(rectangle2.getY(), result.getY(), 0);
+		Assert.assertEquals(rectangle2.getWidth(), result.getWidth(), 0);
+		Assert.assertEquals(rectangle2.getHeight(), result.getHeight(), 0);
+		Assert.assertEquals(rectangle2.getRotation(), result.getRotation(), 0);
+
+	}
+
 	@Test(expected = UnsupportedOperationException.class)
 	public void testIntersectionRotatedException() {
 		rectangle1 = new Rectangle(0, 0, 50, 50);
