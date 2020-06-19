@@ -100,7 +100,7 @@ public class UiXmlLoader {
         }
     }
 
-    private <T extends UiElement, M> M populateModel(T container, Class<M> model) {
+    protected <T extends UiElement, M> M populateModel(T container, Class<M> model) {
         M newInstance = (M) Mdx.reflect.newInstance(model);
         for (Field field : Mdx.reflect.getDeclaredFields(model)) {
             if (field.isAnnotationPresent(org.mini2Dx.ui.annotation.UiElement.class)) {
@@ -117,7 +117,7 @@ public class UiXmlLoader {
         return newInstance;
     }
 
-    private <T extends UiElement, M> M populateModel(T container, M model) {
+    protected <T extends UiElement, M> M populateModel(T container, M model) {
         M newInstance = model;
         for (Field field : Mdx.reflect.getDeclaredFields(model.getClass())) {
             if (field.isAnnotationPresent(org.mini2Dx.ui.annotation.UiElement.class)) {

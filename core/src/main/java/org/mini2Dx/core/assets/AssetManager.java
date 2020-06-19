@@ -234,6 +234,10 @@ public class AssetManager implements Disposable {
 		return queuedAssets - completedTasks;
 	}
 
+	public FileHandleResolver getFileHandleResolver() {
+		return fileHandleResolver;
+	}
+
 	ObjectMap<String, ReferenceCountedObject> getAssets() {
 		return assets;
 	}
