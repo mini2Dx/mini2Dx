@@ -20,7 +20,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-    - uses: malinskiy/action-android/emulator-run-cmd@release/0.0.7
+      uses: malinskiy/action-android/emulator-run-cmd@release/0.0.7
       with:
         cmd: ./gradlew build
         api: 21
