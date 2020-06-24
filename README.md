@@ -1,7 +1,7 @@
 mini2Dx
 =======
 
-[![Build Status](https://travis-ci.org/mini2Dx/mini2Dx.svg?branch=master)](https://travis-ci.org/mini2Dx/mini2Dx)
+![Continuous Integration](https://github.com/mini2Dx/mini2Dx/workflows/Continuous%20Integration/badge.svg)
 
 A high-level game development API for LibGDX inspired by Slick
 
