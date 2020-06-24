@@ -24,7 +24,7 @@ jobs:
     - name: Build with Gradle
       uses: malinskiy/action-android/emulator-run-cmd@release/0.0.7
       with:
-        cmd: ./gradlew build
+        cmd: ./gradlew build -x :mini2Dx-uats-libgdx-android:check -x :mini2Dx-uats-libgdx-android:validateSigningDebug -x :mini2Dx-uats-libgdx-android:packageDebug
         api: 21
         tag: default
         abi: x86
