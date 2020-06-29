@@ -212,18 +212,12 @@ public class XmlSerializer {
             currentClass = clazz;
             while(currentClass != null && !currentClass.equals(Object.class)) {
                 final String className = currentClass.getName();
-                if(!fieldCache.containsKey(className)) {
-                    fieldCache.put(className, Mdx.reflect.getDeclaredFields(currentClass));
-                }
-
                 final AotSerializedClassData classData = AotSerializationData.getClassData(currentClass);
-                final Field [] fields;
 
-                if(classData != null) {
-                    fields = classData.getFieldDataAsFieldArray();
-                } else {
-                    fields = Mdx.reflect.getDeclaredFields(currentClass);
+                if (!fieldCache.containsKey(className)) {
+                    fieldCache.put(className, classData == null ? Mdx.reflect.getDeclaredFields(currentClass) : classData.getFieldDataAsFieldArray());
                 }
+                final Field [] fields = fieldCache.get(className);
 
                 for (Field field : fields) {
                     Annotation annotation = field
