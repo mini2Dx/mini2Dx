@@ -35,7 +35,7 @@ public class FloatQueue {
     /** Number of elements in the queue. */
     public int size = 0;
 
-    private IntQueueIterable iterable;
+    private FloatQueueIterable iterable;
 
     /** Creates a new Queue which can hold 16 values without needing to resize backing array. */
     public FloatQueue () {
@@ -283,7 +283,7 @@ public class FloatQueue {
     /** Returns an iterator for the items in the queue. Remove is supported.
      */
     public Iterator<Float> iterator () {
-        if (iterable == null) iterable = new IntQueueIterable(this);
+        if (iterable == null) iterable = new FloatQueueIterable(this);
         return iterable.iterator();
     }
 
@@ -367,18 +367,18 @@ public class FloatQueue {
         return true;
     }
 
-    static public class IntQueueIterator implements Iterator<Float>, Iterable<Float> {
+    static public class FloatQueueIterator implements Iterator<Float>, Iterable<Float> {
         private final FloatQueue queue;
         private final boolean allowRemove;
         int index;
         boolean valid = true;
 
 
-        public IntQueueIterator (FloatQueue queue) {
+        public FloatQueueIterator(FloatQueue queue) {
             this(queue, true);
         }
 
-        public IntQueueIterator (FloatQueue queue, boolean allowRemove) {
+        public FloatQueueIterator(FloatQueue queue, boolean allowRemove) {
             this.queue = queue;
             this.allowRemove = allowRemove;
         }
@@ -413,24 +413,24 @@ public class FloatQueue {
         }
     }
 
-    static public class IntQueueIterable implements Iterable<Float> {
+    static public class FloatQueueIterable implements Iterable<Float> {
         private final FloatQueue queue;
         private final boolean allowRemove;
-        private IntQueueIterator iterator1, iterator2;
+        private FloatQueueIterator iterator1, iterator2;
 
-        public IntQueueIterable (FloatQueue queue) {
+        public FloatQueueIterable(FloatQueue queue) {
             this(queue, true);
         }
 
-        public IntQueueIterable (FloatQueue queue, boolean allowRemove) {
+        public FloatQueueIterable(FloatQueue queue, boolean allowRemove) {
             this.queue = queue;
             this.allowRemove = allowRemove;
         }
 
         public Iterator<Float> iterator () {
             if (iterator1 == null) {
-                iterator1 = new IntQueueIterator(queue, allowRemove);
-                iterator2 = new IntQueueIterator(queue, allowRemove);
+                iterator1 = new FloatQueueIterator(queue, allowRemove);
+                iterator2 = new FloatQueueIterator(queue, allowRemove);
             }
             if (!iterator1.valid) {
                 iterator1.index = 0;

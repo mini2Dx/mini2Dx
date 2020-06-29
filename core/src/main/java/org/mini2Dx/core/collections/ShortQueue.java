@@ -35,7 +35,7 @@ public class ShortQueue {
     /** Number of elements in the queue. */
     public int size = 0;
 
-    private IntQueueIterable iterable;
+    private ShortQueueIterable iterable;
 
     /** Creates a new Queue which can hold 16 values without needing to resize backing array. */
     public ShortQueue () {
@@ -283,7 +283,7 @@ public class ShortQueue {
     /** Returns an iterator for the items in the queue. Remove is supported.
      */
     public Iterator<Short> iterator () {
-        if (iterable == null) iterable = new IntQueueIterable(this);
+        if (iterable == null) iterable = new ShortQueueIterable(this);
         return iterable.iterator();
     }
 
@@ -367,18 +367,18 @@ public class ShortQueue {
         return true;
     }
 
-    static public class IntQueueIterator implements Iterator<Short>, Iterable<Short> {
+    static public class ShortQueueIterator implements Iterator<Short>, Iterable<Short> {
         private final ShortQueue queue;
         private final boolean allowRemove;
         int index;
         boolean valid = true;
 
 
-        public IntQueueIterator (ShortQueue queue) {
+        public ShortQueueIterator(ShortQueue queue) {
             this(queue, true);
         }
 
-        public IntQueueIterator (ShortQueue queue, boolean allowRemove) {
+        public ShortQueueIterator(ShortQueue queue, boolean allowRemove) {
             this.queue = queue;
             this.allowRemove = allowRemove;
         }
@@ -413,24 +413,24 @@ public class ShortQueue {
         }
     }
 
-    static public class IntQueueIterable implements Iterable<Short> {
+    static public class ShortQueueIterable implements Iterable<Short> {
         private final ShortQueue queue;
         private final boolean allowRemove;
-        private IntQueueIterator iterator1, iterator2;
+        private ShortQueueIterator iterator1, iterator2;
 
-        public IntQueueIterable (ShortQueue queue) {
+        public ShortQueueIterable(ShortQueue queue) {
             this(queue, true);
         }
 
-        public IntQueueIterable (ShortQueue queue, boolean allowRemove) {
+        public ShortQueueIterable(ShortQueue queue, boolean allowRemove) {
             this.queue = queue;
             this.allowRemove = allowRemove;
         }
 
         public Iterator<Short> iterator () {
             if (iterator1 == null) {
-                iterator1 = new IntQueueIterator(queue, allowRemove);
-                iterator2 = new IntQueueIterator(queue, allowRemove);
+                iterator1 = new ShortQueueIterator(queue, allowRemove);
+                iterator2 = new ShortQueueIterator(queue, allowRemove);
             }
             if (!iterator1.valid) {
                 iterator1.index = 0;
