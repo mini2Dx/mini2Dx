@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<template>
- <tileset firstgid="1" source="ortho_tileset1.tsx"/>
- <object gid="1" width="64" height="80">
-    <properties>
-     <property name="testProperty" value="SUCCESS"/>
-    </properties>
- </object>
-</template>

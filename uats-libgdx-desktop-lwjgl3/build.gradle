@@ -2,7 +2,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 mainClassName = "org.mini2Dx.uats.desktop.Lwjgl3UATApplication"
-project.ext.assetsDir = new File("$projectDir/assets");
+project.ext.assetsDir = new File("$projectDir/../uats-libgdx-desktop/assets");
 
 sourceSets.main.resources.srcDirs += project.ext.assetsDir.getAbsolutePath()
 

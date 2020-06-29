@@ -45,6 +45,5 @@ obj/
 default-mdx-theme.png
 default-mdx-theme.atlas
 Content.mgcb
-uats-libgdx-desktop/assets/example.ui.xml
-uats-libgdx-desktop/assets/mini2dx-ui.xsd
-uats-libgdx-desktop/assets/custom-mini2dx-ui.xsd
+uats-libgdx-desktop-lwjgl2/assets/
+uats-libgdx-desktop-lwjgl3/assets/
