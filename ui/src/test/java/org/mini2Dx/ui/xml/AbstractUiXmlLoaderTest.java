@@ -28,6 +28,7 @@ import org.mini2Dx.ui.element.UiElement;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Locale;
 
 public abstract class AbstractUiXmlLoaderTest {
     protected final Mockery mockery = new Mockery();
@@ -44,6 +45,7 @@ public abstract class AbstractUiXmlLoaderTest {
 
     @Before
     public void setUpLoader() {
+        Locale.setDefault(Locale.ENGLISH);
         Mdx.graphics = new LibgdxGraphicsUtils();
         fileHandleResolver = mockery.mock(FileHandleResolver.class);
 
