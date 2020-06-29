@@ -35,7 +35,7 @@ public class LongQueue {
     /** Number of elements in the queue. */
     public int size = 0;
 
-    private IntQueueIterable iterable;
+    private LongQueueIterable iterable;
 
     /** Creates a new Queue which can hold 16 values without needing to resize backing array. */
     public LongQueue () {
@@ -283,7 +283,7 @@ public class LongQueue {
     /** Returns an iterator for the items in the queue. Remove is supported.
      */
     public Iterator<Long> iterator () {
-        if (iterable == null) iterable = new IntQueueIterable(this);
+        if (iterable == null) iterable = new LongQueueIterable(this);
         return iterable.iterator();
     }
 
@@ -367,18 +367,18 @@ public class LongQueue {
         return true;
     }
 
-    static public class IntQueueIterator implements Iterator<Long>, Iterable<Long> {
+    static public class LongQueueIterator implements Iterator<Long>, Iterable<Long> {
         private final LongQueue queue;
         private final boolean allowRemove;
         int index;
         boolean valid = true;
 
 
-        public IntQueueIterator (LongQueue queue) {
+        public LongQueueIterator(LongQueue queue) {
             this(queue, true);
         }
 
-        public IntQueueIterator (LongQueue queue, boolean allowRemove) {
+        public LongQueueIterator(LongQueue queue, boolean allowRemove) {
             this.queue = queue;
             this.allowRemove = allowRemove;
         }
@@ -413,24 +413,24 @@ public class LongQueue {
         }
     }
 
-    static public class IntQueueIterable implements Iterable<Long> {
+    static public class LongQueueIterable implements Iterable<Long> {
         private final LongQueue queue;
         private final boolean allowRemove;
-        private IntQueueIterator iterator1, iterator2;
+        private LongQueueIterator iterator1, iterator2;
 
-        public IntQueueIterable (LongQueue queue) {
+        public LongQueueIterable(LongQueue queue) {
             this(queue, true);
         }
 
-        public IntQueueIterable (LongQueue queue, boolean allowRemove) {
+        public LongQueueIterable(LongQueue queue, boolean allowRemove) {
             this.queue = queue;
             this.allowRemove = allowRemove;
         }
 
         public Iterator<Long> iterator () {
             if (iterator1 == null) {
-                iterator1 = new IntQueueIterator(queue, allowRemove);
-                iterator2 = new IntQueueIterator(queue, allowRemove);
+                iterator1 = new LongQueueIterator(queue, allowRemove);
+                iterator2 = new LongQueueIterator(queue, allowRemove);
             }
             if (!iterator1.valid) {
                 iterator1.index = 0;
