@@ -106,7 +106,7 @@ public class ConcurrentSortedIntList<E> extends SortedIntList<E> implements Conc
     }
 
     /**
-     * Returns an iterator to traverse the list.<br/>
+     * Returns an iterator to traverse the list.
      * Only one iterator can be active per list at any given time.
      *
      * @return Iterator to traverse list
