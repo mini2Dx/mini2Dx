@@ -35,6 +35,7 @@ import java.util.List;
 @Threads(value=1)
 public class RenderTreeLayoutPerformanceTest {
 	private static final int CHILDREN_PER_NODE = 5;
+	private static final float MAXIMUM_DELTA = 1f / GameContainer.TARGET_FPS;
 
 	@State(Scope.Thread)
 	public static class TestState extends BasicGame {
@@ -82,7 +83,7 @@ public class RenderTreeLayoutPerformanceTest {
 			for(Container container : containers) {
 				uiContainer.remove(container);
 			}
-			uiContainer.update(GameContainer.MAXIMUM_DELTA);
+			uiContainer.update(MAXIMUM_DELTA);
 		}
 		
 		private void addNestedElements(Div root, int depth) {
@@ -121,6 +122,6 @@ public class RenderTreeLayoutPerformanceTest {
 	@BenchmarkMode(value=Mode.AverageTime)
 	@Group("UiContainer_InitialLayout")
 	public void testInitialLayout(TestState state) {
-		state.uiContainer.update(GameContainer.MAXIMUM_DELTA);
+		state.uiContainer.update(MAXIMUM_DELTA);
 	}
 }

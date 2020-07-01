@@ -17,6 +17,7 @@ package org.mini2Dx.core.geom;
 
 import org.mini2Dx.core.Geometry;
 import org.mini2Dx.core.Graphics;
+import org.mini2Dx.core.util.Lerper;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
 
@@ -121,10 +122,9 @@ public class Circle extends Shape {
 	}
 
 	public static void lerp(Circle result, Circle from, Circle target, float alpha) {
-		final float inverseAlpha = 1.0f - alpha;
-		result.circle.x = (from.circle.x * inverseAlpha) + (target.getX() * alpha);
-		result.circle.y = (from.circle.y * inverseAlpha) + (target.getY() * alpha);
-		result.circle.radius = (from.circle.radius * inverseAlpha) + (target.getRadius() * alpha);
+		result.circle.x = Lerper.lerp(from.circle.x, target.circle.x, alpha);
+		result.circle.y = Lerper.lerp(from.circle.y, target.circle.y, alpha);
+		result.circle.radius = Lerper.lerp(from.circle.radius, target.circle.radius, alpha);
 		result.notifyPositionChangeListeners();
 		result.notifyPositionChangeListeners();
 		result.notifySizeChangeListeners();

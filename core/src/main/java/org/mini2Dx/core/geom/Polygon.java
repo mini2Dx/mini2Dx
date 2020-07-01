@@ -19,6 +19,7 @@ import org.mini2Dx.core.Geometry;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.core.util.Lerper;
 import org.mini2Dx.gdx.math.EarClippingTriangulator;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
@@ -147,8 +148,6 @@ public class Polygon extends Shape {
 	}
 
 	public static void lerp(Polygon result, Polygon from, Polygon target, float alpha) {
-		final float inverseAlpha = 1.0f - alpha;
-
 		float[] currentVertices = from.vertices;
 		float[] targetVertices = target.vertices;
 		float[] resultVertices = result.vertices;
@@ -157,18 +156,18 @@ public class Polygon extends Shape {
 			throw new MdxException("Cannot lerp polygons with different vertice amounts");
 		}
 		if (from.getRotation() != target.getRotation()) {
-			float newRotation = (from.rotation * inverseAlpha) + (target.getRotation() * alpha);
+			float newRotation = Lerper.lerp(from.rotation, target.getRotation(), alpha);
 			if (from.getX() == target.getX() && from.getY() == target.getY()) {
 				// Same origin, only rotational change
 				result.setRotation(newRotation);
 			} else {
-				result.setRotationAround((currentVertices[0] * inverseAlpha) + (targetVertices[0] * alpha),
-						(currentVertices[1] * inverseAlpha) + (targetVertices[1] * alpha), newRotation);
+				result.setRotationAround(Lerper.lerp(currentVertices[0], targetVertices[0], alpha),
+						Lerper.lerp(currentVertices[1], targetVertices[1], alpha), newRotation);
 			}
 		} else if (!from.isSameAs(target)) {
 			for (int i = 0; i < currentVertices.length; i += 2) {
-				resultVertices[i] = (currentVertices[i] * inverseAlpha) + (targetVertices[i] * alpha);
-				resultVertices[i + 1] = (currentVertices[i + 1] * inverseAlpha) + (targetVertices[i + 1] * alpha);
+				resultVertices[i] = Lerper.lerp(currentVertices[i], targetVertices[i], alpha);
+				resultVertices[i + 1] =  Lerper.lerp(currentVertices[i + 1], targetVertices[i + 1], alpha);
 			}
 			result.vertices = resultVertices;
 			result.setDirty();

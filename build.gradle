@@ -14,7 +14,7 @@ buildscript {
     }
     dependencies {
 		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-		classpath 'me.champeau.gradle:jmh-gradle-plugin:0.4.8'
+		classpath 'me.champeau.gradle:jmh-gradle-plugin:0.5.0'
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.9.0'
 		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.10'
 		classpath "org.mini2Dx:gradle-mini2Dx-mgcb:1.0.2"
@@ -245,10 +245,12 @@ project(":" + rootProject.name + "-core") {
 	jmh {
 		timeUnit = 'ns'
 		threads = Runtime.getRuntime().availableProcessors()
-		warmupIterations = 10
-		iterations = 10
+		warmupIterations = 5
+		iterations = 5
 		fork = Runtime.getRuntime().availableProcessors()
-		jvmArgsPrepend = '-Xmx1024m'
+		jvmArgsPrepend = '-Xmx2048m'
+		duplicateClassesStrategy = DuplicatesStrategy.EXCLUDE
+		include = ['LerperPerformanceTest']
 	}
     
 	jacocoTestReport {
