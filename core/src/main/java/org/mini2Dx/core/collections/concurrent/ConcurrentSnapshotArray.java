@@ -487,7 +487,7 @@ public class ConcurrentSnapshotArray<T> extends SnapshotArray<T> implements Conc
     }
 
     /**
-     * Returns the items as an array. Note the array is typed, so the {@link #ConcurrentArray(Class)} constructor must have been used.
+     * Returns the items as an array. Note the array is typed, so the {@link #ConcurrentSnapshotArray(Class)} constructor must have been used.
      * Otherwise use {@link #toArray(Class)} to specify the array type.
      */
     @Override
@@ -541,7 +541,6 @@ public class ConcurrentSnapshotArray<T> extends SnapshotArray<T> implements Conc
     public T[] begin() {
         lock.lockWrite();
         T[] t = super.begin();
-        lock.unlockWrite();
         return t;
     }
 
@@ -550,7 +549,6 @@ public class ConcurrentSnapshotArray<T> extends SnapshotArray<T> implements Conc
      */
     @Override
     public void end() {
-        lock.lockWrite();
         super.end();
         lock.unlockWrite();
     }

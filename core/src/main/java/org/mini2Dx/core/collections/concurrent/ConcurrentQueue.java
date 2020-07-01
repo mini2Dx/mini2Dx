@@ -220,7 +220,7 @@ public class ConcurrentQueue<T> extends Queue<T> implements ConcurrentCollection
      * same as {@link #first()}.
      *
      * @param index
-     * @throws IndexOutOfBoundsException when the index is negative or >= size
+     * @throws IndexOutOfBoundsException when the index is negative or greater or equal than size
      */
     @Override
     public T get(int index) {

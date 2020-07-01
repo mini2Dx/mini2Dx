@@ -39,7 +39,7 @@ public class ConcurrentBits extends Bits implements ConcurrentCollection {
     /**
      * @param index the index of the bit
      * @return whether the bit is set
-     * @throws ArrayIndexOutOfBoundsException if index < 0
+     * @throws ArrayIndexOutOfBoundsException if index is less than 0
      */
     @Override
     public boolean get(int index) {
@@ -54,7 +54,7 @@ public class ConcurrentBits extends Bits implements ConcurrentCollection {
      *
      * @param index the index of the bit
      * @return whether the bit was set before invocation
-     * @throws ArrayIndexOutOfBoundsException if index < 0
+     * @throws ArrayIndexOutOfBoundsException if index is less than 0
      */
     @Override
     public boolean getAndClear(int index) {
@@ -69,7 +69,7 @@ public class ConcurrentBits extends Bits implements ConcurrentCollection {
      *
      * @param index the index of the bit
      * @return whether the bit was set before invocation
-     * @throws ArrayIndexOutOfBoundsException if index < 0
+     * @throws ArrayIndexOutOfBoundsException if index is less than 0
      */
     @Override
     public boolean getAndSet(int index) {
@@ -81,7 +81,7 @@ public class ConcurrentBits extends Bits implements ConcurrentCollection {
 
     /**
      * @param index the index of the bit to set
-     * @throws ArrayIndexOutOfBoundsException if index < 0
+     * @throws ArrayIndexOutOfBoundsException if index is less than 0
      */
     @Override
     public void set(int index) {
@@ -102,7 +102,7 @@ public class ConcurrentBits extends Bits implements ConcurrentCollection {
 
     /**
      * @param index the index of the bit to clear
-     * @throws ArrayIndexOutOfBoundsException if index < 0
+     * @throws ArrayIndexOutOfBoundsException if index is less than 0
      */
     @Override
     public void clear(int index) {
