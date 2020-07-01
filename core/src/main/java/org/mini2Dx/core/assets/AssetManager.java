@@ -48,9 +48,9 @@ import java.util.concurrent.TimeUnit;
 public class AssetManager implements Disposable {
 	private static final String LOGGING_TAG = AssetManager.class.getSimpleName();
 	/**
-	 * The time limit for loading operations per frame. Defaults to 2ms (one eight of a frame @ 60FPS)
+	 * The time limit for loading operations per frame. Defaults to 4ms (one eight of a frame @ 30FPS)
 	 */
-	public static long UPDATE_TIMEBOX_MILLIS = 2;
+	public static long UPDATE_TIMEBOX_MILLIS = 4;
 
 	private final FileHandleResolver fileHandleResolver;
 
