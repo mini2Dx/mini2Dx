@@ -18,10 +18,13 @@ package org.mini2Dx.ui.style;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.SerializationException;
 import org.mini2Dx.core.font.MonospaceGameFont;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
+import org.mini2Dx.core.serialization.JsonSerializer;
+import org.mini2Dx.core.serialization.XmlSerializer;
 
 import java.util.Scanner;
 
@@ -30,6 +33,9 @@ public class UiFontTest {
 	@Before
 	public void setup() {
 		Mdx.reflect = new JvmReflection();
+		Mdx.locks = new JvmLocks();
+		Mdx.xml = new XmlSerializer();
+		Mdx.json = new JsonSerializer();
 	}
 
 	@Test

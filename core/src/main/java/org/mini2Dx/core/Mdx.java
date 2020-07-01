@@ -88,7 +88,7 @@ public class Mdx {
     /**
      * JSON Serialization API
      */
-    public static final JsonSerializer json = new JsonSerializer();
+    public static JsonSerializer json;
 
     /**
      * {@link Logger} API
@@ -118,7 +118,7 @@ public class Mdx {
     /**
      * XML serialization API
      */
-    public static final XmlSerializer xml = new XmlSerializer();
+    public static XmlSerializer xml;
 
     /**
      * Platform utilities API

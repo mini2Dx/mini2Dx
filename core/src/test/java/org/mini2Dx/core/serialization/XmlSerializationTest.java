@@ -18,6 +18,7 @@ package org.mini2Dx.core.serialization;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.SerializationException;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
@@ -35,7 +36,7 @@ public class XmlSerializationTest {
 	public void setUp() {
 		Mdx.reflect = new JvmReflection();
 		AotSerializationData.clear();
-
+		Mdx.locks = new JvmLocks();
 		xmlSerializer = new XmlSerializer();
 		parentObject = createTestParentObject();
 	}

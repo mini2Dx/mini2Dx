@@ -19,8 +19,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
+import org.mini2Dx.core.serialization.XmlSerializer;
 import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
 
@@ -32,6 +34,8 @@ public class TextButtonTest {
 	public void setUp() {
 		Mdx.graphics = new LibgdxGraphicsUtils();
 		Mdx.reflect = new JvmReflection();
+		Mdx.locks = new JvmLocks();
+		Mdx.xml = new XmlSerializer();
 	}
 
 	@Test

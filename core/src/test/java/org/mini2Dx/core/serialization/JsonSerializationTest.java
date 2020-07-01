@@ -18,6 +18,7 @@ package org.mini2Dx.core.serialization;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.RequiredFieldException;
 import org.mini2Dx.core.exception.SerializationException;
@@ -40,6 +41,7 @@ public class JsonSerializationTest {
 		AotSerializationData.clear();
 
 		Mdx.reflect = new JvmReflection();
+		Mdx.locks = new JvmLocks();
 		serializer = new JsonSerializer();
 
 		parentObject = new TestParentObject();

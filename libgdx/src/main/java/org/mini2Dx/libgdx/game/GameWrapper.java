@@ -23,6 +23,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import org.mini2Dx.core.*;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
+import org.mini2Dx.core.serialization.JsonSerializer;
+import org.mini2Dx.core.serialization.XmlSerializer;
 import org.mini2Dx.libgdx.*;
 import org.mini2Dx.natives.OsInformation;
 
@@ -58,6 +60,8 @@ public abstract class GameWrapper implements ApplicationListener {
 		Mdx.runtime = ApiRuntime.LIBGDX;
 		Mdx.gameIdentifier = gameIdentifier;
 		Mdx.locks = new JvmLocks();
+		Mdx.xml = new XmlSerializer();
+		Mdx.json = new JsonSerializer();
 		initialise(gameIdentifier);
 
 		Mdx.audio = new LibgdxAudio();
