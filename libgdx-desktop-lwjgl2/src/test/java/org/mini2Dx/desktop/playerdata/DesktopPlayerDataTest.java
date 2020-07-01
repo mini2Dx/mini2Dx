@@ -18,8 +18,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.DependencyInjection;
+import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
+import org.mini2Dx.core.serialization.JsonSerializer;
+import org.mini2Dx.core.serialization.XmlSerializer;
 import org.mini2Dx.gdx.utils.*;
 import org.mini2Dx.libgdx.LibgdxFiles;
 import org.mini2Dx.libgdx.desktop.DesktopComponentScanner;
@@ -52,6 +55,9 @@ public class DesktopPlayerDataTest {
         Mdx.reflect = new JvmReflection();
         Mdx.platform = GameWrapper.getPlatform();
         Mdx.di = new DependencyInjection(new DesktopComponentScanner());
+        Mdx.locks = new JvmLocks();
+        Mdx.xml = new XmlSerializer();
+        Mdx.json = new JsonSerializer();
         desktopData = new DesktopPlayerData(TEST_IDENTIFIER);
         
         createTestObjects();

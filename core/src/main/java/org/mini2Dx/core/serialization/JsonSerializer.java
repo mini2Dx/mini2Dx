@@ -16,6 +16,7 @@
 package org.mini2Dx.core.serialization;
 
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.collections.concurrent.ConcurrentObjectMap;
 import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.exception.RequiredFieldException;
 import org.mini2Dx.core.exception.SerializationException;
@@ -51,8 +52,8 @@ import java.util.Map;
 public class JsonSerializer {
 	private static final String LOGGING_TAG = JsonSerializer.class.getSimpleName();
 
-	private final ObjectMap<String, Method[]> methodCache = new ObjectMap<String, Method[]>();
-	private final ObjectMap<String, Field[]> fieldCache = new ObjectMap<String, Field[]>();
+	private final ObjectMap<String, Method[]> methodCache = new ConcurrentObjectMap<>();
+	private final ObjectMap<String, Field[]> fieldCache = new ConcurrentObjectMap<>();
 
 	/**
 	 * Reads a JSON document and converts it into an object of the specified

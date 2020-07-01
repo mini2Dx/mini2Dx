@@ -11,14 +11,12 @@
  */
 package org.mini2Dx.android;
 
+import android.content.Context;
 import org.mini2Dx.android.di.AndroidDependencyInjection;
 import org.mini2Dx.android.playerdata.AndroidPlayerData;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
-import org.mini2Dx.libgdx.game.ApplicationListener;
 import org.mini2Dx.libgdx.game.GameWrapper;
-
-import android.content.Context;
 
 /**
  * Android implementation of {@link GameWrapper}

@@ -41,6 +41,8 @@ namespace monogame
         {
             Mdx.gameIdentifier_ = gameIdentifier;
             Mdx.locks_ = new MonoGameLocks();
+            Mdx.xml_ = new XmlSerializer();
+            Mdx.json_ = new JsonSerializer();
 
             if(config.AllowUserResizing.HasValue)
             {
