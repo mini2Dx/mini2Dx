@@ -18,18 +18,18 @@ buildscript {
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.9.0'
 		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.10'
 		classpath "org.mini2Dx:gradle-mini2Dx-mgcb:1.0.2"
-		classpath 'com.android.tools.build:gradle:3.4.2'
+        classpath 'com.android.tools.build:gradle:3.6.0-rc01'
 		classpath "com.viridiansoftware:gradle-desugar-task:1.0.1"
 		classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.8'
     }
 }
 
 Properties sdkProperties = new Properties()
-def sdkPropertiesFile = project.rootProject.file('local.properties');
+def sdkPropertiesFile = project.rootProject.file('local.properties')
 if(sdkPropertiesFile.exists()) {
-	sdkProperties.load(sdkPropertiesFile.newDataInputStream());
+	sdkProperties.load(sdkPropertiesFile.newDataInputStream())
 	sdkProperties.each { Object key, Object value ->
-		ext[key] = value;
+		ext[key] = value
 	}
 }
 
@@ -83,7 +83,7 @@ def docProjects() {
 	subprojects.findAll { !it.name.contains('uat') && !it.name.contains('monogame') }
 }
 
-def projectVersion = '2.0.0-alpha.26';
+def projectVersion = '2.0.0-alpha.26'
 
 configure(docProjects()) {
 	apply plugin: "signing"
@@ -523,7 +523,7 @@ project(":" + rootProject.name + "-uats") {
 	}
 
 	if(!projectVersion.contains("SNAPSHOT")) {
-		def docDirectory = new File(project.parent.projectDir.getParentFile(), "mini2Dx-website/docs/javadoc/${projectVersion}");
+		def docDirectory = new File(project.parent.projectDir.getParentFile(), "mini2Dx-website/docs/javadoc/${projectVersion}")
 		println docDirectory.absolutePath
 
 		task docs(type: Javadoc) {
@@ -689,13 +689,13 @@ boolean hasConsoleSdk() {
 			}
 			def transpilerHome = properties.getProperty('transpilerExe')
 			if(transpilerHome != null && transpilerHome.length() > 0) {
-				return true;
+				return true
 			}
 		}
 	} catch (all) {
 		println all
 	}
-	return false;
+	return false
 }
 
 boolean hasAndroidSdk() {
@@ -710,7 +710,7 @@ boolean hasAndroidSdk() {
 			def androidHome = properties.getProperty('sdk.dir')
 			if(androidHome != null && androidHome.length() > 0) {
 				println androidHome
-				return true;
+				return true
 			}
 		}
 	} catch (all) {
@@ -720,7 +720,7 @@ boolean hasAndroidSdk() {
 		def androidHome = "$System.env.ANDROID_HOME"
 		if(androidHome != null && androidHome.length() > 0 && !androidHome.contains('null')) {
 			println androidHome
-			return true;
+			return true
 		}
 	} catch (all) {
 		println all
