@@ -36,6 +36,10 @@ public class ConcurrentIntTreeMap<T> extends IntTreeMap<T> implements Concurrent
         super(initialCapacity, loadFactor);
     }
 
+    /**
+     * NOTE: read access to the other map is not thread-safe
+     * @param map
+     */
     public ConcurrentIntTreeMap(IntMap<? extends T> map) {
         super(map);
     }
@@ -119,7 +123,7 @@ public class ConcurrentIntTreeMap<T> extends IntTreeMap<T> implements Concurrent
     public int findKey(Object value, boolean identity, int notFound) {
         lock.lockRead();
         int i = super.findKey(value, identity, notFound);
-        lock.lockWrite();
+        lock.unlockRead();
         return i;
     }
 

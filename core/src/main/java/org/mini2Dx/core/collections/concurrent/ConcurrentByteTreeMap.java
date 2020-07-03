@@ -36,6 +36,10 @@ public class ConcurrentByteTreeMap<T> extends ByteTreeMap<T> implements Concurre
         super(initialCapacity, loadFactor);
     }
 
+    /**
+     * NOTE: read access to the other map is not thread-safe
+     * @param map
+     */
     public ConcurrentByteTreeMap(ByteMap<? extends T> map) {
         super(map);
     }
@@ -119,7 +123,7 @@ public class ConcurrentByteTreeMap<T> extends ByteTreeMap<T> implements Concurre
     public byte findKey(Object value, boolean identity, byte notFound) {
         lock.lockRead();
         byte b = super.findKey(value, identity, notFound);
-        lock.lockWrite();
+        lock.unlockRead();
         return b;
     }
 

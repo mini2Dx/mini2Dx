@@ -35,6 +35,10 @@ public class ConcurrentShortMap<T> extends ShortMap<T> implements ConcurrentColl
         super(initialCapacity, loadFactor);
     }
 
+    /**
+     * NOTE: read access to the other map is not thread-safe
+     * @param map
+     */
     public ConcurrentShortMap(ShortMap<? extends T> map) {
         super(map);
     }
@@ -118,7 +122,7 @@ public class ConcurrentShortMap<T> extends ShortMap<T> implements ConcurrentColl
     public short findKey(Object value, boolean identity, short notFound) {
         lock.lockRead();
         short s = super.findKey(value, identity, notFound);
-        lock.lockWrite();
+        lock.unlockRead();
         return s;
     }
 

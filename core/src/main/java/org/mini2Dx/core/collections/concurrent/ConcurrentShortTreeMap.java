@@ -38,6 +38,10 @@ public class ConcurrentShortTreeMap<T> extends ShortTreeMap<T> implements Concur
         super(initialCapacity, loadFactor);
     }
 
+    /**
+     * NOTE: read access to the other map is not thread-safe
+     * @param map
+     */
     public ConcurrentShortTreeMap(ShortMap<? extends T> map) {
         super(map);
     }
@@ -121,7 +125,7 @@ public class ConcurrentShortTreeMap<T> extends ShortTreeMap<T> implements Concur
     public short findKey(Object value, boolean identity, short notFound) {
         lock.lockRead();
         short s = super.findKey(value, identity, notFound);
-        lock.lockWrite();
+        lock.unlockRead();
         return s;
     }
 

@@ -26,15 +26,13 @@ public class ConcurrentPools {
     /** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. Note the max size is ignored
      * if this is not the first time this pool has been requested. */
     public static <T> Pool<T> get(Class<T> type, int max){
-        typePools.getLock().lockRead();
-        Pool pool = typePools.get(type);
+        typePools.getLock().lockWrite();
+        Pool<T> pool = typePools.get(type);
         if (pool == null){
-            pool = new ConcurrentReflectionPool(type, 4, max);
-            typePools.getLock().lockWrite();
+            pool = new ConcurrentReflectionPool<T>(type, 4, max);
             typePools.put(type, pool);
-            typePools.getLock().unlockWrite();
         }
-        typePools.getLock().unlockRead();
+        typePools.getLock().unlockWrite();
         return pool;
     }
 

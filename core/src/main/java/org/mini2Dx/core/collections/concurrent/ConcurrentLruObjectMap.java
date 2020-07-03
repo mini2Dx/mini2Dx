@@ -36,6 +36,10 @@ public class ConcurrentLruObjectMap<K, V> extends LruObjectMap<K, V> implements 
         super(initialCapacity, loadFactor);
     }
 
+    /**
+     * NOTE: read access to the other map is not thread-safe
+     * @param map
+     */
     public ConcurrentLruObjectMap(ObjectMap<? extends K, ? extends V> map) {
         super(map);
     }
@@ -48,6 +52,11 @@ public class ConcurrentLruObjectMap<K, V> extends LruObjectMap<K, V> implements 
         super(initialCapacity, maxCapacity, loadFactor);
     }
 
+    /**
+     * NOTE: read access to the other map is not thread-safe
+     * @param map
+     * @param maxCapacity
+     */
     public ConcurrentLruObjectMap(ObjectMap<? extends K, ? extends V> map, int maxCapacity) {
         super(map, maxCapacity);
     }

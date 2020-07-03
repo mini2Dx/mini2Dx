@@ -54,6 +54,8 @@ public class ConcurrentIntArray extends IntArray implements ConcurrentCollection
      * ordered. The capacity is set to the number of elements, so any subsequent elements added will cause the backing array to be
      * grown.
      *
+     * NOTE: read access to the other array is not thread-safe
+     *
      * @param array
      */
     public ConcurrentIntArray(IntArray array) {

@@ -56,6 +56,8 @@ public class ConcurrentOrderedMap<K, V> extends OrderedMap<K, V> implements Conc
     /**
      * Creates a new map identical to the specified map.
      *
+     * NOTE: read access to the other map is not thread-safe
+     *
      * @param map
      */
     public ConcurrentOrderedMap(OrderedMap<? extends K, ? extends V> map) {

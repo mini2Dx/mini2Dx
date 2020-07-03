@@ -76,6 +76,8 @@ public class ConcurrentArrayMap<K, V> extends ArrayMap<K, V> implements Concurre
      * will be ordered if the specified map is ordered. The capacity is set to the number of elements, so any subsequent elements
      * added will cause the backing arrays to be grown.
      *
+     * NOTE: read access to the other ArrayMap is not thread-safe
+     *
      * @param array
      */
     public ConcurrentArrayMap(ArrayMap array) {

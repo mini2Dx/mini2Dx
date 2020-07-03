@@ -54,6 +54,8 @@ public class ConcurrentObjectFloatMap<K> extends ObjectFloatMap<K> implements Co
     /**
      * Creates a new map identical to the specified map.
      *
+     * NOTE: read access to the other map is not thread-safe
+     *
      * @param map
      */
     public ConcurrentObjectFloatMap(ObjectFloatMap<? extends K> map) {

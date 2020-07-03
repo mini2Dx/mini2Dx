@@ -27,9 +27,14 @@ public class ConcurrentDelayedRemovalArray<T> extends DelayedRemovalArray<T> imp
     protected ReadWriteLock lock = Mdx.locks.newReadWriteLock();
 
     public ConcurrentDelayedRemovalArray() {
+        super();
     }
 
-    public ConcurrentDelayedRemovalArray(Array array) {
+    /**
+     * NOTE: read access to the other array is not thread-safe
+     * @param array
+     */
+    public ConcurrentDelayedRemovalArray(Array<? extends T> array) {
         super(array);
     }
 
