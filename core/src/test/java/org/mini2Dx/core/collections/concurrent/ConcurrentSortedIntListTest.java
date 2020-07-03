@@ -31,7 +31,7 @@ public class ConcurrentSortedIntListTest extends ConcurrentCollectionTest{
                     l.insert(counter.getAndIncrement(), i);
                 }
             }
-        }, 100));
+        }, 100);
         assertEquals(1000, l.size());
     }
 }
