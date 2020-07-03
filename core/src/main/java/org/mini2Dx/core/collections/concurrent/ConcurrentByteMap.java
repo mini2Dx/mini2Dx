@@ -23,18 +23,40 @@ public class ConcurrentByteMap<T> extends ByteMap<T> implements ConcurrentCollec
 
     protected ReadWriteLock lock = Mdx.locks.newReadWriteLock();
 
+    /**
+     * Creates a new map with an initial capacity of 51 and a load factor of 0.8.
+     */
     public ConcurrentByteMap() {
         super();
     }
 
+    /**
+     * Creates a new map with a load factor of 0.8.
+     *
+     * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
+     */
     public ConcurrentByteMap(int initialCapacity) {
         super(initialCapacity);
     }
 
+    /**
+     * Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
+     * growing the backing table.
+     *
+     * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
+     * @param loadFactor
+     */
     public ConcurrentByteMap(int initialCapacity, float loadFactor) {
         super(initialCapacity, loadFactor);
     }
 
+    /**
+     * Creates a new map identical to the specified map.
+     *
+     * NOTE: read access to the other map is not thread-safe
+     *
+     * @param map
+     */
     public ConcurrentByteMap(ByteMap<? extends T> map) {
         super(map);
     }
@@ -118,7 +140,7 @@ public class ConcurrentByteMap<T> extends ByteMap<T> implements ConcurrentCollec
     public byte findKey(Object value, boolean identity, byte notFound) {
         lock.lockRead();
         byte b = super.findKey(value, identity, notFound);
-        lock.lockWrite();
+        lock.unlockRead();
         return b;
     }
 

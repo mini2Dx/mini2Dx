@@ -54,6 +54,8 @@ public class ConcurrentObjectIntMap<K> extends ObjectIntMap<K> implements Concur
     /**
      * Creates a new map identical to the specified map.
      *
+     * NOTE: read access to the other map is not thread-safe
+     *
      * @param map
      */
     public ConcurrentObjectIntMap(ObjectIntMap<? extends K> map) {

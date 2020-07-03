@@ -30,6 +30,10 @@ public class ConcurrentSnapshotArray<T> extends SnapshotArray<T> implements Conc
         super();
     }
 
+    /**
+     * NOTE: read access to the other array is not thread-safe
+     * @param array
+     */
     public ConcurrentSnapshotArray(Array array) {
         super(array);
     }
@@ -541,6 +545,7 @@ public class ConcurrentSnapshotArray<T> extends SnapshotArray<T> implements Conc
     public T[] begin() {
         lock.lockWrite();
         T[] t = super.begin();
+        lock.unlockWrite();
         return t;
     }
 
@@ -549,6 +554,7 @@ public class ConcurrentSnapshotArray<T> extends SnapshotArray<T> implements Conc
      */
     @Override
     public void end() {
+        lock.lockWrite();
         super.end();
         lock.unlockWrite();
     }

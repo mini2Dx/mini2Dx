@@ -37,6 +37,10 @@ public class ConcurrentLongTreeMap<T> extends LongTreeMap<T> implements Concurre
         super(initialCapacity, loadFactor);
     }
 
+    /**
+     * NOTE: read access to the other map is not thread-safe
+     * @param map
+     */
     public ConcurrentLongTreeMap(LongMap<? extends T> map) {
         super(map);
     }
@@ -120,7 +124,7 @@ public class ConcurrentLongTreeMap<T> extends LongTreeMap<T> implements Concurre
     public long findKey(Object value, boolean identity, long notFound) {
         lock.lockRead();
         long i = super.findKey(value, identity, notFound);
-        lock.lockWrite();
+        lock.unlockRead();
         return i;
     }
 

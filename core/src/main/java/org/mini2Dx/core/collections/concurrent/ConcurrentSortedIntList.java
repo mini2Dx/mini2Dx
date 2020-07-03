@@ -107,17 +107,13 @@ public class ConcurrentSortedIntList<E> extends SortedIntList<E> implements Conc
 
     /**
      * Returns an iterator to traverse the list.
-     * Only one iterator can be active per list at any given time.
+     * Only one iterator can be active per list at any given time. Not thread-safe
      *
      * @return Iterator to traverse list
      */
     @Override
     public Iterator<Node<E>> iterator() {
-        boolean oldAllocate = Collections.allocateIterators;
-        Collections.allocateIterators = true;
-        Iterator<Node<E>> iNE = super.iterator();
-        Collections.allocateIterators = oldAllocate;
-        return iNE;
+        return super.iterator();
     }
 
     @Override

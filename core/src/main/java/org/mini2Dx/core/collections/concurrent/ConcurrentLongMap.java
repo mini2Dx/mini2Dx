@@ -54,6 +54,8 @@ public class ConcurrentLongMap<T> extends LongMap<T> implements ConcurrentCollec
     /**
      * Creates a new map identical to the specified map.
      *
+     * NOTE: read access to the other map is not thread-safe
+     *
      * @param map
      */
     public ConcurrentLongMap(LongMap<? extends T> map) {
@@ -182,7 +184,7 @@ public class ConcurrentLongMap<T> extends LongMap<T> implements ConcurrentCollec
     public void ensureCapacity(int additionalCapacity) {
         lock.lockWrite();
         super.ensureCapacity(additionalCapacity);
-        lock.unlockWrite();
+        lock.unlockRead();
     }
 
     @Override

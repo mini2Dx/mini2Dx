@@ -83,8 +83,28 @@ public class ConcurrentShortArray extends ShortArray implements ConcurrentCollec
         super(ordered, array, startIndex, count);
     }
 
+    /**
+     * Creates a new array containing the elements in the specific array. The new array will be ordered if the specific array is
+     * ordered. The capacity is set to the number of elements, so any subsequent elements added will cause the backing array to be
+     * grown.
+     *
+     * NOTE: read access to the other array is not thread-safe
+     *
+     * @param array
+     */
+    public ConcurrentShortArray(ShortArray array) {
+        super(array);
+    }
+
     @Override
     public void add(short value) {
+        lock.lockWrite();
+        super.add(value);
+        lock.unlockWrite();
+    }
+
+    @Override
+    public void add(int value) {
         lock.lockWrite();
         super.add(value);
         lock.unlockWrite();

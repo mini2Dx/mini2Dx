@@ -54,6 +54,8 @@ public class ConcurrentIntIntMap extends IntIntMap implements ConcurrentCollecti
     /**
      * Creates a new map identical to the specified map.
      *
+     * NOTE: read access to the other map is not thread-safe
+     *
      * @param map
      */
     public ConcurrentIntIntMap(IntIntMap map) {

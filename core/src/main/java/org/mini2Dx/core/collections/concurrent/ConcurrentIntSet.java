@@ -54,6 +54,8 @@ public class ConcurrentIntSet extends IntSet implements ConcurrentCollection {
     /**
      * Creates a new set identical to the specified set.
      *
+     * NOTE: read access to the other set is not thread-safe
+     *
      * @param set
      */
     public ConcurrentIntSet(IntSet set) {

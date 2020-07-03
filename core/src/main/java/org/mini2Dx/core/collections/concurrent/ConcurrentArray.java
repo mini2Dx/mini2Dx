@@ -76,6 +76,8 @@ public class ConcurrentArray<T> extends Array<T> implements ConcurrentCollection
      * and will be ordered if the specified array is ordered. The capacity is set to the number of elements, so any subsequent
      * elements added will cause the backing array to be grown.
      *
+     * NOTE: read access to the other Array is not thread-safe
+     *
      * @param array
      */
     public ConcurrentArray(Array<? extends T> array) {

@@ -54,6 +54,8 @@ public class ConcurrentIntFloatMap extends IntFloatMap implements ConcurrentColl
     /**
      * Creates a new map identical to the specified map.
      *
+     * NOTE: read access to the other map is not thread-safe
+     *
      * @param map
      */
     public ConcurrentIntFloatMap(IntFloatMap map) {

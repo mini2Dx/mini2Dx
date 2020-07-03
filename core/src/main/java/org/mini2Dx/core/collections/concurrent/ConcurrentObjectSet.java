@@ -54,6 +54,8 @@ public class ConcurrentObjectSet<T> extends ObjectSet<T> implements ConcurrentCo
     /**
      * Creates a new set identical to the specified set.
      *
+     * NOTE: read access to the other set is not thread-safe
+     *
      * @param set
      */
     public ConcurrentObjectSet(ObjectSet<? extends T> set) {
