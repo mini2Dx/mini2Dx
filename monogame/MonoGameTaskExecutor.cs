@@ -14,6 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -101,7 +102,7 @@ namespace monogame
 
         public AsyncResult submit(Callable c)
         {
-            return new MonoGameAsyncResult(Task.Factory.StartNew(c.call));
+            return new MonoGameAsyncResult(Task.Factory.StartNew((Func<object>) c.call));
         }
 
         public void submit(FrameSpreadTask fst)

@@ -18,7 +18,7 @@ buildscript {
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.9.0'
 		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.10'
 		classpath "org.mini2Dx:gradle-mini2Dx-mgcb:1.0.2"
-        classpath 'com.android.tools.build:gradle:3.6.0-rc01'
+        classpath 'com.android.tools.build:gradle:3.4.2'
 		classpath "com.viridiansoftware:gradle-desugar-task:1.0.1"
 		classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.8'
     }
@@ -676,6 +676,14 @@ project(":" + rootProject.name + "-artemis-odb") {
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
 		testCompile "org.jmock:jmock-legacy:$jmockVersion"
     }
+}
+
+tasks.withType(JavaCompile) {
+    options.fork = true
+}
+
+tasks.withType(Test) {
+    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
 }
 
 boolean hasConsoleSdk() {
