@@ -58,7 +58,7 @@ namespace monogame.Files
                 {
                     _fileInfo = new FileInfo(path);
                     _filename = _fileInfo.Name;
-                    _totalBytes = (int) _fileInfo.Length;
+                    _totalBytes = _fileInfo.Exists ? (int) _fileInfo.Length : 0;
                 }
             }
             else if(Mdx.platform_.isConsole())
@@ -77,7 +77,7 @@ namespace monogame.Files
                 {
                     _fileInfo = new FileInfo(path);
                     _filename = path.Substring(path.LastIndexOf('/') + 1);
-                    _totalBytes = _fileType.Equals(FileType.INTERNAL_) ? -1 : (int)_fileInfo.Length;
+                    _totalBytes = _fileType.Equals(FileType.INTERNAL_) ? -1 : (_fileInfo.Exists ? (int)_fileInfo.Length : 0);
                 }
             }
             else

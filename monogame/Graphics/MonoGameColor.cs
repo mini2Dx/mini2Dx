@@ -502,22 +502,22 @@ namespace monogame.Graphics
             return getAAsFloat();
         }
 
-        public float rb()
+        public sbyte rb()
         {
             return getRAsByte();
         }
 
-        public float gb()
+        public sbyte gb()
         {
             return getGAsByte();
         }
 
-        public float bb()
+        public sbyte bb()
         {
             return getBAsByte();
         }
 
-        public float ab()
+        public sbyte ab()
         {
             return getAAsByte();
         }
