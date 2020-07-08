@@ -38,11 +38,13 @@ namespace monogame.Files
         private int _totalBytes;
         private DirectoryInfo _directoryInfo;
         private FileInfo _fileInfo;
+        private readonly string _originalPath;
 
         public MonoGameFileHandle(string prefix, string path, FileType fileType)
         {
             _fileType = fileType;
             _prefix = prefix;
+            _originalPath = path;
             path = prefix + path;
 
             if(Mdx.platform_.isDesktop())
@@ -106,7 +108,7 @@ namespace monogame.Files
         
         public Java.Lang.String path()
         {
-            return ((string) pathWithPrefix()).Remove(0, _prefix.Length);
+            return _originalPath;
         }
 
         public Java.Lang.String normalize()
