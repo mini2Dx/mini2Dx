@@ -82,8 +82,6 @@ public class DeferredRunnableTest {
     public void testDeferredUntilUpdateRunnableProcessOrder() {
         mockery.checking(new Expectations() {
             {
-                atLeast(1).of(uiContainer).isContainer();
-                will(returnValue(true));
                 atLeast(1).of(uiContainer).getZIndex();
                 will(returnValue(0));
                 atLeast(1).of(uiContainer).getWidth();
@@ -146,8 +144,6 @@ public class DeferredRunnableTest {
     public void testDeferredUntilLayoutRunnableProcessOrder() {
         mockery.checking(new Expectations() {
             {
-                atLeast(1).of(uiContainer).isContainer();
-                will(returnValue(true));
                 atLeast(1).of(uiContainer).getZIndex();
                 will(returnValue(0));
                 atLeast(1).of(uiContainer).getWidth();

@@ -60,7 +60,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		this.parent = parent;
 		this.element = element;
 		this.zIndex = element.getZIndex();
-		this.outerArea = element.isContainer() ? new CollisionBox() : new StaticCollisionBox();
+		this.outerArea = new StaticCollisionBox(); //TODO: use CollisionBox for smoother animations at higher FPS, see #257
 
 		setDirty();
 	}
