@@ -461,7 +461,7 @@ project(":" + rootProject.name + "-all") {
 					'-o', project.file("generated-src").getAbsolutePath(),
 					'-p', 'mini2Dx-all',
 					'-b',
-					'--desugar', "${desugarWorkarounds}",
+					'--desugar', "${workarounds}\\mini2Dx-workarounds\\",
 					'-r', "${jdkDll}"
 		}
 
@@ -496,7 +496,7 @@ project(":" + rootProject.name + "-uats") {
 			dlls = files('../monogame-pipeline-ext/bin/Debug/monogame-pipeline-ext.dll')
 		}
 
-		task desugarJar(type: com.viridiansoftware.desugar.DesugarTask, dependsOn: jar) {
+		task desugarJar(type: com.viridiansoftware.desugar.DesugarTask, dependsOn: [jar, project(":" + rootProject.name + "-all").fatJar]) {
 			inputJar file('build/libs/' + project.name + '-' + project.version + '.jar')
 			outputJar file('build/libs/' + project.name + '-desugarjar.jar')
 			bootstrapClasspath files("${jdkJar}")
@@ -513,7 +513,8 @@ project(":" + rootProject.name + "-uats") {
 					'-o', project.file("generated-src").getAbsolutePath(),
 					'-p', 'mini2Dx-uats',
 					'-b',
-					'--desugar', "${desugarWorkarounds}",
+					'--desugar', "${workarounds}\\mini2Dx-workarounds\\",
+					'--overrides', "${workarounds}\\mini2Dx-overrides\\",
 					'-r', "${jdkDll};..\\..\\..\\all\\generated-src\\bin\\Debug\\mini2Dx-all.dll"
 		}
 
