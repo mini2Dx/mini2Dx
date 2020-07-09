@@ -29,30 +29,7 @@ import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import org.mini2Dx.gdx.Input;
 import org.mini2Dx.gdx.InputMultiplexer;
-import org.mini2Dx.uats.AudioUAT;
-import org.mini2Dx.uats.BlendingUAT;
-import org.mini2Dx.uats.ClippingUAT;
-import org.mini2Dx.uats.FlexUiUAT;
-import org.mini2Dx.uats.GamePadMapping;
-import org.mini2Dx.uats.GamePadUAT;
-import org.mini2Dx.uats.GeometryUAT;
-import org.mini2Dx.uats.GraphicsUAT;
-import org.mini2Dx.uats.HexagonalTiledMapUAT;
-import org.mini2Dx.uats.IsometricTiledMapUAT;
-import org.mini2Dx.uats.MonospaceFontUAT;
-import org.mini2Dx.uats.OrthogonalTiledMapNoCachingUAT;
-import org.mini2Dx.uats.PixelUiUAT;
-import org.mini2Dx.uats.PlatformUtilsUAT;
-import org.mini2Dx.uats.ShaderUAT;
-import org.mini2Dx.uats.ShapeClippingUAT;
-import org.mini2Dx.uats.SpriteCacheUAT;
-import org.mini2Dx.uats.SpriteUAT;
-import org.mini2Dx.uats.TextureAtlasLoaderUAT;
-import org.mini2Dx.uats.TextureRegionUAT;
-import org.mini2Dx.uats.TilingDrawableUAT;
-import org.mini2Dx.uats.UiSerializationUAT;
-import org.mini2Dx.uats.ViewportUAT;
-import org.mini2Dx.uats.XmlUiUAT;
+import org.mini2Dx.uats.*;
 import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.animation.TypingTextAnimation;
@@ -270,6 +247,16 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 			@Override
 			public void onActionEnd(ActionEvent event) {
 				nextScreenId = ScreenIds.getScreenId(AudioUAT.class);
+			}
+		})));
+		uatsDialog.add(FlexRow.withElements("row-async-audio", UiUtils.createButton(uiNavigation, "Async audio", new ActionListener() {
+			@Override
+			public void onActionBegin(ActionEvent event) {
+			}
+
+			@Override
+			public void onActionEnd(ActionEvent event) {
+				nextScreenId = ScreenIds.getScreenId(AsyncAudioUAT.class);
 			}
 		})));
 		uatsDialog.add(FlexRow.withElements("row-orthogonal-tiledmap",

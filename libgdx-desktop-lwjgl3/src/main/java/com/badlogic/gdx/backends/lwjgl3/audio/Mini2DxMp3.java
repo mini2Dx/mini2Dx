@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import javazoom.jl.decoder.*;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 /**
  * Modified version of {@link Mp3} to support sound completion events
@@ -102,11 +103,15 @@ public class Mini2DxMp3 extends Mp3 {
 		// Note: This uses a slightly modified version of JLayer.
 
 		public Sound (Mini2DxOpenALAudio audio, FileHandle file) {
+			this(audio, file.read(), file.path());
+		}
+
+		public Sound (Mini2DxOpenALAudio audio, InputStream stream, String fileName) {
 			super(audio);
 			if (audio.noDevice) return;
 			ByteArrayOutputStream output = new ByteArrayOutputStream(4096);
 
-			Bitstream bitstream = new Bitstream(file.read());
+			Bitstream bitstream = new Bitstream(stream);
 			MP3Decoder decoder = new MP3Decoder();
 
 			try {

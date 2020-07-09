@@ -26,7 +26,7 @@ namespace monogame
 {
     public class MonoGameTaskExecutor : global::Java.Lang.Object, Org.Mini2Dx.Core.TaskExecutor
     {
-        private class MonoGameAsyncFuture : Org.Mini2Dx.Core.Executor.AsyncFuture
+        internal class MonoGameAsyncFuture : Org.Mini2Dx.Core.Executor.AsyncFuture
         {
             private Task _task;
 
@@ -41,7 +41,7 @@ namespace monogame
             }
         }
 
-        private class MonoGameAsyncResult : MonoGameAsyncFuture, Org.Mini2Dx.Core.Executor.AsyncResult
+        internal class MonoGameAsyncResult : MonoGameAsyncFuture, Org.Mini2Dx.Core.Executor.AsyncResult
         {
             private TaskAwaiter<object> taskAwaiter;
             internal MonoGameAsyncResult(Task<object> task) : base(task)

@@ -15,12 +15,6 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.android;
 
-import org.mini2Dx.core.Audio;
-import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.audio.MusicCompletionListener;
-import org.mini2Dx.core.audio.SoundCompletionListener;
-
-import com.badlogic.gdx.utils.Array;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -29,7 +23,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Build;
-
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
@@ -38,9 +31,9 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.LongArray;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.libgdx.LibgdxAudio;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

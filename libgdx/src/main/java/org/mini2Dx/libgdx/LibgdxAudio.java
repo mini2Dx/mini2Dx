@@ -17,13 +17,10 @@ package org.mini2Dx.libgdx;
 
 import com.badlogic.gdx.Gdx;
 import org.mini2Dx.core.Audio;
-import org.mini2Dx.core.audio.Music;
-import org.mini2Dx.core.audio.MusicCompletionListener;
-import org.mini2Dx.core.audio.Sound;
-import org.mini2Dx.core.audio.SoundCompletionListener;
-import org.mini2Dx.core.exception.NotYetImplementedException;
+import org.mini2Dx.core.audio.*;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.libgdx.audio.LibgdxAsyncSoundResult;
 import org.mini2Dx.libgdx.audio.LibgdxMusic;
 import org.mini2Dx.libgdx.audio.LibgdxSound;
 import org.mini2Dx.libgdx.files.LibgdxFileHandle;
@@ -38,6 +35,11 @@ public class LibgdxAudio implements Audio {
 	public Sound newSound(FileHandle fileHandle) throws IOException {
 		final LibgdxFileHandle gdxFileHandle = (LibgdxFileHandle) fileHandle;
 		return new LibgdxSound(Gdx.audio.newSound(gdxFileHandle.fileHandle));
+	}
+
+	@Override
+	public AsyncSoundResult newAsyncSound(FileHandle fileHandle) {
+		return new LibgdxAsyncSoundResult(fileHandle);
 	}
 
 	@Override

@@ -97,7 +97,6 @@ namespace monogame.Files
 
             ContentManager contentManager = ((MonoGameFiles)Mdx.files_)._contentManager;
             string resolvedPath = path();
-            global::System.Console.WriteLine(resolvedPath);
             return contentManager.Load<T>(resolvedPath);
         }
 

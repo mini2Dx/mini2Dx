@@ -15,10 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.core;
 
-import org.mini2Dx.core.audio.Music;
-import org.mini2Dx.core.audio.MusicCompletionListener;
-import org.mini2Dx.core.audio.Sound;
-import org.mini2Dx.core.audio.SoundCompletionListener;
+import org.mini2Dx.core.audio.*;
 import org.mini2Dx.core.files.FileHandle;
 
 import java.io.IOException;
@@ -42,7 +39,19 @@ public interface Audio {
 	 * @return The new {@link Sound} instance
 	 * @throws IOException Thrown when the sound could not be loaded
 	 */
-	public Sound newSound(FileHandle fileHandle) throws IOException;
+    public Sound newSound(FileHandle fileHandle) throws IOException;
+
+	/**
+	 * See {@link #newSound(FileHandle)}.
+	 * Loads a new {@link Sound} instance asynchronously.
+	 * On platforms not supporting async sound loading a warning will be logged and the sound would be loaded on game thread
+	 * when {@link AsyncSoundResult#getResult()} is called.
+	 * Supported platforms: Libgdx Desktop LWJGL2/3, Monogame.
+	 *
+	 * @param fileHandle The {@link FileHandle} to load the audio from
+	 * @return The {@link AsyncSoundResult} instance that's loading the sound
+	 */
+	public AsyncSoundResult newAsyncSound(FileHandle fileHandle);
 
 	/**
 	 * <p>
