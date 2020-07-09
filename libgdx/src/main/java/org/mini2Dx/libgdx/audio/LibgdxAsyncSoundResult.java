@@ -16,63 +16,38 @@
 package org.mini2Dx.libgdx.audio;
 
 import com.badlogic.gdx.Gdx;
-import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.audio.AsyncSoundResult;
 import org.mini2Dx.core.audio.Sound;
-import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.executor.AsyncResult;
 import org.mini2Dx.core.files.FileHandle;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Callable;
 
-public class LibgdxAsyncSoundResult implements AsyncSoundResult {
-
-    FileHandle file;
-    AsyncResult<InputStream> result;
+public class LibgdxAsyncSoundResult extends AsyncSoundResult {
 
     public LibgdxAsyncSoundResult(FileHandle file){
-        this.file = file;
-        result = Mdx.executor.submit(new Callable<InputStream>() {
+        super(file);
+    }
+
+    @Override
+    protected Callable<Object> asyncReadFile(FileHandle file) {
+        return new Callable<Object>() {
             @Override
             public InputStream call() throws Exception {
                 return new ByteArrayInputStream(file.readBytes());
             }
-        });
+        };
     }
 
-    /**
-     * Returns the result object
-     *
-     * @return Null if no result is available
-     */
     @Override
-    public Sound getResult() {
-        if (!isFinished()){
+    protected Sound makeSound(AsyncResult result) {
+        try {
+            return (Sound) Gdx.audio.getClass().getMethod("newSound", InputStream.class, String.class).invoke(Gdx.audio, result.getResult(), handle.path());
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             return null;
         }
-        try {
-            return (Sound) Gdx.audio.getClass().getMethod("newSound", InputStream.class, String.class).invoke(Gdx.audio, result.getResult(), file.path());
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            Mdx.log.info("WARNING", "Async sound loading not supported on this platform, falling back to loading on main thread...");
-            try {
-                return Mdx.audio.newSound(this.file);
-            } catch (IOException ioException) {
-                throw new MdxException("Error while loading sound", ioException);
-            }
-        }
-    }
-
-    /**
-     * Returns if the asynchronous task has finished executing
-     *
-     * @return False if the task is still queued or executing
-     */
-    @Override
-    public boolean isFinished() {
-        return result.isFinished();
     }
 }

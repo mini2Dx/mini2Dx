@@ -14,14 +14,13 @@
  * limitations under the License.
  ******************************************************************************/
 using Java.Util.Concurrent;
-using Org.Mini2Dx.Core;
 using Org.Mini2Dx.Core.Audio;
 using Org.Mini2Dx.Core.Executor;
 using Org.Mini2Dx.Core.Files;
 
 namespace monogame.Audio
 {
-    public class MonoGameAsyncSoundResult : AsyncSoundResult
+    public sealed class MonoGameAsyncSoundResult : AsyncSoundResult
     {
         private class AsyncSoundCallable : Callable
         {
@@ -37,24 +36,20 @@ namespace monogame.Audio
                 return new MonoGameSound(_handle);
             }
         }
-        
-        
-        private AsyncResult _result;
 
         public MonoGameAsyncSoundResult(FileHandle handle)
         {
-           _result = Mdx.executor_.submit(new AsyncSoundCallable(handle));
-        }
-        
-        
-        public bool isFinished()
-        {
-            return _result.isFinished();
+            _init_(handle);
         }
 
-        public object getResult()
+        public override Callable asyncReadFile(FileHandle arg0)
         {
-            return _result.getResult();
+            return new AsyncSoundCallable(handle_);
+        }
+
+        public override Sound makeSound(AsyncResult arg0)
+        {
+            return (Sound) arg0.getResult();
         }
     }
 }
