@@ -15,45 +15,29 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.lwjgl3.audio;
 
-import com.badlogic.gdx.utils.*;
-import org.mini2Dx.core.Mdx;
-import org.mini2Dx.libgdx.LibgdxAudio;
-
-import static org.lwjgl.openal.AL10.AL_BUFFER;
-import static org.lwjgl.openal.AL10.AL_NO_ERROR;
-import static org.lwjgl.openal.AL10.AL_ORIENTATION;
-import static org.lwjgl.openal.AL10.AL_PAUSED;
-import static org.lwjgl.openal.AL10.AL_PLAYING;
-import static org.lwjgl.openal.AL10.AL_POSITION;
-import static org.lwjgl.openal.AL10.AL_SOURCE_STATE;
-import static org.lwjgl.openal.AL10.AL_STOPPED;
-import static org.lwjgl.openal.AL10.AL_VELOCITY;
-import static org.lwjgl.openal.AL10.alDeleteSources;
-import static org.lwjgl.openal.AL10.alGenSources;
-import static org.lwjgl.openal.AL10.alGetError;
-import static org.lwjgl.openal.AL10.alGetSourcei;
-import static org.lwjgl.openal.AL10.alListenerfv;
-import static org.lwjgl.openal.AL10.alSourcePause;
-import static org.lwjgl.openal.AL10.alSourcePlay;
-import static org.lwjgl.openal.AL10.alSourceStop;
-import static org.lwjgl.openal.AL10.alSourcei;
-import static org.lwjgl.openal.ALC10.*;
-
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.openal.AL;
-import org.lwjgl.openal.AL10;
-
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.*;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.openal.AL;
+import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
+import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.audio.Sound;
+import org.mini2Dx.libgdx.LibgdxAudio;
+import org.mini2Dx.libgdx.audio.LibgdxSound;
+
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+
+import static org.lwjgl.openal.AL10.*;
+import static org.lwjgl.openal.ALC10.*;
 
 /**
  * Modified version of {@link OpenALAudio} to support sound completion events
@@ -65,8 +49,8 @@ public class Mini2DxOpenALAudio implements Audio {
 	private LongMap<Integer> soundIdToSource;
 	private IntMap<Long> sourceToSoundId;
 	private long nextSoundId = 0;
-	private ObjectMap<String, Class<? extends Mini2DxOpenALSound>> extensionToSoundClass = new ObjectMap();
-	private ObjectMap<String, Class<? extends Mini2DxOpenALMusic>> extensionToMusicClass = new ObjectMap();
+	private final ObjectMap<String, Class<? extends Mini2DxOpenALSound>> extensionToSoundClass = new ObjectMap();
+	private final ObjectMap<String, Class<? extends Mini2DxOpenALMusic>> extensionToMusicClass = new ObjectMap();
 	private LongArray recentSoundIds;
 	private Mini2DxOpenALSound[] recentSounds;
 	private int mostRecetSound = -1;
@@ -151,6 +135,22 @@ public class Mini2DxOpenALAudio implements Audio {
 			return soundClass.getConstructor(new Class[] {Mini2DxOpenALAudio.class, FileHandle.class}).newInstance(this, file);
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error creating sound " + soundClass.getName() + " for file: " + file, ex);
+		}
+	}
+
+	//used for async sound loading, invoked via reflection
+	@SuppressWarnings("unused")
+	public Sound newSound(InputStream stream, String fileName) {
+		if (stream == null)
+			throw new IllegalArgumentException("file cannot be null.");
+		Class<? extends Mini2DxOpenALSound> soundClass = extensionToSoundClass.get(fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase());
+		if (soundClass == null)
+			throw new GdxRuntimeException("Unknown file extension for sound: " + fileName);
+		try {
+			return new LibgdxSound(soundClass.getConstructor(new Class[] { Mini2DxOpenALAudio.class, InputStream.class, String.class }).newInstance(this,
+					stream, fileName));
+		} catch (Exception ex) {
+			throw new GdxRuntimeException("Error creating sound " + soundClass.getName() + " for file: " + fileName, ex);
 		}
 	}
 

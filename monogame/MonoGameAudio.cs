@@ -58,6 +58,11 @@ namespace monogame
             _soundCompletionListeners.AddLast(completionListener);
         }
 
+        public AsyncSoundResult newAsyncSound(FileHandle arg0)
+        {
+            return new MonoGameAsyncSoundResult(arg0);
+        }
+
         public void removeSoundCompletionListener(SoundCompletionListener completionListener)
         {
             _soundCompletionListeners.Remove(completionListener);

@@ -15,13 +15,14 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.lwjgl.audio;
 
-import java.io.EOFException;
-import java.io.FilterInputStream;
-import java.io.IOException;
-
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
+
+import java.io.EOFException;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Modified version of {@link Wav} to support sound completion events
@@ -58,15 +59,18 @@ public class Mini2DxWav extends Wav {
 	
 	static public class Sound extends Mini2DxOpenALSound {
 		public Sound (Mini2DxOpenALAudio audio, FileHandle file) {
+			this(audio, file.read(), file.path());
+		}
+		public Sound(Mini2DxOpenALAudio audio, InputStream stream, String fileName){
 			super(audio);
 			if (audio.noDevice) return;
 
 			WavInputStream input = null;
 			try {
-				input = new WavInputStream(file);
+				input = new WavInputStream(stream, fileName);
 				setup(StreamUtils.copyStreamToByteArray(input, input.dataRemaining), input.channels, input.sampleRate);
 			} catch (IOException ex) {
-				throw new GdxRuntimeException("Error reading WAV file: " + file, ex);
+				throw new GdxRuntimeException("Error reading WAV file: " + fileName, ex);
 			} finally {
 				StreamUtils.closeQuietly(input);
 			}
@@ -77,16 +81,16 @@ public class Mini2DxWav extends Wav {
 	static private class WavInputStream extends FilterInputStream {
 		int channels, sampleRate, dataRemaining;
 
-		WavInputStream (FileHandle file) {
-			super(file.read());
+		WavInputStream (InputStream stream, String fileName){
+			super(stream);
 			try {
 				if (read() != 'R' || read() != 'I' || read() != 'F' || read() != 'F')
-					throw new GdxRuntimeException("RIFF header not found: " + file);
+					throw new GdxRuntimeException("RIFF header not found: " + fileName);
 
 				skipFully(4);
 
 				if (read() != 'W' || read() != 'A' || read() != 'V' || read() != 'E')
-					throw new GdxRuntimeException("Invalid wave file header: " + file);
+					throw new GdxRuntimeException("Invalid wave file header: " + fileName);
 
 				int fmtChunkLength = seekToChunk('f', 'm', 't', ' ');
 
@@ -109,8 +113,12 @@ public class Mini2DxWav extends Wav {
 				dataRemaining = seekToChunk('d', 'a', 't', 'a');
 			} catch (Throwable ex) {
 				StreamUtils.closeQuietly(this);
-				throw new GdxRuntimeException("Error reading WAV file: " + file, ex);
+				throw new GdxRuntimeException("Error reading WAV file: " + fileName, ex);
 			}
+		}
+
+		WavInputStream (FileHandle file) {
+			this(file.read(), file.path());
 		}
 
 		private int seekToChunk (char c1, char c2, char c3, char c4) throws IOException {

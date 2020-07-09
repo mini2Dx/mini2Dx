@@ -26,8 +26,11 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.audio.Sound;
 import org.mini2Dx.libgdx.LibgdxAudio;
+import org.mini2Dx.libgdx.audio.LibgdxSound;
 
+import java.io.InputStream;
 import java.nio.FloatBuffer;
 
 import static org.lwjgl.openal.AL10.*;
@@ -42,8 +45,8 @@ public class Mini2DxOpenALAudio implements Audio {
 	private LongMap<Integer> soundIdToSource;
 	private IntMap<Long> sourceToSoundId;
 	private long nextSoundId = 0;
-	private ObjectMap<String, Class<? extends Mini2DxOpenALSound>> extensionToSoundClass = new ObjectMap();
-	private ObjectMap<String, Class<? extends Mini2DxOpenALMusic>> extensionToMusicClass = new ObjectMap();
+	private final ObjectMap<String, Class<? extends Mini2DxOpenALSound>> extensionToSoundClass = new ObjectMap();
+	private final ObjectMap<String, Class<? extends Mini2DxOpenALMusic>> extensionToMusicClass = new ObjectMap();
 	private LongArray recentSoundIds;
 	private Mini2DxOpenALSound[] recentSounds;
 	private int mostRecetSound = -1;
@@ -126,6 +129,22 @@ public class Mini2DxOpenALAudio implements Audio {
 					file);
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error creating sound " + soundClass.getName() + " for file: " + file, ex);
+		}
+	}
+
+	//used for async sound loading, invoked via reflection
+	@SuppressWarnings("unused")
+	public Sound newSound(InputStream stream, String fileName) {
+		if (stream == null)
+			throw new IllegalArgumentException("file cannot be null.");
+		Class<? extends Mini2DxOpenALSound> soundClass = extensionToSoundClass.get(fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase());
+		if (soundClass == null)
+			throw new GdxRuntimeException("Unknown file extension for sound: " + fileName);
+		try {
+			return new LibgdxSound(soundClass.getConstructor(new Class[] { Mini2DxOpenALAudio.class, InputStream.class, String.class }).newInstance(this,
+					stream, fileName));
+		} catch (Exception ex) {
+			throw new GdxRuntimeException("Error creating sound " + soundClass.getName() + " for file: " + fileName, ex);
 		}
 	}
 

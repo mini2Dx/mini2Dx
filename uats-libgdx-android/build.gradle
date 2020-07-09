@@ -60,7 +60,7 @@ task copyAndroidNatives() {
     }
 }
 
-task launchAndroid(type: Exec, dependsOn: [':mini2Dx-uats-android:installDebug']) {
+task launchAndroid(type: Exec, dependsOn: [':mini2Dx-uats-libgdx-android:installDebug']) {
     def path
     def localProperties = project.file("../local.properties")
     if (localProperties.exists()) {

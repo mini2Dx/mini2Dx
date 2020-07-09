@@ -15,10 +15,11 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.lwjgl.audio;
 
-import java.io.ByteArrayOutputStream;
-
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.StreamUtils;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 /**
  * Modified version of {@link Ogg} to support sound completion events
@@ -60,13 +61,17 @@ public class Mini2DxOgg extends Ogg {
 	}
 
 	static public class Sound extends Mini2DxOpenALSound {
-		public Sound(Mini2DxOpenALAudio audio, FileHandle file) {
+		public Sound(com.badlogic.gdx.backends.lwjgl.audio.Mini2DxOpenALAudio audio, FileHandle file) {
+			this(audio, file.read(), file.path());
+		}
+
+		public Sound(Mini2DxOpenALAudio audio, InputStream stream, String fileName) {
 			super(audio);
 			if (audio.noDevice)
 				return;
 			OggInputStream input = null;
 			try {
-				input = new OggInputStream(file.read());
+				input = new OggInputStream(stream);
 				ByteArrayOutputStream output = new ByteArrayOutputStream(4096);
 				byte[] buffer = new byte[2048];
 				while (!input.atEnd()) {

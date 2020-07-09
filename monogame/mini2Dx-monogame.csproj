@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Audio\MonoGameAsyncSoundResult.cs" />
     <Compile Include="Audio\MonoGameMusic.cs" />
     <Compile Include="Audio\MonoGameSound.cs" />
     <Compile Include="Files\mini2DxFileContent.cs" />
