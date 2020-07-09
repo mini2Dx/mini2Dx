@@ -22,7 +22,7 @@ import org.mini2Dx.gdx.math.MathUtils;
  */
 public class Lerper {
 
-	public static Mode MODE = Mode.CLAMP;
+	public static Mode MODE = Mode.MONOTONIC;
 
 	public static float lerp(float from, float to, float alpha) {
 		switch(MODE) {
