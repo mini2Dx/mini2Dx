@@ -41,6 +41,8 @@ if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
 		packageGroup = 'org.mini2Dx'
 		username = ossrhUser
 		password = ossrhPassword
+		numberOfRetries = 30
+		delayBetweenRetriesInMillis = 5000
 	}
 }
 
