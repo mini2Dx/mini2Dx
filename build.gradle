@@ -15,10 +15,11 @@ buildscript {
     dependencies {
 		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
 		classpath 'me.champeau.gradle:jmh-gradle-plugin:0.5.0'
-		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.9.0'
+		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2'
+		classpath 'de.marcphilipp.gradle:nexus-publish-plugin:0.4.0'
 		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.10'
 		classpath "org.mini2Dx:gradle-mini2Dx-mgcb:1.0.2"
-        classpath 'com.android.tools.build:gradle:3.4.2'
+        classpath 'com.android.tools.build:gradle:3.6.2'
 		classpath "com.viridiansoftware:gradle-desugar-task:1.0.1"
 		classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.8'
     }
@@ -87,7 +88,7 @@ def projectVersion = '2.0.0-alpha.27'
 
 configure(docProjects()) {
 	apply plugin: "signing"
-	apply plugin: "maven"
+	apply plugin: "maven-publish"
 	
 	group = 'org.mini2Dx'
 	version = projectVersion
@@ -120,12 +121,12 @@ configure(docProjects()) {
 		        }
 		    }
 		}
-		
+
 		task sourcesJar(type: Jar) {
 			archiveClassifier = 'sources'
 			from android.sourceSets.main.java.srcDirs[0]
 		}
-		
+
 		task javadocJar(type: Jar) {
 			archiveClassifier = 'javadoc'
 			from javadoc
@@ -135,7 +136,7 @@ configure(docProjects()) {
 			archives javadocJar, sourcesJar
 		}
 	} else {
-		apply plugin: "java"
+		apply plugin: "java-library"
 		apply plugin: "checkstyle"
 		
 		sourceCompatibility = 1.8
@@ -144,7 +145,7 @@ configure(docProjects()) {
 		configurations {
 			testOutput.extendsFrom (testCompile)
 		}
-		
+
 		task sourcesJar(type: Jar) {
 			archiveClassifier = 'sources'
 			from sourceSets.main.allSource
@@ -175,39 +176,30 @@ configure(docProjects()) {
   
 	// Maven Central publication
 	if(project.hasProperty('ossrhUser')) {
-		signing {
-			sign configurations.archives
-		}
-		
-		uploadArchives {
-			repositories {
-				mavenDeployer {
-					// POM signature
-					beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-					// Target repository
-					repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-						authentication(userName: ossrhUser, password: ossrhPassword)
-					}
-					pom.project {
-						name project.name
-						description project.description
-						packaging 'jar'
-						url 'https://github.com/mini2Dx/mini2Dx'
-	
-						scm {
-							connection 'scm:git:https://github.com/mini2Dx/mini2Dx.git'
-							developerConnection 'scm:git:git@github.com:mini2Dx/mini2Dx.git'
-							url 'https://github.com/mini2Dx/mini2Dx.git'
-						}
+		apply plugin: "de.marcphilipp.nexus-publish"
 
+		publishing {
+			publications {
+				mavenJava(MavenPublication) {
+					afterEvaluate {
+						from project.name.contains('android') ? components.release : components.java
+						artifact sourcesJar
+						artifact javadocJar
+					}
+					pom {
+						name = project.name
+						description = project.description
+						packaging = 'jar'
+						url = 'https://github.com/mini2Dx/mini2Dx'
+						artifactId = archivesBaseName
+						groupId = group
 						licenses {
 							license {
-								name 'Apache License 2.0'
-								url 'https://opensource.org/licenses/Apache-2.0'
-								distribution 'repo'
+								name = 'Apache License 2.0'
+								url = 'https://opensource.org/licenses/Apache-2.0'
+								distribution = 'repo'
 							}
 						}
-	
 						developers {
 							developer {
 								id = 'tomcashman'
@@ -215,9 +207,41 @@ configure(docProjects()) {
 								email = 'thomascashman404@gmail.com'
 							}
 						}
+						scm {
+							connection = 'scm:git:https://github.com/mini2Dx/mini2Dx.git'
+							developerConnection = 'scm:git:git@github.com:mini2Dx/mini2Dx.git'
+							url = 'https://github.com/mini2Dx/mini2Dx.git'
+						}
 					}
 				}
 			}
+			repositories {
+				maven {
+					name = "GitHubPackages"
+					url = uri("https://maven.pkg.github.com/mini2Dx/mini2Dx")
+					credentials {
+						username = project.getProperty('gpr.user')
+						password = project.getProperty('gpr.key')
+					}
+				}
+			}
+
+			nexusPublishing {
+				connectTimeout = Duration.ofMinutes(15)
+				clientTimeout  = Duration.ofMinutes(15)
+				repositories {
+					sonatype {
+						packageGroup = rootProject.nexusStaging.packageGroup
+						stagingProfileId = rootProject.nexusStaging.stagingProfileId
+						username = project.getProperty('ossrhUser')
+						password = project.getProperty('ossrhPassword')
+					}
+				}
+			}
+		}
+
+		signing {
+			sign publishing.publications
 		}
 	}
 }
