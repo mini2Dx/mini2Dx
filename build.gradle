@@ -177,7 +177,7 @@ configure(docProjects()) {
 	}
   
 	// Maven Central publication
-	if(project.hasProperty('ossrhUser')) {
+	if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
 		apply plugin: "de.marcphilipp.nexus-publish"
 
 		publishing {
