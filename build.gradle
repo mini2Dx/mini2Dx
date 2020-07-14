@@ -189,12 +189,14 @@ configure(docProjects()) {
 						artifact javadocJar
 					}
 					pom {
-						name = project.name
-						description = project.description
-						packaging = 'jar'
-						url = 'https://github.com/mini2Dx/mini2Dx'
-						artifactId = archivesBaseName
 						groupId = group
+						name = project.name
+						afterEvaluate {
+							description = project.description
+						}
+						packaging = project.name.contains('android') ? 'aar' : 'jar'
+						url = 'https://github.com/mini2Dx/mini2Dx'
+
 						licenses {
 							license {
 								name = 'Apache License 2.0'
