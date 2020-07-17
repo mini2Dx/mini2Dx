@@ -43,7 +43,13 @@ public class TiledObject {
 	private float [] vertices;
 	private String text;
 	private boolean wrapText;
-	
+	private boolean builtFromTemplate;
+
+	TiledObject(int id, float x, float y, float width, float height, boolean builtFromTemplate) {
+		this(id, x, y, width, height);
+		this.builtFromTemplate = builtFromTemplate;
+	}
+
 	public TiledObject(int id, float x, float y, float width, float height) {
 		super();
 		this.id = id;
@@ -386,5 +392,9 @@ public class TiledObject {
 
 	public boolean isWrapText() {
 		return wrapText;
+	}
+
+	public boolean isBuiltFromTemplate() {
+		return builtFromTemplate;
 	}
 }

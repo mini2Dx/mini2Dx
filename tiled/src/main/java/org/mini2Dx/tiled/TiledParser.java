@@ -34,9 +34,7 @@ import org.mini2Dx.tiled.tileset.TsxTilesetSource;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.zip.DataFormatException;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
 
 /**
  * Parses Tiled XML files and notifies {@link TiledParserListener}s of map data
@@ -536,7 +534,7 @@ public class TiledParser implements TiledParserNotifier {
 				yAdjusted= true;
 			}
 
-			TiledObject object = new TiledObject(id, x, y, width, height);
+			TiledObject object = new TiledObject(id, x, y, width, height, objectTemplate != null);
 
 			object.setName(element.getAttribute("name", objectTemplate != null ? objectTemplate.getName() : null));
 			String type = element.getAttribute("type", objectTemplate != null ? objectTemplate.getType() : null);
