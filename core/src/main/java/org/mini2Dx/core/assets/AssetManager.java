@@ -63,6 +63,7 @@ public class AssetManager implements Disposable {
 
 	private float queuedAssets = 0f;
 	private float completedTasks = 0f;
+	private boolean loadingTasksDirty = false;
 
 	public AssetManager(FileHandleResolver fileHandleResolver) {
 		this(fileHandleResolver, true);
@@ -150,13 +151,17 @@ public class AssetManager implements Disposable {
 			assetDescriptor.setResolvedFileHandle(fileHandleResolver.resolve(assetDescriptor.getFilePath()));
 			final AssetLoader assetLoader = assetLoaders.get(assetDescriptor.getClazz());
 			loadingTasks.add(new AssetLoadingTask(assetLoader, assetDescriptor));
+			loadingTasksDirty = true;
 		}
 		if(System.nanoTime() - startTime >= TimeUnit.MILLISECONDS.toNanos(UPDATE_TIMEBOX_MILLIS)) {
 			return false;
 		}
 
 		//Sort loading tasks so that tasks with less dependencies (more likely to be depended on) are processed first
-		loadingTasks.sort();
+		if(loadingTasksDirty) {
+			loadingTasks.sort();
+			loadingTasksDirty = false;
+		}
 
 		if(System.nanoTime() - startTime >= TimeUnit.MILLISECONDS.toNanos(UPDATE_TIMEBOX_MILLIS)) {
 			return false;
@@ -166,6 +171,7 @@ public class AssetManager implements Disposable {
 			if(loadingTasks.get(i).update(this)) {
 				loadingTasks.removeIndex(i);
 				completedTasks++;
+				loadingTasksDirty = true;
 			}
 			if(System.nanoTime() - startTime >= TimeUnit.MILLISECONDS.toNanos(UPDATE_TIMEBOX_MILLIS)) {
 				return false;
