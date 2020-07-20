@@ -86,7 +86,7 @@ def docProjects() {
 	subprojects.findAll { !it.name.contains('uat') && !it.name.contains('monogame') }
 }
 
-def projectVersion = '2.0.0-alpha.27'
+def projectVersion = '2.0.0-SNAPSHOT'
 
 configure(docProjects()) {
 	apply plugin: "signing"
@@ -179,46 +179,48 @@ configure(docProjects()) {
 	// Maven Central publication
 	if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
 		apply plugin: "de.marcphilipp.nexus-publish"
+	}
 
-		publishing {
-			publications {
-				mavenJava(MavenPublication) {
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				afterEvaluate {
+					from project.name.contains('android') ? components.release : components.java
+					artifact sourcesJar
+					artifact javadocJar
+				}
+				pom {
+					groupId = group
+					name = project.name
 					afterEvaluate {
-						from project.name.contains('android') ? components.release : components.java
-						artifact sourcesJar
-						artifact javadocJar
+						description = project.description
 					}
-					pom {
-						groupId = group
-						name = project.name
-						afterEvaluate {
-							description = project.description
-						}
-						packaging = project.name.contains('android') ? 'aar' : 'jar'
-						url = 'https://github.com/mini2Dx/mini2Dx'
+					packaging = project.name.contains('android') ? 'aar' : 'jar'
+					url = 'https://github.com/mini2Dx/mini2Dx'
 
-						licenses {
-							license {
-								name = 'Apache License 2.0'
-								url = 'https://opensource.org/licenses/Apache-2.0'
-								distribution = 'repo'
-							}
+					licenses {
+						license {
+							name = 'Apache License 2.0'
+							url = 'https://opensource.org/licenses/Apache-2.0'
+							distribution = 'repo'
 						}
-						developers {
-							developer {
-								id = 'tomcashman'
-								name = 'Thomas Cashman'
-								email = 'thomascashman404@gmail.com'
-							}
+					}
+					developers {
+						developer {
+							id = 'tomcashman'
+							name = 'Thomas Cashman'
+							email = 'thomascashman404@gmail.com'
 						}
-						scm {
-							connection = 'scm:git:https://github.com/mini2Dx/mini2Dx.git'
-							developerConnection = 'scm:git:git@github.com:mini2Dx/mini2Dx.git'
-							url = 'https://github.com/mini2Dx/mini2Dx.git'
-						}
+					}
+					scm {
+						connection = 'scm:git:https://github.com/mini2Dx/mini2Dx.git'
+						developerConnection = 'scm:git:git@github.com:mini2Dx/mini2Dx.git'
+						url = 'https://github.com/mini2Dx/mini2Dx.git'
 					}
 				}
 			}
+		}
+		if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
 			repositories {
 				maven {
 					name = "GitHubPackages"
@@ -232,7 +234,7 @@ configure(docProjects()) {
 
 			nexusPublishing {
 				connectTimeout = Duration.ofMinutes(15)
-				clientTimeout  = Duration.ofMinutes(15)
+				clientTimeout = Duration.ofMinutes(15)
 				repositories {
 					sonatype {
 						packageGroup = rootProject.nexusStaging.packageGroup
@@ -243,7 +245,9 @@ configure(docProjects()) {
 				}
 			}
 		}
+	}
 
+	if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
 		signing {
 			sign publishing.publications
 		}
