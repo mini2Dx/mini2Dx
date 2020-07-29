@@ -73,7 +73,7 @@ public class DesktopMini2DxGame implements Application {
 
 		this.graphics = graphics;
 		this.files = new LwjglFiles();
-		this.input = new LwjglInput();
+		this.input = new DefaultLwjglInput();
 		this.net = new LwjglNet(config);
 
 		initialiseLibGDX();

@@ -157,7 +157,7 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 		setApplicationLogger(new AndroidApplicationLogger());
 		graphics = new AndroidMini2DxGraphics(this, config,
 				config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
-		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
+		input = createInput(this, this, graphics.view, config);
 		audio = new AndroidMini2DxAudio(this, config);
 		this.getFilesDir(); // workaround for Android bug #10515463
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
@@ -419,7 +419,7 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 		boolean keyboardAvailable = false;
 		if (config.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO)
 			keyboardAvailable = true;
-		input.keyboardAvailable = keyboardAvailable;
+		input.setKeyboardAvailable(keyboardAvailable);
 	}
 
 	@Override
@@ -564,5 +564,31 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 	@Override
 	public Handler getHandler() {
 		return this.handler;
+	}
+
+	/**
+	 * Returns the AndroidAudio to be used by the application
+	 *
+	 * @param context
+	 * @param config
+	 * @return the created {@link AndroidAudio}
+	 */
+	@Override
+	public AndroidAudio createAudio(Context context, AndroidApplicationConfiguration config) {
+		return new DefaultAndroidAudio(context, config);
+	}
+
+	/**
+	 * Returns the AndroidInput to be used by the application
+	 *
+	 * @param activity
+	 * @param context
+	 * @param view
+	 * @param config
+	 * @return the created {@link AndroidInput}
+	 */
+	@Override
+	public AndroidInput createInput(Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
+		return new DefaultAndroidInput(activity, context, view, config);
 	}
 }
