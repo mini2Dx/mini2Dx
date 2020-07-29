@@ -27,13 +27,13 @@ import org.mini2Dx.ui.element.TextBox;
  * Extends {@link StyleRule} for {@link TextBox} styling
  */
 public class TextBoxStyleRule extends StyleRule {
-	@Field
+	@Field(optional = true)
 	private String background;
-	@Field
+	@Field(optional = true)
 	private String hoverBackground;
-	@Field
+	@Field(optional = true)
 	private String actionBackground;
-	@Field
+	@Field(optional = true)
 	private String disabledBackground;
 	@Field
 	private String font;

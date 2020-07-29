@@ -33,8 +33,8 @@ public abstract class BackgroundRenderer {
 	public abstract void render(Graphics g, float x, float y, float width, float height);
 
 	public static BackgroundRenderer parse(String value) {
-		if(value.isEmpty()) {
-			throw new MdxException("Missing background value");
+		if(value == null || value.isEmpty()) {
+			return new NoopBackgroundRenderer();
 		}
 		final String [] components = value.split(" ");
 		if(components.length > 2) {
@@ -48,6 +48,8 @@ public abstract class BackgroundRenderer {
 		final String backgroundType = typeComponents[0];
 
 		switch(backgroundType) {
+		case "none":
+			return new NoopBackgroundRenderer();
 		case "ninepatch": {
 			if(typeComponents.length == 1 || typeComponents[1].isEmpty()) {
 				throw new MdxException(value + " is missing ninepatch args (left,right,top,bottom), e.g. " + value + ":4,4,2,2");
