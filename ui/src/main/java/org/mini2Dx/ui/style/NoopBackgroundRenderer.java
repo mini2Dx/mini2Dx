@@ -21,7 +21,7 @@ import org.mini2Dx.core.files.FileHandleResolver;
 
 public class NoopBackgroundRenderer extends BackgroundRenderer {
 	public NoopBackgroundRenderer() {
-		super(imagePath);
+		super(null);
 	}
 
 	@Override
