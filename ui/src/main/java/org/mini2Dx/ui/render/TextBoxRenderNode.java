@@ -22,6 +22,7 @@ import org.mini2Dx.core.font.FontGlyphLayout;
 import org.mini2Dx.core.font.GameFontCache;
 import org.mini2Dx.gdx.Input;
 import org.mini2Dx.ui.element.TextBox;
+import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.event.EventTrigger;
 import org.mini2Dx.ui.event.params.EventTriggerParams;
 import org.mini2Dx.ui.event.params.EventTriggerParamsPool;
@@ -45,6 +46,8 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule> imp
 	private float renderCursorX;
 	private float renderCursorHeight;
 
+	private boolean previouslyVisible = false;
+
 	protected LayoutRuleset layoutRuleset;
 	protected FontGlyphLayout glyphLayout = Mdx.fonts.defaultFont().newGlyphLayout();
 	protected GameFontCache fontCache = Mdx.fonts.defaultFont().newCache();
@@ -67,12 +70,21 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule> imp
 		if (!layoutRuleset.equals(element.getFlexLayout())) {
 			initLayoutRuleset();
 		}
+		if(isIncludedInRender() && isIncludedInRender() != previouslyVisible) {
+			updateBitmapFontCache();
+		}
+		previouslyVisible = isIncludedInRender();
 		super.layout(layoutState);
 	}
 
 	@Override
 	public void update(UiContainerRenderTree uiContainer, float delta) {
 		super.update(uiContainer, delta);
+
+		if(isIncludedInRender() && isIncludedInRender() != previouslyVisible) {
+			updateBitmapFontCache();
+		}
+		previouslyVisible = isIncludedInRender();
 
 		if (cursorTimer <= CURSOR_VISIBLE_DURATION) {
 			cursorVisible = true;
