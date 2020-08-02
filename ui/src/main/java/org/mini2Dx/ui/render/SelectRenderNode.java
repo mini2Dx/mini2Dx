@@ -97,6 +97,8 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 		Color tmpColor = g.getColor();
 		GameFont tmpFont = g.getFont();
 
+		final String text = element.getTotalOptions() > 0 ? element.getSelectedLabel() : " ";
+
 		if (element.isEnabled()) {
 			if (element.getEnabledTextColor() != null) {
 				g.setColor(element.getEnabledTextColor());
@@ -113,7 +115,7 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 				g.setFont(fallbackFont);
 			}
 
-			g.drawString(element.getSelectedLabel(), leftButton.getRenderX() + leftButton.getRenderWidth(),
+			g.drawString(text, leftButton.getRenderX() + leftButton.getRenderWidth(),
 					leftButton.getRenderY() + (leftButton.getRenderHeight() / 2) - (labelHeight / 2f),
 					getContentRenderWidth() - leftButton.getRenderWidth() - rightButton.getRenderWidth(),
 					HorizontalAlignment.CENTER.getAlignValue());
@@ -165,7 +167,7 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 				g.setFont(fallbackFont);
 			}
 
-			g.drawString(element.getSelectedLabel(), leftButton.getRenderX() + leftButton.getRenderWidth(),
+			g.drawString(text, leftButton.getRenderX() + leftButton.getRenderWidth(),
 					leftButton.getRenderY() + (leftButton.getRenderHeight() / 2) - (labelHeight / 2f),
 					getContentRenderWidth() - leftButton.getRenderWidth() - rightButton.getRenderWidth(),
 					HorizontalAlignment.CENTER.getAlignValue());
@@ -340,14 +342,15 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 			labelStyleFont = disabledStyleRule.getGameFont();
 		}
 
+		final String text = element.getTotalOptions() > 0 ? element.getSelectedLabel() : " ";
 		if (labelStyleFont == null) {
-			glyphLayout.setText(element.getSelectedLabel(), white, preferredContentWidth,
+			glyphLayout.setText(text, white, preferredContentWidth,
 					HorizontalAlignment.CENTER.getAlignValue(), true);
 		} else {
 			if(!labelStyleFont.equals(glyphLayout.getFont())) {
 				glyphLayout = labelStyleFont.newGlyphLayout();
 			}
-			glyphLayout.setText(element.getSelectedLabel(), white, preferredContentWidth,
+			glyphLayout.setText(text, white, preferredContentWidth,
 					HorizontalAlignment.CENTER.getAlignValue(), true);
 		}
 		labelHeight = glyphLayout.getHeight();
