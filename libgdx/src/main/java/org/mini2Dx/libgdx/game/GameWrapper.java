@@ -68,13 +68,17 @@ public abstract class GameWrapper implements ApplicationListener {
 		Mdx.executor = new LibgdxTaskExecutor(Math.max(2, Runtime.getRuntime().availableProcessors()));
 		Mdx.files = new LibgdxFiles();
 		Mdx.fonts = new LibgdxFonts();
-		Mdx.graphics = new LibgdxGraphicsUtils();
+		Mdx.graphics = createGraphicsUtils();
 		Mdx.graphicsContext = createGraphicsContext();
 		Mdx.input = new LibgdxInput();
 		Mdx.log = new LibgdxLogger();
 		Mdx.reflect = new JvmReflection();
 
 		gameContainer.start(Mdx.graphicsContext);
+	}
+
+	protected GraphicsUtils createGraphicsUtils() {
+		return new LibgdxGraphicsUtils();
 	}
 
 	@Override
