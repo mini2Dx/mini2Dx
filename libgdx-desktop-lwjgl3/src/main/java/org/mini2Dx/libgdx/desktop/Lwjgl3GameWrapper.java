@@ -15,8 +15,12 @@
  ******************************************************************************/
 package org.mini2Dx.libgdx.desktop;
 
+import org.mini2Dx.core.GraphicsUtils;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.core.graphics.CustomCursor;
+import org.mini2Dx.core.graphics.Pixmap;
+import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
 
 public class Lwjgl3GameWrapper extends DesktopGameWrapper {
 
@@ -32,5 +36,15 @@ public class Lwjgl3GameWrapper extends DesktopGameWrapper {
 	@Override
 	public boolean isGameWindowReady() {
 		return Lwjgl3PlatformUtils.GAME_THREAD_ID != -1L;
+	}
+
+	@Override
+	protected GraphicsUtils createGraphicsUtils() {
+		return new LibgdxGraphicsUtils(){
+			@Override
+			public CustomCursor newCustomCursor(Pixmap upPixmap, Pixmap downPixmap, int xHotspot, int yHotspot) {
+				return new Lwjgl3CustomCursor(upPixmap, downPixmap, xHotspot, yHotspot);
+			}
+		};
 	}
 }
