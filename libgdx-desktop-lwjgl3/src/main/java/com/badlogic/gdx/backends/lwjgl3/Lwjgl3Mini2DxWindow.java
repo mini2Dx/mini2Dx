@@ -426,12 +426,14 @@ public class Lwjgl3Mini2DxWindow implements Disposable {
 					continue;
 				}
 				Mdx.platformUtils.markUpdateBegin();
-				input.update();
 				if (!iconified)
 					input.update();
 				listener.update(targetTimestepSeconds);
 				Mdx.platformUtils.markUpdateEnd();
 				accumulator -= targetTimestepNanos;
+
+				if (!iconified)
+					input.prepareNext();
 			}
 			listener.interpolate((accumulator * 1f) / (targetTimestepNanos * 1f));
 			Mdx.platformUtils.markRenderBegin();
@@ -451,9 +453,6 @@ public class Lwjgl3Mini2DxWindow implements Disposable {
 				lastFrameDropWarning = -1;
 			}
 		}
-
-		if (!iconified)
-			input.prepareNext();
 
 		return shouldRender;
 	}
