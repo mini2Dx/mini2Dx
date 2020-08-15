@@ -16,7 +16,7 @@
 package org.mini2Dx.libgdx.desktop;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Mini2DxGraphics;
 import org.mini2Dx.core.graphics.Pixmap;
 import org.mini2Dx.libgdx.graphics.LibgdxCustomCursor;
 
@@ -38,6 +38,6 @@ public class Lwjgl3CustomCursor extends LibgdxCustomCursor {
 
     @Override
     protected void updateCursorVisibility() {
-        glfwSetInputMode(((Lwjgl3Graphics) Gdx.graphics).getWindow().getWindowHandle(), GLFW_CURSOR, visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
+        glfwSetInputMode(((Lwjgl3Mini2DxGraphics) Gdx.graphics).getWindow().getWindowHandle(), GLFW_CURSOR, visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
     }
 }
