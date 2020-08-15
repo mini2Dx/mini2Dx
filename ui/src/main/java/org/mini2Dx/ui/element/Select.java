@@ -18,6 +18,7 @@ package org.mini2Dx.ui.element;
 import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.Field;
+import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.event.ActionEvent;
@@ -210,6 +211,14 @@ public class Select<V> extends UiElement implements Actionable, FlexUiElement {
 	}
 
 	/**
+	 * Clears all options
+	 */
+	public void clearOptions() {
+		options.clear();
+		selectedIndex = 0;
+	}
+
+	/**
 	 * Removes a selectable option from this {@link Select} based on the
 	 * option's label
 	 * 
@@ -221,6 +230,7 @@ public class Select<V> extends UiElement implements Actionable, FlexUiElement {
 		for (int i = 0; i < options.size; i++) {
 			if (options.get(i).getLabel().equals(label)) {
 				options.removeIndex(i);
+				selectedIndex = MathUtils.clamp(selectedIndex, 0, options.size -1);
 				return true;
 			}
 		}
@@ -239,6 +249,7 @@ public class Select<V> extends UiElement implements Actionable, FlexUiElement {
 		for (int i = 0; i < options.size; i++) {
 			if (options.get(i).getValue().equals(value)) {
 				options.removeIndex(i);
+				selectedIndex = MathUtils.clamp(selectedIndex, 0, options.size -1);
 				return true;
 			}
 		}
