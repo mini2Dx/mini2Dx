@@ -42,6 +42,7 @@ public class Select<V> extends UiElement implements Actionable, FlexUiElement {
 	private Array<ActionListener> actionListeners;
 
 	private int selectedIndex = 0;
+	private boolean wrapSelectedIndex = true;
 	private Color enabledTextColor = null;
 	private Color disabledTextColor = null;
 
@@ -322,10 +323,14 @@ public class Select<V> extends UiElement implements Actionable, FlexUiElement {
 
 	/**
 	 * Changes the current selection to the next available option. If the
-	 * current selection is the last option then this method does nothing.
+	 * current selection is the last option then this method
+	 * does nothing if {@link #wrapSelectedIndex} is false.
 	 */
 	public void nextOption() {
 		if (selectedIndex >= options.size - 1) {
+			if(wrapSelectedIndex) {
+				selectedIndex = 0;
+			}
 			return;
 		}
 		selectedIndex++;
@@ -334,10 +339,13 @@ public class Select<V> extends UiElement implements Actionable, FlexUiElement {
 	/**
 	 * Changes the current selection to the option before the currently selected
 	 * option. If this current selection is the first option then this method
-	 * does nothing.
+	 * does nothing if {@link #wrapSelectedIndex} is false.
 	 */
 	public void previousOption() {
 		if (selectedIndex <= 0) {
+			if(wrapSelectedIndex) {
+				selectedIndex = options.size - 1;
+			}
 			return;
 		}
 		selectedIndex--;
@@ -588,5 +596,21 @@ public class Select<V> extends UiElement implements Actionable, FlexUiElement {
 	 */
 	public void setHeightFlex(float height) {
 		flexLayout = FlexLayoutRuleset.setHeight(flexLayout, height);
+	}
+
+	/**
+	 * True if the index will wrap around if the player keeps pressing one of the buttons
+	 * @return
+	 */
+	public boolean isWrapSelectedIndex() {
+		return wrapSelectedIndex;
+	}
+
+	/**
+	 * Sets if the index will wrap around if the player keeps pressing one of the buttons
+	 * @param wrapSelectedIndex
+	 */
+	public void setWrapSelectedIndex(boolean wrapSelectedIndex) {
+		this.wrapSelectedIndex = wrapSelectedIndex;
 	}
 }

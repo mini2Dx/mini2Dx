@@ -18,6 +18,7 @@ package org.mini2Dx.ui.render;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.collision.CollisionBox;
+import org.mini2Dx.core.collision.util.StaticCollisionBox;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.font.FontGlyphLayout;
 import org.mini2Dx.core.font.GameFont;
@@ -41,8 +42,8 @@ import org.mini2Dx.ui.style.UiTheme;
  */
 public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> implements ActionableRenderNode {
 	protected LayoutRuleset layoutRuleset;
-	private final CollisionBox leftButton = new CollisionBox();
-	private final CollisionBox rightButton = new CollisionBox();
+	private final StaticCollisionBox leftButton = new StaticCollisionBox();
+	private final StaticCollisionBox rightButton = new StaticCollisionBox();
 	private final Color white = Mdx.graphics.newColor(1f,1f, 1f, 1f);
 
 	private NodeState leftButtonState = NodeState.NORMAL;
@@ -336,10 +337,15 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 	@Override
 	protected float determinePreferredContentHeight(LayoutState layoutState) {
 		GameFont labelStyleFont = null;
+		float labelMarginTop = 0f, labelMarginBottom = 0f;
 		if (element.isEnabled()) {
 			labelStyleFont = enabledStyleRule.getGameFont();
+			labelMarginTop = enabledStyleRule.getMarginTop();
+			labelMarginBottom = enabledStyleRule.getMarginBottom();
 		} else {
 			labelStyleFont = disabledStyleRule.getGameFont();
+			labelMarginTop = disabledStyleRule.getMarginTop();
+			labelMarginBottom = disabledStyleRule.getMarginBottom();
 		}
 
 		final String text = element.getTotalOptions() > 0 ? element.getSelectedLabel() : " ";
@@ -353,7 +359,7 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 			glyphLayout.setText(text, white, preferredContentWidth,
 					HorizontalAlignment.CENTER.getAlignValue(), true);
 		}
-		labelHeight = glyphLayout.getHeight();
+		labelHeight = glyphLayout.getHeight() + labelMarginTop + labelMarginBottom;
 
 		float result = labelHeight;
 		if (style.getMinHeight() > 0 && result + style.getPaddingTop() + style.getPaddingBottom() + style.getMarginTop()
