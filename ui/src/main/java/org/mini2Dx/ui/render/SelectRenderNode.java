@@ -116,8 +116,8 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 				g.setFont(fallbackFont);
 			}
 
-			g.drawString(text, leftButton.getRenderX() + leftButton.getRenderWidth(),
-					leftButton.getRenderY() + (leftButton.getRenderHeight() / 2) - (labelHeight / 2f),
+			g.drawString(text, leftButton.getRenderX() + leftButton.getRenderWidth() + enabledStyleRule.getMarginLeft(),
+					leftButton.getRenderY() + (leftButton.getRenderHeight() / 2) - (labelHeight / 2f) + enabledStyleRule.getMarginTop(),
 					getContentRenderWidth() - leftButton.getRenderWidth() - rightButton.getRenderWidth(),
 					HorizontalAlignment.CENTER.getAlignValue());
 
@@ -168,8 +168,8 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 				g.setFont(fallbackFont);
 			}
 
-			g.drawString(text, leftButton.getRenderX() + leftButton.getRenderWidth(),
-					leftButton.getRenderY() + (leftButton.getRenderHeight() / 2) - (labelHeight / 2f),
+			g.drawString(text, leftButton.getRenderX() + leftButton.getRenderWidth() + disabledStyleRule.getMarginLeft(),
+					leftButton.getRenderY() + (leftButton.getRenderHeight() / 2) - (labelHeight / 2f) + disabledStyleRule.getMarginTop(),
 					getContentRenderWidth() - leftButton.getRenderWidth() - rightButton.getRenderWidth(),
 					HorizontalAlignment.CENTER.getAlignValue());
 
