@@ -116,8 +116,9 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 				g.setFont(fallbackFont);
 			}
 
-			g.drawString(text, leftButton.getRenderX() + leftButton.getRenderWidth() + enabledStyleRule.getMarginLeft(),
-					leftButton.getRenderY() + (leftButton.getRenderHeight() / 2) - (labelHeight / 2f) + enabledStyleRule.getMarginTop(),
+			g.drawString(text, leftButton.getRenderX() + leftButton.getRenderWidth() + enabledStyleRule.getPaddingLeft(),
+					leftButton.getRenderY() + MathUtils.round((leftButton.getRenderHeight() * 0.5f) - (labelHeight * 0.5f))
+							+ enabledStyleRule.getPaddingTop(),
 					getContentRenderWidth() - leftButton.getRenderWidth() - rightButton.getRenderWidth(),
 					HorizontalAlignment.CENTER.getAlignValue());
 
@@ -168,8 +169,9 @@ public class SelectRenderNode extends RenderNode<Select<?>, SelectStyleRule> imp
 				g.setFont(fallbackFont);
 			}
 
-			g.drawString(text, leftButton.getRenderX() + leftButton.getRenderWidth() + disabledStyleRule.getMarginLeft(),
-					leftButton.getRenderY() + (leftButton.getRenderHeight() / 2) - (labelHeight / 2f) + disabledStyleRule.getMarginTop(),
+			g.drawString(text, leftButton.getRenderX() + leftButton.getRenderWidth() + enabledStyleRule.getPaddingLeft(),
+					leftButton.getRenderY() + MathUtils.round((leftButton.getRenderHeight() * 0.5f) - (labelHeight * 0.5f))
+					+ disabledStyleRule.getPaddingLeft(),
 					getContentRenderWidth() - leftButton.getRenderWidth() - rightButton.getRenderWidth(),
 					HorizontalAlignment.CENTER.getAlignValue());
 
