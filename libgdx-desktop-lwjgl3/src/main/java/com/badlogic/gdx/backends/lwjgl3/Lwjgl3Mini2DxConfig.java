@@ -52,6 +52,7 @@ public class Lwjgl3Mini2DxConfig extends Lwjgl3ApplicationConfiguration {
 		targetFPS = config.targetFPS;
 		capUpdatesPerSecond = config.capUpdatesPerSecond;
 		errorOnFrameDrop = config.errorOnFrameDrop;
+		windowListener = config.windowListener;
 	}
 
 	private void setTargetTimestep() {
