@@ -33,6 +33,12 @@ public interface Lwjgl3Mini2DxWindowListener extends Lwjgl3WindowListener {
 	 */
 	void created(Lwjgl3Mini2DxWindow window);
 
+	/**
+	 * Called when the window is resized
+	 * @param window The window instance
+	 */
+	void resized(Lwjgl3Mini2DxWindow window);
+
 	@Override
 	default void created(Lwjgl3Window window) { }
 }

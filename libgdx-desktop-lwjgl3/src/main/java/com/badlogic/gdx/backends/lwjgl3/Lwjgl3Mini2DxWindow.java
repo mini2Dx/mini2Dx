@@ -363,7 +363,7 @@ public class Lwjgl3Mini2DxWindow implements Disposable {
 				maxHeight > -1 ? maxHeight : GLFW.GLFW_DONT_CARE);
 	}
 
-	Lwjgl3Mini2DxGraphics getGraphics() {
+	public Lwjgl3Mini2DxGraphics getGraphics() {
 		return graphics;
 	}
 

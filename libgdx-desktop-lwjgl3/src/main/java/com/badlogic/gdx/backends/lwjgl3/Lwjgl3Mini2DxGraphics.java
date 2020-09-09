@@ -70,6 +70,10 @@ public class Lwjgl3Mini2DxGraphics implements Graphics, Disposable {
 			window.getListener().resize(getWidth(), getHeight());
 			window.getListener().render();
 			GLFW.glfwSwapBuffers(windowHandle);
+
+			if(window.getConfig().windowListener != null) {
+				window.getConfig().windowListener.resized(window);
+			}
 		}
 	};
 
@@ -229,7 +233,7 @@ public class Lwjgl3Mini2DxGraphics implements Graphics, Disposable {
 
 	@Override
 	public float getPpcX() {
-		Lwjgl3Monitor monitor = (Lwjgl3Monitor) getMonitor();
+		Lwjgl3Graphics.Lwjgl3Monitor monitor = (Lwjgl3Graphics.Lwjgl3Monitor) getMonitor();
 		GLFW.glfwGetMonitorPhysicalSize(monitor.monitorHandle, tmpBuffer, tmpBuffer2);
 		int sizeX = tmpBuffer.get(0);
 		DisplayMode mode = getDisplayMode();
@@ -238,7 +242,7 @@ public class Lwjgl3Mini2DxGraphics implements Graphics, Disposable {
 
 	@Override
 	public float getPpcY() {
-		Lwjgl3Monitor monitor = (Lwjgl3Monitor) getMonitor();
+		Lwjgl3Graphics.Lwjgl3Monitor monitor = (Lwjgl3Graphics.Lwjgl3Monitor) getMonitor();
 		GLFW.glfwGetMonitorPhysicalSize(monitor.monitorHandle, tmpBuffer, tmpBuffer2);
 		int sizeY = tmpBuffer2.get(0);
 		DisplayMode mode = getDisplayMode();
@@ -340,9 +344,9 @@ public class Lwjgl3Mini2DxGraphics implements Graphics, Disposable {
 	@Override
 	public boolean setFullscreenMode(DisplayMode displayMode) {
 		window.getInput().resetPollingStates();
-		Lwjgl3DisplayMode newMode = (Lwjgl3DisplayMode) displayMode;
+		Lwjgl3Graphics.Lwjgl3DisplayMode newMode = (Lwjgl3Graphics.Lwjgl3DisplayMode) displayMode;
 		if (isFullscreen()) {
-			Lwjgl3DisplayMode currentMode = (Lwjgl3DisplayMode) getDisplayMode();
+			Lwjgl3Graphics.Lwjgl3DisplayMode currentMode = (Lwjgl3Graphics.Lwjgl3DisplayMode) getDisplayMode();
 			if (currentMode.getMonitor() == newMode.getMonitor() && currentMode.refreshRate == newMode.refreshRate) {
 				// same monitor and refresh rate
 				GLFW.glfwSetWindowSize(window.getWindowHandle(), newMode.width, newMode.height);
@@ -462,31 +466,5 @@ public class Lwjgl3Mini2DxGraphics implements Graphics, Disposable {
 	@Override
 	public void dispose() {
 		this.resizeCallback.free();
-	}
-
-	public static class Lwjgl3DisplayMode extends DisplayMode {
-		final long monitorHandle;
-
-		Lwjgl3DisplayMode(long monitor, int width, int height, int refreshRate, int bitsPerPixel) {
-			super(width, height, refreshRate, bitsPerPixel);
-			this.monitorHandle = monitor;
-		}
-
-		public long getMonitor() {
-			return monitorHandle;
-		}
-	}
-
-	public static class Lwjgl3Monitor extends Monitor {
-		final long monitorHandle;
-
-		Lwjgl3Monitor(long monitor, int virtualX, int virtualY, String name) {
-			super(virtualX, virtualY, name);
-			this.monitorHandle = monitor;
-		}
-
-		public long getMonitorHandle() {
-			return monitorHandle;
-		}
 	}
 }
