@@ -78,6 +78,8 @@ public class DesktopMini2DxGame implements Application {
 	private static GLVersion glVersion;
 	private static Callback glDebugCallback;
 
+	private final Sync sync;
+
 	static void initializeGlfw() {
 		if (errorCallback == null) {
 			Lwjgl3NativesLoader.load();
@@ -110,6 +112,8 @@ public class DesktopMini2DxGame implements Application {
 		this.files = Gdx.files = new Lwjgl3Files();
 		this.net = Gdx.net = new Lwjgl3Net(config);
 		this.clipboard = new Lwjgl3Clipboard();
+
+		this.sync = new Sync();
 
 		gameWrapper = new Lwjgl3GameWrapper(gameContainer, config.gameIdentifier);
 
@@ -201,6 +205,8 @@ public class DesktopMini2DxGame implements Application {
 				} catch (InterruptedException e) {
 					// ignore
 				}
+			} else if(config.foregroundFPS > 0) {
+				sync.sync(config.foregroundFPS); // sleep as needed to meet the target framerate
 			}
 		}
 	}

@@ -30,6 +30,11 @@ public class Lwjgl3Mini2DxConfig extends Lwjgl3ApplicationConfiguration {
 	 */
 	public boolean errorOnFrameDrop = false;
 	/**
+	 * Sets the target framerate for the application. The CPU sleeps as needed. Must be positive.
+	 * Use 0 to never sleep. Default is 0.
+	 */
+	public int foregroundFPS = 0;
+	/**
 	 * The window listener
 	 */
 	public Lwjgl3Mini2DxWindowListener windowListener;
@@ -53,6 +58,7 @@ public class Lwjgl3Mini2DxConfig extends Lwjgl3ApplicationConfiguration {
 		capUpdatesPerSecond = config.capUpdatesPerSecond;
 		errorOnFrameDrop = config.errorOnFrameDrop;
 		windowListener = config.windowListener;
+		foregroundFPS = config.foregroundFPS;
 	}
 
 	private void setTargetTimestep() {
