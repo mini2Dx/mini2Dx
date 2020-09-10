@@ -364,6 +364,7 @@ public class Lwjgl3Mini2DxGraphics implements Graphics, Disposable {
 					0, 0, newMode.width, newMode.height, newMode.refreshRate);
 		}
 		updateFramebufferInfo();
+		setVSync(window.getConfig().vSyncEnabled);
 		return true;
 	}
 
@@ -402,7 +403,7 @@ public class Lwjgl3Mini2DxGraphics implements Graphics, Disposable {
 	@Override
 	public void setUndecorated(boolean undecorated) {
 		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
-		config.setDecorated(!undecorated);
+		config.setDecorated(undecorated);
 		GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_DECORATED, undecorated ? GLFW.GLFW_FALSE : GLFW.GLFW_TRUE);
 	}
 
@@ -415,6 +416,7 @@ public class Lwjgl3Mini2DxGraphics implements Graphics, Disposable {
 
 	@Override
 	public void setVSync(boolean vsync) {
+		window.getConfig().vSyncEnabled = vsync;
 		GLFW.glfwSwapInterval(vsync ? 1 : 0);
 	}
 
