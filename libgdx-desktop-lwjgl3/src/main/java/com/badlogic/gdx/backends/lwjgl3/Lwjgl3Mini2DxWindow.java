@@ -408,38 +408,56 @@ public class Lwjgl3Mini2DxWindow implements Disposable {
 		}
 
 		if (shouldRender) {
+			if (!iconified)
+				input.update();
+
 			graphics.update();
 
-			long deltaNanos = time - lastFrameTime;
+			switch (Mdx.timestepMode) {
+			case DEFAULT:
+				listener.preUpdate(graphics.getDeltaTime());
 
-			if(deltaNanos > config.maximumTimestepNanos()) {
-				deltaNanos = config.maximumTimestepNanos();
-			}
-
-			accumulator += deltaNanos;
-
-			while (accumulator >= targetTimestepNanos) {
-				if(config.capUpdatesPerSecond &&
-						Mdx.platformUtils.getUpdatesThisSecond() >= config.targetFPS) {
-					Mdx.platformUtils.markUpdateBegin();
-					accumulator -= targetTimestepNanos;
-					continue;
-				}
 				Mdx.platformUtils.markUpdateBegin();
-				if (!iconified)
-					input.update();
-				listener.update(targetTimestepSeconds);
+				listener.update(graphics.getDeltaTime());
 				Mdx.platformUtils.markUpdateEnd();
-				accumulator -= targetTimestepNanos;
 
-				if (!iconified)
-					input.prepareNext();
+				listener.interpolate(1f);
+				break;
+			case PHYSICS:
+				long deltaNanos = time - lastFrameTime;
+
+				if(deltaNanos > config.maximumTimestepNanos()) {
+					deltaNanos = config.maximumTimestepNanos();
+				}
+
+				accumulator += deltaNanos;
+
+				Mdx.platformUtils.markUpdateBegin();
+				while (accumulator >= targetTimestepNanos) {
+					if(config.capUpdatesPerSecond &&
+							Mdx.platformUtils.getUpdatesThisSecond() >= config.targetFPS) {
+						accumulator -= targetTimestepNanos;
+						continue;
+					}
+					listener.preUpdate(graphics.getDeltaTime());
+					listener.updatePhysics(targetTimestepSeconds);
+
+					accumulator -= targetTimestepNanos;
+				}
+				listener.update(graphics.getDeltaTime());
+				Mdx.platformUtils.markUpdateEnd();
+
+				listener.interpolate((accumulator * 1f) / (targetTimestepNanos * 1f));
+				break;
 			}
-			listener.interpolate((accumulator * 1f) / (targetTimestepNanos * 1f));
+
 			Mdx.platformUtils.markRenderBegin();
 			listener.render();
 			Mdx.platformUtils.markRenderEnd();
 			GLFW.glfwSwapBuffers(windowHandle);
+
+			if (!iconified)
+				input.prepareNext();
 		}
 		lastFrameTime = time;
 

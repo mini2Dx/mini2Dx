@@ -36,6 +36,17 @@ public interface ScreenManager<T extends GameScreen> extends GameResizeListener 
 	 *            The time since the last update
 	 */
 	public void update(GameContainer gc, float delta);
+
+	/**
+	 * Updates the physics on the current game screen
+	 *
+	 * @param gc
+	 *            The {@link GameContainer} that is updating this
+	 *            {@link ScreenManager}
+	 * @param delta
+	 *            The time to advance physics by
+	 */
+	public void updatePhysics(GameContainer gc, float delta);
 	
 	/**
 	 * Interpolate between the previous and current state

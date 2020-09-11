@@ -17,6 +17,7 @@ package org.mini2Dx.core.game;
 
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.TimestepMode;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.utils.Array;
 
@@ -53,7 +54,13 @@ public abstract class GameContainer {
     public abstract void update(float delta);
 
     /**
-     * Interpolate the game state
+     * Update the game physics
+     * @param delta The time in seconds to advance the physics by
+     */
+    public void updatePhysics(float delta) {}
+
+    /**
+     * Interpolate the game physics
      * @param alpha The alpha value to use during interpolation
      */
     public void interpolate(float alpha) {

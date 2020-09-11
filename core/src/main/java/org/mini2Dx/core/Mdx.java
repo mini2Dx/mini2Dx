@@ -116,6 +116,11 @@ public class Mdx {
     public static ApiRuntime runtime;
 
     /**
+     * Returns the {@link TimestepMode} specified at launch
+     */
+    public static TimestepMode timestepMode;
+
+    /**
      * XML serialization API
      */
     public static XmlSerializer xml;

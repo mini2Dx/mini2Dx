@@ -24,7 +24,7 @@ import org.mini2Dx.core.geom.Point;
 import java.util.Objects;
 
 /**
- * An implementation of a collision point that will not move between updates/frames, thus, does not register as an interpolating collision. Due to this,
+ * An implementation of a collision point that does not register as an interpolating collision. Due to this,
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionPoint} implementation.
  */
 public class StaticCollisionPoint extends Point implements CollisionObject {

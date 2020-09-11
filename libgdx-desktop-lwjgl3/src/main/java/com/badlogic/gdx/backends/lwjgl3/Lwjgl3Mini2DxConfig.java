@@ -15,8 +15,15 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.lwjgl3;
 
+import org.mini2Dx.core.TimestepMode;
+
 public class Lwjgl3Mini2DxConfig extends Lwjgl3ApplicationConfiguration {
 	public final String gameIdentifier;
+
+	/**
+	 * The {@link TimestepMode} to use
+	 */
+	public TimestepMode timestepMode = TimestepMode.DEFAULT;
 	/**
 	 * The target framerate
 	 */
