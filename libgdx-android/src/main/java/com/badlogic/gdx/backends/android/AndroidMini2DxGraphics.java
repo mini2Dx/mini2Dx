@@ -116,22 +116,43 @@ public class AndroidMini2DxGraphics extends AndroidGraphics {
 					t.printStackTrace();
 				}
 			}
-			
-			float delta = deltaTime;
-			if (delta > maximumDelta) {
-				delta = maximumDelta;
-			}
 
-			accumulator += delta;
+			final float delta = deltaTime;
 
-			while (accumulator >= targetTimestep) {
-				Mdx.platformUtils.markUpdateBegin();
-				app.getInput().processEvents();
-				game.getApplicationListener().update(targetTimestep);
-				Mdx.platformUtils.markUpdateEnd();
-				accumulator -= targetTimestep;
+			app.getInput().processEvents();
+
+			switch(Mdx.timestepMode) {
+				case DEFAULT:
+					Mdx.platformUtils.markUpdateBegin();
+					game.getApplicationListener().preUpdate(delta);
+					game.getApplicationListener().preUpdatePhysics(targetTimestep);
+					game.getApplicationListener().updatePhysics(targetTimestep);
+					game.getApplicationListener().update(delta);
+					Mdx.platformUtils.markUpdateEnd();
+
+					game.getApplicationListener().interpolate(1f);
+					break;
+				case PHYSICS:
+					float physicsDelta = deltaTime;
+					if (physicsDelta > maximumDelta) {
+						physicsDelta = maximumDelta;
+					}
+
+					accumulator += physicsDelta;
+
+					Mdx.platformUtils.markUpdateBegin();
+					game.getApplicationListener().preUpdate(delta);
+					while (accumulator >= targetTimestep) {
+						game.getApplicationListener().preUpdatePhysics(targetTimestep);
+						game.getApplicationListener().updatePhysics(targetTimestep);
+						accumulator -= targetTimestep;
+					}
+					game.getApplicationListener().update(delta);
+					Mdx.platformUtils.markUpdateEnd();
+
+					game.getApplicationListener().interpolate(accumulator / targetTimestep);
+					break;
 			}
-			game.getApplicationListener().interpolate(accumulator / targetTimestep);
 			
 			frameId++;
 			Mdx.platformUtils.markRenderBegin();

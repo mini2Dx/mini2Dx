@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Modified version of {@link AndroidAudio} to support sound completion events
+ * Modified version of AndroidAudio to support sound completion events
  */
 public class AndroidMini2DxAudio implements com.badlogic.gdx.Audio {
     private final SoundPool soundPool;

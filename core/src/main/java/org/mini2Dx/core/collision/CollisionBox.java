@@ -16,6 +16,7 @@
 package org.mini2Dx.core.collision;
 
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.TimestepMode;
 import org.mini2Dx.core.geom.*;
 import org.mini2Dx.core.lock.ReadWriteLock;
 import org.mini2Dx.core.util.InterpolationTracker;
@@ -198,6 +199,12 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 	@Override
 	public void interpolate(float alpha) {
 		if(!interpolateRequired) {
+			return;
+		}
+		if(Mdx.timestepMode.equals(TimestepMode.DEFAULT)) {
+			renderRectangle.set(this);
+			storeRenderCoordinates();
+			interpolateRequired = false;
 			return;
 		}
 		previousRectangle.lerp(renderRectangle, this, alpha);

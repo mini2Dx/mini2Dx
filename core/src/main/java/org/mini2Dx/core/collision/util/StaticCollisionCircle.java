@@ -24,7 +24,7 @@ import org.mini2Dx.core.geom.Circle;
 import java.util.Objects;
 
 /**
- * An implementation of a collision circle that does not move between updates/frames, thus, does not register as an interpolating collision. Due to this,
+ * An implementation of a collision circle that does not register as an interpolating collision. Due to this,
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionCircle} implementation.
  */
 public class StaticCollisionCircle extends Circle implements CollisionArea {

@@ -4,6 +4,7 @@
 - Interpolation is now automatically handled by framework
 - Added MonoGame runtime for consoles
 - Added LibGDX LWJGL3 runtime for desktop
+- Added timestep mode configuration
 - Added object pool for geometry and collision objects
 - Added task executor API to use platform-specific thread implementations
 - Added (optional) object pooling for geometry classes

@@ -26,7 +26,7 @@ import org.mini2Dx.gdx.math.Vector2;
 import java.util.Objects;
 
 /**
- * An implementation of a collision polygon that will not move between updates/frames, thus, does not register as an interpolating collision. Due to this,
+ * An implementation of a collision polygon that does not register as an interpolating collision. Due to this,
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionPolygon} implementation.
  */
 public class StaticCollisionPolygon extends Polygon implements CollisionArea {

@@ -350,21 +350,42 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 		}
 		Mdx.platformUtils.markFrame();
 
-		float delta = deltaTime;
-		if (delta > maximumDelta) {
-			delta = maximumDelta;
-		}
+		input.processEvents();
 
-		accumulator += delta;
-
-		while (accumulator >= targetTimestep) {
+		final float delta = deltaTime;
+		switch(Mdx.timestepMode) {
+		case DEFAULT:
 			Mdx.platformUtils.markUpdateBegin();
-			input.processEvents();
-			app.listener.update(targetTimestep);
+			app.listener.preUpdate(delta);
+			app.listener.preUpdatePhysics(targetTimestep);
+			app.listener.updatePhysics(targetTimestep);
+			app.listener.update(delta);
 			Mdx.platformUtils.markUpdateEnd();
-			accumulator -= targetTimestep;
+
+			app.listener.interpolate(1f);
+			break;
+		case PHYSICS:
+			float physicsDelta = deltaTime;
+			if (physicsDelta > maximumDelta) {
+				physicsDelta = maximumDelta;
+			}
+
+			accumulator += physicsDelta;
+
+			Mdx.platformUtils.markUpdateBegin();
+			app.listener.preUpdate(delta);
+			while (accumulator >= targetTimestep) {
+				app.listener.preUpdatePhysics(targetTimestep);
+				app.listener.updatePhysics(targetTimestep);
+				accumulator -= targetTimestep;
+			}
+			app.listener.update(delta);
+			Mdx.platformUtils.markUpdateEnd();
+
+			app.listener.interpolate(accumulator / targetTimestep);
+			break;
 		}
-		app.listener.interpolate(accumulator / targetTimestep);
+
 		frameId++;
 		Mdx.platformUtils.markRenderBegin();
 		app.listener.render();

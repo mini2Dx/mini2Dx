@@ -36,7 +36,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.libgdx.game.GameWrapper;
 
 public class Lwjgl3Mini2DxWindow implements Disposable {
@@ -408,38 +407,58 @@ public class Lwjgl3Mini2DxWindow implements Disposable {
 		}
 
 		if (shouldRender) {
+			if (!iconified)
+				input.update();
+
 			graphics.update();
 
-			long deltaNanos = time - lastFrameTime;
-
-			if(deltaNanos > config.maximumTimestepNanos()) {
-				deltaNanos = config.maximumTimestepNanos();
-			}
-
-			accumulator += deltaNanos;
-
-			while (accumulator >= targetTimestepNanos) {
-				if(config.capUpdatesPerSecond &&
-						Mdx.platformUtils.getUpdatesThisSecond() >= config.targetFPS) {
-					Mdx.platformUtils.markUpdateBegin();
-					accumulator -= targetTimestepNanos;
-					continue;
-				}
+			switch (Mdx.timestepMode) {
+			case DEFAULT:
 				Mdx.platformUtils.markUpdateBegin();
-				if (!iconified)
-					input.update();
-				listener.update(targetTimestepSeconds);
+				listener.preUpdate(graphics.getDeltaTime());
+				listener.preUpdatePhysics(targetTimestepSeconds);
+				listener.updatePhysics(targetTimestepSeconds);
+				listener.update(graphics.getDeltaTime());
 				Mdx.platformUtils.markUpdateEnd();
-				accumulator -= targetTimestepNanos;
 
-				if (!iconified)
-					input.prepareNext();
+				listener.interpolate(1f);
+				break;
+			case PHYSICS:
+				long deltaNanos = time - lastFrameTime;
+
+				if(deltaNanos > config.maximumTimestepNanos()) {
+					deltaNanos = config.maximumTimestepNanos();
+				}
+
+				accumulator += deltaNanos;
+
+				Mdx.platformUtils.markUpdateBegin();
+				listener.preUpdate(graphics.getDeltaTime());
+				while (accumulator >= targetTimestepNanos) {
+					if(config.capUpdatesPerSecond &&
+							Mdx.platformUtils.getUpdatesThisSecond() >= config.targetFPS) {
+						accumulator -= targetTimestepNanos;
+						continue;
+					}
+					listener.preUpdatePhysics(targetTimestepSeconds);
+					listener.updatePhysics(targetTimestepSeconds);
+
+					accumulator -= targetTimestepNanos;
+				}
+				listener.update(graphics.getDeltaTime());
+				Mdx.platformUtils.markUpdateEnd();
+
+				listener.interpolate((accumulator * 1f) / (targetTimestepNanos * 1f));
+				break;
 			}
-			listener.interpolate((accumulator * 1f) / (targetTimestepNanos * 1f));
+
 			Mdx.platformUtils.markRenderBegin();
 			listener.render();
 			Mdx.platformUtils.markRenderEnd();
 			GLFW.glfwSwapBuffers(windowHandle);
+
+			if (!iconified)
+				input.prepareNext();
 		}
 		lastFrameTime = time;
 

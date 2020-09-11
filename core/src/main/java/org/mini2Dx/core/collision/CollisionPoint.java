@@ -16,6 +16,7 @@
 package org.mini2Dx.core.collision;
 
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.TimestepMode;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.PositionChangeListener;
 import org.mini2Dx.core.geom.Positionable;
@@ -123,6 +124,12 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 	@Override
 	public void interpolate(float alpha) {
 		if(!interpolateRequired) {
+			return;
+		}
+		if(Mdx.timestepMode.equals(TimestepMode.DEFAULT)) {
+			renderPosition.set(this);
+			storeRenderCoordinates();
+			interpolateRequired = false;
 			return;
 		}
 		renderPosition.set(previousPosition.lerp(this, alpha));

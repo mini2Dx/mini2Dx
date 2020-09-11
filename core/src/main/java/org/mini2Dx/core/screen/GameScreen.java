@@ -27,7 +27,15 @@ public interface GameScreen {
 	 * @param gc The {@link GameContainer} of the game
 	 */
 	public void initialise(GameContainer gc);
-	
+
+	/**
+	 * Updates the game physics on the screen
+	 * @param gc The {@link GameContainer} of the game
+	 * @param delta The time in seconds to advance physics by
+	 */
+	public default void updatePhysics(GameContainer gc, float delta) {
+	}
+
 	/**
 	 * Updates the game screen
 	 * @param gc The {@link GameContainer} of the game

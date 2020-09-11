@@ -16,6 +16,7 @@
 package org.mini2Dx.core.collision;
 
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.TimestepMode;
 import org.mini2Dx.core.geom.*;
 import org.mini2Dx.core.lock.ReadWriteLock;
 import org.mini2Dx.core.util.InterpolationTracker;
@@ -136,6 +137,12 @@ public class CollisionCircle extends Circle implements CollisionArea,
 	@Override
 	public void interpolate(float alpha) {
 		if(!interpolateRequired) {
+			return;
+		}
+		if(Mdx.timestepMode.equals(TimestepMode.DEFAULT)) {
+			renderCircle.set(this);
+			storeRenderCoordinates();
+			interpolateRequired = false;
 			return;
 		}
 		previousCircle.lerp(renderCircle, this, alpha);

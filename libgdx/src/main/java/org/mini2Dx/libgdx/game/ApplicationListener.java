@@ -25,8 +25,17 @@ import com.badlogic.gdx.Application;
  * resources.
  */
 public interface ApplicationListener extends com.badlogic.gdx.ApplicationListener {
+	/** Called before the {@link Application} should update itself. */
+	public void preUpdate(float delta);
+
+	/** Called before the {@link Application} should update its physics. */
+	public void preUpdatePhysics(float delta);
+
 	/** Called when the {@link Application} should update itself. */
 	public void update (float delta);
+
+	/** Called when the {@link Application} should update its physics. */
+	public void updatePhysics(float delta);
 
 	/** Called when the {@link Application} should interpolate itself. */
 	public void interpolate (float alpha);

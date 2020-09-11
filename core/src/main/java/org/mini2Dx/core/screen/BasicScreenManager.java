@@ -67,6 +67,14 @@ public class BasicScreenManager<T extends GameScreen> implements
 	}
 
 	@Override
+	public void updatePhysics(GameContainer gc, float delta) {
+		if(currentScreen == null) {
+			return;
+		}
+		currentScreen.updatePhysics(gc, delta);
+	}
+
+	@Override
 	public void interpolate(GameContainer gc, float alpha) {
 		if (currentScreen != null) {
 			currentScreen.interpolate(gc, alpha);

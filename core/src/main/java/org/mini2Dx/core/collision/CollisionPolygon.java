@@ -16,6 +16,7 @@
 package org.mini2Dx.core.collision;
 
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.TimestepMode;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.geom.*;
 import org.mini2Dx.core.lock.ReadWriteLock;
@@ -157,6 +158,12 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 	@Override
 	public void interpolate(float alpha) {
 		if(!interpolateRequired) {
+			return;
+		}
+		if(Mdx.timestepMode.equals(TimestepMode.DEFAULT)) {
+			renderPolygon.set(this);
+			storeRenderCoordinates();
+			interpolateRequired = false;
 			return;
 		}
 		previousPolygon.lerp(renderPolygon,this, alpha);

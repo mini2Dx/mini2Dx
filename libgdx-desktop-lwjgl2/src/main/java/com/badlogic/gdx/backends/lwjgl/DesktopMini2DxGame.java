@@ -25,6 +25,7 @@ import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.libgdx.desktop.Lwjgl2GameWrapper;
 import org.mini2Dx.libgdx.desktop.Lwjgl2Mini2DxConfig;
 import org.mini2Dx.libgdx.game.ApplicationListener;
+import org.mini2Dx.libgdx.game.GameWrapper;
 
 import java.awt.*;
 
@@ -40,7 +41,7 @@ public class DesktopMini2DxGame implements Application {
 	protected final LwjglFiles files;
 	protected final LwjglInput input;
 	protected final LwjglNet net;
-	protected final ApplicationListener listener;
+	protected final GameWrapper listener;
 	protected Thread mainLoopThread;
 	protected boolean running = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>(Runnable.class);
@@ -226,22 +227,45 @@ public class DesktopMini2DxGame implements Application {
 				Mdx.platformUtils.markFrame();
 				graphics.frameId++;
 
-				float delta = graphics.getDeltaTime();
-				if (delta > maximumDeltaSeconds) {
-					delta = maximumDeltaSeconds;
-				}
+				input.update();
+				input.processEvents();
 
-				accumulator += delta;
+				final float delta = graphics.getDeltaTime();
 
-				while (accumulator >= targetTimestepSeconds) {
+				switch(Mdx.timestepMode) {
+				case DEFAULT:
 					Mdx.platformUtils.markUpdateBegin();
-					input.update();
-					input.processEvents();
-					listener.update(targetTimestepSeconds);
+					listener.preUpdate(delta);
+					listener.preUpdatePhysics(targetTimestepSeconds);
+					listener.updatePhysics(targetTimestepSeconds);
+					listener.update(delta);
 					Mdx.platformUtils.markUpdateEnd();
-					accumulator -= targetTimestepSeconds;
+
+					listener.interpolate(1f);
+					break;
+				case PHYSICS:
+					float physicsDelta = graphics.getDeltaTime();
+					if (physicsDelta > maximumDeltaSeconds) {
+						physicsDelta = maximumDeltaSeconds;
+					}
+
+					accumulator += physicsDelta;
+
+					Mdx.platformUtils.markUpdateBegin();
+					listener.preUpdate(delta);
+					while (accumulator >= targetTimestepSeconds) {
+						listener.preUpdatePhysics(targetTimestepSeconds);
+						listener.updatePhysics(targetTimestepSeconds);
+
+						accumulator -= targetTimestepSeconds;
+					}
+					listener.update(delta);
+					Mdx.platformUtils.markUpdateEnd();
+
+					listener.interpolate(accumulator / targetTimestepSeconds);
+					break;
 				}
-				listener.interpolate(accumulator / targetTimestepSeconds);
+
 				Mdx.platformUtils.markRenderBegin();
 				listener.render();
 				Mdx.platformUtils.markRenderEnd();

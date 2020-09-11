@@ -97,17 +97,25 @@ configure(docProjects()) {
 
 	if(project.name.contains("android")) {
 		apply plugin: "com.android.library"
-		
+
 		task javadoc(type: Javadoc) {
 			failOnError = false
 			source = android.sourceSets.main.java.srcDirs
 		    classpath += configurations.compile
-		
+
+			if (JavaVersion.current().isJava8Compatible()) {
+				options.addStringOption('Xdoclint:none', '-quiet')
+			}
+
+			doFirst {
+				classpath += files(android.getBootClasspath())
+			}
+
 		    afterEvaluate {
 		        // Wait after evaluation to add the android classpath
 		        // to avoid "buildToolsVersion is not specified" error
-		        classpath += files(android.getBootClasspath())
-		
+
+
 		        // Process AAR dependencies
 		        def aarDependencies = classpath.filter { it.name.endsWith('.aar') }
 		        classpath -= aarDependencies
@@ -115,7 +123,7 @@ configure(docProjects()) {
 		            // Extract classes.jar from the AAR dependency, and add it to the javadoc classpath
 		            def outputPath = "$buildDir/tmp/aarJar/${aar.name.replace('.aar', '.jar')}"
 		            classpath += files(outputPath)
-		
+
 		            // Use a task so the actual extraction only happens before the javadoc task is run
 		            dependsOn task(name: "extract ${aar.name}").doLast {
 		                extractEntry(aar, 'classes.jar', outputPath)

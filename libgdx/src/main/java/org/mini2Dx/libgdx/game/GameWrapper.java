@@ -90,12 +90,35 @@ public abstract class GameWrapper implements ApplicationListener {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void preUpdate(float delta) {
 		if(gameContainer == null) {
 			return;
 		}
 		gameContainer.preUpdate(delta);
+	}
+
+	@Override
+	public void preUpdatePhysics(float delta) {
+		if(gameContainer == null) {
+			return;
+		}
+		gameContainer.preUpdatePhysics(delta);
+	}
+
+	@Override
+	public void update(float delta) {
+		if(gameContainer == null) {
+			return;
+		}
 		gameContainer.update(delta);
+	}
+
+	@Override
+	public void updatePhysics(float delta) {
+		if(gameContainer == null) {
+			return;
+		}
+		gameContainer.updatePhysics(delta);
 	}
 
 	@Override
