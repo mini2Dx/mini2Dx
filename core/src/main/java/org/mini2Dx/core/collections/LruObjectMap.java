@@ -85,7 +85,7 @@ public class LruObjectMap<K, V> extends ObjectMap<K, V> {
 	}
 
 	@Override
-	public V get(K key) {
+	public <T extends K> V get(T key) {
 		final V result = super.get(key);
 		accessCounter.getAndIncrement(key, 0, 1);
 		return result;

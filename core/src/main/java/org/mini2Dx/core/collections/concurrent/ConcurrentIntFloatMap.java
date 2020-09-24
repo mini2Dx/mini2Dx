@@ -180,24 +180,9 @@ public class ConcurrentIntFloatMap extends IntFloatMap implements ConcurrentColl
      * @param value
      */
     @Override
-    public boolean containsValue(float value) {
+    public boolean containsValue(int value) {
         lock.lockRead();
         boolean b = super.containsValue(value);
-        lock.unlockRead();
-        return b;
-    }
-
-    /**
-     * Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
-     * be an expensive operation.
-     *
-     * @param value
-     * @param epsilon
-     */
-    @Override
-    public boolean containsValue(float value, float epsilon) {
-        lock.lockRead();
-        boolean b = super.containsValue(value, epsilon);
         lock.unlockRead();
         return b;
     }
@@ -218,7 +203,7 @@ public class ConcurrentIntFloatMap extends IntFloatMap implements ConcurrentColl
      * @param notFound
      */
     @Override
-    public int findKey(float value, int notFound) {
+    public int findKey(int value, int notFound) {
         lock.lockRead();
         int i = super.findKey(value, notFound);
         lock.unlockRead();

@@ -112,7 +112,7 @@ public class ConcurrentSortedIntList<E> extends SortedIntList<E> implements Conc
      * @return Iterator to traverse list
      */
     @Override
-    public Iterator<Node<E>> iterator() {
+    public java.util.Iterator<Node<E>> iterator() {
         return super.iterator();
     }
 

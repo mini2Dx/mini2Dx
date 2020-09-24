@@ -92,10 +92,11 @@ public class ConcurrentOrderedSet<T> extends OrderedSet<T> implements Concurrent
     }
 
     @Override
-    public void addAll(T[] array, int offset, int length) {
+    public boolean addAll(T[] array, int offset, int length) {
         lock.lockWrite();
-        super.addAll(array, offset, length);
+        boolean b = super.addAll(array, offset, length);
         lock.unlockWrite();
+        return b;
     }
 
     @Override
