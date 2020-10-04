@@ -485,18 +485,15 @@ public class DesktopMini2DxGame implements Application {
 					monitorHandle = config.maximizedMonitor.monitorHandle;
 				}
 
-				//TODO: Use this code after LibGDX 1.9.12 is released
-//				IntBuffer areaXPos = BufferUtils.createIntBuffer(1);
-//				IntBuffer areaYPos = BufferUtils.createIntBuffer(1);
-//				IntBuffer areaWidth = BufferUtils.createIntBuffer(1);
-//				IntBuffer areaHeight = BufferUtils.createIntBuffer(1);
-//				GLFW.glfwGetMonitorWorkarea(monitorHandle, areaXPos, areaYPos, areaWidth, areaHeight);
-//
-//				GLFW.glfwSetWindowPos(windowHandle,
-//						areaXPos.get(0) + areaWidth.get(0) / 2 - windowWidth / 2,
-//						areaYPos.get(0) + areaHeight.get(0) / 2 - windowHeight / 2);
-				GLFWVidMode vidMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-				GLFW.glfwSetWindowPos(windowHandle, vidMode.width() / 2 - windowWidth / 2, vidMode.height() / 2 - windowHeight / 2);
+				IntBuffer areaXPos = BufferUtils.createIntBuffer(1);
+				IntBuffer areaYPos = BufferUtils.createIntBuffer(1);
+				IntBuffer areaWidth = BufferUtils.createIntBuffer(1);
+				IntBuffer areaHeight = BufferUtils.createIntBuffer(1);
+				GLFW.glfwGetMonitorWorkarea(monitorHandle, areaXPos, areaYPos, areaWidth, areaHeight);
+
+				GLFW.glfwSetWindowPos(windowHandle,
+						areaXPos.get(0) + areaWidth.get(0) / 2 - windowWidth / 2,
+						areaYPos.get(0) + areaHeight.get(0) / 2 - windowHeight / 2);
 			} else {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
