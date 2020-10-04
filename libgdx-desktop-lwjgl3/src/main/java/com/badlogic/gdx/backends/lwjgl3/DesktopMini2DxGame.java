@@ -15,48 +15,24 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.lwjgl3;
 
-import java.io.File;
-import java.io.PrintStream;
-import java.nio.IntBuffer;
-
-import com.badlogic.gdx.ApplicationLogger;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.backends.lwjgl3.audio.Mini2DxOpenALAudio;
+import com.badlogic.gdx.backends.lwjgl3.audio.mock.MockAudio;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+import com.badlogic.gdx.utils.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.AMDDebugOutput;
-import org.lwjgl.opengl.ARBDebugOutput;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL43;
-import org.lwjgl.opengl.GLCapabilities;
-import org.lwjgl.opengl.GLUtil;
-import org.lwjgl.opengl.KHRDebug;
+import org.lwjgl.opengl.*;
 import org.lwjgl.system.Callback;
-
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Audio;
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.LifecycleListener;
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.lwjgl3.audio.OpenALAudio;
-import com.badlogic.gdx.backends.lwjgl3.audio.mock.MockAudio;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Clipboard;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.libgdx.desktop.Lwjgl3GameWrapper;
 import org.mini2Dx.libgdx.desktop.Lwjgl3PlatformUtils;
+
+import java.io.File;
+import java.io.PrintStream;
+import java.nio.IntBuffer;
 
 public class DesktopMini2DxGame implements Application {
 	private final Lwjgl3Mini2DxConfig config;
@@ -116,6 +92,7 @@ public class DesktopMini2DxGame implements Application {
 		this.sync = new Sync();
 
 		gameWrapper = new Lwjgl3GameWrapper(gameContainer, config.gameIdentifier);
+		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
 		Lwjgl3Mini2DxWindow window = createWindow(config,0);
 		windows.add(window);
