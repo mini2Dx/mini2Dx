@@ -116,59 +116,59 @@ public class SpriteUAT extends BasicGameScreen {
 
 		g.drawString("(6) drawTileImage of (2) hvd", xPosition, yPosition);
 		yPosition += g.getFont().getLineHeight() + MARGIN;
-		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, false, false, false);
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, 1f,false, false, false);
 		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
 
 		g.drawString("(7) drawTileImage of (3) hvd", xPosition, yPosition);
 		yPosition += g.getFont().getLineHeight() + MARGIN;
-		StaticTileRenderer.drawTileImage(g, spriteFlipHRegion, (int) xPosition, (int) yPosition, false, false, false);
+		StaticTileRenderer.drawTileImage(g, spriteFlipHRegion, (int) xPosition, (int) yPosition, 1f, false, false, false);
 		yPosition += spriteFlipHRegion.getRegionHeight() + MARGIN;
 
 		g.drawString("(8) drawTileImage of (4) hvd", xPosition, yPosition);
 		yPosition += g.getFont().getLineHeight() + MARGIN;
-		StaticTileRenderer.drawTileImage(g, spriteFlipVRegion, (int) xPosition, (int) yPosition, false, false, false);
+		StaticTileRenderer.drawTileImage(g, spriteFlipVRegion, (int) xPosition, (int) yPosition, 1f, false, false, false);
 
 		xPosition += gc.getWidth() / 2;
 		yPosition = MARGIN;
 
 		g.drawString("(9) drawTileImage of (5) hvd", xPosition, yPosition);
 		yPosition += g.getFont().getLineHeight() + MARGIN;
-		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, false, false, false);
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, 1f, false, false, false);
 		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
 
 		g.drawString("(10) drawTileImage of (2) Hvd", xPosition, yPosition);
 		yPosition += g.getFont().getLineHeight() + MARGIN;
-		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, true, false, false);
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, 1f, true, false, false);
 		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
 
 		g.drawString("(11) drawTileImage of (2) hVd", xPosition, yPosition);
 		yPosition += g.getFont().getLineHeight() + MARGIN;
-		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, false, true, false);
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, 1f, false, true, false);
 		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
 
 		g.drawString("(12) drawTileImage of (2) hvD", xPosition, yPosition);
 		yPosition += g.getFont().getLineHeight() + MARGIN;
-		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, false, false, true);
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, 1f, false, false, true);
 		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
 
 		g.drawString("(13) drawTileImage of (2) HVd", xPosition, yPosition);
 		yPosition += g.getFont().getLineHeight() + MARGIN;
-		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, true, true, false);
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, 1f, true, true, false);
 		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
 
 		g.drawString("(14) drawTileImage of (2) HvD", xPosition, yPosition);
 		yPosition += g.getFont().getLineHeight() + MARGIN;
-		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, true, false, true);
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, 1f, true, false, true);
 		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
 
 		g.drawString("(15) drawTileImage of (2) hVD", xPosition, yPosition);
 		yPosition += g.getFont().getLineHeight() + MARGIN;
-		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, false, true, true);
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, 1f, false, true, true);
 		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
 
 		g.drawString("(16) drawTileImage of (2) HVD", xPosition, yPosition);
 		yPosition += g.getFont().getLineHeight() + MARGIN;
-		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, true, true, true);
+		StaticTileRenderer.drawTileImage(g, spriteTextureRegion, (int) xPosition, (int) yPosition, 1f, true, true, true);
 		yPosition += spriteTextureRegion.getRegionHeight() + MARGIN;
 
 	}
