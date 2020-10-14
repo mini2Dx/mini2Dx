@@ -164,8 +164,10 @@ public abstract class TilesetSource implements Disposable {
 	 *            The X coordinate to render at
 	 * @param renderY
 	 *            The Y coordinate to render at
+	 * @param alpha
+	 *            The alpha blend value (1.0 by default)
 	 */
-	public abstract void drawTile(Graphics g, int tileId, int firstGid, int renderX, int renderY);
+	public abstract void drawTile(Graphics g, int tileId, int firstGid, int renderX, int renderY, float alpha);
 
 	/**
 	 * Draws the whole tileset to the {@link Graphics} context
@@ -176,8 +178,10 @@ public abstract class TilesetSource implements Disposable {
 	 *            The X coordinate to render at
 	 * @param renderY
 	 *            The Y coordinate to render at
+	 * @param alpha
+	 *            The alpha blend value (1.0 by default)
 	 */
-	public abstract void drawTileset(Graphics g, int renderX, int renderY);
+	public abstract void drawTileset(Graphics g, int renderX, int renderY, float alpha);
 
 	/**
 	 * Returns the {@link Tile} for a given tile id

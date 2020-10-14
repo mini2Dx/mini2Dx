@@ -230,18 +230,18 @@ public class ImageTilesetSource extends TilesetSource {
 	}
 
 	@Override
-	public void drawTile(Graphics g, int tileId, int firstGid, int renderX, int renderY) {
+	public void drawTile(Graphics g, int tileId, int firstGid, int renderX, int renderY, float alpha) {
 		int tileX = getTileX(tileId, firstGid);
 		int tileY = getTileY(tileId, firstGid);
-		tiles[tileX][tileY].draw(g, renderX, renderY); 
+		tiles[tileX][tileY].draw(g, renderX, renderY, alpha);
 	}
 
 	@Override
-	public void drawTileset(Graphics g, int renderX, int renderY) {
+	public void drawTileset(Graphics g, int renderX, int renderY, float alpha) {
 		for (int y = 0; y < getHeightInTiles(); y++) {
 			for (int x = 0; x < getWidthInTiles(); x++) {
 				tiles[x][y].draw(g, renderX + (x * getTileWidth()), renderY
-						+ (y * getTileHeight())); 
+						+ (y * getTileHeight()), alpha);
 			}
 		}
 	}

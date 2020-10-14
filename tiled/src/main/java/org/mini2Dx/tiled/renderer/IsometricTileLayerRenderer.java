@@ -40,14 +40,14 @@ public class IsometricTileLayerRenderer implements TileLayerRenderer {
 
 	@Override
 	public void drawLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX, int startTileY,
-						  int widthInTiles, int heightInTiles) {
+						  int widthInTiles, int heightInTiles, float alpha) {
 		renderLayer(g, layer, renderX, renderY, startTileX,
-				startTileY, widthInTiles, heightInTiles);
+				startTileY, widthInTiles, heightInTiles, alpha);
 	}
 	
 	private void renderLayer(Graphics g, TileLayer layer, int renderX,
 			int renderY, int startTileX, int startTileY, int widthInTiles,
-			int heightInTiles) {
+			int heightInTiles, float alpha) {
 		int totalRows = widthInTiles + heightInTiles;
 		
 		for(int row = 0; row < totalRows - 1; row++) {
@@ -71,7 +71,7 @@ public class IsometricTileLayerRenderer implements TileLayerRenderer {
 				for (int i = 0; i < tiledMap.getTilesets().size; i++) {
 					Tileset tileset = tiledMap.getTilesets().get(i);
 					if (tileset.contains(tileId)) {
-						tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY);
+						tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY, alpha);
 						break;
 					}
 				}

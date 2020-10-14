@@ -97,7 +97,25 @@ public class Tileset implements Disposable {
 	 *            The Y coordinate to render at
 	 */
 	public void drawTile(Graphics g, int tileId, int renderX, int renderY) {
-		tilesetSource.drawTile(g, tileId, firstGid, renderX, renderY);
+		tilesetSource.drawTile(g, tileId, firstGid, renderX, renderY, 1.0f);
+	}
+
+	/**
+	 * Draws a tile to the {@link Graphics} context
+	 *
+	 * @param g
+	 *            The {@link Graphics} context available for rendering
+	 * @param tileId
+	 *            The tile id to render
+	 * @param renderX
+	 *            The X coordinate to render at
+	 * @param renderY
+	 *            The Y coordinate to render at
+	 * @param alpha
+	 *            The alpha blend value
+	 */
+	public void drawTile(Graphics g, int tileId, int renderX, int renderY, float alpha) {
+		tilesetSource.drawTile(g, tileId, firstGid, renderX, renderY, alpha);
 	}
 
 	/**
@@ -111,7 +129,24 @@ public class Tileset implements Disposable {
 	 *            The Y coordinate to render at
 	 */
 	public void drawTileset(Graphics g, int renderX, int renderY) {
-		tilesetSource.drawTileset(g, renderX, renderY);
+		tilesetSource.drawTileset(g, renderX, renderY, 1.0f);
+	}
+
+
+	/**
+	 * Draws the whole tileset to the {@link Graphics} context
+	 *
+	 * @param g
+	 *            The {@link Graphics} context available for rendering
+	 * @param renderX
+	 *            The X coordinate to render at
+	 * @param renderY
+	 *            The Y coordinate to render at
+	 * @param alpha
+	 *            The alpha blend value
+	 */
+	public void drawTileset(Graphics g, int renderX, int renderY, float alpha) {
+		tilesetSource.drawTileset(g, renderX, renderY, alpha);
 	}
 
 	/**

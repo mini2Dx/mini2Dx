@@ -27,7 +27,7 @@ public class IsometricStaggeredTileLayerRenderer implements TileLayerRenderer {
 
 	@Override
 	public void drawLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX, int startTileY,
-						  int widthInTiles, int heightInTiles) {
+						  int widthInTiles, int heightInTiles, float alpha) {
 		// TODO Auto-generated method stub
 		
 	}

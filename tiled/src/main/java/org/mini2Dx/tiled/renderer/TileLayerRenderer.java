@@ -32,9 +32,10 @@ public interface TileLayerRenderer {
 	 * @param startTileY The tile y coordinate to start at
 	 * @param widthInTiles The width to render in tiles
 	 * @param heightInTiles The height to render in tiles
+	 * @param alpha The alpha blending value
 	 */
 	public void drawLayer(Graphics g, TileLayer layer, int renderX,
-						  int renderY, int startTileX, int startTileY, int widthInTiles, int heightInTiles);
+						  int renderY, int startTileX, int startTileY, int widthInTiles, int heightInTiles, float alpha);
 	
 	public void dispose();
 }

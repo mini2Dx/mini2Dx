@@ -61,21 +61,21 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 
 	@Override
 	public void drawLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX, int startTileY,
-						  int widthInTiles, int heightInTiles) {
+						  int widthInTiles, int heightInTiles, float alpha) {
 		// TODO: Support caching
 		switch (tiledMap.getStaggerAxis()) {
 		case X:
-			drawStaggeredXLayer(g, layer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles);
+			drawStaggeredXLayer(g, layer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles, alpha);
 			break;
 		case Y:
 		default:
-			drawStaggeredYLayer(g, layer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles);
+			drawStaggeredYLayer(g, layer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles, alpha);
 			break;
 		}
 	}
 
 	private void drawStaggeredXLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX,
-			int startTileY, int widthInTiles, int heightInTiles) {
+			int startTileY, int widthInTiles, int heightInTiles, float alpha) {
 		for (int y = 0; y < heightInTiles; y++) {
 			switch (tiledMap.getStaggerIndex()) {
 			case EVEN: {
@@ -89,7 +89,7 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 					}
 					int tileRenderX = renderX + (x * threeQuarterHexWidth);
 					int tileRenderY = renderY + (y * hexHeight);
-					renderTile(g, tileId, tileRenderX, tileRenderY);
+					renderTile(g, tileId, tileRenderX, tileRenderY, alpha);
 				}
 				for (int x = row2Offset; x < widthInTiles; x += 2) {
 					int tileId = layer.getTileId(x + startTileX, y + startTileY);
@@ -99,7 +99,7 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 					}
 					int tileRenderX = renderX + (x * threeQuarterHexWidth);
 					int tileRenderY = renderY + (y * hexHeight) + halfHexHeight;
-					renderTile(g, tileId, tileRenderX, tileRenderY);
+					renderTile(g, tileId, tileRenderX, tileRenderY, alpha);
 				}
 				break;
 			}
@@ -115,7 +115,7 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 					}
 					int tileRenderX = renderX + (x * threeQuarterHexWidth);
 					int tileRenderY = renderY + (y * hexHeight);
-					renderTile(g, tileId, tileRenderX, tileRenderY);
+					renderTile(g, tileId, tileRenderX, tileRenderY, alpha);
 				}
 				for (int x = row2Offset; x < widthInTiles; x += 2) {
 					int tileId = layer.getTileId(x + startTileX, y + startTileY);
@@ -125,7 +125,7 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 					}
 					int tileRenderX = renderX + (x * threeQuarterHexWidth);
 					int tileRenderY = renderY + (y * hexHeight) + halfHexHeight;
-					renderTile(g, tileId, tileRenderX, tileRenderY);
+					renderTile(g, tileId, tileRenderX, tileRenderY, alpha);
 				}
 				break;
 			}
@@ -134,7 +134,7 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 	}
 
 	private void drawStaggeredYLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX,
-			int startTileY, int widthInTiles, int heightInTiles) {
+			int startTileY, int widthInTiles, int heightInTiles, float alpha) {
 		for (int y = 0; y < heightInTiles; y++) {
 			int tileRenderY = renderY + (y * threeQuarterHexHeight);
 
@@ -163,16 +163,16 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 				}
 				}
 
-				renderTile(g, tileId, tileRenderX, tileRenderY);
+				renderTile(g, tileId, tileRenderX, tileRenderY, alpha);
 			}
 		}
 	}
 
-	private void renderTile(Graphics g, int tileId, int tileRenderX, int tileRenderY) {
+	private void renderTile(Graphics g, int tileId, int tileRenderX, int tileRenderY, float alpha) {
 		for (int i = 0; i < tiledMap.getTilesets().size; i++) {
 			Tileset tileset = tiledMap.getTilesets().get(i);
 			if (tileset.contains(tileId)) {
-				tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY);
+				tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY, alpha);
 				break;
 			}
 		}

@@ -51,30 +51,30 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 
 	@Override
 	public void drawLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX, int startTileY,
-						  int widthInTiles, int heightInTiles) {
+						  int widthInTiles, int heightInTiles, float alpha) {
 		if(TiledMap.FAST_RENDER_EMPTY_LAYERS && emptyTileLayerRenderers != null) {
 			final OrthogonalEmptyTileLayerRenderer renderer = emptyTileLayerRenderers.get(layer.getIndex(), null);
 			if(renderer != null) {
-				renderer.drawLayer(g, layer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles);
+				renderer.drawLayer(g, layer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles, alpha);
 				return;
 			}
 		}
-		renderWithoutClipAndTranslate(g, layer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles);
+		renderWithoutClipAndTranslate(g, layer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles, alpha);
 	}
 
 	private void renderWithoutClipAndTranslate(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX, int startTileY,
-	                                        int widthInTiles, int heightInTiles) {
+	                                        int widthInTiles, int heightInTiles, float alpha) {
 		int startTileRenderX = (startTileX * tiledMap.getTileWidth());
 		int startTileRenderY = (startTileY * tiledMap.getTileHeight());
 
 		int tileRenderX = MathUtils.round(renderX - startTileRenderX);
 		int tileRenderY = MathUtils.round(renderY - startTileRenderY);
 
-		renderLayer(g, layer, tileRenderX, tileRenderY, startTileX, startTileY, widthInTiles, heightInTiles);
+		renderLayer(g, layer, tileRenderX, tileRenderY, startTileX, startTileY, widthInTiles, heightInTiles, alpha);
 	}
 
 	private void renderLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX, int startTileY,
-			int widthInTiles, int heightInTiles) {
+			int widthInTiles, int heightInTiles, float alpha) {
 		for (int y = startTileY; y < startTileY + heightInTiles && y < layer.getHeight(); y++) {
 			for (int x = startTileX; x < startTileX + widthInTiles && x < layer.getWidth(); x++) {
 				int tileId = layer.getTileId(x, y);
@@ -107,7 +107,7 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 				for (int i = 0; i < tiledMap.getTilesets().size; i++) {
 					Tileset tileset = tiledMap.getTilesets().get(i);
 					if (tileset.contains(tileId)) {
-						tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY, flipHorizontally, flipVertically, flipDiagonally);
+						tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY, alpha, flipHorizontally, flipVertically, flipDiagonally);
 						break;
 					}
 				}

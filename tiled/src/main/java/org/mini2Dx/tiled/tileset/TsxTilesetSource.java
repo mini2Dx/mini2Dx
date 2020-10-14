@@ -104,13 +104,13 @@ public class TsxTilesetSource extends TilesetSource {
 	}
 
 	@Override
-	public void drawTile(Graphics g, int tileId, int firstGid, int renderX, int renderY) {
-		tileset.drawTile(g, tileId, firstGid, renderX, renderY);
+	public void drawTile(Graphics g, int tileId, int firstGid, int renderX, int renderY, float alpha) {
+		tileset.drawTile(g, tileId, firstGid, renderX, renderY, alpha);
 	}
 
 	@Override
-	public void drawTileset(Graphics g, int renderX, int renderY) {
-		tileset.drawTileset(g, renderX, renderY);
+	public void drawTileset(Graphics g, int renderX, int renderY, float alpha) {
+		tileset.drawTileset(g, renderX, renderY, alpha);
 	}
 
 	@Override

@@ -38,14 +38,16 @@ public class StaticTileRenderer implements TileRenderer {
 	}
 
 	@Override
-	public void draw(Graphics g, int renderX, int renderY) {
-		g.drawSprite(getCurrentTileImage(), renderX, renderY);
+	public void draw(Graphics g, int renderX, int renderY, float alpha) {
+		Sprite tileImage = getCurrentTileImage();
+		tileImage.setAlpha(alpha);
+		tileImage.setPosition(renderX, renderY);
+		g.drawSprite(tileImage);
 	}
 	
 	@Override
-	public void draw(Graphics g, int renderX, int renderY, boolean flipH, boolean flipV, boolean flipD) {
-		Sprite tileImage = getCurrentTileImage();
-		StaticTileRenderer.drawTileImage(g, tileImage, renderX, renderY, flipH, flipV, flipD);
+	public void draw(Graphics g, int renderX, int renderY, float alpha, boolean flipH, boolean flipV, boolean flipD) {
+		StaticTileRenderer.drawTileImage(g, getCurrentTileImage(), renderX, renderY, alpha, flipH, flipV, flipD);
 	}
 
 	@Override
@@ -58,7 +60,7 @@ public class StaticTileRenderer implements TileRenderer {
 	}
 
 	public static void drawTileImage(Graphics g, Sprite tileImage, int renderX, int renderY,
-	                                 boolean flipH, boolean flipV, boolean flipD) {
+	                                 float alpha, boolean flipH, boolean flipV, boolean flipD) {
 		boolean previousFlipX = tileImage.isFlipX();
 		boolean previousFlipY = tileImage.isFlipY();
 
@@ -77,8 +79,10 @@ public class StaticTileRenderer implements TileRenderer {
 		} else {
 			tileImage.setFlip(flipH, flipV);
 		}
+		tileImage.setAlpha(alpha);
+		tileImage.setPosition(renderX, renderY);
 
-		g.drawSprite(tileImage, renderX, renderY);
+		g.drawSprite(tileImage);
 		tileImage.setRotation(0f);
 		tileImage.setFlip(previousFlipX, previousFlipY);
 	}

@@ -54,7 +54,7 @@ public class OrthogonalEmptyTileLayerRenderer implements TileLayerRenderer {
 
 	@Override
 	public void drawLayer(Graphics g, TileLayer layer, int renderX, int renderY,
-						  int startTileX, int startTileY, int widthInTiles, int heightInTiles) {
+						  int startTileX, int startTileY, int widthInTiles, int heightInTiles, float alpha) {
 		int startTileRenderX = (startTileX * tiledMap.getTileWidth());
 		int startTileRenderY = (startTileY * tiledMap.getTileHeight());
 
@@ -92,7 +92,7 @@ public class OrthogonalEmptyTileLayerRenderer implements TileLayerRenderer {
 				int tileRenderX = renderX + (tileRef.x * tiledMap.getTileWidth());
 				int tileRenderY = renderY + (tileRef.y * tiledMap.getTileHeight());
 
-				tileRef.tile.draw(g, tileRenderX, tileRenderY, flipHorizontally, flipVertically, flipDiagonally);
+				tileRef.tile.draw(g, tileRenderX, tileRenderY, alpha, flipHorizontally, flipVertically, flipDiagonally);
 			}
 		}
 	}

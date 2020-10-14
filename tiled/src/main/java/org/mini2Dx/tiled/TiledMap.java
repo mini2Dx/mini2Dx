@@ -287,23 +287,50 @@ public class TiledMap {
 	 */
 	public void draw(Graphics g, int x, int y, int startTileX, int startTileY, int widthInTiles, int heightInTiles,
 			int layer) {
-		Layer tiledLayer = tiledMapData.getLayers().get(layer);
-		drawLayer(g, tiledLayer, x, y, startTileX, startTileY, widthInTiles, heightInTiles);
+		draw(g, x, y, startTileX, startTileY, widthInTiles, heightInTiles, layer, 1.0f);
 	}
 
-	private void drawLayer(Graphics g, Layer tiledLayer, int x, int y, int startTileX, int startTileY, int widthInTiles, int heightInTiles) {
+	/**
+	 * Draws a section of a specified layer of the map at the specified coordinates
+	 *
+	 * @param g
+	 *            The {@link Graphics} context available for rendering
+	 * @param x
+	 *            The x coordinate to render at
+	 * @param y
+	 *            The y coordinate to render at
+	 * @param startTileX
+	 *            The x tile coordinate in the map to start from
+	 * @param startTileY
+	 *            The y tile coordinate in the map to start from
+	 * @param widthInTiles
+	 *            The amount of tiles across the x axis to render
+	 * @param heightInTiles
+	 *            The amount of tiles across the y axis to render
+	 * @param layer
+	 *            The layer index to render (Note: The indicies only represent the root layers)
+	 * @param alpha
+	 *            The alpha blending value to render with
+	 */
+	public void draw(Graphics g, int x, int y, int startTileX, int startTileY, int widthInTiles, int heightInTiles,
+	                 int layer, float alpha) {
+		Layer tiledLayer = tiledMapData.getLayers().get(layer);
+		drawLayer(g, tiledLayer, x, y, startTileX, startTileY, widthInTiles, heightInTiles, alpha);
+	}
+
+	private void drawLayer(Graphics g, Layer tiledLayer, int x, int y, int startTileX, int startTileY, int widthInTiles, int heightInTiles, float alpha) {
 		switch (tiledLayer.getLayerType()) {
 		case IMAGE:
 			break;
 		case OBJECT:
 			drawTiledObjectGroup(g, (TiledObjectGroup) tiledLayer, x, y, startTileX, startTileY, widthInTiles,
-					heightInTiles);
+					heightInTiles, alpha);
 			break;
 		case TILE:
-			drawTileLayer(g, (TileLayer) tiledLayer, x, y, startTileX, startTileY, widthInTiles, heightInTiles);
+			drawTileLayer(g, (TileLayer) tiledLayer, x, y, startTileX, startTileY, widthInTiles, heightInTiles, alpha);
 			break;
 		case GROUP:
-			drawGroupLayer(g, (GroupLayer) tiledLayer, x, y, startTileX, startTileY, widthInTiles, heightInTiles);
+			drawGroupLayer(g, (GroupLayer) tiledLayer, x, y, startTileX, startTileY, widthInTiles, heightInTiles, alpha);
 			break;
 		default:
 			break;
@@ -401,7 +428,7 @@ public class TiledMap {
 	}
 
 	public void drawTileLayer(Graphics g, TileLayer layer, int renderX, int renderY, int startTileX, int startTileY,
-			int widthInTiles, int heightInTiles) {
+			int widthInTiles, int heightInTiles, float alpha) {
 		if (!isTilesetTexturesLoaded(true)) {
 			Mdx.log.error(TiledMap.class.getSimpleName(), "Attempting to render TiledMap without its tilesets loaded");
 			return;
@@ -416,22 +443,22 @@ public class TiledMap {
 		if (!preTileLayerRendered(g, layer, startTileX, startTileY, widthInTiles, heightInTiles))
 			return;
 
-		tileLayerRenderer.drawLayer(g, layer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles);
+		tileLayerRenderer.drawLayer(g, layer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles, alpha);
 
 		onTileLayerRendered(g, layer, startTileX, startTileY, widthInTiles, heightInTiles);
 	}
 
 	private void drawTiledObjectGroup(Graphics g, TiledObjectGroup objectGroup, int renderX, int renderY,
-			int startTileX, int startTileY, int widthInTiles, int heightInTiles) {
+			int startTileX, int startTileY, int widthInTiles, int heightInTiles, float alpha) {
 		if (tiledObjectGroupRenderer == null) {
 			return;
 		}
 		tiledObjectGroupRenderer.drawObjectGroup(g, objectGroup, renderX, renderY, startTileX, startTileY, widthInTiles,
-				heightInTiles);
+				heightInTiles, alpha);
 	}
 
 	public void drawGroupLayer(Graphics g, GroupLayer layer, int renderX, int renderY, int startTileX, int startTileY,
-	                          int widthInTiles, int heightInTiles) {
+	                          int widthInTiles, int heightInTiles, float alpha) {
 		if (!isTilesetTexturesLoaded(true)) {
 			Mdx.log.error(TiledMap.class.getSimpleName(), "Attempting to render TiledMap without its tilesets loaded");
 			return;
@@ -447,7 +474,7 @@ public class TiledMap {
 			return;
 
 		for(Layer childLayer : layer.layers) {
-			drawLayer(g, childLayer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles);
+			drawLayer(g, childLayer, renderX, renderY, startTileX, startTileY, widthInTiles, heightInTiles, alpha);
 		}
 
 		onGroupLayerRendered(g, layer, startTileX, startTileY, widthInTiles, heightInTiles);

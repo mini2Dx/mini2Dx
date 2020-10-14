@@ -53,14 +53,16 @@ public class AnimatedTileRenderer implements TileRenderer {
 	}
 
 	@Override
-	public void draw(Graphics g, int renderX, int renderY) {
-		g.drawSprite(getCurrentTileImage(), renderX, renderY);
+	public void draw(Graphics g, int renderX, int renderY, float alpha) {
+		Sprite tileImage = getCurrentTileImage();
+		tileImage.setAlpha(alpha);
+		tileImage.setPosition(renderX, renderY);
+		g.drawSprite(tileImage);
 	}
 
 	@Override
-	public void draw(Graphics g, int renderX, int renderY, boolean flipH, boolean flipV, boolean flipD) {
-		Sprite tileImage = getCurrentTileImage();
-		StaticTileRenderer.drawTileImage(g, tileImage, renderX, renderY, flipH, flipV, flipD);
+	public void draw(Graphics g, int renderX, int renderY, float alpha, boolean flipH, boolean flipV, boolean flipD) {
+		StaticTileRenderer.drawTileImage(g, getCurrentTileImage(), renderX, renderY, alpha, flipH, flipV, flipD);
 	}
 
 	@Override

@@ -42,8 +42,10 @@ public interface TileRenderer extends Disposable {
 	 *            The x coordinate to render at
 	 * @param renderY
 	 *            The y coordinate to render at
+	 * @param alpha
+	 * 	          The alpha value to render with
 	 */
-	public void draw(Graphics g, int renderX, int renderY);
+	public void draw(Graphics g, int renderX, int renderY, float alpha);
 
 	/**
 	 * Renders the {@link Tile} at the given coordinates
@@ -54,6 +56,8 @@ public interface TileRenderer extends Disposable {
 	 *            The x coordinate to render at
 	 * @param renderY
 	 *            The y coordinate to render at
+	 * @param alpha
+	 *            The alpha value to render with
 	 * @param flipH
 	 *            True if the tile is flipped horizontally
 	 * @param flipV
@@ -61,7 +65,7 @@ public interface TileRenderer extends Disposable {
 	 * @param flipD
 	 *            True if the tile is flipped (anti) diagonally - rotation
 	 */
-	public void draw(Graphics g, int renderX, int renderY, boolean flipH, boolean flipV, boolean flipD);
+	public void draw(Graphics g, int renderX, int renderY, float alpha, boolean flipH, boolean flipV, boolean flipD);
 
 	/**
 	 * Returns the current {@link Tile} image
