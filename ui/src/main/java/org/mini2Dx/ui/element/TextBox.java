@@ -58,6 +58,8 @@ public class TextBox extends UiElement implements Actionable, FlexUiElement {
 	private boolean enabled = true;
 	@Field(optional = true)
 	private boolean passwordField = false;
+	@Field(optional = true)
+	private int characterLimit = -1;
 	
 	protected TextBoxRenderNode renderNode;
 
@@ -197,6 +199,9 @@ public class TextBox extends UiElement implements Actionable, FlexUiElement {
 		if (value.equals(this.value)) {
 			return;
 		}
+		if (characterLimit >= 0 && value.length() > characterLimit) {
+			return;
+		}
 		this.value = value;
 		
 		if (renderNode == null) {
@@ -219,6 +224,29 @@ public class TextBox extends UiElement implements Actionable, FlexUiElement {
 	 */
 	public void setPasswordField(boolean passwordField) {
 		this.passwordField = passwordField;
+	}
+
+	/**
+	 * Returns the current character limit of this {@link TextBox}.
+	 * @return a negative integer if there is no character limit or positive number (including zero) if such limit is
+	 * set.
+	 */
+	public int getCharacterLimit() {
+		return characterLimit;
+	}
+
+	/**
+	 * Sets the character limit for this {@link TextBox}. Any negative number will disable the character limit.
+	 * Any positive number (including zero) will trigger this behavior. If this {@link TextBox} reaches the
+	 * character limit it will stop accepting any newer input.
+	 * @param characterLimit
+	 */
+	public void setCharacterLimit(int characterLimit) {
+		this.characterLimit = characterLimit;
+	}
+
+	public boolean isCharacterLimitReached() {
+		return characterLimit >= 0 && value.length() >= characterLimit;
 	}
 
 	@Override
