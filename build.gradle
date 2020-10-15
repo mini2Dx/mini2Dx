@@ -87,7 +87,7 @@ def docProjects() {
 	subprojects.findAll { !it.name.contains('uat') && !it.name.contains('monogame') }
 }
 
-def projectVersion = '2.0.0-SNAPSHOT'
+def projectVersion = '2.0.0-alpha.34'
 
 configure(docProjects()) {
 	apply plugin: "signing"
@@ -193,6 +193,8 @@ configure(docProjects()) {
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
+				groupId = group
+
 				afterEvaluate {
 					from project.name.contains('android') ? components.release : components.java
 					artifact sourcesJar
@@ -201,7 +203,7 @@ configure(docProjects()) {
 				}
 				pom {
 					groupId = group
-					name = project.name
+					name = project.name.toLowerCase()
 					afterEvaluate {
 						description = project.description
 					}
