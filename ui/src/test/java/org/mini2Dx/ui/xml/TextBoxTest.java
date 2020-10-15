@@ -32,6 +32,13 @@ public class TextBoxTest extends AbstractUiElementXmlTest<TextBox> {
     }
 
     @Test
+    public void text_box_character_limit_field_provided() {
+        TextBox element = loadFile("<text-box id=\"x\" characterLimit=\"3\" />");
+
+        assertEquals(element.getCharacterLimit(), 3);
+    }
+
+    @Test
     public void text_box_enabled_provided() {
         TextBox element = loadFile("<text-box id=\"x\" enabled=\"false\" />");
 
@@ -75,6 +82,7 @@ public class TextBoxTest extends AbstractUiElementXmlTest<TextBox> {
                 "              height=\"1\"" +
                 "              visibility=\"HIDDEN\"" +
                 "              password=\"true\"" +
+                "              characterLimit=\"10\"" +
                 "              value=\"hello\"" +
                 "              enabled=\"false\"" +
                 "              layout=\"blah\"" +
