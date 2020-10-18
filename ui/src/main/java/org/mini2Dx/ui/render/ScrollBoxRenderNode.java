@@ -16,7 +16,7 @@
 package org.mini2Dx.ui.render;
 
 import org.mini2Dx.core.Graphics;
-import org.mini2Dx.core.collision.CollisionBox;
+import org.mini2Dx.core.collision.util.StaticCollisionBox;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.IntMap;
@@ -39,10 +39,10 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 		implements ActionableRenderNode {
 	private static final String LOGGING_TAG = ScrollBoxRenderNode.class.getSimpleName();
 
-	protected final CollisionBox topScrollButton = new CollisionBox();
-    protected final CollisionBox bottomScrollButton = new CollisionBox();
-    protected final CollisionBox scrollThumb = new CollisionBox();
-    protected final CollisionBox scrollTrack = new CollisionBox();
+	protected final StaticCollisionBox topScrollButton = new StaticCollisionBox();
+    protected final StaticCollisionBox bottomScrollButton = new StaticCollisionBox();
+    protected final StaticCollisionBox scrollThumb = new StaticCollisionBox();
+    protected final StaticCollisionBox scrollTrack = new StaticCollisionBox();
 
     protected ScrollTo scrollTo = null;
 
