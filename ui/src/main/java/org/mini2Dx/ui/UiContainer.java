@@ -80,6 +80,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	private float scaleY = 1f;
 	private String lastThemeId;
 	private boolean themeWarningIssued, initialThemeLayoutComplete;
+	private float inputSourceChangeTimer = 0f, inputSourceChangeThreshold = 0.1f;
 
 	private final IntArray actionKeys = new IntArray();
 	private Navigatable activeNavigation;
@@ -161,7 +162,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 *            The time since the last frame (in seconds)
 	 */
 	public void update(float delta) {
-		updateLastInputSource();
+		updateLastInputSource(delta);
 		updateLastGamePadType();
 		if (!isThemeApplied()) {
 			if (!themeWarningIssued) {
@@ -909,13 +910,20 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		}
 	}
 
-	private void updateLastInputSource() {
+	private void updateLastInputSource(float delta) {
 		if (nextInputSource == null) {
 			return;
 		}
 		if (this.lastInputSource.equals(nextInputSource)) {
+			inputSourceChangeTimer = 0f;
 			return;
 		}
+		inputSourceChangeTimer += delta;
+		if(inputSourceChangeTimer < inputSourceChangeThreshold) {
+			return;
+		}
+		inputSourceChangeTimer = 0f;
+
 		InputSource oldInputSource = this.lastInputSource;
 		this.lastInputSource = nextInputSource;
 		notifyInputSourceChange(oldInputSource, lastInputSource);
@@ -1020,6 +1028,14 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 */
 	public void setPassThroughMouseMovement(boolean passThroughMouseMovement) {
 		this.passThroughMouseMovement = passThroughMouseMovement;
+	}
+
+	/**
+	 * Sets the duration of new input that needs to occur before the input source is considered changed
+	 * @param inputSourceChangeThreshold The time in seconds
+	 */
+	public void setInputSourceChangeThreshold(float inputSourceChangeThreshold) {
+		this.inputSourceChangeThreshold = inputSourceChangeThreshold;
 	}
 
 	/**
@@ -1172,15 +1188,41 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		}
 	}
 
+	/**
+	 * Sends input source change event to all containers with the current input source as both the old and new
+	 */
+	public void notifyInputSource() {
+		notifyInputSourceChange(lastInputSource, lastInputSource);
+	}
+
+	/**
+	 * Sends game pad change event to all containers with the current game pad type as both the old and new
+	 */
+	public void notifyGamePadType() {
+		notifyGamePadTypeChange(lastGamePadType, lastGamePadType);
+	}
+
 	private void notifyInputSourceChange(InputSource oldSource, InputSource newSource) {
-		for (int i = inputSourceListeners.size - 1; i >= 0; i--) {
-			inputSourceListeners.get(i).inputSourceChanged(this, oldSource, newSource);
+		for(int i = uiContainerInstances.size - 1; i >= 0; i--) {
+			uiContainerInstances.get(i).notifyInputSourceChange(uiContainerInstances.get(i), oldSource, newSource);
+		}
+	}
+
+	private void notifyInputSourceChange(UiContainer uiContainer, InputSource oldSource, InputSource newSource) {
+		for (int i = uiContainer.inputSourceListeners.size - 1; i >= 0; i--) {
+			uiContainer.inputSourceListeners.get(i).inputSourceChanged(uiContainer, oldSource, newSource);
 		}
 	}
 
 	private void notifyGamePadTypeChange(GamePadType oldGamePadType, GamePadType newGamePadType) {
-		for (int i = inputSourceListeners.size - 1; i >= 0; i--) {
-			inputSourceListeners.get(i).gamePadTypeChanged(this, oldGamePadType, newGamePadType);
+		for(int i = uiContainerInstances.size - 1; i >= 0; i--) {
+			uiContainerInstances.get(i).notifyGamePadTypeChange(uiContainerInstances.get(i), oldGamePadType, newGamePadType);
+		}
+	}
+
+	private void notifyGamePadTypeChange(UiContainer uiContainer, GamePadType oldGamePadType, GamePadType newGamePadType) {
+		for (int i = uiContainer.inputSourceListeners.size - 1; i >= 0; i--) {
+			uiContainer.inputSourceListeners.get(i).gamePadTypeChanged(uiContainer, oldGamePadType, newGamePadType);
 		}
 	}
 
