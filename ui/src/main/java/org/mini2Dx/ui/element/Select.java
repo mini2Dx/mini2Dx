@@ -37,7 +37,7 @@ import org.mini2Dx.ui.style.StyleRule;
  * A {@link UiElement} with preset options. Uses left/right buttons to change
  * the selection.
  */
-public class Select<V> extends UiElement implements Actionable, FlexUiElement {
+public class Select<V> extends UiElement implements MultiToggle, Actionable, FlexUiElement {
 	private final Array<SelectOption<V>> options = new Array<SelectOption<V>>(true,1, SelectOption.class);
 	private Array<ActionListener> actionListeners;
 

@@ -17,9 +17,7 @@ package org.mini2Dx.ui.navigation;
 
 import org.mini2Dx.gdx.Input.Keys;
 import org.mini2Dx.gdx.utils.Array;
-import org.mini2Dx.ui.element.Actionable;
-import org.mini2Dx.ui.element.Hoverable;
-import org.mini2Dx.ui.element.UiElement;
+import org.mini2Dx.ui.element.*;
 import org.mini2Dx.ui.layout.ScreenSize;
 
 /**
@@ -76,6 +74,20 @@ public class VerticalUiNavigation implements UiNavigation {
 		case Keys.DOWN:
 			navigation.get(cursor).invokeEndHover();
 			cursor = cursor < navigation.size - 1 ? cursor + 1 : 0;
+			break;
+		case Keys.A:
+		case Keys.LEFT:
+			if(navigation.get(cursor) instanceof MultiToggle) {
+				MultiToggle toggle = (MultiToggle) navigation.get(cursor);
+				toggle.previousOption();
+			}
+			break;
+		case Keys.D:
+		case Keys.RIGHT:
+			if(navigation.get(cursor) instanceof MultiToggle) {
+				MultiToggle toggle = (MultiToggle) navigation.get(cursor);
+				toggle.nextOption();
+			}
 			break;
 		}
 		return navigation.get(cursor);
