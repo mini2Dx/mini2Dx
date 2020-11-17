@@ -95,6 +95,25 @@ public class LibgdxTaskExecutor implements TaskExecutor {
 	}
 
 	@Override
+	public int getTotalQueuedAsyncTasks() {
+		if(executorService instanceof ThreadPoolExecutor) {
+			return ((ThreadPoolExecutor) executorService).getQueue().size();
+		}
+		if(executorService instanceof ForkJoinPool) {
+			return ((ForkJoinPool) executorService).getQueuedSubmissionCount();
+		}
+		if(executorService instanceof ScheduledThreadPoolExecutor) {
+			return ((ScheduledThreadPoolExecutor) executorService).getQueue().size();
+		}
+		return 0;
+	}
+
+	@Override
+	public int getTotalQueuedFrameSpreadTasks() {
+		return spreadTasks.size;
+	}
+
+	@Override
 	public void dispose() {
 		executorService.shutdown();
 	}

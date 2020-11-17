@@ -66,4 +66,16 @@ public interface TaskExecutor extends Disposable {
 	 * @param max The maximum number greater than 0
 	 */
 	public void setMaxFrameTasksPerFrame(int max);
+
+	/**
+	 * Returns the current amount of tasks in the async queue
+	 * @return 0 if no tasks are currently queued
+	 */
+	public int getTotalQueuedAsyncTasks();
+
+	/**
+	 * Returns the current amount of {@link FrameSpreadTask} in the frame spread queue
+	 * @return 0 if no tasks are currently queued
+	 */
+	public int getTotalQueuedFrameSpreadTasks();
 }
