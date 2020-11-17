@@ -89,6 +89,16 @@ public class PrototypeBeanTest {
 			public void setMaxFrameTasksPerFrame(int max) {
 
 			}
+
+			@Override
+			public int getTotalQueuedAsyncTasks() {
+				return 0;
+			}
+
+			@Override
+			public int getTotalQueuedFrameSpreadTasks() {
+				return 0;
+			}
 		};
 
 
