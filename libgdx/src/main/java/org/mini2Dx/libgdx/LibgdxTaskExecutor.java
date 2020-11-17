@@ -22,21 +22,28 @@ import org.mini2Dx.core.executor.FrameSpreadTask;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.libgdx.executor.LibgdxAsyncResult;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LibgdxTaskExecutor implements TaskExecutor {
+	private static final String LOGGING_TAG = LibgdxTaskExecutor.class.getSimpleName();
 	private static final int DEFAULT_MAX_FRAME_TASKS_PER_FRAME = 32;
 
 	private final ExecutorService executorService;
+	private final AtomicInteger threadIdGenerator = new AtomicInteger(0);
 	private final Array<FrameSpreadTask> spreadTasks = new Array<FrameSpreadTask>(false, 16);
 
 	private int maxFrameTasksPerFrame;
 
 	public LibgdxTaskExecutor(int threads) {
-		executorService = Executors.newFixedThreadPool(threads);
+		executorService = Executors.newFixedThreadPool(threads, new ThreadFactory() {
+			@Override
+			public Thread newThread(Runnable r) {
+				Thread result = new Thread(r);
+				result.setName(LOGGING_TAG + "-" + threadIdGenerator.getAndIncrement());
+				return result;
+			}
+		});
 		maxFrameTasksPerFrame = DEFAULT_MAX_FRAME_TASKS_PER_FRAME;
 	}
 
