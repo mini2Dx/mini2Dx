@@ -49,7 +49,7 @@ if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
 ext {
 	androidBeansVersion="1.0.0"
 	androidVersion="4.4"
-	artemisVersion="2.1.0"
+	artemisVersion="2.3.0"
 	beanutilsVersion="1.8.3"
 	gdxVersion="1.9.10"
 	gdxAdvancedControllersVersion="1.0.0"
