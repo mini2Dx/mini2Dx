@@ -1,5 +1,6 @@
 [2.0.0-SNAPSHOT]
 ...In development...
+- Update to artemis-odb 2.3.0
 - De-coupled LibGDX to allow for other runtime implementations
 - Interpolation is now automatically handled by framework
 - Added MonoGame runtime for consoles
