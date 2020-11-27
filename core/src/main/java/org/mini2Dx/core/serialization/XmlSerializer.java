@@ -20,10 +20,7 @@ import org.mini2Dx.core.collections.concurrent.ConcurrentObjectMap;
 import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.exception.RequiredFieldException;
 import org.mini2Dx.core.exception.SerializationException;
-import org.mini2Dx.core.reflect.Annotation;
-import org.mini2Dx.core.reflect.Constructor;
-import org.mini2Dx.core.reflect.Field;
-import org.mini2Dx.core.reflect.Method;
+import org.mini2Dx.core.reflect.*;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.NonConcrete;
 import org.mini2Dx.core.serialization.annotation.PostDeserialize;
@@ -310,9 +307,12 @@ public class XmlSerializer {
             return result;
         } catch (SerializationException e) {
             throw e;
+        } catch (ReflectionException e) {
+            e.printStackTrace();
+            throw new SerializationException(element.toString() + "\n" + e.getMessage(), e);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new SerializationException(e.getMessage(), e);
+            throw new SerializationException(element.toString() + "\n" + e.getMessage(), e);
         }
     }
 
@@ -367,6 +367,8 @@ public class XmlSerializer {
 
     private <T> T construct(final XmlReader.Element element, Class<?> clazz) throws SerializationException, IllegalArgumentException {
         Constructor[] constructors = Mdx.reflect.getConstructors(clazz);
+        ConstructorSorter.sort(constructors);
+
         // Single constructor with no args
         if (constructors.length == 1 && constructors[0].getParameterAnnotations().length == 0) {
             return (T) constructors[0].newInstance();

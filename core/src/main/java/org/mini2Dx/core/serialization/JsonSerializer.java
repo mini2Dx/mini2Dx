@@ -21,10 +21,7 @@ import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.exception.RequiredFieldException;
 import org.mini2Dx.core.exception.SerializationException;
 import org.mini2Dx.core.files.FileHandle;
-import org.mini2Dx.core.reflect.Annotation;
-import org.mini2Dx.core.reflect.Constructor;
-import org.mini2Dx.core.reflect.Field;
-import org.mini2Dx.core.reflect.Method;
+import org.mini2Dx.core.reflect.*;
 import org.mini2Dx.core.serialization.annotation.ConstructorArg;
 import org.mini2Dx.core.serialization.annotation.NonConcrete;
 import org.mini2Dx.core.serialization.annotation.PostDeserialize;
@@ -388,6 +385,8 @@ public class JsonSerializer {
 
 	private <T> T construct(JsonValue objectRoot, Class<?> clazz) throws SerializationException, IllegalArgumentException {
 		Constructor[] constructors = Mdx.reflect.getConstructors(clazz);
+		ConstructorSorter.sort(constructors);
+
 		// Single constructor with no args
 		if (constructors.length == 1 && constructors[0].getParameterAnnotations().length == 0) {
 			return (T) constructors[0].newInstance();

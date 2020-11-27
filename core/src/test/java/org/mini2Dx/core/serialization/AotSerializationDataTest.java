@@ -70,7 +70,7 @@ public class AotSerializationDataTest {
 
 		AotSerializedClassData classData = AotSerializationData.getClassData(TestComplexConstructorArgObject.class);
 		Assert.assertEquals(0, classData.getTotalFields());
-		Assert.assertEquals(2, classData.getTotalConstructors());
+		Assert.assertEquals(3, classData.getTotalConstructors());
 
 		String data = stringWriter.toString();
 		System.out.println(data);
@@ -81,7 +81,7 @@ public class AotSerializationDataTest {
 
 		AotSerializedClassData result = AotSerializationData.getClassData(TestComplexConstructorArgObject.class);
 		Assert.assertEquals(0, classData.getTotalFields());
-		Assert.assertEquals(2, classData.getTotalConstructors());
+		Assert.assertEquals(3, classData.getTotalConstructors());
 		Assert.assertEquals(classData, result);
 
 		Assert.assertTrue(result.getTotalConstructors() > 0);
@@ -90,6 +90,14 @@ public class AotSerializationDataTest {
 			case 1:
 				Assert.assertEquals("id", result.getConstructorData(i).getConstructorArgName(0));
 				Assert.assertEquals(Integer.class, result.getConstructorData(i).getConstructorArgType(0));
+				break;
+			case 3:
+				Assert.assertEquals("id", result.getConstructorData(i).getConstructorArgName(0));
+				Assert.assertEquals(Integer.class, result.getConstructorData(i).getConstructorArgType(0));
+				Assert.assertEquals("x", result.getConstructorData(i).getConstructorArgName(1));
+				Assert.assertEquals(Float.class, result.getConstructorData(i).getConstructorArgType(1));
+				Assert.assertEquals("y", result.getConstructorData(i).getConstructorArgName(2));
+				Assert.assertEquals(Float.class, result.getConstructorData(i).getConstructorArgType(2));
 				break;
 			case 5:
 				Assert.assertEquals("id", result.getConstructorData(i).getConstructorArgName(0));

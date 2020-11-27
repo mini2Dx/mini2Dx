@@ -28,10 +28,6 @@ public class TestComplexConstructorArgObject {
 		this(9);
 	}
 
-	public TestComplexConstructorArgObject(@ConstructorArg(clazz = Integer.class, name = "id") int id) {
-		this(id, 0f, 0f, 0f, 0f);
-	}
-
 	public TestComplexConstructorArgObject(@ConstructorArg(clazz = Integer.class, name = "id") int id,
 										   @ConstructorArg(clazz = Float.class, name = "x") float x,
 										   @ConstructorArg(clazz = Float.class, name = "y") float y,
@@ -42,6 +38,16 @@ public class TestComplexConstructorArgObject {
 		this.y = y;
 		this.width = width;
 		this.height = height;
+	}
+
+	public TestComplexConstructorArgObject(@ConstructorArg(clazz = Integer.class, name = "id") int id,
+	                                       @ConstructorArg(clazz = Float.class, name = "x") float x,
+	                                       @ConstructorArg(clazz = Float.class, name = "y") float y) {
+		this(id, x, y, 0f, 0f);
+	}
+
+	public TestComplexConstructorArgObject(@ConstructorArg(clazz = Integer.class, name = "id") int id) {
+		this(id, 0f, 0f, 0f, 0f);
 	}
 
 	@ConstructorArg(clazz = Integer.class, name = "id")
