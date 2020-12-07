@@ -18,7 +18,6 @@ package org.mini2Dx.ui.render;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.collision.CollisionArea;
-import org.mini2Dx.core.collision.CollisionBox;
 import org.mini2Dx.core.collision.util.StaticCollisionBox;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.geom.Rectangle;
@@ -169,9 +168,11 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	public boolean mouseMoved(int screenX, int screenY) {
 		if (innerArea.contains(screenX, screenY)) {
 			beginHover();
+			element.notifyNodeMouseListenersMouseMoved(true);
 			return true;
 		} else if (state != NodeState.NORMAL) {
 			endHover();
+			element.notifyNodeMouseListenersMouseMoved(false);
 		}
 		return false;
 	}
@@ -181,10 +182,12 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 	}
 
 	public ActionableRenderNode mouseDown(int screenX, int screenY, int pointer, int button) {
+		element.notifyNodeMouseListenersMouseDown(innerArea.contains(screenX, screenY));
 		return null;
 	}
 
 	public void mouseUp(int screenX, int screenY, int pointer, int button) {
+		element.notifyNodeMouseListenersMouseUp(innerArea.contains(screenX, screenY));
 	}
 
 	public boolean contains(float screenX, float screenY) {

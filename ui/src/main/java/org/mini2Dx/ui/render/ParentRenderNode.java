@@ -242,10 +242,12 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 					result = true;
 				}
 			}
+			element.notifyNodeMouseListenersMouseMoved(true);
 			return result;
 		} else if (getState() != NodeState.NORMAL) {
 			setState(NodeState.NORMAL);
 		}
+		element.notifyNodeMouseListenersMouseMoved(innerArea.contains(screenX, screenY));
 		return false;
 	}
 
@@ -270,6 +272,7 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 	@Override
 	public ActionableRenderNode mouseDown(int screenX, int screenY, int pointer, int button) {
 		if (!isIncludedInRender()) {
+			element.notifyNodeMouseListenersMouseDown(innerArea.contains(screenX, screenY));
 			return null;
 		}
 		final IntMap.Keys keys = layers.descendingKeys();
@@ -278,9 +281,11 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 			final int layerIndex = keys.next();
 			ActionableRenderNode result = layers.get(layerIndex).mouseDown(screenX, screenY, pointer, button);
 			if (result != null) {
+				element.notifyNodeMouseListenersMouseDown(innerArea.contains(screenX, screenY));
 				return result;
 			}
 		}
+		element.notifyNodeMouseListenersMouseDown(innerArea.contains(screenX, screenY));
 		return null;
 	}
 
