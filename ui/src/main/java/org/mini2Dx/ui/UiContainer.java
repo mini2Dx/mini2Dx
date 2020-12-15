@@ -760,23 +760,13 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		if (renderTree == null) {
 			return;
 		}
-		UiNavigation navigation = activeNavigation.getNavigation();
-		if (navigation == null) {
+		if (activeAction == null) {
 			return;
 		}
-		Actionable actionable = navigation.getCursor();
-		if (actionable == null) {
+		if (activeAction.getState() != NodeState.HOVER) {
 			return;
 		}
-		ActionableRenderNode actionableRenderNode = (ActionableRenderNode) renderNode
-				.getElementById(actionable.getId());
-		if (actionableRenderNode == null) {
-			return;
-		}
-		if (actionableRenderNode.getState() != NodeState.HOVER) {
-			return;
-		}
-		actionableRenderNode.setState(NodeState.NORMAL);
+		activeAction.setState(NodeState.NORMAL);
 	}
 
 	public void clearActiveAction() {
