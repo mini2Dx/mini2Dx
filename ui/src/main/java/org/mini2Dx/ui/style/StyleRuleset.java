@@ -41,9 +41,9 @@ public abstract class StyleRuleset<T extends StyleRule> {
 	public abstract void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager);
 	
 	protected T getStyleRule(ScreenSize screenSize, ObjectMap<ScreenSize, T> rules) {
-		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
-		while(screenSizes.hasNext()) {
-			ScreenSize nextSize = screenSizes.next();
+		final Array<ScreenSize> largestToSmallestScreenSizes = ScreenSize.sharedLargestToSmallest();
+		for(int i = 0; i < largestToSmallestScreenSizes.size; i++) {
+			final ScreenSize nextSize = largestToSmallestScreenSizes.get(i);
 			if(nextSize.isGreaterThan(screenSize)) {
 				continue;
 			}

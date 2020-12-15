@@ -220,12 +220,12 @@ public class FlexLayoutRuleset extends LayoutRuleset {
 	}
 
 	private void finaliseRuleset(ObjectMap<ScreenSize, SizeRule> sizeRules, ObjectMap<ScreenSize, OffsetRule> offsetRules) {
-		Iterator<ScreenSize> screenSizes = ScreenSize.smallestToLargest();
+		final Array<ScreenSize> smallestToLargestScreenSizes = ScreenSize.sharedSmallestToLargest();
 		SizeRule lastSizeRule = new ResponsiveSizeRule(12);
 		OffsetRule lastOffsetRule = new AbsoluteOffsetRule(0);
 
-		while (screenSizes.hasNext()) {
-			ScreenSize nextSize = screenSizes.next();
+		for(int i = 0; i < smallestToLargestScreenSizes.size; i++) {
+			final ScreenSize nextSize = smallestToLargestScreenSizes.get(i);
 
 			if (!sizeRules.containsKey(nextSize)) {
 				sizeRules.put(nextSize, lastSizeRule);

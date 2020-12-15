@@ -69,9 +69,9 @@ public class GridUiNavigation implements UiNavigation {
 
 	@Override
 	public void layout(ScreenSize screenSize) {
-		Iterator<ScreenSize> screenSizes = ScreenSize.largestToSmallest();
-		while (screenSizes.hasNext()) {
-			ScreenSize nextSize = screenSizes.next();
+		final Array<ScreenSize> largestToSmallestScreenSizes = ScreenSize.sharedLargestToSmallest();
+		for(int i = 0; i < largestToSmallestScreenSizes.size; i++) {
+			final ScreenSize nextSize = largestToSmallestScreenSizes.get(i);
 			if (nextSize.getMinSize(1f) > screenSize.getMinSize(1f)) {
 				continue;
 			}

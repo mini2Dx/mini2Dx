@@ -94,6 +94,22 @@ public enum ScreenSize {
 	public static Iterator<ScreenSize> smallestToLargest() {
 		return smallestToLargest.iterator();
 	}
+
+	/**
+	 * Returns a new {@link ScreenSize}s array ordered smallest to largest
+	 * @return
+	 */
+	public static Array<ScreenSize> copyOfSmallestToLargest() {
+		return new Array<ScreenSize>(smallestToLargest);
+	}
+
+	/**
+	 * Returns the shared {@link ScreenSize}s array ordered smallest to largest. WARNING: Only use this for iteration by index
+	 * @return
+	 */
+	public static Array<ScreenSize> sharedSmallestToLargest() {
+		return smallestToLargest;
+	}
 	
 	/**
 	 * Returns an {@link Iterator} of largest to smallest {@link ScreenSize}s
@@ -101,6 +117,22 @@ public enum ScreenSize {
 	 */
 	public static Iterator<ScreenSize> largestToSmallest() {
 		return largestToSmallest.iterator();
+	}
+
+	/**
+	 * Returns a new {@link ScreenSize}s array ordered largest to smallest
+	 * @return
+	 */
+	public static Array<ScreenSize> copyOfLargestToSmallest() {
+		return new Array<ScreenSize>(largestToSmallest);
+	}
+
+	/**
+	 * Returns the shared {@link ScreenSize}s array ordered largest to smallest. WARNING: Only use this for iteration by index
+	 * @return
+	 */
+	public static Array<ScreenSize> sharedLargestToSmallest() {
+		return largestToSmallest;
 	}
 	
 	public static ScreenSize fromString(String value) {
