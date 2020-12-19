@@ -64,7 +64,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 
 	private final Array<GamePadUiInput<?>> controllerInputs = new Array<GamePadUiInput<?>>(true,1, GamePadUiInput.class);
 
-	private final Array<UiInputSourceListener> inputSourceListeners = new Array<UiInputSourceListener>(true,1, UiContainerListener.class);
+	private final Array<UiInputSourceListener> inputSourceListeners = new Array<UiInputSourceListener>(true,1, UiInputSourceListener.class);
 	private final Array<UiContainerListener> containerListeners = new Array<UiContainerListener>(true,1, UiContainerListener.class);
 
 	private final IntSet receivedKeyDowns = new IntSet();
