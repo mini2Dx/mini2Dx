@@ -34,6 +34,7 @@
     <pattern>org.apache.harmony.security.provider.cert.DRLCertFactory</pattern>
     <pattern>org.apache.harmony.security.provider.crypto.CryptoProvider</pattern>
     <pattern>org.mini2Dx.ui.**</pattern>
+    <pattern>com.badlogic.gdx.controllers.IosControllerManager</pattern>
   </forceLinkClasses>
   <libs>
       <lib>z</lib> 
@@ -46,5 +47,6 @@
     <framework>OpenAL</framework>
     <framework>AudioToolbox</framework>
     <framework>AVFoundation</framework>
+    <framework>GameKit</framework>
   </frameworks>
 </config>

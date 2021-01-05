@@ -16,7 +16,6 @@
 package org.mini2Dx.libgdx;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.controllers.AdvancedController;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import org.mini2Dx.core.Input;
@@ -46,28 +45,14 @@ public class LibgdxInput implements Input {
 			final LibgdxGamePad gamePad;
 
 			if(firstRun) {
-				if(controller instanceof AdvancedController) {
-					final AdvancedController advancedController = (AdvancedController) controller;
-					gamePad = new LibgdxAdvancedGamePad(advancedController);
+				gamePad = new LibgdxGamePad(controller);
+			} else {
+				final String instanceId = controller.getUniqueId() != null ? controller.getUniqueId() : controller.getName();
+
+				if(gamePadsById.containsKey(instanceId)) {
+					gamePad = gamePadsById.get(controller.getName());
 				} else {
 					gamePad = new LibgdxGamePad(controller);
-				}
-			} else {
-				if(controller instanceof AdvancedController) {
-					final AdvancedController advancedController = (AdvancedController) controller;
-					final String instanceId = advancedController.getUniqueId() != null ? advancedController.getUniqueId() : advancedController.getName();
-
-					if(gamePadsById.containsKey(instanceId)) {
-						gamePad = gamePadsById.get(instanceId);
-					} else {
-						gamePad = new LibgdxGamePad(controller);
-					}
-				} else {
-					if(gamePadsById.containsKey(controller.getName())) {
-						gamePad = gamePadsById.get(controller.getName());
-					} else {
-						gamePad = new LibgdxGamePad(controller);
-					}
 				}
 			}
 

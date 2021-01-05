@@ -17,7 +17,6 @@ package org.mini2Dx.libgdx.input;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
-import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector3;
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.GamePadListener;
@@ -25,22 +24,26 @@ import org.mini2Dx.core.input.GamePadType;
 import org.mini2Dx.core.input.PovState;
 import org.mini2Dx.core.input.ps4.PS4GamePad;
 import org.mini2Dx.core.input.xbox.XboxGamePad;
+import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.IntFloatMap;
 import org.mini2Dx.gdx.utils.IntMap;
 import org.mini2Dx.gdx.utils.IntSet;
 
 public class LibgdxGamePad implements GamePad, ControllerListener {
+	private static final int VIBRATE_DURATION = 1000 * 60 * 60;
+
 	private final Controller controller;
 	private final Array<GamePadListener> listeners = new Array<GamePadListener>();
 
 	private final IntSet downButtons = new IntSet();
 	private final IntFloatMap axes = new IntFloatMap();
-	private final IntMap<PovState> povs = new IntMap<PovState>();
 	private final IntMap<org.mini2Dx.gdx.math.Vector3> accelerometers = new IntMap<org.mini2Dx.gdx.math.Vector3>();
 
 	protected GamePadType gamePadType = null;
 	protected boolean connected = true;
+
+	protected float vibrateStrength = 0f;
 
 	public LibgdxGamePad(Controller controller) {
 		this.controller = controller;
@@ -84,62 +87,6 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 	}
 
 	@Override
-	public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-		switch(value) {
-		case center:
-			povs.put(povCode, PovState.CENTER);
-			break;
-		case north:
-			povs.put(povCode, PovState.NORTH);
-			break;
-		case south:
-			povs.put(povCode, PovState.SOUTH);
-			break;
-		case east:
-			povs.put(povCode, PovState.EAST);
-			break;
-		case west:
-			povs.put(povCode, PovState.WEST);
-			break;
-		case northEast:
-			povs.put(povCode, PovState.NORTH_EAST);
-			break;
-		case southEast:
-			povs.put(povCode, PovState.SOUTH_EAST);
-			break;
-		case northWest:
-			povs.put(povCode, PovState.NORTH_WEST);
-			break;
-		case southWest:
-			povs.put(povCode, PovState.SOUTH_WEST);
-			break;
-		}
-		notifyPovChanged(povCode, povs.get(povCode, PovState.CENTER));
-		return true;
-	}
-
-	@Override
-	public boolean xSliderMoved(Controller controller, int sliderCode, boolean value) {
-		return true;
-	}
-
-	@Override
-	public boolean ySliderMoved(Controller controller, int sliderCode, boolean value) {
-		return true;
-	}
-
-	@Override
-	public boolean accelerometerMoved(Controller controller, int accelerometerCode, Vector3 value) {
-		if(!accelerometers.containsKey(accelerometerCode)) {
-			accelerometers.put(accelerometerCode, new org.mini2Dx.gdx.math.Vector3(value.x, value.y, value.z));
-		} else {
-			accelerometers.get(accelerometerCode).set(value.x, value.y, value.z);
-		}
-		notifyAccelerometerChanged(accelerometerCode);
-		return true;
-	}
-
-	@Override
 	public GamePadType getGamePadType() {
 		if(gamePadType == null) {
 			final String name = controller.getName().toLowerCase();
@@ -162,6 +109,9 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 
 	@Override
 	public String getInstanceId() {
+		if(controller.getUniqueId() != null) {
+			return controller.getUniqueId();
+		}
 		return controller.getName();
 	}
 
@@ -188,11 +138,6 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 	@Override
 	public float getAxis(int axisCode) {
 		return axes.get(axisCode, 0f);
-	}
-
-	@Override
-	public PovState getPov(int povCode) {
-		return povs.get(povCode, PovState.CENTER);
 	}
 
 	@Override
@@ -271,38 +216,52 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 
 	@Override
 	public boolean isPlayerIndicesSupported() {
-		return false;
+		return controller.supportsPlayerIndex();
 	}
 
 	@Override
 	public int getPlayerIndex() {
-		return -1;
+		if(!isPlayerIndicesSupported()) {
+			return -1;
+		}
+		return controller.getPlayerIndex();
 	}
 
 	@Override
 	public void setPlayerIndex(int playerIndex) {
+		if(!isPlayerIndicesSupported()) {
+			return;
+		}
+		controller.setPlayerIndex(playerIndex);
 	}
 
 	@Override
 	public boolean isVibrateSupported() {
-		return false;
+		return controller.canVibrate();
 	}
 
 	@Override
 	public boolean isVibrating() {
-		return false;
+		return controller.isVibrating() && vibrateStrength > 0f;
 	}
 
 	@Override
 	public float getVibrationStrength() {
-		return 0f;
+		return vibrateStrength;
 	}
 
 	@Override
 	public void startVibration(float strength) {
+		if(!isVibrateSupported()) {
+			return;
+		}
+		vibrateStrength = MathUtils.clamp(strength, 0f, 1f);
+		controller.startVibration(VIBRATE_DURATION, vibrateStrength);
 	}
 
 	@Override
 	public void stopVibration() {
+		vibrateStrength = 0f;
+		controller.cancelVibration();
 	}
 }
