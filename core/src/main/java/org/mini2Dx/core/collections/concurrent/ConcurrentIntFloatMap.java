@@ -70,6 +70,14 @@ public class ConcurrentIntFloatMap extends IntFloatMap implements ConcurrentColl
     }
 
     @Override
+    public float put(int key, float value, float defaultValue) {
+        lock.lockWrite();
+        final float result = super.put(key, value, defaultValue);
+        lock.unlockWrite();
+        return result;
+    }
+
+    @Override
     public void putAll(IntFloatMap map) {
         boolean isOtherConcurrent = map instanceof ConcurrentCollection;
         if (isOtherConcurrent){
@@ -271,9 +279,6 @@ public class ConcurrentIntFloatMap extends IntFloatMap implements ConcurrentColl
 
     /**
      * Returns an iterator for the entries in the map. Remove is supported.
-     * <p>
-     * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-     * {@link Entries} constructor for nested or multithreaded iteration.
      */
     @Override
     public Entries entries() {
@@ -282,9 +287,6 @@ public class ConcurrentIntFloatMap extends IntFloatMap implements ConcurrentColl
 
     /**
      * Returns an iterator for the values in the map. Remove is supported.
-     * <p>
-     * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-     * {@link Entries} constructor for nested or multithreaded iteration.
      */
     @Override
     public Values values() {
@@ -293,9 +295,6 @@ public class ConcurrentIntFloatMap extends IntFloatMap implements ConcurrentColl
 
     /**
      * Returns an iterator for the keys in the map. Remove is supported.
-     * <p>
-     * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called. Use the
-     * {@link Entries} constructor for nested or multithreaded iteration.
      */
     @Override
     public Keys keys() {

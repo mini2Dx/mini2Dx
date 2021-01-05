@@ -13,7 +13,7 @@ public class ConcurrentFloatQueueTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentFloatQueue().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAdd() {
         ConcurrentFloatQueue q = new ConcurrentFloatQueue();
         CountDownLatch latch = new CountDownLatch(200);
@@ -45,7 +45,7 @@ public class ConcurrentFloatQueueTest extends ConcurrentCollectionTest {
         assertEquals(200, q.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemove() {
         ConcurrentFloatQueue q = new ConcurrentFloatQueue();
         for (int i = 0; i < 100; i++) {

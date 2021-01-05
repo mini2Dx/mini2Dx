@@ -1,6 +1,8 @@
 package org.mini2Dx.core.collections.concurrent;
 
 import org.junit.Test;
+import org.mini2Dx.gdx.utils.IntFloatMap;
+import org.mini2Dx.gdx.utils.IntIntMap;
 
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
@@ -14,7 +16,7 @@ public class ConcurrentIntFloatMapTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentIntFloatMap().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPutItems() {
         ConcurrentIntFloatMap m = new ConcurrentIntFloatMap();
         Random r = new Random();
@@ -44,7 +46,7 @@ public class ConcurrentIntFloatMapTest extends ConcurrentCollectionTest {
         assertEquals(count.get(), m.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemoveItems() {
         ConcurrentIntFloatMap m = new ConcurrentIntFloatMap();
         for (int i = 0; i < 10000; i++) {
@@ -54,38 +56,52 @@ public class ConcurrentIntFloatMapTest extends ConcurrentCollectionTest {
         Thread[] kThreads = createAndStartThreads(new Runnable() {
             @Override
             public void run() {
-                latch.countDown();
                 try {
-                    latch.await();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                for (int i = 0; i < 10; i++) {
-                    m.getLock().lockWrite();
-                    int key = m.keys().next();
-                    assertTrue(m.containsKey(key));
-                    m.remove(key, 0);
-                    assertFalse(m.containsKey(key));
-                    m.getLock().unlockWrite();
+                    latch.countDown();
+                    try {
+                        latch.await();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    for (int i = 0; i < 10; i++) {
+                        m.getLock().lockWrite();
+                        final IntFloatMap.Keys iterator = m.keys();
+                        if(iterator.hasNext) {
+                            int key = iterator.next();
+                            assertTrue(m.containsKey(key));
+                            m.remove(key, 0);
+                            assertFalse(m.containsKey(key));
+                        }
+                        m.getLock().unlockWrite();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }, 900);
         Thread[] vThreads = createAndStartThreads(new Runnable() {
             @Override
             public void run() {
-                latch.countDown();
                 try {
-                    latch.await();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                for (int i = 0; i < 10; i++) {
-                    m.getLock().lockWrite();
-                    float value = m.values().next();
-                    assertTrue(m.containsValue(value));
-                    m.remove(m.findKey(value, 0), 0);
-                    assertFalse(m.containsValue(value));
-                    m.getLock().unlockWrite();
+                    latch.countDown();
+                    try {
+                        latch.await();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    for (int i = 0; i < 10; i++) {
+                        m.getLock().lockWrite();
+                        final IntFloatMap.Values iterator = m.values();
+                        if(iterator.hasNext()) {
+                            float value = iterator.next();
+                            assertTrue(m.containsValue(value));
+                            m.remove(m.findKey(value, 0), 0);
+                            assertFalse(m.containsValue(value));
+                        }
+                        m.getLock().unlockWrite();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }, 100);

@@ -405,8 +405,8 @@ public class ConcurrentSnapshotArray<T> extends SnapshotArray<T> implements Conc
      * Returns an iterator for the items in the array. Remove is supported.
      */
     @Override
-    public Iterator<T> iterator() {
-        return new ArrayIterator<>(this);
+    public ArrayIterator<T> iterator() {
+        return new ArrayIterator<T>(this);
     }
 
     /**

@@ -433,7 +433,7 @@ public class ConcurrentDelayedRemovalArray<T> extends DelayedRemovalArray<T> imp
      * Returns an iterator for the items in the array. Remove is supported.
      */
     @Override
-    public Iterator<T> iterator() {
+    public ArrayIterator<T> iterator() {
         return new ArrayIterator<>(this);
     }
 

@@ -386,9 +386,9 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 	}
 
 	@Override
-	public boolean mouseScrolled(int screenX, int screenY, float amount) {
+	public boolean mouseScrolled(int screenX, int screenY, float amountX, float amountY) {
 		if (innerArea.contains(screenX, screenY)) {
-			setScrollThumbPosition(scrollThumbPosition + (amount * ((ScrollBox) element).getScrollFactor()));
+			setScrollThumbPosition(scrollThumbPosition + (amountY * ((ScrollBox) element).getScrollFactor()));
 		}
 		return false;
 	}

@@ -86,31 +86,10 @@ public class Lwjgl3Mini2DxInput implements Input, Disposable {
 	};
 
 	private GLFWScrollCallback scrollCallback = new GLFWScrollCallback() {
-		private long pauseTime = 250000000L; //250ms
-		private float scrollYRemainder;
-		private long lastScrollEventTime;
 		@Override
 		public void invoke(long window, double scrollX, double scrollY) {
 			Lwjgl3Mini2DxInput.this.window.getGraphics().requestRendering();
-			if (scrollYRemainder > 0 && scrollY < 0 || scrollYRemainder < 0 && scrollY > 0 ||
-					TimeUtils.nanoTime() - lastScrollEventTime > pauseTime ) {
-				// fire a scroll event immediately:
-				//  - if the scroll direction changes;
-				//  - if the user did not move the wheel for more than 250ms
-				scrollYRemainder = 0;
-				int scrollAmount = (int)-Math.signum(scrollY);
-				eventQueue.scrolled(scrollAmount);
-				lastScrollEventTime = TimeUtils.nanoTime();
-			}
-			else {
-				scrollYRemainder += scrollY;
-				while (Math.abs(scrollYRemainder) >= 1) {
-					int scrollAmount = (int)-Math.signum(scrollY);
-					eventQueue.scrolled(scrollAmount);
-					lastScrollEventTime = TimeUtils.nanoTime();
-					scrollYRemainder += scrollAmount;
-				}
-			}
+			eventQueue.scrolled(-(float)scrollX, -(float)scrollY);
 		}
 	};
 
@@ -324,7 +303,7 @@ public class Lwjgl3Mini2DxInput implements Input, Disposable {
 		if (key == Input.Keys.ANY_KEY) {
 			return keyJustPressed;
 		}
-		if (key < 0 || key > 256) {
+		if (key < 0 || key >= justPressedKeys.length) {
 			return false;
 		}
 		return justPressedKeys[key];
@@ -332,6 +311,11 @@ public class Lwjgl3Mini2DxInput implements Input, Disposable {
 
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
+		getTextInput(listener, title, text, hint, OnscreenKeyboardType.Default);
+	}
+
+	@Override
+	public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
 		// FIXME getTextInput does nothing
 		listener.canceled();
 	}
@@ -382,6 +366,7 @@ public class Lwjgl3Mini2DxInput implements Input, Disposable {
 			return '\t';
 		case Keys.FORWARD_DEL:
 			return 127;
+		case Keys.NUMPAD_ENTER:
 		case Keys.ENTER:
 			return '\n';
 		}
@@ -518,11 +503,13 @@ public class Lwjgl3Mini2DxInput implements Input, Disposable {
 		case GLFW.GLFW_KEY_END:
 			return Input.Keys.END;
 		case GLFW.GLFW_KEY_CAPS_LOCK:
+			return Keys.CAPS_LOCK;
 		case GLFW.GLFW_KEY_SCROLL_LOCK:
-		case GLFW.GLFW_KEY_NUM_LOCK:
+			return Keys.SCROLL_LOCK;
 		case GLFW.GLFW_KEY_PRINT_SCREEN:
+			return Keys.PRINT_SCREEN;
 		case GLFW.GLFW_KEY_PAUSE:
-			return Input.Keys.UNKNOWN;
+			return Keys.PAUSE;
 		case GLFW.GLFW_KEY_F1:
 			return Input.Keys.F1;
 		case GLFW.GLFW_KEY_F2:
@@ -548,19 +535,33 @@ public class Lwjgl3Mini2DxInput implements Input, Disposable {
 		case GLFW.GLFW_KEY_F12:
 			return Input.Keys.F12;
 		case GLFW.GLFW_KEY_F13:
+			return Input.Keys.F13;
 		case GLFW.GLFW_KEY_F14:
+			return Input.Keys.F14;
 		case GLFW.GLFW_KEY_F15:
+			return Input.Keys.F15;
 		case GLFW.GLFW_KEY_F16:
+			return Input.Keys.F16;
 		case GLFW.GLFW_KEY_F17:
+			return Input.Keys.F17;
 		case GLFW.GLFW_KEY_F18:
+			return Input.Keys.F18;
 		case GLFW.GLFW_KEY_F19:
+			return Input.Keys.F19;
 		case GLFW.GLFW_KEY_F20:
+			return Input.Keys.F20;
 		case GLFW.GLFW_KEY_F21:
+			return Input.Keys.F21;
 		case GLFW.GLFW_KEY_F22:
+			return Input.Keys.F22;
 		case GLFW.GLFW_KEY_F23:
+			return Input.Keys.F23;
 		case GLFW.GLFW_KEY_F24:
+			return Input.Keys.F24;
 		case GLFW.GLFW_KEY_F25:
 			return Input.Keys.UNKNOWN;
+		case GLFW.GLFW_KEY_NUM_LOCK:
+			return Keys.NUM_LOCK;
 		case GLFW.GLFW_KEY_KP_0:
 			return Input.Keys.NUMPAD_0;
 		case GLFW.GLFW_KEY_KP_1:
@@ -582,19 +583,19 @@ public class Lwjgl3Mini2DxInput implements Input, Disposable {
 		case GLFW.GLFW_KEY_KP_9:
 			return Input.Keys.NUMPAD_9;
 		case GLFW.GLFW_KEY_KP_DECIMAL:
-			return Input.Keys.PERIOD;
+			return Keys.NUMPAD_DOT;
 		case GLFW.GLFW_KEY_KP_DIVIDE:
-			return Input.Keys.SLASH;
+			return Keys.NUMPAD_DIVIDE;
 		case GLFW.GLFW_KEY_KP_MULTIPLY:
-			return Input.Keys.STAR;
+			return Keys.NUMPAD_MULTIPLY;
 		case GLFW.GLFW_KEY_KP_SUBTRACT:
-			return Input.Keys.MINUS;
+			return Keys.NUMPAD_SUBTRACT;
 		case GLFW.GLFW_KEY_KP_ADD:
-			return Input.Keys.PLUS;
+			return Keys.NUMPAD_ADD;
 		case GLFW.GLFW_KEY_KP_ENTER:
-			return Input.Keys.ENTER;
+			return Keys.NUMPAD_ENTER;
 		case GLFW.GLFW_KEY_KP_EQUAL:
-			return Input.Keys.EQUALS;
+			return Keys.NUMPAD_EQUALS;
 		case GLFW.GLFW_KEY_LEFT_SHIFT:
 			return Input.Keys.SHIFT_LEFT;
 		case GLFW.GLFW_KEY_LEFT_CONTROL:
@@ -740,6 +741,14 @@ public class Lwjgl3Mini2DxInput implements Input, Disposable {
 			return GLFW.GLFW_KEY_HOME;
 		case Input.Keys.END:
 			return GLFW.GLFW_KEY_END;
+		case Keys.SCROLL_LOCK:
+			return GLFW.GLFW_KEY_SCROLL_LOCK;
+		case Keys.CAPS_LOCK:
+			return GLFW.GLFW_KEY_CAPS_LOCK;
+		case Keys.PRINT_SCREEN:
+			return GLFW.GLFW_KEY_PRINT_SCREEN;
+		case Keys.PAUSE:
+			return GLFW.GLFW_KEY_PAUSE;
 		case Input.Keys.F1:
 			return GLFW.GLFW_KEY_F1;
 		case Input.Keys.F2:
@@ -764,6 +773,32 @@ public class Lwjgl3Mini2DxInput implements Input, Disposable {
 			return GLFW.GLFW_KEY_F11;
 		case Input.Keys.F12:
 			return GLFW.GLFW_KEY_F12;
+		case Input.Keys.F13:
+			return GLFW.GLFW_KEY_F13;
+		case Input.Keys.F14:
+			return GLFW.GLFW_KEY_F14;
+		case Input.Keys.F15:
+			return GLFW.GLFW_KEY_F15;
+		case Input.Keys.F16:
+			return GLFW.GLFW_KEY_F16;
+		case Input.Keys.F17:
+			return GLFW.GLFW_KEY_F17;
+		case Input.Keys.F18:
+			return GLFW.GLFW_KEY_F18;
+		case Input.Keys.F19:
+			return GLFW.GLFW_KEY_F19;
+		case Input.Keys.F20:
+			return GLFW.GLFW_KEY_F20;
+		case Input.Keys.F21:
+			return GLFW.GLFW_KEY_F21;
+		case Input.Keys.F22:
+			return GLFW.GLFW_KEY_F22;
+		case Input.Keys.F23:
+			return GLFW.GLFW_KEY_F23;
+		case Input.Keys.F24:
+			return GLFW.GLFW_KEY_F24;
+		case Keys.NUM_LOCK:
+			return GLFW.GLFW_KEY_NUM_LOCK;
 		case Input.Keys.NUMPAD_0:
 			return GLFW.GLFW_KEY_KP_0;
 		case Input.Keys.NUMPAD_1:
@@ -784,14 +819,20 @@ public class Lwjgl3Mini2DxInput implements Input, Disposable {
 			return GLFW.GLFW_KEY_KP_8;
 		case Input.Keys.NUMPAD_9:
 			return GLFW.GLFW_KEY_KP_9;
-		case Input.Keys.SLASH:
+		case Keys.NUMPAD_DIVIDE:
 			return GLFW.GLFW_KEY_KP_DIVIDE;
-		case Input.Keys.STAR:
+		case Keys.NUMPAD_MULTIPLY:
 			return GLFW.GLFW_KEY_KP_MULTIPLY;
-		case Input.Keys.MINUS:
+		case Keys.NUMPAD_SUBTRACT:
 			return GLFW.GLFW_KEY_KP_SUBTRACT;
-		case Input.Keys.PLUS:
+		case Keys.NUMPAD_ADD:
 			return GLFW.GLFW_KEY_KP_ADD;
+		case Keys.NUMPAD_ENTER:
+			return GLFW.GLFW_KEY_KP_ENTER;
+		case Keys.NUMPAD_EQUALS:
+			return GLFW.GLFW_KEY_KP_EQUAL;
+		case Keys.NUMPAD_DOT:
+			return GLFW.GLFW_KEY_KP_DECIMAL;
 		case Input.Keys.SHIFT_LEFT:
 			return GLFW.GLFW_KEY_LEFT_SHIFT;
 		case Input.Keys.CONTROL_LEFT:
@@ -885,6 +926,11 @@ public class Lwjgl3Mini2DxInput implements Input, Disposable {
 
 	@Override
 	public void setOnscreenKeyboardVisible(boolean visible) {
+	}
+
+	@Override
+	public void setOnscreenKeyboardVisible(boolean visible, OnscreenKeyboardType type) {
+
 	}
 
 	@Override

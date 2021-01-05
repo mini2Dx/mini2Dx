@@ -98,7 +98,7 @@ public class ConcurrentOrderedMap<K, V> extends OrderedMap<K, V> implements Conc
      * @param key
      */
     @Override
-    public V get(K key) {
+    public <T extends K> V get(T key) {
         lock.lockRead();
         V v = super.get(key);
         lock.unlockRead();

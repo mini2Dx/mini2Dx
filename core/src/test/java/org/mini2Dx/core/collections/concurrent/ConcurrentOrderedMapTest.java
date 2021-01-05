@@ -14,7 +14,7 @@ public class ConcurrentOrderedMapTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentOrderedMap<>().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPutItems() {
         ConcurrentOrderedMap<Integer, Integer> m = new ConcurrentOrderedMap<>();
         Random r = new Random();
@@ -44,7 +44,7 @@ public class ConcurrentOrderedMapTest extends ConcurrentCollectionTest {
         assertEquals(count.get(), m.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemoveItems() {
         ConcurrentOrderedMap<Integer, Integer> m = new ConcurrentOrderedMap<>();
         for (int i = 0; i < 10000; i++) {

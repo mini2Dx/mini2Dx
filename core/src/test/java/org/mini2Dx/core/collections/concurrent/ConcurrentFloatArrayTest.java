@@ -13,7 +13,7 @@ public class ConcurrentFloatArrayTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentFloatArray().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAddItems() {
         ConcurrentFloatArray a = new ConcurrentFloatArray();
         CountDownLatch latch = new CountDownLatch(100);
@@ -34,7 +34,7 @@ public class ConcurrentFloatArrayTest extends ConcurrentCollectionTest {
         assertEquals(a.size, 10*1000);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPopItems(){
         ConcurrentFloatArray a = new ConcurrentFloatArray();
         CountDownLatch latch = new CountDownLatch(1000);
@@ -57,7 +57,7 @@ public class ConcurrentFloatArrayTest extends ConcurrentCollectionTest {
         assertEquals(0, a.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAddSubtract(){
         ConcurrentFloatArray a = new ConcurrentFloatArray();
         for (int i = 0; i < 1000; i++) {

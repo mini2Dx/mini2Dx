@@ -14,7 +14,7 @@ public class ConcurrentDelayedRemovalArrayTest extends ConcurrentCollectionTest 
         assertNotNull(new ConcurrentDelayedRemovalArray<>().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAddItems() {
         ConcurrentDelayedRemovalArray<Integer> a = new ConcurrentDelayedRemovalArray<>();
         CountDownLatch latch = new CountDownLatch(100);
@@ -35,7 +35,7 @@ public class ConcurrentDelayedRemovalArrayTest extends ConcurrentCollectionTest 
         assertEquals(a.size, 10*1000);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPopItems(){
         ConcurrentDelayedRemovalArray<Integer> a = new ConcurrentDelayedRemovalArray<>();
         CountDownLatch latch = new CountDownLatch(1000);
@@ -57,7 +57,7 @@ public class ConcurrentDelayedRemovalArrayTest extends ConcurrentCollectionTest 
         assertEquals(0, a.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testDelayedRemoval(){
         ConcurrentDelayedRemovalArray<Integer> a = new ConcurrentDelayedRemovalArray<>();
         for (int i = 0; i < 1000; i++) {

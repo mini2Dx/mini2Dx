@@ -14,7 +14,7 @@ public class ConcurrentObjectIntMapTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentObjectIntMap<>().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPutItems() {
         ConcurrentObjectIntMap<Integer> m = new ConcurrentObjectIntMap<>();
         Random r = new Random();
@@ -44,7 +44,7 @@ public class ConcurrentObjectIntMapTest extends ConcurrentCollectionTest {
         assertEquals(count.get(), m.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemoveItems() {
         ConcurrentObjectIntMap<Integer> m = new ConcurrentObjectIntMap<>();
         for (int i = 0; i < 10000; i++) {

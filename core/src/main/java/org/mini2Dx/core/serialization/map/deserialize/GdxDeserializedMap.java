@@ -40,7 +40,7 @@ public class GdxDeserializedMap<T> extends DeserializedMap<T> {
 		this.valueClass = valueClass;
 
 		for(Method method : Mdx.reflect.getMethods(fieldClass)) {
-			if(method.getName().equals("put")) {
+			if(method.getName().equals("put") && method.getParameterTypes().length == 2) {
 				putMethod = method;
 				break;
 			}
@@ -79,7 +79,7 @@ public class GdxDeserializedMap<T> extends DeserializedMap<T> {
 		try {
 			putMethod.invoke(map, key, value);
 		} catch (ReflectionException e) {
-			Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
+			Mdx.log.error(LOGGING_TAG, fieldClass + " (fallback:" + fallbackClass + ") - " + e.getMessage(), e);
 		}
 	}
 }

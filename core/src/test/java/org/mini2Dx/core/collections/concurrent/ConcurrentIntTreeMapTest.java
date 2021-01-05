@@ -14,7 +14,7 @@ public class ConcurrentIntTreeMapTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentIntMap<>().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPutItems() {
         ConcurrentIntMap<Integer> m = new ConcurrentIntMap<>();
         Random r = new Random();
@@ -44,7 +44,7 @@ public class ConcurrentIntTreeMapTest extends ConcurrentCollectionTest {
         assertEquals(count.get(), m.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemoveItems() {
         ConcurrentIntMap<Integer> m = new ConcurrentIntMap<>();
         for (int i = 0; i < 10000; i++) {

@@ -14,7 +14,7 @@ public class ConcurrentShortMapTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentShortMap<>().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPutItems() {
         ConcurrentShortMap<Integer> m = new ConcurrentShortMap<>();
         Random r = new Random();
@@ -44,7 +44,7 @@ public class ConcurrentShortMapTest extends ConcurrentCollectionTest {
         assertEquals(count.get(), m.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemoveItems() {
         ConcurrentShortMap<Integer> m = new ConcurrentShortMap<>();
         Random r = new Random();

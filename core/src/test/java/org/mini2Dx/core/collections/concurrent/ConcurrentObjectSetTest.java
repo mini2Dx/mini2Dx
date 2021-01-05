@@ -13,7 +13,7 @@ public class ConcurrentObjectSetTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentObjectSet<>().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAdd() {
         ConcurrentObjectSet<Integer> set = new ConcurrentObjectSet<>();
         Random r = new Random();
@@ -35,7 +35,7 @@ public class ConcurrentObjectSetTest extends ConcurrentCollectionTest {
         assertEquals(1000, set.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemove(){
         ConcurrentObjectSet<Integer> set = new ConcurrentObjectSet<>();
         for (int i = 0; i < 10000; i++) {

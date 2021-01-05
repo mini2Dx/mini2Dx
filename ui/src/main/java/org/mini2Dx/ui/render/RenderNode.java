@@ -177,7 +177,7 @@ public abstract class RenderNode<T extends UiElement, S extends StyleRule> imple
 		return false;
 	}
 	
-	public boolean mouseScrolled(int screenX, int screenY, float amount) {
+	public boolean mouseScrolled(int screenX, int screenY, float amountX, float amountY) {
 		return false;
 	}
 

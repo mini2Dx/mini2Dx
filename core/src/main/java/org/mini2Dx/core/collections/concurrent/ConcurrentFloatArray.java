@@ -194,7 +194,7 @@ public class ConcurrentFloatArray extends FloatArray implements ConcurrentCollec
     }
 
     @Override
-    public int lastIndexOf(char value) {
+    public int lastIndexOf(float value) {
         lock.lockRead();
         int i = super.lastIndexOf(value);
         lock.unlockRead();

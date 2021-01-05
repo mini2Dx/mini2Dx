@@ -13,7 +13,7 @@ public class ConcurrentSnapshotArrayTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentSnapshotArray<>().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAddItems() {
         ConcurrentSnapshotArray<Integer> a = new ConcurrentSnapshotArray<>();
         CountDownLatch latch = new CountDownLatch(100);
@@ -34,7 +34,7 @@ public class ConcurrentSnapshotArrayTest extends ConcurrentCollectionTest {
         assertEquals(a.size, 100*100);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPopItems(){
         ConcurrentSnapshotArray<Integer> a = new ConcurrentSnapshotArray<>();
         for (int i = 0; i < 1000; i++) {
@@ -56,7 +56,7 @@ public class ConcurrentSnapshotArrayTest extends ConcurrentCollectionTest {
         assertEquals(0, a.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testSnapshotPopItems(){
         ConcurrentSnapshotArray<Integer> a = new ConcurrentSnapshotArray<>(1000);
         for (int i = 0; i < 1000; i++) {

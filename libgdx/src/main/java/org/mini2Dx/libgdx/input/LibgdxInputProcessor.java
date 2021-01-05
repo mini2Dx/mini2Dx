@@ -81,11 +81,11 @@ public class LibgdxInputProcessor implements com.badlogic.gdx.InputProcessor {
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(float amountX, float amountY) {
 		if(inputProcessor == null) {
 			return false;
 		}
-		return inputProcessor.scrolled(amount);
+		return inputProcessor.scrolled(amountX, amountY);
 	}
 
 	public void setInputProcessor(InputProcessor inputProcessor) {

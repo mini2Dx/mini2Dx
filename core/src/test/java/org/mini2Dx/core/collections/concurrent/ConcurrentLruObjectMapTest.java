@@ -14,7 +14,7 @@ public class ConcurrentLruObjectMapTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentLruObjectMap<>().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPutItems() {
         ConcurrentLruObjectMap<Integer, Integer> m = new ConcurrentLruObjectMap<>();
         Random r = new Random();
@@ -42,7 +42,7 @@ public class ConcurrentLruObjectMapTest extends ConcurrentCollectionTest {
         assertEquals(LruIntMap.DEFAULT_MAX_CAPACITY, m.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemoveItems() {
         ConcurrentLruObjectMap<Integer, Integer> m = new ConcurrentLruObjectMap<>();
         for (int i = 0; i < LruIntMap.DEFAULT_MAX_CAPACITY; i++) {

@@ -13,7 +13,7 @@ public class ConcurrentBooleanArrayTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentBooleanArray().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAddItems() {
         ConcurrentBooleanArray a = new ConcurrentBooleanArray();
         CountDownLatch latch = new CountDownLatch(10);
@@ -34,7 +34,7 @@ public class ConcurrentBooleanArrayTest extends ConcurrentCollectionTest {
         assertEquals(a.size, 10*1000);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPopItems(){
         ConcurrentBooleanArray a = new ConcurrentBooleanArray();
         for (int i = 0; i < 1000; i++) {

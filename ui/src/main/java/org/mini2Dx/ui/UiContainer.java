@@ -459,11 +459,11 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(float amountX, float amountY) {
 		if (!pointerNavigationAllowed()) {
 			return false;
 		}
-		return renderTree.mouseScrolled(lastMouseX, lastMouseY, amount);
+		return renderTree.mouseScrolled(lastMouseX, lastMouseY, amountX, amountY);
 	}
 
 	@Override

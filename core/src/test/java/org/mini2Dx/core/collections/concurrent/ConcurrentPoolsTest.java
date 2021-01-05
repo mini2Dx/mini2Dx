@@ -17,7 +17,7 @@ public class ConcurrentPoolsTest {
         Mdx.locks = new JvmLocks();
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPool() {
         CountDownLatch latch = new CountDownLatch(150);
         Thread[] stringThreads = createAndStartThreads(new Runnable() {

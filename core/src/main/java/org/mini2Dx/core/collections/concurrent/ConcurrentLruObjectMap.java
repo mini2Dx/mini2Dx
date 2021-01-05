@@ -103,7 +103,7 @@ public class ConcurrentLruObjectMap<K, V> extends LruObjectMap<K, V> implements 
      * @param key
      */
     @Override
-    public V get(K key) {
+    public <T extends K> V get(T key) {
         lock.lockRead();
         V v = super.get(key);
         lock.unlockRead();

@@ -13,7 +13,7 @@ public class ConcurrentOrderedSetTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentOrderedSet<>().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAdd() {
         ConcurrentOrderedSet<Integer> set = new ConcurrentOrderedSet<>();
         Random r = new Random();
@@ -35,7 +35,7 @@ public class ConcurrentOrderedSetTest extends ConcurrentCollectionTest {
         assertEquals(1000, set.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemove(){
         ConcurrentOrderedSet<Integer> set = new ConcurrentOrderedSet<>();
         for (int i = 0; i < 10000; i++) {

@@ -13,7 +13,7 @@ public class ConcurrentCharArrayTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentCharArray().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAddItems() {
         ConcurrentCharArray a = new ConcurrentCharArray();
         CountDownLatch latch = new CountDownLatch(100);
@@ -34,7 +34,7 @@ public class ConcurrentCharArrayTest extends ConcurrentCollectionTest {
         assertEquals(a.size, 10*1000);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPopItems(){
         ConcurrentCharArray a = new ConcurrentCharArray();
         CountDownLatch latch = new CountDownLatch(1000);

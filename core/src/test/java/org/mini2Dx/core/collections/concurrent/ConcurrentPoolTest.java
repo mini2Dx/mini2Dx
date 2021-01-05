@@ -14,7 +14,7 @@ public class ConcurrentPoolTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentPoolImpl().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPool() {
         ConcurrentPoolImpl pool = new ConcurrentPoolImpl();
         CountDownLatch latch = new CountDownLatch(100);

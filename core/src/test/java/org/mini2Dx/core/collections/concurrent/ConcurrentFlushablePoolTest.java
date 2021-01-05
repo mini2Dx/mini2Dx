@@ -14,7 +14,7 @@ public class ConcurrentFlushablePoolTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentPoolImpl().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPool() {
         ConcurrentFlushablePoolImpl pool = new ConcurrentFlushablePoolImpl();
         CountDownLatch latch = new CountDownLatch(100);
@@ -43,7 +43,7 @@ public class ConcurrentFlushablePoolTest extends ConcurrentCollectionTest {
         assertEquals(pool.i.get(), 100);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testFlushPool() {
         ConcurrentFlushablePoolImpl pool = new ConcurrentFlushablePoolImpl();
         CountDownLatch latch = new CountDownLatch(100);

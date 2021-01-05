@@ -13,7 +13,7 @@ public class ConcurrentReflectionPoolTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentReflectionPool<>(Object.class).getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPool() {
         ConcurrentReflectionPool<Object> pool = new ConcurrentReflectionPool<>(Object.class);
         CountDownLatch latch = new CountDownLatch(100);

@@ -14,7 +14,7 @@ public class ConcurrentPooledLinkedListTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentPooledLinkedList<>(1).getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAdd() {
         ConcurrentPooledLinkedList<Integer> l = new ConcurrentPooledLinkedList<>(2000);
         l.iter();
@@ -51,7 +51,7 @@ public class ConcurrentPooledLinkedListTest extends ConcurrentCollectionTest {
         assertEquals(2000, l.size());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemove() {
         ConcurrentPooledLinkedList<Integer> l = new ConcurrentPooledLinkedList<>(10000);
         for (int i = 0; i < 10000; i++) {

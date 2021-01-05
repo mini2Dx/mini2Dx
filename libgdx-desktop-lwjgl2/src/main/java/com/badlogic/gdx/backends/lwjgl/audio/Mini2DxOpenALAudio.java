@@ -36,7 +36,7 @@ import java.nio.FloatBuffer;
 import static org.lwjgl.openal.AL10.*;
 
 /**
- * Modified version of {@link OpenALAudio} to support sound completion events
+ * Modified version of OpenALAudio to support sound completion events
  */
 public class Mini2DxOpenALAudio implements Audio {
 	private final int deviceBufferSize;

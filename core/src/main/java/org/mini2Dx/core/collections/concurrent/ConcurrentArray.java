@@ -452,7 +452,7 @@ public class ConcurrentArray<T> extends Array<T> implements ConcurrentCollection
      * Returns an iterator for the items in the array. Remove is supported.
      */
     @Override
-    public Iterator<T> iterator() {
+    public ArrayIterator<T> iterator() {
         return new ArrayIterator<>(this);
     }
 

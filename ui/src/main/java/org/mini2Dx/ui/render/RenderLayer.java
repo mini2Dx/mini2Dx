@@ -57,10 +57,10 @@ public class RenderLayer implements Comparable<RenderLayer> {
 		layoutRuleset.layout(layoutState, owner, children);
 	}
 	
-	public boolean mouseScrolled(int screenX, int screenY, float amount) {
+	public boolean mouseScrolled(int screenX, int screenY, float amountX, float amountY) {
 		boolean result = false;
 		for(int i = children.size - 1; i >= 0; i--) {
-			if(children.get(i).mouseScrolled(screenX, screenY, amount)) {
+			if(children.get(i).mouseScrolled(screenX, screenY, amountX, amountY)) {
 				result = true;
 			}
 		}

@@ -12,7 +12,7 @@ public class ConcurrentCharQueueTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentCharQueue().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAdd() {
         ConcurrentCharQueue q = new ConcurrentCharQueue();
         CountDownLatch latch = new CountDownLatch(200);
@@ -44,7 +44,7 @@ public class ConcurrentCharQueueTest extends ConcurrentCollectionTest {
         assertEquals(200, q.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemove() {
         ConcurrentCharQueue q = new ConcurrentCharQueue();
         for (int i = 0; i < 100; i++) {

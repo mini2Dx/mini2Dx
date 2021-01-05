@@ -14,7 +14,7 @@ public class ConcurrentCharMapTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentCharMap<>().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPutItems() {
         ConcurrentCharMap<Integer> m = new ConcurrentCharMap<>();
         Random r = new Random();
@@ -44,7 +44,7 @@ public class ConcurrentCharMapTest extends ConcurrentCollectionTest {
         assertEquals(count.get(), m.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemoveItems() {
         ConcurrentCharMap<Integer> m = new ConcurrentCharMap<>();
         Random r = new Random();

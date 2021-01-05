@@ -14,7 +14,7 @@ public class ConcurrentArrayMapTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentArrayMap<>().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPutItems() {
         ConcurrentArrayMap<Integer, String> m = new ConcurrentArrayMap<>();
         Random r = new Random();
@@ -47,7 +47,7 @@ public class ConcurrentArrayMapTest extends ConcurrentCollectionTest {
         assertTrue(m.notEmpty());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemoveItems() {
         ConcurrentArrayMap<Integer, String> m = new ConcurrentArrayMap<>();
         Random r = new Random();

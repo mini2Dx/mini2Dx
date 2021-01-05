@@ -252,7 +252,7 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 	}
 
 	@Override
-	public boolean mouseScrolled(int screenX, int screenY, float amount) {
+	public boolean mouseScrolled(int screenX, int screenY, float amountX, float amountY) {
 		if (innerArea.contains(screenX, screenY)) {
 			boolean result = false;
 
@@ -260,7 +260,7 @@ public abstract class ParentRenderNode<T extends ParentUiElement, S extends Pare
 			keys.reset();
 			while(keys.hasNext) {
 				final int layerIndex = keys.next();
-				if (layers.get(layerIndex).mouseScrolled(screenX, screenY, amount)) {
+				if (layers.get(layerIndex).mouseScrolled(screenX, screenY, amountX, amountY)) {
 					result = true;
 				}
 			}

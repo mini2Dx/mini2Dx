@@ -14,7 +14,7 @@ public class ConcurrentObjectFloatMapTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentObjectFloatMap<>().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPutItems() {
         ConcurrentObjectFloatMap<Integer> m = new ConcurrentObjectFloatMap<>();
         Random r = new Random();
@@ -44,7 +44,7 @@ public class ConcurrentObjectFloatMapTest extends ConcurrentCollectionTest {
         assertEquals(count.get(), m.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemoveItems() {
         ConcurrentObjectFloatMap<Integer> m = new ConcurrentObjectFloatMap<>();
         for (int i = 0; i < 10000; i++) {

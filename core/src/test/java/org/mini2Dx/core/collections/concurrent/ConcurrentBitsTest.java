@@ -12,7 +12,7 @@ public class ConcurrentBitsTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentBits().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testFlipBit() {
         ConcurrentBits b = new ConcurrentBits(16);
         CountDownLatch latch = new CountDownLatch(20);
@@ -51,7 +51,7 @@ public class ConcurrentBitsTest extends ConcurrentCollectionTest {
         }
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testOperands() {
         ConcurrentBits ones = new ConcurrentBits(16),
                 zeros = new ConcurrentBits(16),

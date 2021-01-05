@@ -14,7 +14,7 @@ public class ConcurrentByteMapTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentByteMap<>().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPutItems() {
         ConcurrentByteMap<Integer> m = new ConcurrentByteMap<>();
         Random r = new Random();
@@ -44,7 +44,7 @@ public class ConcurrentByteMapTest extends ConcurrentCollectionTest {
         assertEquals(count.get(), m.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemoveItems() {
         ConcurrentByteTreeMap<Integer> m = new ConcurrentByteTreeMap<>();
         for (byte i = 0; i < 127; i++) {

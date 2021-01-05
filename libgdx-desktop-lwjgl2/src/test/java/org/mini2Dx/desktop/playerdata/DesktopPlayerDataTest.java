@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.mini2Dx.core.DependencyInjection;
 import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.StdOutLogger;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
 import org.mini2Dx.core.serialization.JsonSerializer;
 import org.mini2Dx.core.serialization.XmlSerializer;
@@ -58,6 +59,7 @@ public class DesktopPlayerDataTest {
         Mdx.locks = new JvmLocks();
         Mdx.xml = new XmlSerializer();
         Mdx.json = new JsonSerializer();
+        Mdx.log = new StdOutLogger();
         desktopData = new DesktopPlayerData(TEST_IDENTIFIER);
         
         createTestObjects();

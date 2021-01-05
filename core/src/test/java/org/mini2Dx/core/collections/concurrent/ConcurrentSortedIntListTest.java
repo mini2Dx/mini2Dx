@@ -13,7 +13,7 @@ public class ConcurrentSortedIntListTest extends ConcurrentCollectionTest{
         assertNotNull(new ConcurrentSortedIntList<>().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAdd() {
         ConcurrentSortedIntList<Integer> l = new ConcurrentSortedIntList<>();
         AtomicInteger counter = new AtomicInteger(0);

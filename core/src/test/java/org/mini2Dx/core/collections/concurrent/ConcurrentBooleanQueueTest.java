@@ -12,7 +12,7 @@ public class ConcurrentBooleanQueueTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentBooleanQueue().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAdd() {
         ConcurrentBooleanQueue q = new ConcurrentBooleanQueue();
         CountDownLatch latch = new CountDownLatch(200);
@@ -44,7 +44,7 @@ public class ConcurrentBooleanQueueTest extends ConcurrentCollectionTest {
         assertEquals(200, q.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testRemove() {
         ConcurrentBooleanQueue q = new ConcurrentBooleanQueue();
         for (int i = 0; i < 100; i++) {

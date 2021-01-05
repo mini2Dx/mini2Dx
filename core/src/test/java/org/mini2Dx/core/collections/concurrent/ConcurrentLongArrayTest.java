@@ -13,7 +13,7 @@ public class ConcurrentLongArrayTest extends ConcurrentCollectionTest {
         assertNotNull(new ConcurrentLongArray().getLock());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAddItems() {
         ConcurrentLongArray a = new ConcurrentLongArray();
         CountDownLatch latch = new CountDownLatch(10);
@@ -34,7 +34,7 @@ public class ConcurrentLongArrayTest extends ConcurrentCollectionTest {
         assertEquals(a.size, 10*1000);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testPopItems(){
         ConcurrentLongArray a = new ConcurrentLongArray();
         CountDownLatch latch = new CountDownLatch(1000);
@@ -56,7 +56,7 @@ public class ConcurrentLongArrayTest extends ConcurrentCollectionTest {
         assertEquals(0, a.size);
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testAddSubtract(){
         ConcurrentLongArray a = new ConcurrentLongArray();
         for (int i = 0; i < 1000; i++) {

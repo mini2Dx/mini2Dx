@@ -17,11 +17,11 @@ buildscript {
 		classpath 'me.champeau.gradle:jmh-gradle-plugin:0.5.0'
 		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2'
 		classpath 'de.marcphilipp.gradle:nexus-publish-plugin:0.4.0'
-		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.10'
+		classpath 'com.badlogicgames.gdx:gdx-tools:1.9.13'
 		classpath "org.mini2Dx:gradle-mini2Dx-mgcb:1.0.2"
         classpath 'com.android.tools.build:gradle:3.6.2'
 		classpath "com.viridiansoftware:gradle-desugar-task:1.0.1"
-		classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.8'
+		classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.12'
     }
 }
 
@@ -51,14 +51,14 @@ ext {
 	androidVersion="4.4"
 	artemisVersion="2.3.0"
 	beanutilsVersion="1.8.3"
-	gdxVersion="1.9.10"
+	gdxVersion="1.9.13"
 	gdxAdvancedControllersVersion="1.0.0"
 	langVersion="3.1"
 	lwjgl3Version="3.2.3"
 	multiDexVersion="1.0.1"
 	nativesLoaderVersion="1.0.0"
 	reflectionsVersion="0.9.12"
-	roboVMVersion="2.3.8"
+	roboVMVersion="2.3.12"
 	
 	junitVersion="4.12"
 	jmockVersion="2.5.1"
