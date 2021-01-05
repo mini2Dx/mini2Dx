@@ -84,9 +84,9 @@ public class IOSMini2DxGame implements Application {
 	ApplicationLogger applicationLogger;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
-	float displayScaleFactor;
+	float pixelsPerPoint;
 	
-	private CGRect lastScreenBounds = null;
+	private IOSScreenBounds lastScreenBounds = null;
 
 	Array<Runnable> runnables = new Array<Runnable>();
 	Array<Runnable> executedRunnables = new Array<Runnable>();
@@ -103,38 +103,18 @@ public class IOSMini2DxGame implements Application {
 		this.uiApp = uiApp;
 
 		// enable or disable screen dimming
-		UIApplication.getSharedApplication().setIdleTimerDisabled(config.preventScreenDimming);
+		uiApp.setIdleTimerDisabled(config.preventScreenDimming);
 
-		Gdx.app.debug("IOSMini2DxGame", "iOS version: " + UIDevice.getCurrentDevice().getSystemVersion());
-		// fix the scale factor if we have a retina device (NOTE: iOS screen sizes are in "points" not pixels by default!)
+		Gdx.app.debug("IOSApplication", "iOS version: " + UIDevice.getCurrentDevice().getSystemVersion());
+		Gdx.app.debug("IOSApplication", "Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
 
-		Gdx.app.debug("IOSMini2DxGame", "Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
-
-		float scale = (float)(getIosVersion() >= 8 ? UIScreen.getMainScreen().getNativeScale() : UIScreen.getMainScreen()
-			.getScale());
-		if (scale >= 2.0f) {
-			Gdx.app.debug("IOSMini2DxGame", "scale: " + scale);
-			if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
-				// it's an iPad!
-				displayScaleFactor = config.displayScaleLargeScreenIfRetina * scale;
-			} else {
-				// it's an iPod or iPhone
-				displayScaleFactor = config.displayScaleSmallScreenIfRetina * scale;
-			}
-		} else {
-			// no retina screen: no scaling!
-			if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
-				// it's an iPad!
-				displayScaleFactor = config.displayScaleLargeScreenIfNonRetina;
-			} else {
-				// it's an iPod or iPhone
-				displayScaleFactor = config.displayScaleSmallScreenIfNonRetina;
-			}
-		}
+		// iOS counts in "points" instead of pixels. Points are logical pixels
+		pixelsPerPoint = (float)UIScreen.getMainScreen().getNativeScale();
+		Gdx.app.debug("IOSApplication", "Pixels per point: " + pixelsPerPoint);
 
 		// setup libgdx
 		this.input = new IOSMini2DxInput(this);
-		this.graphics = new IOSMini2DxGraphics(scale, this, config, input, config.useGL30);
+		this.graphics = new IOSMini2DxGraphics(this, config, input, config.useGL30);
 		Gdx.gl = Gdx.gl20 = graphics.gl20;
 		Gdx.gl30 = graphics.gl30;
 		this.files = new IOSFiles();
@@ -156,6 +136,21 @@ public class IOSMini2DxGame implements Application {
 		return true;
 	}
 
+	protected IOSMini2DxGraphics.IOSUIViewController createUIViewController (IOSMini2DxGraphics graphics) {
+		return new IOSMini2DxGraphics.IOSUIViewController(this, graphics);
+	}
+
+	/** Returns device ppi using a best guess approach when device is unknown. Overwrite to customize strategy. */
+	protected int guessUnknownPpi() {
+		int ppi;
+		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad)
+			ppi = 132 * (int) pixelsPerPoint;
+		else
+			ppi = 164 * (int) pixelsPerPoint;
+		error("IOSApplication", "Device PPI unknown. PPI value has been guessed to " + ppi + " but may be wrong");
+		return ppi;
+	}
+
 	private int getIosVersion () {
 		String systemVersion = UIDevice.getCurrentDevice().getSystemVersion();
 		int version = Integer.parseInt(systemVersion.split("\\.")[0]);
@@ -174,53 +169,41 @@ public class IOSMini2DxGame implements Application {
 		return uiWindow;
 	}
 
-	/** GL View spans whole screen, that is, even under the status bar. iOS can also rotate the screen, which is not handled
-	 * consistently over iOS versions. This method returns, in pixels, rectangle in which libGDX draws.
-	 *
-	 * @return dimensions of space we draw to, adjusted for device orientation */
-	protected CGRect getBounds () {
-		final CGRect screenBounds = UIScreen.getMainScreen().getBounds();
+	/** @see IOSScreenBounds for detailed explanation
+	 * @return logical dimensions of space we draw to, adjusted for device orientation */
+	protected IOSScreenBounds computeBounds () {
+		CGRect screenBounds = uiWindow.getBounds();
 		final CGRect statusBarFrame = uiApp.getStatusBarFrame();
-		final UIInterfaceOrientation statusBarOrientation = uiApp.getStatusBarOrientation();
-
-		double statusBarHeight = Math.min(statusBarFrame.getWidth(), statusBarFrame.getHeight());
+		double statusBarHeight = statusBarFrame.getHeight();
 
 		double screenWidth = screenBounds.getWidth();
 		double screenHeight = screenBounds.getHeight();
 
-		// Make sure that the orientation is consistent with ratios. Should be, but may not be on older iOS versions
-		switch (statusBarOrientation) {
-		case LandscapeLeft:
-		case LandscapeRight:
-			if (screenHeight > screenWidth) {
-				debug("IOSApplication", "Switching reported width and height (w=" + screenWidth + " h=" + screenHeight + ")");
-				double tmp = screenHeight;
-				// noinspection SuspiciousNameCombination
-				screenHeight = screenWidth;
-				screenWidth = tmp;
-			}
-		}
-
-		// update width/height depending on display scaling selected
-		screenWidth *= displayScaleFactor;
-		screenHeight *= displayScaleFactor;
-
 		if (statusBarHeight != 0.0) {
 			debug("IOSApplication", "Status bar is visible (height = " + statusBarHeight + ")");
-			statusBarHeight *= displayScaleFactor;
 			screenHeight -= statusBarHeight;
 		} else {
 			debug("IOSApplication", "Status bar is not visible");
 		}
+		final int offsetX = 0;
+		final int offsetY = (int)Math.round(statusBarHeight);
 
-		debug("IOSApplication", "Total computed bounds are w=" + screenWidth + " h=" + screenHeight);
+		final int width = (int)Math.round(screenWidth);
+		final int height = (int)Math.round(screenHeight);
 
-		return lastScreenBounds = new CGRect(0.0, statusBarHeight, screenWidth, screenHeight);
+		final int backBufferWidth = (int)Math.round(screenWidth * pixelsPerPoint);
+		final int backBufferHeight = (int)Math.round(screenHeight * pixelsPerPoint);
+
+		debug("IOSApplication", "Computed bounds are x=" + offsetX + " y=" + offsetY + " w=" + width + " h=" + height + " bbW= "
+				+ backBufferWidth + " bbH= " + backBufferHeight);
+
+		return lastScreenBounds = new IOSScreenBounds(offsetX, offsetY, width, height, backBufferWidth, backBufferHeight);
 	}
 
-	protected CGRect getCachedBounds () {
+	/** @return area of screen in UIKit points on which libGDX draws, with 0,0 being upper left corner */
+	public IOSScreenBounds getScreenBounds () {
 		if (lastScreenBounds == null)
-			return getBounds();
+			return computeBounds();
 		else
 			return lastScreenBounds;
 	}
@@ -438,6 +421,16 @@ public class IOSMini2DxGame implements Application {
 			@Override
 			public void setContents (String content) {
 				UIPasteboard.getGeneralPasteboard().setString(content);
+			}
+
+			@Override
+			public boolean hasContents () {
+				if (Foundation.getMajorSystemVersion() >= 10) {
+					return UIPasteboard.getGeneralPasteboard().hasStrings();
+				}
+
+				String contents = getContents();
+				return contents != null && !contents.isEmpty();
 			}
 
 			@Override

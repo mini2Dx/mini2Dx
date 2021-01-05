@@ -17,6 +17,7 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.backends.iosrobovm.objectal.ALChannelSource;
 import com.badlogic.gdx.backends.iosrobovm.objectal.ALSource;
+import com.badlogic.gdx.backends.iosrobovm.objectal.OALIOSAudio;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.LongArray;
@@ -35,7 +36,7 @@ import java.io.IOException;
 /**
  *
  */
-public class IOSMini2DxAudio extends IOSAudio {
+public class IOSMini2DxAudio extends OALIOSAudio {
 	private final LongArray recentSoundIds = new LongArray();
 	
 	private final ALChannelSource channel;

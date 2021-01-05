@@ -15,28 +15,18 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.iosrobovm;
 
+import org.mini2Dx.gdx.utils.IntSet;
 import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSExtensions;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSRange;
-import org.robovm.apple.uikit.UIAlertView;
-import org.robovm.apple.uikit.UIAlertViewDelegate;
-import org.robovm.apple.uikit.UIAlertViewDelegateAdapter;
-import org.robovm.apple.uikit.UIAlertViewStyle;
-import org.robovm.apple.uikit.UIDevice;
-import org.robovm.apple.uikit.UIKeyboardType;
-import org.robovm.apple.uikit.UIReturnKeyType;
-import org.robovm.apple.uikit.UITextAutocapitalizationType;
-import org.robovm.apple.uikit.UITextAutocorrectionType;
-import org.robovm.apple.uikit.UITextField;
-import org.robovm.apple.uikit.UITextFieldDelegate;
-import org.robovm.apple.uikit.UITextFieldDelegateAdapter;
-import org.robovm.apple.uikit.UITextSpellCheckingType;
-import org.robovm.apple.uikit.UITouch;
-import org.robovm.apple.uikit.UITouchPhase;
+import org.robovm.apple.gamecontroller.GCKeyboard;
+import org.robovm.apple.uikit.*;
 import org.robovm.objc.annotation.Method;
+import org.robovm.objc.block.VoidBlock1;
 import org.robovm.rt.VM;
 import org.robovm.rt.bro.NativeObject;
 import org.robovm.rt.bro.annotation.MachineSizedUInt;
@@ -58,6 +48,7 @@ import com.badlogic.gdx.utils.Pool;
  */
 public class IOSMini2DxInput implements Input {
 	static final int MAX_TOUCHES = 20;
+	private static final int POINTER_NOT_FOUND = -1;
 
 	private static class NSObjectWrapper<T extends NSObject> {
 		private static final long HANDLE_OFFSET;
@@ -93,6 +84,8 @@ public class IOSMini2DxInput implements Input {
 	int[] deltaY = new int[MAX_TOUCHES];
 	int[] touchX = new int[MAX_TOUCHES];
 	int[] touchY = new int[MAX_TOUCHES];
+	float[] pressures = new float[MAX_TOUCHES];
+	boolean pressureSupported;
 	// we store the pointer to the UITouch struct here, or 0
 	long[] touchDown = new long[MAX_TOUCHES];
 	int numTouched = 0;
@@ -104,7 +97,13 @@ public class IOSMini2DxInput implements Input {
 		}
 	};
 	Array<TouchEvent> touchEvents = new Array<TouchEvent>();
-	TouchEvent currentEvent = null;
+	Pool<KeyEvent> keyEventPool = new Pool<KeyEvent>(16, 1000) {
+		protected KeyEvent newObject () {
+			return new KeyEvent();
+		}
+	};
+	Array<KeyEvent> keyEvents = new Array();
+	long currentEventTimeStamp = 0;
 	float[] acceleration = new float[3];
 	float[] rotation = new float[3];
 	float[] R = new float[9];
@@ -115,6 +114,14 @@ public class IOSMini2DxInput implements Input {
 	UIAccelerometerDelegate accelerometerDelegate;
 	boolean compassSupported;
 	boolean keyboardCloseOnReturn;
+	boolean softkeyboardActive = false;
+
+	private IntSet keysToCatch = new IntSet();
+	private boolean keyJustPressed = false;
+	private int keyCount = 0;
+	private boolean hadHardwareKeyEvent = false;
+	private final boolean[] keys = new boolean[Keys.MAX_KEYCODE + 1];
+	private final boolean[] justPressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 
 	public IOSMini2DxInput(IOSMini2DxGame app) {
 		this.app = app;
@@ -123,12 +130,16 @@ public class IOSMini2DxInput implements Input {
 	}
 
 	void setupPeripherals() {
-		// motionManager = new CMMotionManager();
+		//motionManager = new CMMotionManager();
 		setupAccelerometer();
 		setupCompass();
 		UIDevice device = UIDevice.getCurrentDevice();
-		if (device.getModel().equalsIgnoreCase("iphone"))
-			hasVibrator = true;
+		if (device.getModel().equalsIgnoreCase("iphone")) hasVibrator = true;
+
+		if (app.getVersion() >= 9){
+			UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
+			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
+		}
 	}
 
 	private void setupCompass() {
@@ -262,38 +273,57 @@ public class IOSMini2DxInput implements Input {
 	}
 
 	@Override
-	public float getPressure() {
-		return 0;
+	public float getPressure () {
+		return pressures[0];
 	}
 
 	@Override
-	public float getPressure(int pointer) {
-		return 0;
+	public float getPressure (int pointer) {
+		return pressures[pointer];
 	}
 
 	@Override
-	public boolean isButtonPressed(int button) {
+	public boolean isButtonPressed (int button) {
 		return button == Buttons.LEFT && numTouched > 0;
 	}
 
 	@Override
 	public boolean isButtonJustPressed(int button) {
-		return false;
+		return button == Buttons.LEFT && justTouched;
 	}
 
 	@Override
-	public boolean isKeyPressed(int key) {
-		return false;
+	public boolean isKeyPressed (int key) {
+		if (key == Input.Keys.ANY_KEY) {
+			return keyCount > 0;
+		}
+		if (key < 0 || key > Keys.MAX_KEYCODE) {
+			return false;
+		}
+		return keys[key];
 	}
 
 	@Override
-	public boolean isKeyJustPressed(int key) {
-		return false;
+	public boolean isKeyJustPressed (int key) {
+		if (key == Input.Keys.ANY_KEY) {
+			return keyJustPressed;
+		}
+		if (key < 0 || key > Keys.MAX_KEYCODE) {
+			return false;
+		}
+		return justPressedKeys[key];
 	}
+
 
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
-		buildUIAlertView(listener, title, text, hint).show();
+		getTextInput(listener, title, text, hint, OnscreenKeyboardType.Default);
+	}
+
+	@Override
+	public void getTextInput(TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
+		UIAlertController uiAlertController = buildUIAlertController(listener, title, text, hint, type);
+		app.getUIViewController().presentViewController(uiAlertController, true, null);
 	}
 
 	// hack for software keyboard support
@@ -367,15 +397,46 @@ public class IOSMini2DxInput implements Input {
 	};
 
 	@Override
-	public void setOnscreenKeyboardVisible(boolean visible) {
-		if (textfield == null)
-			createDefaultTextField();
+	public void setOnscreenKeyboardVisible (boolean visible) {
+		setOnscreenKeyboardVisible(visible, OnscreenKeyboardType.Default);
+	}
+
+	@Override
+	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
+		if (textfield == null) createDefaultTextField();
+		softkeyboardActive = visible;
 		if (visible) {
+			UIKeyboardType preferredInputType;
+			if(type == null) type = OnscreenKeyboardType.Default;
+			textfield.setKeyboardType(getIosInputType(type));
 			textfield.becomeFirstResponder();
 			textfield.setDelegate(textDelegate);
 		} else {
 			textfield.resignFirstResponder();
 		}
+	}
+
+	protected UIKeyboardType getIosInputType(OnscreenKeyboardType type) {
+		UIKeyboardType preferredInputType;
+		switch (type) {
+		case NumberPad:
+			preferredInputType = UIKeyboardType.NumberPad;
+			break;
+		case PhonePad:
+			preferredInputType = UIKeyboardType.PhonePad;
+			break;
+		case Email:
+			preferredInputType = UIKeyboardType.EmailAddress;
+			break;
+		case URI:
+			preferredInputType = UIKeyboardType.URL;
+			break;
+		case Password: //no equivalent in UIKeyboardType?
+		default:
+			preferredInputType = UIKeyboardType.Default;
+			break;
+		}
+		return preferredInputType;
 	}
 
 	/**
@@ -410,57 +471,42 @@ public class IOSMini2DxInput implements Input {
 		app.getUIViewController().getView().addSubview(textfield);
 	}
 
-	// Issue 773 indicates this may solve a premature GC issue
-	UIAlertViewDelegate delegate;
-
-	/**
-	 * Builds an {@link UIAlertView} with an added {@link UITextField} for
-	 * inputting text.
-	 * 
-	 * @param listener
-	 *            Text input listener
-	 * @param title
-	 *            Dialog title
-	 * @param text
-	 *            Text for text field
-	 * @return UiAlertView
-	 */
-	private UIAlertView buildUIAlertView(final TextInputListener listener, String title, String text,
-			String placeholder) {
-		delegate = new UIAlertViewDelegateAdapter() {
+	/** Builds an {@link UIAlertController} with an added {@link UITextField} for inputting text.
+	 * @param listener Text input listener
+	 * @param title Dialog title
+	 * @param text Text for text field
+	 * @param type
+	 * @return UIAlertController */
+	private UIAlertController buildUIAlertController(final TextInputListener listener, String title, final String text, final String placeholder, final OnscreenKeyboardType type) {
+		final UIAlertController uiAlertController = new UIAlertController(title, text, UIAlertControllerStyle.Alert);
+		uiAlertController.addTextField(new VoidBlock1<UITextField>() {
 			@Override
-			public void clicked(UIAlertView view, long clicked) {
-				if (clicked == 0) {
-					// user clicked "Cancel" button
-					listener.canceled();
-				} else if (clicked == 1) {
-					// user clicked "Ok" button
-					UITextField textField = view.getTextField(0);
-					listener.input(textField.getText());
+			public void invoke(UITextField uiTextField) {
+				uiTextField.setPlaceholder(placeholder);
+				uiTextField.setText(text);
+				uiTextField.setKeyboardType(getIosInputType(type));
+				if (type == OnscreenKeyboardType.Password) {
+					uiTextField.setSecureTextEntry(true);
 				}
-				delegate = null;
-			}
 
+			}
+		});
+		uiAlertController.addAction(new UIAlertAction("Ok", UIAlertActionStyle.Default, new VoidBlock1<UIAlertAction>() {
 			@Override
-			public void cancel(UIAlertView view) {
-				listener.canceled();
-				delegate = null;
+			public void invoke(UIAlertAction uiAlertAction) {
+				// user clicked "Ok" button
+				UITextField textField = uiAlertController.getTextFields().get(0);
+				listener.input(textField.getText());
 			}
-		};
-
-		// build the view
-		final UIAlertView uiAlertView = new UIAlertView();
-		uiAlertView.setTitle(title);
-		uiAlertView.addButton("Cancel");
-		uiAlertView.addButton("Ok");
-		uiAlertView.setAlertViewStyle(UIAlertViewStyle.PlainTextInput);
-		uiAlertView.setDelegate(delegate);
-
-		UITextField textField = uiAlertView.getTextField(0);
-		textField.setPlaceholder(placeholder);
-		textField.setText(text);
-
-		return uiAlertView;
+		}));
+		uiAlertController.addAction(new UIAlertAction("Cancel", UIAlertActionStyle.Cancel, new VoidBlock1<UIAlertAction>() {
+			@Override
+			public void invoke(UIAlertAction uiAlertAction) {
+				// user clicked "Cancel" button
+				listener.canceled();
+			}
+		}));
+		return uiAlertController;
 	}
 
 	@Override
@@ -480,36 +526,41 @@ public class IOSMini2DxInput implements Input {
 
 	@Override
 	public long getCurrentEventTime() {
-		return currentEvent.timestamp;
+		return currentEventTimeStamp;
 	}
 
 	@Override
-	public void setCatchBackKey(boolean catchBack) {
-
+	public void setCatchBackKey (boolean catchBack) {
+		setCatchKey(Keys.BACK, catchBack);
 	}
 
 	@Override
 	public boolean isCatchBackKey() {
-		return false;
+		return keysToCatch.contains(Keys.BACK);
+	}
+
+	@Override
+	public void setCatchMenuKey (boolean catchMenu) {
+		setCatchKey(Keys.MENU, catchMenu);
+	}
+
+	@Override
+	public boolean isCatchMenuKey () {
+		return keysToCatch.contains(Keys.MENU);
 	}
 
 	@Override
 	public void setCatchKey (int keycode, boolean catchKey) {
-
+		if (!catchKey) {
+			keysToCatch.remove(keycode);
+		} else if (catchKey) {
+			keysToCatch.add(keycode);
+		}
 	}
 
 	@Override
 	public boolean isCatchKey (int keycode) {
-		return false;
-	}
-
-	@Override
-	public void setCatchMenuKey(boolean catchMenu) {
-	}
-
-	@Override
-	public boolean isCatchMenuKey() {
-		return false;
+		return keysToCatch.contains(keycode);
 	}
 
 	@Override
@@ -532,7 +583,12 @@ public class IOSMini2DxInput implements Input {
 			return hasVibrator;
 		if (peripheral == Peripheral.Compass)
 			return compassSupported;
-		// if(peripheral == Peripheral.OnscreenKeyboard) return true;
+		if (peripheral == Peripheral.OnscreenKeyboard)
+			return true;
+		if (peripheral == Peripheral.Pressure)
+			return pressureSupported;
+		if (peripheral == Peripheral.HardwareKeyboard)
+			return Foundation.getMajorSystemVersion() >= 14 ? GCKeyboard.getCoalescedKeyboard() != null : hadHardwareKeyEvent;
 		return false;
 	}
 
@@ -581,32 +637,121 @@ public class IOSMini2DxInput implements Input {
 		Gdx.graphics.requestRendering();
 	}
 
+	public boolean onKey(UIKey key, boolean down) {
+		if (key == null) {
+			return false;
+		}
+
+		int keyCode = getGdxKeyCode(key);
+
+		if (keyCode != Keys.UNKNOWN)
+			synchronized (keyEvents) {
+				hadHardwareKeyEvent = true;
+
+				KeyEvent event = keyEventPool.obtain();
+				long timeStamp = System.nanoTime();
+				event.timeStamp = timeStamp;
+				event.keyChar = 0;
+				event.keyCode = keyCode;
+				event.type = down ? KeyEvent.KEY_DOWN : KeyEvent.KEY_UP;
+				keyEvents.add(event);
+
+				if (!down) {
+					char character;
+
+					switch (keyCode) {
+					case Keys.DEL:
+						character = 8;
+						break;
+					case Keys.FORWARD_DEL:
+						character = 127;
+						break;
+					case Keys.ENTER:
+						character = 13;
+						break;
+					default:
+						String characters = key.getCharacters();
+						// special keys return constants like "UIKeyInputF5", so we check for length 1
+						character = (characters != null && characters.length() == 1) ? characters.charAt(0) : 0;
+					}
+
+					if (character >= 0) {
+						event = keyEventPool.obtain();
+						event.timeStamp = timeStamp;
+						event.type = KeyEvent.KEY_TYPED;
+						event.keyCode = keyCode;
+						event.keyChar = character;
+						keyEvents.add(event);
+					}
+
+					if (keys[keyCode]) {
+						keyCount--;
+						keys[keyCode] = false;
+					}
+				} else {
+					if (!keys[event.keyCode]) {
+						keyCount++;
+						keys[event.keyCode] = true;
+					}
+				}
+
+			}
+
+		return isCatchKey(keyCode);
+	}
+
 	void processEvents() {
 		synchronized (touchEvents) {
 			justTouched = false;
 			for (TouchEvent event : touchEvents) {
-				currentEvent = event;
+				currentEventTimeStamp = event.timestamp;
 				switch (event.phase) {
 				case Began:
-					if (inputProcessor != null)
-						inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
-					if (numTouched == 1)
-						justTouched = true;
+					if (inputProcessor != null) inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
+					if (numTouched >= 1) justTouched = true;
 					break;
 				case Cancelled:
 				case Ended:
-					if (inputProcessor != null)
-						inputProcessor.touchUp(event.x, event.y, event.pointer, Buttons.LEFT);
+					if (inputProcessor != null) inputProcessor.touchUp(event.x, event.y, event.pointer, Buttons.LEFT);
 					break;
 				case Moved:
 				case Stationary:
-					if (inputProcessor != null)
-						inputProcessor.touchDragged(event.x, event.y, event.pointer);
+					if (inputProcessor != null) inputProcessor.touchDragged(event.x, event.y, event.pointer);
 					break;
 				}
 			}
 			touchEventPool.freeAll(touchEvents);
 			touchEvents.clear();
+		}
+
+		synchronized (keyEvents) {
+			if (keyJustPressed) {
+				keyJustPressed = false;
+				for (int i = 0; i < justPressedKeys.length; i++) {
+					justPressedKeys[i] = false;
+				}
+			}
+
+			for (KeyEvent e : keyEvents) {
+				currentEventTimeStamp = e.timeStamp;
+				switch (e.type) {
+				case KeyEvent.KEY_DOWN:
+					if (inputProcessor != null) inputProcessor.keyDown(e.keyCode);
+					keyJustPressed = true;
+					justPressedKeys[e.keyCode] = true;
+					break;
+				case KeyEvent.KEY_UP:
+					if (inputProcessor != null) inputProcessor.keyUp(e.keyCode);
+					break;
+				case KeyEvent.KEY_TYPED:
+					// don't process key typed events if soft keyboard is active
+					// the soft keyboard hook already catches the changes
+					if (!softkeyboardActive && inputProcessor != null) inputProcessor.keyTyped(e.keyChar);
+				}
+
+			}
+			keyEventPool.freeAll(keyEvents);
+			keyEvents.clear();
 		}
 	}
 
@@ -640,21 +785,26 @@ public class IOSMini2DxInput implements Input {
 		public static native @MachineSizedUInt long count(@Pointer long thiz);
 	}
 
-	private void toTouchEvents(long touches) {
+	private void toTouchEvents (long touches) {
 		long array = NSSetExtensions.allObjects(touches);
-		int length = (int) NSArrayExtensions.count(array);
+		int length = (int)NSArrayExtensions.count(array);
+		final IOSScreenBounds screenBounds = app.getScreenBounds();
 		for (int i = 0; i < length; i++) {
 			long touchHandle = NSArrayExtensions.objectAtIndex$(array, i);
 			UITouch touch = UI_TOUCH_WRAPPER.wrap(touchHandle);
 			final int locX, locY;
 			// Get and map the location to our drawing space
 			{
-				CGPoint loc = touch.getLocationInView(touch.getWindow());
-				final CGRect bounds = app.getCachedBounds();
-				locX = (int) (loc.getX() * app.displayScaleFactor - bounds.getMinX());
-				locY = (int) (loc.getY() * app.displayScaleFactor - bounds.getMinY());
-				// app.debug("IOSInput","pos= "+loc+" bounds= "+bounds+" x=
-				// "+locX+" locY= "+locY);
+				CGPoint loc = touch.getLocationInView(app.graphics.view);
+				locX = (int)(loc.getX() - screenBounds.x);
+				locY = (int)(loc.getY() - screenBounds.y);
+				// app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
+			}
+
+			// if its not supported, we will simply use 1.0f when touch is present
+			float pressure = 1.0f;
+			if (pressureSupported) {
+				pressure = (float)touch.getForce();
 			}
 
 			synchronized (touchEvents) {
@@ -663,8 +813,7 @@ public class IOSMini2DxInput implements Input {
 				event.x = locX;
 				event.y = locY;
 				event.phase = phase;
-				event.timestamp = (long) (touch.getTimestamp() * 1000000000);
-				touchEvents.add(event);
+				event.timestamp = (long)(touch.getTimestamp() * 1000000000);
 
 				if (phase == UITouchPhase.Began) {
 					event.pointer = getFreePointer();
@@ -673,25 +822,38 @@ public class IOSMini2DxInput implements Input {
 					touchY[event.pointer] = event.y;
 					deltaX[event.pointer] = 0;
 					deltaY[event.pointer] = 0;
+					pressures[event.pointer] = pressure;
 					numTouched++;
 				}
 
-				if (phase == UITouchPhase.Moved || phase == UITouchPhase.Stationary) {
+				else if (phase == UITouchPhase.Moved || phase == UITouchPhase.Stationary) {
 					event.pointer = findPointer(touch);
-					deltaX[event.pointer] = event.x - touchX[event.pointer];
-					deltaY[event.pointer] = event.y - touchY[event.pointer];
-					touchX[event.pointer] = event.x;
-					touchY[event.pointer] = event.y;
+					if (event.pointer != POINTER_NOT_FOUND) {
+						deltaX[event.pointer] = event.x - touchX[event.pointer];
+						deltaY[event.pointer] = event.y - touchY[event.pointer];
+						touchX[event.pointer] = event.x;
+						touchY[event.pointer] = event.y;
+						pressures[event.pointer] = pressure;
+					}
 				}
 
-				if (phase == UITouchPhase.Cancelled || phase == UITouchPhase.Ended) {
+				else if (phase == UITouchPhase.Cancelled || phase == UITouchPhase.Ended) {
 					event.pointer = findPointer(touch);
-					touchDown[event.pointer] = 0;
-					touchX[event.pointer] = event.x;
-					touchY[event.pointer] = event.y;
-					deltaX[event.pointer] = 0;
-					deltaY[event.pointer] = 0;
-					numTouched--;
+					if (event.pointer != POINTER_NOT_FOUND) {
+						touchDown[event.pointer] = 0;
+						touchX[event.pointer] = event.x;
+						touchY[event.pointer] = event.y;
+						deltaX[event.pointer] = 0;
+						deltaY[event.pointer] = 0;
+						pressures[event.pointer] = 0;
+						numTouched--;
+					}
+				}
+
+				if (event.pointer != POINTER_NOT_FOUND) {
+					touchEvents.add(event);
+				} else {
+					touchEventPool.free(event);
 				}
 			}
 		}
@@ -702,6 +864,17 @@ public class IOSMini2DxInput implements Input {
 		long timestamp;
 		int x, y;
 		int pointer;
+	}
+
+	static class KeyEvent {
+		static final int KEY_DOWN = 0;
+		static final int KEY_UP = 1;
+		static final int KEY_TYPED = 2;
+
+		long timeStamp;
+		int type;
+		int keyCode;
+		char keyChar;
 	}
 
 	@Override
@@ -725,5 +898,282 @@ public class IOSMini2DxInput implements Input {
 	@Override
 	public int getMaxPointers () {
 		return MAX_TOUCHES;
+	}
+
+	protected int getGdxKeyCode(UIKey key) {
+		UIKeyboardHIDUsage keyCode;
+		try {
+			keyCode = key.getKeyCode();
+		} catch (IllegalArgumentException e) {
+			return Keys.UNKNOWN;
+		}
+
+		switch (keyCode) {
+		case KeyboardA:
+			return Keys.A;
+		case KeyboardB:
+			return Keys.B;
+		case KeyboardC:
+			return Keys.C;
+		case KeyboardD:
+			return Keys.D;
+		case KeyboardE:
+			return Keys.E;
+		case KeyboardF:
+			return Keys.F;
+		case KeyboardG:
+			return Keys.G;
+		case KeyboardH:
+			return Keys.H;
+		case KeyboardI:
+			return Keys.I;
+		case KeyboardJ:
+			return Keys.J;
+		case KeyboardK:
+			return Keys.K;
+		case KeyboardL:
+			return Keys.L;
+		case KeyboardM:
+			return Keys.M;
+		case KeyboardN:
+			return Keys.N;
+		case KeyboardO:
+			return Keys.O;
+		case KeyboardP:
+			return Keys.P;
+		case KeyboardQ:
+			return Keys.Q;
+		case KeyboardR:
+			return Keys.R;
+		case KeyboardS:
+			return Keys.S;
+		case KeyboardT:
+			return Keys.T;
+		case KeyboardU:
+			return Keys.U;
+		case KeyboardV:
+			return Keys.V;
+		case KeyboardW:
+			return Keys.W;
+		case KeyboardX:
+			return Keys.X;
+		case KeyboardY:
+			return Keys.Y;
+		case KeyboardZ:
+			return Keys.Z;
+		case Keyboard1:
+			return Keys.NUM_1;
+		case Keyboard2:
+			return Keys.NUM_2;
+		case Keyboard3:
+			return Keys.NUM_3;
+		case Keyboard4:
+			return Keys.NUM_4;
+		case Keyboard5:
+			return Keys.NUM_5;
+		case Keyboard6:
+			return Keys.NUM_6;
+		case Keyboard7:
+			return Keys.NUM_7;
+		case Keyboard8:
+			return Keys.NUM_8;
+		case Keyboard9:
+			return Keys.NUM_9;
+		case Keyboard0:
+			return Keys.NUM_0;
+		case KeyboardReturnOrEnter:
+			return Keys.ENTER;
+		case KeyboardEscape:
+			return Keys.ESCAPE;
+		case KeyboardDeleteOrBackspace:
+			return Keys.BACKSPACE;
+		case KeyboardTab:
+			return Keys.TAB;
+		case KeyboardSpacebar:
+			return Keys.SPACE;
+		case KeyboardHyphen:
+			return Keys.MINUS;
+		case KeyboardEqualSign:
+			return Keys.EQUALS;
+		case KeyboardOpenBracket:
+			return Keys.LEFT_BRACKET;
+		case KeyboardCloseBracket:
+			return Keys.RIGHT_BRACKET;
+		case KeyboardBackslash:
+			return Keys.BACKSLASH;
+		case KeyboardNonUSPound:
+			return Keys.POUND;
+		case KeyboardSemicolon:
+			return Keys.SEMICOLON;
+		case KeyboardQuote:
+			return Keys.APOSTROPHE;
+		case KeyboardGraveAccentAndTilde:
+			return Keys.GRAVE;
+		case KeyboardComma:
+			return Keys.COMMA;
+		case KeyboardPeriod:
+			return Keys.PERIOD;
+		case KeyboardSlash:
+			return Keys.SLASH;
+		case KeyboardF1:
+			return Keys.F1;
+		case KeyboardF2:
+			return Keys.F2;
+		case KeyboardF3:
+			return Keys.F3;
+		case KeyboardF4:
+			return Keys.F4;
+		case KeyboardF5:
+			return Keys.F5;
+		case KeyboardF6:
+			return Keys.F6;
+		case KeyboardF7:
+			return Keys.F7;
+		case KeyboardF8:
+			return Keys.F8;
+		case KeyboardF9:
+			return Keys.F9;
+		case KeyboardF10:
+			return Keys.F10;
+		case KeyboardF11:
+			return Keys.F11;
+		case KeyboardF12:
+			return Keys.F12;
+		case KeyboardF13:
+			return Keys.F13;
+		case KeyboardF14:
+			return Keys.F14;
+		case KeyboardF15:
+			return Keys.F15;
+		case KeyboardF16:
+			return Keys.F16;
+		case KeyboardF17:
+			return Keys.F17;
+		case KeyboardF18:
+			return Keys.F18;
+		case KeyboardF19:
+			return Keys.F19;
+		case KeyboardF20:
+			return Keys.F20;
+		case KeyboardF21:
+			return Keys.F21;
+		case KeyboardF22:
+			return Keys.F22;
+		case KeyboardF23:
+			return Keys.F23;
+		case KeyboardF24:
+			return Keys.F24;
+		case KeyboardPause:
+			return Keys.PAUSE;
+		case KeyboardInsert:
+			return Keys.INSERT;
+		case KeyboardHome:
+			return Keys.HOME;
+		case KeyboardPageUp:
+			return Keys.PAGE_UP;
+		case KeyboardDeleteForward:
+			return Keys.DEL;
+		case KeyboardEnd:
+			return Keys.END;
+		case KeyboardPageDown:
+			return Keys.PAGE_DOWN;
+		case KeyboardRightArrow:
+			return Keys.RIGHT;
+		case KeyboardLeftArrow:
+			return Keys.LEFT;
+		case KeyboardDownArrow:
+			return Keys.DOWN;
+		case KeyboardUpArrow:
+			return Keys.UP;
+		case KeypadNumLock:
+			return Keys.NUM_LOCK;
+		case KeypadSlash:
+			return Keys.NUMPAD_DIVIDE;
+		case KeypadAsterisk:
+			return Keys.NUMPAD_MULTIPLY;
+		case KeypadHyphen:
+			return Keys.NUMPAD_SUBTRACT;
+		case KeypadPlus:
+			return Keys.NUMPAD_ADD;
+		case KeypadEnter:
+			return Keys.NUMPAD_ENTER;
+		case Keypad1:
+			return Keys.NUM_1;
+		case Keypad2:
+			return Keys.NUM_2;
+		case Keypad3:
+			return Keys.NUM_3;
+		case Keypad4:
+			return Keys.NUM_4;
+		case Keypad5:
+			return Keys.NUM_5;
+		case Keypad6:
+			return Keys.NUM_6;
+		case Keypad7:
+			return Keys.NUM_7;
+		case Keypad8:
+			return Keys.NUM_8;
+		case Keypad9:
+			return Keys.NUM_9;
+		case Keypad0:
+			return Keys.NUM_0;
+		case KeypadPeriod:
+			return Keys.NUMPAD_DOT;
+		case KeyboardNonUSBackslash:
+			return Keys.BACKSLASH;
+		case KeyboardApplication:
+			return Keys.MENU;
+		case KeyboardPower:
+			return Keys.POWER;
+		case KeypadEqualSign:
+		case KeypadEqualSignAS400:
+			return Keys.NUMPAD_EQUALS;
+		case KeyboardHelp:
+			return Keys.F1;
+		case KeyboardMenu:
+			return Keys.MENU;
+		case KeyboardSelect:
+			return Keys.BUTTON_SELECT;
+		case KeyboardStop:
+			return Keys.MEDIA_STOP;
+		case KeyboardFind:
+			return Keys.SEARCH;
+		case KeyboardMute:
+			return Keys.MUTE;
+		case KeyboardVolumeUp:
+			return Keys.VOLUME_UP;
+		case KeyboardVolumeDown:
+			return Keys.VOLUME_DOWN;
+		case KeypadComma:
+			return Keys.NUMPAD_COMMA;
+		case KeyboardAlternateErase:
+			return Keys.DEL;
+		case KeyboardCancel:
+			return Keys.ESCAPE;
+		case KeyboardClear:
+			return Keys.CLEAR;
+		case KeyboardReturn:
+			return Keys.ENTER;
+		case KeyboardLeftControl:
+			return Keys.CONTROL_LEFT;
+		case KeyboardLeftShift:
+			return Keys.SHIFT_LEFT;
+		case KeyboardLeftAlt:
+			return Keys.ALT_LEFT;
+		case KeyboardRightControl:
+			return Keys.CONTROL_RIGHT;
+		case KeyboardRightShift:
+			return Keys.SHIFT_RIGHT;
+		case KeyboardRightAlt:
+			return Keys.ALT_RIGHT;
+		case KeyboardCapsLock:
+			return Keys.CAPS_LOCK;
+		case KeyboardPrintScreen:
+			return Keys.PRINT_SCREEN;
+		case KeyboardScrollLock:
+			return Keys.SCROLL_LOCK;
+		default:
+			return Keys.UNKNOWN;
+		}
 	}
 }
