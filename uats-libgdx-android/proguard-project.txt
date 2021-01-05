@@ -44,3 +44,5 @@
 -keep public class * extends org.mini2Dx.element.UiElement { 
       public <init>*(...); 
 }
+
+-keep class com.badlogic.gdx.controllers.android.AndroidControllers { *; }

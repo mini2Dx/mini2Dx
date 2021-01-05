@@ -52,7 +52,7 @@ ext {
 	artemisVersion="2.3.0"
 	beanutilsVersion="1.8.3"
 	gdxVersion="1.9.13"
-	gdxAdvancedControllersVersion="1.0.0"
+	gdxControllersVersion="2.0.0"
 	langVersion="3.1"
 	lwjgl3Version="3.2.3"
 	multiDexVersion="1.0.1"
@@ -319,7 +319,7 @@ project(":" + rootProject.name + "-libgdx") {
 		compile project(":" + rootProject.name + "-core")
 		compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-		compile "de.golfgl.gdxcontrollerutils:gdx-controllers-advanced:$gdxAdvancedControllersVersion"
+		compile "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
 		compile "org.mini2Dx:natives-loader:$nativesLoaderVersion"
 
 		testCompile "junit:junit:$junitVersion"
@@ -354,7 +354,9 @@ project(":" + rootProject.name + "-libgdx-desktop-lwjgl2") {
 		compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
 		compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 		compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-		compile "de.golfgl.gdxcontrollerutils:gdx-controllers-jamepad:$gdxAdvancedControllersVersion"
+		compile ("com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion") {
+			exclude group: 'com.badlogicgames.gdx', module: 'gdx-jnigen-loader'
+		}
 
 		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
 		testCompile "junit:junit:$junitVersion"
@@ -373,44 +375,9 @@ project(":" + rootProject.name + "-libgdx-desktop-lwjgl3") {
 		compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
 		compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 		compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-		compile "de.golfgl.gdxcontrollerutils:gdx-controllers-jamepad:$gdxAdvancedControllersVersion"
-
-		//Workaround until LibGDX 1.9.12
-		compile "org.lwjgl:lwjgl:$lwjgl3Version"
-		compile "org.lwjgl:lwjgl:$lwjgl3Version:natives-windows"
-		compile "org.lwjgl:lwjgl:$lwjgl3Version:natives-windows-x86"
-		compile "org.lwjgl:lwjgl:$lwjgl3Version:natives-linux"
-		compile "org.lwjgl:lwjgl:$lwjgl3Version:natives-linux-arm32"
-		compile "org.lwjgl:lwjgl:$lwjgl3Version:natives-linux-arm64"
-		compile "org.lwjgl:lwjgl:$lwjgl3Version:natives-macos"
-		compile "org.lwjgl:lwjgl-glfw:$lwjgl3Version"
-		compile "org.lwjgl:lwjgl-glfw:$lwjgl3Version:natives-windows"
-		compile "org.lwjgl:lwjgl-glfw:$lwjgl3Version:natives-windows-x86"
-		compile "org.lwjgl:lwjgl-glfw:$lwjgl3Version:natives-linux"
-		compile "org.lwjgl:lwjgl-glfw:$lwjgl3Version:natives-linux-arm32"
-		compile "org.lwjgl:lwjgl-glfw:$lwjgl3Version:natives-linux-arm64"
-		compile "org.lwjgl:lwjgl-glfw:$lwjgl3Version:natives-macos"
-		compile "org.lwjgl:lwjgl-jemalloc:$lwjgl3Version"
-		compile "org.lwjgl:lwjgl-jemalloc:$lwjgl3Version:natives-windows"
-		compile "org.lwjgl:lwjgl-jemalloc:$lwjgl3Version:natives-windows-x86"
-		compile "org.lwjgl:lwjgl-jemalloc:$lwjgl3Version:natives-linux"
-		compile "org.lwjgl:lwjgl-jemalloc:$lwjgl3Version:natives-linux-arm32"
-		compile "org.lwjgl:lwjgl-jemalloc:$lwjgl3Version:natives-linux-arm64"
-		compile "org.lwjgl:lwjgl-jemalloc:$lwjgl3Version:natives-macos"
-		compile "org.lwjgl:lwjgl-opengl:$lwjgl3Version"
-		compile "org.lwjgl:lwjgl-opengl:$lwjgl3Version:natives-windows"
-		compile "org.lwjgl:lwjgl-opengl:$lwjgl3Version:natives-windows-x86"
-		compile "org.lwjgl:lwjgl-opengl:$lwjgl3Version:natives-linux"
-		compile "org.lwjgl:lwjgl-opengl:$lwjgl3Version:natives-linux-arm32"
-		compile "org.lwjgl:lwjgl-opengl:$lwjgl3Version:natives-linux-arm64"
-		compile "org.lwjgl:lwjgl-opengl:$lwjgl3Version:natives-macos"
-		compile "org.lwjgl:lwjgl-openal:$lwjgl3Version"
-		compile "org.lwjgl:lwjgl-openal:$lwjgl3Version:natives-windows"
-		compile "org.lwjgl:lwjgl-openal:$lwjgl3Version:natives-windows-x86"
-		compile "org.lwjgl:lwjgl-openal:$lwjgl3Version:natives-linux"
-		compile "org.lwjgl:lwjgl-openal:$lwjgl3Version:natives-linux-arm32"
-		compile "org.lwjgl:lwjgl-openal:$lwjgl3Version:natives-linux-arm64"
-		compile "org.lwjgl:lwjgl-openal:$lwjgl3Version:natives-macos"
+		compile ("com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion") {
+			exclude group: 'com.badlogicgames.gdx', module: 'gdx-jnigen-loader'
+		}
 
 		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
 		testCompile "junit:junit:$junitVersion"
@@ -438,7 +405,7 @@ if (hasAndroidSdk()) {
 			api project(":" + rootProject.name + "-libgdx")
 
 			api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-			api "de.golfgl.gdxcontrollerutils:gdx-controllers-android:$gdxAdvancedControllersVersion"
+			api "com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"
 		}
 	}
 }
@@ -455,6 +422,7 @@ if (Os.isFamily(Os.FAMILY_MAC)) {
 			compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
 			compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
 			compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
+			compile "com.badlogicgames.gdx-controllers:gdx-controllers-ios:$gdxControllersVersion"
 
 			compile "org.reflections:reflections:$reflectionsVersion"
 
@@ -652,6 +620,7 @@ if (hasAndroidSdk()){
 			api project(":" + rootProject.name + "-libgdx-android")
 			api project(":" + rootProject.name + "-uats")
 			api "com.android.support:multidex:$multiDexVersion"
+			implementation "com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"
 
 			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
 			natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"

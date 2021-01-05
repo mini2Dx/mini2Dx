@@ -117,13 +117,6 @@ public interface GamePad {
 	public float getAxis (int axisCode);
 
 	/**
-	 * Returns the current value of a PoV (Dpad)
-	 * @param povCode The PoV code (Note: these may vary per platform)
-	 * @return The current {@link PovState}
-	 */
-	public PovState getPov (int povCode);
-
-	/**
 	 * Returns if this gamepad has accelerometer functionality
 	 * @return True if supported
 	 */
