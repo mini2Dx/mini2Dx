@@ -157,10 +157,10 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 		setApplicationLogger(new AndroidApplicationLogger());
 		graphics = new AndroidMini2DxGraphics(this, config,
 				config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
-		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
+		input = createInput(this, this, graphics.view, config);
 		audio = new AndroidMini2DxAudio(this, config);
 		this.getFilesDir(); // workaround for Android bug #10515463
-		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
+		files = new AndroidFiles(this.getAssets(), this);
 		net = new AndroidNet(this, config);
 		this.listener = listener;
 		this.handler = new Handler();
@@ -211,10 +211,8 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 		useImmersiveMode(this.useImmersiveMode);
 		if (this.useImmersiveMode && getVersion() >= Build.VERSION_CODES.KITKAT) {
 			try {
-				Class<?> vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
-				Object o = vlistener.newInstance();
-				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
-				method.invoke(o, this);
+				AndroidVisibilityListener vlistener = new AndroidVisibilityListener();
+				vlistener.createListener(this);
 			} catch (Exception e) {
 				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
 			}
@@ -241,10 +239,8 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 		View rootView = getWindow().getDecorView();
 
 		try {
-			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			if (getVersion() <= 13)
-				m.invoke(rootView, 0x0);
-			m.invoke(rootView, 0x1);
+			if (getVersion() <= 13) rootView.setSystemUiVisibility(0x0);
+			rootView.setSystemUiVisibility(0x1);
 		} catch (Exception e) {
 			log("AndroidApplication", "Can't hide status bar", e);
 		}
@@ -274,11 +270,10 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 
 		View view = getWindow().getDecorView();
 		try {
-			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
 			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 					| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 					| View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-			m.invoke(view, code);
+			view.setSystemUiVisibility(code);
 		} catch (Exception e) {
 			log("AndroidApplication", "Can't set immersive mode", e);
 		}
@@ -419,7 +414,7 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 		boolean keyboardAvailable = false;
 		if (config.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO)
 			keyboardAvailable = true;
-		input.keyboardAvailable = keyboardAvailable;
+		input.setKeyboardAvailable(keyboardAvailable);
 	}
 
 	@Override
@@ -564,5 +559,15 @@ public class AndroidMini2DxGame extends Activity implements AndroidApplicationBa
 	@Override
 	public Handler getHandler() {
 		return this.handler;
+	}
+
+	@Override
+	public AndroidAudio createAudio(Context context, AndroidApplicationConfiguration config) {
+		return new AndroidMini2DxAudio(context, config);
+	}
+
+	@Override
+	public AndroidInput createInput(Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
+		return new DefaultAndroidInput(this, this, graphics.view, config);
 	}
 }

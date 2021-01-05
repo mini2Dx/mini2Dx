@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * Modified version of AndroidAudio to support sound completion events
  */
-public class AndroidMini2DxAudio implements com.badlogic.gdx.Audio {
+public class AndroidMini2DxAudio implements com.badlogic.gdx.backends.android.AndroidAudio {
     private final SoundPool soundPool;
     private final AudioManager manager;
     private final LongArray recentSoundIds = new LongArray();
@@ -88,7 +88,7 @@ public class AndroidMini2DxAudio implements com.badlogic.gdx.Audio {
         recentSoundIds.add(streamId);
     }
 
-    protected void pause() {
+    public void pause() {
         if (soundPool == null) {
             return;
         }
@@ -104,7 +104,7 @@ public class AndroidMini2DxAudio implements com.badlogic.gdx.Audio {
         this.soundPool.autoPause();
     }
 
-    protected void resume() {
+    public void resume() {
         if (soundPool == null) {
             return;
         }
@@ -114,6 +114,13 @@ public class AndroidMini2DxAudio implements com.badlogic.gdx.Audio {
             }
         }
         this.soundPool.autoResume();
+    }
+
+    @Override
+    public void notifyMusicDisposed(AndroidMusic music) {
+        synchronized (musics) {
+            musics.remove(this);
+        }
     }
 
     /**

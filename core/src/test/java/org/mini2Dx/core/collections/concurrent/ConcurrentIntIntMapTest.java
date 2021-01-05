@@ -1,5 +1,6 @@
 package org.mini2Dx.core.collections.concurrent;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mini2Dx.gdx.utils.IntFloatMap;
 import org.mini2Dx.gdx.utils.IntIntMap;
@@ -46,6 +47,8 @@ public class ConcurrentIntIntMapTest extends ConcurrentCollectionTest {
         assertEquals(count.get(), m.size);
     }
 
+    //Re-add after this issue is resolved -> https://github.com/libgdx/libgdx/issues/6347
+    @Ignore
     @Test(timeout = 10000L)
     public void testRemoveItems() {
         ConcurrentIntIntMap m = new ConcurrentIntIntMap();

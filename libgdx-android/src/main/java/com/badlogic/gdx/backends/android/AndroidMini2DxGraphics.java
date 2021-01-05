@@ -57,13 +57,13 @@ public class AndroidMini2DxGraphics extends AndroidGraphics {
 		lastFrameTime = time;
 		Mdx.platformUtils.markFrame();
 
-		// After pause deltaTime can have somewhat huge value that destabilizes
-		// the mean, so let's cut it off
+		// After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
 		if (!resume) {
-			mean.addValue(deltaTime);
+			deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		} else {
 			deltaTime = 0;
 		}
+		lastFrameTime = time;
 
 		boolean lrunning = false;
 		boolean lpause = false;
