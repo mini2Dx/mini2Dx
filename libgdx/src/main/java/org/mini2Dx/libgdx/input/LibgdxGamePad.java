@@ -17,6 +17,7 @@ package org.mini2Dx.libgdx.input;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.math.Vector3;
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.GamePadListener;
@@ -33,13 +34,15 @@ import org.mini2Dx.gdx.utils.IntSet;
 public class LibgdxGamePad implements GamePad, ControllerListener {
 	private static final int VIBRATE_DURATION = 1000 * 60 * 60;
 
-	private final Controller controller;
 	private final Array<GamePadListener> listeners = new Array<GamePadListener>();
 
 	private final IntSet downButtons = new IntSet();
 	private final IntFloatMap axes = new IntFloatMap();
 	private final IntMap<org.mini2Dx.gdx.math.Vector3> accelerometers = new IntMap<org.mini2Dx.gdx.math.Vector3>();
 
+	protected String uniqueId;
+	protected int playerIndex;
+	protected Controller controller;
 	protected GamePadType gamePadType = null;
 	protected boolean connected = true;
 
@@ -47,22 +50,35 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 
 	public LibgdxGamePad(Controller controller) {
 		this.controller = controller;
+		this.playerIndex = controller.getPlayerIndex();
+		this.uniqueId = controller.getUniqueId();
+
+		Controllers.addListener(this);
 	}
 
 	public void init() {
+		this.playerIndex = controller.getPlayerIndex();
+		this.uniqueId = controller.getUniqueId();
 		this.controller.addListener(this);
 	}
 
 	@Override
 	public void connected(Controller controller) {
-		connected = true;
-		notifyConnected();
+		if (controller.getPlayerIndex() == playerIndex) {
+			this.controller = controller;
+			init();
+
+			connected = true;
+			notifyConnected();
+		}
 	}
 
 	@Override
 	public void disconnected(Controller controller) {
-		connected = false;
-		notifyDisconnected();
+		if (controller.getUniqueId().equals(uniqueId)) {
+			connected = false;
+			notifyDisconnected();
+		}
 	}
 
 	@Override
@@ -262,6 +278,8 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 	@Override
 	public void stopVibration() {
 		vibrateStrength = 0f;
-		controller.cancelVibration();
+		//Workaround to Jamepad issue
+		controller.startVibration(VIBRATE_DURATION, 0f);
+		//controller.cancelVibration();
 	}
 }

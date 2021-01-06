@@ -17,6 +17,7 @@ package org.mini2Dx.core.input.nswitch;
 
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.GamePadListener;
+import org.mini2Dx.core.input.button.SwitchDualJoyConButton;
 import org.mini2Dx.core.input.button.SwitchJoyConLButton;
 import org.mini2Dx.core.input.deadzone.DeadZone;
 import org.mini2Dx.core.input.deadzone.NoopDeadZone;
@@ -45,6 +46,10 @@ public abstract class SwitchJoyConLGamePad implements GamePadListener, Disposabl
 
 		gamePad.addListener(this);
 	}
+
+	public abstract boolean isButtonDown(SwitchJoyConLButton button);
+
+	public abstract boolean isButtonUp(SwitchJoyConLButton button);
 
 	protected boolean notifyConnected() {
 		for(SwitchJoyConLGamePadListener listener : listeners) {
@@ -157,5 +162,49 @@ public abstract class SwitchJoyConLGamePad implements GamePadListener, Disposabl
 			zlDeadZone = new NoopDeadZone();
 		}
 		this.zlDeadZone = zlDeadZone;
+	}
+
+	public boolean isConnected() {
+		return gamePad.isConnected();
+	}
+
+	public String getInstanceId() {
+		return gamePad.getInstanceId();
+	}
+
+	public String getModelInfo() {
+		return gamePad.getModelInfo();
+	}
+
+	public boolean isPlayerIndicesSupported() {
+		return gamePad.isPlayerIndicesSupported();
+	}
+
+	public int getPlayerIndex() {
+		return gamePad.getPlayerIndex();
+	}
+
+	public void setPlayerIndex(int playerIndex) {
+		gamePad.setPlayerIndex(playerIndex);
+	}
+
+	public boolean isVibrateSupported() {
+		return gamePad.isVibrateSupported();
+	}
+
+	public boolean isVibrating() {
+		return gamePad.isVibrating();
+	}
+
+	public float getVibrationStrength() {
+		return gamePad.getVibrationStrength();
+	}
+
+	public void startVibration(float strength) {
+		gamePad.startVibration(strength);
+	}
+
+	public void stopVibration() {
+		gamePad.stopVibration();
 	}
 }

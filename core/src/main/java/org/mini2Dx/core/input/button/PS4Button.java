@@ -34,6 +34,7 @@ public enum PS4Button implements GamePadButton {
 	R3("ps4-r3"),
 
 	PS("ps4-ps"),
+	SHARE("ps4-share"),
 	OPTIONS("ps4-options"),
 	TOUCHPAD("ps4-touchpad");
 

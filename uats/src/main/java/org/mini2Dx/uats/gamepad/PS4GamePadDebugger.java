@@ -72,6 +72,16 @@ public class PS4GamePadDebugger implements PS4GamePadListener, GamePadDebugger {
 	@Override
 	public boolean buttonUp(PS4GamePad controller, PS4Button button) {
 		buttonMessages.put(button, "UP");
+
+		switch(button) {
+		case CROSS:
+			if(controller.isVibrating()) {
+				controller.stopVibration();
+			} else {
+				controller.startVibration(0.5f);
+			}
+			break;
+		}
 		return false;
 	}
 	

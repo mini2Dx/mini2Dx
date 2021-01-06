@@ -17,12 +17,15 @@ package org.mini2Dx.core.input.ps4;
 
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.GamePadMapping;
+import org.mini2Dx.core.input.GamePadType;
 import org.mini2Dx.core.input.button.PS4Button;
 import org.mini2Dx.core.input.deadzone.DeadZone;
 import org.mini2Dx.core.input.deadzone.NoopDeadZone;
 import org.mini2Dx.core.input.deadzone.RadialDeadZone;
+import org.mini2Dx.gdx.math.Vector3;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
+import org.mini2Dx.gdx.utils.IntSet;
 
 public abstract class PS4GamePad implements GamePadMapping<PS4GamePadListener>, Disposable {
 	public static final String [] ID = new String [] {
@@ -30,12 +33,12 @@ public abstract class PS4GamePad implements GamePadMapping<PS4GamePadListener>, 
 		"PS4".toLowerCase()
 	};
 
-	private final Array<PS4GamePadListener> listeners = new Array<PS4GamePadListener>(true, 2, PS4GamePadListener.class);
-	private final GamePad gamePad;
+	protected final Array<PS4GamePadListener> listeners = new Array<PS4GamePadListener>(true, 2, PS4GamePadListener.class);
+	protected final GamePad gamePad;
 
-	private DeadZone leftStickDeadZone, rightStickDeadZone;
-	private DeadZone l2DeadZone, r2DeadZone;
-	private boolean l2, r2;
+	protected DeadZone leftStickDeadZone, rightStickDeadZone;
+	protected DeadZone l2DeadZone, r2DeadZone;
+	protected boolean l2, r2;
 
 	public PS4GamePad(GamePad gamePad) {
 		this(gamePad, new NoopDeadZone(), new NoopDeadZone());
@@ -51,6 +54,10 @@ public abstract class PS4GamePad implements GamePadMapping<PS4GamePadListener>, 
 
 		gamePad.addListener(this);
 	}
+
+	public abstract boolean isButtonDown(PS4Button button);
+
+	public abstract boolean isButtonUp(PS4Button button);
 
 	protected boolean notifyConnected() {
 		for(PS4GamePadListener listener : listeners) {
@@ -236,5 +243,49 @@ public abstract class PS4GamePad implements GamePadMapping<PS4GamePadListener>, 
 			r2DeadZone = new NoopDeadZone();
 		}
 		this.r2DeadZone = r2DeadZone;
+	}
+
+	public boolean isConnected() {
+		return gamePad.isConnected();
+	}
+
+	public String getInstanceId() {
+		return gamePad.getInstanceId();
+	}
+
+	public String getModelInfo() {
+		return gamePad.getModelInfo();
+	}
+
+	public boolean isPlayerIndicesSupported() {
+		return gamePad.isPlayerIndicesSupported();
+	}
+
+	public int getPlayerIndex() {
+		return gamePad.getPlayerIndex();
+	}
+
+	public void setPlayerIndex(int playerIndex) {
+		gamePad.setPlayerIndex(playerIndex);
+	}
+
+	public boolean isVibrateSupported() {
+		return gamePad.isVibrateSupported();
+	}
+
+	public boolean isVibrating() {
+		return gamePad.isVibrating();
+	}
+
+	public float getVibrationStrength() {
+		return gamePad.getVibrationStrength();
+	}
+
+	public void startVibration(float strength) {
+		gamePad.startVibration(strength);
+	}
+
+	public void stopVibration() {
+		gamePad.stopVibration();
 	}
 }

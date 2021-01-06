@@ -78,6 +78,16 @@ public class XboxGamePadDebugger implements XboxGamePadListener, GamePadDebugger
 	@Override
 	public boolean buttonUp(XboxGamePad controller, XboxButton button) {
 		buttonMessages.put(button, "UP");
+
+		switch(button) {
+		case X:
+			if(controller.isVibrating()) {
+				controller.stopVibration();
+			} else {
+				controller.startVibration(0.5f);
+			}
+			break;
+		}
 		return false;
 	}
 

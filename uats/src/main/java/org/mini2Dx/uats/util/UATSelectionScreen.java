@@ -158,6 +158,20 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 		uiNavigation = new VerticalUiNavigation();
 		
 		uatsDialog.add(FlexRow.withElements("row-os", UiUtils.createLabel("Detected OS: " + Mdx.platform)));
+
+		uatsDialog.add(FlexRow.withElements("row-utilities", UiUtils.createHeader("Utilities")));
+		uatsDialog.add(
+				FlexRow.withElements("row-controller-mapping", UiUtils.createButton(uiNavigation, "Controller Mapping", new ActionListener() {
+					@Override
+					public void onActionBegin(ActionEvent event) {
+					}
+
+					@Override
+					public void onActionEnd(ActionEvent event) {
+						nextScreenId = ScreenIds.getScreenId(GamePadMapping.class);
+					}
+				})));
+
 		uatsDialog.add(FlexRow.withElements("row-header", UiUtils.createHeader("User Acceptance Tests", new TypingTextAnimation())));
 		uatsDialog.add(FlexRow.withElements("row-blending", UiUtils.createButton(uiNavigation, "Blending", false, new ActionListener() {
 			@Override
@@ -413,18 +427,7 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 				nextScreenId = ScreenIds.getScreenId(UiSerializationUAT.class);
 			}
 		})));
-		uatsDialog.add(FlexRow.withElements("row-utilities", UiUtils.createHeader("Utilities")));
-		uatsDialog.add(
-				FlexRow.withElements("row-controller-mapping", UiUtils.createButton(uiNavigation, "Controller Mapping", new ActionListener() {
-					@Override
-					public void onActionBegin(ActionEvent event) {
-					}
 
-					@Override
-					public void onActionEnd(ActionEvent event) {
-						nextScreenId = ScreenIds.getScreenId(GamePadMapping.class);
-					}
-				})));
 		uatsDialog.setVisibility(Visibility.VISIBLE);
 		uatsDialog.setNavigation(uiNavigation);
 

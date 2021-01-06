@@ -16,6 +16,8 @@
 package org.mini2Dx.libgdx.input;
 
 import org.mini2Dx.core.input.GamePad;
+import org.mini2Dx.core.input.GamePadListener;
+import org.mini2Dx.core.input.GamePadType;
 import org.mini2Dx.core.input.PovState;
 import org.mini2Dx.core.input.button.PS4Button;
 import org.mini2Dx.core.input.deadzone.DeadZone;
@@ -23,6 +25,7 @@ import org.mini2Dx.core.input.ps4.PS4GamePad;
 import org.mini2Dx.core.input.ps4.PS4GamePadListener;
 import org.mini2Dx.gdx.math.Vector3;
 import org.mini2Dx.gdx.utils.IntMap;
+import org.mini2Dx.gdx.utils.ObjectIntMap;
 
 public class LibgdxPS4GamePad extends PS4GamePad {
 
@@ -32,6 +35,16 @@ public class LibgdxPS4GamePad extends PS4GamePad {
 
 	public LibgdxPS4GamePad(GamePad gamePad, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) {
 		super(gamePad, leftStickDeadZone, rightStickDeadZone);
+	}
+
+	@Override
+	public boolean isButtonDown(PS4Button button) {
+		return gamePad.isButtonDown(BUTTON_CODES.get(button, -1));
+	}
+
+	@Override
+	public boolean isButtonUp(PS4Button button) {
+		return gamePad.isButtonUp(BUTTON_CODES.get(button, -1));
 	}
 
 	@Override
@@ -108,9 +121,9 @@ public class LibgdxPS4GamePad extends PS4GamePad {
 			put(2, PS4Button.SQUARE);
 			put(3, PS4Button.TRIANGLE);
 
-			put(4, PS4Button.TOUCHPAD);
+			put(4, PS4Button.SHARE);
 			put(5, PS4Button.PS);
-			put(6, PS4Button.OPTIONS);
+			put(6, PS4Button.TOUCHPAD);
 
 			put(7, PS4Button.L3);
 			put(8, PS4Button.R3);
@@ -122,6 +135,15 @@ public class LibgdxPS4GamePad extends PS4GamePad {
 			put(12, PS4Button.DOWN);
 			put(13, PS4Button.LEFT);
 			put(14, PS4Button.RIGHT);
+		}
+	};
+	private static final ObjectIntMap<PS4Button> BUTTON_CODES = new ObjectIntMap<PS4Button>() {
+		{
+			final IntMap.Keys keys = BUTTON_MAPPINGS.keys();
+			while(keys.hasNext) {
+				final int code = keys.next();
+				put(BUTTON_MAPPINGS.get(code), code);
+			}
 		}
 	};
 }

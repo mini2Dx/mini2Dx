@@ -48,6 +48,10 @@ public abstract class SwitchDualJoyConGamePad implements GamePadMapping<SwitchDu
 		gamePad.addListener(this);
 	}
 
+	public abstract boolean isButtonDown(SwitchDualJoyConButton button);
+
+	public abstract boolean isButtonUp(SwitchDualJoyConButton button);
+
 	protected boolean notifyConnected() {
 		for(SwitchDualJoyConGamePadListener listener : listeners) {
 			listener.connected(this);
@@ -218,5 +222,49 @@ public abstract class SwitchDualJoyConGamePad implements GamePadMapping<SwitchDu
 			zrDeadZone = new NoopDeadZone();
 		}
 		this.zrDeadZone = zrDeadZone;
+	}
+
+	public boolean isConnected() {
+		return gamePad.isConnected();
+	}
+
+	public String getInstanceId() {
+		return gamePad.getInstanceId();
+	}
+
+	public String getModelInfo() {
+		return gamePad.getModelInfo();
+	}
+
+	public boolean isPlayerIndicesSupported() {
+		return gamePad.isPlayerIndicesSupported();
+	}
+
+	public int getPlayerIndex() {
+		return gamePad.getPlayerIndex();
+	}
+
+	public void setPlayerIndex(int playerIndex) {
+		gamePad.setPlayerIndex(playerIndex);
+	}
+
+	public boolean isVibrateSupported() {
+		return gamePad.isVibrateSupported();
+	}
+
+	public boolean isVibrating() {
+		return gamePad.isVibrating();
+	}
+
+	public float getVibrationStrength() {
+		return gamePad.getVibrationStrength();
+	}
+
+	public void startVibration(float strength) {
+		gamePad.startVibration(strength);
+	}
+
+	public void stopVibration() {
+		gamePad.stopVibration();
 	}
 }

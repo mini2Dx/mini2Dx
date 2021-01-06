@@ -17,6 +17,7 @@ package org.mini2Dx.core.input.xbox;
 
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.GamePadMapping;
+import org.mini2Dx.core.input.button.PS4Button;
 import org.mini2Dx.core.input.button.XboxButton;
 import org.mini2Dx.core.input.deadzone.DeadZone;
 import org.mini2Dx.core.input.deadzone.NoopDeadZone;
@@ -30,15 +31,16 @@ public abstract class XboxGamePad implements GamePadMapping<XboxGamePadListener>
 			"Xbox".toLowerCase(),
 			"X-Box".toLowerCase(),
 			"X360".toLowerCase(),
-			"XInput".toLowerCase()
+			"XInput".toLowerCase(),
+			"PC Wired GamePad".toLowerCase()
 	};
 
-	private final Array<XboxGamePadListener> listeners = new Array<XboxGamePadListener>(true, 2, XboxGamePadListener.class);
-	private final GamePad gamePad;
+	protected final Array<XboxGamePadListener> listeners = new Array<XboxGamePadListener>(true, 2, XboxGamePadListener.class);
+	protected final GamePad gamePad;
 
-	private DeadZone leftStickDeadZone, rightStickDeadZone;
-	private DeadZone leftTriggerDeadZone, rightTriggerDeadZone;
-	private boolean leftTrigger, rightTrigger;
+	protected DeadZone leftStickDeadZone, rightStickDeadZone;
+	protected DeadZone leftTriggerDeadZone, rightTriggerDeadZone;
+	protected boolean leftTrigger, rightTrigger;
 
 	public XboxGamePad(GamePad gamePad) {
 		this(gamePad, new NoopDeadZone(), new NoopDeadZone());
@@ -54,6 +56,10 @@ public abstract class XboxGamePad implements GamePadMapping<XboxGamePadListener>
 
 		gamePad.addListener(this);
 	}
+
+	public abstract boolean isButtonDown(XboxButton button);
+
+	public abstract boolean isButtonUp(XboxButton button);
 
 	protected boolean notifyConnected() {
 		for(XboxGamePadListener listener : listeners) {
@@ -233,5 +239,49 @@ public abstract class XboxGamePad implements GamePadMapping<XboxGamePadListener>
 			rightTriggerDeadZone = new NoopDeadZone();
 		}
 		this.rightTriggerDeadZone = rightTriggerDeadZone;
+	}
+
+	public boolean isConnected() {
+		return gamePad.isConnected();
+	}
+
+	public String getInstanceId() {
+		return gamePad.getInstanceId();
+	}
+
+	public String getModelInfo() {
+		return gamePad.getModelInfo();
+	}
+
+	public boolean isPlayerIndicesSupported() {
+		return gamePad.isPlayerIndicesSupported();
+	}
+
+	public int getPlayerIndex() {
+		return gamePad.getPlayerIndex();
+	}
+
+	public void setPlayerIndex(int playerIndex) {
+		gamePad.setPlayerIndex(playerIndex);
+	}
+
+	public boolean isVibrateSupported() {
+		return gamePad.isVibrateSupported();
+	}
+
+	public boolean isVibrating() {
+		return gamePad.isVibrating();
+	}
+
+	public float getVibrationStrength() {
+		return gamePad.getVibrationStrength();
+	}
+
+	public void startVibration(float strength) {
+		gamePad.startVibration(strength);
+	}
+
+	public void stopVibration() {
+		gamePad.stopVibration();
 	}
 }

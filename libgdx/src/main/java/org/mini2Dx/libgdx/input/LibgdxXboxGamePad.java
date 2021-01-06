@@ -17,12 +17,14 @@ package org.mini2Dx.libgdx.input;
 
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.PovState;
+import org.mini2Dx.core.input.button.PS4Button;
 import org.mini2Dx.core.input.button.XboxButton;
 import org.mini2Dx.core.input.deadzone.DeadZone;
 import org.mini2Dx.core.input.xbox.XboxGamePad;
 import org.mini2Dx.core.input.xbox.XboxGamePadListener;
 import org.mini2Dx.gdx.math.Vector3;
 import org.mini2Dx.gdx.utils.IntMap;
+import org.mini2Dx.gdx.utils.ObjectIntMap;
 
 public class LibgdxXboxGamePad extends XboxGamePad {
 
@@ -32,6 +34,16 @@ public class LibgdxXboxGamePad extends XboxGamePad {
 
 	public LibgdxXboxGamePad(GamePad gamePad, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) {
 		super(gamePad, leftStickDeadZone, rightStickDeadZone);
+	}
+
+	@Override
+	public boolean isButtonDown(XboxButton button) {
+		return gamePad.isButtonDown(BUTTON_CODES.get(button, -1));
+	}
+
+	@Override
+	public boolean isButtonUp(XboxButton button) {
+		return gamePad.isButtonUp(BUTTON_CODES.get(button, -1));
 	}
 
 	@Override
@@ -122,6 +134,15 @@ public class LibgdxXboxGamePad extends XboxGamePad {
 			put(12, XboxButton.DOWN);
 			put(13, XboxButton.LEFT);
 			put(14, XboxButton.RIGHT);
+		}
+	};
+	private static final ObjectIntMap<XboxButton> BUTTON_CODES = new ObjectIntMap<XboxButton>() {
+		{
+			final IntMap.Keys keys = BUTTON_MAPPINGS.keys();
+			while(keys.hasNext) {
+				final int code = keys.next();
+				put(BUTTON_MAPPINGS.get(code), code);
+			}
 		}
 	};
 }
