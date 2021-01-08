@@ -230,6 +230,7 @@ public class DesktopMini2DxGame implements Application {
 
 				input.update();
 				input.processEvents();
+				listener.getLibgdxInput().updateGamePads();
 
 				final float delta = graphics.getDeltaTime();
 

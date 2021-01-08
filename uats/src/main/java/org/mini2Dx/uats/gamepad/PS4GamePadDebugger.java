@@ -16,6 +16,7 @@
 package org.mini2Dx.uats.gamepad;
 
 import org.mini2Dx.core.Graphics;
+import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.button.PS4Button;
 import org.mini2Dx.core.input.ps4.PS4GamePad;
 import org.mini2Dx.core.input.ps4.PS4GamePadListener;
@@ -55,11 +56,13 @@ public class PS4GamePadDebugger implements PS4GamePadListener, GamePadDebugger {
 
 	@Override
 	public void connected(PS4GamePad gamePad) {
+		gamePad.addListener(this);
 		connected = true;
 	}
 
 	@Override
-	public void disconnected(PS4GamePad controller) {
+	public void disconnected(PS4GamePad gamePad) {
+		gamePad.removeListener(this);
 		connected = false;
 	}
 	

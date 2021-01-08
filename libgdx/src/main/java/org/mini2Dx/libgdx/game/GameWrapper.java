@@ -35,6 +35,8 @@ public abstract class GameWrapper implements ApplicationListener {
 	private final GameContainer gameContainer;
 	private final String gameIdentifier;
 
+	private LibgdxInput libgdxInput;
+
 	/**
 	 * Constructor
 	 * @param gc The {@link GameContainer} which implements the developer's game
@@ -70,7 +72,9 @@ public abstract class GameWrapper implements ApplicationListener {
 		Mdx.fonts = new LibgdxFonts();
 		Mdx.graphics = createGraphicsUtils();
 		Mdx.graphicsContext = createGraphicsContext();
-		Mdx.input = new LibgdxInput();
+
+		libgdxInput = new LibgdxInput();
+		Mdx.input = libgdxInput;
 		Mdx.log = new LibgdxLogger();
 		Mdx.reflect = new JvmReflection();
 
@@ -183,5 +187,9 @@ public abstract class GameWrapper implements ApplicationListener {
 		case UNIX:
 			return Platform.LINUX;
 		}
+	}
+
+	public LibgdxInput getLibgdxInput() {
+		return libgdxInput;
 	}
 }

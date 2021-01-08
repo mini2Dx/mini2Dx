@@ -17,9 +17,11 @@ package org.mini2Dx.libgdx;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 import org.mini2Dx.core.Input;
 import org.mini2Dx.core.input.GamePad;
+import org.mini2Dx.core.input.GamePadConnectionListener;
 import org.mini2Dx.core.input.nswitch.SwitchDualJoyConGamePad;
 import org.mini2Dx.core.input.nswitch.SwitchJoyConLGamePad;
 import org.mini2Dx.core.input.nswitch.SwitchJoyConRGamePad;
@@ -27,41 +29,88 @@ import org.mini2Dx.core.input.ps4.PS4GamePad;
 import org.mini2Dx.core.input.xbox.XboxGamePad;
 import org.mini2Dx.gdx.InputProcessor;
 import org.mini2Dx.gdx.utils.Array;
-import org.mini2Dx.gdx.utils.ObjectMap;
+import org.mini2Dx.gdx.utils.Queue;
 import org.mini2Dx.libgdx.input.*;
 
-public class LibgdxInput implements Input {
-	private final Array<GamePad> gamePads = new Array<GamePad>();
-	private final ObjectMap<String, LibgdxGamePad> gamePadsById = new ObjectMap<String, LibgdxGamePad>();
+public class LibgdxInput implements Input, ControllerListener {
+	private final Array<GamePad> connectedGamePads = new Array<GamePad>();
+	private final Array<GamePad> disconnectedGamePads = new Array<GamePad>();
+	private final Queue<Controller> connectedGamePadQueue = new Queue<>();
 
 	private LibgdxInputProcessor gdxInputProcessor = null;
+	private GamePadConnectionListener connectionListener = null;
+
+	private boolean initialised = false;
+
+	public LibgdxInput() {
+		super();
+		Controllers.addListener(this);
+	}
 
 	public void updateGamePads() {
-		final boolean firstRun = gamePads.size == 0;
+		init();
+		reconnectGamePads();
+		connectNewGamePads();
+	}
 
-		for(int i = 0; i < Controllers.getControllers().size; i++) {
-			final Controller controller = Controllers.getControllers().get(i);
+	private void init() {
+		if(initialised) {
+			return;
+		}
 
-			final LibgdxGamePad gamePad;
+		for(Controller controller : Controllers.getControllers()) {
+			connectedGamePadQueue.addLast(controller);
+		}
+		initialised = true;
+	}
 
-			if(firstRun) {
-				gamePad = new LibgdxGamePad(controller);
-			} else {
-				final String instanceId = controller.getUniqueId() != null ? controller.getUniqueId() : controller.getName();
+	private void reconnectGamePads() {
+		for(int i = disconnectedGamePads.size - 1; i >= 0; i--) {
+			final LibgdxGamePad gamePad = (LibgdxGamePad) disconnectedGamePads.get(i);
+			if(!gamePad.isConnected()) {
+				continue;
+			}
+			connectedGamePads.add(gamePad);
+			disconnectedGamePads.removeIndex(i);
 
-				if(gamePadsById.containsKey(instanceId)) {
-					gamePad = gamePadsById.get(controller.getName());
-				} else {
-					gamePad = new LibgdxGamePad(controller);
+			notifyGamePadConnected(gamePad);
+		}
+	}
+
+	private void connectNewGamePads() {
+		while(!connectedGamePadQueue.isEmpty()) {
+			final Controller controller = connectedGamePadQueue.removeFirst();
+
+			boolean existingController = false;
+			for(int i = 0; i < connectedGamePads.size; i++) {
+				if(LibgdxGamePad.getInstanceId(controller).equals(connectedGamePads.get(i).getInstanceId())) {
+					//Already connected
+					existingController = true;
+					break;
 				}
 			}
 
-			if(!gamePadsById.containsKey(gamePad.getInstanceId())) {
-				gamePads.add(gamePad);
-				gamePadsById.put(gamePad.getInstanceId(), gamePad);
-				gamePad.init();
+			if(existingController) {
+				continue;
 			}
+			final GamePad gamePad = new LibgdxGamePad(controller);
+			connectedGamePads.add(gamePad);
+			notifyGamePadConnected(gamePad);
 		}
+	}
+
+	private void notifyGamePadConnected(GamePad gamePad) {
+		if(connectionListener == null) {
+			return;
+		}
+		connectionListener.onConnect(gamePad);
+	}
+
+	private void notifyGamePadDisconnected(GamePad gamePad) {
+		if(connectionListener == null) {
+			return;
+		}
+		connectionListener.onDisconnect(gamePad);
 	}
 
 	@Override
@@ -75,16 +124,25 @@ public class LibgdxInput implements Input {
 	}
 
 	@Override
+	public void setGamePadConnectionListener(GamePadConnectionListener listener, boolean notifyExisting) {
+		this.connectionListener = listener;
+
+		if(!notifyExisting) {
+			return;
+		}
+		for(int i = connectedGamePads.size - 1; i >= 0; i--) {
+			listener.onConnect(connectedGamePads.get(i));
+		}
+	}
+
+	@Override
 	public void setOnScreenKeyboardVisible(boolean visible) {
 		Gdx.input.setOnscreenKeyboardVisible(visible);
 	}
 
 	@Override
 	public Array<GamePad> getGamePads() {
-		if(gamePads.size == 0) {
-			updateGamePads();
-		}
-		return gamePads;
+		return connectedGamePads;
 	}
 
 	@Override
@@ -140,5 +198,39 @@ public class LibgdxInput implements Input {
 	@Override
 	public boolean justTouched() {
 		return Gdx.input.justTouched();
+	}
+
+	@Override
+	public void connected(Controller controller) {
+		connectedGamePadQueue.addLast(controller);
+	}
+
+	@Override
+	public void disconnected(Controller controller) {
+		for(int i = connectedGamePads.size - 1; i >= 0; i--) {
+			final LibgdxGamePad gamePad = (LibgdxGamePad) connectedGamePads.get(i);
+			if(gamePad.getInstanceId().equals(LibgdxGamePad.getInstanceId(controller))) {
+				disconnectedGamePads.add(gamePad);
+				connectedGamePads.removeIndex(i);
+
+				notifyGamePadDisconnected(gamePad);
+				break;
+			}
+		}
+	}
+
+	@Override
+	public boolean buttonDown(Controller controller, int buttonCode) {
+		return false;
+	}
+
+	@Override
+	public boolean buttonUp(Controller controller, int buttonCode) {
+		return false;
+	}
+
+	@Override
+	public boolean axisMoved(Controller controller, int axisCode, float value) {
+		return false;
 	}
 }

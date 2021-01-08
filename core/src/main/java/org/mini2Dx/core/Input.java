@@ -16,6 +16,7 @@
 package org.mini2Dx.core;
 
 import org.mini2Dx.core.input.GamePad;
+import org.mini2Dx.core.input.GamePadConnectionListener;
 import org.mini2Dx.core.input.nswitch.SwitchDualJoyConGamePad;
 import org.mini2Dx.core.input.nswitch.SwitchJoyConLGamePad;
 import org.mini2Dx.core.input.nswitch.SwitchJoyConRGamePad;
@@ -32,6 +33,13 @@ public interface Input {
     public void setInputProcessor(InputProcessor inputProcessor);
 
     /**
+     * Sets the {@link GamePadConnectionListener} for handling {@link GamePad} connects/disconnects
+     * @param listener The {@link GamePadConnectionListener} to use
+     * @param notifyExisting True if the listener should receive a {@link GamePadConnectionListener#onConnect(GamePad)} call for existing controllers connected
+     */
+    public void setGamePadConnectionListener(GamePadConnectionListener listener, boolean notifyExisting);
+
+    /**
      * Sets on mobile and consoles of the on-screen keyboard should appear
      * @param visible True if the keyboard should appear
      */
@@ -39,7 +47,6 @@ public interface Input {
 
     /**
      * Returns the list of known {@link GamePad}s connected to the device.
-     * If a {@link GamePad} disconnects/unplugs it will remain in this array.
      * @return An empty {@link Array} if no {@link GamePad}s are present.
      */
     public Array<GamePad> getGamePads();

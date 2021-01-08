@@ -41,6 +41,7 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 	private final IntMap<org.mini2Dx.gdx.math.Vector3> accelerometers = new IntMap<org.mini2Dx.gdx.math.Vector3>();
 
 	protected String uniqueId;
+	protected String model;
 	protected int playerIndex;
 	protected Controller controller;
 	protected GamePadType gamePadType = null;
@@ -51,20 +52,29 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 	public LibgdxGamePad(Controller controller) {
 		this.controller = controller;
 		this.playerIndex = controller.getPlayerIndex();
-		this.uniqueId = controller.getUniqueId();
+		this.uniqueId = getInstanceId(controller);
+		this.model = controller.getName();
 
 		Controllers.addListener(this);
 	}
 
+	public static String getInstanceId(Controller controller) {
+		return controller.getUniqueId() != null ? controller.getUniqueId() :
+				controller.getName() + "-" + controller.getPlayerIndex();
+	}
+
 	public void init() {
 		this.playerIndex = controller.getPlayerIndex();
-		this.uniqueId = controller.getUniqueId();
+		this.uniqueId = getInstanceId(controller);
+		this.model = controller.getName();
+
 		this.controller.addListener(this);
 	}
 
 	@Override
 	public void connected(Controller controller) {
-		if (controller.getPlayerIndex() == playerIndex) {
+		if (controller.getPlayerIndex() == playerIndex &&
+				this.model.equals(controller.getName())) {
 			this.controller = controller;
 			init();
 
@@ -125,10 +135,7 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 
 	@Override
 	public String getInstanceId() {
-		if(controller.getUniqueId() != null) {
-			return controller.getUniqueId();
-		}
-		return controller.getName();
+		return uniqueId;
 	}
 
 	@Override

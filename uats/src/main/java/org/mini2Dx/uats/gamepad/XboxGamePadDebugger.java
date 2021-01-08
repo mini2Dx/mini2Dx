@@ -61,11 +61,13 @@ public class XboxGamePadDebugger implements XboxGamePadListener, GamePadDebugger
 
 	@Override
 	public void connected(XboxGamePad gamePad) {
+		gamePad.addListener(this);
 		connected = true;
 	}
 
 	@Override
-	public void disconnected(XboxGamePad controller) {
+	public void disconnected(XboxGamePad gamePad) {
+		gamePad.removeListener(this);
 		connected = false;
 	}
 

@@ -21,7 +21,9 @@ public enum Platform {
 	LINUX(true, false, false),
 	ANDROID(false, true, false),
 	IOS(false, true, false),
-	NINTENDO_SWITCH(false, false, true);
+	NINTENDO_SWITCH(false, false, true),
+	PLAYSTATION(false, false, true),
+	XBOX(false, false, true);
 
 	private final boolean desktop, mobile, console;
 

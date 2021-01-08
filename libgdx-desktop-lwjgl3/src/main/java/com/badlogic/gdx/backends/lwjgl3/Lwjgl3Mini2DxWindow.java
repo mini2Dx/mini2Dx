@@ -407,8 +407,10 @@ public class Lwjgl3Mini2DxWindow implements Disposable {
 		}
 
 		if (shouldRender) {
-			if (!iconified)
+			if (!iconified) {
 				input.update();
+				listener.getLibgdxInput().updateGamePads();
+			}
 
 			graphics.update();
 

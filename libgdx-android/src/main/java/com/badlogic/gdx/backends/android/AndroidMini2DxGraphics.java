@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.android;
 
+import org.mini2Dx.android.AndroidGameWrapper;
 import org.mini2Dx.android.AndroidMini2DxConfig;
 import org.mini2Dx.core.Mdx;
 
@@ -120,6 +121,7 @@ public class AndroidMini2DxGraphics extends AndroidGraphics {
 			final float delta = deltaTime;
 
 			app.getInput().processEvents();
+			((AndroidGameWrapper) game.getApplicationListener()).getLibgdxInput().updateGamePads();
 
 			switch(Mdx.timestepMode) {
 				case DEFAULT:
