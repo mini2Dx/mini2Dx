@@ -378,7 +378,7 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 		Mdx.platformUtils.markFrame();
 
 		input.processEvents();
-		((IOSGameWrapper) app.listener).updateGamePads();
+		((IOSGameWrapper) app.listener).getLibgdxInput().updateGamePads();
 
 		final float delta = deltaTime;
 		switch(Mdx.timestepMode) {
