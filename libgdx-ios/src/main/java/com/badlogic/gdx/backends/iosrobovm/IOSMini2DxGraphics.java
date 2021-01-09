@@ -50,6 +50,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.Array;
 
+import org.mini2Dx.ios.IOSGameWrapper;
+
 /**
  * Based on LibGDX's IOSGraphics class, adds mini2Dx's timestep logic
  */
