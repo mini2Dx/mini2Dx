@@ -16,6 +16,7 @@
 package org.mini2Dx.uats.gamepad;
 
 import org.mini2Dx.core.Graphics;
+import org.mini2Dx.core.input.GamePad;
 
 /**
  *
@@ -23,4 +24,6 @@ import org.mini2Dx.core.Graphics;
 public interface GamePadDebugger {
 
 	public void render(Graphics g);
+
+	public GamePad getGamePad();
 }

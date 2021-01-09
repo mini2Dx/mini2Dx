@@ -25,6 +25,7 @@ import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
+import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.uats.gamepad.GamePadDebugger;
 import org.mini2Dx.uats.gamepad.PS4GamePadDebugger;
 import org.mini2Dx.uats.gamepad.XboxGamePadDebugger;
@@ -37,49 +38,15 @@ import org.mini2Dx.uats.util.UATSelectionScreen;
 public class GamePadUAT extends BasicGameScreen implements GamePadConnectionListener {
 	private static final String LOGGING_TAG = GamePadUAT.class.getSimpleName();
 
-	private GamePadDebugger gamePadDebugger;
+	private final Array<GamePadDebugger> gamePadDebuggers = new Array<>();
 
 	@Override
 	public void initialise(GameContainer gc) {
-		Mdx.input.setGamePadConnectionListener(this, false);
+		Mdx.input.setGamePadConnectionListener(this, true);
 	}
 
 	@Override
 	public void update(GameContainer gc, ScreenManager<? extends GameScreen> screenManager, float delta) {
-		if(gamePadDebugger == null) {
-			for(GamePad gamePad : Mdx.input.getGamePads()) {
-				switch(gamePad.getGamePadType()) {
-				case XBOX:
-					XboxGamePadDebugger xbox360Debugger = new XboxGamePadDebugger();
-					try {
-						Mdx.input.newXboxGamePad(gamePad).addListener(xbox360Debugger);
-						this.gamePadDebugger = xbox360Debugger;
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return;
-				case PS4:
-					PS4GamePadDebugger ps4Debugger = new PS4GamePadDebugger();
-					try {
-						Mdx.input.newPS4GamePad(gamePad).addListener(ps4Debugger);
-						this.gamePadDebugger = ps4Debugger;
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return;
-				case UNKNOWN:
-				default:
-					gamePadDebugger = new GamePadDebugger() {
-						@Override
-						public void render(Graphics g) {
-							g.drawString("Unknown controller", 32f, 32f);
-						}
-					};
-					break;
-				}
-			}
-		}
-
 		if(Mdx.input.justTouched()) {
 			screenManager.enterGameScreen(UATSelectionScreen.SCREEN_ID, new FadeOutTransition(), new FadeInTransition());
 		}
@@ -91,10 +58,9 @@ public class GamePadUAT extends BasicGameScreen implements GamePadConnectionList
 
 	@Override
 	public void render(GameContainer gc, Graphics g) {
-		if(gamePadDebugger == null) {
-			return;
+		for(GamePadDebugger gamePadDebugger : gamePadDebuggers) {
+			gamePadDebugger.render(g);
 		}
-		gamePadDebugger.render(g);
 	}
 
 	@Override
@@ -104,7 +70,37 @@ public class GamePadUAT extends BasicGameScreen implements GamePadConnectionList
 
 	@Override
 	public void onConnect(GamePad gamePad) {
-		Mdx.log.info(LOGGING_TAG, gamePad.getInstanceId() + " connected (" + Mdx.input.getGamePads().size + " total connected)");
+		Mdx.log.info(LOGGING_TAG, gamePad.getInstanceId() + " connected (Player Index: " + gamePad.getPlayerIndex() + ")(" + Mdx.input.getGamePads().size + " total connected)");
+
+		for(GamePadDebugger debugger : gamePadDebuggers) {
+			if(debugger.getGamePad().getPlayerIndex() == gamePad.getPlayerIndex())  {
+				return;
+			}
+		}
+
+		switch(gamePad.getGamePadType()) {
+		case XBOX:
+			XboxGamePadDebugger xbox360Debugger = new XboxGamePadDebugger(gamePad,gamePadDebuggers.size * 512f);
+			try {
+				Mdx.input.newXboxGamePad(gamePad).addListener(xbox360Debugger);
+				gamePadDebuggers.add(xbox360Debugger);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return;
+		case PS4:
+			PS4GamePadDebugger ps4Debugger = new PS4GamePadDebugger(gamePad,gamePadDebuggers.size * 512f);
+			try {
+				Mdx.input.newPS4GamePad(gamePad).addListener(ps4Debugger);
+				gamePadDebuggers.add(ps4Debugger);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return;
+		case UNKNOWN:
+		default:
+			break;
+		}
 	}
 
 	@Override

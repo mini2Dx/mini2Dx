@@ -16,6 +16,7 @@
 package org.mini2Dx.uats.gamepad;
 
 import org.mini2Dx.core.Graphics;
+import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.button.XboxButton;
 import org.mini2Dx.core.input.xbox.XboxGamePad;
 import org.mini2Dx.core.input.xbox.XboxGamePadListener;
@@ -30,8 +31,14 @@ public class XboxGamePadDebugger implements XboxGamePadListener, GamePadDebugger
 	private float rightStickXAxis, rightStickYAxis;
 	private float leftTrigger, rightTrigger;
 	private boolean connected = true;
+
+	private final float offsetX;
+	private final GamePad gamePad;
 	
-	public XboxGamePadDebugger() {
+	public XboxGamePadDebugger(GamePad gamePad, float offsetX) {
+		this.gamePad = gamePad;
+		this.offsetX = offsetX;
+
 		for(XboxButton button : XboxButton.values()) {
 			buttonMessages.put(button, "UP");
 		}
@@ -39,22 +46,22 @@ public class XboxGamePadDebugger implements XboxGamePadListener, GamePadDebugger
 
 	@Override
 	public void render(Graphics g) {
-		g.drawString("Xbox 360 Controller", 32f, 24f);
+		g.drawString("Xbox 360 Controller", offsetX + 32f, 24f);
 		if(connected) {
-			g.drawString("Connected", 32f, 48f);
+			g.drawString("Connected", offsetX + 32f, 48f);
 		} else {
-			g.drawString("Disconnected", 32f, 48f);
+			g.drawString("Disconnected", offsetX + 32f, 48f);
 		}
-		g.drawString("Left Stick X: " + leftStickXAxis, 32f, 72f);
-		g.drawString("Left Stick Y: " + leftStickYAxis, 32f, 96f);
-		g.drawString("Right Stick X: " + rightStickXAxis, 32f, 120f);
-		g.drawString("Right Stick Y: " + rightStickYAxis, 32f, 144f);
-		g.drawString("Left Trigger: " + leftTrigger, 32f, 168f);
-		g.drawString("Right Trigger: " + rightTrigger, 32f, 192f);
+		g.drawString("Left Stick X: " + leftStickXAxis, offsetX + 32f, 72f);
+		g.drawString("Left Stick Y: " + leftStickYAxis, offsetX + 32f, 96f);
+		g.drawString("Right Stick X: " + rightStickXAxis, offsetX + 32f, 120f);
+		g.drawString("Right Stick Y: " + rightStickYAxis, offsetX + 32f, 144f);
+		g.drawString("Left Trigger: " + leftTrigger, offsetX + 32f, 168f);
+		g.drawString("Right Trigger: " + rightTrigger, offsetX + 32f, 192f);
 		
 		float y = 72f;
 		for(XboxButton button : buttonMessages.keys()) {
-			g.drawString(button.name() + ": " + buttonMessages.get(button), 256f, y);
+			g.drawString(button.name() + ": " + buttonMessages.get(button), offsetX + 256f, y);
 			y += 24f;
 		}
 	}
@@ -129,4 +136,7 @@ public class XboxGamePadDebugger implements XboxGamePadListener, GamePadDebugger
 		return false;
 	}
 
+	public GamePad getGamePad() {
+		return gamePad;
+	}
 }

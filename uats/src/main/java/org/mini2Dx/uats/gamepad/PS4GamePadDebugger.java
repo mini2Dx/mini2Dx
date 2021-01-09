@@ -18,6 +18,7 @@ package org.mini2Dx.uats.gamepad;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.button.PS4Button;
+import org.mini2Dx.core.input.button.XboxButton;
 import org.mini2Dx.core.input.ps4.PS4GamePad;
 import org.mini2Dx.core.input.ps4.PS4GamePadListener;
 import org.mini2Dx.gdx.utils.ObjectMap;
@@ -31,25 +32,37 @@ public class PS4GamePadDebugger implements PS4GamePadListener, GamePadDebugger {
 	private float rightStickXAxis, rightStickYAxis;
 	private float l2, r2;
 	private boolean connected = true;
-	
+
+	private final float offsetX;
+	private final GamePad gamePad;
+
+	public PS4GamePadDebugger(GamePad gamePad, float offsetX) {
+		this.gamePad = gamePad;
+		this.offsetX = offsetX;
+
+		for(PS4Button button : PS4Button.values()) {
+			buttonMessages.put(button, "UP");
+		}
+	}
+
 	@Override
 	public void render(Graphics g) {
-		g.drawString("PS4 Controller", 32f, 24f);
+		g.drawString("PS4 Controller", offsetX + 32f, 24f);
 		if(connected) {
-			g.drawString("Connected", 32f, 48f);
+			g.drawString("Connected", offsetX + 32f, 48f);
 		} else {
-			g.drawString("Disconnected", 32f, 48f);
+			g.drawString("Disconnected", offsetX + 32f, 48f);
 		}
-		g.drawString("Left Stick X: " + leftStickXAxis, 32f, 72f);
-		g.drawString("Left Stick Y: " + leftStickYAxis, 32f, 96f);
-		g.drawString("Right Stick X: " + rightStickXAxis, 32f, 120f);
-		g.drawString("Right Stick Y: " + rightStickYAxis, 32f, 144f);
-		g.drawString("L2: " + l2, 32f, 168f);
-		g.drawString("R2: " + r2, 32f, 192f);
+		g.drawString("Left Stick X: " + leftStickXAxis, offsetX + 32f, 72f);
+		g.drawString("Left Stick Y: " + leftStickYAxis, offsetX + 32f, 96f);
+		g.drawString("Right Stick X: " + rightStickXAxis, offsetX + 32f, 120f);
+		g.drawString("Right Stick Y: " + rightStickYAxis, offsetX + 32f, 144f);
+		g.drawString("L2: " + l2, offsetX + 32f, 168f);
+		g.drawString("R2: " + r2, offsetX + 32f, 192f);
 		
 		float y = 72f;
 		for(PS4Button button : buttonMessages.keys()) {
-			g.drawString(button.name() + ": " + buttonMessages.get(button), 256f, y);
+			g.drawString(button.name() + ": " + buttonMessages.get(button), offsetX + 256f, y);
 			y += 24f;
 		}
 	}
@@ -122,5 +135,9 @@ public class PS4GamePadDebugger implements PS4GamePadListener, GamePadDebugger {
 	public boolean r2Moved(PS4GamePad controller, float value) {
 		r2 = value;
 		return false;
+	}
+
+	public GamePad getGamePad() {
+		return gamePad;
 	}
 }

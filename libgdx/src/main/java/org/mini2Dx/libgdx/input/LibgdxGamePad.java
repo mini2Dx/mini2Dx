@@ -93,6 +93,9 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 
 	@Override
 	public boolean buttonDown(Controller controller, int buttonCode) {
+		if (!controller.getUniqueId().equals(uniqueId)) {
+			return false;
+		}
 		downButtons.add(buttonCode);
 		notifyButtonDown(buttonCode);
 		return true;
@@ -100,6 +103,9 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 
 	@Override
 	public boolean buttonUp(Controller controller, int buttonCode) {
+		if (!controller.getUniqueId().equals(uniqueId)) {
+			return false;
+		}
 		downButtons.remove(buttonCode);
 		notifyButtonUp(buttonCode);
 		return true;
@@ -107,6 +113,9 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 
 	@Override
 	public boolean axisMoved(Controller controller, int axisCode, float value) {
+		if (!controller.getUniqueId().equals(uniqueId)) {
+			return false;
+		}
 		axes.put(axisCode, value);
 		notifyAxisChanged(axisCode, value);
 		return true;
