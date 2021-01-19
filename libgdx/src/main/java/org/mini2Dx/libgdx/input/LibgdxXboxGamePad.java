@@ -16,12 +16,9 @@
 package org.mini2Dx.libgdx.input;
 
 import org.mini2Dx.core.input.GamePad;
-import org.mini2Dx.core.input.PovState;
-import org.mini2Dx.core.input.button.PS4Button;
 import org.mini2Dx.core.input.button.XboxButton;
 import org.mini2Dx.core.input.deadzone.DeadZone;
 import org.mini2Dx.core.input.xbox.XboxGamePad;
-import org.mini2Dx.core.input.xbox.XboxGamePadListener;
 import org.mini2Dx.gdx.math.Vector3;
 import org.mini2Dx.gdx.utils.IntMap;
 import org.mini2Dx.gdx.utils.ObjectIntMap;
@@ -70,10 +67,6 @@ public class LibgdxXboxGamePad extends XboxGamePad {
 			return;
 		}
 		notifyButtonUp(BUTTON_MAPPINGS.get(buttonCode));
-	}
-
-	@Override
-	public void onPovChanged(GamePad gamePad, int povCode, PovState povState) {
 	}
 
 	@Override

@@ -317,6 +317,7 @@
                     <xsd:attribute name="id" type="xsd:string" use="required"/>
                     <xsd:attribute name="value" type="xsd:string"/>
                     <xsd:attribute name="password" type="xsd:boolean" default="false"/>
+                    <xsd:attribute name="characterLimit" type="xsd:integer" default="-1"/>
                     <xsd:attribute name="enabled" type="xsd:boolean" default="true"/>
                     <xsd:attribute name="layout" type="xsd:string" default="flex-column:xs-12c"/>
                 </xsd:extension>

@@ -56,36 +56,41 @@ namespace monogame
         }
 
         private const int DefaultMaxFrameTasksPerFrame = 32;
-        private readonly LinkedList<FrameSpreadTask> spreadTasks = new LinkedList<FrameSpreadTask>();
+        private readonly List<FrameSpreadTask> spreadTasks = new List<FrameSpreadTask>();
+        private readonly List<Task<object>> asyncTasks = new List<Task<object>>();
         private int maxFrameTasksPerFrame = DefaultMaxFrameTasksPerFrame;
-
 
         public void dispose()
         {
         }
 
-        public void update(float f)
+        public void update(float delta)
         {
             var taskCount = 0;
 
-            var node = spreadTasks.First;
-
-            while (node != null)
+            for(int i = 0; i < spreadTasks.Count; i++)
             {
-                if (node.Value.updateTask())
+                if(spreadTasks[i].updateTask())
                 {
-                    node = node.Next;
-                    spreadTasks.Remove(node.Previous);
-                }
-                else
-                {
-                    node = node.Next;
+                    spreadTasks.RemoveAt(i);
+                    i--;
                 }
                 taskCount++;
 
                 if (taskCount >= maxFrameTasksPerFrame)
                 {
                     break;
+                }
+            }
+
+            lock (asyncTasks)
+            {
+                for(int i = asyncTasks.Count - 1; i >= 0; i--)
+                {
+                    if(asyncTasks[i].IsCompleted)
+                    {
+                        asyncTasks.RemoveAt(i);
+                    }
                 }
             }
         }
@@ -97,22 +102,51 @@ namespace monogame
 
         public AsyncFuture submit(Runnable r)
         {
-            return new MonoGameAsyncFuture(Task.Factory.StartNew(r.run));
+            Task<object> task = Task.Factory.StartNew<object>(() =>
+            {
+                r.run();
+                return null;
+            });
+            lock(asyncTasks)
+            {
+                asyncTasks.Add(task);
+            }
+            return new MonoGameAsyncFuture(task);
         }
 
         public AsyncResult submit(Callable c)
         {
-            return new MonoGameAsyncResult(Task.Factory.StartNew((Func<object>) c.call));
+            Task<object> task = Task.Factory.StartNew((Func<object>)c.call);
+            lock(asyncTasks)
+            {
+                asyncTasks.Add(task);
+            }
+            return new MonoGameAsyncResult(task);
         }
 
         public void submit(FrameSpreadTask fst)
         {
-            spreadTasks.AddLast(fst);
+            spreadTasks.Add(fst);
         }
 
         public void setMaxFrameTasksPerFrame(int i)
         {
             maxFrameTasksPerFrame = i;
+        }
+
+        public int getTotalQueuedAsyncTasks()
+        {
+            int result = 0;
+            lock(asyncTasks)
+            {
+                result = asyncTasks.Count;
+            }
+            return result;
+        }
+
+        public int getTotalQueuedFrameSpreadTasks()
+        {
+            return spreadTasks.Count;
         }
     }
 }

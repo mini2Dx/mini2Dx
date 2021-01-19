@@ -28,19 +28,16 @@ namespace monogame.Input
 {
     public class MonoGameXboxGamePad : Org.Mini2Dx.Core.Input.Xbox.XboxGamePad, O_M_C_Input_GamePadListener
     {
-        private PovState _prevPovState;
         
         public MonoGameXboxGamePad(GamePad gamePad, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) : base()
         {
             base._init_(gamePad, leftStickDeadZone, rightStickDeadZone);
-            _prevPovState = gamePad.getPov(0);
             
         }
 
         public MonoGameXboxGamePad(GamePad gamePad) : base()
         {
             base._init_(gamePad);
-            _prevPovState = gamePad.getPov(0);
         }
 
         void O_M_C_Input_GamePadListener.onConnect(GamePad gamePad)
@@ -79,6 +76,14 @@ namespace monogame.Input
                     return XboxButton.Y_;
                 case Buttons.BigButton:
                     return XboxButton.GUIDE_;
+                case Buttons.DPadLeft:
+                    return XboxButton.LEFT_;
+                case Buttons.DPadRight:
+                    return XboxButton.RIGHT_;
+                case Buttons.DPadUp:
+                    return XboxButton.UP_;
+                case Buttons.DPadDown:
+                    return XboxButton.DOWN_;
                 default:
                     return null;
             }
@@ -100,56 +105,6 @@ namespace monogame.Input
             {
                 notifyButtonUp(button);
             }
-        }
-
-        void O_M_C_Input_GamePadListener.onPovChanged(GamePad gamePad, int povCode, PovState povState)
-        {
-            if (povState.isPressed(PovState.NORTH_) != _prevPovState.isPressed(PovState.NORTH_))
-            {
-                if (povState.isPressed(PovState.NORTH_))
-                {
-                    notifyButtonDown(XboxButton.UP_);
-                }
-                else
-                {
-                    notifyButtonUp(XboxButton.UP_);
-                }
-            }
-            if (povState.isPressed(PovState.SOUTH_) != _prevPovState.isPressed(PovState.SOUTH_))
-            {
-                if (povState.isPressed(PovState.SOUTH_))
-                {
-                    notifyButtonDown(XboxButton.DOWN_);
-                }
-                else
-                {
-                    notifyButtonUp(XboxButton.DOWN_);
-                }
-            }
-            if (povState.isPressed(PovState.EAST_) != _prevPovState.isPressed(PovState.EAST_))
-            {
-                if (povState.isPressed(PovState.EAST_))
-                {
-                    notifyButtonDown(XboxButton.RIGHT_);
-                }
-                else
-                {
-                    notifyButtonUp(XboxButton.RIGHT_);
-                }
-            }
-            if (povState.isPressed(PovState.WEST_) != _prevPovState.isPressed(PovState.WEST_))
-            {
-                if (povState.isPressed(PovState.WEST_))
-                {
-                    notifyButtonDown(XboxButton.LEFT_);
-                }
-                else
-                {
-                    notifyButtonUp(XboxButton.LEFT_);
-                }
-            }
-
-            _prevPovState = povState;
         }
 
         void O_M_C_Input_GamePadListener.onAxisChanged(GamePad gamePad, int axisCode, float axisValue)
