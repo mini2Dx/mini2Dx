@@ -39,10 +39,6 @@ public class BaseGamePadListener implements GamePadListener {
 	}
 
 	@Override
-	public void onPovChanged(GamePad gamePad, int povCode, PovState povState) {
-	}
-
-	@Override
 	public void onAxisChanged(GamePad gamePad, int axisCode, float axisValue) {
 	}
 

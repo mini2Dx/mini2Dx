@@ -27,18 +27,15 @@ namespace monogame.Input
 {
     public class MonoGamePS4GamePad : Org.Mini2Dx.Core.Input.Ps4.PS4GamePad, O_M_C_Input_GamePadListener
     {
-        private PovState _prevPovState;
 
         public MonoGamePS4GamePad(GamePad gamePad, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) : base()
         {
             base._init_(gamePad, leftStickDeadZone, rightStickDeadZone);
-            _prevPovState = gamePad.getPov(0);
         }
 
         public MonoGamePS4GamePad(GamePad gamePad) : base()
         {
             base._init_(gamePad);
-            _prevPovState = gamePad.getPov(0);
         }
 
         void O_M_C_Input_GamePadListener.onConnect(GamePad gamePad)
@@ -98,56 +95,6 @@ namespace monogame.Input
             {
                 notifyButtonUp(button);
             }
-        }
-
-        void O_M_C_Input_GamePadListener.onPovChanged(GamePad gamePad, int povCode, PovState povState)
-        {
-            if (povState.isPressed(PovState.NORTH_) != _prevPovState.isPressed(PovState.NORTH_))
-            {
-                if (povState.isPressed(PovState.NORTH_))
-                {
-                    notifyButtonDown(PS4Button.UP_);
-                }
-                else
-                {
-                    notifyButtonUp(PS4Button.UP_);
-                }
-            }
-            if (povState.isPressed(PovState.SOUTH_) != _prevPovState.isPressed(PovState.SOUTH_))
-            {
-                if (povState.isPressed(PovState.SOUTH_))
-                {
-                    notifyButtonDown(PS4Button.DOWN_);
-                }
-                else
-                {
-                    notifyButtonUp(PS4Button.DOWN_);
-                }
-            }
-            if (povState.isPressed(PovState.EAST_) != _prevPovState.isPressed(PovState.EAST_))
-            {
-                if (povState.isPressed(PovState.EAST_))
-                {
-                    notifyButtonDown(PS4Button.RIGHT_);
-                }
-                else
-                {
-                    notifyButtonUp(PS4Button.RIGHT_);
-                }
-            }
-            if (povState.isPressed(PovState.WEST_) != _prevPovState.isPressed(PovState.WEST_))
-            {
-                if (povState.isPressed(PovState.WEST_))
-                {
-                    notifyButtonDown(PS4Button.LEFT_);
-                }
-                else
-                {
-                    notifyButtonUp(PS4Button.LEFT_);
-                }
-            }
-
-            _prevPovState = povState;
         }
 
         void O_M_C_Input_GamePadListener.onAxisChanged(GamePad gamePad, int axisCode, float axisValue)

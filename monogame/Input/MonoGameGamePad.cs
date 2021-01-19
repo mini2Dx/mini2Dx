@@ -43,7 +43,6 @@ namespace monogame.Input
             public bool isConnected;
             public bool[] buttons;
             public float[] axes;
-            public PovState[] povs;
             public Vector3[] accelerometers;
         }
         
@@ -82,10 +81,6 @@ namespace monogame.Input
                 state.ThumbSticks.Right.Y,
                 state.Triggers.Left,
                 state.Triggers.Right
-            };
-            status.povs = new[]
-            {
-                getPov(0)
             };
             status.accelerometers = new Vector3[0];
             
@@ -224,60 +219,6 @@ namespace monogame.Input
             }
         }
 
-        public PovState getPov(int povCode)
-        {
-            if (povCode != 0)
-            {
-                throw new NotSupportedException();
-            }
-
-            var state = GamePad.GetState(povCode).DPad;
-            PovState povState = PovState.CENTER_;
-            if (state.Down == ButtonState.Pressed)
-            {
-                povState = PovState.SOUTH_;
-            }
-
-            if (state.Up == ButtonState.Pressed)
-            {
-                povState = PovState.NORTH_;
-            }
-
-            if (state.Left == ButtonState.Pressed)
-            {
-                if (povState == PovState.NORTH_)
-                {
-                    povState = PovState.NORTH_WEST_;
-                }
-                else if (povState == PovState.SOUTH_)
-                {
-                    povState = PovState.SOUTH_WEST_;
-                }
-                else
-                {
-                    povState = PovState.WEST_;
-                }
-            }
-
-            if (state.Right == ButtonState.Pressed)
-            {
-                if (povState == PovState.NORTH_)
-                {
-                    povState = PovState.NORTH_EAST_;
-                }
-                else if (povState == PovState.SOUTH_)
-                {
-                    povState = PovState.SOUTH_EAST_;
-                }
-                else
-                {
-                    povState = PovState.EAST_;
-                }
-            }
-
-            return povState;
-        }
-
         public bool isAccelerometerSupported()
         {
             return false;
@@ -357,19 +298,6 @@ namespace monogame.Input
                     while (node != null)
                     {
                         node.Value.onAxisChanged(this, i, currentStatus.axes[i]);
-                        node = node.Next;
-                    }
-                }
-            }
-            
-            for (int i = 0; i < currentStatus.povs.Length; i++)
-            {
-                if (_prevStatus.povs[i] != currentStatus.povs[i])
-                {
-                    var node = _gamePadListeners.First;
-                    while (node != null)
-                    {
-                        node.Value.onPovChanged(this, i, currentStatus.povs[i]);
                         node = node.Next;
                     }
                 }

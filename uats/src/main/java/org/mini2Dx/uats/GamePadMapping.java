@@ -20,7 +20,6 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.GamePadListener;
-import org.mini2Dx.core.input.PovState;
 import org.mini2Dx.core.screen.BasicGameScreen;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
@@ -46,7 +45,6 @@ public class GamePadMapping extends BasicGameScreen implements GamePadListener {
 	private String gamePadInstanceId = "", gamePadType = "", gamePadModel = "";
 	private Map<Integer, String> buttonMessages = new HashMap<Integer, String>();
 	private Map<Integer, String> axisMessages = new HashMap<Integer, String>();
-	private Map<Integer, String> povMessages = new HashMap<Integer, String>();
 	private Map<Integer, String> xSliderMessages = new HashMap<Integer, String>();
 	private Map<Integer, String> ySliderMessages = new HashMap<Integer, String>();
 	private Map<Integer, String> accelerometerMessages = new HashMap<Integer, String>();
@@ -102,12 +100,6 @@ public class GamePadMapping extends BasicGameScreen implements GamePadListener {
 		
 		for(int axisCode : axisMessages.keySet()) {
 			g.drawString("Axis " + axisCode + ": " + axisMessages.get(axisCode), x, y);
-			y = incrementY(gc, y);
-			x = determineX(gc, x, y);
-		}
-		
-		for(int povCode : povMessages.keySet()) {
-			g.drawString("POV " + povCode + ": " + povMessages.get(povCode), x, y);
 			y = incrementY(gc, y);
 			x = determineX(gc, x, y);
 		}
@@ -200,14 +192,6 @@ public class GamePadMapping extends BasicGameScreen implements GamePadListener {
 		gamePadType = gamePad.getGamePadType().toFriendlyString();
 		gamePadModel = gamePad.getModelInfo();
 		buttonMessages.put(buttonCode, "UP");
-	}
-
-	@Override
-	public void onPovChanged(GamePad gamePad, int povCode, PovState povState) {
-		gamePadInstanceId = gamePad.getInstanceId();
-		gamePadType = gamePad.getGamePadType().toFriendlyString();
-		gamePadModel = gamePad.getModelInfo();
-		povMessages.put(povCode, povState.toString());
 	}
 
 	@Override

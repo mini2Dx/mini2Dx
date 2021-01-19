@@ -79,7 +79,7 @@ namespace monogame.Graphics
             return false;
         }
 
-        bool InputProcessor.scrolled(int obj0)
+        bool InputProcessor.scrolled(float scrollX, float scrollY)
         {
             return false;
         }

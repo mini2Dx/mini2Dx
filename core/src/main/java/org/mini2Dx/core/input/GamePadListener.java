@@ -29,9 +29,7 @@ public interface GamePadListener {
 	public void onButtonDown(GamePad gamePad, int buttonCode);
 
 	public void onButtonUp(GamePad gamePad, int buttonCode);
-
-	public void onPovChanged(GamePad gamePad, int povCode, PovState povState);
-
+	
 	public void onAxisChanged(GamePad gamePad, int axisCode, float axisValue);
 
 	public void onAccelerometerChanged(GamePad gamePad, int accelerometerCode, Vector3 value);

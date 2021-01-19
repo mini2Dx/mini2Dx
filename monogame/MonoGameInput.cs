@@ -19,6 +19,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using monogame.Input;
 using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Input;
 using Org.Mini2Dx.Core.Input.Nswitch;
 using Org.Mini2Dx.Core.Input.Ps4;
 using Org.Mini2Dx.Core.Input.Xbox;
@@ -31,35 +32,57 @@ namespace monogame
 {
     public class MonoGameInput : global::Java.Lang.Object, Org.Mini2Dx.Core._Input
     {
-        private InputProcessor _inputProcessor;
+        private InputProcessor inputProcessor;
+        private GamePadConnectionListener gamePadConnectionListener;
         
-        private MouseState _previousMouseState;
-        private Keys[] _previousPressedKeys;
-        private MonoGameGamePad[] _gamePads;
-        private readonly Array _gamePadsArray;
-        private MouseState _currentMouseState;
-        private Keys[] _currentPressedKeys;
+        private MouseState previousMouseState;
+        private Keys[] previousPressedKeys;
+        private MonoGameGamePad[] gamePads;
+        private readonly Array gamePadsArray;
+        private MouseState currentMouseState;
+        private Keys[] currentPressedKeys;
 
         public MonoGameInput()
         {
-            _currentMouseState = _previousMouseState = Mouse.GetState();
-            _currentPressedKeys = _previousPressedKeys = new Keys[0];
-            _gamePads = new MonoGameGamePad[Microsoft.Xna.Framework.Input.GamePad.MaximumGamePadCount];
-            for (var i = 0; i < _gamePads.Length; i++)
+            currentMouseState = previousMouseState = Mouse.GetState();
+            currentPressedKeys = previousPressedKeys = new Keys[0];
+            gamePads = new MonoGameGamePad[Microsoft.Xna.Framework.Input.GamePad.MaximumGamePadCount];
+            for (var i = 0; i < gamePads.Length; i++)
             {
-                _gamePads[i] = new MonoGameGamePad(i);
+                gamePads[i] = new MonoGameGamePad(i);
             }
-            _gamePadsArray = Array.with(_gamePads);
+            gamePadsArray = Array.with(gamePads);
         }
         
         public void setInputProcessor(InputProcessor inputProcessor)
         {
-            _inputProcessor = inputProcessor;
+            this.inputProcessor = inputProcessor;
+        }
+
+        public void setGamePadConnectionListener(GamePadConnectionListener listener, bool notifyExisting)
+        {
+            gamePadConnectionListener = listener;
+
+            if(!notifyExisting)
+            {
+                return;
+            }
+            for(int i = 0; i < gamePads.Length; i++)
+            {
+                if(gamePads[i] == null)
+                {
+                    continue;
+                }
+                if(gamePads[i].isConnected())
+                {
+                    listener.onConnect(gamePads[i]);
+                }
+            }
         }
 
         public Array getGamePads()
         {
-            return _gamePadsArray;
+            return gamePadsArray;
         }
 
         public PS4GamePad newPS4GamePad(GamePad gamePad)
@@ -90,11 +113,11 @@ namespace monogame
         public void update()
         {
             updateControllerInput();
-            _previousMouseState = _currentMouseState;
-            _previousPressedKeys = _currentPressedKeys;
-            _currentMouseState = Mouse.GetState();
-            _currentPressedKeys = Keyboard.GetState().GetPressedKeys();
-            if (_inputProcessor != null)
+            previousMouseState = currentMouseState;
+            previousPressedKeys = currentPressedKeys;
+            currentMouseState = Mouse.GetState();
+            currentPressedKeys = Keyboard.GetState().GetPressedKeys();
+            if (inputProcessor != null)
             {
                 updateMouseInput();
                 updateKeyboardInput();
@@ -103,11 +126,29 @@ namespace monogame
 
         private void updateControllerInput()
         {
-            for (int i = 0; i < _gamePads.Length; i++)
+            for (int i = 0; i < gamePads.Length; i++)
             {
-                if (_gamePads[i].wasConnected() || _gamePads[i].isConnected())
+                if (gamePads[i] == null)
                 {
-                    _gamePads[i].update();
+                    continue;
+                }
+                if (!gamePads[i].wasConnected() && gamePads[i].isConnected())
+                {
+                    if(gamePadConnectionListener != null)
+                    {
+                        gamePadConnectionListener.onConnect(gamePads[i]);
+                    }
+                }
+                else if (gamePads[i].wasConnected() && !gamePads[i].isConnected())
+                {
+                    if (gamePadConnectionListener != null)
+                    {
+                        gamePadConnectionListener.onDisconnect(gamePads[i]);
+                    }
+                }
+                if (gamePads[i].wasConnected() || gamePads[i].isConnected())
+                {
+                    gamePads[i].update();
                 }
             }
         }
@@ -122,57 +163,57 @@ namespace monogame
         private void updateMouseInput()
         {
 
-            if (_previousMouseState.X != _currentMouseState.X || _previousMouseState.Y != _currentMouseState.Y)
+            if (previousMouseState.X != currentMouseState.X || previousMouseState.Y != currentMouseState.Y)
             {
-                if (isAnyMouseButtonPressed(_currentMouseState))
+                if (isAnyMouseButtonPressed(currentMouseState))
                 {
-                    _inputProcessor.touchDragged(_currentMouseState.X, _currentMouseState.Y, 0);
+                    inputProcessor.touchDragged(currentMouseState.X, currentMouseState.Y, 0);
                 }
                 else
                 {
-                    _inputProcessor.mouseMoved(_currentMouseState.X, _currentMouseState.Y);
+                    inputProcessor.mouseMoved(currentMouseState.X, currentMouseState.Y);
                 }
             }
 
-            if (_previousMouseState.ScrollWheelValue != _currentMouseState.ScrollWheelValue)
+            if (previousMouseState.ScrollWheelValue != currentMouseState.ScrollWheelValue)
             {
-                _inputProcessor.scrolled(
-                    -Math.Sign(_currentMouseState.ScrollWheelValue - _previousMouseState.ScrollWheelValue));
+                inputProcessor.scrolled(0, 
+                    -Math.Sign(currentMouseState.ScrollWheelValue - previousMouseState.ScrollWheelValue));
             }
 
-            if (_previousMouseState.LeftButton != _currentMouseState.LeftButton)
+            if (previousMouseState.LeftButton != currentMouseState.LeftButton)
             {
-                if (_currentMouseState.LeftButton == ButtonState.Pressed)
+                if (currentMouseState.LeftButton == ButtonState.Pressed)
                 {
-                    _inputProcessor.touchDown(_currentMouseState.X, _currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.LEFT_);
+                    inputProcessor.touchDown(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.LEFT_);
                 }
                 else
                 {
-                    _inputProcessor.touchUp(_currentMouseState.X, _currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.LEFT_);
+                    inputProcessor.touchUp(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.LEFT_);
                 }
             }
 
-            if (_previousMouseState.MiddleButton != _currentMouseState.MiddleButton)
+            if (previousMouseState.MiddleButton != currentMouseState.MiddleButton)
             {
-                if (_currentMouseState.MiddleButton == ButtonState.Pressed)
+                if (currentMouseState.MiddleButton == ButtonState.Pressed)
                 {
-                    _inputProcessor.touchDown(_currentMouseState.X, _currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.MIDDLE_);
+                    inputProcessor.touchDown(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.MIDDLE_);
                 }
                 else
                 {
-                    _inputProcessor.touchUp(_currentMouseState.X, _currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.MIDDLE_);
+                    inputProcessor.touchUp(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.MIDDLE_);
                 }
             }
 
-            if (_previousMouseState.RightButton != _currentMouseState.RightButton)
+            if (previousMouseState.RightButton != currentMouseState.RightButton)
             {
-                if (_currentMouseState.RightButton == ButtonState.Pressed)
+                if (currentMouseState.RightButton == ButtonState.Pressed)
                 {
-                    _inputProcessor.touchDown(_currentMouseState.X, _currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.RIGHT_);
+                    inputProcessor.touchDown(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.RIGHT_);
                 }
                 else
                 {
-                    _inputProcessor.touchUp(_currentMouseState.X, _currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.RIGHT_);
+                    inputProcessor.touchUp(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.RIGHT_);
                 }
             }
         }
@@ -190,33 +231,34 @@ namespace monogame
 
             return false;
         }
+
         private void updateKeyboardInput()
         {
-            for (int i = 0; i < _currentPressedKeys.Length; i++)
+            for (int i = 0; i < currentPressedKeys.Length; i++)
             {
-                if (!contains(_previousPressedKeys, _currentPressedKeys[i]))
+                if (!contains(previousPressedKeys, currentPressedKeys[i]))
                 {
-                    var monoGameKey = monoGameKeyToGdxKey(_currentPressedKeys[i]);
+                    var monoGameKey = monoGameKeyToGdxKey(currentPressedKeys[i]);
                     if(monoGameKey != 0)
                     {
-                        _inputProcessor.keyDown(monoGameKey);
-                        var keyCharacter = monoGameKeyToChar(_currentPressedKeys[i]);
+                        inputProcessor.keyDown(monoGameKey);
+                        var keyCharacter = monoGameKeyToChar(currentPressedKeys[i]);
                         if (keyCharacter != 0)
                         {
-                            _inputProcessor.keyTyped(keyCharacter);
+                            inputProcessor.keyTyped(keyCharacter);
                         }
                     }
                 }
             }
 
-            for (int i = 0; i < _previousPressedKeys.Length; i++)
+            for (int i = 0; i < previousPressedKeys.Length; i++)
             {
-                if (!contains(_currentPressedKeys, _previousPressedKeys[i]))
+                if (!contains(currentPressedKeys, previousPressedKeys[i]))
                 {
-                    var monoGameKey = monoGameKeyToGdxKey(_previousPressedKeys[i]);
+                    var monoGameKey = monoGameKeyToGdxKey(previousPressedKeys[i]);
                     if (monoGameKey != 0)
                     {
-                        _inputProcessor.keyUp(monoGameKey);
+                        inputProcessor.keyUp(monoGameKey);
                     }
                 }
             }
@@ -520,35 +562,35 @@ namespace monogame
 
         public int getX()
         {
-            return _previousMouseState.X;
+            return previousMouseState.X;
         }
 
         public int getY()
         {
-            return _previousMouseState.Y;
+            return previousMouseState.Y;
         }
 
-        public bool isKeyJustPressed(int i)
+        public bool isKeyJustPressed(int keyCode)
         {
-            var monogameKey = gdxKeyToMonoGameKey(i);
-            return contains(_currentPressedKeys, monogameKey) && !contains(_previousPressedKeys, monogameKey);
+            var monogameKey = gdxKeyToMonoGameKey(keyCode);
+            return contains(currentPressedKeys, monogameKey) && !contains(previousPressedKeys, monogameKey);
         }
 
-        public bool isKeyDown(int i)
+        public bool isKeyDown(int keyCode)
         {
-            return contains(_currentPressedKeys, gdxKeyToMonoGameKey(i));
+            return contains(currentPressedKeys, gdxKeyToMonoGameKey(keyCode));
         }
 
-        public bool isKeyUp(int i)
+        public bool isKeyUp(int keyCode)
         {
-            return !isKeyDown(i);
+            return !isKeyDown(keyCode);
         }
 
         public bool justTouched()
         {
-            return _previousMouseState.LeftButton == ButtonState.Released && _currentMouseState.LeftButton == ButtonState.Pressed ||
-                   _previousMouseState.MiddleButton == ButtonState.Released && _currentMouseState.MiddleButton == ButtonState.Pressed ||
-                   _previousMouseState.RightButton == ButtonState.Released && _currentMouseState.RightButton == ButtonState.Pressed;
+            return previousMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed ||
+                   previousMouseState.MiddleButton == ButtonState.Released && currentMouseState.MiddleButton == ButtonState.Pressed ||
+                   previousMouseState.RightButton == ButtonState.Released && currentMouseState.RightButton == ButtonState.Pressed;
         }
     }
 }

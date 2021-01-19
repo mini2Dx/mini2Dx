@@ -18,11 +18,9 @@ package org.mini2Dx.libgdx.input;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.math.Vector3;
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.GamePadListener;
 import org.mini2Dx.core.input.GamePadType;
-import org.mini2Dx.core.input.PovState;
 import org.mini2Dx.core.input.ps4.PS4GamePad;
 import org.mini2Dx.core.input.xbox.XboxGamePad;
 import org.mini2Dx.gdx.math.MathUtils;
@@ -225,12 +223,6 @@ public class LibgdxGamePad implements GamePad, ControllerListener {
 	protected void notifyButtonUp(int buttonCode) {
 		for(int i = listeners.size - 1; i >= 0; i--) {
 			listeners.get(i).onButtonUp(this, buttonCode);
-		}
-	}
-
-	protected void notifyPovChanged(int povCode, PovState state) {
-		for(int i = listeners.size - 1; i >= 0; i--) {
-			listeners.get(i).onPovChanged(this, povCode, state);
 		}
 	}
 
