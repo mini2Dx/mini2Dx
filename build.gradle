@@ -52,7 +52,7 @@ ext {
 	artemisVersion="2.3.0"
 	beanutilsVersion="1.8.3"
 	gdxVersion="1.9.13"
-	gdxControllersVersion="2.0.0"
+	gdxControllersVersion="2.0.1"
 	langVersion="3.1"
 	lwjgl3Version="3.2.3"
 	multiDexVersion="1.0.1"
@@ -354,9 +354,7 @@ project(":" + rootProject.name + "-libgdx-desktop-lwjgl2") {
 		compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
 		compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 		compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-		compile ("com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion") {
-			exclude group: 'com.badlogicgames.gdx', module: 'gdx-jnigen-loader'
-		}
+		compile "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
 
 		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
 		testCompile "junit:junit:$junitVersion"
@@ -375,10 +373,11 @@ project(":" + rootProject.name + "-libgdx-desktop-lwjgl3") {
 		compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
 		compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 		compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-		compile ("com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion") {
+		compile "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
+		compile("com.badlogicgames.jamepad:jamepad:2.0.14.0") {
 			exclude group: 'com.badlogicgames.gdx', module: 'gdx-jnigen-loader'
 		}
-
+		
 		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
 		testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
