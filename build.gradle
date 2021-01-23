@@ -527,11 +527,15 @@ project(":" + rootProject.name + "-all") {
 					'-r', "${jdkDll};${supportDll}"
 		}
 
-		task buildDebugSolution(type: Exec, dependsOn: transpile) {
+		task restore(type:Exec, dependsOn: transpile) {
+			commandLine 'cmd', '/c', 'msbuild.exe', '/t:restore', './mini2Dx-all.sln'
+		}
+
+		task buildDebugSolution(type: Exec, dependsOn: restore) {
 			commandLine 'cmd', '/c', 'msbuild.exe', '/m', '/p:Configuration=Debug', '/clp:ErrorsOnly', 'mini2Dx-all.sln'
 		}
 
-		task buildReleaseSolution(type: Exec, dependsOn: transpile) {
+		task buildReleaseSolution(type: Exec, dependsOn: restore) {
 			commandLine 'cmd', '/c', 'msbuild.exe', '/m', '/p:Configuration=Release', '/clp:ErrorsOnly', 'mini2Dx-all.sln'
 		}
 
@@ -580,14 +584,18 @@ project(":" + rootProject.name + "-uats") {
 					'-o', project.file("generated-src").getAbsolutePath(),
 					'-p', 'mini2Dx-uats',
 					'-b',
-					'-r', "${jdkDll};${supportDll};..\\..\\..\\all\\generated-src\\bin\\Debug\\mini2Dx-all.dll"
+					'-r', "${jdkDll};${supportDll};..\\..\\..\\all\\generated-src\\bin\\Debug\\netstandard2.0\\mini2Dx-all.dll"
 		}
 
-		task buildDebugSolution(type: Exec, dependsOn: [generateMonoGameContent, transpile]) {
+		task restore(type:Exec, dependsOn: transpile) {
+			commandLine 'cmd', '/c', 'msbuild.exe', '/t:restore', '..\\mini2Dx.sln'
+		}
+
+		task buildDebugSolution(type: Exec, dependsOn: [generateMonoGameContent, restore]) {
 			commandLine 'cmd', '/c', 'msbuild.exe', '/m', '/p:Configuration=Debug', '/clp:ErrorsOnly', '..\\mini2Dx.sln'
 		}
 
-		task buildReleaseSolution(type: Exec, dependsOn: [generateMonoGameContent, transpile]) {
+		task buildReleaseSolution(type: Exec, dependsOn: [generateMonoGameContent, restore]) {
 			commandLine 'cmd', '/c', 'msbuild.exe', '/m', '/p:Configuration=Release', '/clp:ErrorsOnly', '..\\mini2Dx.sln'
 		}
 

@@ -25,7 +25,7 @@ namespace monogame.Util
 {
     public class MonoGameZlibStream : global::Java.Lang.Object, ZlibStream
     {
-        private MonoGame.Utilities.ZlibStream zlibStream;
+        private MonoGame.Framework.Utilities.ZlibStream zlibStream;
         private byte[] buffer = null;
 
         public MonoGameZlibStream(sbyte [] sdata)
@@ -35,7 +35,7 @@ namespace monogame.Util
             {
                 data[i] = (byte) sdata[i];
             }
-            zlibStream = new MonoGame.Utilities.ZlibStream(new MemoryStream(data), MonoGame.Utilities.CompressionMode.Decompress);
+            zlibStream = new MonoGame.Framework.Utilities.ZlibStream(new MemoryStream(data), MonoGame.Framework.Utilities.CompressionMode.Decompress);
         }
 
         public void read(sbyte[] arg0)
