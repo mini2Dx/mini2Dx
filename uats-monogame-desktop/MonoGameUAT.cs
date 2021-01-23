@@ -172,9 +172,10 @@ namespace mini2Dx_common_uats
                 return false;
             }
 
-            public bool scrolled(int amount)
+
+            public bool scrolled(float scrollX, float scrollY)
             {
-                Console.WriteLine("scrolled({0})", amount);
+                Console.WriteLine("scrolled({0}, {1})", scrollX, scrollY);
                 return false;
             }
 

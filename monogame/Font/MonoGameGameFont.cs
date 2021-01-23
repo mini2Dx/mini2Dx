@@ -54,8 +54,7 @@ namespace monogame.Font
             var font = new MonoGameGameFont();
             font._spriteFont = BMFontLoader.LoadXml(fntFileHandle.readString(), textureFileName =>
             {
-                return ((MonoGameTexture)Mdx.graphics_.newTexture(fntFileHandle.parent().child(textureFileName)))
-                    .texture2D;
+                return new TextureWithOffset(((MonoGameTexture)Mdx.graphics_.newTexture(fntFileHandle.parent().child(textureFileName))).texture2D);
             });
             font._sharedFontGlyphLayout = font.newGlyphLayout();
             font._capHeight = font._spriteFont.GetGlyphs()['A'].BoundsInTexture.Height;

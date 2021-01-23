@@ -1,118 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AC3AE86C-55AD-4F1E-97E8-12E6389137AD}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>monogame</RootNamespace>
     <AssemblyName>monogame</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <LangVersion>5</LangVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyTitle>monogame</AssemblyTitle>
+    <Product>monogame</Product>
+    <Copyright>Copyright © 2021 Thomas Cashman</Copyright>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mini2Dx-all">
-      <HintPath>..\all\generated-src\bin\Debug\mini2Dx-all.dll</HintPath>
+      <HintPath>..\all\generated-src\bin\Debug\netstandard2.0\mini2Dx-all.dll</HintPath>
     </Reference>
     <Reference Include="openjdk8">
-      <HintPath>..\..\kava\openjdk8\generated-src\bin\Debug\openjdk8.dll</HintPath>
+      <HintPath>..\..\kava\openjdk8\generated-src\bin\Debug\netstandard2.0\openjdk8.dll</HintPath>
     </Reference>
-    <Reference Include="SpriteFontPlus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>libs\SpriteFontPlus.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Audio\MonoGameAsyncSoundResult.cs" />
-    <Compile Include="Audio\MonoGameMusic.cs" />
-    <Compile Include="Audio\MonoGameSound.cs" />
-    <Compile Include="Files\mini2DxFileContent.cs" />
-    <Compile Include="Files\mini2DxFileReader.cs" />
-    <Compile Include="Files\MonoGameContentManager.cs" />
-    <Compile Include="Files\MonoGameFileHandle.cs" />
-    <Compile Include="Font\MonoGameFontCacheTexture.cs" />
-    <Compile Include="Font\MonoGameGameFont.cs" />
-    <Compile Include="Font\MonoGameFontGlyphLayout.cs" />
-    <Compile Include="Font\MonoGameGameFontCache.cs" />
-    <Compile Include="Graphics\MonoGameColor.cs" />
-    <Compile Include="Graphics\MonoGameCustomCursor.cs" />
-    <Compile Include="Graphics\MonoGameFrameBuffer.cs" />
-    <Compile Include="Graphics\MonoGameNinePatch.cs" />
-    <Compile Include="Graphics\MonoGamePixmap.cs" />
-    <Compile Include="Graphics\MonoGameReadOnlyColor.cs" />
-    <Compile Include="Graphics\MonoGameShader.cs" />
-    <Compile Include="Graphics\MonoGameShapeRenderer.cs" />
-    <Compile Include="Graphics\MonoGameSprite.cs" />
-    <Compile Include="Graphics\MonoGameSpriteCache.cs" />
-    <Compile Include="Graphics\MonoGameTexture.cs" />
-    <Compile Include="Graphics\MonoGameTextureAtlasRegion.cs" />
-    <Compile Include="Graphics\MonoGameTextureRegion.cs" />
-    <Compile Include="Input\MonoGameGamePad.cs" />
-    <Compile Include="Input\MonoGamePS4GamePad.cs" />
-    <Compile Include="Input\MonoGameXboxGamePad.cs" />
-    <Compile Include="Locks\MonoGameReadWriteLock.cs" />
-    <Compile Include="Locks\MonoGameReentrantLock.cs" />
-    <Compile Include="Mini2DxGame.cs" />
-    <Compile Include="MonoGameAudio.cs" />
-    <Compile Include="MonoGameConfig.cs" />
-    <Compile Include="MonoGameFiles.cs" />
-    <Compile Include="MonoGameFonts.cs" />
-    <Compile Include="MonoGameGraphics.cs" />
-    <Compile Include="MonoGameGraphicsUtils.cs" />
-    <Compile Include="MonoGameInput.cs" />
-    <Compile Include="MonoGameLocks.cs" />
-    <Compile Include="MonoGameLogger.cs" />
-    <Compile Include="MonoGamePlatformUtils.cs" />
-    <Compile Include="MonoGamePlayerData.cs" />
-    <Compile Include="MonoGameTaskExecutor.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\MonoGameGraphicsHelpers.cs" />
-    <Compile Include="Util\MonoGameMathsUtil.cs" />
-    <Compile Include="Util\MonoGameInputStream.cs" />
-    <Compile Include="Util\MonoGameOutputStream.cs" />
-    <Compile Include="Util\MonoGameZlibStream.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.Portable">
-      <Version>3.7.1.189</Version>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641">
+      <PrivateAssets>All</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="SpriteFontPlus" Version="0.8.5.43" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-         Other similar extension points exist, see Microsoft.Common.targets.
-    <Target Name="BeforeBuild">
-    </Target>
-    <Target Name="AfterBuild">
-    </Target>
-    -->
 </Project>

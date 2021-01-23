@@ -14,8 +14,6 @@
  * limitations under the License.
  ******************************************************************************/
 using System;
-using System.Runtime.Remoting.Messaging;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using monogame.Input;
 using Org.Mini2Dx.Core;
