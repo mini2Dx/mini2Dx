@@ -12,6 +12,11 @@ task launchDesktop3(dependsOn: classes, type: JavaExec) {
     standardInput = System.in
     workingDir = project.assetsDir
     ignoreExitValue = true
+
+    if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+        // Required to run lwjgl java apps on Mac OSX
+        jvmArgs = ["-XstartOnFirstThread"]
+    }
 }
 
 eclipse {
