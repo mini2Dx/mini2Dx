@@ -48,7 +48,7 @@ namespace monogame
             jsonSerializer._init_();
             Mdx.json_ = jsonSerializer;
 
-            if(config.AllowUserResizing.HasValue)
+            if (config.AllowUserResizing.HasValue)
             {
                 Window.AllowUserResizing = config.AllowUserResizing.Value;
             }

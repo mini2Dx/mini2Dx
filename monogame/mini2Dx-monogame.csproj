@@ -8,17 +8,12 @@
     <Copyright>Copyright © 2021 Thomas Cashman</Copyright>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="mini2Dx-all">
-      <HintPath>..\all\generated-src\bin\Debug\netstandard2.0\mini2Dx-all.dll</HintPath>
-    </Reference>
-    <Reference Include="openjdk8">
-      <HintPath>..\..\kava\openjdk8\generated-src\bin\Debug\netstandard2.0\openjdk8.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="SpriteFontPlus" Version="0.8.5.43" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\uats\generated-src\mini2Dx-uats.csproj" />
   </ItemGroup>
 </Project>
