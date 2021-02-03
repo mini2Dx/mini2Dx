@@ -494,52 +494,6 @@ project(":" + rootProject.name + "-all") {
 		source docProjects().collect { p -> p.name.contains("android") ? p.android.sourceSets.main.java.srcDirs : p.sourceSets.main.allJava }
 		classpath = files(docProjects().collect { p -> p.name.contains("android") ? p.configurations.compile : p.sourceSets.main.compileClasspath })
 	}
-
-	task fatJar(type: Jar, dependsOn: [
-			project(":" + rootProject.name + "-core").build,
-			project(":" + rootProject.name + "-tiled").build,
-			project(":" + rootProject.name + "-ui").build,
-	]) {
-		baseName = project.name + '-fatjar'
-		from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-		with jar
-	}
-
-	if(hasConsoleSdk()) {
-		task desugarJar(type: com.viridiansoftware.desugar.DesugarTask, dependsOn: fatJar) {
-			inputJar = file('build/libs/' + project.name + '-fatjar-' + project.version + '.jar')
-			outputJar = file('build/libs/' + project.name + '-desugar.jar')
-			bootstrapClasspath = files("${jdkJar}")
-			coreLibrary false
-			desugarInterfaceMethodBodiesIfNeeded false
-			minSdkVersion 26
-			verbose true
-		}
-
-		task transpile(type: Exec, dependsOn: desugarJar) {
-			workingDir 'build/libs'
-			commandLine 'cmd', '/c', "${transpilerExe}",
-					'-i', project.name + '-desugar.jar',
-					'-o', project.file("generated-src").getAbsolutePath(),
-					'-p', 'mini2Dx-all',
-					'-b',
-					'-r', "${jdkDll};${supportDll}"
-		}
-
-		task restore(type:Exec, dependsOn: transpile) {
-			commandLine 'cmd', '/c', 'msbuild.exe', '/t:restore', './mini2Dx-all.sln'
-		}
-
-		task buildDebugSolution(type: Exec, dependsOn: restore) {
-			commandLine 'cmd', '/c', 'msbuild.exe', '/m', '/p:Configuration=Debug', '/clp:ErrorsOnly', 'mini2Dx-all.sln'
-		}
-
-		task buildReleaseSolution(type: Exec, dependsOn: restore) {
-			commandLine 'cmd', '/c', 'msbuild.exe', '/m', '/p:Configuration=Release', '/clp:ErrorsOnly', 'mini2Dx-all.sln'
-		}
-
-		build.dependsOn buildDebugSolution, buildReleaseSolution
-	}
 }
 
 project(":" + rootProject.name + "-uats") {
@@ -559,20 +513,25 @@ project(":" + rootProject.name + "-uats") {
 	}
 
 	if(hasConsoleSdk()) {
+		task fatJar(type: Jar, dependsOn: [project(":" + rootProject.name + "-all").build]) {
+			baseName = project.name + '-fatjar'
+			from { configurations.compile.plus(file("${jdkJar}")).collect { it.isDirectory() ? it : zipTree(it) } }
+			with jar
+		}
+
 		mgcb {
 			assetsDirectory = file('../uats-libgdx-desktop/assets')
 			projectDirectory = file('../uats-monogame-desktop/Content')
-			dlls = files('../monogame-pipeline-ext/bin/Debug/monogame-pipeline-ext.dll')
+			dlls = files('../monogame-pipeline-ext/bin/Debug/netstandard2.0/monogame-pipeline-ext.dll')
 		}
 
-		task desugarJar(type: com.viridiansoftware.desugar.DesugarTask, dependsOn: [jar, project(":" + rootProject.name + "-all").fatJar]) {
-			inputJar = file('build/libs/' + project.name + '-' + project.version + '.jar')
+		task desugarJar(type: com.viridiansoftware.desugar.DesugarTask, dependsOn: fatJar) {
+			inputJar = file('build/libs/' + project.name + '-fatjar-' + project.version + '.jar')
 			outputJar = file('build/libs/' + project.name + '-desugar.jar')
-			bootstrapClasspath = files("${jdkJar}")
-			classpath = files("../all/build/libs/mini2Dx-all-desugar.jar")
-			coreLibrary false
-			desugarInterfaceMethodBodiesIfNeeded false
-			minSdkVersion 26
+			allowEmptyBootclasspath true
+			desugarInterfaceMethodBodiesIfNeeded true
+			coreLibrary true
+			minSdkVersion 19
 			verbose true
 		}
 
@@ -583,7 +542,9 @@ project(":" + rootProject.name + "-uats") {
 					'-o', project.file("generated-src").getAbsolutePath(),
 					'-p', 'mini2Dx-uats',
 					'-b',
-					'-r', "${jdkDll};${supportDll};..\\..\\..\\all\\generated-src\\bin\\Debug\\netstandard2.0\\mini2Dx-all.dll"
+					'--overrides', "${overrides}",
+					'--ignore-list', "${ignoreList}",
+					'-r', "${supportDll}"
 		}
 
 		task restore(type:Exec, dependsOn: transpile) {

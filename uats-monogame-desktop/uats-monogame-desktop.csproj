@@ -10,14 +10,6 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="mini2Dx-all">
-      <HintPath>..\all\generated-src\bin\Debug\netstandard2.0\mini2Dx-all.dll</HintPath>
-    </Reference>
-    <Reference Include="openjdk8">
-      <HintPath>..\all\generated-src\bin\Debug\netstandard2.0\openjdk8.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
   </ItemGroup>
