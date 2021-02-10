@@ -121,6 +121,10 @@ public class DependencyInjection {
         return (T) beans.get(classKey).getInstance();
     }
 
+    public ComponentScanner getComponentScanner() {
+        return componentScanner;
+    }
+
     public BeanUtils beanUtils() {
         return beanUtils;
     }
