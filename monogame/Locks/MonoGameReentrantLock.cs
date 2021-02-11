@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-using Org.Mini2Dx.Core.Lock;
+using Org.Mini2Dx.Lockprovider;
 using System;
 using System.Collections.Generic;
 using System.Linq;

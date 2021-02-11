@@ -19,11 +19,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using monogame.Locks;
-using Org.Mini2Dx.Core.Lock;
+using Org.Mini2Dx.Lockprovider;
 
 namespace monogame
 {
-    public class MonoGameLocks : global::Java.Lang.Object, global::Org.Mini2Dx.Core.Locks
+    public class MonoGameLocks : global::Java.Lang.Object, global::Org.Mini2Dx.Lockprovider.Locks
     {
         public ReadWriteLock newReadWriteLock()
         {
