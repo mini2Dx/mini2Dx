@@ -19,7 +19,6 @@ import junit.framework.Assert;
 import net.jodah.concurrentunit.Waiter;
 import org.junit.Before;
 import org.junit.Test;
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.collision.util.QuadTreeAwareCollisionBox;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Point;
@@ -28,6 +27,7 @@ import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;

@@ -17,7 +17,7 @@ package org.mini2Dx.core.collections.concurrent;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.collections.IntTreeMap;
-import org.mini2Dx.core.lock.ReadWriteLock;
+import org.mini2Dx.lockprovider.ReadWriteLock;
 import org.mini2Dx.gdx.utils.IntMap;
 
 public class ConcurrentIntTreeMap<T> extends IntTreeMap<T> implements ConcurrentCollection {

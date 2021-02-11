@@ -19,7 +19,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.TimestepMode;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.geom.*;
-import org.mini2Dx.core.lock.ReadWriteLock;
+import org.mini2Dx.lockprovider.ReadWriteLock;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;

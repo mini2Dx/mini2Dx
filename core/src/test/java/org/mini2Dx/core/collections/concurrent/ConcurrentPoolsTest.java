@@ -2,8 +2,8 @@ package org.mini2Dx.core.collections.concurrent;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
 import java.util.concurrent.CountDownLatch;
 

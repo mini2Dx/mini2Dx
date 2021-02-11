@@ -19,7 +19,7 @@ import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.geom.*;
 import org.mini2Dx.core.graphics.Color;
-import org.mini2Dx.core.lock.ReadWriteLock;
+import org.mini2Dx.lockprovider.ReadWriteLock;
 import org.mini2Dx.gdx.utils.Array;
 
 /**

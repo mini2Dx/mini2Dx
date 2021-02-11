@@ -16,8 +16,8 @@
 package org.mini2Dx.core.collections.concurrent;
 
 import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.lock.ReadWriteLock;
 import org.mini2Dx.gdx.utils.FloatArray;
+import org.mini2Dx.lockprovider.ReadWriteLock;
 
 public class ConcurrentFloatArray extends FloatArray implements ConcurrentCollection {
 

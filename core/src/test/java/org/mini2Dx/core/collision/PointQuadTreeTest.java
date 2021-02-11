@@ -18,13 +18,13 @@ package org.mini2Dx.core.collision;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.collision.util.QuadTreeAwareCollisionPoint;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
 import java.util.Random;
 

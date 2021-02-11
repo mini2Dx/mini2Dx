@@ -18,11 +18,11 @@ package org.mini2Dx.core.util;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Logger;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.collision.CollisionBox;
 import org.mini2Dx.core.collision.CollisionCircle;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
 public class InterpolationTrackerTest {
 

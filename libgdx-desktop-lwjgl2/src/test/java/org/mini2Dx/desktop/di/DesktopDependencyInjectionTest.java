@@ -18,7 +18,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.DependencyInjection;
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.di.dummy.*;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
@@ -26,6 +25,7 @@ import org.mini2Dx.libgdx.LibgdxFiles;
 import org.mini2Dx.libgdx.LibgdxTaskExecutor;
 import org.mini2Dx.libgdx.desktop.DesktopComponentScanner;
 import org.mini2Dx.libgdx.game.GameWrapper;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
 /**
  * Integration test for GameContext and {@link DesktopComponentScanner}

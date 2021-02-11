@@ -17,13 +17,12 @@ package org.mini2Dx.ui.element;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
 import org.mini2Dx.core.serialization.XmlSerializer;
 import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 import org.mini2Dx.ui.layout.HorizontalAlignment;
 
 /**

@@ -19,12 +19,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Logger;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.collision.util.*;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.Vector2;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
 public class CollisionsTest {
 	private static final int DEFAULT_POOL_SIZE = 1;

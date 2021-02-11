@@ -16,8 +16,8 @@
 package org.mini2Dx.core.collections.concurrent;
 
 import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.lock.ReadWriteLock;
 import org.mini2Dx.gdx.utils.BooleanArray;
+import org.mini2Dx.lockprovider.ReadWriteLock;
 
 public class ConcurrentBooleanArray extends BooleanArray implements ConcurrentCollection {
 

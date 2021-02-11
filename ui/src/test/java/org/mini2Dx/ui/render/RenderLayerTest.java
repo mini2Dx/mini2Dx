@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.mini2Dx.ui.render;
 
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.gdx.utils.Array;
 import junit.framework.Assert;
@@ -25,6 +24,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 import org.mini2Dx.ui.dummy.DummyParentRenderNode;
 import org.mini2Dx.ui.dummy.DummyParentUiElement;
 import org.mini2Dx.ui.dummy.DummyRenderNode;
@@ -33,9 +33,6 @@ import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.layout.FlexLayoutRuleset;
 import org.mini2Dx.ui.layout.LayoutRuleset;
 import org.mini2Dx.ui.layout.LayoutState;
-import org.mini2Dx.ui.layout.ScreenSize;
-
-import java.util.List;
 
 /**
  * Unit tests for {@link RenderLayer}

@@ -18,11 +18,11 @@ package org.mini2Dx.core.collision;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.geom.PositionChangeListener;
 import org.mini2Dx.core.geom.SizeChangeListener;
 import org.mini2Dx.gdx.math.Vector2;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
 /**
  * Unit tests for {@link CollisionPolygon}

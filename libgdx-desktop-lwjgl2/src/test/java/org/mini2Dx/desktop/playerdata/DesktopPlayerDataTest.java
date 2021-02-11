@@ -18,7 +18,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.DependencyInjection;
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.StdOutLogger;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
@@ -30,6 +29,7 @@ import org.mini2Dx.libgdx.desktop.DesktopComponentScanner;
 import org.mini2Dx.libgdx.desktop.DesktopPlayerData;
 import org.mini2Dx.libgdx.game.GameWrapper;
 import org.mini2Dx.core.serialization.dummy.*;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
 import java.io.File;
 import java.util.*;

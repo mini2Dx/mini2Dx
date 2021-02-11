@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.mini2Dx.ui.render;
 
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.gdx.utils.Array;
 import org.jmock.Expectations;
@@ -23,6 +22,7 @@ import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 import org.mini2Dx.ui.InputSource;
 import org.mini2Dx.ui.dummy.DummyRenderNode;
 import org.mini2Dx.ui.dummy.DummyUiElement;
@@ -35,8 +35,6 @@ import org.mini2Dx.ui.style.ParentStyleRule;
 import org.mini2Dx.ui.style.UiTheme;
 
 import junit.framework.Assert;
-
-import java.util.List;
 
 /**
  * Unit tests for {@link DivRenderNode}

@@ -18,13 +18,13 @@ package org.mini2Dx.core.serialization;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.RequiredFieldException;
 import org.mini2Dx.core.exception.SerializationException;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
 import org.mini2Dx.core.serialization.dummy.*;
 import org.mini2Dx.gdx.utils.*;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
 import java.util.ArrayList;
 import java.util.HashMap;

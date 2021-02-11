@@ -26,6 +26,7 @@ import org.mini2Dx.core.reflect.jvm.JvmReflection;
 import org.mini2Dx.core.serialization.JsonSerializer;
 import org.mini2Dx.core.serialization.XmlSerializer;
 import org.mini2Dx.libgdx.*;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 import org.mini2Dx.natives.OsInformation;
 
 /**

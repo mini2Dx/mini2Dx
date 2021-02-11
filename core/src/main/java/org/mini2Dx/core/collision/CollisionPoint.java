@@ -21,7 +21,7 @@ import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.PositionChangeListener;
 import org.mini2Dx.core.geom.Positionable;
 import org.mini2Dx.core.geom.Shape;
-import org.mini2Dx.core.lock.ReadWriteLock;
+import org.mini2Dx.lockprovider.ReadWriteLock;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;

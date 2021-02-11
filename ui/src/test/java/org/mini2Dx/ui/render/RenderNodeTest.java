@@ -15,8 +15,6 @@
  ******************************************************************************/
 package org.mini2Dx.ui.render;
 
-import org.junit.Ignore;
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.Platform;
 import org.mini2Dx.core.util.InterpolationTracker;
@@ -28,6 +26,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 import org.mini2Dx.ui.dummy.DummyParentRenderNode;
 import org.mini2Dx.ui.dummy.DummyParentUiElement;
 import org.mini2Dx.ui.dummy.DummyRenderNode;

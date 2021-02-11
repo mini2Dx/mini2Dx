@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.mini2Dx.core.collision;
 
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.collision.util.QuadTreeAwareCollisionPoint;
 import org.mini2Dx.gdx.math.MathUtils;
 import junit.framework.Assert;
@@ -27,6 +26,7 @@ import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
 import java.util.Queue;
 import java.util.Random;

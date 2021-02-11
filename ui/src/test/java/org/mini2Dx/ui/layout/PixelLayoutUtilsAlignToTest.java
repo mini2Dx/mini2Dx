@@ -21,10 +21,9 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 import org.mini2Dx.ui.dummy.DummyParentUiElement;
-import org.mini2Dx.ui.dummy.DummyUiElement;
 
 public class PixelLayoutUtilsAlignToTest {
 

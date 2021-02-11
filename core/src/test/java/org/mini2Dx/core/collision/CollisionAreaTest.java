@@ -18,9 +18,9 @@ package org.mini2Dx.core.collision;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mini2Dx.core.JvmLocks;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.geom.PositionChangeListener;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
 /**
  *
