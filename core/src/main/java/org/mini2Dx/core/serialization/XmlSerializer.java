@@ -412,15 +412,23 @@ public class XmlSerializer {
                 constructorParameters[i] = parsePrimitive(element.getAttributes().get(bestMatchedConstructor.getConstructorArgName(i)), bestMatchedConstructor.getConstructorArgTypes()[i]);
             }
 
+            boolean couldNotFindConstructor = false;
             try {
                 return (T) clazz.getConstructor(bestMatchedConstructor.getConstructorArgTypes()).newInstance(constructorParameters);
+            } catch (NoSuchMethodException e) {
+                couldNotFindConstructor = true;
             } catch (Exception e) {
-                e.printStackTrace();
+                Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
             }
             try {
                 return (T) clazz.getConstructor(bestMatchedConstructor.getConstructorArgTypesWithPrimitives()).newInstance(constructorParameters);
+            } catch (NoSuchMethodException e) {
+                couldNotFindConstructor = true;
             } catch (Exception e) {
-                e.printStackTrace();
+                Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
+            }
+            if(couldNotFindConstructor) {
+                Mdx.log.error(LOGGING_TAG, "Could not find constructor for " + clazz.getName() + ". Falling back to default constructor");
             }
             return (T) Mdx.reflect.newInstance(clazz);
         } else {
