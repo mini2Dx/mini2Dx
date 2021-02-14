@@ -417,6 +417,11 @@ public class XmlSerializer {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            try {
+                return (T) clazz.getConstructor(bestMatchedConstructor.getConstructorArgTypesWithPrimitives()).newInstance(constructorParameters);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return (T) Mdx.reflect.newInstance(clazz);
         } else {
             Constructor bestMatchedConstructor = null;

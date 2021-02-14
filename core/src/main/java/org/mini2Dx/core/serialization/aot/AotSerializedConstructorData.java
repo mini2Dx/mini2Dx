@@ -17,6 +17,7 @@ public class AotSerializedConstructorData {
 	private final Array<String> constructorArgTypes = new Array<String>();
 
 	private Class[] constructorParamTypes = null;
+	private Class[] constructorParamTypesWithPrimitives = null;
 
 	public AotSerializedConstructorData(Class ownerClass, Constructor constructor, Array<ConstructorArg> constructorArgs) {
 		for(int i = 0; i < constructorArgs.size; i++) {
@@ -83,6 +84,28 @@ public class AotSerializedConstructorData {
 		return null;
 	}
 
+	public Class getConstructorArgPrimitiveType(int index) {
+		switch (constructorArgTypes.get(index).toLowerCase()) {
+		case "java.lang.boolean":
+			return Boolean.TYPE;
+		case "java.lang.byte":
+			return Byte.TYPE;
+		case "java.lang.char":
+			return Character.TYPE;
+		case "java.lang.double":
+			return Double.TYPE;
+		case "java.lang.float":
+			return Float.TYPE;
+		case "java.lang.integer":
+			return Integer.TYPE;
+		case "java.lang.long":
+			return Long.TYPE;
+		case "java.lang.short":
+			return Short.TYPE;
+		}
+		return null;
+	}
+
 	public Class[] getConstructorArgTypes() {
 		if(constructorParamTypes == null) {
 			constructorParamTypes = new Class[constructorArgTypes.size];
@@ -95,6 +118,25 @@ public class AotSerializedConstructorData {
 			}
 		}
 		return constructorParamTypes;
+	}
+
+	public Class[] getConstructorArgTypesWithPrimitives() {
+		if(constructorParamTypesWithPrimitives == null) {
+			constructorParamTypesWithPrimitives = new Class[constructorArgTypes.size];
+			for(int i = 0; i < constructorParamTypesWithPrimitives.length; i++) {
+				Class primitiveType = getConstructorArgPrimitiveType(i);
+				if(primitiveType == null) {
+					try {
+						constructorParamTypesWithPrimitives[i] = Class.forName(constructorArgTypes.get(i));
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+				} else {
+					constructorParamTypesWithPrimitives[i] = primitiveType;
+				}
+			}
+		}
+		return constructorParamTypesWithPrimitives;
 	}
 
 	@Override
