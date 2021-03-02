@@ -64,6 +64,17 @@ public class ConcurrentOrderedSet<T> extends OrderedSet<T> implements Concurrent
     }
 
     /**
+     * Returns the size in a thread-safe manner
+     * @return 0 if empty
+     */
+    public int size() {
+        lock.lockRead();
+        final int result = super.size;
+        lock.unlockRead();
+        return result;
+    }
+
+    /**
      * Returns true if the key was not already in the set. If this set already contains the key, the call leaves the set unchanged
      * and returns false.
      *

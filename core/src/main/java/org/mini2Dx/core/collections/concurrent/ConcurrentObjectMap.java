@@ -62,6 +62,17 @@ public class ConcurrentObjectMap<K, V> extends ObjectMap<K, V> implements Concur
     }
 
     /**
+     * Returns the size in a thread-safe manner
+     * @return 0 if empty
+     */
+    public int size() {
+        lock.lockRead();
+        final int result = super.size;
+        lock.unlockRead();
+        return result;
+    }
+
+    /**
      * Returns the old value associated with the specified key, or null.
      *
      * @param key

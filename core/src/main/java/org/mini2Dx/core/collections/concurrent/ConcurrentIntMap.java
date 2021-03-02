@@ -62,6 +62,17 @@ public class ConcurrentIntMap<T> extends IntMap<T> implements ConcurrentCollecti
         super(map);
     }
 
+    /**
+     * Returns the size in a thread-safe manner
+     * @return 0 if empty
+     */
+    public int size() {
+        lock.lockRead();
+        final int result = super.size;
+        lock.unlockRead();
+        return result;
+    }
+
     @Override
     public T put(int key, T value) {
         lock.lockWrite();

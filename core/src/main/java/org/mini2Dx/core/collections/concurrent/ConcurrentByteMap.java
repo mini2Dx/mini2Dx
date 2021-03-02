@@ -61,6 +61,17 @@ public class ConcurrentByteMap<T> extends ByteMap<T> implements ConcurrentCollec
         super(map);
     }
 
+    /**
+     * Returns the size in a thread-safe manner
+     * @return 0 if empty
+     */
+    public int size() {
+        lock.lockRead();
+        final int result = super.size;
+        lock.unlockRead();
+        return result;
+    }
+
     @Override
     public T put(byte key, T value) {
         lock.lockWrite();

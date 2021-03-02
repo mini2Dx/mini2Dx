@@ -16,6 +16,7 @@
 package org.mini2Dx.libgdx;
 
 import org.mini2Dx.core.TaskExecutor;
+import org.mini2Dx.core.collections.concurrent.ConcurrentArray;
 import org.mini2Dx.core.executor.AsyncFuture;
 import org.mini2Dx.core.executor.AsyncResult;
 import org.mini2Dx.core.executor.FrameSpreadTask;
@@ -31,7 +32,7 @@ public class LibgdxTaskExecutor implements TaskExecutor {
 
 	private final ExecutorService executorService;
 	private final AtomicInteger threadIdGenerator = new AtomicInteger(0);
-	private final Array<FrameSpreadTask> spreadTasks = new Array<FrameSpreadTask>(false, 16);
+	private final ConcurrentArray<FrameSpreadTask> spreadTasks = new ConcurrentArray<FrameSpreadTask>(false, 16);
 
 	private int maxFrameTasksPerFrame;
 
@@ -50,7 +51,7 @@ public class LibgdxTaskExecutor implements TaskExecutor {
 	@Override
 	public void update(float delta) {
 		int taskCount = 0;
-		for(int i = 0; i < spreadTasks.size; i++) {
+		for(int i = 0; i < spreadTasks.size(); i++) {
 			if(spreadTasks.get(i).updateTask()) {
 				spreadTasks.removeIndex(i);
 				i--;
@@ -110,7 +111,7 @@ public class LibgdxTaskExecutor implements TaskExecutor {
 
 	@Override
 	public int getTotalQueuedFrameSpreadTasks() {
-		return spreadTasks.size;
+		return spreadTasks.size();
 	}
 
 	@Override

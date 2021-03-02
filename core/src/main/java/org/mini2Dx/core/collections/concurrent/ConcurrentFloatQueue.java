@@ -43,6 +43,17 @@ public class ConcurrentFloatQueue extends FloatQueue implements ConcurrentCollec
     }
 
     /**
+     * Returns the size in a thread-safe manner
+     * @return 0 if empty
+     */
+    public int size() {
+        lock.lockRead();
+        final int result = super.size;
+        lock.unlockRead();
+        return result;
+    }
+
+    /**
      * Append given object to the tail. (enqueue to tail) Unless backing array needs resizing, operates in O(1) time.
      *
      * @param object can be null

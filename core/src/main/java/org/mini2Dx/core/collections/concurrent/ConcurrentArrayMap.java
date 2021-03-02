@@ -84,6 +84,17 @@ public class ConcurrentArrayMap<K, V> extends ArrayMap<K, V> implements Concurre
         super(array);
     }
 
+    /**
+     * Returns the size in a thread-safe manner
+     * @return 0 if empty
+     */
+    public int size() {
+        lock.lockRead();
+        final int result = super.size;
+        lock.unlockRead();
+        return result;
+    }
+
     @Override
     public int put(K key, V value) {
         lock.lockWrite();

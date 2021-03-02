@@ -84,6 +84,17 @@ public class ConcurrentBooleanArray extends BooleanArray implements ConcurrentCo
         super(ordered, array, startIndex, count);
     }
 
+    /**
+     * Returns the size in a thread-safe manner
+     * @return 0 if empty
+     */
+    public int size() {
+        lock.lockRead();
+        final int result = super.size;
+        lock.unlockRead();
+        return result;
+    }
+
     @Override
     public void add(boolean value) {
         lock.lockWrite();

@@ -63,6 +63,17 @@ public class ConcurrentIntSet extends IntSet implements ConcurrentCollection {
     }
 
     /**
+     * Returns the size in a thread-safe manner
+     * @return 0 if empty
+     */
+    public int size() {
+        lock.lockRead();
+        final int result = super.size;
+        lock.unlockRead();
+        return result;
+    }
+
+    /**
      * Returns true if the key was not already in the set.
      *
      * @param key
