@@ -17,6 +17,7 @@ package org.mini2Dx.core;
 
 import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.files.FileHandle;
+import org.mini2Dx.core.font.FontBuilderGameFont;
 import org.mini2Dx.core.font.GameFont;
 import org.mini2Dx.core.font.MonospaceGameFont;
 
@@ -58,5 +59,15 @@ public abstract class Fonts {
 	 */
 	public GameFont newMonospaceFont(MonospaceGameFont.FontParameters fontParameters) {
 		return new MonospaceGameFont(fontParameters);
+	}
+
+	/**
+	 * Creates a new {@link FontBuilderGameFont} instance. Font made using <a href="https://github.com/andryblack/fontbuilder">FontBuilder</a>.
+	 * {@link GameFont#load(AssetManager)}, {@link GameFont#loadInternal()} or {@link GameFont#loadExternal()} must be called afterwards.
+	 * @param fontParameters The {@link org.mini2Dx.core.font.FontBuilderGameFont.FontParameters}
+	 * @return A new {@link FontBuilderGameFont} instance
+	 */
+	public GameFont newFontBuilderFont(FontBuilderGameFont.FontParameters fontParameters) {
+		return new FontBuilderGameFont(fontParameters);
 	}
 }
