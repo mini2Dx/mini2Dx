@@ -514,6 +514,8 @@ project(":" + rootProject.name + "-uats") {
 		compile project(":" + rootProject.name + "-all")
 	}
 
+	compileJava.options.encoding = "UTF-8"
+
 	if(hasConsoleSdk()) {
 		task fatJar(type: Jar, dependsOn: [project(":" + rootProject.name + "-all").build]) {
 			baseName = project.name + '-fatjar'

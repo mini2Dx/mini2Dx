@@ -77,6 +77,7 @@ public class UATApplication extends ScreenBasedGame {
 		addScreen(new SpriteUAT(fallbackFileHandleResolver));
 		addScreen(new ViewportUAT(fallbackFileHandleResolver));
 		addScreen(new MonospaceFontUAT(assetManager));
+		addScreen(new FontBuilderFontUAT(assetManager));
 		addScreen(new AudioUAT(fallbackFileHandleResolver));
 		addScreen(new AsyncAudioUAT(fallbackFileHandleResolver));
 		addScreen(new OrthogonalTiledMapNoCachingUAT(assetManager));
