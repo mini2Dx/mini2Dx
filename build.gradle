@@ -273,6 +273,8 @@ project(":" + rootProject.name + "-core") {
     apply plugin: "me.champeau.gradle.jmh"
     apply plugin: "jacoco"
 
+	compileJava.options.encoding = "UTF-8"
+
     dependencies {
 		compile "org.mini2Dx:gdx-compression:$gdxVersion"
 		compile "org.mini2Dx:gdx-input:$gdxVersion"

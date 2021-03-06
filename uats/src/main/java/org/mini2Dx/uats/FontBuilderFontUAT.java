@@ -19,7 +19,6 @@ import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import org.mini2Dx.core.util.Align;
-import org.mini2Dx.gdx.utils.IntIntMap;
 import org.mini2Dx.uats.util.ScreenIds;
 import org.mini2Dx.uats.util.UATSelectionScreen;
 
@@ -37,8 +36,8 @@ public class FontBuilderFontUAT extends BasicGameScreen implements MonospaceGame
 		this.assetManager = assetManager;
 
 		final FontBuilderGameFont.FontParameters fontParameters = new FontBuilderGameFont.FontParameters();
-		fontParameters.xmlPath = "ch_bold_12.xml";
-		fontParameters.texturePath = "ch_bold_12.png";
+		fontParameters.xmlPath = "ipix_regular_12.xml";
+		fontParameters.texturePath = "ipix_regular_12.png";
 		fontParameters.xmlFileHandleType = FileType.INTERNAL;
 
 		font = new FontBuilderGameFont(fontParameters);
@@ -60,8 +59,8 @@ public class FontBuilderFontUAT extends BasicGameScreen implements MonospaceGame
 			return;
 		}
 		if (!cacheSetUp) {
-			fontCache.addText("Font cache example", 0f, 0f);
-			fontCache.addText("Font cache wrapping example", 0f, font.getLineHeight(), 32f, Align.LEFT, true);
+			fontCache.addText("我很好！如果拿到珍宝的话会更好！我们一起搞定它！", 0f, 0f);
+			fontCache.addText("别担心，亲爱的朋友，伊维特会照顾好你的。", 0f, font.getLineHeight(), 32f, Align.LEFT, true);
 			cacheSetUp = true;
 		}
 	}
@@ -84,28 +83,28 @@ public class FontBuilderFontUAT extends BasicGameScreen implements MonospaceGame
 
 		float renderY = 4f;
 
-		g.drawString("炼金术耗尽了你的能量。你会在一定时间内重获能量，好好休息一下或者吃顿好的也会加速恢复能量。", 4f, renderY);
-		renderY += font.getLineHeight() * 4f;
+		g.drawString("看到了吗?没那么难是不是?接下来就随意探索这座山吧.", 4f, renderY);
+		renderY += font.getLineHeight() * 5f;
 
-		font.draw(g, "作轉望時能，一環時慢兒獨力行存人可生試什已西推開基。\n紅國他那上上裡開型實", 4f, renderY, (CHARACTER_WIDTH * 10) + 9, Align.LEFT, true);
-		renderY += font.getLineHeight() * 4f;
+		font.draw(g, "看到了吗?没那么难是不是?\n接下来就随意探索这座山吧.", 4f, renderY, (CHARACTER_WIDTH * 10) + 9, Align.LEFT, true);
+		renderY += font.getLineHeight() * 5f;
 
-		font.draw(g, "作轉望時能，一環時慢兒獨力行存人可生試什已西推開基。紅國他那上上裡開型實", 4f, renderY, (CHARACTER_WIDTH * 10) + 9, Align.LEFT, true);
-		renderY += font.getLineHeight() * 4f;
+		font.draw(g, "看到了吗?没那么难是不是?接下来就随意探索这座山吧.。", 4f, renderY, (CHARACTER_WIDTH * 10) + 9, Align.LEFT, true);
+		renderY += font.getLineHeight() * 5f;
 
-		font.draw(g, "作轉望時能，一環時慢兒獨力行存人可生試什已西推開基。紅國他那上上裡開型實", 4f, renderY, (CHARACTER_WIDTH * 10) + 9, Align.RIGHT, true);
-		renderY += font.getLineHeight() * 4f;
+		font.draw(g, "看到了吗?没那么难是不是?接下来就随意探索这座山吧.。", 4f, renderY, (CHARACTER_WIDTH * 10) + 9, Align.RIGHT, true);
+		renderY += font.getLineHeight() * 5f;
 
-		font.draw(g, "作轉望時能，一環時慢兒獨力行存人可生試什已西推開基。\n紅國他那上上裡開型實", 4f, renderY, -1f, Align.RIGHT, true);
-		renderY += font.getLineHeight() * 4f;
+		font.draw(g, "看到了吗?没那么难是不是?\n接下来就随意探索这座山吧.", 4f, renderY, -1f, Align.RIGHT, true);
+		renderY += font.getLineHeight() * 5f;
 
-		font.draw(g, "作轉望時能，一環時慢兒獨力行存人可生試什已西推開基。紅國他那上上裡開型實", 4f, renderY, (CHARACTER_WIDTH * 10) + 9, Align.CENTER, true);
-		renderY += font.getLineHeight() * 4f;
+		font.draw(g, "看到了吗?没那么难是不是?接下来就随意探索这座山吧.", 4f, renderY, (CHARACTER_WIDTH * 10) + 9, Align.CENTER, true);
+		renderY += font.getLineHeight() * 5f;
 
-		font.draw(g, "作轉望時能，一環時慢兒獨力行存人可生試什已西推開基。\n紅國他那上上裡開型實", 4f, renderY, -1f, Align.CENTER, true);
-		renderY += font.getLineHeight() * 4f;
+		font.draw(g, "看到了吗?没那么难是不是?\n接下来就随意探索这座山吧.", 4f, renderY, -1f, Align.CENTER, true);
+		renderY += font.getLineHeight() * 5f;
 
-		fontCache.setPosition(128f, 4f);
+		fontCache.setPosition(128f, 128f);
 		fontCache.draw(g);
 
 		g.setFont(defaultFont);

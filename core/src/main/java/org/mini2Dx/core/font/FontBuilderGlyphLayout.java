@@ -88,7 +88,7 @@ public class FontBuilderGlyphLayout implements FontGlyphLayout {
 		float xOffset = 0f;
 
 		for(int i = 0; i < str.length();) {
-			final char startChar = str.charAt(i);
+			final char startChar = resolveChar(str.charAt(i));
 			if(startChar == '\n' || startChar == '\r' || Character.isWhitespace(startChar)) {
 				final FontBuilderGlyph glyph = getGlyph(i);
 				glyph.color.set(color);
@@ -106,7 +106,7 @@ public class FontBuilderGlyphLayout implements FontGlyphLayout {
 			}
 
 			for(; i < str.length() && xOffset < lineWidth; i++) {
-				final char c = str.charAt(i);
+				final char c = resolveChar(str.charAt(i));
 				final float previousXOffset = xOffset;
 
 				if(!font.charMap.containsKey(c)) {
@@ -143,7 +143,7 @@ public class FontBuilderGlyphLayout implements FontGlyphLayout {
 		float xOffset = Float.MAX_VALUE;
 
 		for(int i = 0; i < str.length();) {
-			final char startChar = str.charAt(i);
+			final char startChar = resolveChar(str.charAt(i));
 			if(startChar == '\n' || startChar == '\r' || Character.isWhitespace(startChar)) {
 				final FontBuilderGlyph glyph = getGlyph(i);
 				glyph.color.set(color);
@@ -166,7 +166,7 @@ public class FontBuilderGlyphLayout implements FontGlyphLayout {
 			}
 
 			for(; i < str.length() && xOffset < targetWidth; i++) {
-				final char c = str.charAt(i);
+				final char c = resolveChar(str.charAt(i));
 				final float previousXOffset = xOffset;
 
 				if(!font.charMap.containsKey(c)) {
@@ -200,7 +200,7 @@ public class FontBuilderGlyphLayout implements FontGlyphLayout {
 		float yOffset = 0f;
 
 		for(int i = 0; i < str.length();) {
-			final char startChar = str.charAt(i);
+			final char startChar = resolveChar(str.charAt(i));
 			if(startChar == '\n' || startChar == '\r' || Character.isWhitespace(startChar)) {
 				final FontBuilderGlyph glyph = getGlyph(i);
 				glyph.color.set(color);
@@ -219,7 +219,7 @@ public class FontBuilderGlyphLayout implements FontGlyphLayout {
 			float xOffset = MathUtils.round((targetWidth * 0.5f) - (lineWidth * 0.5f));
 
 			for(; i < str.length() && xOffset < targetWidth; i++) {
-				final char c = str.charAt(i);
+				final char c = resolveChar(str.charAt(i));
 				final float previousXOffset = xOffset;
 
 				if(!font.charMap.containsKey(c)) {
@@ -246,7 +246,7 @@ public class FontBuilderGlyphLayout implements FontGlyphLayout {
 		float x = 0f;
 
 		for(int i = from; i < str.length(); i++) {
-			final char c = str.charAt(i);
+			final char c = resolveChar(str.charAt(i));
 			switch(c) {
 			case '\r':
 			case '\n':
@@ -315,6 +315,29 @@ public class FontBuilderGlyphLayout implements FontGlyphLayout {
 	@Override
 	public GameFont getFont() {
 		return font;
+	}
+
+	private char resolveChar(char c) {
+		if(font.charMap.containsKey(c)) {
+			return c;
+		}
+		//Full-width fallback
+		if(c == '。') {
+			return '.';
+		}
+		if(c == '，') {
+			return ',';
+		}
+		if(c == '？') {
+			return '?';
+		}
+		if(c == '！') {
+			return '!';
+		}
+		if(c == '…') {
+			return '.';
+		}
+		return c;
 	}
 
 	public void transferGlyphsTo(Array<FontBuilderGlyph> result, float x, float y) {
