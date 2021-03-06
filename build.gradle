@@ -88,7 +88,7 @@ def docProjects() {
 	subprojects.findAll { !it.name.contains('uat') && !it.name.contains('monogame') }
 }
 
-def projectVersion = '2.0.0-alpha.45'
+def projectVersion = '2.0.0-alpha.46'
 
 configure(docProjects()) {
 	apply plugin: "signing"
@@ -102,6 +102,7 @@ configure(docProjects()) {
 
 		task javadoc(type: Javadoc) {
 			failOnError = false
+			options.encoding = 'UTF-8'
 			source = android.sourceSets.main.java.srcDirs
 		    classpath += configurations.compile
 
@@ -156,6 +157,10 @@ configure(docProjects()) {
 		
 		configurations {
 			testOutput.extendsFrom (testCompile)
+		}
+
+		javadoc {
+			options.encoding = 'UTF-8'
 		}
 
 		task sourcesJar(type: Jar) {
@@ -495,6 +500,7 @@ project(":" + rootProject.name + "-all") {
 	javadoc {
 		failOnError = false
 		title = 'mini2Dx'
+		options.encoding = 'UTF-8'
 		source docProjects().collect { p -> p.name.contains("android") ? p.android.sourceSets.main.java.srcDirs : p.sourceSets.main.allJava }
 		classpath = files(docProjects().collect { p -> p.name.contains("android") ? p.configurations.compile : p.sourceSets.main.compileClasspath })
 	}
@@ -577,6 +583,7 @@ project(":" + rootProject.name + "-uats") {
 		task docs(type: Javadoc) {
 			failOnError = false
 			title = 'mini2Dx'
+			options.encoding = 'UTF-8'
 			source docProjects().collect {p -> p.name.contains("android") ? p.android.sourceSets.main.java.srcDirs : p.sourceSets.main.allJava }
 			classpath = files(docProjects().collect {p -> p.name.contains("android") ? p.configurations.compile : p.sourceSets.main.compileClasspath})
 			destinationDir = docDirectory
