@@ -51,6 +51,7 @@ public class Lwjgl3Mini2DxConfig extends Lwjgl3ApplicationConfiguration {
 
 	public Lwjgl3Mini2DxConfig(String gameIdentifier) {
 		this.gameIdentifier = gameIdentifier;
+		autoIconify = true;
 	}
 
 	static Lwjgl3Mini2DxConfig copy(Lwjgl3Mini2DxConfig config) {
