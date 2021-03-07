@@ -19,6 +19,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.AssetDescriptor;
 import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.files.FileHandleResolver;
+import org.mini2Dx.core.font.FontBuilderGameFont;
 import org.mini2Dx.core.font.GameFont;
 import org.mini2Dx.core.font.MonospaceGameFont;
 import org.mini2Dx.core.graphics.Color;
@@ -58,6 +59,8 @@ public class UiFont {
 	
 	private Color fontBorderColor, fontShadowColor;
 	private GameFont gameFont;
+
+	private boolean fontBuilderXml = false;
 	
 	public void prepareAssets(UiTheme theme, FileHandleResolver fileHandleResolver, AssetManager assetManager) {
 		if(theme.isHeadless()) {
@@ -70,8 +73,13 @@ public class UiFont {
 			gameFont = Mdx.fonts.newBitmapFont(fileHandleResolver.resolve(path));
 		} else if(path.endsWith(".xml")) {
 			try {
-				final MonospaceGameFont.FontParameters fontParameters = Mdx.xml.fromXml(fileHandleResolver.resolve(path).reader(), MonospaceGameFont.FontParameters.class);
-				gameFont = Mdx.fonts.newMonospaceFont(fontParameters);
+				if(fontBuilderXml) {
+					final FontBuilderGameFont.FontParameters fontParameters = Mdx.xml.fromXml(fileHandleResolver.resolve(path).reader(), FontBuilderGameFont.FontParameters.class);
+					gameFont = Mdx.fonts.newFontBuilderFont(fontParameters);
+				} else {
+					final MonospaceGameFont.FontParameters fontParameters = Mdx.xml.fromXml(fileHandleResolver.resolve(path).reader(), MonospaceGameFont.FontParameters.class);
+					gameFont = Mdx.fonts.newMonospaceFont(fontParameters);
+				}
 			} catch (Exception e) {
 				Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
 			}
@@ -94,11 +102,23 @@ public class UiFont {
 		}
 		if(path.endsWith(".xml")) {
 			try {
-				final MonospaceGameFont.FontParameters fontParameters = Mdx.xml.fromXml(fileHandleResolver.resolve(path).reader(), MonospaceGameFont.FontParameters.class);
-				if(fontParameters.textureAtlasPath != null) {
-					dependencies.add(new AssetDescriptor(fontParameters.textureAtlasPath, TextureAtlas.class));
-				} else if(fontParameters.texturePath != null) {
-					dependencies.add(new AssetDescriptor(fontParameters.texturePath, Texture.class));
+				final String headContent = fileHandleResolver.resolve(path).head("UTF-8");
+				fontBuilderXml = headContent.contains("xmlFileHandleType");
+
+				if(fontBuilderXml) {
+					final FontBuilderGameFont.FontParameters fontParameters = Mdx.xml.fromXml(fileHandleResolver.resolve(path).reader(), FontBuilderGameFont.FontParameters.class);
+					if(fontParameters.textureAtlasPath != null) {
+						dependencies.add(new AssetDescriptor(fontParameters.textureAtlasPath, TextureAtlas.class));
+					} else if(fontParameters.texturePath != null) {
+						dependencies.add(new AssetDescriptor(fontParameters.texturePath, Texture.class));
+					}
+				} else {
+					final MonospaceGameFont.FontParameters fontParameters = Mdx.xml.fromXml(fileHandleResolver.resolve(path).reader(), MonospaceGameFont.FontParameters.class);
+					if(fontParameters.textureAtlasPath != null) {
+						dependencies.add(new AssetDescriptor(fontParameters.textureAtlasPath, TextureAtlas.class));
+					} else if(fontParameters.texturePath != null) {
+						dependencies.add(new AssetDescriptor(fontParameters.texturePath, Texture.class));
+					}
 				}
 			} catch (Exception e) {
 				Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
