@@ -16,6 +16,7 @@
 package org.mini2Dx.core.files;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
 public interface FileHandle {
 
@@ -106,6 +107,44 @@ public interface FileHandle {
 	 * @throws IOException if the file handle represents a directory, doesn't exist, or could not be read.
 	 */
 	public String readString() throws IOException;
+
+	/**
+	 * Returns the first 10 lines of the file as a string using the platform's default charset.
+	 * @return The first 10 lines as a string
+	 * @throws IOException if the file handle represents a directory, doesn't exist, or could not be read.
+	 */
+	public default String head() throws IOException {
+		return head(Charset.defaultCharset().name());
+	}
+
+	/**
+	 * Returns the specified amount of lines from the beginning of the file as a string using the platform's default charset.
+	 * @param lines The number of lines to return
+	 * @return The first N lines as a string
+	 * @throws IOException
+	 */
+	public default String head(int lines) throws IOException {
+		return head(10, Charset.defaultCharset().name());
+	}
+
+	/**
+	 * Returns the first 10 lines of the file as a string using the specified charset.
+	 * @param charset The charset to use
+	 * @return The first 10 lines as a string
+	 * @throws IOException
+	 */
+	public default String head(String charset) throws IOException {
+		return head(10, charset);
+	}
+
+	/**
+	 * Returns the specified amount of lines from the beginning of the file as a string using the specified charset.
+	 * @param lines The number of lines to return
+	 * @param charset The charset to use
+	 * @return The first N lines as a string
+	 * @throws IOException
+	 */
+	public String head(int lines, String charset) throws IOException;
 
 	/**
 	 * Reads the entire file into a string using the specified charset.

@@ -20,6 +20,7 @@ import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.files.FileType;
 
 import java.io.*;
+import java.util.Scanner;
 
 public class LibgdxFileHandle implements FileHandle {
 	public final com.badlogic.gdx.files.FileHandle fileHandle;
@@ -127,6 +128,24 @@ public class LibgdxFileHandle implements FileHandle {
 	@Override
 	public String readString() throws IOException {
 		return fileHandle.readString();
+	}
+
+	@Override
+	public String head(int lines, String charset) throws IOException {
+		final Reader reader = fileHandle.reader(charset);
+		final Scanner scanner = new Scanner(reader);
+		final StringBuilder result = new StringBuilder();
+
+		int line = 0;
+		while(line < lines && scanner.hasNextLine()) {
+			result.append(scanner.nextLine());
+			result.append('\n');
+
+			line++;
+		}
+		scanner.close();
+		reader.close();
+		return result.toString();
 	}
 
 	@Override
