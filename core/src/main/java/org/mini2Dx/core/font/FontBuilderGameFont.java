@@ -22,10 +22,7 @@ import org.mini2Dx.core.collections.CharMap;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.files.FileType;
-import org.mini2Dx.core.graphics.Color;
-import org.mini2Dx.core.graphics.Texture;
-import org.mini2Dx.core.graphics.TextureAtlas;
-import org.mini2Dx.core.graphics.TextureRegion;
+import org.mini2Dx.core.graphics.*;
 import org.mini2Dx.core.serialization.annotation.Field;
 import org.mini2Dx.core.serialization.annotation.PostDeserialize;
 import org.mini2Dx.core.util.Align;
@@ -104,7 +101,11 @@ public class FontBuilderGameFont implements GameFont {
 			if(textureAtlas == null) {
 				throw new MdxException("No such texture atlas '" + fontParameters.textureAtlasPath + "'");
 			}
-			textureRegion = Mdx.graphics.newTextureRegion(textureAtlas.findRegion(fontParameters.texturePath));
+			final TextureAtlasRegion textureAtlasRegion = textureAtlas.findRegion(fontParameters.texturePath);
+			if(textureAtlasRegion == null) {
+				throw new MdxException("No such texture atlas region '" + fontParameters.texturePath + "' in '" + fontParameters.textureAtlasPath + "'");
+			}
+			textureRegion = Mdx.graphics.newTextureRegion(textureAtlasRegion);
 		} else {
 			if(!assetManager.isLoaded(fontParameters.texturePath)) {
 				assetManager.load(fontParameters.texturePath, Texture.class);
