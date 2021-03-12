@@ -171,7 +171,7 @@ public class AotSerializedClassData {
 		return fieldData.get(fieldIndex).getField();
 	}
 
-	public Field[] getFieldDataAsFieldArray() {
+	public synchronized Field[] getFieldDataAsFieldArray() {
 		if(fieldDataAsFieldArray == null) {
 			fieldDataAsFieldArray = new Field[getTotalFields()];
 			for(int i = 0; i < fieldDataAsFieldArray.length; i++) {
@@ -181,7 +181,7 @@ public class AotSerializedClassData {
 		return fieldDataAsFieldArray;
 	}
 
-	public AotSerializedFieldData getFieldData(String fieldName) {
+	public synchronized AotSerializedFieldData getFieldData(String fieldName) {
 		if(fieldDataByFieldName.containsKey(fieldName)) {
 			return fieldDataByFieldName.get(fieldName);
 		}

@@ -16,8 +16,8 @@ public class AotSerializedConstructorData {
 	private final Array<String> constructorArgNames = new Array<String>();
 	private final Array<String> constructorArgTypes = new Array<String>();
 
-	private Class[] constructorParamTypes = null;
-	private Class[] constructorParamTypesWithPrimitives = null;
+	private Class[] constructorArgClasses = null;
+	private Class[] constructorArgClassesWithPrimitives = null;
 
 	public AotSerializedConstructorData(Class ownerClass, Constructor constructor, Array<ConstructorArg> constructorArgs) {
 		for(int i = 0; i < constructorArgs.size; i++) {
@@ -67,24 +67,19 @@ public class AotSerializedConstructorData {
 		writer.println(result.toString());
 	}
 
-	public int getTotalArgs() {
+	public synchronized int getTotalArgs() {
 		return constructorArgNames.size;
 	}
 
-	public String getConstructorArgName(int index) {
+	public synchronized String getConstructorArgName(int index) {
 		return constructorArgNames.get(index);
 	}
 
-	public Class getConstructorArgType(int index) {
-		try {
-			return Class.forName(constructorArgTypes.get(index));
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return null;
+	public synchronized Class getConstructorArgType(int index) {
+		return getConstructorArgTypes()[index];
 	}
 
-	public Class getConstructorArgPrimitiveType(int index) {
+	public synchronized Class getConstructorArgPrimitiveType(int index) {
 		switch (constructorArgTypes.get(index).toLowerCase()) {
 		case "java.lang.boolean":
 			return Boolean.TYPE;
@@ -106,37 +101,37 @@ public class AotSerializedConstructorData {
 		return null;
 	}
 
-	public Class[] getConstructorArgTypes() {
-		if(constructorParamTypes == null) {
-			constructorParamTypes = new Class[constructorArgTypes.size];
-			for(int i = 0; i < constructorParamTypes.length; i++) {
+	public synchronized Class[] getConstructorArgTypes() {
+		if(constructorArgClasses == null) {
+			constructorArgClasses = new Class[constructorArgTypes.size];
+			for(int i = 0; i < constructorArgClasses.length; i++) {
 				try {
-					constructorParamTypes[i] = Class.forName(constructorArgTypes.get(i));
+					constructorArgClasses[i] = Class.forName(constructorArgTypes.get(i));
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		return constructorParamTypes;
+		return constructorArgClasses;
 	}
 
-	public Class[] getConstructorArgTypesWithPrimitives() {
-		if(constructorParamTypesWithPrimitives == null) {
-			constructorParamTypesWithPrimitives = new Class[constructorArgTypes.size];
-			for(int i = 0; i < constructorParamTypesWithPrimitives.length; i++) {
+	public synchronized Class[] getConstructorArgTypesWithPrimitives() {
+		if(constructorArgClassesWithPrimitives == null) {
+			constructorArgClassesWithPrimitives = new Class[constructorArgTypes.size];
+			for(int i = 0; i < constructorArgClassesWithPrimitives.length; i++) {
 				Class primitiveType = getConstructorArgPrimitiveType(i);
 				if(primitiveType == null) {
 					try {
-						constructorParamTypesWithPrimitives[i] = Class.forName(constructorArgTypes.get(i));
+						constructorArgClassesWithPrimitives[i] = Class.forName(constructorArgTypes.get(i));
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
 					}
 				} else {
-					constructorParamTypesWithPrimitives[i] = primitiveType;
+					constructorArgClassesWithPrimitives[i] = primitiveType;
 				}
 			}
 		}
-		return constructorParamTypesWithPrimitives;
+		return constructorArgClassesWithPrimitives;
 	}
 
 	@Override
