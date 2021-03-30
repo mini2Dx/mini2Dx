@@ -81,7 +81,7 @@ public class DesktopPlayerData extends PlayerData {
 							"Application Support", gameIdentifier)
 					.toAbsolutePath().toString();
 		case LINUX:
-			if (gameIdentifier.contains(".")) {
+			if (gameIdentifier.startsWith(".")) {
 				gameIdentifier = gameIdentifier.substring(gameIdentifier
 						.indexOf('.') + 1);
 			}
