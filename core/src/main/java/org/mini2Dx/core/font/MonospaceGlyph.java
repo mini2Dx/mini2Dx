@@ -34,14 +34,24 @@ public class MonospaceGlyph {
 	}
 
 	public void release() {
-		POOL.addLast(this);
+		x = 0f;
+		y = 0f;
+		textureRegion = null;
+
+		synchronized(POOL) {
+			POOL.addLast(this);
+		}
 	}
 
 	public static MonospaceGlyph allocate() {
-		if(POOL.size == 0) {
-			return new MonospaceGlyph();
+		final MonospaceGlyph result;
+		synchronized(POOL) {
+			if (POOL.size == 0) {
+				result = new MonospaceGlyph();
+			} else {
+				result = POOL.removeFirst();
+			}
 		}
-		final MonospaceGlyph result = POOL.removeFirst();
 		result.x = 0f;
 		result.y = 0f;
 		result.textureRegion = null;

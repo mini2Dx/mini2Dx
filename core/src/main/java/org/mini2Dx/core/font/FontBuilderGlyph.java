@@ -37,14 +37,20 @@ public class FontBuilderGlyph {
 		y = 0f;
 		glyphChar = null;
 
-		POOL.addLast(this);
+		synchronized(POOL) {
+			POOL.addLast(this);
+		}
 	}
 
 	public static FontBuilderGlyph allocate() {
-		if(POOL.size == 0) {
-			return new FontBuilderGlyph();
+		final FontBuilderGlyph result;
+		synchronized(POOL) {
+			if(POOL.size == 0) {
+				result = new FontBuilderGlyph();
+			} else {
+				result = POOL.removeFirst();
+			}
 		}
-		final FontBuilderGlyph result = POOL.removeFirst();
 		result.x = 0f;
 		result.y = 0f;
 		result.glyphChar = null;
