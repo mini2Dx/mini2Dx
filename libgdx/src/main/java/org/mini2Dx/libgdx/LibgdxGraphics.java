@@ -760,7 +760,9 @@ public class LibgdxGraphics implements Graphics {
 
 	@Override
 	public void rotate(float degrees, float x, float y) {
-		if (MathUtils.isZero(degrees)) {
+		if (MathUtils.isZero(degrees) &&
+				MathUtils.isEqual(x, rotationX) &&
+				MathUtils.isEqual(y, rotationY)) {
 			return;
 		}
 		endRendering();
