@@ -119,7 +119,6 @@ public class DesktopMini2DxGame implements Application {
 				}
 			}
 		};
-		mainLoopThread.setPriority(Thread.MAX_PRIORITY);
 		mainLoopThread.start();
 	}
 

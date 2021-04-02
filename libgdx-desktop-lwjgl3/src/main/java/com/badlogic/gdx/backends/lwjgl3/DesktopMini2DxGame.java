@@ -92,7 +92,6 @@ public class DesktopMini2DxGame implements Application {
 		this.sync = new Sync();
 
 		gameWrapper = new Lwjgl3GameWrapper(gameContainer, config.gameIdentifier);
-		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
 		Lwjgl3Mini2DxWindow window = createWindow(config,0);
 		windows.add(window);
