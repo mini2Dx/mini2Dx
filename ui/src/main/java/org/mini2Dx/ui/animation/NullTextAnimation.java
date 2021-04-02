@@ -30,11 +30,11 @@ public class NullTextAnimation extends BaseTextAnimation {
 	public void onResize(GameFontCache cache, String text, float renderWidth, int hAlign) {
 		boolean previouslyNull = false;
 		if(previousState == null) {
-			previousState = TextCacheState.allocate(text, renderWidth, hAlign);
+			previousState = TextCacheState.allocate(cache.getFont(), text, renderWidth, hAlign);
 			previouslyNull = true;
 		}
 
-		TextCacheState state = TextCacheState.allocate(text, renderWidth, hAlign);
+		TextCacheState state = TextCacheState.allocate(cache.getFont(), text, renderWidth, hAlign);
 		if(!previouslyNull && previousState.equals(state)) {
 			state.dispose();
 			return;

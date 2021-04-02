@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.ui.animation;
 
+import org.mini2Dx.core.font.GameFont;
 import org.mini2Dx.gdx.utils.Disposable;
 import org.mini2Dx.gdx.utils.Queue;
 
@@ -23,7 +24,7 @@ import java.util.Objects;
 public class TextCacheState implements Disposable {
 	private static final Queue<TextCacheState> POOL = new Queue<TextCacheState>();
 
-	public static TextCacheState allocate(String text, float renderWidth, int hAlign) {
+	public static TextCacheState allocate(GameFont gameFont, String text, float renderWidth, int hAlign) {
 		final TextCacheState result;
 		if(POOL.size == 0) {
 			result = new TextCacheState();
@@ -33,15 +34,18 @@ public class TextCacheState implements Disposable {
 		result.text = text;
 		result.renderWidth = renderWidth;
 		result.hAlign = hAlign;
+		result.font = gameFont;
 		return result;
 	}
 
+	public GameFont font;
 	public String text;
 	public float renderWidth;
 	public int hAlign;
 
 	@Override
 	public void dispose() {
+		font = null;
 		text = null;
 		renderWidth = -1f;
 		hAlign = -1;
@@ -55,11 +59,12 @@ public class TextCacheState implements Disposable {
 		TextCacheState that = (TextCacheState) o;
 		return Float.compare(that.renderWidth, renderWidth) == 0 &&
 				hAlign == that.hAlign &&
+				Objects.equals(font, that.font) &&
 				Objects.equals(text, that.text);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(text, renderWidth, hAlign);
+		return Objects.hash(text, renderWidth, hAlign, font);
 	}
 }
