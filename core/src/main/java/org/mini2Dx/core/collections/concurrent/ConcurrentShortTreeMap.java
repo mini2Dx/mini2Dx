@@ -63,6 +63,40 @@ public class ConcurrentShortTreeMap<T> extends ShortTreeMap<T> implements Concur
         return t;
     }
 
+    /**
+     * Puts a key/value if the key is not already present
+     * @param key The key to put if absent
+     * @param value The value to put if absent
+     * @return True if the value was put
+     */
+    public boolean putIfAbsent(short key, T value) {
+        boolean result = false;
+        lock.lockWrite();
+        if(!super.containsKey(key)) {
+            super.put(key, value);
+            result = true;
+        }
+        lock.unlockWrite();
+        return result;
+    }
+
+    /**
+     * Puts a key/value if the key is already present
+     * @param key The key to put if present
+     * @param value The value to put if present
+     * @return True if the value was put
+     */
+    public boolean putIfPresent(short key, T value) {
+        boolean result = false;
+        lock.lockWrite();
+        if(super.containsKey(key)) {
+            super.put(key, value);
+            result = true;
+        }
+        lock.unlockWrite();
+        return result;
+    }
+
     @Override
     public void putAll(ShortMap<T> map) {
         boolean isOtherConcurrent = map instanceof ConcurrentCollection;

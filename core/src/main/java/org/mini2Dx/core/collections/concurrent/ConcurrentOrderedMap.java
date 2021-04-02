@@ -89,6 +89,40 @@ public class ConcurrentOrderedMap<K, V> extends OrderedMap<K, V> implements Conc
         return v;
     }
 
+    /**
+     * Puts a key/value if the key is not already present
+     * @param key The key to put if absent
+     * @param value The value to put if absent
+     * @return True if the value was put
+     */
+    public boolean putIfAbsent(K key, V value) {
+        boolean result = false;
+        lock.lockWrite();
+        if(!super.containsKey(key)) {
+            super.put(key, value);
+            result = true;
+        }
+        lock.unlockWrite();
+        return result;
+    }
+
+    /**
+     * Puts a key/value if the key is already present
+     * @param key The key to put if present
+     * @param value The value to put if present
+     * @return True if the value was put
+     */
+    public boolean putIfPresent(K key, V value) {
+        boolean result = false;
+        lock.lockWrite();
+        if(super.containsKey(key)) {
+            super.put(key, value);
+            result = true;
+        }
+        lock.unlockWrite();
+        return result;
+    }
+
     @Override
     public void putAll(ObjectMap<? extends K, ? extends V> map) {
         boolean isOtherConcurrent = map instanceof ConcurrentCollection;
