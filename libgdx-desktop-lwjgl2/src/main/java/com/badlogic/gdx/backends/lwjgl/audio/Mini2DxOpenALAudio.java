@@ -293,9 +293,12 @@ public class Mini2DxOpenALAudio implements Audio {
 		}
 		int sourceId = soundIdToSource.get(soundId);
 		int soundState = AL10.alGetSourcei(sourceId, AL10.AL_SOURCE_STATE);
+		alGetError();
 
 		switch (soundState) {
-		case AL10.AL_PLAYING:
+		case AL_INITIAL:
+		case AL_PAUSED:
+		case AL_PLAYING:
 			return true;
 		default:
 			return false;
