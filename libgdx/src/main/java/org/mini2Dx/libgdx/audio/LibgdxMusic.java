@@ -61,7 +61,7 @@ public class LibgdxMusic implements Music, com.badlogic.gdx.audio.Music.OnComple
 
 	@Override
 	public void setLooping(boolean isLooping) {
-		music.setLooping(true);
+		music.setLooping(isLooping);
 	}
 
 	@Override
