@@ -87,6 +87,7 @@ public class Mini2DxOpenALAudioDevice implements AudioDevice {
 			sourceID = audio.obtainSource(true);
 			if (sourceID == -1) return;
 			if (buffers == null) {
+				alGetError();
 				buffers = BufferUtils.createIntBuffer(bufferCount);
 				alGenBuffers(buffers);
 				if (alGetError() != AL_NO_ERROR) throw new GdxRuntimeException("Unabe to allocate audio buffers.");

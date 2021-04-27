@@ -76,6 +76,7 @@ public abstract class Mini2DxOpenALMusic implements Music {
 
 			if (buffers == null) {
 				buffers = BufferUtils.createIntBuffer(bufferCount);
+				alGetError();
 				alGenBuffers(buffers);
 				int errorCode = alGetError();
 				if (errorCode != AL_NO_ERROR)
@@ -83,6 +84,7 @@ public abstract class Mini2DxOpenALMusic implements Music {
 			}
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 			setPan(pan, volume);
+			alGetError();
 
 			boolean filled = false; // Check if there's anything to actually play.
 			for (int i = 0; i < bufferCount; i++) {

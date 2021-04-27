@@ -93,6 +93,7 @@ public class Mini2DxOpenALAudio implements Audio {
 		}
 		AL.createCapabilities(deviceCapabilities);
 
+		alGetError();
 		allSources = new IntArray(false, simultaneousSources);
 		for (int i = 0; i < simultaneousSources; i++) {
 			int sourceID = alGenSources();
@@ -197,8 +198,13 @@ public class Mini2DxOpenALAudio implements Audio {
 
 	void freeSource (int sourceID) {
 		if (noDevice) return;
+		alGetError();
 		alSourceStop(sourceID);
+		int e = alGetError();
+		if (e != AL_NO_ERROR) throw new GdxRuntimeException("AL Error: " + e);
 		alSourcei(sourceID, AL_BUFFER, 0);
+		e = alGetError();
+		if (e != AL_NO_ERROR) throw new GdxRuntimeException("AL Error: " + e);
 		Long soundId = sourceToSoundId.remove(sourceID);
 		if (soundId != null) soundIdToSource.remove(soundId);
 		idleSources.add(sourceID);
