@@ -172,15 +172,15 @@ public class Mini2DxOpenALAudio implements Audio {
 			int sourceId = idleSources.get(i);
 			int state = alGetSourcei(sourceId, AL_SOURCE_STATE);
 			if (state != AL_PLAYING && state != AL_PAUSED) {
+				if (sourceToSoundId.containsKey(sourceId)) {
+					long soundId = sourceToSoundId.get(sourceId);
+					sourceToSoundId.remove(sourceId);
+					soundIdToSource.remove(soundId);
+				}
+
 				if (isMusic) {
 					idleSources.removeIndex(i);
 				} else {
-					if (sourceToSoundId.containsKey(sourceId)) {
-						long soundId = sourceToSoundId.get(sourceId);
-						sourceToSoundId.remove(sourceId);
-						soundIdToSource.remove(soundId);
-					}
-
 					long soundId = nextSoundId++;
 					sourceToSoundId.put(sourceId, soundId);
 					soundIdToSource.put(soundId, sourceId);
