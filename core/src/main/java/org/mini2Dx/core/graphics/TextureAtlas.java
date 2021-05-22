@@ -19,6 +19,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
+import org.mini2Dx.gdx.utils.ObjectMap;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +27,7 @@ public class TextureAtlas implements Disposable {
 	public static final long MAX_ATLAS_LOAD_TIME_NANOS = TimeUnit.MILLISECONDS.toNanos(2);
 
 	private final TextureAtlasConfig config;
+	private final ObjectMap<String, TextureAtlasRegion> firstRegionsCache = new ObjectMap<String, TextureAtlasRegion>();
 
 	private Array<TextureAtlasRegion> atlasRegions;
 	private int loadedAtlasRegions;
@@ -83,9 +85,13 @@ public class TextureAtlas implements Disposable {
 	 * @return The region, or null.
 	 */
 	public TextureAtlasRegion findRegion(String name){
+		if(firstRegionsCache.containsKey(name)) {
+			return firstRegionsCache.get(name);
+		}
 		for (int i = 0; i < atlasRegions.size; i++) {
 			TextureAtlasRegion region = atlasRegions.get(i);
 			if (region.getName().equals(name)){
+				firstRegionsCache.put(name, region);
 				return region;
 			}
 		}
