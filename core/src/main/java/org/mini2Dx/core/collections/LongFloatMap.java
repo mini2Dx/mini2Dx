@@ -90,7 +90,7 @@ public class LongFloatMap implements Iterable<LongFloatMap.Entry> {
 		return tableSize;
 	}
 
-	/** Returns an index >= 0 and <= {@link #mask} for the specified {@code item}.
+	/** Returns an index &gt;= 0 and &lt;= {@link #mask} for the specified {@code item}.
 	 * <p>
 	 * The default implementation uses Fibonacci hashing on the item's {@link Object#hashCode()}: the hashcode is multiplied by a
 	 * long constant (2 to the 64th, divided by the golden ratio) then the uppermost bits are shifted into the lowest positions to
