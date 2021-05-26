@@ -226,8 +226,7 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 
 		float currentScrollY = getInnerY() + scrollTranslationY;
 		float scrollFactor = ((ScrollBox) element).getScrollFactor() * contentHeight;
-		if (scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + getInnerHeight()
-				+ scrollFactor) {
+		if (scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + getInnerHeight()) {
 			if (scrollTo.isImmediate()) {
 				// TODO: Optimise this
 				while (scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + getInnerHeight()
@@ -235,15 +234,23 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 					setScrollThumbPosition(scrollThumbPosition + ((ScrollBox) element).getScrollFactor());
 					currentScrollY = getInnerY() + scrollTranslationY;
 				}
+				if (scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + getInnerHeight()){
+					float scrollAmount = (scrollToNode.getOuterY() + scrollToNode.getOuterHeight()) - (currentScrollY + getInnerHeight());
+					setScrollThumbPosition(scrollThumbPosition + (scrollAmount / contentHeight));
+				}
 			} else {
 				setScrollThumbPosition(scrollThumbPosition + ((ScrollBox) element).getScrollFactor());
 			}
-		} else if (scrollToNode.getOuterY() < currentScrollY - scrollFactor) {
+		} else if (scrollToNode.getOuterY() < currentScrollY) {
 			if (scrollTo.isImmediate()) {
 				// TODO: Optimise this
 				while (scrollToNode.getOuterY() < currentScrollY - scrollFactor) {
 					setScrollThumbPosition(scrollThumbPosition - ((ScrollBox) element).getScrollFactor());
 					currentScrollY = getInnerY() + scrollTranslationY;
+				}
+				if (scrollToNode.getOuterY() < currentScrollY){
+					float scrollAmount = currentScrollY - scrollToNode.getOuterY();
+					setScrollThumbPosition(scrollThumbPosition - (scrollAmount / contentHeight));
 				}
 			} else {
 				setScrollThumbPosition(scrollThumbPosition - ((ScrollBox) element).getScrollFactor());
