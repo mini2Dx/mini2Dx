@@ -361,6 +361,34 @@ public class RectangleTest {
 	}
 
 	@Test
+	public void testIntersectsIgnoringEdgeOverlap() {
+		rectangle1 = new Rectangle(0, 0, 50, 50);
+		rectangle2 = new Rectangle(49, 0, 50f, 50f);
+
+		Assert.assertTrue(rectangle1.intersectsIgnoringEdges(rectangle2));
+
+		rectangle2.setXY(49, 0);
+		Assert.assertTrue(rectangle1.intersectsIgnoringEdges(rectangle2));
+		rectangle2.setXY(50, 0);
+		Assert.assertFalse(rectangle1.intersectsIgnoringEdges(rectangle2));
+
+		rectangle2.setXY(-49, 0);
+		Assert.assertTrue(rectangle1.intersectsIgnoringEdges(rectangle2));
+		rectangle2.setXY(-50, 0);
+		Assert.assertFalse(rectangle1.intersectsIgnoringEdges(rectangle2));
+
+		rectangle2.setXY(0, 49);
+		Assert.assertTrue(rectangle1.intersectsIgnoringEdges(rectangle2));
+		rectangle2.setXY(0, 50);
+		Assert.assertFalse(rectangle1.intersectsIgnoringEdges(rectangle2));
+
+		rectangle2.setXY(0, -49);
+		Assert.assertTrue(rectangle1.intersectsIgnoringEdges(rectangle2));
+		rectangle2.setXY(0, -50);
+		Assert.assertFalse(rectangle1.intersectsIgnoringEdges(rectangle2));
+	}
+
+	@Test
 	public void testLerp() {
 		rectangle1 = new Rectangle(0, 0, 50, 50);
 		rectangle2 = new Rectangle(50, 50, 100f, 100f);

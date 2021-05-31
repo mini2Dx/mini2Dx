@@ -133,7 +133,12 @@ public class Triangle extends Shape {
 	public boolean intersects(Sizeable shape) {
 		return polygon.intersects(shape);
 	}
-	
+
+	@Override
+	public boolean intersectsIgnoringEdges(Sizeable shape) {
+		return polygon.intersectsIgnoringEdges(shape);
+	}
+
 	@Override
 	public boolean intersects(LineSegment lineSegment) {
 		return intersectsLineSegment(lineSegment.getPointA(), lineSegment.getPointB());

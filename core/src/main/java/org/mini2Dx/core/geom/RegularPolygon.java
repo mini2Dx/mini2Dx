@@ -157,6 +157,11 @@ public class RegularPolygon extends Shape {
 	}
 
 	@Override
+	public boolean intersectsIgnoringEdges(Sizeable shape) {
+		return polygon.intersectsIgnoringEdges(shape);
+	}
+
+	@Override
 	public boolean intersects(LineSegment lineSegment) {
 		return intersectsLineSegment(lineSegment.getPointA(), lineSegment.getPointB());
 	}

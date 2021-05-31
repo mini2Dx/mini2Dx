@@ -172,6 +172,11 @@ public class Rectangle extends Shape {
 		return polygon.intersects(shape);
 	}
 
+	@Override
+	public boolean intersectsIgnoringEdges(Sizeable shape) {
+		return polygon.intersectsIgnoringEdges(shape);
+	}
+
 	/**
 	 * Returns if the specified {@link Circle} intersects this {@link Rectangle}
 	 * 

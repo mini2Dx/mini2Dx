@@ -57,6 +57,13 @@ public interface Sizeable extends Positionable {
 	public boolean intersects(Sizeable shape);
 
 	/**
+	 * Returns if this shape intersects a shape. False if only the edges overlap.
+	 * @param shape The {@link Sizeable} to check
+	 * @return True if this shape intersects the specified {@link Sizeable}
+	 */
+	public boolean intersectsIgnoringEdges(Sizeable shape);
+
+	/**
 	 * Returns if this shape intersects the specified
 	 * {@link LineSegment}
 	 *

@@ -636,10 +636,12 @@ public class PolygonTest {
 				new Point(-10f, 5f),
 				new Point(-5f, 10f)
 			});
-		
+
+		Assert.assertEquals(false, polygon.contains(0f, 0f));
 		Assert.assertEquals(true, polygon.contains(0f, 5f));
 		Assert.assertEquals(false, polygon.contains(15f, 5f));
-		
+
+		Assert.assertEquals(false, polygon.contains(new Vector2(0f,0f)));
 		Assert.assertEquals(true, polygon.contains(new Vector2(0f, 5f)));
 		Assert.assertEquals(false, polygon.contains(new Vector2(15f, 5f)));
 		
@@ -738,6 +740,46 @@ public class PolygonTest {
 		Assert.assertEquals(true, polygon.intersects(intersectingRectangle));
 		Assert.assertEquals(true, polygon.intersects(onLineIntersectingRectangle));
 		Assert.assertEquals(false, polygon.intersects(nonIntersectingRectangle));
+	}
+
+	@Test
+	public void testIntersectsIgnoringEdgesRectangle() {
+		Polygon polygon = new Polygon(new Point [] {
+				new Point(0f, 0f),
+				new Point(10f, 0f),
+				new Point(10f, 10f),
+				new Point(0f, 10f)
+		});
+
+		Rectangle intersectingRectangle = new Rectangle(-5f, -5f, 10f, 10f);
+		Rectangle onLineIntersectingRectangle = new Rectangle(-5f, -5f, 10f, 5f);
+		Rectangle nonIntersectingRectangle = new Rectangle(100f, 100f, 10f, 10f);
+
+		Assert.assertEquals(true, polygon.intersectsIgnoringEdges(intersectingRectangle));
+		Assert.assertEquals(false, polygon.intersectsIgnoringEdges(onLineIntersectingRectangle));
+		Assert.assertEquals(false, polygon.intersectsIgnoringEdges(nonIntersectingRectangle));
+	}
+
+	@Test
+	public void testIntersectsIgnorin58gEdgesRectangleCircle() {
+		Polygon polygon = new Polygon(new Point [] {
+				new Point(0f, 0f),
+				new Point(10f, 0f),
+				new Point(10f, 10f),
+				new Point(0f, 10f)
+		});
+
+		Circle intersectingCircle = new Circle(8,8,8);
+		Circle onLineIntersectingCircle = new Circle(15, 5, 5);
+		Circle nonIntersectingCircle = new Circle(20, 5, 5);
+
+		Assert.assertEquals(true, polygon.intersectsIgnoringEdges(intersectingCircle));
+		Assert.assertEquals(false, polygon.intersectsIgnoringEdges(onLineIntersectingCircle));
+		Assert.assertEquals(false, polygon.intersectsIgnoringEdges(nonIntersectingCircle));
+
+		Assert.assertEquals(true, intersectingCircle.intersectsIgnoringEdges(polygon));
+		Assert.assertEquals(false, onLineIntersectingCircle.intersectsIgnoringEdges(polygon));
+		Assert.assertEquals(false, nonIntersectingCircle.intersectsIgnoringEdges(polygon));
 	}
 	
 	@Test

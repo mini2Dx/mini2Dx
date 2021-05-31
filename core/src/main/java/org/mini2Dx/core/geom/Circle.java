@@ -212,7 +212,15 @@ public class Circle extends Shape {
 		}
 		return shape.getPolygon().intersects(this);
 	}
-	
+
+	@Override
+	public boolean intersectsIgnoringEdges(Sizeable shape) {
+		if(shape.isCircle()) {
+			return intersectsIgnoringEdges((Circle) shape);
+		}
+		return shape.getPolygon().intersectsIgnoringEdges(this);
+	}
+
 	@Override
 	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
 		final Vector2 centerTmp = CENTER_TMP.get();
@@ -259,6 +267,10 @@ public class Circle extends Shape {
 	 */
 	public boolean intersects(Circle circle) {
 		return Vector2.dst(this.circle.x, this.circle.y, circle.getX(), circle.getY()) <= this.circle.radius + circle.getRadius();
+	}
+
+	public boolean intersectsIgnoringEdges(Circle circle) {
+		return Vector2.dst(this.circle.x, this.circle.y, circle.getX(), circle.getY()) < this.circle.radius + circle.getRadius();
 	}
 	
 	/**

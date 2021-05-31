@@ -61,6 +61,17 @@ public class CircleTest {
 	}
 
 	@Test
+	public void testIntersectsIgnoringEdgesCircle() {
+		Circle circle2 = new Circle(20f, 20f, 4);
+		Assert.assertEquals(false, circle1.intersectsIgnoringEdges(circle2));
+		Assert.assertEquals(false, circle2.intersectsIgnoringEdges(circle1));
+
+		circle2.setXY(8f, 0f);
+		Assert.assertEquals(false, circle1.intersectsIgnoringEdges(circle2));
+		Assert.assertEquals(false, circle2.intersectsIgnoringEdges(circle1));
+	}
+
+	@Test
 	public void testGetDistanceToPositionable() {
 		Point point = new Point(3f, 0f);
 		Assert.assertEquals(0f, circle1.getDistanceTo(point), 0.00001f);
