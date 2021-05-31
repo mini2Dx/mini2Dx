@@ -257,6 +257,41 @@ public class ConcurrentPointQuadTreeTest implements Runnable {
 	}
 
 	@Test
+	public void testGetElementsWithinRegionIgnoringEdges() {
+		rootQuad.add(point1);
+		rootQuad.add(point2);
+		rootQuad.add(point3);
+		rootQuad.add(point4);
+
+		Array<CollisionPoint> collisionPoints = rootQuad.getElementsWithinAreaIgnoringEdges(new Rectangle(0, 0, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(point1, collisionPoints.get(0));
+
+		collisionPoints = rootQuad.getElementsWithinAreaIgnoringEdges(new Rectangle(64, 0, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(point2, collisionPoints.get(0));
+
+		collisionPoints = rootQuad.getElementsWithinAreaIgnoringEdges(new Rectangle(0, 64, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(point3, collisionPoints.get(0));
+
+		collisionPoints = rootQuad.getElementsWithinAreaIgnoringEdges(new Rectangle(64, 64, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(point4, collisionPoints.get(0));
+
+		CollisionPoint collisionPoint5 = new CollisionPoint(32, 32);
+		CollisionPoint collisionPoint6 = new CollisionPoint(48, 48);
+		rootQuad.add(collisionPoint5);
+		rootQuad.add(collisionPoint6);
+
+		collisionPoints = rootQuad.getElementsWithinAreaIgnoringEdges(new Rectangle(0, 0, 64, 64));
+		Assert.assertEquals(3, collisionPoints.size);
+		Assert.assertEquals(true, collisionPoints.contains(point1, false));
+		Assert.assertEquals(true, collisionPoints.contains(collisionPoint5, false));
+		Assert.assertEquals(true, collisionPoints.contains(collisionPoint6, false));
+	}
+
+	@Test
 	public void testGetElementsWithinRegionUpwards() {
 		rootQuad.add(qAPoint1);
 		rootQuad.add(qAPoint2);

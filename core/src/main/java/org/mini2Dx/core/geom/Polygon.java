@@ -250,6 +250,14 @@ public class Polygon extends Shape {
 		return intersects(shape.getPolygon());
 	}
 
+	@Override
+	public boolean intersectsIgnoringEdges(Sizeable shape) {
+		if (shape.isCircle()) {
+			return intersectsIgnoringEdges((Circle) shape);
+		}
+		return intersectsIgnoringEdges(shape.getPolygon());
+	}
+
 	/**
 	 * Returns if this {@link Polygon} intersects another
 	 * 
@@ -304,6 +312,53 @@ public class Polygon extends Shape {
 		return result;
 	}
 
+	public boolean intersectsIgnoringEdges(Polygon polygon) {
+		minMaxDirtyCheck();
+		polygon.minMaxDirtyCheck();
+		if (isRectangle && polygon.isRectangle &&
+				MathUtils.round(rotation % 90f) == 0f &&
+				MathUtils.round(polygon.rotation % 90f) == 0f) {
+			boolean xAxisOverlaps = true;
+			boolean yAxisOverlaps = true;
+
+			if (maxX <= polygon.minX)
+				xAxisOverlaps = false;
+			if (polygon.maxX <= minX)
+				xAxisOverlaps = false;
+			if (maxY <= polygon.minY)
+				yAxisOverlaps = false;
+			if (polygon.maxY <= minY)
+				yAxisOverlaps = false;
+
+			return xAxisOverlaps && yAxisOverlaps;
+		}
+
+		if (polygon.minX >= maxX) {
+			return false;
+		}
+		if (polygon.maxX <= minX) {
+			return false;
+		}
+		if (polygon.minY >= maxY) {
+			return false;
+		}
+		if (polygon.maxY <= minY) {
+			return false;
+		}
+		boolean result = false;
+
+		internalEdgeIterator.begin();
+		while (internalEdgeIterator.hasNext()) {
+			internalEdgeIterator.next();
+			if (polygon.intersects(internalEdgeIterator.getEdgeLineSegment())) {
+				result = true;
+				break;
+			}
+		}
+		internalEdgeIterator.end();
+		return result;
+	}
+
 	/**
 	 * Returns if this {@link Polygon} intersects a {@link Triangle}
 	 * 
@@ -328,6 +383,47 @@ public class Polygon extends Shape {
 	}
 
 	public boolean intersects(Circle circle) {
+		if (isRectangle) {
+			minMaxDirtyCheck();
+			float closestX = circle.getX();
+			float closestY = circle.getY();
+
+			if (circle.getX() < minX) {
+				closestX = minX;
+			} else if (circle.getX() > maxX) {
+				closestX = maxX;
+			}
+
+			if (circle.getY() < minY) {
+				closestY = minY;
+			} else if (circle.getY() > maxY) {
+				closestY = maxY;
+			}
+
+			closestX = closestX - circle.getX();
+			closestX *= closestX;
+			closestY = closestY - circle.getY();
+			closestY *= closestY;
+
+			return closestX + closestY < circle.getRadius() * circle.getRadius();
+		}
+
+		boolean result = false;
+
+		internalEdgeIterator.begin();
+		while (internalEdgeIterator.hasNext()) {
+			internalEdgeIterator.next();
+			if (circle.intersectsLineSegment(internalEdgeIterator.getPointAX(), internalEdgeIterator.getPointAY(),
+					internalEdgeIterator.getPointBX(), internalEdgeIterator.getPointBY())) {
+				result = true;
+				break;
+			}
+		}
+		internalEdgeIterator.end();
+		return result;
+	}
+
+	public boolean intersectsIgnoringEdges(Circle circle) {
 		if (isRectangle) {
 			minMaxDirtyCheck();
 			float closestX = circle.getX();

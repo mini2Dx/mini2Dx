@@ -217,6 +217,41 @@ public class PointQuadTreeTest {
 	}
 
 	@Test
+	public void testGetElementsWithinRegionIgnoringEdges() {
+		rootQuad.add(point1);
+		rootQuad.add(point2);
+		rootQuad.add(point3);
+		rootQuad.add(point4);
+
+		Array<CollisionPoint> collisionPoints = rootQuad.getElementsWithinAreaIgnoringEdges(new Rectangle(0, 0, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(point1, collisionPoints.get(0));
+
+		collisionPoints = rootQuad.getElementsWithinAreaIgnoringEdges(new Rectangle(64, 0, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(point2, collisionPoints.get(0));
+
+		collisionPoints = rootQuad.getElementsWithinAreaIgnoringEdges(new Rectangle(0, 64, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(point3, collisionPoints.get(0));
+
+		collisionPoints = rootQuad.getElementsWithinAreaIgnoringEdges(new Rectangle(64, 64, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(point4, collisionPoints.get(0));
+
+		CollisionPoint collisionPoint5 = new CollisionPoint(32, 32);
+		CollisionPoint collisionPoint6 = new CollisionPoint(48, 48);
+		rootQuad.add(collisionPoint5);
+		rootQuad.add(collisionPoint6);
+
+		collisionPoints = rootQuad.getElementsWithinAreaIgnoringEdges(new Rectangle(0, 0, 64, 64));
+		Assert.assertEquals(3, collisionPoints.size);
+		Assert.assertEquals(true, collisionPoints.contains(point1, false));
+		Assert.assertEquals(true, collisionPoints.contains(collisionPoint5, false));
+		Assert.assertEquals(true, collisionPoints.contains(collisionPoint6, false));
+	}
+
+	@Test
 	public void testGetElementsWithinRegionUpwards() {
 		rootQuad.add(qAPoint1);
 		rootQuad.add(qAPoint2);
@@ -247,6 +282,43 @@ public class PointQuadTreeTest {
 		rootQuad.add(collisionPoint6);
 
 		collisionPoints = qAPoint1.getQuad().getElementsWithinArea(new Rectangle(0, 0, 64, 64), QuadTreeSearchDirection.UPWARDS);
+		Assert.assertEquals(3, collisionPoints.size);
+		Assert.assertEquals(true, collisionPoints.contains(qAPoint1, false));
+		Assert.assertEquals(true, collisionPoints.contains(collisionPoint5, false));
+		Assert.assertEquals(true, collisionPoints.contains(collisionPoint6, false));
+	}
+
+	@Test
+	public void testGetElementsWithinRegionIgnoringEdgesUpwards() {
+		rootQuad.add(qAPoint1);
+		rootQuad.add(qAPoint2);
+		rootQuad.add(qAPoint3);
+		rootQuad.add(qAPoint4);
+
+		Array<CollisionPoint> collisionPoints;
+
+		collisionPoints = qAPoint1.getQuad().getElementsWithinAreaIgnoringEdges(new Rectangle(0, 0, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(qAPoint1, collisionPoints.get(0));
+
+		collisionPoints = qAPoint2.getQuad().getElementsWithinAreaIgnoringEdges(new Rectangle(64, 0, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(qAPoint2, collisionPoints.get(0));
+
+		collisionPoints = qAPoint3.getQuad().getElementsWithinAreaIgnoringEdges(new Rectangle(0, 64, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(qAPoint3, collisionPoints.get(0));
+
+		collisionPoints = qAPoint4.getQuad().getElementsWithinAreaIgnoringEdges(new Rectangle(64, 64, 64, 64));
+		Assert.assertEquals(1, collisionPoints.size);
+		Assert.assertEquals(qAPoint4, collisionPoints.get(0));
+
+		QuadTreeAwareCollisionPoint collisionPoint5 = new QuadTreeAwareCollisionPoint(32, 32);
+		QuadTreeAwareCollisionPoint collisionPoint6 = new QuadTreeAwareCollisionPoint(48, 48);
+		rootQuad.add(collisionPoint5);
+		rootQuad.add(collisionPoint6);
+
+		collisionPoints = qAPoint1.getQuad().getElementsWithinAreaIgnoringEdges(new Rectangle(0, 0, 64, 64), QuadTreeSearchDirection.UPWARDS);
 		Assert.assertEquals(3, collisionPoints.size);
 		Assert.assertEquals(true, collisionPoints.contains(qAPoint1, false));
 		Assert.assertEquals(true, collisionPoints.contains(collisionPoint5, false));

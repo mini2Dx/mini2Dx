@@ -630,6 +630,65 @@ public class ConcurrentPointQuadTree<T extends Positionable> extends Rectangle i
 	}
 
 	@Override
+	public Array<T> getElementsWithinAreaIgnoringEdges(Shape area) {
+		Array<T> result = new Array<T>();
+		getElementsWithinAreaIgnoringEdges(result, area);
+		return result;
+	}
+
+	@Override
+	public Array<T> getElementsWithinAreaIgnoringEdges(Shape area, QuadTreeSearchDirection searchDirection) {
+		Array<T> result = new Array<T>();
+		getElementsWithinAreaIgnoringEdges(result, area, searchDirection);
+		return result;
+	}
+
+	@Override
+	public void getElementsWithinAreaIgnoringEdges(Array<T> result, Shape area) {
+		lock.lockRead();
+		if (topLeft != null) {
+			topLeft.getElementsWithinAreaIgnoringEdges(result, area);
+			topRight.getElementsWithinAreaIgnoringEdges(result, area);
+			bottomLeft.getElementsWithinAreaIgnoringEdges(result, area);
+			bottomRight.getElementsWithinAreaIgnoringEdges(result, area);
+		} else {
+			addElementsWithinArea(result, area);
+		}
+		lock.unlockRead();
+	}
+
+	@Override
+	public void getElementsWithinAreaIgnoringEdges(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection) {
+		switch (searchDirection){
+			case UPWARDS:
+				lock.lockRead();
+				if (elements != null) {
+					addElementsWithinArea(result, area);
+				}
+				if (parent != null) {
+					if (parent.topLeft != this && (area.contains(parent.topLeft) || area.intersectsIgnoringEdges(parent.topLeft))) {
+						parent.topLeft.getElementsWithinAreaIgnoringEdges(result, area);
+					}
+					if (parent.topRight != this && (area.contains(parent.topRight) || area.intersectsIgnoringEdges(parent.topRight))) {
+						parent.topRight.getElementsWithinAreaIgnoringEdges(result, area);
+					}
+					if (parent.bottomLeft != this && (area.contains(parent.bottomLeft) || area.intersectsIgnoringEdges(parent.bottomLeft))) {
+						parent.bottomLeft.getElementsWithinAreaIgnoringEdges(result, area);
+					}
+					if (parent.bottomRight != this && (area.contains(parent.bottomRight) || area.intersectsIgnoringEdges(parent.bottomRight))) {
+						parent.bottomRight.getElementsWithinAreaIgnoringEdges(result, area);
+					}
+					parent.getElementsWithinAreaIgnoringEdges(result, area, searchDirection);
+				}
+				lock.unlockRead();
+				break;
+			case DOWNWARDS:
+				getElementsWithinAreaIgnoringEdges(result, area);
+				break;
+		}
+	}
+
+	@Override
 	public Array<T> getElementsContainingArea(Shape area, boolean entirelyContained) {
 		return new Array<>();
 	}

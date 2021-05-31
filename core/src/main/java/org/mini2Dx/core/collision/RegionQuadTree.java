@@ -290,6 +290,15 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 		}
 	}
 
+	protected void addElementsWithinAreaIgnoringEdges(Array<T> result, Shape area) {
+		for (int i = elements.size - 1; i >= 0; i--) {
+			T element = elements.get(i);
+			if (element != null && (area.contains(element) || area.intersectsIgnoringEdges(element))) {
+				result.add(element);
+			}
+		}
+	}
+
 	@Override
 	public void getElementsWithinArea(Array<T> result, Shape area) {
 		if (topLeft != null) {
@@ -349,6 +358,82 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 				parent.bottomRight.getElementsWithinArea(result, area);
 			}
 			((RegionQuadTree<T>)parent).getElementsWithinAreaUpwards(result, area, false);
+		}
+	}
+
+	@Override
+	public Array<T> getElementsWithinAreaIgnoringEdges(Shape area) {
+		Array<T> result = new Array<T>();
+		getElementsWithinAreaIgnoringEdges(result, area);
+		return result;
+	}
+
+	@Override
+	public Array<T> getElementsWithinAreaIgnoringEdges(Shape area, QuadTreeSearchDirection searchDirection) {
+		Array<T> result = new Array<T>();
+		getElementsWithinAreaIgnoringEdges(result, area, searchDirection);
+		return result;
+	}
+
+	@Override
+	public void getElementsWithinAreaIgnoringEdges(Array<T> result, Shape area) {
+		if (topLeft != null) {
+			if (topLeft.contains(area) || topLeft.intersectsIgnoringEdges(area))
+				topLeft.getElementsWithinAreaIgnoringEdges(result, area);
+			if (topRight.contains(area) || topRight.intersectsIgnoringEdges(area))
+				topRight.getElementsWithinAreaIgnoringEdges(result, area);
+			if (bottomLeft.contains(area) || bottomLeft.intersectsIgnoringEdges(area))
+				bottomLeft.getElementsWithinAreaIgnoringEdges(result, area);
+			if (bottomRight.contains(area) || bottomRight.intersectsIgnoringEdges(area))
+				bottomRight.getElementsWithinAreaIgnoringEdges(result, area);
+		}
+		addElementsWithinAreaIgnoringEdges(result, area);
+	}
+
+	@Override
+	public void getElementsWithinAreaIgnoringEdges(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection) {
+		switch (searchDirection){
+			case UPWARDS:
+				getElementsWithinAreaIgnoringEdgesUpwards(result, area, true);
+				break;
+			case DOWNWARDS:
+				this.getElementsWithinAreaIgnoringEdges(result, area);
+				break;
+		}
+	}
+
+	private void getElementsWithinAreaIgnoringEdgesUpwards(Array<T> result, Shape area, boolean firstInvocation) {
+		if (elements != null) {
+			addElementsWithinArea(result, area);
+		}
+		if (firstInvocation && topLeft != null){
+			if (area.contains(topLeft) || area.intersectsIgnoringEdges(topLeft)){
+				topLeft.getElementsWithinAreaIgnoringEdges(result, area);
+			}
+			if (area.contains(topRight) || area.intersectsIgnoringEdges(topRight)){
+				topRight.getElementsWithinAreaIgnoringEdges(result, area);
+			}
+			if (area.contains(bottomLeft) || area.intersectsIgnoringEdges(bottomLeft)){
+				bottomLeft.getElementsWithinAreaIgnoringEdges(result, area);
+			}
+			if (area.contains(bottomRight) || area.intersectsIgnoringEdges(bottomRight)){
+				bottomRight.getElementsWithinAreaIgnoringEdges(result, area);
+			}
+		}
+		if (parent != null) {
+			if (parent.topLeft != this && (area.contains(parent.topLeft) || area.intersectsIgnoringEdges(parent.topLeft))) {
+				parent.topLeft.getElementsWithinAreaIgnoringEdges(result, area);
+			}
+			if (parent.topRight != this && (area.contains(parent.topRight) || area.intersectsIgnoringEdges(parent.topRight))) {
+				parent.topRight.getElementsWithinAreaIgnoringEdges(result, area);
+			}
+			if (parent.bottomLeft != this && (area.contains(parent.bottomLeft) || area.intersectsIgnoringEdges(parent.bottomLeft))) {
+				parent.bottomLeft.getElementsWithinAreaIgnoringEdges(result, area);
+			}
+			if (parent.bottomRight != this && (area.contains(parent.bottomRight) || area.intersectsIgnoringEdges(parent.bottomRight))) {
+				parent.bottomRight.getElementsWithinAreaIgnoringEdges(result, area);
+			}
+			((RegionQuadTree<T>)parent).getElementsWithinAreaIgnoringEdgesUpwards(result, area, false);
 		}
 	}
 
