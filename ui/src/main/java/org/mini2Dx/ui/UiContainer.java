@@ -880,6 +880,13 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 * @return
 	 */
 	public InputSource getLastInputSource() {
+		if(lastInputSource == null) {
+			if(Mdx.platform.isConsole()) {
+				lastInputSource = InputSource.CONTROLLER;
+			} else if(Mdx.platform.isMobile()) {
+				lastInputSource = InputSource.TOUCHSCREEN;
+			}
+		}
 		return lastInputSource;
 	}
 
