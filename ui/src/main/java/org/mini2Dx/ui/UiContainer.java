@@ -1189,7 +1189,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 * Sends input source change event to all containers with the current input source as both the old and new
 	 */
 	public void notifyInputSource() {
-		notifyInputSourceChange(lastInputSource, lastInputSource);
+		notifyInputSourceChange(getLastInputSource(), getLastInputSource());
 	}
 
 	/**
