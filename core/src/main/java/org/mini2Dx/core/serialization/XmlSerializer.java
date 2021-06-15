@@ -559,7 +559,7 @@ public class XmlSerializer {
         } catch (SerializationException e) {
             throw e;
         } catch (ReflectionException e) {
-            throw new SerializationException(e.getMessage(), e);
+            throw new SerializationException("Could not set " + field.getName() + " - " + e.getMessage(), e);
         }
     }
 
@@ -571,7 +571,7 @@ public class XmlSerializer {
         try {
             field.set(object, Enum.valueOf((Class<Enum>) fieldClass, value));
         } catch (ReflectionException e) {
-            throw new SerializationException(e.getMessage(), e);
+            throw new SerializationException("Could not set field " + field.getName() + " with value '" + value + "' - " + e.getMessage(), e);
         }
     }
 
@@ -601,7 +601,8 @@ public class XmlSerializer {
                 field.set(object, value);
             }
         } catch (Exception e) {
-            throw new SerializationException(e.getMessage(), e);
+            Mdx.log.error(LOGGING_TAG, "Could not set field " + field.getName() + " with value '" + value + "' - " + e.getMessage());
+            throw new SerializationException("Could not set field " + field.getName() + " with value '" + value + "' - " + e.getMessage(), e);
         }
     }
 
