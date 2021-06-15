@@ -794,7 +794,19 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 * Clears the current {@link Navigatable} being navigated
 	 */
 	public void clearActiveNavigation() {
-		unsetExistingNavigationHover();
+		clearActiveNavigation(true);
+	}
+
+	/**
+	 * Clears the current {@link Navigatable} being navigated
+	 *
+	 * @param unsetHoveredItem
+	 *            Boolean for unsetting hovered item
+	 */
+	public void clearActiveNavigation(boolean unsetHoveredItem) {
+		if (unsetHoveredItem) {
+			unsetExistingNavigationHover();
+		}
 		this.activeTextInput = null;
 		this.activeAction = null;
 		this.activeNavigation = null;
