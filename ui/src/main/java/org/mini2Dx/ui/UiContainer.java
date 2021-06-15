@@ -721,6 +721,17 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 *            The current {@link Navigatable} being navigated
 	 */
 	public void setActiveNavigation(Navigatable activeNavigation) {
+		setActiveNavigation(activeNavigation, true);
+	}
+
+	/**
+	 * Sets the current {@link Navigatable} for UI navigation
+	 * 
+	 * @param activeNavigation
+	 *            The current {@link Navigatable} being navigated
+	 * @param resetCursor Should the cursor position reset
+	 */
+	public void setActiveNavigation(Navigatable activeNavigation, boolean resetCursor) {
 		if (this.activeNavigation != null && activeNavigation != null
 				&& this.activeNavigation.getId().equals(activeNavigation.getId())) {
 			return;
@@ -741,11 +752,16 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		if (navigation == null) {
 			return;
 		}
-		Actionable firstActionable = navigation.resetCursor();
-		if (firstActionable == null) {
+		Actionable actionable;
+		if (resetCursor) {
+			actionable = navigation.resetCursor();
+		} else {
+			actionable = navigation.getCursor();
+		}
+		if (actionable == null) {
 			return;
 		}
-		RenderNode<?, ?> renderNode = renderTree.getElementById(firstActionable.getId());
+		RenderNode<?, ?> renderNode = renderTree.getElementById(actionable.getId());
 		if (renderNode == null) {
 			return;
 		}
