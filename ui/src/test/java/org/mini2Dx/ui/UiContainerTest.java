@@ -88,6 +88,17 @@ public class UiContainerTest implements UiContainerListener {
 		uiContainer.update(1f);
 		Assert.assertEquals(true, listenerEvents.contains("inputSourceChanged"));
 	}
+
+	@Test
+	public void testKeyDownChangeInputSource() {
+		uiContainer.setLastInputSource(InputSource.CONTROLLER);
+		uiContainer.update(1f);
+
+		Assert.assertEquals(InputSource.CONTROLLER, uiContainer.getLastInputSource());
+		uiContainer.keyDown(Keys.A);
+		uiContainer.update(1f);
+		Assert.assertEquals(InputSource.KEYBOARD_MOUSE, uiContainer.getLastInputSource());
+	}
 	
 	@Test
 	public void testDeferredControllerTypeChangeNotification() {
