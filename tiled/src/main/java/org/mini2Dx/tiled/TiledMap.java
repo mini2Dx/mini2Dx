@@ -39,6 +39,10 @@ public class TiledMap {
 	 */
 	public static boolean FAST_RENDER_EMPTY_LAYERS = false;
 	/**
+	 * Threshold for when {@link #FAST_RENDER_EMPTY_LAYERS} is applied to a layer. Defaults to 0.8 (80% of layer is empty).
+	 */
+	public static float FAST_RENDER_EMPTY_LAYERS_THRESHOLD = 0.8f;
+	/**
 	 * Set to true if mini2Dx should check the viewport bounds while rendering a tile and avoid rendering it if it is outside of the bounds
 	 */
 	public static boolean CLIP_TILES_OUTSIDE_GRAPHICS_VIEWPORT = false;

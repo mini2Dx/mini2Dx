@@ -166,10 +166,10 @@ public class TileLayer extends Layer {
 
 	/**
 	 * Returns if the majority of the {@link TileLayer} consists of empty tiles
-	 * @return False if &gt;50% of the layer contains tiles
+	 * @return False if &gt;{@link TiledMap#FAST_RENDER_EMPTY_LAYERS_THRESHOLD} of the layer contains tiles
 	 */
 	public boolean isMostlyEmptyTiles() {
-		return MathUtils.round((getTotalEmptyTiles() * 1f) / (getWidth() * getHeight() * 1f)) == 1;
+		return (getTotalEmptyTiles() * 1f) / (getWidth() * getHeight() * 1f) >= TiledMap.FAST_RENDER_EMPTY_LAYERS_THRESHOLD;
 	}
 
 	/**
