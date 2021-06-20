@@ -88,7 +88,7 @@ def docProjects() {
 	subprojects.findAll { !it.name.contains('uat') && !it.name.contains('monogame') }
 }
 
-def projectVersion = '2.0.0-alpha.54'
+def projectVersion = '2.0.0-alpha.55'
 
 configure(docProjects()) {
 	apply plugin: "signing"
