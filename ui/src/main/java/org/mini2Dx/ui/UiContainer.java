@@ -480,6 +480,14 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	@Override
 	public boolean keyDown(int keycode) {
 		setLastInputSource(InputSource.KEYBOARD_MOUSE);
+		return keyDownNoInputChange(keycode);
+	}
+
+	/**
+	 * Simulates a key down event without changing the input source
+	 * @param keycode
+	 */
+	public boolean keyDownNoInputChange(int keycode) {
 		if (activeTextInput != null && activeTextInput.isReceivingInput()) {
 			receivedKeyDowns.add(keycode);
 			return true;

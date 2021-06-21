@@ -66,7 +66,7 @@ public class PS4UiInput extends PS4GamePadAdapter implements GamePadUiInput<PS4B
 		
 		if(left) {
 			if(leftTimer == stickRepeatTimer) {
-				uiContainer.keyDown(Keys.LEFT);
+				uiContainer.keyDownNoInputChange(Keys.LEFT);
 				uiContainer.keyUp(Keys.LEFT);
 			}
 			leftTimer -= delta;
@@ -79,7 +79,7 @@ public class PS4UiInput extends PS4GamePadAdapter implements GamePadUiInput<PS4B
 		
 		if(right) {
 			if(rightTimer == stickRepeatTimer) {
-				uiContainer.keyDown(Keys.RIGHT);
+				uiContainer.keyDownNoInputChange(Keys.RIGHT);
 				uiContainer.keyUp(Keys.RIGHT);
 			}
 			rightTimer -= delta;
@@ -92,7 +92,7 @@ public class PS4UiInput extends PS4GamePadAdapter implements GamePadUiInput<PS4B
 		
 		if(up) {
 			if(upTimer == stickRepeatTimer) {
-				uiContainer.keyDown(Keys.UP);
+				uiContainer.keyDownNoInputChange(Keys.UP);
 				uiContainer.keyUp(Keys.UP);
 			}
 			upTimer -= delta;
@@ -105,7 +105,7 @@ public class PS4UiInput extends PS4GamePadAdapter implements GamePadUiInput<PS4B
 		
 		if(down) {
 			if(downTimer == stickRepeatTimer) {
-				uiContainer.keyDown(Keys.DOWN);
+				uiContainer.keyDownNoInputChange(Keys.DOWN);
 				uiContainer.keyUp(Keys.DOWN);
 			}
 			downTimer -= delta;
@@ -172,13 +172,13 @@ public class PS4UiInput extends PS4GamePadAdapter implements GamePadUiInput<PS4B
 		if(navigateWithDPad) {
 			switch (button) {
 			case UP:
-				return uiContainer.keyDown(Keys.UP);
+				return uiContainer.keyDownNoInputChange(Keys.UP);
 			case DOWN:
-				return uiContainer.keyDown(Keys.DOWN);
+				return uiContainer.keyDownNoInputChange(Keys.DOWN);
 			case LEFT:
-				return uiContainer.keyDown(Keys.LEFT);
+				return uiContainer.keyDownNoInputChange(Keys.LEFT);
 			case RIGHT:
-				return uiContainer.keyDown(Keys.RIGHT);
+				return uiContainer.keyDownNoInputChange(Keys.RIGHT);
 			}
 		}
 

@@ -80,7 +80,7 @@ public class XboxUiInput extends XboxGamePadAdapter implements GamePadUiInput<Xb
 		
 		if(left) {
 			if(leftTimer == stickRepeatTimer) {
-				uiContainer.keyDown(Keys.LEFT);
+				uiContainer.keyDownNoInputChange(Keys.LEFT);
 				uiContainer.keyUp(Keys.LEFT);
 				debugLog("Navigate left");
 			}
@@ -94,7 +94,7 @@ public class XboxUiInput extends XboxGamePadAdapter implements GamePadUiInput<Xb
 		
 		if(right) {
 			if(rightTimer == stickRepeatTimer) {
-				uiContainer.keyDown(Keys.RIGHT);
+				uiContainer.keyDownNoInputChange(Keys.RIGHT);
 				uiContainer.keyUp(Keys.RIGHT);
 				debugLog("Navigate right");
 			}
@@ -108,7 +108,7 @@ public class XboxUiInput extends XboxGamePadAdapter implements GamePadUiInput<Xb
 		
 		if(up) {
 			if(upTimer == stickRepeatTimer) {
-				uiContainer.keyDown(Keys.UP);
+				uiContainer.keyDownNoInputChange(Keys.UP);
 				uiContainer.keyUp(Keys.UP);
 				debugLog("Navigate up");
 			}
@@ -122,7 +122,7 @@ public class XboxUiInput extends XboxGamePadAdapter implements GamePadUiInput<Xb
 		
 		if(down) {
 			if(downTimer == stickRepeatTimer) {
-				uiContainer.keyDown(Keys.DOWN);
+				uiContainer.keyDownNoInputChange(Keys.DOWN);
 				uiContainer.keyUp(Keys.DOWN);
 				debugLog("Navigate down");
 			}
@@ -191,13 +191,13 @@ public class XboxUiInput extends XboxGamePadAdapter implements GamePadUiInput<Xb
 		if(navigateWithDPad) {
 			switch(button) {
 			case UP:
-				return uiContainer.keyDown(Keys.UP);
+				return uiContainer.keyDownNoInputChange(Keys.UP);
 			case DOWN:
-				return uiContainer.keyDown(Keys.DOWN);
+				return uiContainer.keyDownNoInputChange(Keys.DOWN);
 			case LEFT:
-				return uiContainer.keyDown(Keys.LEFT);
+				return uiContainer.keyDownNoInputChange(Keys.LEFT);
 			case RIGHT:
-				return uiContainer.keyDown(Keys.RIGHT);
+				return uiContainer.keyDownNoInputChange(Keys.RIGHT);
 			}
 		}
 
