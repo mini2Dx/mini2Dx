@@ -24,48 +24,36 @@ namespace monogame
 {
     public class MonoGameFiles : global::Java.Lang.Object, Org.Mini2Dx.Core._Files
     {
-        private readonly string _internalFilePrefix, _externalFilePrefix = ((string) Mdx.gameIdentifier_) + Path.DirectorySeparatorChar;
+        private readonly string _internalFilePrefix;
         internal readonly MonoGameContentManager _contentManager;
 
         public MonoGameFiles(ContentManager contentManager)
         {
             _internalFilePrefix = contentManager.RootDirectory + Path.DirectorySeparatorChar;
-            if (Mdx.platform_.isDesktop())
-            {
-                _externalFilePrefix = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + Path.DirectorySeparatorChar + _externalFilePrefix;
-            }
-            else if(Mdx.platform_.isConsole())
-            {
-                _externalFilePrefix = "";
-            }
-            else
-            {
-                throw new NotSupportedException("Files aren't yet supported on this platform");
-            }
             _contentManager = new MonoGameContentManager(contentManager.ServiceProvider, contentManager.RootDirectory);
         }
 
-        public FileHandle @internal(Java.Lang.String path)
+        public FileHandle internal_1F3F44D2(Java.Lang.String path)
         {
             return new MonoGameFileHandle(_internalFilePrefix, path, FileType.INTERNAL_);
         }
 
-        public bool isExternalStorageAvailable()
+        public bool isExternalStorageAvailable_FBE0B2A4()
         {
             return true;
         }
 
-        public FileHandle external(Java.Lang.String path)
+        public FileHandle external_1F3F44D2(Java.Lang.String path)
         {
-            return new MonoGameFileHandle(_externalFilePrefix, path, FileType.EXTERNAL_);
+            return new MonoGameFileHandle("", path, FileType.EXTERNAL_);
         }
 
-        public bool isLocalStorageAvailable()
+        public bool isLocalStorageAvailable_FBE0B2A4()
         {
             return false;
         }
 
-        public FileHandle local(Java.Lang.String path)
+        public FileHandle local_1F3F44D2(Java.Lang.String path)
         {
             throw new NotImplementedException();
         }

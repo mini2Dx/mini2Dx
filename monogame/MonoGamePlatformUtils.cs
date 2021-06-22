@@ -23,51 +23,84 @@ namespace monogame
 {
     public class MonoGamePlatformUtils : Org.Mini2Dx.Core.PlatformUtils
     {
+        public static PlatformMemoryInfoProvider MEMORY_INFO_PROVIDER = null;
+        public static PlatformTimeInfoProvider TIME_INFO_PROVIDER = null;
+
         public MonoGamePlatformUtils() : base()
         {
             base._init_();
         }
 
-        public override void exit(bool b)
+        public override void exit_AA5A2C66(bool b)
         {
             Mini2DxGame.instance.Exit();
         }
 
-        public override long nanoTime()
+        public override long nanoTime_0BE0CBD4()
         {
-            return 100L * Stopwatch.GetTimestamp();
+            if(TIME_INFO_PROVIDER != null)
+            {
+                return TIME_INFO_PROVIDER.GetCurrentTimeNanos();
+            }
+            return 100L * DateTime.UtcNow.Ticks;
         }
 
-        public override long currentTimeMillis()
+        public override long currentTimeMillis_0BE0CBD4()
         {
-            var nano = Stopwatch.GetTimestamp();
+            if (TIME_INFO_PROVIDER != null)
+            {
+                return TIME_INFO_PROVIDER.GetCurrentTimeMillis();
+            }
+            var nano = DateTime.UtcNow.Ticks;
             nano /= TimeSpan.TicksPerMillisecond;
             return nano;
         }
 
-        public override long getTotalMemory()
+        public override long getTotalMemory_0BE0CBD4()
         {
+            if(MEMORY_INFO_PROVIDER != null)
+            {
+                return MEMORY_INFO_PROVIDER.GetTotalMemory();
+            }
             return Process.GetCurrentProcess().VirtualMemorySize64;
         }
 
-        public override long getAvailableMemory()
+        public override long getAvailableMemory_0BE0CBD4()
         {
-            return getTotalMemory() - getUsedMemory();
+            return getTotalMemory_0BE0CBD4() - getUsedMemory_0BE0CBD4();
         }
 
-        public override long getUsedMemory()
+        public override long getUsedMemory_0BE0CBD4()
         {
+            if(MEMORY_INFO_PROVIDER != null)
+            {
+                return MEMORY_INFO_PROVIDER.GetUsedMemory();
+            }
             return Process.GetCurrentProcess().WorkingSet64;
         }
 
-        public override bool isGameThread()
+        public override bool isGameThread_FBE0B2A4()
         {
             return Thread.CurrentThread.ManagedThreadId == 1 && Thread.CurrentThread.Name == null;
         }
 
-        public override ZlibStream decompress(sbyte[] arg0)
+        public override ZlibStream decompress_5F233ABB(sbyte[] arg0)
         {
             return new MonoGameZlibStream(arg0);
         }
+    }
+
+    public abstract class PlatformMemoryInfoProvider
+    {
+        public abstract long GetUsedMemory();
+
+        public abstract long GetTotalMemory();
+    }
+
+    public abstract class PlatformTimeInfoProvider
+    {
+        public abstract long GetCurrentTimeNanos();
+
+        public abstract long GetCurrentTimeMillis();
     }
 }

@@ -27,24 +27,43 @@ namespace monogame.Locks
     {
         object @object = new object();
 
-        public bool isHeldByCurrentThread()
+        public bool isHeldByCurrentThread_FBE0B2A4()
         {
             return Monitor.IsEntered(@object);
         }
 
-        public void @lock()
+        public void lock_EFE09FC0()
         {
-            Monitor.Enter(@object);
+            bool locked = false;
+            while (!locked)
+            {
+                try
+                {
+                    Monitor.Enter(@object, ref locked);
+                }
+                catch (global::System.Threading.ThreadInterruptedException) { }
+            }
         }
 
-        public bool tryLock()
+        public bool tryLock_FBE0B2A4()
         {
-            return Monitor.TryEnter(@object);
+            try
+            {
+                return Monitor.TryEnter(@object);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public void unlock()
+        public void unlock_EFE09FC0()
         {
-            Monitor.Exit(@object);
+            try
+            {
+                Monitor.Exit(@object);
+            }
+            catch (global::System.Exception) { }
         }
     }
 }

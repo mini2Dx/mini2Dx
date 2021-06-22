@@ -32,122 +32,122 @@ namespace monogame.Graphics
         {
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color add(sbyte r, sbyte g, sbyte b, sbyte a)
+        public override Org.Mini2Dx.Core.Graphics.Color add_2CE9FB0F(sbyte r, sbyte g, sbyte b, sbyte a)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color add(Org.Mini2Dx.Core.Graphics.Color c)
+        public override Org.Mini2Dx.Core.Graphics.Color add_F18CABCA(Org.Mini2Dx.Core.Graphics.Color c)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color add(float r, float g, float b, float a)
+        public override Org.Mini2Dx.Core.Graphics.Color add_DF74E9CF(float r, float g, float b, float a)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color lerp(sbyte r, sbyte g, sbyte b, sbyte a, float t)
+        public override Org.Mini2Dx.Core.Graphics.Color lerp_8C006841(sbyte r, sbyte g, sbyte b, sbyte a, float t)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color lerp(Org.Mini2Dx.Core.Graphics.Color color, float t)
+        public override Org.Mini2Dx.Core.Graphics.Color lerp_50042A18(Org.Mini2Dx.Core.Graphics.Color color, float t)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color lerp(float r, float g, float b, float a, float t)
+        public override Org.Mini2Dx.Core.Graphics.Color lerp_2E63AB81(float r, float g, float b, float a, float t)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color multiply(sbyte r, sbyte g, sbyte b, sbyte a)
+        public override Org.Mini2Dx.Core.Graphics.Color multiply_2CE9FB0F(sbyte r, sbyte g, sbyte b, sbyte a)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color multiply(Org.Mini2Dx.Core.Graphics.Color c)
+        public override Org.Mini2Dx.Core.Graphics.Color multiply_F18CABCA(Org.Mini2Dx.Core.Graphics.Color c)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color multiply(float multiplier)
+        public override Org.Mini2Dx.Core.Graphics.Color multiply_56581B81(float multiplier)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color multiply(float r, float g, float b, float a)
+        public override Org.Mini2Dx.Core.Graphics.Color multiply_DF74E9CF(float r, float g, float b, float a)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color set(Org.Mini2Dx.Core.Graphics.Color c)
+        public override Org.Mini2Dx.Core.Graphics.Color set_F18CABCA(Org.Mini2Dx.Core.Graphics.Color c)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color set(sbyte r, sbyte g, sbyte b, sbyte a)
+        public override Org.Mini2Dx.Core.Graphics.Color set_2CE9FB0F(sbyte r, sbyte g, sbyte b, sbyte a)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color set(float r, float g, float b, float a)
+        public override Org.Mini2Dx.Core.Graphics.Color set_DF74E9CF(float r, float g, float b, float a)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color subtract(Org.Mini2Dx.Core.Graphics.Color c)
+        public override Org.Mini2Dx.Core.Graphics.Color subtract_F18CABCA(Org.Mini2Dx.Core.Graphics.Color c)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color subtract(float r, float g, float b, float a)
+        public override Org.Mini2Dx.Core.Graphics.Color subtract_DF74E9CF(float r, float g, float b, float a)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override Org.Mini2Dx.Core.Graphics.Color subtract(sbyte r, sbyte g, sbyte b, sbyte a)
+        public override Org.Mini2Dx.Core.Graphics.Color subtract_2CE9FB0F(sbyte r, sbyte g, sbyte b, sbyte a)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override void setA(sbyte b)
+        public override void setA_638B22FE(sbyte b)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override void setA(float f)
+        public override void setA_97413DCA(float f)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override void setB(sbyte b)
+        public override void setB_638B22FE(sbyte b)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override void setB(float f)
+        public override void setB_97413DCA(float f)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override void setG(sbyte b)
+        public override void setG_638B22FE(sbyte b)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override void setG(float f)
+        public override void setG_97413DCA(float f)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override void setR(sbyte b)
+        public override void setR_638B22FE(sbyte b)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }
 
-        public override void setR(float f)
+        public override void setR_97413DCA(float f)
         {
             throw new NotSupportedException(EXCEPTION_MESSAGE);
         }

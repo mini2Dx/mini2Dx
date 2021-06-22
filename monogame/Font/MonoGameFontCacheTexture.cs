@@ -139,7 +139,7 @@ namespace monogame.Font
             }
 
             MonoGameTextureRegion textureRegion = _caches[cacheId];
-            g.drawTextureRegion(textureRegion, position.X, position.Y);
+            g.drawTextureRegion_C70A626B(textureRegion, position.X, position.Y);
         }
 
         public void clear(int cacheId)
@@ -158,9 +158,9 @@ namespace monogame.Font
 
             for(int i = 0; i < cache._previousDrawingOperations.Count; i++)
             {
-                int currentMaxX = MathUtils.round(cache._previousDrawingOperations[i].x +
+                int currentMaxX = MathUtils.round_9A414283(cache._previousDrawingOperations[i].x +
                     cache._previousDrawingOperations[i].targetWidth);
-                int currentMaxY = MathUtils.round(cache._previousDrawingOperations[i].y +
+                int currentMaxY = MathUtils.round_9A414283(cache._previousDrawingOperations[i].y +
                     cache._previousDrawingOperations[i].targetHeight);
 
                 maxX = Math.Max(maxX, currentMaxX);

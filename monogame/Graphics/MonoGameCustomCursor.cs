@@ -21,34 +21,34 @@ namespace monogame.Graphics
             if(Mini2DxGame.instance.getConfig().IsMouseVisible.HasValue &&
                 Mini2DxGame.instance.getConfig().IsMouseVisible.Value)
             {
-                upCursor = MouseCursor.FromTexture2D(((MonoGameTexture)Mdx.graphics_.newTexture(upPixmap)).texture2D, xHotspot, yHotspot);
-                downCursor = MouseCursor.FromTexture2D(((MonoGameTexture)Mdx.graphics_.newTexture(downPixmap)).texture2D, xHotspot, yHotspot);
+                upCursor = MouseCursor.FromTexture2D(((MonoGameTexture)Mdx.graphics_.newTexture_5A25B7D4(upPixmap)).texture2D, xHotspot, yHotspot);
+                downCursor = MouseCursor.FromTexture2D(((MonoGameTexture)Mdx.graphics_.newTexture_5A25B7D4(downPixmap)).texture2D, xHotspot, yHotspot);
                 Mouse.SetCursor(upCursor);
             }
         }
 
 
-        bool InputProcessor.keyDown(int obj0)
+        bool InputProcessor.keyDown_4118CD17(int obj0)
         {
             return false;
         }
 
-        bool InputProcessor.keyUp(int obj0)
+        bool InputProcessor.keyUp_4118CD17(int obj0)
         {
             return false;
         }
 
-        bool InputProcessor.keyTyped(char obj0)
+        bool InputProcessor.keyTyped_0E996675(char obj0)
         {
             return false;
         }
 
-        bool InputProcessor.touchDown(int obj0, int obj1, int obj2, int obj3)
+        bool InputProcessor.touchDown_A890D1B4(int obj0, int obj1, int obj2, int obj3)
         {
             if (Mini2DxGame.instance.getConfig().IsMouseVisible.HasValue &&
                 Mini2DxGame.instance.getConfig().IsMouseVisible.Value)
             {
-                if (isVisible())
+                if (isVisible_FBE0B2A4())
                 {
                     Mouse.SetCursor(downCursor);
                 }  
@@ -56,12 +56,12 @@ namespace monogame.Graphics
             return false;
         }
 
-        bool InputProcessor.touchUp(int obj0, int obj1, int obj2, int obj3)
+        bool InputProcessor.touchUp_A890D1B4(int obj0, int obj1, int obj2, int obj3)
         {
             if (Mini2DxGame.instance.getConfig().IsMouseVisible.HasValue &&
                 Mini2DxGame.instance.getConfig().IsMouseVisible.Value)
             {
-                if(isVisible())
+                if(isVisible_FBE0B2A4())
                 {
                     Mouse.SetCursor(upCursor);
                 }
@@ -69,17 +69,17 @@ namespace monogame.Graphics
             return false;
         }
 
-        bool InputProcessor.touchDragged(int obj0, int obj1, int obj2)
+        bool InputProcessor.touchDragged_F8B7DE3F(int obj0, int obj1, int obj2)
         {
             return false;
         }
 
-        bool InputProcessor.mouseMoved(int obj0, int obj1)
+        bool InputProcessor.mouseMoved_1E4D20DC(int obj0, int obj1)
         {
             return false;
         }
 
-        bool InputProcessor.scrolled(float scrollX, float scrollY)
+        bool InputProcessor.scrolled_1548FAA4(float scrollX, float scrollY)
         {
             return false;
         }

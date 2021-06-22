@@ -49,15 +49,15 @@ namespace monogame
             {
                 gamePads[i] = new MonoGameGamePad(i);
             }
-            gamePadsArray = Array.with(gamePads);
+            gamePadsArray = Array.with_7D7B1E36(gamePads);
         }
         
-        public void setInputProcessor(InputProcessor inputProcessor)
+        public void setInputProcessor_8E738C44(InputProcessor inputProcessor)
         {
             this.inputProcessor = inputProcessor;
         }
 
-        public void setGamePadConnectionListener(GamePadConnectionListener listener, bool notifyExisting)
+        public void setGamePadConnectionListener_39881AFC(GamePadConnectionListener listener, bool notifyExisting)
         {
             gamePadConnectionListener = listener;
 
@@ -71,39 +71,39 @@ namespace monogame
                 {
                     continue;
                 }
-                if(gamePads[i].isConnected())
+                if(gamePads[i].isConnected_FBE0B2A4())
                 {
-                    listener.onConnect(gamePads[i]);
+                    listener.onConnect_238EC38A(gamePads[i]);
                 }
             }
         }
 
-        public Array getGamePads()
+        public Array getGamePads_9BE31B41()
         {
             return gamePadsArray;
         }
 
-        public PS4GamePad newPS4GamePad(GamePad gamePad)
+        public PS4GamePad newPS4GamePad_D12C0E63(GamePad gamePad)
         {
             return new MonoGamePS4GamePad(gamePad);
         }
 
-        public SwitchDualJoyConGamePad newSwitchDualJoyConGamePad(GamePad gamePad)
+        public SwitchDualJoyConGamePad newSwitchDualJoyConGamePad_B4A1FE67(GamePad gamePad)
         {
             throw new NotImplementedException();
         }
 
-        public SwitchJoyConLGamePad newSwitchJoyConLGamePad(GamePad gamePad)
+        public SwitchJoyConLGamePad newSwitchJoyConLGamePad_DC6EEB37(GamePad gamePad)
         {
             throw new NotImplementedException();
         }
 
-        public SwitchJoyConRGamePad newSwitchJoyConRGamePad(GamePad gamePad)
+        public SwitchJoyConRGamePad newSwitchJoyConRGamePad_663BA2E9(GamePad gamePad)
         {
             throw new NotImplementedException();
         }
 
-        public XboxGamePad newXboxGamePad(GamePad gamePad)
+        public XboxGamePad newXboxGamePad_1507DC33(GamePad gamePad)
         {
             return new MonoGameXboxGamePad(gamePad);
         }
@@ -130,21 +130,21 @@ namespace monogame
                 {
                     continue;
                 }
-                if (!gamePads[i].wasConnected() && gamePads[i].isConnected())
+                if (!gamePads[i].wasConnected() && gamePads[i].isConnected_FBE0B2A4())
                 {
                     if(gamePadConnectionListener != null)
                     {
-                        gamePadConnectionListener.onConnect(gamePads[i]);
+                        gamePadConnectionListener.onConnect_238EC38A(gamePads[i]);
                     }
                 }
-                else if (gamePads[i].wasConnected() && !gamePads[i].isConnected())
+                else if (gamePads[i].wasConnected() && !gamePads[i].isConnected_FBE0B2A4())
                 {
                     if (gamePadConnectionListener != null)
                     {
-                        gamePadConnectionListener.onDisconnect(gamePads[i]);
+                        gamePadConnectionListener.onConnect_238EC38A(gamePads[i]);
                     }
                 }
-                if (gamePads[i].wasConnected() || gamePads[i].isConnected())
+                if (gamePads[i].wasConnected() || gamePads[i].isConnected_FBE0B2A4())
                 {
                     gamePads[i].update();
                 }
@@ -165,17 +165,17 @@ namespace monogame
             {
                 if (isAnyMouseButtonPressed(currentMouseState))
                 {
-                    inputProcessor.touchDragged(currentMouseState.X, currentMouseState.Y, 0);
+                    inputProcessor.touchDragged_F8B7DE3F(currentMouseState.X, currentMouseState.Y, 0);
                 }
                 else
                 {
-                    inputProcessor.mouseMoved(currentMouseState.X, currentMouseState.Y);
+                    inputProcessor.mouseMoved_1E4D20DC(currentMouseState.X, currentMouseState.Y);
                 }
             }
 
             if (previousMouseState.ScrollWheelValue != currentMouseState.ScrollWheelValue)
             {
-                inputProcessor.scrolled(0, 
+                inputProcessor.scrolled_1548FAA4(0, 
                     -Math.Sign(currentMouseState.ScrollWheelValue - previousMouseState.ScrollWheelValue));
             }
 
@@ -183,11 +183,11 @@ namespace monogame
             {
                 if (currentMouseState.LeftButton == ButtonState.Pressed)
                 {
-                    inputProcessor.touchDown(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.LEFT_);
+                    inputProcessor.touchDown_A890D1B4(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.LEFT_);
                 }
                 else
                 {
-                    inputProcessor.touchUp(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.LEFT_);
+                    inputProcessor.touchUp_A890D1B4(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.LEFT_);
                 }
             }
 
@@ -195,11 +195,11 @@ namespace monogame
             {
                 if (currentMouseState.MiddleButton == ButtonState.Pressed)
                 {
-                    inputProcessor.touchDown(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.MIDDLE_);
+                    inputProcessor.touchDown_A890D1B4(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.MIDDLE_);
                 }
                 else
                 {
-                    inputProcessor.touchUp(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.MIDDLE_);
+                    inputProcessor.touchUp_A890D1B4(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.MIDDLE_);
                 }
             }
 
@@ -207,11 +207,11 @@ namespace monogame
             {
                 if (currentMouseState.RightButton == ButtonState.Pressed)
                 {
-                    inputProcessor.touchDown(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.RIGHT_);
+                    inputProcessor.touchDown_A890D1B4(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.RIGHT_);
                 }
                 else
                 {
-                    inputProcessor.touchUp(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.RIGHT_);
+                    inputProcessor.touchUp_A890D1B4(currentMouseState.X, currentMouseState.Y, 0, Org.Mini2Dx.Gdx.Input_n_Buttons.RIGHT_);
                 }
             }
         }
@@ -239,11 +239,11 @@ namespace monogame
                     var monoGameKey = monoGameKeyToGdxKey(currentPressedKeys[i]);
                     if(monoGameKey != 0)
                     {
-                        inputProcessor.keyDown(monoGameKey);
+                        inputProcessor.keyDown_4118CD17(monoGameKey);
                         var keyCharacter = monoGameKeyToChar(currentPressedKeys[i]);
                         if (keyCharacter != 0)
                         {
-                            inputProcessor.keyTyped(keyCharacter);
+                            inputProcessor.keyTyped_0E996675(keyCharacter);
                         }
                     }
                 }
@@ -256,7 +256,7 @@ namespace monogame
                     var monoGameKey = monoGameKeyToGdxKey(previousPressedKeys[i]);
                     if (monoGameKey != 0)
                     {
-                        inputProcessor.keyUp(monoGameKey);
+                        inputProcessor.keyUp_4118CD17(monoGameKey);
                     }
                 }
             }
@@ -550,41 +550,41 @@ namespace monogame
             }
         }
         
-        public void setOnScreenKeyboardVisible(bool b)
+        public void setOnScreenKeyboardVisible_AA5A2C66(bool b)
         {
-            if (Mdx.platform_.isDesktop())
+            if (Mdx.platform_.isDesktop_FBE0B2A4())
             {
                 return;
             }
         }
 
-        public int getX()
+        public int getX_0EE0D08D()
         {
             return previousMouseState.X;
         }
 
-        public int getY()
+        public int getY_0EE0D08D()
         {
             return previousMouseState.Y;
         }
 
-        public bool isKeyJustPressed(int keyCode)
+        public bool isKeyJustPressed_4118CD17(int keyCode)
         {
             var monogameKey = gdxKeyToMonoGameKey(keyCode);
             return contains(currentPressedKeys, monogameKey) && !contains(previousPressedKeys, monogameKey);
         }
 
-        public bool isKeyDown(int keyCode)
+        public bool isKeyDown_4118CD17(int keyCode)
         {
             return contains(currentPressedKeys, gdxKeyToMonoGameKey(keyCode));
         }
 
-        public bool isKeyUp(int keyCode)
+        public bool isKeyUp_4118CD17(int keyCode)
         {
-            return !isKeyDown(keyCode);
+            return !isKeyDown_4118CD17(keyCode);
         }
 
-        public bool justTouched()
+        public bool justTouched_FBE0B2A4()
         {
             return previousMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed ||
                    previousMouseState.MiddleButton == ButtonState.Released && currentMouseState.MiddleButton == ButtonState.Pressed ||

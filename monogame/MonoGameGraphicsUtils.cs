@@ -36,7 +36,7 @@ namespace monogame
             _graphicsDevice = graphicsDevice;
         }
 
-        public override Texture newTexture(sbyte[] barr)
+        public override Texture newTexture_4CDE97CA(sbyte[] barr)
         {
             byte[] data = new byte[barr.Length];
             for(int i = 0; i < barr.Length; i++)
@@ -48,96 +48,96 @@ namespace monogame
             return new MonoGameTexture(texture);
         }
 
-        public override Color newColor(float r, float g, float b, float a)
+        public override Color newColor_DF74E9CF(float r, float g, float b, float a)
         {
             return new MonoGameColor(r,g,b,a);
         }
 
-        public override Color newColor(int rgba8888)
+        public override Color newColor_290C98AC(int rgba8888)
         {
             return new MonoGameColor(MonoGameColor.toMonoGameColor((uint) rgba8888));
         }
 
-        public override Color newColor(int r, int g, int b, int a)
+        public override Color newColor_AD27635F(int r, int g, int b, int a)
         {
             return new MonoGameColor(r,g,b,a);
         }
 
-        public override Color newColor(sbyte r, sbyte g, sbyte b, sbyte a)
+        public override Color newColor_2CE9FB0F(sbyte r, sbyte g, sbyte b, sbyte a)
         {
             return new MonoGameColor(r,g,b,a);
         }
 
-        public override Color newColor(Color color)
+        public override Color newColor_F18CABCA(Color color)
         {
-            return new MonoGameColor(color.rb(), color.gb(), color.bb(), color.ab());
+            return new MonoGameColor(color.rb_03E0BF3C(), color.gb_03E0BF3C(), color.bb_03E0BF3C(), color.ab_03E0BF3C());
         }
 
-        public override Color newReadOnlyColor(float r, float g, float b, float a)
+        public override Color newReadOnlyColor_DF74E9CF(float r, float g, float b, float a)
         {
             return new MonoGameReadOnlyColor(r,g,b,a);
         }
 
-        public override Color newReadOnlyColor(int rgba8888)
+        public override Color newReadOnlyColor_290C98AC(int rgba8888)
         {
             return new MonoGameReadOnlyColor(MonoGameColor.toMonoGameColor((uint) rgba8888));
         }
 
-        public override Color newReadOnlyColor(int r, int g, int b, int a)
+        public override Color newReadOnlyColor_AD27635F(int r, int g, int b, int a)
         {
             return new MonoGameReadOnlyColor(r,g,b,a);
         }
 
-        public override Color newReadOnlyColor(sbyte r, sbyte g, sbyte b, sbyte a)
+        public override Color newReadOnlyColor_2CE9FB0F(sbyte r, sbyte g, sbyte b, sbyte a)
         {
             return new MonoGameReadOnlyColor(r,g,b,a);
         }
 
-        public override Color newReadOnlyColor(Color color)
+        public override Color newReadOnlyColor_F18CABCA(Color color)
         {
-            return new MonoGameReadOnlyColor(color.rb(), color.gb(), color.bb(), color.ab());
+            return new MonoGameReadOnlyColor(color.rb_03E0BF3C(), color.gb_03E0BF3C(), color.bb_03E0BF3C(), color.ab_03E0BF3C());
         }
 
-        public override NinePatch newNinePatch(Texture texture, int left, int right, int top, int bottom)
+        public override NinePatch newNinePatch_D8829279(Texture texture, int left, int right, int top, int bottom)
         {
-            return newNinePatch(new MonoGameTextureRegion(texture), left, right, top, bottom);
+            return newNinePatch_E8B73EE1(new MonoGameTextureRegion(texture), left, right, top, bottom);
         }
 
-        public override NinePatch newNinePatch(TextureRegion region, int left, int right, int top, int bottom)
+        public override NinePatch newNinePatch_E8B73EE1(TextureRegion region, int left, int right, int top, int bottom)
         {
             return new MonoGameNinePatch(region, left, right, top, bottom);
         }
 
-        public override FrameBuffer newFrameBuffer(int width, int height)
+        public override FrameBuffer newFrameBuffer_9F3C0E57(int width, int height)
         {
             return new MonoGameFrameBuffer(_graphicsDevice, width, height);
         }
 
-        public override ParticleEffect newParticleEffect()
+        public override ParticleEffect newParticleEffect_5F264111()
         {
             throw new NotImplementedException();
         }
 
-        public override ParticleEffect newParticleEffect(FileHandle effectFile, FileHandle imagesDir)
+        public override ParticleEffect newParticleEffect_D29FBBD1(FileHandle effectFile, FileHandle imagesDir)
         {
             throw new NotImplementedException();
         }
 
-        public override ParticleEffect newParticleEffect(FileHandle effectFile, TextureAtlas atlas)
+        public override ParticleEffect newParticleEffect_21903989(FileHandle effectFile, TextureAtlas atlas)
         {
             throw new NotImplementedException();
         }
 
-        public override Pixmap newPixmap(int width, int height, PixmapFormat format)
+        public override Pixmap newPixmap_990CB4F7(int width, int height, PixmapFormat format)
         {
             return new MonoGamePixmap(width, height, format);
         }
 
-        public override Pixmap newPixmap(FileHandle file)
+        public override Pixmap newPixmap_7C2D11FD(FileHandle file)
         {
             Texture2D texture;
 
-            texture = ((MonoGameTexture)newTexture(file)).texture2D;
+            texture = ((MonoGameTexture)newTexture_69120FDF(file)).texture2D;
 
             var rawTextureData = new UInt32[texture.Width * texture.Height];
             texture.GetData(rawTextureData);
@@ -155,59 +155,59 @@ namespace monogame
             return pixmap;
         }
 
-        public override Sprite newSprite(TextureRegion texture)
+        public override Sprite newSprite_CB432FF0(TextureRegion texture)
         {
             if(texture is Sprite)
             {
                 Sprite sprite = new MonoGameSprite();
-                sprite.set((Sprite)texture);
+                sprite.set_615359F5((Sprite)texture);
                 return sprite;
             }
             return new MonoGameSprite(texture);
         }
 
-        public override TextureAtlasRegion newTextureAtlasRegion(Texture texture, Java.Lang.String name, int index, int x, int y, int width, int height,
+        public override TextureAtlasRegion newTextureAtlasRegion_95DF68AC(Texture texture, Java.Lang.String name, int index, int x, int y, int width, int height,
             bool rotate, int originalWidth, int originalHeight, int offsetX, int offsetY)
         {
             return new MonoGameTextureAtlasRegion(texture, name, index, x, y, width, height, rotate, originalWidth, originalHeight, offsetX, offsetY);
         }
 
-        public override TextureAtlasRegion newTextureAtlasRegion(Java.Lang.String texturePath, Java.Lang.String name, int index, int x, int y, int width, int height,
+        public override TextureAtlasRegion newTextureAtlasRegion_5044756D(Java.Lang.String texturePath, Java.Lang.String name, int index, int x, int y, int width, int height,
             bool rotate, int originalWidth, int originalHeight, int offsetX, int offsetY)
         {
             return new MonoGameTextureAtlasRegion(texturePath, name, index, x, y, width, height, rotate, originalWidth, originalHeight, offsetX, offsetY);
         }
 
-        public override Sprite newSprite(Texture texture)
+        public override Sprite newSprite_768542D8(Texture texture)
         {
             return new MonoGameSprite(texture);
         }
 
-        public override Sprite newSprite(Texture texture, int width, int height)
+        public override Sprite newSprite_F735C8D0(Texture texture, int width, int height)
         {
             return new MonoGameSprite(texture, width, height);
         }
 
-        public override Sprite newSprite(Texture texture, int x, int y, int width, int height)
+        public override Sprite newSprite_93C59988(Texture texture, int x, int y, int width, int height)
         {
             return new MonoGameSprite(texture, x, y, width, height);
         }
 
-        public override Sprite newSprite(TextureRegion texture, int width, int height)
+        public override Sprite newSprite_AD1B3FA8(TextureRegion texture, int width, int height)
         {
             return new MonoGameSprite(texture, width, height);
         }
 
-        public override Sprite newSprite(TextureRegion texture, int x, int y, int width, int height)
+        public override Sprite newSprite_67C53C60(TextureRegion texture, int x, int y, int width, int height)
         {
             return new MonoGameSprite(texture, x, y, width, height);
         }
 
-        public override Texture newTexture(FileHandle fileHandle)
+        public override Texture newTexture_69120FDF(FileHandle fileHandle)
         {
             try
             {
-                return newTexture(fileHandle.readBytes());
+                return newTexture_4CDE97CA(fileHandle.readBytes_A27A8875());
             }
             catch (Exception)
             {
@@ -215,68 +215,68 @@ namespace monogame
             }
         }
 
-        public override Texture newTexture(FileHandle fileHandle, PixmapFormat format)
+        public override Texture newTexture_D5999D8F(FileHandle fileHandle, PixmapFormat format)
         {
-            var pixmap = newPixmap(fileHandle);
-            return newTexture(pixmap, pixmap.getFormat());
+            var pixmap = newPixmap_7C2D11FD(fileHandle);
+            return newTexture_5B771B24(pixmap, pixmap.getFormat_4C177B62());
         }
 
-        public override Texture newTexture(Pixmap pixmap)
+        public override Texture newTexture_5A25B7D4(Pixmap pixmap)
         {
-            return newTexture(pixmap, pixmap.getFormat());
+            return newTexture_5B771B24(pixmap, pixmap.getFormat_4C177B62());
         }
 
-        public override Texture newTexture(Pixmap pixmap, PixmapFormat format)
+        public override Texture newTexture_5B771B24(Pixmap pixmap, PixmapFormat format)
         {
             var rawPixmap = ((MonoGamePixmap)pixmap).toRawPixelsARGB();
 
-            var texture = new Texture2D(_graphicsDevice, pixmap.getWidth(), pixmap.getHeight(), false, SurfaceFormat.Color);
+            var texture = new Texture2D(_graphicsDevice, pixmap.getWidth_0EE0D08D(), pixmap.getHeight_0EE0D08D(), false, SurfaceFormat.Color);
             texture.SetData(rawPixmap);
 
             return new MonoGameTexture(texture);
         }
 
-        public override TextureRegion newTextureRegion(Texture texture)
+        public override TextureRegion newTextureRegion_F6DA8362(Texture texture)
         {
             return new MonoGameTextureRegion(texture);
         }
 
-        public override TextureRegion newTextureRegion(TextureRegion texture, int x, int y, int width, int height)
+        public override TextureRegion newTextureRegion_8A18329A(TextureRegion texture, int x, int y, int width, int height)
         {
             return new MonoGameTextureRegion(texture, x, y, width, height);
         }
 
-        public override TextureRegion newTextureRegion(Texture texture, int width, int height)
+        public override TextureRegion newTextureRegion_B9E5B3CA(Texture texture, int width, int height)
         {
             return new MonoGameTextureRegion(texture, width, height);
         }
 
-        public override TextureRegion newTextureRegion(Texture texture, int x, int y, int width, int height)
+        public override TextureRegion newTextureRegion_3F7528D2(Texture texture, int x, int y, int width, int height)
         {
             return new MonoGameTextureRegion(texture, x, y, width, height);
         }
 
-        public override TextureRegion newTextureRegion(TextureRegion texture)
+        public override TextureRegion newTextureRegion_25152E6A(TextureRegion texture)
         {
             return new MonoGameTextureRegion(texture);
         }
 
-        public override TextureRegion newTextureRegion(TextureRegion texture, int width, int height)
+        public override TextureRegion newTextureRegion_BCDF5E72(TextureRegion texture, int width, int height)
         {
             return new MonoGameTextureRegion(texture, width, height);
         }
 
-        public override Shader newShader(Java.Lang.String path)
+        public override Shader newShader_FAA50909(Java.Lang.String path)
         {
             return new MonoGameShader(path);
         }
 
-        public override CustomCursor newCustomCursor(Pixmap p1, Pixmap p2, int i1, int i2)
+        public override CustomCursor newCustomCursor_0F969A1B(Pixmap p1, Pixmap p2, int i1, int i2)
         {
             return new MonoGameCustomCursor(p1, p2, i1, i2);
         }
 
-        public override SpriteCache newSpriteCache()
+        public override SpriteCache newSpriteCache_B8D502BF()
         {
             return new MonoGameSpriteCache(_graphicsDevice);
         }

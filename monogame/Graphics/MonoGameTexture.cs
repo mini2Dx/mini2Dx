@@ -37,61 +37,61 @@ namespace monogame.Graphics
             this.texture2D = texture2D;
         }
 
-        public void dispose()
+        public void dispose_EFE09FC0()
         {
             texture2D.Dispose();
         }
 
-        public void draw(Pixmap pixmap, int x, int y)
+        public void draw_A700ECD1(Pixmap pixmap, int x, int y)
         {
             var rawTexture = new UInt32[texture2D.Width * texture2D.Height];
             texture2D.GetData(rawTexture);
-            for (var pixmapX = 0; pixmapX < pixmap.getWidth(); pixmapX++)
+            for (var pixmapX = 0; pixmapX < pixmap.getWidth_0EE0D08D(); pixmapX++)
             {
-                for (var pixmapY = 0; pixmapY < pixmap.getHeight(); pixmapY++)
+                for (var pixmapY = 0; pixmapY < pixmap.getHeight_0EE0D08D(); pixmapY++)
                 {
-                    rawTexture[x + pixmapX + (y + pixmapY) * texture2D.Width] = (uint) pixmap.getPixel(pixmapX, pixmapY);
+                    rawTexture[x + pixmapX + (y + pixmapY) * texture2D.Width] = (uint) pixmap.getPixel_114D0C65(pixmapX, pixmapY);
                 }
             }
             texture2D.SetData(rawTexture);
         }
 
-        public int getHeight()
+        public int getHeight_0EE0D08D()
         {
             return texture2D.Height;
         }
 
-        public int getWidth()
+        public int getWidth_0EE0D08D()
         {
             return texture2D.Width;
         }
 
-        public bool isManaged()
+        public bool isManaged_FBE0B2A4()
         {
             return true;
         }
 
-        public TextureAddressMode getUAddressMode()
+        public TextureAddressMode getUAddressMode_F8C501D6()
         {
             return _uMode;
         }
 
-        public void setUAddressMode(TextureAddressMode mode)
+        public void setUAddressMode_B0E621FC(TextureAddressMode mode)
         {
             _uMode = mode;
         }
         
-        public TextureAddressMode getVAddressMode()
+        public TextureAddressMode getVAddressMode_F8C501D6()
         {
             return _vMode;
         }
         
-        public void setVAddressMode(TextureAddressMode mode)
+        public void setVAddressMode_B0E621FC(TextureAddressMode mode)
         {
             _vMode = mode;
         }
 
-        public void setAddressMode(TextureAddressMode uMode, TextureAddressMode vMode)
+        public void setAddressMode_59F6F5E0(TextureAddressMode uMode, TextureAddressMode vMode)
         {
             _uMode = uMode;
             _vMode = vMode;

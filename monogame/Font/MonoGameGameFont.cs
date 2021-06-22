@@ -52,11 +52,11 @@ namespace monogame.Font
         public static MonoGameGameFont loadBitmapFont(MonoGameFileHandle fntFileHandle)
         { 
             var font = new MonoGameGameFont();
-            font._spriteFont = BMFontLoader.LoadXml(fntFileHandle.readString(), textureFileName =>
+            font._spriteFont = BMFontLoader.LoadXml(fntFileHandle.readString_E605312C(), textureFileName =>
             {
-                return new TextureWithOffset(((MonoGameTexture)Mdx.graphics_.newTexture(fntFileHandle.parent().child(textureFileName))).texture2D);
+                return new TextureWithOffset(((MonoGameTexture)Mdx.graphics_.newTexture_69120FDF(fntFileHandle.parent_D17169DC().child_1F3F44D2(textureFileName))).texture2D);
             });
-            font._sharedFontGlyphLayout = font.newGlyphLayout();
+            font._sharedFontGlyphLayout = font.newGlyphLayout_2AEFE927();
             font._capHeight = font._spriteFont.GetGlyphs()['A'].BoundsInTexture.Height;
             return font;
         }
@@ -76,38 +76,38 @@ namespace monogame.Font
                     CharacterRange.Cyrillic
                 }
             ).CreateSpriteFont(((MonoGameGraphics)Mdx.graphicsContext_)._graphicsDevice);
-            _sharedFontGlyphLayout = newGlyphLayout();
+            _sharedFontGlyphLayout = newGlyphLayout_2AEFE927();
             _capHeight = _spriteFont.GetGlyphs()['A'].BoundsInTexture.Height;
         }
 
-        public bool load(AssetManager am)
+        public bool load_DFE6C4BD(AssetManager am)
         {
             return false;
         }
 
-        public bool loadInternal()
+        public bool loadInternal_FBE0B2A4()
         {
             _spriteFont = _fileHandle.loadFromContentManager<SpriteFont>();
-            _sharedFontGlyphLayout = newGlyphLayout();
+            _sharedFontGlyphLayout = newGlyphLayout_2AEFE927();
             _capHeight = _spriteFont.GetGlyphs()['A'].BoundsInTexture.Height;
             return true;
         }
 
-        public bool loadExternal()
+        public bool loadExternal_FBE0B2A4()
         {
             return false;
         }
 
-        public void draw(_Graphics g, String str, float x, float y)
+        public void draw_FB6AB899(_Graphics g, String str, float x, float y)
         {
-            _sharedFontGlyphLayout.setText(str);
-            draw(g, str, x, y, _sharedFontGlyphLayout.getWidth());
-            _sharedFontGlyphLayout.reset();
+            _sharedFontGlyphLayout.setText_C7B6A388(str);
+            draw_5881F77F(g, str, x, y, _sharedFontGlyphLayout.getWidth_FFE0B8F0());
+            _sharedFontGlyphLayout.reset_EFE09FC0();
         }
 
-        public void draw(_Graphics g, String str, float x, float y, float targetWidth)
+        public void draw_5881F77F(_Graphics g, String str, float x, float y, float targetWidth)
         {
-            draw(g, str, x, y, targetWidth, Align.LEFT_, true);
+            draw_F97A968A(g, str, x, y, targetWidth, Align.LEFT_, true);
         }
 
         internal void draw(SpriteBatch spriteBatch, String str, float targetWidth, int horizontalAlignment, bool wrap, Vector2 position, Microsoft.Xna.Framework.Color renderColor)
@@ -147,7 +147,7 @@ namespace monogame.Font
                     {
                         origin.X = (int)(_spriteFont.MeasureString(strings[i]).X / 2);
                     }
-                    position.Y += getLineHeight();
+                    position.Y += getLineHeight_FFE0B8F0();
                     spriteBatch.DrawString(_spriteFont,
                         strings[i],
                         position,
@@ -161,7 +161,7 @@ namespace monogame.Font
             }
         }
 
-        public void draw(_Graphics g, String str, float x, float y, float targetWidth, int horizontalAlignment, bool wrap)
+        public void draw_F97A968A(_Graphics g, String str, float x, float y, float targetWidth, int horizontalAlignment, bool wrap)
         {
             var graphics = (MonoGameGraphics)g;
             draw(graphics._spriteBatch, str, targetWidth, horizontalAlignment, wrap,
@@ -174,49 +174,49 @@ namespace monogame.Font
                 });
         }
 
-        public FontGlyphLayout newGlyphLayout()
+        public FontGlyphLayout newGlyphLayout_2AEFE927()
         {
             return new MonoGameFontGlyphLayout(this);
         }
 
-        public GameFontCache newCache()
+        public GameFontCache newCache_8BFDA5A5()
         {
             return new MonoGameGameFontCache(this);
         }
 
-        public FontGlyphLayout getSharedGlyphLayout()
+        public FontGlyphLayout getSharedGlyphLayout_2AEFE927()
         {
             return _sharedFontGlyphLayout;
         }
 
-        public Color getColor()
+        public Color getColor_F0D7D9CF()
         {
             return new MonoGameColor(_color);
         }
 
-        public void setColor(Color c)
+        public void setColor_24D51C91(Color c)
         {
             _color = ((MonoGameColor) c)._color;
         }
 
-        public float getLineHeight()
+        public float getLineHeight_FFE0B8F0()
         {
             return _spriteFont.LineSpacing;
         }
 
-        public float getCapHeight()
+        public float getCapHeight_FFE0B8F0()
         {
             return _capHeight;
         }
 
-        public bool useIntegerPositions()
+        public bool useIntegerPositions_FBE0B2A4()
         {
             return false;
         }
 
-        public void dispose()
+        public void dispose_EFE09FC0()
         {
-            _sharedFontGlyphLayout.dispose();
+            _sharedFontGlyphLayout.dispose_EFE09FC0();
         }
 
         internal String wrapText(string text, float maxLineWidth) {

@@ -58,7 +58,7 @@ ext {
 	lwjgl3Version="3.2.3"
 	multiDexVersion="1.0.1"
 	nativesLoaderVersion="1.0.0"
-	reflectionsVersion="0.9.12"
+	reflectionsVersion="0.11.5"
 	roboVMVersion="2.3.12"
 	
 	junitVersion="4.12"
@@ -344,7 +344,7 @@ project(":" + rootProject.name + "-libgdx-desktop") {
 
 	dependencies {
 		compile project(":" + rootProject.name + "-libgdx")
-		compile "org.reflections:reflections:$reflectionsVersion"
+		compile "net.oneandone.reflections8:reflections8:$reflectionsVersion"
 
 		testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
 		testCompile "junit:junit:$junitVersion"
@@ -432,7 +432,7 @@ if (Os.isFamily(Os.FAMILY_MAC)) {
 			compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
 			compile "com.badlogicgames.gdx-controllers:gdx-controllers-ios:$gdxControllersVersion"
 
-			compile "org.reflections:reflections:$reflectionsVersion"
+			compile "net.oneandone.reflections8:reflections8:$reflectionsVersion"
 
 			testCompile "junit:junit:$junitVersion"
 			testCompile "org.jmock:jmock-junit4:$jmockVersion"
@@ -525,21 +525,21 @@ project(":" + rootProject.name + "-uats") {
 	compileJava.options.encoding = "UTF-8"
 
 	if(hasConsoleSdk()) {
-		task fatJar(type: Jar, dependsOn: [project(":" + rootProject.name + "-all").build]) {
-			baseName = project.name + '-fatjar'
-			from { configurations.compile.plus(file("${jdkJar}")).collect { it.isDirectory() ? it : zipTree(it) } }
-			with jar
-		}
-
 		mgcb {
 			assetsDirectory = file('../uats-libgdx-desktop/assets')
 			projectDirectory = file('../uats-monogame-desktop/Content')
 			dlls = files('../monogame-pipeline-ext/bin/Debug/netstandard2.0/monogame-pipeline-ext.dll')
 		}
 
+		task fatJar(type: Jar, dependsOn: [jar, project(":" + rootProject.name + "-all").build]) {
+			baseName = project.name + '-fatjar'
+			from { configurations.compile.plus(file("${jdkJar}")).collect { it.isDirectory() ? it : zipTree(it) } }
+			with jar
+		}
+
 		task desugarJar(type: com.viridiansoftware.desugar.DesugarTask, dependsOn: fatJar) {
 			inputJar = file('build/libs/' + project.name + '-fatjar-' + project.version + '.jar')
-			outputJar = file('build/libs/' + project.name + '-desugar.jar')
+			outputJar = file('build/libs/' + project.name + '-fatjar-desugar.jar')
 			allowEmptyBootclasspath true
 			desugarInterfaceMethodBodiesIfNeeded true
 			coreLibrary true
@@ -547,20 +547,24 @@ project(":" + rootProject.name + "-uats") {
 			verbose true
 		}
 
-		task transpile(type: Exec, dependsOn: [desugarJar, project(":" + rootProject.name + "-all").build]) {
+		task transpile(type: Exec, dependsOn: [desugarJar]) {
 			workingDir 'build/libs'
 			commandLine 'cmd', '/c', "${transpilerExe}",
-					'-i', project.name + '-desugar.jar',
+					'-i', project.name + '-fatjar-desugar.jar',
 					'-o', project.file("generated-src").getAbsolutePath(),
 					'-p', 'mini2Dx-uats',
 					'-b',
 					'--overrides', "${overrides}",
 					'--ignore-list', "${ignoreList}",
-					'-r', "${supportDll}"
+					'-j', "${supportProject}"
 		}
 
 		task restore(type:Exec, dependsOn: transpile) {
 			commandLine 'cmd', '/c', 'msbuild.exe', '/t:restore', '..\\mini2Dx.sln'
+		}
+
+		task buildPipelineExtension(type: Exec, dependsOn: [restore]) {
+			commandLine 'cmd', '/c', 'msbuild.exe', '/m', '/p:Configuration=Release', '/t:mini2Dx-uats,mini2Dx-monogame,monogame-pipeline-ext', '/clp:ErrorsOnly', '..\\mini2Dx.sln'
 		}
 
 		task buildDebugSolution(type: Exec, dependsOn: [generateMonoGameContent, restore]) {
@@ -572,7 +576,8 @@ project(":" + rootProject.name + "-uats") {
 		}
 
 		processResources.dependsOn copyUatResources
-		generateMonoGameContent.dependsOn processResources
+		buildPipelineExtension.dependsOn processResources
+		generateMonoGameContent.dependsOn buildPipelineExtension
 		build.dependsOn buildDebugSolution, buildReleaseSolution
 	}
 
@@ -694,6 +699,17 @@ project(":" + rootProject.name + "-uats-libgdx-desktop-lwjgl3") {
 		compile project(":" + rootProject.name + "-libgdx-desktop-lwjgl3")
 		compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
 	}
+
+	task generateAotData(dependsOn: classes, type: JavaExec) {
+		main = 'org.mini2Dx.uats.desktop.AotDataWriter'
+		classpath = sourceSets.main.runtimeClasspath
+		standardInput = System.in
+		workingDir = new File("$projectDir/../uats-libgdx-desktop/assets")
+		args "org.mini2Dx.uats", file("$projectDir/../uats-libgdx-desktop/assets/_generated").getAbsolutePath()
+		ignoreExitValue = false
+	}
+
+	project(":" + rootProject.name + "-uats").generateMonoGameContent.dependsOn generateAotData
 }
 
 if(hasConsoleSdk()) {

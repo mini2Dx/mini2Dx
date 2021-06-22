@@ -2,7 +2,7 @@
   <PropertyGroup>
     <RootNamespace>monogame</RootNamespace>
     <AssemblyName>monogame</AssemblyName>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
     <AssemblyTitle>monogame</AssemblyTitle>
     <Product>monogame</Product>
     <Copyright>Copyright © 2021 Thomas Cashman</Copyright>
@@ -15,5 +15,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\uats\generated-src\mini2Dx-uats.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+	<ProjectReference Include="..\..\kava\kava.support\kava.support.csproj" />
   </ItemGroup>
 </Project>

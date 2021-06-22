@@ -15,62 +15,140 @@
  ******************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
-using Java.Lang;
 using Java.Util.Concurrent;
 using Org.Mini2Dx.Core.Executor;
 
 namespace monogame
 {
-    public class MonoGameTaskExecutor : global::Java.Lang.Object, Org.Mini2Dx.Core.TaskExecutor
+    public class MonoGameTaskExecutor : global::Java.Lang.Object, global::Org.Mini2Dx.Core.TaskExecutor
     {
-        internal class MonoGameAsyncFuture : Org.Mini2Dx.Core.Executor.AsyncFuture
+
+        internal class MonoGameAsyncResult : global::Org.Mini2Dx.Core.Executor.AsyncResult
         {
-            private Task _task;
+            private global::Java.Lang.Runnable runnable;
+            private Callable callable;
 
-            internal MonoGameAsyncFuture(Task task)
+            private object @lock = new object();
+            private bool finished = false;
+            private object result = null;
+
+            internal MonoGameAsyncResult(global::Java.Lang.Runnable runnable)
             {
-                _task = task;
+                this.runnable = runnable;
             }
 
-            public bool isFinished()
+            internal MonoGameAsyncResult(Callable callable)
             {
-                return _task.IsCanceled || _task.IsCompleted || _task.IsFaulted;
-            }
-        }
-
-        internal class MonoGameAsyncResult : MonoGameAsyncFuture, Org.Mini2Dx.Core.Executor.AsyncResult
-        {
-            private TaskAwaiter<object> taskAwaiter;
-            internal MonoGameAsyncResult(Task<object> task) : base(task)
-            {
-                taskAwaiter = task.GetAwaiter();
+                this.callable = callable;
             }
 
-            public object getResult()
+            public void Run()
             {
-                return taskAwaiter.IsCompleted ? taskAwaiter.GetResult() : null;
+                try
+                {
+                    object result;
+                    if(callable != null)
+                    {
+                        result = callable.call_6069C574();
+                    }
+                    else
+                    {
+                        runnable.run_EFE09FC0();
+                        result = null;
+                    }
+                    lock (@lock)
+                    {
+                        this.result = result;
+                        finished = true;
+                    }
+                } 
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                lock (@lock)
+                {
+                    finished = true;
+                }
+            }
+
+            public object getResult_6069C574()
+            {
+                lock(@lock)
+                {
+                    return result;
+                }
+            }
+
+            public bool isFinished_FBE0B2A4()
+            {
+                lock(@lock)
+                {
+                    return finished;
+                }
             }
         }
 
         private const int DefaultMaxFrameTasksPerFrame = 32;
         private readonly List<FrameSpreadTask> spreadTasks = new List<FrameSpreadTask>();
-        private readonly List<Task<object>> asyncTasks = new List<Task<object>>();
         private int maxFrameTasksPerFrame = DefaultMaxFrameTasksPerFrame;
 
-        public void dispose()
+        private Thread[] threads = new Thread[4];
+        private ConcurrentQueue<MonoGameAsyncResult> taskQueue = new ConcurrentQueue<MonoGameAsyncResult>();
+        private object taskQueueMonitor = new object();
+        private int running = 1;
+
+        public MonoGameTaskExecutor()
         {
+            for(int i = 0; i < threads.Length; i++)
+            {
+                threads[i] = new Thread(new ThreadStart(ExecuteTasks));
+                threads[i].Start();
+            }
         }
 
-        public void update(float delta)
+        void ExecuteTasks()
+        {
+            while(Interlocked.CompareExchange(ref running, 1, 1) == 1)
+            {
+                MonoGameAsyncResult task = null;
+                if(taskQueue.TryDequeue(out task))
+                {
+                    task.Run();
+                }
+
+                while (taskQueue.IsEmpty)
+                {
+                    try
+                    {
+                        lock (taskQueueMonitor)
+                        {
+                            global::System.Threading.Monitor.Wait(taskQueueMonitor);
+                        }
+                    }
+                    catch { }
+                    continue;
+                }
+            }
+        }
+
+        public void dispose_EFE09FC0()
+        {
+            Interlocked.Exchange(ref running, 0);
+        }
+
+        public void update_97413DCA(float delta)
         {
             var taskCount = 0;
 
             for(int i = 0; i < spreadTasks.Count; i++)
             {
-                if(spreadTasks[i].updateTask())
+                if(spreadTasks[i].updateTask_FBE0B2A4())
                 {
                     spreadTasks.RemoveAt(i);
                     i--;
@@ -82,69 +160,53 @@ namespace monogame
                     break;
                 }
             }
+        }
 
-            lock (asyncTasks)
+        public void execute_67C91AEE(global::Java.Lang.Runnable r)
+        {
+            submit_CE72AB39(r);
+        }
+
+        public AsyncFuture submit_CE72AB39(global::Java.Lang.Runnable r)
+        {
+            MonoGameAsyncResult result = new MonoGameAsyncResult(r);
+            taskQueue.Enqueue(result);
+
+            lock (taskQueueMonitor)
             {
-                for(int i = asyncTasks.Count - 1; i >= 0; i--)
-                {
-                    if(asyncTasks[i].IsCompleted)
-                    {
-                        asyncTasks.RemoveAt(i);
-                    }
-                }
-            }
-        }
-
-        public void execute(Runnable r)
-        {
-            submit(r);
-        }
-
-        public AsyncFuture submit(Runnable r)
-        {
-            Task<object> task = Task.Factory.StartNew<object>(() =>
-            {
-                r.run();
-                return null;
-            });
-            lock(asyncTasks)
-            {
-                asyncTasks.Add(task);
-            }
-            return new MonoGameAsyncFuture(task);
-        }
-
-        public AsyncResult submit(Callable c)
-        {
-            Task<object> task = Task.Factory.StartNew((Func<object>)c.call);
-            lock(asyncTasks)
-            {
-                asyncTasks.Add(task);
-            }
-            return new MonoGameAsyncResult(task);
-        }
-
-        public void submit(FrameSpreadTask fst)
-        {
-            spreadTasks.Add(fst);
-        }
-
-        public void setMaxFrameTasksPerFrame(int i)
-        {
-            maxFrameTasksPerFrame = i;
-        }
-
-        public int getTotalQueuedAsyncTasks()
-        {
-            int result = 0;
-            lock(asyncTasks)
-            {
-                result = asyncTasks.Count;
+                global::System.Threading.Monitor.Pulse(taskQueueMonitor);
             }
             return result;
         }
 
-        public int getTotalQueuedFrameSpreadTasks()
+        public AsyncResult submit_B4F5AEF2(Callable c)
+        {
+            MonoGameAsyncResult result = new MonoGameAsyncResult(c);
+            taskQueue.Enqueue(result);
+
+            lock (taskQueueMonitor)
+            {
+                global::System.Threading.Monitor.Pulse(taskQueueMonitor);
+            }
+            return result;
+        }
+
+        public void submit_51830217(FrameSpreadTask fst)
+        {
+            spreadTasks.Add(fst);
+        }
+
+        public void setMaxFrameTasksPerFrame_3518BA33(int i)
+        {
+            maxFrameTasksPerFrame = i;
+        }
+
+        public int getTotalQueuedAsyncTasks_0EE0D08D()
+        {
+            return taskQueue.Count;
+        }
+
+        public int getTotalQueuedFrameSpreadTasks_0EE0D08D()
         {
             return spreadTasks.Count;
         }

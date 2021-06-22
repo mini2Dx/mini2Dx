@@ -29,12 +29,12 @@ namespace monogame.Util
         public MonoGameInputStream(MonoGameFileHandle fileHandle)
         {
             base._init_();
-            if (!fileHandle.exists() || fileHandle.isDirectory())
+            if (!fileHandle.exists_FBE0B2A4() || fileHandle.isDirectory_FBE0B2A4())
             {
                 throw new IOException();
             }
 
-            var fileInfo = new FileInfo(fileHandle.pathWithPrefix());
+            var fileInfo = new FileInfo(fileHandle.originalPath());
             _stream = fileInfo.OpenRead();
         }
 
@@ -43,19 +43,19 @@ namespace monogame.Util
             _stream = stream;
         }
         
-        public override int read()
+        public override int read_0EE0D08D()
         {
             return _stream.ReadByte();
         }
 
-        public override int read(sbyte[] b, int off, int len)
+        public override int read_A3D15292(sbyte[] b, int off, int len)
         {
             if (len == 0)
             {
                 return 0;
             }
 
-            var c = read();
+            var c = read_0EE0D08D();
             if (c == -1)
             {
                 return -1;
@@ -67,7 +67,7 @@ namespace monogame.Util
             {
                 for (; i < len; i++)
                 {
-                    c = read();
+                    c = read_0EE0D08D();
                     if (c == -1)
                     {
                         break;
@@ -82,12 +82,12 @@ namespace monogame.Util
             return i;
         }
 
-        public override int read(sbyte[] b)
+        public override int read_FDE2BDAA(sbyte[] b)
         {
-            return read(b, 0, b.Length);
+            return read_A3D15292(b, 0, b.Length);
         }
 
-        public override long skip(long n)
+        public override long skip_5BE5DC4A(long n)
         {
             var remaining = n;
             if (n <= 0)
@@ -99,7 +99,7 @@ namespace monogame.Util
             var skipBuffer = new sbyte[size];
             while (remaining > 0)
             {
-                var nr = read(skipBuffer, 0, (int) Math.Min(size, remaining));
+                var nr = read_A3D15292(skipBuffer, 0, (int) Math.Min(size, remaining));
                 if (nr < 0)
                 {
                     break;
@@ -110,28 +110,28 @@ namespace monogame.Util
             return n - remaining;
         }
 
-        public override int available()
+        public override int available_0EE0D08D()
         {
             return 0;
         }
 
-        public override void close()
+        public override void close_EFE09FC0()
         {
             _stream.Close();
         }
 
-        public override void mark(int readLimit)
+        public override void mark_3518BA33(int readLimit)
         {
         }
 
-        public override void reset()
+        public override void reset_EFE09FC0()
         {
             IOException exception = new IOException();
             exception._init_("mark/reset aren't supported");
             throw exception;
         }
 
-        public override bool markSupported()
+        public override bool markSupported_FBE0B2A4()
         {
             return false;
         }

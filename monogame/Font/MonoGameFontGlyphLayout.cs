@@ -33,49 +33,49 @@ namespace monogame.Font
             _font = font;
         }
         
-        public void setText(CharSequence cs)
+        public void setText_C7B6A388(CharSequence cs)
         {
-            _textSize.X = _font._spriteFont.MeasureString(cs.toString()).X;
-            _textSize.Y = _font.getCapHeight();
-            for (var i = 0; i < cs.length(); i++)
+            _textSize.X = _font._spriteFont.MeasureString(cs.toString_E605312C()).X;
+            _textSize.Y = _font.getCapHeight_FFE0B8F0();
+            for (var i = 0; i < cs.length_0EE0D08D(); i++)
             {
-                if (cs.charAt(i) == '\n' && i + 1 < cs.length())
+                if (cs.charAt_4818D81C(i) == '\n' && i + 1 < cs.length_0EE0D08D())
                 {
-                    _textSize.Y += _font.getCapHeight();
+                    _textSize.Y += _font.getCapHeight_FFE0B8F0();
                 }
             }
         }
 
-        public void setText(CharSequence cs, Color color, float targetWidth, int align, bool wrap)
+        public void setText_8167018A(CharSequence cs, Color color, float targetWidth, int align, bool wrap)
         {
-            setText(_font.wrapText(cs.toString(), targetWidth + 1));
+            setText_C7B6A388(_font.wrapText(cs.toString_E605312C(), targetWidth + 1));
             if (!wrap)
             {
-                _textSize.Y = _font.getCapHeight();
+                _textSize.Y = _font.getCapHeight_FFE0B8F0();
             }
         }
 
-        public void reset()
+        public void reset_EFE09FC0()
         {
             _textSize = defaultValue;
         }
 
-        public void dispose()
+        public void dispose_EFE09FC0()
         {
             
         }
 
-        public float getWidth()
+        public float getWidth_FFE0B8F0()
         {
             return _textSize.X;
         }
 
-        public float getHeight()
+        public float getHeight_FFE0B8F0()
         {
             return _textSize.Y;
         }
 
-        public GameFont getFont()
+        public GameFont getFont_0370ED29()
         {
             return _font;
         }

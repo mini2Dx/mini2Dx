@@ -38,37 +38,37 @@ namespace monogame
             MonoGameMusic.musicCompletionListeners = _musicCompletionListeners;
         }
 
-        public Music newMusic(FileHandle fileHandle)
+        public Music newMusic_C995EB38(FileHandle fileHandle)
         {
             return new MonoGameMusic(fileHandle);
         }
 
-        public void addMusicCompletionListener(MusicCompletionListener completionListener)
+        public void addMusicCompletionListener_FA743BBA(MusicCompletionListener completionListener)
         {
             _musicCompletionListeners.AddLast(completionListener);
         }
 
-        public void removeMusicCompletionListener(MusicCompletionListener completionListener)
+        public void removeMusicCompletionListener_FA743BBA(MusicCompletionListener completionListener)
         {
             _musicCompletionListeners.Remove(completionListener);
         }
 
-        public void addSoundCompletionListener(SoundCompletionListener completionListener)
+        public void addSoundCompletionListener_6D852ABC(SoundCompletionListener completionListener)
         {
             _soundCompletionListeners.AddLast(completionListener);
         }
 
-        public AsyncSoundResult newAsyncSound(FileHandle arg0)
+        public AsyncSoundResult newAsyncSound_0F0BBE0F(FileHandle arg0)
         {
             return new MonoGameAsyncSoundResult(arg0);
         }
 
-        public void removeSoundCompletionListener(SoundCompletionListener completionListener)
+        public void removeSoundCompletionListener_6D852ABC(SoundCompletionListener completionListener)
         {
             _soundCompletionListeners.Remove(completionListener);
         }
 
-        public Sound newSound(FileHandle fileHandle)
+        public Sound newSound_F8578266(FileHandle fileHandle)
         {
             return new MonoGameSound(fileHandle);
         }
@@ -78,20 +78,21 @@ namespace monogame
             var node = _soundCompletionListeners.First;
             while (node != null)
             {
-                node.Value.onSoundCompleted(id);
+                node.Value.onSoundCompleted_5FE5E296(id);
                 node = node.Next;
             }
         }
 
         public void update()
         {
-            for (int i = 0; i < MonoGameSound.instances.Count; i++)
+            for (int i = 0; i < MonoGameSoundInstance.Instances.Count; i++)
             {
-                var currentSound = MonoGameSound.instances[i];
-                if (currentSound != null && currentSound.State == SoundState.Stopped)
+                var currentSound = MonoGameSoundInstance.Instances[i];
+                if (currentSound != null && currentSound.SoundEffectInstance.State == SoundState.Stopped)
                 {
-                    soundCompleted(i);
-                    MonoGameSound.dispose(i);
+                    soundCompleted(currentSound.Id);
+                    currentSound.Dispose();
+                    i--;
                 }
             }
         }

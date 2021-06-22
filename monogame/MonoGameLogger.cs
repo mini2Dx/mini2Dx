@@ -23,39 +23,39 @@ namespace monogame
     public class MonoGameLogger : global::Java.Lang.Object, Org.Mini2Dx.Core.Logger
     {
         private int _logLevel = _static_Logger.LOG_INFO_;
-        public void debug(Java.Lang.String tag, Java.Lang.String msg)
+        public virtual void debug_159F0320(Java.Lang.String tag, Java.Lang.String msg)
         {
-            if (_logLevel <= _static_Logger.LOG_DEBUG_)
+            if (_logLevel >= _static_Logger.LOG_DEBUG_)
             {
                 Debug.WriteLine("[" + ((string) tag) + "] " + ((string) msg));
             }
         }
 
-        public void error(Java.Lang.String tag, Java.Lang.String msg, Exception e)
+        public virtual void error_7C8FFA70(Java.Lang.String tag, Java.Lang.String msg, Exception e)
         {
-            if (_logLevel <= _static_Logger.LOG_ERROR_)
+            if (_logLevel >= _static_Logger.LOG_ERROR_)
             {
                 Console.Error.WriteLine("[" + ((string) tag) + "] " + ((string) msg) + " " + e.ToString());
             }
         }
 
-        public void error(Java.Lang.String tag, Java.Lang.String msg)
+        public virtual void error_159F0320(Java.Lang.String tag, Java.Lang.String msg)
         {
-            if (_logLevel <= _static_Logger.LOG_ERROR_)
+            if (_logLevel >= _static_Logger.LOG_ERROR_)
             {
                 Console.Error.WriteLine("[" + ((string) tag) + "] " + ((string) msg));
             }
         }
 
-        public void info(Java.Lang.String tag, Java.Lang.String msg)
+        public virtual void info_159F0320(Java.Lang.String tag, Java.Lang.String msg)
         {
-            if (_logLevel <= _static_Logger.LOG_INFO_)
+            if (_logLevel >= _static_Logger.LOG_INFO_)
             {
                 Console.WriteLine("[" + ((string) tag) + "] " + ((string) msg));
             }
         }
 
-        public void setLoglevel(int arg0)
+        public void setLoglevel_3518BA33(int arg0)
         {
             _logLevel = arg0;
         }

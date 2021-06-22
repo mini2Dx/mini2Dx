@@ -26,8 +26,8 @@ namespace monogame.Graphics
 {
     public class MonoGameTextureAtlasRegion : MonoGameTextureRegion, TextureAtlasRegion
     {
-        public readonly string name;
-        public readonly string texturePath = "";
+        public readonly Java.Lang.String name;
+        public readonly Java.Lang.String texturePath = "";
         public readonly bool rotate;
         public readonly int x, y;
         public readonly int width, height;
@@ -66,77 +66,77 @@ namespace monogame.Graphics
             this.offsetY = offsetY;
         }
 
-        public override void setTexture(Texture t)
+        public override void setTexture_1B161583(Texture t)
         {
-            base.setTexture(t);
-            setRegion(x, y, width, height);
+            base.setTexture_1B161583(t);
+            setRegion_9C90BED0(x, y, width, height);
         }
 
-        public float getRotatedPackedWidth()
-        {
-            if (rotate)
-            {
-                return getRegionHeight();
-            }
-            else
-            {
-                return getRegionWidth();
-            }
-        }
-
-        public float getRotatedPackedHeight()
+        public float getRotatedPackedWidth_FFE0B8F0()
         {
             if (rotate)
             {
-                return getRegionWidth();
+                return getRegionHeight_0EE0D08D();
             }
             else
             {
-                return getRegionHeight();
+                return getRegionWidth_0EE0D08D();
             }
         }
 
-        public Java.Lang.String getTexturePath()
+        public float getRotatedPackedHeight_FFE0B8F0()
+        {
+            if (rotate)
+            {
+                return getRegionWidth_0EE0D08D();
+            }
+            else
+            {
+                return getRegionHeight_0EE0D08D();
+            }
+        }
+
+        public Java.Lang.String getTexturePath_E605312C()
         {
             return texturePath;
         }
 
-        public Java.Lang.String getName()
+        public Java.Lang.String getName_E605312C()
         {
             return name;
         }
 
-        public int getIndex()
+        public int getIndex_0EE0D08D()
         {
             return index;
         }
 
-        public float getPackedWidth()
+        public float getPackedWidth_FFE0B8F0()
         {
             return width;
         }
 
-        public float getPackedHeight()
+        public float getPackedHeight_FFE0B8F0()
         {
             return height;
         }
 
-        public float getOriginalWidth()
+        public float getOriginalWidth_FFE0B8F0()
         {
             return originalWidth;
         }
 
-        public float getOriginalHeight()
+        public float getOriginalHeight_FFE0B8F0()
         {
             return originalHeight;
         }
 
-        public float getOffsetX()
+        public float getOffsetX_FFE0B8F0()
         {
             return offsetX;
         }
 
-        public float getOffsetY()
+        public float getOffsetY_FFE0B8F0()
         {
             return offsetY;
         }

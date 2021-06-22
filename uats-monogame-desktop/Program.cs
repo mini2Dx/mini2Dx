@@ -18,6 +18,8 @@ namespace mini2Dx_common_uats
         {
             bool UAT_APP = true;
 
+            Java.Lang.SystemPropertiesOverride.OVERRIDE_USER_LANGUAGE = "en";
+
             GameContainer game = (UAT_APP ? new UATApplication() as GameContainer : new MonoGameUAT());
             game._init_();
 
@@ -32,7 +34,7 @@ namespace mini2Dx_common_uats
             using (var mini2DxGame = new Mini2DxGame("org.mini2Dx.uat", game, config))
                 mini2DxGame.Run();
 
-            Java.Lang.System.exit(0);
+            Java.Lang.System.exit_3518BA33(0);
         }
     }
 }

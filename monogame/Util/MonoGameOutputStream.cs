@@ -28,8 +28,8 @@ namespace monogame.Util
         public MonoGameOutputStream(MonoGameFileHandle fileHandle, bool append)
         {
             base._init_();
-            if (!fileHandle.exists() || fileHandle.isDirectory()) throw new IOException();
-            var fileInfo = new FileInfo(fileHandle.pathWithPrefix());
+            if (!fileHandle.exists_FBE0B2A4() || fileHandle.isDirectory_FBE0B2A4()) throw new IOException();
+            var fileInfo = new FileInfo(fileHandle.originalPath());
             _stream = append ? fileInfo.Open(FileMode.Append, FileAccess.Write) : fileInfo.Create();
         }
 
@@ -38,12 +38,12 @@ namespace monogame.Util
             _stream = stream;
         }
         
-        public override void write(int b)
+        public override void write_3518BA33(int b)
         {
             _stream.WriteByte((byte) b);
         }
 
-        public override void write(sbyte[] b, int off, int len)
+        public override void write_B6D1707B(sbyte[] b, int off, int len)
         {
             if (b == null)
                 throw new NullPointerException();
@@ -53,21 +53,21 @@ namespace monogame.Util
                 return;
             for (var i = 0; i < len; i++)
             {
-                write(b[off + i]);
+                write_3518BA33(b[off + i]);
             }
         }
 
-        public override void write(sbyte[] b)
+        public override void write_00E2C263(sbyte[] b)
         {
-            write(b,0, b.Length);
+            write_B6D1707B(b,0, b.Length);
         }
 
-        public override void close()
+        public override void close_EFE09FC0()
         {
             _stream.Close();
         }
 
-        public override void flush()
+        public override void flush_EFE09FC0()
         {
             _stream.Flush();
         }

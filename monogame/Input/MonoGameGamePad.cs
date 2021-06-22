@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
+using Org.Mini2Dx.Core;
 using Org.Mini2Dx.Core.Input;
 using Org.Mini2Dx.Core.Input.Ps4;
 using Org.Mini2Dx.Core.Input.Xbox;
@@ -71,7 +72,8 @@ namespace monogame.Input
             status.buttons = new bool[buttonCodes.Length];
             for (var i = 0; i < buttonCodes.Length; i++)
             {
-                status.buttons[i] = state.IsButtonDown((Buttons) buttonCodes[i]);
+                Buttons buttonCode = (Buttons)buttonCodes[i];
+                status.buttons[i] = state.IsButtonDown(buttonCode);
             }
             status.axes = new []
             {
@@ -87,17 +89,17 @@ namespace monogame.Input
             return status;
         }
         
-        public void addListener(GamePadListener gpl)
+        public void addListener_1B7E98A8(GamePadListener gpl)
         {
             _gamePadListeners.AddLast(gpl);
         }
 
-        public void removeListener(GamePadListener gpl)
+        public void removeListener_1B7E98A8(GamePadListener gpl)
         {
             _gamePadListeners.Remove(gpl);
         }
 
-        public GamePadType getGamePadType()
+        public GamePadType getGamePadType_2F51C410()
         {
             string displayName = GamePad.GetCapabilities(_playerIndex).DisplayName;
             if(displayName == null)
@@ -123,6 +125,15 @@ namespace monogame.Input
                     return GamePadType.XBOX_;
                 }
             }
+
+            if(Mdx.platform_.Equals(Platform.XBOX_))
+            {
+                return GamePadType.XBOX_;
+            }
+            if (Mdx.platform_.Equals(Platform.PLAYSTATION_))
+            {
+                return GamePadType.PS4_;
+            }
             return GamePadType.UNKNOWN_;
         }
 
@@ -131,67 +142,67 @@ namespace monogame.Input
             return _prevStatus.isConnected;
         }
 
-        public bool isConnected()
+        public bool isConnected_FBE0B2A4()
         {
             return GamePad.GetState(_playerIndex).IsConnected;
         }
 
-        public bool isPlayerIndicesSupported()
+        public bool isPlayerIndicesSupported_FBE0B2A4()
         {
             return true;
         }
 
-        public int getPlayerIndex()
+        public int getPlayerIndex_0EE0D08D()
         {
             return _playerIndex;
         }
 
-        public void setPlayerIndex(int i)
+        public void setPlayerIndex_3518BA33(int i)
         {
             throw new NotSupportedException();
         }
 
-        public bool isVibrateSupported()
+        public bool isVibrateSupported_FBE0B2A4()
         {
             var capabilities = GamePad.GetCapabilities(_playerIndex);
             return capabilities.HasRightVibrationMotor || capabilities.HasLeftVibrationMotor;
         }
 
-        public bool isVibrating()
+        public bool isVibrating_FBE0B2A4()
         {
             return _isVibrating;
         }
 
-        public float getVibrationStrength()
+        public float getVibrationStrength_FFE0B8F0()
         {
             return _vibrationStrength;
         }
 
-        public void startVibration(float strength)
+        public void startVibration_97413DCA(float strength)
         {
             _isVibrating = true;
             _vibrationStrength = strength;
             GamePad.SetVibration(_playerIndex, strength, strength);
         }
 
-        public void stopVibration()
+        public void stopVibration_EFE09FC0()
         {
             _isVibrating = false;
             _vibrationStrength = 0;
             GamePad.SetVibration(_playerIndex, 0, 0);
         }
 
-        public bool isButtonDown(int buttonCode)
+        public bool isButtonDown_4118CD17(int buttonCode)
         {
             return GamePad.GetState(_playerIndex).IsButtonDown((Buttons) buttonCode);
         }
 
-        public bool isButtonUp(int buttonCode)
+        public bool isButtonUp_4118CD17(int buttonCode)
         {
             return GamePad.GetState(_playerIndex).IsButtonUp((Buttons) buttonCode);
         }
 
-        public float getAxis(int axisCode)
+        public float getAxis_4518D363(int axisCode)
         {
             var state = GamePad.GetState(_playerIndex);
             switch ((AxisCodes)axisCode)
@@ -219,22 +230,22 @@ namespace monogame.Input
             }
         }
 
-        public bool isAccelerometerSupported()
+        public bool isAccelerometerSupported_FBE0B2A4()
         {
             return false;
         }
         
-        public Vector3 getAccelerometer(int i)
+        public Vector3 getAccelerometer_287A9422(int i)
         {
             throw new NotSupportedException();
         }
 
-        public float getAccelerometerSensitivity()
+        public float getAccelerometerSensitivity_FFE0B8F0()
         {
             throw new NotSupportedException();
         }
 
-        public void setAccelerometerSensitivity(float f)
+        public void setAccelerometerSensitivity_97413DCA(float f)
         {
             throw new NotSupportedException();
         }
@@ -250,7 +261,7 @@ namespace monogame.Input
                     var node = _gamePadListeners.First;
                     while (node != null)
                     {
-                        node.Value.onConnect(this);
+                        node.Value.onConnect_238EC38A(this);
                         node = node.Next;
                     }
                 }
@@ -259,7 +270,7 @@ namespace monogame.Input
                     var node = _gamePadListeners.First;
                     while (node != null)
                     {
-                        node.Value.onDisconnect(this);
+                        node.Value.onDisconnect_238EC38A(this);
                         node = node.Next;
                     }
                 }
@@ -274,7 +285,7 @@ namespace monogame.Input
                         var node = _gamePadListeners.First;
                         while (node != null)
                         {
-                            node.Value.onButtonDown(this, buttonCodes[i]);
+                            node.Value.onButtonDown_7016EF7D(this, buttonCodes[i]);
                             node = node.Next;
                         }
                     }
@@ -283,7 +294,7 @@ namespace monogame.Input
                         var node = _gamePadListeners.First;
                         while (node != null)
                         {
-                            node.Value.onButtonUp(this, buttonCodes[i]);
+                            node.Value.onButtonUp_7016EF7D(this, buttonCodes[i]);
                             node = node.Next;
                         }
                     }
@@ -297,7 +308,7 @@ namespace monogame.Input
                     var node = _gamePadListeners.First;
                     while (node != null)
                     {
-                        node.Value.onAxisChanged(this, i, currentStatus.axes[i]);
+                        node.Value.onAxisChanged_AD47562B(this, i, currentStatus.axes[i]);
                         node = node.Next;
                     }
                 }
@@ -310,7 +321,7 @@ namespace monogame.Input
                     var node = _gamePadListeners.First;
                     while (node != null)
                     {
-                        node.Value.onAccelerometerChanged(this, i, currentStatus.accelerometers[i]);
+                        node.Value.onAccelerometerChanged_FE43FF32(this, i, currentStatus.accelerometers[i]);
                         node = node.Next;
                     }
                 }
@@ -319,12 +330,12 @@ namespace monogame.Input
             _prevStatus = currentStatus;
         }
 
-        public Java.Lang.String getInstanceId()
+        public Java.Lang.String getInstanceId_E605312C()
         {
             return GamePad.GetCapabilities(_playerIndex).DisplayName + "#" + _playerIndex;
         }
 
-        public Java.Lang.String getModelInfo()
+        public Java.Lang.String getModelInfo_E605312C()
         {
             return GamePad.GetCapabilities(_playerIndex).DisplayName;
         }

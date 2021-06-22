@@ -24,16 +24,9 @@ namespace monogame.Audio
     {
         private class AsyncSoundCallable : Callable
         {
-            private FileHandle _handle;
-            
-            public AsyncSoundCallable(FileHandle handle)
+            public object call_6069C574()
             {
-                _handle = handle;
-            }
-            
-            public object call()
-            {
-                return new MonoGameSound(_handle);
+                return null;
             }
         }
 
@@ -42,14 +35,14 @@ namespace monogame.Audio
             _init_(handle);
         }
 
-        public override Callable asyncReadFile(FileHandle arg0)
+        public override Callable asyncReadFile_8463974D(FileHandle arg0)
         {
-            return new AsyncSoundCallable(handle_);
+            return new AsyncSoundCallable();
         }
 
-        public override Sound makeSound(AsyncResult arg0)
+        public override Sound makeSound_C7580A69(AsyncResult arg0)
         {
-            return (Sound) arg0.getResult();
+            return new MonoGameSound(base.handle_);
         }
     }
 }

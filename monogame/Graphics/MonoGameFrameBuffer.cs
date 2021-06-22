@@ -37,53 +37,53 @@ namespace monogame.Graphics
             texture = new MonoGameTexture(null);
         }
         
-        public void dispose()
+        public void dispose_EFE09FC0()
         {
             _renderTarget.Dispose();
         }
 
-        public void begin()
+        public void begin_EFE09FC0()
         {
             ((MonoGameGraphics)Mdx.graphicsContext_).endRendering();
-            bind();
-            Mdx.graphicsContext_.clearContext();
+            bind_EFE09FC0();
+            Mdx.graphicsContext_.clearContext_EFE09FC0();
             ((MonoGameGraphics)Mdx.graphicsContext_)._gameWidth = _renderTarget.Width;
             ((MonoGameGraphics)Mdx.graphicsContext_)._gameHeight = _renderTarget.Height;
             ((MonoGameGraphics)Mdx.graphicsContext_).beginRendering();
         }
 
-        public void end()
+        public void end_EFE09FC0()
         {
             ((MonoGameGraphics)Mdx.graphicsContext_).endRendering();
-            unbind();
-            ((MonoGameGraphics)Mdx.graphicsContext_)._gameWidth = Mdx.graphicsContext_.getWindowWidth();
-            ((MonoGameGraphics)Mdx.graphicsContext_)._gameHeight = Mdx.graphicsContext_.getWindowHeight();
+            unbind_EFE09FC0();
+            ((MonoGameGraphics)Mdx.graphicsContext_)._gameWidth = Mdx.graphicsContext_.getWindowWidth_0EE0D08D();
+            ((MonoGameGraphics)Mdx.graphicsContext_)._gameHeight = Mdx.graphicsContext_.getWindowHeight_0EE0D08D();
             ((MonoGameGraphics)Mdx.graphicsContext_).beginRendering();
         }
 
-        public void bind()
+        public void bind_EFE09FC0()
         {
             _graphicsDevice.SetRenderTarget(_renderTarget);
             ((MonoGameGraphics)Mdx.graphicsContext_)._currentRenderTarget = _renderTarget;
         }
 
-        public void unbind()
+        public void unbind_EFE09FC0()
         {
             _graphicsDevice.SetRenderTarget(null);
             ((MonoGameGraphics)Mdx.graphicsContext_)._currentRenderTarget = null;
         }
 
-        public int getWidth()
+        public int getWidth_0EE0D08D()
         {
             return _renderTarget.Width;
         }
 
-        public int getHeight()
+        public int getHeight_0EE0D08D()
         {
             return _renderTarget.Height;
         }
 
-        public Texture getTexture()
+        public Texture getTexture_D75719FD()
         {
             texture.texture2D = _renderTarget;
             return texture;

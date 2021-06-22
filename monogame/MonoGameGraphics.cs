@@ -43,10 +43,11 @@ namespace monogame
         internal readonly SpriteBatch _spriteBatch;
         internal readonly GraphicsDevice _graphicsDevice;
         private Color _setColor = new MonoGameColor(255,255,255,255);
-        private Microsoft.Xna.Framework.Color _backgroundColor = Microsoft.Xna.Framework.Color.Black;
-        internal Microsoft.Xna.Framework.Color _tint = Microsoft.Xna.Framework.Color.White;
+        private Microsoft.Xna.Framework.Color _backgroundColor = new Microsoft.Xna.Framework.Color(0, 0, 0);
+        internal Microsoft.Xna.Framework.Color _tint = new Microsoft.Xna.Framework.Color(255, 255, 255);
         internal int _gameWidth, _gameHeight;
-        private Effect _currentShader;
+        private MonoGameShader _defaultShader;
+        private MonoGameShader _currentShader;
         private Org.Mini2Dx.Core.Geom.Rectangle _clipRectangle;
         private RasterizerState _rasterizerState;
         private SamplerState _samplerState = new SamplerState();
@@ -93,11 +94,14 @@ namespace monogame
             _spriteBatch = new SpriteBatch(graphicsDevice);
             _graphicsDevice = graphicsDevice;
             _clipRectangle = new Org.Mini2Dx.Core.Geom.Rectangle();
-            _clipRectangle._init_(0, 0, getWindowWidth(), getWindowHeight());
+            _clipRectangle._init_(0, 0, getWindowWidth_0EE0D08D(), getWindowHeight_0EE0D08D());
             _shapeRenderer = new MonoGameShapeRenderer(graphicsDevice, (MonoGameColor) _setColor, _spriteBatch);
+            Effect defaultEffect = null;
+            _defaultShader = new MonoGameShader(defaultEffect);
+            _currentShader = _defaultShader;
             _rasterizerState = RasterizerNoClipping;
             _graphicsDevice.ScissorRectangle = new Rectangle();
-            _font = Mdx.fonts_.defaultFont();
+            _font = Mdx.fonts_.defaultFont_0370ED29();
             updateFilter();
         }
 
@@ -144,13 +148,13 @@ namespace monogame
                     SpriteSortMode.Deferred,
                     _currentBlending,
                     transformMatrix: CurrentTransformationMatrix,
-                    effect: _currentShader,
+                    effect: _currentShader.shader,
                     rasterizerState: _rasterizerState,
                     samplerState: _samplerState);
 
-                if(_currentShader != null)
+                if(_currentShader != null && _currentShader.shader != null)
                 {
-                    _currentShader.CurrentTechnique.Passes[0].Apply();
+                    //_currentShader.shader.CurrentTechnique.Passes[0].Apply();
                 }
 
                 _isRendering = true;
@@ -178,7 +182,7 @@ namespace monogame
                    Matrix.CreateTranslation(scaledRotationCenterX - scaledTranslationX, scaledRotationCenterY - scaledTranslationY, 0);
         }
         
-        public void preRender(int gameWidth, int gameHeight)
+        public void preRender_224D2728(int gameWidth, int gameHeight)
         {
             _gameWidth = gameWidth;
             _gameHeight = gameHeight;
@@ -186,28 +190,28 @@ namespace monogame
             _graphicsDevice.Clear(_backgroundColor);
         }
 
-        public void postRender()
+        public void postRender_EFE09FC0()
         {
             endRendering();
-            clearScaling();
-            clearShader();
-            setTranslation(0, 0);
-            setRotation(0, 0, 0);
-            removeClip();
+            clearScaling_EFE09FC0();
+            clearShader_EFE09FC0();
+            setTranslation_0948E7C0(0, 0);
+            setRotation_4556C5CA(0, 0, 0);
+            removeClip_A029B76C();
             _currentBlending = DefaultBlending;
         }
 
-        public void clearContext()
+        public void clearContext_EFE09FC0()
         {
             internalClearContext(_backgroundColor, true, true);
         }
 
-        public void clearContext(Color c)
+        public void clearContext_24D51C91(Color c)
         {
-            clearContext(c, true, true);
+            clearContext_C68DBD81(c, true, true);
         }
 
-        public void clearContext(Color c, bool depthBufferBit, bool colorBufferBit)
+        public void clearContext_C68DBD81(Color c, bool depthBufferBit, bool colorBufferBit)
         {
             internalClearContext((c as MonoGameColor)._color, depthBufferBit, colorBufferBit);
         }
@@ -232,204 +236,214 @@ namespace monogame
             }
         }
 
-        public void drawLineSegment(float x1, float y1, float x2, float y2)
+        public void drawLineSegment_C2EDAFC0(float x1, float y1, float x2, float y2)
         {
             beginRendering();
             _shapeRenderer.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
         }
 
-        public void drawRect(float x, float y, float width, float height)
+        public void drawRect_C2EDAFC0(float x, float y, float width, float height)
         {
             beginRendering();
             _shapeRenderer.drawRect((int) x, (int) y, (int) width, (int) height);
         }
 
-        public void fillRect(float x, float y, float width, float height)
+        public void fillRect_C2EDAFC0(float x, float y, float width, float height)
         {
             beginRendering();
             _shapeRenderer.fillRect((int) x, (int) y, (int) width, (int) height);
         }
 
-        public void drawCircle(float centerX, float centerY, int radius)
+        public void drawCircle_E32E4233(float centerX, float centerY, int radius)
         {
             beginRendering();
             _shapeRenderer.drawCircle((int) centerX, (int) centerY, radius);
         }
 
-        public void drawCircle(float centerX, float centerY, float radius)
+        public void drawCircle_4556C5CA(float centerX, float centerY, float radius)
         {
-            drawCircle(centerX, centerY, (int)radius);
+            drawCircle_E32E4233(centerX, centerY, (int)radius);
         }
 
-        public void fillCircle(float centerX, float centerY, int radius)
+        public void fillCircle_E32E4233(float centerX, float centerY, int radius)
         {
             beginRendering();
             _shapeRenderer.fillCircle((int) centerX, (int) centerY, radius);
         }
 
-        public void fillCircle(float centerX, float centerY, float radius)
+        public void fillCircle_4556C5CA(float centerX, float centerY, float radius)
         {
-            fillCircle(centerX, centerY, (int) radius);
+            fillCircle_E32E4233(centerX, centerY, (int) radius);
         }
 
-        public void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3)
+        public void drawTriangle_0416F7C0(float x1, float y1, float x2, float y2, float x3, float y3)
         {
             beginRendering();
             _shapeRenderer.drawTriangle((int) x1, (int) y1, (int) x2, (int) y2, (int) x3, (int) y3);
         }
 
-        public void fillTriangle(float x1, float y1, float x2, float y2, float x3, float y3)
+        public void fillTriangle_0416F7C0(float x1, float y1, float x2, float y2, float x3, float y3)
         {
             beginRendering();
             _shapeRenderer.fillTriangle((int) x1, (int) y1, (int) x2, (int) y2, (int) x3, (int) y3);
         }
 
-        public void drawPolygon(float[] vertices)
+        public void drawPolygon_A7F282AF(float[] vertices)
         {
             for (int i = 0; i < vertices.Length - 2; i+=2)
             {
-                drawLineSegment(vertices[i], vertices[i+1], vertices[i + 2], vertices[i + 3]);
+                drawLineSegment_C2EDAFC0(vertices[i], vertices[i+1], vertices[i + 2], vertices[i + 3]);
             }
-            drawLineSegment(vertices[0], vertices[1], vertices[vertices.Length - 2], vertices[vertices.Length - 1]);
+            drawLineSegment_C2EDAFC0(vertices[0], vertices[1], vertices[vertices.Length - 2], vertices[vertices.Length - 1]);
         }
 
-        public void fillPolygon(float[] vertices, short[] triangles)
+        public void fillPolygon_C74D914F(float[] vertices, short[] triangles)
         {
             for (int i = 0; i < triangles.Length - 2; i+=3)
             {
-                fillTriangle(vertices[triangles[i] * 2], vertices[triangles[i] * 2 + 1], vertices[triangles[i + 1] * 2],
+                fillTriangle_0416F7C0(vertices[triangles[i] * 2], vertices[triangles[i] * 2 + 1], vertices[triangles[i + 1] * 2],
                              vertices[triangles[i + 1] * 2 + 1], vertices[triangles[i + 2] * 2], vertices[triangles[i + 2] * 2 + 1]);
             }
         }
 
-        public void drawString(Java.Lang.String text, float x, float y)
+        public void drawString_BFC06056(Java.Lang.String text, float x, float y)
         {
             beginRendering();
-            _font.draw(this, text, x, y);
+            _font.draw_FB6AB899(this, text, x, y);
         }
 
-        public void drawString(Java.Lang.String text, float x, float y, float targetWidth)
+        public void drawString_2C2C4844(Java.Lang.String text, float x, float y, float targetWidth)
         {
             beginRendering();
-            _font.draw(this, text, x, y, targetWidth);
+            _font.draw_5881F77F(this, text, x, y, targetWidth);
         }
 
-        public void drawString(Java.Lang.String text, float x, float y, float targetWidth, int horizontalAlign)
+        public void drawString_8338FD87(Java.Lang.String text, float x, float y, float targetWidth, int horizontalAlign)
         {
             beginRendering();
-            _font.draw(this, text, x, y, targetWidth, horizontalAlign, true);
+            _font.draw_F97A968A(this, text, x, y, targetWidth, horizontalAlign, true);
         }
 
-        public void drawTexture(Texture texture, float x, float y)
+        public void drawTexture_95EC6133(Texture texture, float x, float y)
         {
-            drawTexture(texture, x, y, false);
+            drawTexture_59AA8AE1(texture, x, y, false);
         }
 
-        public void drawTexture(Texture texture, float x, float y, bool flipY)
+        public void drawTexture_59AA8AE1(Texture texture, float x, float y, bool flipY)
         {
-            drawTexture(texture, x, y, texture.getWidth(), texture.getHeight(), flipY);
+            drawTexture_04079731(texture, x, y, texture.getWidth_0EE0D08D(), texture.getHeight_0EE0D08D(), flipY);
         }
 
-        public void drawTexture(Texture texture, float x, float y, float width, float height)
+        public void drawTexture_5E52BD63(Texture texture, float x, float y, float width, float height)
         {
-            drawTexture(texture, x, y, width, height, false);
+            drawTexture_04079731(texture, x, y, width, height, false);
         }
 
-        public void drawTexture(Texture texture, float x, float y, float width, float height, bool flipY)
+        public void drawTexture_04079731(Texture texture, float x, float y, float width, float height, bool flipY)
         {
             beginRendering();
-            if (texture.getUAddressMode() != _currentUMode || texture.getVAddressMode() != _currentVMode)
+            if (texture.getUAddressMode_F8C501D6() != _currentUMode || texture.getVAddressMode_F8C501D6() != _currentVMode)
             {
-                _currentUMode = texture.getUAddressMode();
-                _currentVMode = texture.getVAddressMode();
+                _currentUMode = texture.getUAddressMode_F8C501D6();
+                _currentVMode = texture.getVAddressMode_F8C501D6();
                 updateAddressMode();
             }
 
             _sharedPositionVector.X = x;
             _sharedPositionVector.Y = y;
-            _sharedScaleVector.X = width / texture.getWidth();
-            _sharedScaleVector.Y = height / texture.getHeight();
+            _sharedScaleVector.X = width / texture.getWidth_0EE0D08D();
+            _sharedScaleVector.Y = height / texture.getHeight_0EE0D08D();
             _spriteBatch.Draw(((MonoGameTexture)texture).texture2D, _sharedPositionVector, null, _tint, 0,
                 Vector2.Zero, _sharedScaleVector, flipY ? SpriteEffects.FlipVertically : SpriteEffects.None, 0f);
         }
 
-        public void drawTextureRegion(TextureRegion textureRegion, float x, float y)
+        public void drawTextureRegion_C70A626B(TextureRegion textureRegion, float x, float y)
         {
-            drawTextureRegion(textureRegion, x, y, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+            drawTextureRegion_1F25C0DB(textureRegion, x, y, textureRegion.getRegionWidth_0EE0D08D(), textureRegion.getRegionHeight_0EE0D08D());
         }
 
-        public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height)
+        public void drawTextureRegion_1F25C0DB(TextureRegion textureRegion, float x, float y, float width, float height)
         {
-            drawTextureRegion(textureRegion, x, y, width, height, 0);
+            drawTextureRegion_AF37B61D(textureRegion, x, y, width, height, 0);
         }
 
-        public void drawTextureRegion(TextureRegion textureRegion, float x, float y, float width, float height, float rotation)
+        public void drawTextureRegion_AF37B61D(TextureRegion textureRegion, float x, float y, float width, float height, float rotation)
         {
             beginRendering();
             
-            if (textureRegion.getTexture().getUAddressMode() != _currentUMode || textureRegion.getTexture().getVAddressMode() != _currentVMode)
+            if (textureRegion.getTexture_D75719FD().getUAddressMode_F8C501D6() != _currentUMode || textureRegion.getTexture_D75719FD().getVAddressMode_F8C501D6() != _currentVMode)
             {
-                _currentUMode = textureRegion.getTexture().getUAddressMode();
-                _currentVMode = textureRegion.getTexture().getVAddressMode();
+                _currentUMode = textureRegion.getTexture_D75719FD().getUAddressMode_F8C501D6();
+                _currentVMode = textureRegion.getTexture_D75719FD().getVAddressMode_F8C501D6();
                 updateAddressMode();
             }
             
-            _sharedSourceRectangle.X = textureRegion.getRegionX();
-            _sharedSourceRectangle.Y = textureRegion.getRegionY();
-            _sharedSourceRectangle.Width = textureRegion.getRegionWidth();
-            _sharedSourceRectangle.Height = textureRegion.getRegionHeight();
+            _sharedSourceRectangle.X = textureRegion.getRegionX_0EE0D08D();
+            _sharedSourceRectangle.Y = textureRegion.getRegionY_0EE0D08D();
+            _sharedSourceRectangle.Width = textureRegion.getRegionWidth_0EE0D08D();
+            _sharedSourceRectangle.Height = textureRegion.getRegionHeight_0EE0D08D();
             _sharedPositionVector.X = x;
             _sharedPositionVector.Y = y;
-            _sharedScaleVector.X = width / textureRegion.getRegionWidth();
-            _sharedScaleVector.Y = height / textureRegion.getRegionHeight();
+            _sharedScaleVector.X = width / textureRegion.getRegionWidth_0EE0D08D();
+            _sharedScaleVector.Y = height / textureRegion.getRegionHeight_0EE0D08D();
             
-            _spriteBatch.Draw(((MonoGameTexture) textureRegion.getTexture()).texture2D, _sharedPositionVector,
+            _spriteBatch.Draw(((MonoGameTexture) textureRegion.getTexture_D75719FD()).texture2D, _sharedPositionVector,
                 _sharedSourceRectangle, _tint, rotation, Vector2.Zero, _sharedScaleVector,
-                (textureRegion.isFlipX() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
-                (textureRegion.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
+                (textureRegion.isFlipX_FBE0B2A4() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
+                (textureRegion.isFlipY_FBE0B2A4() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
         }
 
-        public void drawShape(Shape shape)
+        public void drawShape_3BD1E2A4(Shape shape)
         {
-            drawPolygon(shape.getPolygon().getVertices());
+            drawPolygon_A7F282AF(shape.getPolygon_A507AF13().getVertices_9E7A8229());
         }
 
-        public void fillShape(Shape shape)
+        public void fillShape_3BD1E2A4(Shape shape)
         {
-            fillPolygon(shape.getPolygon().getVertices(), shape.getPolygon().getTriangles().toArray());
+            fillPolygon_C74D914F(shape.getPolygon_A507AF13().getVertices_9E7A8229(), shape.getPolygon_A507AF13().getTriangles_78095B83().toArray_917A6DB2());
         }
 
-        public void drawSprite(Sprite sprite)
+        public void drawSprite_615359F5(Sprite sprite)
         {
-            drawSprite(sprite, sprite.getX(), sprite.getY());
+            drawSprite_2D162465(sprite, sprite.getX_FFE0B8F0(), sprite.getY_FFE0B8F0());
         }
 
-        public void drawSprite(Sprite sprite, float x, float y)
+        public void drawSprite_2D162465(Sprite sprite, float x, float y)
         {     
             beginRendering();   
-            if (sprite.getTexture().getUAddressMode() != _currentUMode || sprite.getTexture().getVAddressMode() != _currentVMode)
+            if (sprite.getTexture_D75719FD().getUAddressMode_F8C501D6() != _currentUMode || sprite.getTexture_D75719FD().getVAddressMode_F8C501D6() != _currentVMode)
             {
-                _currentUMode = sprite.getTexture().getUAddressMode();
-                _currentVMode = sprite.getTexture().getVAddressMode();
+                _currentUMode = sprite.getTexture_D75719FD().getUAddressMode_F8C501D6();
+                _currentVMode = sprite.getTexture_D75719FD().getVAddressMode_F8C501D6();
                 updateAddressMode();
             }
 
-            _sharedPositionVector.X = x + sprite.getOriginX();
-            _sharedPositionVector.Y = y + sprite.getOriginY();
-            _sharedSourceRectangle.X = sprite.getRegionX();
-            _sharedSourceRectangle.Y = sprite.getRegionY();
-            _sharedSourceRectangle.Width = sprite.getRegionWidth();
-            _sharedSourceRectangle.Height = sprite.getRegionHeight();
-            _sharedOriginVector.X = sprite.getOriginX();
-            _sharedOriginVector.Y = sprite.getOriginY();
-            _sharedScaleVector.X = sprite.getScaleX();
-            _sharedScaleVector.Y = sprite.getScaleY();
+            _sharedPositionVector.X = x + sprite.getOriginX_FFE0B8F0();
+            _sharedPositionVector.Y = y + sprite.getOriginY_FFE0B8F0();
+            _sharedSourceRectangle.X = sprite.getRegionX_0EE0D08D();
+            _sharedSourceRectangle.Y = sprite.getRegionY_0EE0D08D();
+            _sharedSourceRectangle.Width = sprite.getRegionWidth_0EE0D08D();
+            _sharedSourceRectangle.Height = sprite.getRegionHeight_0EE0D08D();
+            _sharedOriginVector.X = sprite.getOriginX_FFE0B8F0();
+            _sharedOriginVector.Y = sprite.getOriginY_FFE0B8F0();
+            _sharedScaleVector.X = sprite.getScaleX_FFE0B8F0();
+            _sharedScaleVector.Y = sprite.getScaleY_FFE0B8F0();
+
+            //if tint is white use sprite tint
+            Microsoft.Xna.Framework.Color drawColor;
+            if (_tint.Equals(Microsoft.Xna.Framework.Color.White))
+            {
+                drawColor = ((MonoGameColor)sprite.getTint_F0D7D9CF())._color;
+            } else
+            {
+                drawColor = _tint;
+            }
             
-            _spriteBatch.Draw(((MonoGameTexture) sprite.getTexture()).texture2D, _sharedPositionVector,
-                _sharedSourceRectangle, ((MonoGameColor) sprite.getTint())._color,
+            _spriteBatch.Draw(((MonoGameTexture) sprite.getTexture_D75719FD()).texture2D, _sharedPositionVector,
+                _sharedSourceRectangle, drawColor,
                 MonoGameMathsUtil.degreeToRadian(((MonoGameSprite) sprite).getTotalRotation()),
-                _sharedOriginVector, _sharedScaleVector, (sprite.isFlipX() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
-                (sprite.isFlipY() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
+                _sharedOriginVector, _sharedScaleVector, (sprite.isFlipX_FBE0B2A4() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
+                (sprite.isFlipY_FBE0B2A4() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
         }
 
         internal void drawTexture(MonoGameTexture texture, float x, float y, int srcX, int srcY, int srcWidth,
@@ -437,10 +451,10 @@ namespace monogame
             bool flipY, MonoGameColor tint)
         {     
             beginRendering();   
-            if (texture.getUAddressMode() != _currentUMode || texture.getVAddressMode() != _currentVMode)
+            if (texture.getUAddressMode_F8C501D6() != _currentUMode || texture.getVAddressMode_F8C501D6() != _currentVMode)
             {
-                _currentUMode = texture.getUAddressMode();
-                _currentVMode = texture.getVAddressMode();
+                _currentUMode = texture.getUAddressMode_F8C501D6();
+                _currentVMode = texture.getVAddressMode_F8C501D6();
                 updateAddressMode();
             }
             
@@ -462,29 +476,29 @@ namespace monogame
                 (flipY ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
         }
 
-        public void drawSpriteCache(SpriteCache spriteCache, int cacheId)
+        public void drawSpriteCache_C5995FF6(SpriteCache spriteCache, int cacheId)
         {
-            spriteCache.draw(this, cacheId);
+            spriteCache.draw_3AB38A38(this, cacheId);
         }
 
-        public void drawParticleEffect(ParticleEffect effect)
+        public void drawParticleEffect_29AC8B27(ParticleEffect effect)
         {
             throw new System.NotImplementedException();
         }
 
-        public void drawNinePatch(NinePatch ninePatch, float x, float y, float width, float height)
+        public void drawNinePatch_EE654A84(NinePatch ninePatch, float x, float y, float width, float height)
         {
             beginRendering();
-            ninePatch.render(this, x, y, width, height);
+            ninePatch.render_13ECCFE3(this, x, y, width, height);
         }
 
-        public void drawTilingDrawable(TilingDrawable tilingDrawable, float x, float y, float width, float height)
+        public void drawTilingDrawable_68C092E7(TilingDrawable tilingDrawable, float x, float y, float width, float height)
         {
             beginRendering();
-            tilingDrawable.draw(this, x, y, width, height);
+            tilingDrawable.draw_13ECCFE3(this, x, y, width, height);
         }
 
-        public void rotate(float degrees, float x, float y)
+        public void rotate_4556C5CA(float degrees, float x, float y)
         {
             _rotationCenter.X = x;
             _rotationCenter.Y = y;
@@ -493,12 +507,12 @@ namespace monogame
             endRendering();
         }
 
-        public void setRotation(float degrees, float x, float y)
+        public void setRotation_4556C5CA(float degrees, float x, float y)
         {
-            rotate(degrees - _rotation, x, y);
+            rotate_4556C5CA(degrees - _rotation, x, y);
         }
 
-        public void scale(float scaleX, float scaleY)
+        public void scale_0948E7C0(float scaleX, float scaleY)
         {
             _scale.X *= scaleX;
             _scale.Y *= scaleY;
@@ -506,20 +520,25 @@ namespace monogame
             endRendering();
         }
 
-        public void setScale(float scaleX, float scaleY)
+        public void setScale_0948E7C0(float scaleX, float scaleY)
         {
+            if (MathUtils.isEqual_1548FAA4(_scale.X, scaleX) && MathUtils.isEqual_1548FAA4(_scale.Y, scaleY))
+            {
+                return;
+            }
+            endRendering();
+
             _scale.X = scaleX;
             _scale.Y = scaleY;
             _isTransformationMatrixDirty = true;
-            endRendering();
         }
 
-        public void clearScaling()
+        public void clearScaling_EFE09FC0()
         {
-            setScale(1, 1);
+            setScale_0948E7C0(1, 1);
         }
 
-        public void translate(float translateX, float translateY)
+        public void translate_0948E7C0(float translateX, float translateY)
         {
             _translation.X += translateX;
             _translation.Y += translateY;
@@ -527,24 +546,28 @@ namespace monogame
             endRendering();
         }
 
-        public void setTranslation(float translateX, float translateY)
+        public void setTranslation_0948E7C0(float translateX, float translateY)
         {
+            if (MathUtils.isEqual_1548FAA4(_translation.X, translateX) && MathUtils.isEqual_1548FAA4(_translation.Y, translateY))
+            {
+                return;
+            }
             _translation.X = translateX;
             _translation.Y = translateY;
             _isTransformationMatrixDirty = true;
             endRendering();
         }
 
-        public void setTint(Color tint)
+        public void setTint_24D51C91(Color tint)
         {
-            _tint.R = (byte)tint.getRAsByte();
-            _tint.G = (byte)tint.getGAsByte();
-            _tint.B = (byte)tint.getBAsByte();
-            _tint.A = (byte)tint.getAAsByte();
+            _tint.R = (byte)tint.getRAsByte_03E0BF3C();
+            _tint.G = (byte)tint.getGAsByte_03E0BF3C();
+            _tint.B = (byte)tint.getBAsByte_03E0BF3C();
+            _tint.A = (byte)tint.getAAsByte_03E0BF3C();
         }
 
 
-        public void removeTint()
+        public void removeTint_EFE09FC0()
         {
             _tint.R = 255;
             _tint.G = 255;
@@ -552,21 +575,21 @@ namespace monogame
             _tint.A = 255;
         }
 
-        public void enableBlending()
+        public void enableBlending_EFE09FC0()
         {
             _isBlending = true;
             updateBlending();
             endRendering();
         }
 
-        public void disableBlending()
+        public void disableBlending_EFE09FC0()
         {
             _isBlending = false;
             updateBlending();
             endRendering();
         }
 
-        public void setBlendFunction(Mini2DxBlendFunction srcFunc, Mini2DxBlendFunction dstFunc)
+        public void setBlendFunction_AAE1F480(Mini2DxBlendFunction srcFunc, Mini2DxBlendFunction dstFunc)
         {
             _srcFunction = srcFunc;
             _dstFunction = dstFunc;
@@ -574,132 +597,134 @@ namespace monogame
             endRendering();
         }
 
-        public void clearBlendFunction()
+        public void clearBlendFunction_EFE09FC0()
         {
             _currentBlending = DefaultBlending;
+            _srcFunction = Mini2DxBlendFunction.SRC_ALPHA_;
+            _dstFunction = Mini2DxBlendFunction.ONE_MINUS_SRC_ALPHA_;
             updateBlending();
             endRendering();
         }
 
-        public void flush()
+        public void flush_EFE09FC0()
         {
             endRendering();
             beginRendering();
         }
 
-        public int getLineHeight()
+        public int getLineHeight_0EE0D08D()
         {
             return _shapeRenderer.LineHeight;
         }
 
-        public void setLineHeight(int lineHeight)
+        public void setLineHeight_3518BA33(int lineHeight)
         {
             _shapeRenderer.LineHeight = lineHeight;
         }
 
-        public Color getColor()
+        public Color getColor_F0D7D9CF()
         {
             return _setColor;
         }
 
-        public void setColor(Color color)
+        public void setColor_24D51C91(Color color)
         {
             _setColor = color;
             _shapeRenderer.setColor((MonoGameColor) _setColor);
-            _font.setColor(color);
+            _font.setColor_24D51C91(color);
         }
 
-        public Color getBackgroundColor()
+        public Color getBackgroundColor_F0D7D9CF()
         {
             return new MonoGameColor(_backgroundColor);
         }
 
-        public void setBackgroundColor(Color backgroundColor)
+        public void setBackgroundColor_24D51C91(Color backgroundColor)
         {
             _backgroundColor = ((MonoGameColor) backgroundColor)._color;
         }
 
-        public Color getTint()
+        public Color getTint_F0D7D9CF()
         {
             return new MonoGameColor(_tint);
         }
 
-        public float getScaleX()
+        public float getScaleX_FFE0B8F0()
         {
             return _scale.X;
         }
 
-        public float getScaleY()
+        public float getScaleY_FFE0B8F0()
         {
             return _scale.Y;
         }
 
-        public float getTranslationX()
+        public float getTranslationX_FFE0B8F0()
         {
             return _translation.X;
         }
 
-        public float getTranslationY()
+        public float getTranslationY_FFE0B8F0()
         {
             return _translation.Y;
         }
 
-        public float getRotation()
+        public float getRotation_FFE0B8F0()
         {
             return _rotation;
         }
 
-        public float getRotationX()
+        public float getRotationX_FFE0B8F0()
         {
             return _rotationCenter.X;
         }
 
-        public float getRotationY()
+        public float getRotationY_FFE0B8F0()
         {
             return _rotationCenter.Y;
         }
 
-        public bool isWindowReady()
+        public bool isWindowReady_FBE0B2A4()
         {
             return _gameHeight != 0;
         }
 
-        public int getWindowWidth()
+        public int getWindowWidth_0EE0D08D()
         {
             return _graphicsDevice.PresentationParameters.BackBufferWidth;
         }
 
-        public int getWindowHeight()
+        public int getWindowHeight_0EE0D08D()
         {
             return _graphicsDevice.PresentationParameters.BackBufferHeight;
         }
         
-        public int getWindowSafeX()
+        public int getWindowSafeX_0EE0D08D()
         {
             return _graphicsDevice.Viewport.TitleSafeArea.X;
         }
 
-        public int getWindowSafeY()
+        public int getWindowSafeY_0EE0D08D()
         {
             return _graphicsDevice.Viewport.TitleSafeArea.Y;
         }
 
-        public int getWindowSafeWidth()
+        public int getWindowSafeWidth_0EE0D08D()
         {
             return _graphicsDevice.Viewport.TitleSafeArea.Width;
         }
 
-        public int getWindowSafeHeight()
+        public int getWindowSafeHeight_0EE0D08D()
         {
             return _graphicsDevice.Viewport.TitleSafeArea.Height;
         }
 
-        public TextureFilter getMinFilter()
+        public TextureFilter getMinFilter_8B0D1E35()
         {
             return _currentMinFilter;
         }
 
-        public void setMinFilter(TextureFilter tf)
+        public void setMinFilter_0523C13B(TextureFilter tf)
         {
             if (tf != _currentMinFilter)
             {
@@ -708,12 +733,12 @@ namespace monogame
             }
         }
 
-        public TextureFilter getMagFilter()
+        public TextureFilter getMagFilter_8B0D1E35()
         {
             return _currentMagFilter;
         }
 
-        public void setMagFilter(TextureFilter tf)
+        public void setMagFilter_0523C13B(TextureFilter tf)
         {
             if (tf != _currentMagFilter)
             {
@@ -722,30 +747,30 @@ namespace monogame
             }
         }
 
-        public float getViewportWidth()
+        public float getViewportWidth_FFE0B8F0()
         {
-            return _gameWidth;
+            return _gameWidth / _scale.X;
         }
 
-        public float getViewportHeight()
+        public float getViewportHeight_FFE0B8F0()
         {
-            return _gameHeight;
+            return _gameHeight / _scale.Y;
         }
 
-        public Matrix4 getProjectionMatrix()
+        public Matrix4 getProjectionMatrix_84886056()
         {
             Matrix4 result = new Matrix4();
             result._init_(Matrix.ToFloatArray(CurrentTransformationMatrix));
             return result;
         }
 
-        public void setClip(Org.Mini2Dx.Core.Geom.Rectangle clip)
+        public void setClip_477DF50E(Org.Mini2Dx.Core.Geom.Rectangle clip)
         {
 
-            if (clip.getX() == 0 && clip.getY() == 0 && clip.getWidth() == getViewportWidth() &&
-                clip.getHeight() == getViewportHeight())
+            if (clip.getX_FFE0B8F0() == 0 && clip.getY_FFE0B8F0() == 0 && clip.getWidth_FFE0B8F0() == getViewportWidth_FFE0B8F0() &&
+                clip.getHeight_FFE0B8F0() == getViewportHeight_FFE0B8F0())
             {
-                removeClip();
+                removeClip_A029B76C();
                 return;
             }
 
@@ -767,21 +792,21 @@ namespace monogame
         internal void updateClip()
         {
             var rect = _graphicsDevice.ScissorRectangle;
-            rect.X = (int) (_clipRectangle.getX() * _scale.X - _translation.X);
-            rect.Y = (int) (_clipRectangle.getY() * _scale.Y - _translation.Y);
-            rect.Width = (int) (_clipRectangle.getWidth() * _scale.X);
-            rect.Height = (int) (_clipRectangle.getHeight() * _scale.Y);
+            rect.X = (int) (_clipRectangle.getX_FFE0B8F0() * _scale.X - _translation.X);
+            rect.Y = (int) (_clipRectangle.getY_FFE0B8F0() * _scale.Y - _translation.Y);
+            rect.Width = (int) (_clipRectangle.getWidth_FFE0B8F0() * _scale.X);
+            rect.Height = (int) (_clipRectangle.getHeight_FFE0B8F0() * _scale.Y);
             _graphicsDevice.ScissorRectangle = rect;
         }
 
-        public void setClip(float x, float y, float width, float height)
+        public void setClip_C2EDAFC0(float x, float y, float width, float height)
         {
             var rect = new Org.Mini2Dx.Core.Geom.Rectangle();
             rect._init_(x, y, width, height);
-            setClip(rect);
+            setClip_477DF50E(rect);
         }
 
-        public Org.Mini2Dx.Core.Geom.Rectangle removeClip()
+        public Org.Mini2Dx.Core.Geom.Rectangle removeClip_A029B76C()
         {
             if (!_rasterizerState.ScissorTestEnable)
             {
@@ -792,63 +817,69 @@ namespace monogame
             
             _rasterizerState = RasterizerNoClipping;
 
-            var oldClip = _clipRectangle.copy();
+            var oldClip = _clipRectangle.copy_46F53776();
             
-            _clipRectangle.setX(0);
-            _clipRectangle.setY(0);
-            _clipRectangle.setWidth(getViewportWidth());
-            _clipRectangle.setHeight(getViewportHeight());
+            _clipRectangle.setX_97413DCA(0);
+            _clipRectangle.setY_97413DCA(0);
+            _clipRectangle.setWidth_0188706E(getViewportWidth_FFE0B8F0());
+            _clipRectangle.setHeight_0188706E(getViewportHeight_FFE0B8F0());
             
             return (Org.Mini2Dx.Core.Geom.Rectangle) oldClip;
         }
 
-        public Org.Mini2Dx.Core.Geom.Rectangle peekClip()
+        public Org.Mini2Dx.Core.Geom.Rectangle peekClip_A029B76C()
         {
             var rect = new Org.Mini2Dx.Core.Geom.Rectangle();
             rect._init_();
-            peekClip(rect);
+            peekClip_477DF50E(rect);
             return rect;
         }
 
-        public void peekClip(Org.Mini2Dx.Core.Geom.Rectangle rectangle)
+        public void peekClip_477DF50E(Org.Mini2Dx.Core.Geom.Rectangle rectangle)
         {
-            rectangle.setXY(_clipRectangle.getX(), _clipRectangle.getY());
-            rectangle.setHeight(_clipRectangle.getHeight());
-            rectangle.setWidth(_clipRectangle.getWidth());
+            rectangle.setXY_0948E7C0(_clipRectangle.getX_FFE0B8F0(), _clipRectangle.getY_FFE0B8F0());
+            rectangle.setHeight_0188706E(_clipRectangle.getHeight_FFE0B8F0());
+            rectangle.setWidth_0188706E(_clipRectangle.getWidth_FFE0B8F0());
         }
 
-        public void drawFontCache(GameFontCache gameFontCache)
+        public void drawFontCache_CF61996B(GameFontCache gameFontCache)
         {
-            gameFontCache.draw(this);
+            gameFontCache.draw_2CFA5803(this);
         }
 
-        public void setFont(GameFont font)
+        public void setFont_6B60E80F(GameFont font)
         {
             _font = font;
         }
 
-        public Shader getShader()
+        public Shader getShader_364FDDC3()
         {
-            return new MonoGameShader(_currentShader);
+            return _currentShader;
         }
 
-        public GameFont getFont()
+        public GameFont getFont_0370ED29()
         {
             return _font;
         }
 
-        public void setShader(Shader shader)
+        public void setShader_09F44B85(Shader shader)
+        {
+            if(shader == null)
+            {
+                clearShader_EFE09FC0();
+                return;
+            }
+            endRendering();
+            _currentShader = ((MonoGameShader) shader);
+        }
+
+        public void clearShader_EFE09FC0()
         {
             endRendering();
-            _currentShader = ((MonoGameShader) shader).shader;
+            _currentShader = _defaultShader;
         }
 
-        public void clearShader()
-        {
-            _currentShader = null;
-        }
-
-        public long getFrameId()
+        public long getFrameId_0BE0CBD4()
         {
             return _frameId;
         }

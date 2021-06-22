@@ -38,7 +38,7 @@ namespace monogame.Util
             zlibStream = new MonoGame.Framework.Utilities.ZlibStream(new MemoryStream(data), MonoGame.Framework.Utilities.CompressionMode.Decompress);
         }
 
-        public void read(sbyte[] arg0)
+        public void read_00E2C263(sbyte[] arg0)
         {
             if(buffer == null || buffer.Length != arg0.Length)
             {
@@ -52,7 +52,7 @@ namespace monogame.Util
             }
         }
 
-        public void dispose()
+        public void dispose_EFE09FC0()
         {
             zlibStream.Close();
         }

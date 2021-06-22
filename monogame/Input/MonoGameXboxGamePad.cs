@@ -40,14 +40,14 @@ namespace monogame.Input
             base._init_(gamePad);
         }
 
-        void O_M_C_Input_GamePadListener.onConnect(GamePad gamePad)
+        void O_M_C_Input_GamePadListener.onConnect_238EC38A(GamePad gamePad)
         {
-            notifyConnected();
+            notifyConnected_FBE0B2A4();
         }
 
-        void O_M_C_Input_GamePadListener.onDisconnect(GamePad gamePad)
+        void O_M_C_Input_GamePadListener.onDisconnect_238EC38A(GamePad gamePad)
         {
-            notifyDisconnected();
+            notifyDisconnected_FBE0B2A4();
         }
 
         private XboxButton buttonCodeToXboxButton(int buttonCode)
@@ -89,50 +89,50 @@ namespace monogame.Input
             }
         }
 
-        void O_M_C_Input_GamePadListener.onButtonDown(GamePad gamePad, int buttonCode)
+        void O_M_C_Input_GamePadListener.onButtonDown_7016EF7D(GamePad gamePad, int buttonCode)
         {
             var button = buttonCodeToXboxButton(buttonCode);
             if (button != null)
             {
-                notifyButtonDown(button);
+                notifyButtonDown_967FA8D9(button);
             }
         }
 
-        void O_M_C_Input_GamePadListener.onButtonUp(GamePad gamePad, int buttonCode)
+        void O_M_C_Input_GamePadListener.onButtonUp_7016EF7D(GamePad gamePad, int buttonCode)
         {
             var button = buttonCodeToXboxButton(buttonCode);
             if (button != null)
             {
-                notifyButtonUp(button);
+                notifyButtonUp_967FA8D9(button);
             }
         }
 
-        void O_M_C_Input_GamePadListener.onAxisChanged(GamePad gamePad, int axisCode, float axisValue)
+        void O_M_C_Input_GamePadListener.onAxisChanged_AD47562B(GamePad gamePad, int axisCode, float axisValue)
         {
             switch ((MonoGameGamePad.AxisCodes) axisCode)
             {
                 case MonoGameGamePad.AxisCodes.LeftThumbstickX:
-                    notifyLeftStickXMoved(axisValue);
+                    notifyLeftStickXMoved_8B412AE6(axisValue);
                     break;
                 case MonoGameGamePad.AxisCodes.LeftThumbstickY:
-                    notifyLeftStickYMoved(axisValue);
+                    notifyLeftStickYMoved_8B412AE6(-axisValue);
                     break;
                 case MonoGameGamePad.AxisCodes.RightThumbstickX:
-                    notifyRightStickXMoved(axisValue);
+                    notifyRightStickXMoved_8B412AE6(axisValue);
                     break;
                 case MonoGameGamePad.AxisCodes.RightThumbstickY:
-                    notifyRightStickYMoved(axisValue);
+                    notifyRightStickYMoved_8B412AE6(-axisValue);
                     break;
                 case MonoGameGamePad.AxisCodes.LeftTrigger:
-                    notifyLeftTriggerMoved(axisValue);
+                    notifyLeftTriggerMoved_8B412AE6(axisValue);
                     break;
                 case MonoGameGamePad.AxisCodes.RightTrigger:
-                    notifyRightTriggerMoved(axisValue);
+                    notifyRightTriggerMoved_8B412AE6(axisValue);
                     break;
             }
         }
 
-        void O_M_C_Input_GamePadListener.onAccelerometerChanged(GamePad gamePad, int accelerometerCode, Vector3 value)
+        void O_M_C_Input_GamePadListener.onAccelerometerChanged_FE43FF32(GamePad gamePad, int accelerometerCode, Vector3 value)
         {
         }
     }

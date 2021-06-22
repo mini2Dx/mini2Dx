@@ -51,7 +51,7 @@ namespace monogame.Font
             cacheId = GLOBAL_CACHE.allocateId();
         }
 
-        public void clear()
+        public void clear_EFE09FC0()
         {
             GLOBAL_CACHE.clear(cacheId);
             _previousDrawingOperations.Clear();
@@ -62,18 +62,18 @@ namespace monogame.Font
             GLOBAL_CACHE.setText(this);
         }
 
-        public void addText(CharSequence str, float x, float y, float targetWidth, int horizontalAlign, bool wrap)
+        public void addText_EAACE007(CharSequence str, float x, float y, float targetWidth, int horizontalAlign, bool wrap)
         {
-            Vector2 v2 = _gameFont._spriteFont.MeasureString(str.toString());
+            Vector2 v2 = _gameFont._spriteFont.MeasureString(str.toString_E605312C());
             addText(str, x, y, targetWidth, v2.Y, horizontalAlign, wrap);
         }
 
         public void addText(CharSequence str, float x, float y, float targetWidth, float targetHeight, int horizontalAlign, bool wrap)
         {
-            Vector2 v2 = _gameFont._spriteFont.MeasureString(str.toString());
+            Vector2 v2 = _gameFont._spriteFont.MeasureString(str.toString_E605312C());
             var operation = new MonoGameGameFontCacheDrawingOperation()
             {
-                text = str.toString(),
+                text = str.toString_E605312C(),
                 x = x,
                 y = y,
                 targetWidth = targetWidth,
@@ -87,42 +87,42 @@ namespace monogame.Font
             updateCache();
         }
 
-        public void addText(CharSequence str, float x, float y)
+        public void addText_A899CF08(CharSequence str, float x, float y)
         {
-            Vector2 v2 = _gameFont._spriteFont.MeasureString(str.toString());
+            Vector2 v2 = _gameFont._spriteFont.MeasureString(str.toString_E605312C());
             addText(str, x, y, v2.X, v2.Y, Align.LEFT_, true);
         }
 
-        public void draw(Org.Mini2Dx.Core._Graphics g)
+        public void draw_2CFA5803(Org.Mini2Dx.Core._Graphics g)
         {
             GLOBAL_CACHE.draw(g, this, _position);
         }
 
-        public void setText(CharSequence str, float x, float y)
+        public void setText_A899CF08(CharSequence str, float x, float y)
         {
-            clear();
-            addText(str, x, y);
+            clear_EFE09FC0();
+            addText_A899CF08(str, x, y);
         }
 
-        public void setText(CharSequence str, float x, float y, float targetWidth, int horizontalAlign, bool wrap)
+        public void setText_EAACE007(CharSequence str, float x, float y, float targetWidth, int horizontalAlign, bool wrap)
         {
-            clear();
-            addText(str, x, y, targetWidth, horizontalAlign, wrap);
+            clear_EFE09FC0();
+            addText_EAACE007(str, x, y, targetWidth, horizontalAlign, wrap);
         }
 
-        public void translate(float x, float y)
+        public void translate_0948E7C0(float x, float y)
         {
             _position.X += x;
             _position.Y += y;
         }
 
-        public void setPosition(float x, float y)
+        public void setPosition_0948E7C0(float x, float y)
         {
             _position.X = x;
             _position.Y = y;
         }
 
-        public void setAllColors(Color color)
+        public void setAllColors_24D51C91(Color color)
         {
             GLOBAL_CACHE.clear(cacheId);
             for(int i = 0; i < _previousDrawingOperations.Count; i++)
@@ -133,7 +133,7 @@ namespace monogame.Font
             updateCache();
         }
 
-        public void setAllAlphas(float alpha)
+        public void setAllAlphas_97413DCA(float alpha)
         {
             GLOBAL_CACHE.clear(cacheId);
             for (int i = 0; i < _previousDrawingOperations.Count; i++)
@@ -144,17 +144,17 @@ namespace monogame.Font
             updateCache();
         }
 
-        public void setColor(Color color)
+        public void setColor_24D51C91(Color color)
         {
             _setColor = ((MonoGameColor)color)._color;
         }
 
-        public Color getColor()
+        public Color getColor_F0D7D9CF()
         {
             return new MonoGameColor(_setColor);
         }
 
-        public GameFont getFont()
+        public GameFont getFont_0370ED29()
         {
             return _gameFont;
         }
@@ -162,7 +162,7 @@ namespace monogame.Font
 
     public struct MonoGameGameFontCacheDrawingOperation
     {
-        public string text;
+        public Java.Lang.String text;
         public float x, y, targetWidth, targetHeight;
         public int horizontalAlign;
         public bool wrap;

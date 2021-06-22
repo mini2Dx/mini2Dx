@@ -25,12 +25,12 @@ namespace monogame
 {
     public class MonoGameLocks : global::Java.Lang.Object, global::Org.Mini2Dx.Lockprovider.Locks
     {
-        public ReadWriteLock newReadWriteLock()
+        public ReadWriteLock newReadWriteLock_DBA9C975()
         {
             return new MonoGameReadWriteLock();
         }
 
-        public ReentrantLock newReentrantLock()
+        public ReentrantLock newReentrantLock_70EC328B()
         {
             return new MonoGameReentrantLock();
         }

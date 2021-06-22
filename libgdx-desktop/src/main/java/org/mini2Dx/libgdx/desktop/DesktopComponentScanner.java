@@ -20,7 +20,7 @@ import org.mini2Dx.core.di.ComponentScanner;
 import org.mini2Dx.core.di.annotation.Prototype;
 import org.mini2Dx.core.di.annotation.Singleton;
 import org.mini2Dx.gdx.utils.Array;
-import org.reflections.Reflections;
+import org.reflections8.Reflections;
 
 import java.io.PrintWriter;
 import java.io.Reader;

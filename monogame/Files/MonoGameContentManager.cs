@@ -16,20 +16,66 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using Microsoft.Xna.Framework.Content;
 
 namespace monogame.Files
 {
     public class MonoGameContentManager : ContentManager
     {
+
         public MonoGameContentManager(IServiceProvider serviceProvider, string rootDirectory) : base(serviceProvider, rootDirectory)
         {
         }
 
+        public override T Load<T>(string assetName)
+        {
+            lock(base.LoadedAssets)
+            {
+                return base.Load<T>(assetName);
+            }
+        }
+
+        public override T LoadLocalized<T>(string assetName)
+        {
+            lock (base.LoadedAssets)
+            {
+                return base.LoadLocalized<T>(assetName);
+            }
+        }
+
         public new Stream OpenStream(string assetName)
         {
-            mini2DxFileContent fileContent = base.Load<mini2DxFileContent>(assetName);
+            mini2DxFileContent fileContent = null;
+            lock (base.LoadedAssets)
+            {
+                fileContent = base.Load<mini2DxFileContent>(assetName);
+            }
             return new MemoryStream(fileContent.content);
+        }
+
+        public override void Unload()
+        {
+            lock (base.LoadedAssets)
+            {
+                base.Unload();
+            }
+        }
+
+        protected override void ReloadAsset<T>(string originalAssetName, T currentAsset)
+        {
+            lock (base.LoadedAssets)
+            {
+                base.ReloadAsset(originalAssetName, currentAsset);
+            }
+        }
+
+        protected override void ReloadGraphicsAssets()
+        {
+            lock (base.LoadedAssets)
+            {
+                base.ReloadGraphicsAssets();
+            }
         }
     }
 }

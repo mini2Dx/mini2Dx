@@ -24,24 +24,24 @@ namespace monogame
 {
     public class MonoGameFonts : Org.Mini2Dx.Core.Fonts
     {
-        public override GameFont defaultFont()
+        public override GameFont defaultFont_0370ED29()
         {
-            return newPlatformFont((MonoGameFileHandle)Mdx.files_.@internal("defaultFont.spritefont"));
+            return newPlatformFont_4C54323B((MonoGameFileHandle)Mdx.files_.internal_1F3F44D2("defaultFont.spritefont"));
         }
 
-        public override GameFont newPlatformFont(FileHandle fh)
+        public override GameFont newPlatformFont_4C54323B(FileHandle fh)
         {
             var font = new MonoGameGameFont((MonoGameFileHandle) fh);
-            font.loadInternal();
+            font.loadInternal_FBE0B2A4();
             return font;
         }
 
-        public override GameFont newBitmapFont(FileHandle fh)
+        public override GameFont newBitmapFont_4C54323B(FileHandle fh)
         {
             return MonoGameGameFont.loadBitmapFont((MonoGameFileHandle) fh);
         }
 
-        public override GameFont newTrueTypeFont(FileHandle fh)
+        public override GameFont newTrueTypeFont_4C54323B(FileHandle fh)
         {
             return new MonoGameGameFont((MonoGameFileHandle) fh, 12);
         }

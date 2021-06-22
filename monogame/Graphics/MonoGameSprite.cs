@@ -31,123 +31,125 @@ namespace monogame.Graphics
 
         private float _x, _y, _width, _height, _originX, _originY, _rotation, _scaleX = 1, _scaleY = 1, _90degRotation;
         private Color _tint = new MonoGameColor(Microsoft.Xna.Framework.Color.White);
-        
+
         public MonoGameSprite()
         {
-            setOriginCenter();
+            setOriginCenter_EFE09FC0();
         }
 
-        public MonoGameSprite(Texture texture) : this(texture, texture.getWidth(), texture.getHeight()){}
+        public MonoGameSprite(Texture texture) : this(texture, texture.getWidth_0EE0D08D(), texture.getHeight_0EE0D08D()) { }
 
-        public MonoGameSprite(Texture texture, int srcWidth, int srcHeight): this(texture, 0, 0, srcWidth, srcHeight){}
+        public MonoGameSprite(Texture texture, int srcWidth, int srcHeight) : this(texture, 0, 0, srcWidth, srcHeight) { }
 
         public MonoGameSprite(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) : base(texture, srcX,
             srcY, srcWidth, srcHeight)
         {
-            setBounds(srcX, srcY, srcWidth, srcHeight);
-            setOriginCenter();
+            setBounds_C2EDAFC0(srcX, srcY, srcWidth, srcHeight);
+            setOriginCenter_EFE09FC0();
         }
 
-        public MonoGameSprite(TextureRegion region) : this(region, region.getRegionWidth(), region.getRegionHeight()){}
-        
-        public MonoGameSprite(TextureRegion region, int width, int height) : this(region, 0, 0, width, height){}
+        public MonoGameSprite(TextureRegion region) : this(region, region.getRegionWidth_0EE0D08D(), region.getRegionHeight_0EE0D08D()) { }
+
+        public MonoGameSprite(TextureRegion region, int width, int height) : this(region, 0, 0, width, height) { }
 
         public MonoGameSprite(TextureRegion region, int x, int y, int width, int height) : base(region, x, y, width, height)
         {
-            setFlip(region.isFlipX(), region.isFlipY());
-            setOriginCenter();
+            setFlip_62FCD310(region.isFlipX_FBE0B2A4(), region.isFlipY_FBE0B2A4());
+            setBounds_C2EDAFC0(x, y, width, height);
+            setOriginCenter_EFE09FC0();
         }
-        
-        public MonoGameSprite(TextureAtlasRegion region) : this(region, region.getRegionWidth(), region.getRegionHeight()) {}
 
-        public MonoGameSprite(TextureAtlasRegion region, int width, int height) : this(region, 0, 0, width, height) {}
-        
+        public MonoGameSprite(TextureAtlasRegion region) : this(region, region.getRegionWidth_0EE0D08D(), region.getRegionHeight_0EE0D08D()) { }
+
+        public MonoGameSprite(TextureAtlasRegion region, int width, int height) : this(region, 0, 0, width, height) { }
+
         public MonoGameSprite(TextureAtlasRegion region, int x, int y, int width, int height) : base(region, x, y,
             width, height)
         {
-            if (region.getRotatedPackedHeight() != region.getRegionHeight())
+            if (region.getRotatedPackedHeight_FFE0B8F0() != region.getRegionHeight_0EE0D08D())
             {
-                rotate90(false);
+                rotate90_AA5A2C66(false);
             }
-            setOriginCenter();
-        }
-        
-        public void set(Sprite s)
-        {
-            setRegion(s);
-            setBounds(s.getX(), s.getY(), s.getWidth(), s.getHeight());
-            setOrigin(s.getOriginX(), s.getOriginY());
-            _90degRotation = ((MonoGameSprite) s)._90degRotation;
-            setRotation(s.getRotation());
-            setScale(s.getScaleX(), s.getScaleY());
+            setOriginCenter_EFE09FC0();
+            setBounds_C2EDAFC0(x, y, width, height);
         }
 
-        public void setBounds(float x, float y, float width, float height)
+        public void set_615359F5(Sprite s)
         {
-            setSize(width, height);
+            setRegion_EBB2FEFB(s);
+            setBounds_C2EDAFC0(s.getX_FFE0B8F0(), s.getY_FFE0B8F0(), s.getWidth_FFE0B8F0(), s.getHeight_FFE0B8F0());
+            setOrigin_0948E7C0(s.getOriginX_FFE0B8F0(), s.getOriginY_FFE0B8F0());
+            _90degRotation = ((MonoGameSprite)s)._90degRotation;
+            setRotation_97413DCA(s.getRotation_FFE0B8F0());
+            setScale_0948E7C0(s.getScaleX_FFE0B8F0(), s.getScaleY_FFE0B8F0());
         }
 
-        public void setSize(float width, float height)
+        public void setBounds_C2EDAFC0(float x, float y, float width, float height)
+        {
+            setSize_0948E7C0(width, height);
+        }
+
+        public void setSize_0948E7C0(float width, float height)
         {
             _width = width;
             _height = height;
         }
 
-        public void setPosition(float x, float y)
+        public void setPosition_0948E7C0(float x, float y)
         {
             _x = x;
             _y = y;
         }
 
-        public void setOriginBasedPosition(float x, float y)
+        public void setOriginBasedPosition_0948E7C0(float x, float y)
         {
-            setPosition(x - _originX, y - _originY);
+            setPosition_0948E7C0(x - _originX, y - _originY);
         }
 
-        public void setCenterX(float x)
+        public void setCenterX_97413DCA(float x)
         {
             _x = x - _width / 2;
         }
 
-        public void setCenterY(float y)
+        public void setCenterY_97413DCA(float y)
         {
             _y = y - _height / 2;
         }
 
-        public void setCenter(float x, float y)
+        public void setCenter_0948E7C0(float x, float y)
         {
-            setCenterX(x);
-            setCenterY(y);
+            setCenterX_97413DCA(x);
+            setCenterY_97413DCA(y);
         }
 
-        public void translateX(float xAmount)
+        public void translateX_97413DCA(float xAmount)
         {
             _x += xAmount;
         }
 
-        public void translateY(float yAmount)
+        public void translateY_97413DCA(float yAmount)
         {
             _y += yAmount;
         }
 
-        public void translate(float xAmount, float yAmount)
+        public void translate_0948E7C0(float xAmount, float yAmount)
         {
-            translateX(xAmount);
-            translateY(yAmount);
+            translateX_97413DCA(xAmount);
+            translateY_97413DCA(yAmount);
         }
 
-        public void setOrigin(float originX, float originY)
+        public void setOrigin_0948E7C0(float originX, float originY)
         {
             _originX = originX;
             _originY = originY;
         }
 
-        public void setOriginCenter()
+        public void setOriginCenter_EFE09FC0()
         {
-            setOrigin(getRegionWidth() / 2f, getRegionHeight() / 2f);
+            setOrigin_0948E7C0(getRegionWidth_0EE0D08D() / 2f, getRegionHeight_0EE0D08D() / 2f);
         }
 
-        public float getRotation()
+        public float getRotation_FFE0B8F0()
         {
             return _rotation;
         }
@@ -157,17 +159,17 @@ namespace monogame.Graphics
             return _rotation + _90degRotation;
         }
 
-        public void setRotation(float degrees)
+        public void setRotation_97413DCA(float degrees)
         {
             _rotation = degrees % 360;
         }
 
-        public void rotate(float degrees)
+        public void rotate_97413DCA(float degrees)
         {
-            setRotation(getRotation() + degrees);
+            setRotation_97413DCA(getRotation_FFE0B8F0() + degrees);
         }
 
-        public void rotate90(bool clockwise)
+        public void rotate90_AA5A2C66(bool clockwise)
         {
             if (clockwise)
             {
@@ -179,107 +181,107 @@ namespace monogame.Graphics
             }
         }
 
-        public void setScale(float scaleXY)
+        public void setScale_97413DCA(float scaleXY)
         {
-            setScale(scaleXY, scaleXY);
+            setScale_0948E7C0(scaleXY, scaleXY);
         }
 
-        public void setScale(float scaleX, float scaleY)
+        public void setScale_0948E7C0(float scaleX, float scaleY)
         {
             _scaleX = scaleX;
             _scaleY = scaleY;
         }
 
-        public void scale(float amount)
+        public void scale_97413DCA(float amount)
         {
             _scaleX += amount;
             _scaleY += amount;
         }
 
-        public float[] getVertices()
+        public float[] getVertices_9E7A8229()
         {
             throw new NotImplementedException(); //should not be needed using MonoGame SpriteBatch
         }
 
-        public Rectangle getBoundingRectangle()
+        public Rectangle getBoundingRectangle_A029B76C()
         {
             var rect = new Rectangle();
             rect._init_(_x, _y, _width, _height);
-            rect.setRotation(_90degRotation + _rotation);
+            rect.setRotation_97413DCA(_90degRotation + _rotation);
             return rect;
         }
 
-        public float getX()
+        public float getX_FFE0B8F0()
         {
             return _x;
         }
 
-        public void setX(float x)
+        public void setX_97413DCA(float x)
         {
             _x = x;
         }
 
-        public float getY()
+        public float getY_FFE0B8F0()
         {
             return _y;
         }
 
-        public void setY(float y)
+        public void setY_97413DCA(float y)
         {
             _y = y;
         }
 
-        public float getWidth()
+        public float getWidth_FFE0B8F0()
         {
             return _width;
         }
 
-        public float getHeight()
+        public float getHeight_FFE0B8F0()
         {
             return _height;
         }
 
-        public float getOriginX()
+        public float getOriginX_FFE0B8F0()
         {
             return _originX;
         }
 
-        public float getOriginY()
+        public float getOriginY_FFE0B8F0()
         {
             return _originY;
         }
 
-        public float getScaleX()
+        public float getScaleX_FFE0B8F0()
         {
             return _scaleX;
         }
 
-        public float getScaleY()
+        public float getScaleY_FFE0B8F0()
         {
             return _scaleY;
         }
 
-        public Color getTint()
+        public Color getTint_F0D7D9CF()
         {
             return _tint;
         }
 
-        public void setTint(Color c)
+        public void setTint_24D51C91(Color c)
         {
-            var oldAlpha = getAlpha();
+            var oldAlpha = getAlpha_FFE0B8F0();
             _tint = c;
-            setAlpha(oldAlpha);
+            setAlpha_97413DCA(oldAlpha);
         }
 
-        public float getAlpha()
+        public float getAlpha_FFE0B8F0()
         {
-            return _tint.getAAsFloat();
+            return _tint.getAAsFloat_FFE0B8F0();
         }
 
-        public void setAlpha(float alpha)
+        public void setAlpha_97413DCA(float alpha)
         {
-            _tint.multiply(1f, 1f, 1f, 0f);
-            _tint.add(0, 0, 0, alpha);
+            _tint.multiply_DF74E9CF(1f, 1f, 1f, 0f);
+            _tint.add_DF74E9CF(0, 0, 0, alpha);
         }
     }
 }

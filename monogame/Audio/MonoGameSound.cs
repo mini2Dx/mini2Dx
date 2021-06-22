@@ -14,8 +14,10 @@
  * limitations under the License.
  ******************************************************************************/
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Microsoft.Xna.Framework.Audio;
 using monogame.Files;
 using Org.Mini2Dx.Core.Audio;
@@ -25,42 +27,36 @@ namespace monogame.Audio
 {
     public class MonoGameSound : global::Java.Lang.Object, Sound
     {
-        public static readonly List<SoundEffectInstance> instances;
-        
         private readonly SoundEffect _sound;
-        private readonly List<long> _thisInstancesId;
-
-        static MonoGameSound()
-        {
-            instances = new List<SoundEffectInstance>();
-        }
+        private readonly List<long> _thisInstancesIds;
 
         public MonoGameSound(FileHandle fileHandle)
         {
             _sound = ((MonoGameFileHandle) fileHandle).loadFromContentManager<SoundEffect>();
-            _thisInstancesId = new List<long>();
+            _thisInstancesIds = new List<long>();
         }
         
-        public void dispose()
+        //todo implement a proper solution for disposing SoundEffects
+        public void dispose_EFE09FC0()
         {
-            for (int i = 0; i < _thisInstancesId.Count; i++)
+            for (int i = _thisInstancesIds.Count - 1; i >= 0; i--)
             {
-                if (_thisInstancesId[i] != -1)
+                if (_thisInstancesIds[i] != -1 && MonoGameSoundInstance.InstancesById.ContainsKey(_thisInstancesIds[i]))
                 {
-                    instances[(int) _thisInstancesId[i]].Dispose();
+                    MonoGameSoundInstance.InstancesById[_thisInstancesIds[i]].Dispose();
                 }
             }
-            _sound.Dispose();
+            //_sound.Dispose();
         }
 
-        public long play()
+        public long play_0BE0CBD4()
         {
-            return play(1);
+            return play_9B414416(1);
         }
 
-        public long play(float volume)
+        public long play_9B414416(float volume)
         {
-            return play(volume, 1, 0);
+            return play_4956CC16(volume, 1, 0);
         }
 
         private static float convertPitch(float pitch)
@@ -69,180 +65,242 @@ namespace monogame.Audio
             return pitch < 0 ? pitch * 2 : pitch;
         }
 
-        private bool addInstance(long id)
+        public long play_4956CC16(float volume, float pitch, float pan)
         {
-            for (int i = 0; i < _thisInstancesId.Count; i++)
-            {
-                if (_thisInstancesId[i] == -1)
-                {
-                    _thisInstancesId[i] = id;
-                    return true;
-                }
-            }
+            var soundEffectInstance = _sound.CreateInstance();
+            var soundInstance = MonoGameSoundInstance.Allocate(this, soundEffectInstance);
 
-            return false;
+            soundEffectInstance.Volume = volume;
+            soundEffectInstance.Pan = pan;
+            soundEffectInstance.Pitch = convertPitch(pitch);
+            soundEffectInstance.Play();
+            return soundInstance.Id;
         }
 
-        public long play(float volume, float pitch, float pan)
+        public long loop_0BE0CBD4()
         {
-            long index = instances.Count;
-            if (!addInstance(index))
-            {
-                _thisInstancesId.Add(index);
-            }
-            var instance = _sound.CreateInstance();
-            instances.Add(instance);
-            instance.Volume = volume;
-            instance.Pan = pan;
-            instance.Pitch = convertPitch(pitch);
-            instance.Play();
+            return loop_9B414416(1);
+        }
+
+        public long loop_9B414416(float volume)
+        {
+            return loop_4956CC16(volume, 1, 1);
+        }
+
+        public long loop_4956CC16(float volume, float pitch, float pan)
+        {
+            long index = play_4956CC16(volume, pitch, pan);
+            setLooping_98E3C020(index, true);
             return index;
         }
 
-        public long loop()
+        public void stop_EFE09FC0()
         {
-            return loop(1);
-        }
-
-        public long loop(float volume)
-        {
-            return loop(volume, 1, 1);
-        }
-
-        public long loop(float volume, float pitch, float pan)
-        {
-            long index = play(volume, pitch, pan);
-            setLooping(index, true);
-            return index;
-        }
-
-        public void stop()
-        {
-            for (int i = 0; i < _thisInstancesId.Count; i++)
+            for (int i = 0; i < _thisInstancesIds.Count; i++)
             {
-                stop(_thisInstancesId[i]);
+                stop_5FE5E296(_thisInstancesIds[i]);
             }
         }
 
-        public void pause()
+        public void pause_EFE09FC0()
         {
-            for (int i = 0; i < _thisInstancesId.Count; i++)
+            for (int i = 0; i < _thisInstancesIds.Count; i++)
             {
-                pause(_thisInstancesId[i]);
+                pause_5FE5E296(_thisInstancesIds[i]);
             }
         }
 
-        public void resume()
+        public void resume_EFE09FC0()
         {
-            for (int i = 0; i < _thisInstancesId.Count; i++)
+            for (int i = 0; i < _thisInstancesIds.Count; i++)
             {
-                resume(_thisInstancesId[i]);
+                resume_5FE5E296(_thisInstancesIds[i]);
             }
         }
 
-        public void stop(long soundId)
+        public void stopTracking(long soundId)
         {
-            if (soundId != -1)
-            {
-                var soundEffectInstance = instances[(int) soundId];
-                if (soundEffectInstance != null)
-                {
-                    soundEffectInstance.Stop();
-                    soundEffectInstance.Dispose();
-                    instances[(int) soundId] = null;
-                    MonoGameAudio.soundCompleted(soundId);
-                }
-                _thisInstancesId[(int) soundId] = -1;
-            }
+            _thisInstancesIds.Remove(soundId);
         }
 
-        public static void dispose(long soundId)
+        public void stop_5FE5E296(long soundId)
         {
-            var soundEffectInstance = instances[(int) soundId];
+            if (soundId == -1)
+            {
+                return;
+            }
+            if (!MonoGameSoundInstance.InstancesById.ContainsKey(soundId))
+            {
+                return;
+            }
+            var soundInstance = MonoGameSoundInstance.InstancesById[soundId];
+            var soundEffectInstance = soundInstance.SoundEffectInstance;
+
             if (soundEffectInstance != null)
             {
                 soundEffectInstance.Stop();
                 soundEffectInstance.Dispose();
+                MonoGameAudio.soundCompleted(soundId);
             }
-            instances[(int) soundId] = null;
+            soundInstance.Dispose();
         }
 
-        public void pause(long soundId)
+        public void pause_5FE5E296(long soundId)
         {
-            if (soundId != -1)
+            if (soundId == -1)
             {
-                if (instances[(int) soundId] == null)
-                {
-                    _thisInstancesId[(int) soundId] = -1;
-                    return;
-                }
-                instances[(int) soundId].Pause();
+                return;
+            }
+            if (!MonoGameSoundInstance.InstancesById.ContainsKey(soundId))
+            {
+                return;
+            }
+            var soundInstance = MonoGameSoundInstance.InstancesById[soundId];
+            var soundEffectInstance = soundInstance.SoundEffectInstance;
+            soundEffectInstance.Pause();
+        }
+
+        public void resume_5FE5E296(long soundId)
+        {
+            if (soundId == -1)
+            {
+                return;
+            }
+            if (!MonoGameSoundInstance.InstancesById.ContainsKey(soundId))
+            {
+                return;
+            }
+            var soundInstance = MonoGameSoundInstance.InstancesById[soundId];
+            var soundEffectInstance = soundInstance.SoundEffectInstance;
+            soundEffectInstance.Resume();
+        }
+
+        public void setLooping_98E3C020(long soundId, bool looping)
+        {
+            if (soundId == -1)
+            {
+                return;
+            }
+            if (!MonoGameSoundInstance.InstancesById.ContainsKey(soundId))
+            {
+                return;
+            }
+            var soundInstance = MonoGameSoundInstance.InstancesById[soundId];
+            var soundEffectInstance = soundInstance.SoundEffectInstance;
+            soundEffectInstance.IsLooped = true;
+        }
+
+        public void setPitch_F9247704(long soundId, float pitch)
+        {
+            if (soundId == -1)
+            {
+                return;
+            }
+            if (!MonoGameSoundInstance.InstancesById.ContainsKey(soundId))
+            {
+                return;
+            }
+            var soundInstance = MonoGameSoundInstance.InstancesById[soundId];
+            var soundEffectInstance = soundInstance.SoundEffectInstance;
+            soundEffectInstance.Pitch = convertPitch(pitch);
+        }
+
+        public void setVolume_F9247704(long soundId, float volume)
+        {
+            if (soundId == -1)
+            {
+                return;
+            }
+            if (!MonoGameSoundInstance.InstancesById.ContainsKey(soundId))
+            {
+                return;
+            }
+            var soundInstance = MonoGameSoundInstance.InstancesById[soundId];
+            var soundEffectInstance = soundInstance.SoundEffectInstance;
+            soundEffectInstance.Volume = volume;
+        }
+
+        public void setPan_3604DC16(long soundId, float pan, float volume)
+        {
+            if (soundId == -1)
+            {
+                return;
+            }
+            if (!MonoGameSoundInstance.InstancesById.ContainsKey(soundId))
+            {
+                return;
+            }
+            var soundInstance = MonoGameSoundInstance.InstancesById[soundId];
+            var soundEffectInstance = soundInstance.SoundEffectInstance;
+            soundEffectInstance.Volume = volume;
+            soundEffectInstance.Pan = pan;
+        }
+    }
+
+    public class MonoGameSoundInstance
+    {
+        public static readonly List<MonoGameSoundInstance> Instances = new List<MonoGameSoundInstance>();
+        public static readonly Dictionary<long, MonoGameSoundInstance> InstancesById = new Dictionary<long, MonoGameSoundInstance>();
+
+        private static List<MonoGameSoundInstance> POOL = new List<MonoGameSoundInstance>();
+        private static long ID_ALLOCATOR = 0;
+
+        public MonoGameSound Sound { get; private set; }
+        public SoundEffectInstance SoundEffectInstance { get; private set; }
+        public long Id { get; private set; }
+
+        private MonoGameSoundInstance(){}
+
+        public void Dispose()
+        {
+            Monitor.Enter(POOL);
+            try
+            {
+                Instances.Remove(this);
+                InstancesById.Remove(Id);
+
+                Sound.stopTracking(Id);
+                Sound = null;
+                SoundEffectInstance = null;
+                POOL.Add(this);
+            }
+            finally
+            {
+                Monitor.Exit(POOL);
             }
         }
 
-        public void resume(long soundId)
+        public static MonoGameSoundInstance Allocate(MonoGameSound sound, SoundEffectInstance soundEffectInstance)
         {
-            if (soundId != -1)
+            Monitor.Enter(POOL);
+            try
             {
-                if (instances[(int) soundId] == null)
+                MonoGameSoundInstance result = null;
+                if (POOL.Count == 0)
                 {
-                    _thisInstancesId[(int) soundId] = -1;
-                    return;
+                    result = new MonoGameSoundInstance();
                 }
-                instances[(int) soundId].Resume();
-            }
-        }
+                else
+                {
+                    result = POOL[0];
+                    POOL.RemoveAt(0);
+                }
+                result.Id = ID_ALLOCATOR++;
+                result.Sound = sound;
+                result.SoundEffectInstance = soundEffectInstance;
 
-        public void setLooping(long soundId, bool looping)
-        {
-            if (soundId != -1)
-            {
-                if (instances[(int) soundId] == null)
+                if(ID_ALLOCATOR >= long.MaxValue)
                 {
-                    _thisInstancesId[(int) soundId] = -1;
-                    return;
+                    ID_ALLOCATOR = 0;
                 }
-                instances[(int) soundId].IsLooped = true;
-            }
-        }
 
-        public void setPitch(long soundId, float pitch)
-        {
-            if (soundId != -1)
-            {
-                if (instances[(int) soundId] == null)
-                {
-                    _thisInstancesId[(int) soundId] = -1;
-                    return;
-                }
-                instances[(int) soundId].Pitch = convertPitch(pitch);
+                Instances.Add(result);
+                InstancesById.Add(result.Id, result);
+                return result;
             }
-        }
-
-        public void setVolume(long soundId, float volume)
-        {
-            if (soundId != -1)
+            finally
             {
-                if (instances[(int) soundId] == null)
-                {
-                    _thisInstancesId[(int) soundId] = -1;
-                    return;
-                }
-                instances[(int) soundId].Volume = volume;
-            }
-        }
-
-        public void setPan(long soundId, float pan, float volume)
-        {
-            if (soundId != -1)
-            {
-                if (instances[(int) soundId] == null)
-                {
-                    _thisInstancesId[(int) soundId] = -1;
-                    return;
-                }
-                instances[(int) soundId].Volume = volume;
-                instances[(int) soundId].Pan = pan;
+                Monitor.Exit(POOL);
             }
         }
     }

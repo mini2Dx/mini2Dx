@@ -45,7 +45,7 @@ namespace monogame.Graphics
                 throw new Java.Lang.IllegalArgumentException();
             }
             _texture = texture;
-            setRegion(0, 0, texture.getWidth(), texture.getHeight());
+            setRegion_9C90BED0(0, 0, texture.getWidth_0EE0D08D(), texture.getHeight_0EE0D08D());
         }
 
         public MonoGameTextureRegion(Texture texture, int x, int y, int width, int height)
@@ -55,40 +55,40 @@ namespace monogame.Graphics
                 throw new Java.Lang.IllegalArgumentException();
             }
             _texture = texture;
-            setRegion(x, y, width, height);
+            setRegion_9C90BED0(x, y, width, height);
         }
 
         public MonoGameTextureRegion(TextureRegion region)
         {
-            setRegion(region);
+            setRegion_EBB2FEFB(region);
         }
 
         public MonoGameTextureRegion(TextureRegion region, int x, int y, int width, int height)
         {
-            setRegion(region, x, y, width, height);
+            setRegion_9F8BE18B(region, x, y, width, height);
         }
 
         public MonoGameTextureRegion(TextureRegion region, int width, int height) : this(region, 0, 0, width, height) {}
         public MonoGameTextureRegion(Texture texture, int width, int height) : this(texture, 0, 0, width, height) {}
 
-        public void setRegion(Texture texture)
+        public void setRegion_1B161583(Texture texture)
         {
             _texture = texture;
-            setRegion(0, 0, texture.getWidth(), texture.getHeight());
+            setRegion_9C90BED0(0, 0, texture.getWidth_0EE0D08D(), texture.getHeight_0EE0D08D());
         }
 
-        public void setRegion(int x, int y, int width, int height)
+        public void setRegion_9C90BED0(int x, int y, int width, int height)
         {
-            var invTexWidth = 1f / _texture.getWidth();
-            var invTexHeight = 1f / _texture.getHeight();
-            setRegion(x * invTexWidth, y * invTexHeight, (x + width) * invTexWidth, (y + height) * invTexHeight);
+            var invTexWidth = 1f / _texture.getWidth_0EE0D08D();
+            var invTexHeight = 1f / _texture.getHeight_0EE0D08D();
+            setRegion_C2EDAFC0(x * invTexWidth, y * invTexHeight, (x + width) * invTexWidth, (y + height) * invTexHeight);
             _regionWidth = System.Math.Abs(width);
             _regionHeight = System.Math.Abs(height);
         }
 
-        public void setRegion(float u, float v, float u2, float v2)
+        public void setRegion_C2EDAFC0(float u, float v, float u2, float v2)
         {
-            int texWidth = _texture.getWidth(), texHeight = _texture.getHeight();
+            int texWidth = _texture.getWidth_0EE0D08D(), texHeight = _texture.getHeight_0EE0D08D();
             _regionWidth = (int) System.Math.Round(System.Math.Abs(u2 - u) * texWidth);
             _regionHeight = (int) System.Math.Round(System.Math.Abs(v2 - v) * texHeight);
 
@@ -108,122 +108,122 @@ namespace monogame.Graphics
             _v2 = v2;
         }
 
-        public void setRegion(TextureRegion region)
+        public void setRegion_EBB2FEFB(TextureRegion region)
         {
-            _texture = region.getTexture();
-            setRegion(region.getU(), region.getV(), region.getU2(), region.getV2());
+            _texture = region.getTexture_D75719FD();
+            setRegion_C2EDAFC0(region.getU_FFE0B8F0(), region.getV_FFE0B8F0(), region.getU2_FFE0B8F0(), region.getV2_FFE0B8F0());
         }
 
-        public void setRegion(TextureRegion region, int x, int y, int width, int height)
+        public void setRegion_9F8BE18B(TextureRegion region, int x, int y, int width, int height)
         {
-            _texture = region.getTexture();
-            setRegion(region.getRegionX() + x, region.getRegionY() + y, width, height);
+            _texture = region.getTexture_D75719FD();
+            setRegion_9C90BED0(region.getRegionX_0EE0D08D() + x, region.getRegionY_0EE0D08D() + y, width, height);
         }
 
-        public Texture getTexture()
+        public Texture getTexture_D75719FD()
         {
             return _texture;
         }
 
-        public virtual void setTexture(Texture texture)
+        public virtual void setTexture_1B161583(Texture texture)
         {
             _texture = texture;
         }
 
-        public float getU()
+        public float getU_FFE0B8F0()
         {
             return _u;
         }
 
-        public void setU(float u)
+        public void setU_97413DCA(float u)
         {
             _u = u;
-            _regionWidth = (int) System.Math.Round(System.Math.Abs(_u2 - _u) * _texture.getWidth());
+            _regionWidth = (int) System.Math.Round(System.Math.Abs(_u2 - _u) * _texture.getWidth_0EE0D08D());
         }
 
-        public float getV()
+        public float getV_FFE0B8F0()
         {
             return _v;
         }
 
-        public void setV(float v)
+        public void setV_97413DCA(float v)
         {
             _v = v;
-            _regionHeight = (int) System.Math.Round(System.Math.Abs(_v2 - _v) * _texture.getHeight());
+            _regionHeight = (int) System.Math.Round(System.Math.Abs(_v2 - _v) * _texture.getHeight_0EE0D08D());
         }
 
-        public float getU2()
+        public float getU2_FFE0B8F0()
         {
             return _u2;
         }
 
-        public void setU2(float u2)
+        public void setU2_97413DCA(float u2)
         {
             _u2 = u2;
-            _regionWidth = (int) System.Math.Round(System.Math.Abs(_u2 - _u) * _texture.getWidth());
+            _regionWidth = (int) System.Math.Round(System.Math.Abs(_u2 - _u) * _texture.getWidth_0EE0D08D());
         }
 
-        public float getV2()
+        public float getV2_FFE0B8F0()
         {
             return _v2;
         }
 
-        public void setV2(float v2)
+        public void setV2_97413DCA(float v2)
         {
             _v2 = v2;
-            _regionHeight = (int) System.Math.Round(System.Math.Abs(_v2 - _v) * _texture.getHeight());
+            _regionHeight = (int) System.Math.Round(System.Math.Abs(_v2 - _v) * _texture.getHeight_0EE0D08D());
         }
 
-        public int getRegionX()
+        public int getRegionX_0EE0D08D()
         {
-            return (int) System.Math.Round(System.Math.Min(_u, _u2) * _texture.getWidth());
+            return (int) System.Math.Round(System.Math.Min(_u, _u2) * _texture.getWidth_0EE0D08D());
         }
 
-        public void setRegionX(int x)
+        public void setRegionX_3518BA33(int x)
         {
-            setU(x / (float) _texture.getWidth());
+            setU_97413DCA(x / (float) _texture.getWidth_0EE0D08D());
         }
 
-        public int getRegionY()
+        public int getRegionY_0EE0D08D()
         {
-            var result = (int) System.Math.Round(System.Math.Min(_v, _v2) * _texture.getHeight());
+            var result = (int) System.Math.Round(System.Math.Min(_v, _v2) * _texture.getHeight_0EE0D08D());
             return result;
         }
 
-        public void setRegionY(int y)
+        public void setRegionY_3518BA33(int y)
         {
-            setV(y / (float) _texture.getHeight());
+            setV_97413DCA(y / (float) _texture.getHeight_0EE0D08D());
         }
 
-        public int getRegionWidth()
+        public int getRegionWidth_0EE0D08D()
         {
             return _regionWidth;
         }
 
-        public void setRegionWidth(int width)
+        public void setRegionWidth_3518BA33(int width)
         {
-            if (isFlipX()) {
-                setU(_u2 + width / (float)_texture.getWidth());
+            if (isFlipX_FBE0B2A4()) {
+                setU_97413DCA(_u2 + width / (float)_texture.getWidth_0EE0D08D());
             } else {
-                setU2(_u + width / (float)_texture.getWidth());
+                setU2_97413DCA(_u + width / (float)_texture.getWidth_0EE0D08D());
             }
         }
 
-        public int getRegionHeight()
+        public int getRegionHeight_0EE0D08D()
         {
             return _regionHeight;
         }
 
-        public void setRegionHeight(int height)
+        public void setRegionHeight_3518BA33(int height)
         {
-            if (isFlipY()) {
-                setV(_v2 + height / (float)_texture.getHeight());			
+            if (isFlipY_FBE0B2A4()) {
+                setV_97413DCA(_v2 + height / (float)_texture.getHeight_0EE0D08D());			
             } else {
-                setV2(_v + height / (float)_texture.getHeight());
+                setV2_97413DCA(_v + height / (float)_texture.getHeight_0EE0D08D());
             }
         }
 
-        public void flip(bool x, bool y)
+        public void flip_62FCD310(bool x, bool y)
         {
             if (x) {
                 var temp = _u;
@@ -237,59 +237,59 @@ namespace monogame.Graphics
             }
         }
 
-        public void setFlip(bool x, bool y)
+        public void setFlip_62FCD310(bool x, bool y)
         {
-            setFlipX(x);
-            setFlipY(y);
+            setFlipX_AA5A2C66(x);
+            setFlipY_AA5A2C66(y);
         }
 
-        public bool isFlipX()
+        public bool isFlipX_FBE0B2A4()
         {
             return _u > _u2;
         }
 
-        public void setFlipX(bool b)
+        public void setFlipX_AA5A2C66(bool b)
         {
-            if (isFlipX() != b)
-                flip(true, false);
+            if (isFlipX_FBE0B2A4() != b)
+                flip_62FCD310(true, false);
         }
 
-        public bool isFlipY()
+        public bool isFlipY_FBE0B2A4()
         {
             return _v > _v2;
         }
 
-        public void setFlipY(bool b)
+        public void setFlipY_AA5A2C66(bool b)
         {
-            if (isFlipY() != b)
-                flip(false, true);
+            if (isFlipY_FBE0B2A4() != b)
+                flip_62FCD310(false, true);
         }
 
-        public void scroll(float xAmount, float yAmount)
+        public void scroll_0948E7C0(float xAmount, float yAmount)
         {
             if (xAmount != 0) {
-                var width = (_u2 - _u) * _texture.getWidth();
+                var width = (_u2 - _u) * _texture.getWidth_0EE0D08D();
                 _u = (_u + xAmount) % 1;
-                _u2 = _u + width / _texture.getWidth();
+                _u2 = _u + width / _texture.getWidth_0EE0D08D();
             }
             if (yAmount != 0) {
-                var height = (_v2 - _v) * _texture.getHeight();
+                var height = (_v2 - _v) * _texture.getHeight_0EE0D08D();
                 _v = (_v + yAmount) % 1;
-                _v2 = _v + height / _texture.getHeight();
+                _v2 = _v + height / _texture.getHeight_0EE0D08D();
             }
         }
 
-        public Pixmap toPixmap()
+        public Pixmap toPixmap_3CDB13DF()
         {
             var pixmap = new MonoGamePixmap(_regionWidth, _regionHeight);
 
             var texture2d = ((MonoGameTexture) _texture).texture2D;
             var rawTextureRegionData = new Color[_regionWidth * _regionHeight];
 
-            Rectangle boundingRect = new Rectangle(getRegionX(), getRegionY(), _regionWidth, _regionHeight);
+            Rectangle boundingRect = new Rectangle(getRegionX_0EE0D08D(), getRegionY_0EE0D08D(), _regionWidth, _regionHeight);
             
-            bool flipX = isFlipX();
-            bool flipY = isFlipY();
+            bool flipX = isFlipX_FBE0B2A4();
+            bool flipY = isFlipY_FBE0B2A4();
             
             if (flipX)
             {
@@ -324,10 +324,10 @@ namespace monogame.Graphics
             return pixmap;
         }
 
-        public TextureRegion[][] split(int tileWidth, int tileHeight)
+        public TextureRegion[][] split_B458A465(int tileWidth, int tileHeight)
         {
-            var x = getRegionX();
-            var y = getRegionY();
+            var x = getRegionX_0EE0D08D();
+            var y = getRegionY_0EE0D08D();
             var width = _regionWidth;
             var height = _regionHeight;
 

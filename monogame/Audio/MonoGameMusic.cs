@@ -35,18 +35,19 @@ namespace monogame.Audio
             _songId = ++_songNum;
             _song = ((MonoGameFileHandle)fileHandle).loadFromContentManager<Song>();
         }
-        
-        public void dispose()
+
+        //todo implement a proper solution for disposing Songs
+        public void dispose_EFE09FC0()
         {
-            _song.Dispose();
+            //_song.Dispose();
         }
 
-        public long getId()
+        public long getId_0BE0CBD4()
         {
             return _songId;
         }
 
-        public void play()
+        public void play_EFE09FC0()
         {
             _currentlyPlayingMusic = this;
             if (MediaPlayer.State == MediaState.Paused)
@@ -59,42 +60,42 @@ namespace monogame.Audio
             }
         }
 
-        public void pause()
+        public void pause_EFE09FC0()
         {
             MediaPlayer.Pause();
         }
 
-        public void stop()
+        public void stop_EFE09FC0()
         {
             MediaPlayer.Stop();
         }
 
-        public bool isPlaying()
+        public bool isPlaying_FBE0B2A4()
         {
             return MediaPlayer.State == MediaState.Playing;
         }
 
-        public void setLooping(bool isLooping)
+        public void setLooping_AA5A2C66(bool isLooping)
         {
             MediaPlayer.IsRepeating = isLooping;
         }
 
-        public bool isLooping()
+        public bool isLooping_FBE0B2A4()
         {
             return MediaPlayer.IsRepeating;
         }
 
-        public void setVolume(float volume)
+        public void setVolume_97413DCA(float volume)
         {
             MediaPlayer.Volume = volume;
         }
 
-        public float getVolume()
+        public float getVolume_FFE0B8F0()
         {
             return MediaPlayer.Volume;
         }
 
-        public float getPosition()
+        public float getPosition_FFE0B8F0()
         {
             return (float) MediaPlayer.PlayPosition.TotalSeconds;
         }
@@ -106,7 +107,7 @@ namespace monogame.Audio
                 var node = musicCompletionListeners.First;
                 while (node != null)
                 {
-                    node.Value.onMusicCompleted(_currentlyPlayingMusic);
+                    node.Value.onMusicCompleted_2E9F961C(_currentlyPlayingMusic);
                     node = node.Next;
                 }
             }

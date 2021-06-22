@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+using Java.Lang;
 using Org.Mini2Dx.Lockprovider;
 using System;
 using System.Collections.Generic;
@@ -25,34 +26,75 @@ namespace monogame.Locks
 {
     public class MonoGameReadWriteLock : global::Java.Lang.Object, ReadWriteLock
     {
-        ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
+        ReaderWriterLockSlim @lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
-        public void lockRead()
+        public void lockRead_EFE09FC0()
         {
-            @lock.EnterReadLock();
+            bool locked = false;
+            while(!locked)
+            {
+                try
+                {
+                    @lock.EnterReadLock();
+                    locked = true;
+                }
+                catch (System.Exception e)
+                {
+                    //Java retries until locked
+                    continue;
+                }
+            }
         }
 
-        public void lockWrite()
+        public void lockWrite_EFE09FC0()
         {
-            @lock.EnterWriteLock();
+            bool locked = false;
+            while(!locked)
+            {
+                try
+                {
+                    @lock.EnterWriteLock();
+                    locked = true;
+                }
+                catch (System.Exception e)
+                {
+                    //Java retries until locked
+                    continue;
+                }
+            }
+
         }
 
-        public bool tryLockRead()
+        public bool tryLockRead_FBE0B2A4()
         {
-            return @lock.TryEnterReadLock(0);
+            try
+            {
+                return @lock.TryEnterReadLock(0);
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }
         }
 
-        public bool tryLockWrite()
+        public bool tryLockWrite_FBE0B2A4()
         {
-            return @lock.TryEnterWriteLock(0);
+            try
+            {
+                return @lock.TryEnterWriteLock(0);
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }
         }
 
-        public void unlockRead()
+        public void unlockRead_EFE09FC0()
         {
             @lock.ExitReadLock();
         }
 
-        public void unlockWrite()
+        public void unlockWrite_EFE09FC0()
         {
             @lock.ExitWriteLock();
         }

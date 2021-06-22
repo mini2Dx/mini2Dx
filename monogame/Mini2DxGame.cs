@@ -18,6 +18,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using monogame;
 using Org.Mini2Dx.Core;
+using Org.Mini2Dx.Core.Di;
 using Org.Mini2Dx.Core.Game;
 using Org.Mini2Dx.Core.Reflect.Jvm;
 using Org.Mini2Dx.Core.Serialization;
@@ -27,7 +28,7 @@ namespace monogame
     public class Mini2DxGame : Game
     {
         public static Mini2DxGame instance;
-        
+
         GraphicsDeviceManager graphics;
         private GameContainer game;
         private const float targetFPS = 60;
@@ -59,22 +60,13 @@ namespace monogame
 
             IsFixedTimeStep = config.IsFixedTimeStep;
             graphics = new GraphicsDeviceManager(this);
+            
             graphics.PreparingDeviceSettings += (object s, PreparingDeviceSettingsEventArgs args) =>
             {
                 args.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
             };
             Content.RootDirectory = "Content";
 
-            if(config.PreferredBackBufferWidth.HasValue && config.PreferredBackBufferHeight.HasValue)
-            {
-                graphics.PreferredBackBufferWidth = config.PreferredBackBufferWidth.Value;
-                graphics.PreferredBackBufferHeight = config.PreferredBackBufferHeight.Value;
-            }
-            if(config.IsFullScreen.HasValue)
-            {
-                graphics.IsFullScreen = config.IsFullScreen.Value;
-            }
-            
             this.game = game;
             this.config = config;
             instance = this;
@@ -88,6 +80,17 @@ namespace monogame
         /// </summary>
         protected override void Initialize()
         {
+            if (config.PreferredBackBufferWidth.HasValue && config.PreferredBackBufferHeight.HasValue)
+            {
+                graphics.PreferredBackBufferWidth = config.PreferredBackBufferWidth.Value;
+                graphics.PreferredBackBufferHeight = config.PreferredBackBufferHeight.Value;
+            }
+            if (config.IsFullScreen.HasValue)
+            {
+                graphics.IsFullScreen = config.IsFullScreen.Value;
+            }
+            graphics.ApplyChanges();
+
             if (config.OverridePlatform != null)
             {
                 Mdx.platform_ = config.OverridePlatform;
@@ -111,10 +114,24 @@ namespace monogame
             Mdx.runtime_ = ApiRuntime.MONOGAME_;
             Mdx.input_ = new MonoGameInput();
             Mdx.files_ = new MonoGameFiles(Content);
+
+            BasicComponentScanner componentScanner = new BasicComponentScanner();
+            componentScanner._init_();
+            componentScanner.restoreFrom_FECA74D0(Mdx.files_.internal_1F3F44D2("_generated/aot-di.txt").reader_58C463C2());
+            DependencyInjection dependencyInjection = new DependencyInjection();
+            dependencyInjection._init_(componentScanner);
+            Mdx.di_ = dependencyInjection;
+
             Mdx.fonts_ = new MonoGameFonts();
             Mdx.executor_ = new MonoGameTaskExecutor();
-            Mdx.log_ = new MonoGameLogger();
-            Mdx.playerData_ = new MonoGamePlayerData();
+            if(Mdx.log_ == null)
+            {
+                Mdx.log_ = new MonoGameLogger();
+            }
+            if(Mdx.playerData_ == null)
+            {
+                Mdx.playerData_ = new MonoGamePlayerData();
+            }
             Mdx.reflect_ = new JvmReflection();
             Mdx.platformUtils_ = new MonoGamePlatformUtils();
             base.Initialize();
@@ -129,7 +146,7 @@ namespace monogame
             Mdx.graphicsContext_ = new MonoGameGraphics(GraphicsDevice);
             Mdx.graphics_ = new MonoGameGraphicsUtils(GraphicsDevice);
             Mdx.audio_ = new MonoGameAudio();
-            game.start(Mdx.graphicsContext_);
+            game.start_2CFA5803(Mdx.graphicsContext_);
         }
 
         /// <summary>
@@ -149,23 +166,52 @@ namespace monogame
         {
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (delta > _updateMaximumDelta)
+            if (Mdx.timestepMode_ == TimestepMode.PHYSICS_)
             {
-                delta = _updateMaximumDelta;
-            }
+                float timestepDelta = delta;
+                if (timestepDelta > _updateMaximumDelta)
+                {
+                    timestepDelta = _updateMaximumDelta;
+                }
 
-            _timeAccumulator += delta;
+                _timeAccumulator += timestepDelta;
 
-            while (_timeAccumulator >= targetTimeStep)
-            {
-                Mdx.platformUtils_.markUpdateBegin();
+                Mdx.platformUtils_.markUpdateBegin_EFE09FC0();
+
                 ((MonoGameInput)Mdx.input_).update();
                 ((MonoGameAudio)Mdx.audio_).update();
-                game.update(targetTimeStep);
-                _timeAccumulator -= targetTimeStep;
-                Mdx.platformUtils_.markUpdateEnd();
+                game.preUpdate_97413DCA(delta);
+                while (_timeAccumulator >= targetTimeStep)
+                {
+                    game.preUpdatePhysics_97413DCA(targetTimeStep);
+                    game.updatePhysics_97413DCA(targetTimeStep);
+                    _timeAccumulator -= targetTimeStep;
+                }
+
+                Mdx.executor_.update_97413DCA(delta);
+                game.update_97413DCA(delta);
+                Mdx.platformUtils_.markUpdateEnd_EFE09FC0();
+
+                game.interpolate_97413DCA(_timeAccumulator / targetTimeStep);
             }
-            game.interpolate(_timeAccumulator / targetTimeStep);
+            else
+            {
+                Mdx.platformUtils_.markUpdateBegin_EFE09FC0();
+
+                ((MonoGameInput)Mdx.input_).update();
+                ((MonoGameAudio)Mdx.audio_).update();
+                game.preUpdate_97413DCA(delta);
+                game.preUpdatePhysics_97413DCA(targetTimeStep);
+                game.updatePhysics_97413DCA(targetTimeStep);
+
+                Mdx.executor_.update_97413DCA(delta);
+                game.update_97413DCA(delta);
+
+                Mdx.platformUtils_.markUpdateEnd_EFE09FC0();
+
+                game.interpolate_97413DCA(1f);
+            }
+
 
             base.Update(gameTime);
         }
@@ -176,12 +222,12 @@ namespace monogame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            Mdx.platformUtils_.markFrame();
-            Mdx.graphicsContext_.preRender(Mdx.graphicsContext_.getWindowWidth(), Mdx.graphicsContext_.getWindowHeight());
-            Mdx.platformUtils_.markRenderBegin();
-            game.render(Mdx.graphicsContext_);
-            Mdx.platformUtils_.markRenderEnd();
-            Mdx.graphicsContext_.postRender();
+            Mdx.platformUtils_.markFrame_EFE09FC0();
+            Mdx.graphicsContext_.preRender_224D2728(Mdx.graphicsContext_.getWindowWidth_0EE0D08D(), Mdx.graphicsContext_.getWindowHeight_0EE0D08D());
+            Mdx.platformUtils_.markRenderBegin_EFE09FC0();
+            game.render_2CFA5803(Mdx.graphicsContext_);
+            Mdx.platformUtils_.markRenderEnd_EFE09FC0();
+            Mdx.graphicsContext_.postRender_EFE09FC0();
             base.Draw(gameTime);
         }
 

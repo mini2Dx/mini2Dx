@@ -40,20 +40,33 @@ namespace monogame
             else
             {
                 string currentPath = Environment.CurrentDirectory;
-                if(!currentPath.EndsWith("/"))
+                if(!currentPath.EndsWith("" + Path.DirectorySeparatorChar))
                 {
-                    currentPath += "/";
+                    currentPath += Path.DirectorySeparatorChar;
                 }
-                currentPath += "data/";
+                currentPath += "data" + Path.DirectorySeparatorChar;
                 dataDirectoryPrefix = currentPath;
+
+                if (!Mdx.files_.external_1F3F44D2(dataDirectoryPrefix).exists_FBE0B2A4())
+                {
+                    Mdx.files_.external_1F3F44D2(dataDirectoryPrefix).mkdirs_EFE09FC0();
+                }
             }
         }
 
         private static string joinPath(string prefix, Java.Lang.String[] filePath)
         {
+            if (filePath.Length == 0)
+            {
+                return prefix;
+            }
             string[] paths = new string[filePath.Length + 1];
             paths[0] = prefix;
-            for (int i = 0; i < paths.Length; i++)
+            if(prefix.EndsWith("" + Path.DirectorySeparatorChar))
+            {
+                paths[0] = paths[0].Substring(0, paths[0].Length - 1);
+            }
+            for (int i = 0; i < filePath.Length; i++)
             {
                 paths[i + 1] = filePath[i];
             }
@@ -62,6 +75,10 @@ namespace monogame
 
         private static string joinPath(Java.Lang.String[] filePath)
         {
+            if (filePath.Length == 0)
+            {
+                return "";
+            }
             string[] paths = new string[filePath.Length];
             for(int i = 0; i < paths.Length; i++)
             {
@@ -70,28 +87,28 @@ namespace monogame
             return string.Join(Path.DirectorySeparatorChar.ToString(), paths);
         }
 
-        public override FileHandle resolve(Java.Lang.String[] filePath)
+        public override FileHandle resolve_85AFE6AF(Java.Lang.String[] filePath)
         {
-            return Mdx.files_.external(joinPath(dataDirectoryPrefix, filePath));
+            return Mdx.files_.external_1F3F44D2(joinPath(dataDirectoryPrefix, filePath));
         }
 
-        public override FileHandle resolveTmp(Java.Lang.String[] filePath)
+        public override FileHandle resolveTmp_85AFE6AF(Java.Lang.String[] filePath)
         {
-            return Mdx.files_.external(joinPath(dataDirectoryPrefix, filePath) + ".tmp");
+            return Mdx.files_.external_1F3F44D2(joinPath(dataDirectoryPrefix, filePath) + ".tmp");
         }
 
-        public override void ensureDataDirectoryExists()
+        public override void ensureDataDirectoryExists_EFE09FC0()
         {
-            if(Mdx.platform_.isConsole())
+            if(Mdx.platform_.isConsole_FBE0B2A4())
             {
                 return;
             }
-            Mdx.files_.external(dataDirectoryPrefix).mkdirs();
+            Mdx.files_.external_1F3F44D2(dataDirectoryPrefix).mkdirs_EFE09FC0();
         }
 
-        public override void wipe()
+        public override void wipe_EFE09FC0()
         {
-            Mdx.files_.external(dataDirectoryPrefix).emptyDirectory(false);
+            Mdx.files_.external_1F3F44D2(dataDirectoryPrefix).emptyDirectory_AA5A2C66(false);
         }
     }
 }
