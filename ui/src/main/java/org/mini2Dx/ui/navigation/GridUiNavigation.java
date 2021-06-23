@@ -183,11 +183,14 @@ public class GridUiNavigation implements UiNavigation {
 		return navigation.get(getIndex(cursorX, cursorY));
 	}
 
-	private Actionable updateCursor(String hoverElementId) {
+	Actionable updateCursor(String hoverElementId) {
 		for(int i = 0; i < navigation.size; i++) {
+			if (navigation.get(i) ==  null){
+				continue;
+			}
 			if(navigation.get(i).getId().equals(hoverElementId)) {
 				final int previousIndex = getIndex(cursorX, cursorY);
-				if(i != previousIndex) {
+				if(i != previousIndex && navigation.get(previousIndex) != null) {
 					navigation.get(previousIndex).invokeEndHover();
 				}
 
