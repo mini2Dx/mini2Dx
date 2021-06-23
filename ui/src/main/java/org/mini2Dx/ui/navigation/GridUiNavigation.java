@@ -103,6 +103,9 @@ public class GridUiNavigation implements UiNavigation {
 	@Override
 	public void removeAll() {
 		for(int i = 0; i < navigation.size; i++) {
+			if (navigation.get(i) == null){
+				continue;
+			}
 			navigation.get(i).removeHoverListener(this);
 		}
 		navigation.clear();

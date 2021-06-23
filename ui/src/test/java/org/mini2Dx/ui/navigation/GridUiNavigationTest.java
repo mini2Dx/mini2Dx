@@ -109,6 +109,35 @@ public class GridUiNavigationTest {
 		navigation.layout(ScreenSize.XS);
 		Assert.assertEquals(elements[2][0], navigation.getCursor());
 	}
+
+	@Test
+	public void testRemoveAllWithNullValues(){
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				final Actionable actionable = elements[x][y];
+				mockery.checking(new Expectations() {
+					{
+						exactly(9).of(actionable).removeHoverListener(navigation);
+					}
+				});
+			}
+		}
+
+		final Actionable mockedActionable = mockery.mock(Actionable.class);
+
+		mockery.checking(new Expectations() {
+			{
+				oneOf(mockedActionable).addHoverListener(navigation);
+				oneOf(mockedActionable).removeHoverListener(navigation);
+			}
+		});
+
+		navigation.set(2, 3, mockedActionable);
+
+		addElementsToGrid();
+
+		navigation.removeAll();
+	}
 	
 	private void addElementsToGrid() {
 		for(int x = 0; x < COLUMNS; x++) {
