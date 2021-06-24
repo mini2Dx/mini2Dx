@@ -919,4 +919,12 @@ public abstract class UiElement implements Hoverable {
 	public boolean isContainer() {
 		return false;
 	}
+
+	/**
+	 * Returns the amount of UiEffects applied to the element
+	 * @return
+	 */
+	public int getTotalEffects() {
+		return effects.size;
+	}
 }

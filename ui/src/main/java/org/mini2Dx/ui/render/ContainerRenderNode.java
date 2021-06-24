@@ -22,6 +22,7 @@ import org.mini2Dx.gdx.utils.Queue;
 import org.mini2Dx.ui.element.Actionable;
 import org.mini2Dx.ui.element.Container;
 import org.mini2Dx.ui.element.Div;
+import org.mini2Dx.ui.element.Visibility;
 import org.mini2Dx.ui.layout.LayoutState;
 import org.mini2Dx.ui.navigation.GamePadHotKeyOperation;
 import org.mini2Dx.ui.navigation.KeyboardHotKeyOperation;
@@ -34,6 +35,9 @@ public class ContainerRenderNode extends ParentRenderNode<Div, ContainerStyleRul
 	private final IntMap<String> keyboardHotkeys = new IntMap<String>();
 	private final ObjectMap<String, String> controllerHotkeys = new ObjectMap<String, String>();
 	private final ObjectMap<String, RenderNode<?, ?>> elementIdLookupCache = new ObjectMap<String, RenderNode<?, ?>>();
+
+	private boolean previouslyAllowedUpdate = false;
+	private Visibility previousVisibility = null;
 	
 	public ContainerRenderNode(ParentRenderNode<?, ?> parent, Div div) {
 		super(parent, div);
@@ -47,7 +51,36 @@ public class ContainerRenderNode extends ParentRenderNode<Div, ContainerStyleRul
 		((Container) element).getNavigation().layout(layoutState.getScreenSize());
 		super.layout(layoutState);
 	}
-	
+
+	@Override
+	public void update(UiContainerRenderTree uiContainer, float delta) {
+		final boolean allowedUpdate = isAllowedUpdate();
+		if(allowedUpdate || (previouslyAllowedUpdate != allowedUpdate)) {
+			super.update(uiContainer, delta);
+		}
+		previousVisibility = getElement().getVisibility();
+		previouslyAllowedUpdate = allowedUpdate;
+	}
+
+	private boolean isAllowedUpdate() {
+		if(previousVisibility == null) {
+			return true;
+		}
+		if(!previousVisibility.equals(getElement().getVisibility())) {
+			return true;
+		}
+		if(!getElement().getVisibility().equals(Visibility.HIDDEN)) {
+			return true;
+		}
+		if(effects.size > 0 || getElement().getTotalEffects() > 0) {
+			return true;
+		}
+		if(!initialLayoutOccurred) {
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public RenderNode<?, ?> getElementById(String id) {
 		if (element.getId().equals(id)) {
