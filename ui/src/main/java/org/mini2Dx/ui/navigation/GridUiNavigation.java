@@ -30,6 +30,11 @@ import java.util.Iterator;
  * placed inside a grid
  */
 public class GridUiNavigation implements UiNavigation {
+	private final static int MOVE_UP = -1;
+	private final static int MOVE_DOWN = 1;
+	private final static int MOVE_LEFT = -1;
+	private final static int MOVE_RIGHT = 1;
+
 	private final Array<Actionable> navigation = new Array<Actionable>(true, 1, Actionable.class);
 	private final ObjectMap<ScreenSize, Integer> screenSizeColumns = new ObjectMap<ScreenSize, Integer>();
 
@@ -99,7 +104,7 @@ public class GridUiNavigation implements UiNavigation {
 		actionable.removeHoverListener(this);
 		navigation.removeValue(actionable, true);
 	}
-	
+
 	@Override
 	public void removeAll() {
 		for(int i = 0; i < navigation.size; i++) {
@@ -111,10 +116,15 @@ public class GridUiNavigation implements UiNavigation {
 		navigation.clear();
 		resetCursor();
 	}
-	
+
 	@Override
 	public void set(int index, Actionable actionable) {
-		actionable.addHoverListener(this);
+		if (actionable != null) {
+			actionable.addHoverListener(this);
+		}
+		if (index < navigation.size && navigation.get(index) != null){
+			navigation.get(index).removeHoverListener(this);
+		}
 		while(navigation.size <= index) {
 			navigation.add(null);
 		}
@@ -140,45 +150,50 @@ public class GridUiNavigation implements UiNavigation {
 		if (navigation.size == 0) {
 			return null;
 		}
+		boolean invokeEndHover = false;
+		Actionable previousElement = navigation.get(getIndex(cursorX, cursorY));
 		switch (keycode) {
 		case Keys.W:
 		case Keys.UP:
 			if (cursorY > 0) {
-				navigation.get(getIndex(cursorX, cursorY)).invokeEndHover();
-				cursorY--;
+				invokeEndHover = true;
+				moveVerticalToNextNoneNullElement(MOVE_UP);
 			}
 			break;
 		case Keys.S:
 		case Keys.DOWN:
 			if (getIndex(cursorX, cursorY + 1) >= navigation.size){
-				navigation.get(getIndex(cursorX, cursorY)).invokeEndHover();
-			}else if (cursorY < getTotalRows() - 1) {
-				navigation.get(getIndex(cursorX, cursorY)).invokeEndHover();
-				cursorY++;
+				invokeEndHover = true;
+			} else if (cursorY < getTotalRows() - 1) {
+				invokeEndHover = true;
+				moveVerticalToNextNoneNullElement(MOVE_DOWN);
 			} else {
-				navigation.get(getIndex(cursorX, cursorY)).invokeEndHover();
+				invokeEndHover = true;
 				cursorY = getTotalRows() - 1;
 			}
 			break;
 		case Keys.A:
 		case Keys.LEFT:
 			if (cursorX > 0) {
-				navigation.get(getIndex(cursorX, cursorY)).invokeEndHover();
-				cursorX--;
+				invokeEndHover = true;
+				moveHorizontalToNextNoneNullElement(MOVE_LEFT);
 			}
 			break;
 		case Keys.D:
 		case Keys.RIGHT:
 			if (getIndex(cursorX + 1, cursorY) >= navigation.size) {
-				navigation.get(getIndex(cursorX, cursorY)).invokeEndHover();
+				invokeEndHover = true;
 			}else if (cursorX < columns - 1) {
-				navigation.get(getIndex(cursorX, cursorY)).invokeEndHover();
-				cursorX++;
+				invokeEndHover = true;
+				moveHorizontalToNextNoneNullElement(MOVE_RIGHT);
 			} else {
-				navigation.get(getIndex(cursorX, cursorY)).invokeEndHover();
+				invokeEndHover = true;
 				cursorX = columns - 1;
 			}
 			break;
+		}
+		if (invokeEndHover && previousElement != null){
+			previousElement.invokeEndHover();
 		}
 		return navigation.get(getIndex(cursorX, cursorY));
 	}
@@ -280,5 +295,31 @@ public class GridUiNavigation implements UiNavigation {
 
 	@Override
 	public void onHoverEnd(Hoverable source) {
+	}
+
+	private void moveVerticalToNextNoneNullElement(int direction) {
+		int tempCursorY = cursorY;
+		while ((cursorY + direction) >= 0 && getIndex(cursorX, cursorY + direction) < navigation.size && (cursorY + direction) < getTotalRows()){
+			cursorY += direction;
+			if (navigation.get(getIndex(cursorX, cursorY)) != null){
+				return;
+			}
+		}
+		cursorY = tempCursorY;
+	}
+
+	private void moveHorizontalToNextNoneNullElement(int direction) {
+		int tempCursorX = cursorX;
+		while ((cursorX + direction) >= 0 && (cursorX + direction) < getTotalColumns()){
+			cursorX += direction;
+			if (navigation.get(getIndex(cursorX, cursorY)) != null){
+				return;
+			}
+		}
+		cursorX = tempCursorX;
+	}
+
+	int getNavigationSize(){
+		return navigation.size;
 	}
 }

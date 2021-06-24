@@ -21,6 +21,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.ui.element.Actionable;
+import org.mini2Dx.ui.element.Button;
 import org.mini2Dx.ui.layout.ScreenSize;
 
 import com.badlogic.gdx.Input.Keys;
@@ -165,8 +166,166 @@ public class GridUiNavigationTest {
 		});
 
 		navigation.set(2, 3, mockedActionable);
+		Assert.assertEquals(mockedActionable, navigation.updateCursor(mockedActionable.getId()));
+	}
 
-		navigation.updateCursor(mockedActionable.getId());
+	@Test
+	public void testNavigateUpFromNullElement(){
+		Button[][] navigationElements =  new Button[COLUMNS][ROWS];
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				navigation.set(x, y, navigationElements[x][y]);}
+		}
+
+		navigation.updateCursor(navigationElements[1][1].getId());
+		navigation.set(1, 1, null);
+		Assert.assertEquals(navigationElements[1][0], navigation.navigate(Keys.UP));
+	}
+
+	@Test
+	public void testNavigateDownFromNullElement(){
+		Button[][] navigationElements =  new Button[COLUMNS][ROWS];
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				navigation.set(x, y, navigationElements[x][y]);}
+		}
+
+		navigation.updateCursor(navigationElements[1][1].getId());
+		navigation.set(1, 1, null);
+		Assert.assertEquals(navigationElements[1][2], navigation.navigate(Keys.DOWN));
+	}
+
+	@Test
+	public void testNavigateLeftFromNullElement(){
+		Button[][] navigationElements =  new Button[COLUMNS][ROWS];
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				navigation.set(x, y, navigationElements[x][y]);}
+		}
+
+		navigation.updateCursor(navigationElements[1][1].getId());
+		navigation.set(1, 1, null);
+		Assert.assertEquals(navigationElements[0][1], navigation.navigate(Keys.LEFT));
+	}
+
+	@Test
+	public void testNavigateRightFromNullElement(){
+		Button[][] navigationElements =  new Button[COLUMNS][ROWS];
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				navigation.set(x, y, navigationElements[x][y]);}
+		}
+
+		navigation.updateCursor(navigationElements[1][1].getId());
+		navigation.set(1, 1, null);
+		Assert.assertEquals(navigationElements[2][1], navigation.navigate(Keys.RIGHT));
+	}
+
+	@Test
+	public void testNavigateUpOverNullElement(){
+		Button[][] navigationElements =  new Button[COLUMNS][ROWS];
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				navigation.set(x, y, navigationElements[x][y]);}
+		}
+
+		navigation.updateCursor(navigationElements[1][2].getId());
+		navigation.set(1, 1, null);
+		Assert.assertEquals(navigationElements[1][0], navigation.navigate(Keys.UP));
+	}
+
+	@Test
+	public void testNavigateDownOverNullElement(){
+		Button[][] navigationElements =  new Button[COLUMNS][ROWS];
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				navigation.set(x, y, navigationElements[x][y]);}
+		}
+
+		navigation.updateCursor(navigationElements[1][0].getId());
+		navigation.set(1, 1, null);
+		Assert.assertEquals(navigationElements[1][2], navigation.navigate(Keys.DOWN));
+	}
+
+	@Test
+	public void testNavigateLeftOverNullElement(){
+		Button[][] navigationElements =  new Button[COLUMNS][ROWS];
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				navigation.set(x, y, navigationElements[x][y]);}
+		}
+
+		navigation.updateCursor(navigationElements[2][1].getId());
+		navigation.set(1, 1, null);
+		Assert.assertEquals(navigationElements[0][1], navigation.navigate(Keys.LEFT));
+	}
+
+	@Test
+	public void testNavigateRightOverNullElement(){
+		Button[][] navigationElements =  new Button[COLUMNS][ROWS];
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				navigation.set(x, y, navigationElements[x][y]);}
+		}
+
+		navigation.updateCursor(navigationElements[0][1].getId());
+		navigation.set(1, 1, null);
+		Assert.assertEquals(navigationElements[2][1], navigation.navigate(Keys.RIGHT));
+	}
+
+	@Test
+	public void testNavigateDownNoElementToMoveTo(){
+		Button[][] navigationElements =  new Button[COLUMNS][ROWS];
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				navigation.set(x, y, navigationElements[x][y]);}
+		}
+
+		navigation.updateCursor(navigationElements[2][0].getId());
+		navigation.set(2, 1, null);
+		navigation.set(2, 2, null);
+		Assert.assertEquals(navigationElements[2][0], navigation.navigate(Keys.DOWN));
+	}
+
+	@Test
+	public void testNavigateLeftNoElementToMoveTo(){
+		Button[][] navigationElements =  new Button[COLUMNS][ROWS];
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				navigation.set(x, y, navigationElements[x][y]);}
+		}
+
+		navigation.updateCursor(navigationElements[0][0].getId());
+		navigation.set(1, 0, null);
+		navigation.set(2, 0, null);
+		Assert.assertEquals(navigationElements[0][0], navigation.navigate(Keys.RIGHT));
+	}
+
+	@Test
+	public void testSetNullElement(){
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				final Actionable actionable = elements[x][y];
+				mockery.checking(new Expectations() {
+					{
+						exactly(9).of(actionable).removeHoverListener(navigation);
+					}
+				});
+			}
+		}
+
+		navigation.set(2, 3, null);
+		Assert.assertEquals(12, navigation.getNavigationSize());
 	}
 
 	private void addElementsToGrid() {
