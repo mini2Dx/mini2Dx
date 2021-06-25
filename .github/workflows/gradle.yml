@@ -23,4 +23,5 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 21
+        emulator-build: 7425822
         script: ./gradlew build -x :mini2Dx-uats-libgdx-android:check -x :mini2Dx-uats-libgdx-android:validateSigningDebug -x :mini2Dx-uats-libgdx-android:packageDebug
