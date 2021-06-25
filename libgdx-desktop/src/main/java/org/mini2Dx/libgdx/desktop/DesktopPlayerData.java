@@ -55,6 +55,12 @@ public class DesktopPlayerData extends PlayerData {
 	}
 
 	@Override
+	protected boolean isDataStorageFull() throws Exception {
+		//TODO: Implement partition querying
+		return false;
+	}
+
+	@Override
 	public void wipe() throws PlayerDataException {
 		FileHandle directory = Mdx.files.external(saveDirectory);
 		if (!directory.exists()) {

@@ -62,4 +62,10 @@ public class IOSPlayerData extends PlayerData {
 	protected void ensureDataDirectoryExists() throws IOException {
 		//Exists by default
 	}
+
+	@Override
+	protected boolean isDataStorageFull() throws Exception {
+		//TODO: Implement partition querying
+		return false;
+	}
 }

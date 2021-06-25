@@ -58,6 +58,13 @@ public abstract class PlayerData {
     protected abstract void ensureDataDirectoryExists() throws IOException;
 
     /**
+     * Returns if the player data storage is full
+     * @return True if storage is full
+     * @throws Exception Thrown if storage cannot be accessed
+     */
+    protected abstract boolean isDataStorageFull() throws Exception;
+
+    /**
      * Wipes all data within the game data location
      *
      * @throws PlayerDataException

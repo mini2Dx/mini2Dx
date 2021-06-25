@@ -55,6 +55,12 @@ public class AndroidPlayerData extends PlayerData {
 		//Exists by default
 	}
 
+	@Override
+	protected boolean isDataStorageFull() throws Exception {
+		//TODO: Implement partition querying
+		return false;
+	}
+
     @Override
     public void wipe() throws PlayerDataException, IOException {
         FileHandle directory = Mdx.files.local("./");
