@@ -64,8 +64,13 @@ public class IOSPlayerData extends PlayerData {
 	}
 
 	@Override
-	protected boolean isDataStorageFull() throws Exception {
+	public boolean isDataStorageFull() throws Exception {
 		//TODO: Implement partition querying
 		return false;
+	}
+
+	@Override
+	public boolean isDataStorageConnected() {
+		return true;
 	}
 }

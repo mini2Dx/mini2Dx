@@ -124,7 +124,7 @@ public interface FileHandle {
 	 * @throws IOException
 	 */
 	public default String head(int lines) throws IOException {
-		return head(10, Charset.defaultCharset().name());
+		return head(lines, Charset.defaultCharset().name());
 	}
 
 	/**

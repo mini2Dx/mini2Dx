@@ -62,7 +62,13 @@ public abstract class PlayerData {
      * @return True if storage is full
      * @throws Exception Thrown if storage cannot be accessed
      */
-    protected abstract boolean isDataStorageFull() throws Exception;
+    public abstract boolean isDataStorageFull() throws Exception;
+
+    /**
+     * Returns if the player data storage is connected
+     * @return False if not connected
+     */
+    public abstract boolean isDataStorageConnected();
 
     /**
      * Wipes all data within the game data location
