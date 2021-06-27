@@ -131,6 +131,15 @@ public class LibgdxFileHandle implements FileHandle {
 	}
 
 	@Override
+	public byte[] headBytes(int totalBytes) throws IOException {
+		byte [] result = new byte[totalBytes];
+		final DataInputStream dataInputStream = new DataInputStream(read());
+		dataInputStream.read(result);
+		dataInputStream.close();
+		return result;
+	}
+
+	@Override
 	public String head(int lines, String charset) throws IOException {
 		final Reader reader = fileHandle.reader(charset);
 		final Scanner scanner = new Scanner(reader);

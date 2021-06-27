@@ -109,6 +109,14 @@ public interface FileHandle {
 	public String readString() throws IOException;
 
 	/**
+	 * Returns the first bytes from the file handle
+	 * @param totalBytes The amount of bytes to read
+	 * @return The first bytes
+	 * @throws IOException if the file handle represents a directory, doesn't exist, or could not be read.
+	 */
+	public byte [] headBytes(int totalBytes) throws IOException;
+
+	/**
 	 * Returns the first 10 lines of the file as a string using the platform's default charset.
 	 * @return The first 10 lines as a string
 	 * @throws IOException if the file handle represents a directory, doesn't exist, or could not be read.
