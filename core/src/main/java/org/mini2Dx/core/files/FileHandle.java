@@ -111,7 +111,7 @@ public interface FileHandle {
 	/**
 	 * Returns the first bytes from the file handle
 	 * @param totalBytes The amount of bytes to read
-	 * @return The first bytes
+	 * @return The first bytes up to the total bytes specified (if there are less bytes, only those will be returned)
 	 * @throws IOException if the file handle represents a directory, doesn't exist, or could not be read.
 	 */
 	public byte [] headBytes(int totalBytes) throws IOException;

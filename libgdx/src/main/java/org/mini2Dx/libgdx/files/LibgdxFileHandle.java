@@ -132,10 +132,16 @@ public class LibgdxFileHandle implements FileHandle {
 
 	@Override
 	public byte[] headBytes(int totalBytes) throws IOException {
-		byte [] result = new byte[totalBytes];
+		byte [] tmpResult = new byte[totalBytes];
 		final DataInputStream dataInputStream = new DataInputStream(read());
-		dataInputStream.read(result);
+		int amount = dataInputStream.read(tmpResult);
 		dataInputStream.close();
+
+		if(amount == totalBytes) {
+			return tmpResult;
+		}
+		byte [] result = new byte[amount];
+		System.arraycopy(tmpResult, 0, result, 0, amount);
 		return result;
 	}
 
