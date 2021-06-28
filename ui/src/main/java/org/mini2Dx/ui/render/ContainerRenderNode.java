@@ -36,7 +36,7 @@ public class ContainerRenderNode extends ParentRenderNode<Div, ContainerStyleRul
 	private final ObjectMap<String, String> controllerHotkeys = new ObjectMap<String, String>();
 	private final ObjectMap<String, RenderNode<?, ?>> elementIdLookupCache = new ObjectMap<String, RenderNode<?, ?>>();
 
-	private boolean previouslyAllowedUpdate = false;
+	private boolean previouslyAllowedLayout = false, previouslyAllowedUpdate = false;
 	private Visibility previousVisibility = null;
 	
 	public ContainerRenderNode(ParentRenderNode<?, ?> parent, Div div) {
@@ -48,8 +48,12 @@ public class ContainerRenderNode extends ParentRenderNode<Div, ContainerStyleRul
 		if(isDirty()) {
 			elementIdLookupCache.clear();
 		}
-		((Container) element).getNavigation().layout(layoutState.getScreenSize());
-		super.layout(layoutState);
+		final boolean allowedLayout = isAllowedUpdate();
+		if(allowedLayout || (previouslyAllowedLayout != allowedLayout)) {
+			((Container) element).getNavigation().layout(layoutState.getScreenSize());
+			super.layout(layoutState);
+		}
+		previouslyAllowedLayout = allowedLayout;
 	}
 
 	@Override
