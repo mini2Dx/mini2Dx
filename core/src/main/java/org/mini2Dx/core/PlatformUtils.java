@@ -184,4 +184,12 @@ public abstract class PlatformUtils {
      * @return A new {@link ZlibStream} instance
      */
     public abstract ZlibStream decompress(byte [] compressedData);
+
+    /**
+     * Converts a timestamp to the specified date format
+     * @param millis The timestamp (in millis) to convert
+     * @param format The date format (e.g. yyyy-MM-dd HH:mm:ss)
+     * @return The timestamp in the date format
+     */
+    public abstract String timestampToDateFormat(long millis, String format);
 }
