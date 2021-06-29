@@ -54,7 +54,7 @@ namespace monogame
             }
         }
 
-        private static string joinPath(string prefix, Java.Lang.String[] filePath)
+        public static string joinPath(string prefix, Java.Lang.String[] filePath)
         {
             if (filePath.Length == 0)
             {
@@ -73,7 +73,7 @@ namespace monogame
             return string.Join(Path.DirectorySeparatorChar.ToString(), paths);
         }
 
-        private static string joinPath(Java.Lang.String[] filePath)
+        public static string joinPath(Java.Lang.String[] filePath)
         {
             if (filePath.Length == 0)
             {

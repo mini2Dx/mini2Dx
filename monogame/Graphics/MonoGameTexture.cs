@@ -32,6 +32,8 @@ namespace monogame.Graphics
         internal Texture2D texture2D;
         private TextureAddressMode _uMode = TextureAddressMode.CLAMP_, _vMode = TextureAddressMode.CLAMP_;
 
+        private UInt32[] rawTexture;
+
         public MonoGameTexture(Texture2D texture2D)
         {
             this.texture2D = texture2D;
@@ -40,20 +42,35 @@ namespace monogame.Graphics
         public void dispose_EFE09FC0()
         {
             texture2D.Dispose();
+            rawTexture = null;
         }
 
         public void draw_A700ECD1(Pixmap pixmap, int x, int y)
         {
-            var rawTexture = new UInt32[texture2D.Width * texture2D.Height];
-            texture2D.GetData(rawTexture);
+            if(rawTexture == null || rawTexture.Length != (texture2D.Width * texture2D.Height))
+            {
+                rawTexture = new UInt32[texture2D.Width * texture2D.Height];
+                texture2D.GetData(rawTexture);
+            }
+
+            bool changed = false;
             for (var pixmapX = 0; pixmapX < pixmap.getWidth_0EE0D08D(); pixmapX++)
             {
                 for (var pixmapY = 0; pixmapY < pixmap.getHeight_0EE0D08D(); pixmapY++)
                 {
-                    rawTexture[x + pixmapX + (y + pixmapY) * texture2D.Width] = (uint) pixmap.getPixel_114D0C65(pixmapX, pixmapY);
+                    uint existingValue = rawTexture[x + pixmapX + (y + pixmapY) * texture2D.Width];
+                    uint newValue = (uint)pixmap.getPixel_114D0C65(pixmapX, pixmapY);
+                    if (existingValue != newValue)
+                    {
+                        rawTexture[x + pixmapX + (y + pixmapY) * texture2D.Width] = newValue;
+                        changed = true;
+                    }
                 }
             }
-            texture2D.SetData(rawTexture);
+            if (changed)
+            {
+                texture2D.SetData(rawTexture);
+            }
         }
 
         public int getHeight_0EE0D08D()

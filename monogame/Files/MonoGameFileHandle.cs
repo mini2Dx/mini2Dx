@@ -226,6 +226,20 @@ namespace monogame.Files
             return _fileType;
         }
 
+        public sbyte[] headBytes_0C2FFF8A(int totalBytes)
+        {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            outputStream._init_();
+            InputStream inputStream = read_C679A59B();
+            for (int i = 0; i < totalBytes; i++)
+            {
+                outputStream.write_3518BA33(inputStream.read_0EE0D08D());
+            }
+            inputStream.close_EFE09FC0();
+            outputStream.close_EFE09FC0();
+            return outputStream.toByteArray_A27A8875();
+        }
+
         public InputStream read_C679A59B()
         {
             if (_fileType == FileType.INTERNAL_)
