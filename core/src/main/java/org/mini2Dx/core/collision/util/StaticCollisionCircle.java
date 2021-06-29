@@ -29,7 +29,7 @@ import java.util.Objects;
  */
 public class StaticCollisionCircle extends Circle implements CollisionArea {
 	private int id;
-	private Collisions collisions = null;
+	protected Collisions collisions = null;
 
 	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 
@@ -70,6 +70,10 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 		setRadius(radius);
 	}
 
+	protected void release() {
+		collisions.release(this);
+	}
+
 	@Override
 	public void dispose() {
 		if(disposed) {
@@ -81,7 +85,7 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 			clearSizeChangeListeners();
 
 			disposed = true;
-			collisions.release(this);
+			release();
 			return;
 		}
 		super.dispose();

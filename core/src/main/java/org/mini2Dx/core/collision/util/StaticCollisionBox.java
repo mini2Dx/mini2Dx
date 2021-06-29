@@ -28,7 +28,7 @@ import java.util.Objects;
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionBox} implementation.
  */
 public class StaticCollisionBox extends Rectangle implements CollisionArea {
-	private Collisions collisions = null;
+	protected Collisions collisions = null;
 	private int id;
 
 	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
@@ -71,6 +71,10 @@ public class StaticCollisionBox extends Rectangle implements CollisionArea {
 		forceTo(x, y, width, height);
 	}
 
+	protected void release() {
+		collisions.release(this);
+	}
+
 	@Override
 	public void dispose() {
 		if(disposed) {
@@ -82,7 +86,7 @@ public class StaticCollisionBox extends Rectangle implements CollisionArea {
 			clearSizeChangeListeners();
 
 			disposed = true;
-			collisions.release(this);
+			release();
 			return;
 		}
 		super.dispose();

@@ -29,7 +29,7 @@ import java.util.Objects;
  */
 public class StaticCollisionPoint extends Point implements CollisionObject {
 	private int id;
-	private Collisions collisions = null;
+	protected Collisions collisions = null;
 
 	private RenderCoordMode renderCoordMode = RenderCoordMode.GLOBAL_DEFAULT;
 
@@ -70,6 +70,10 @@ public class StaticCollisionPoint extends Point implements CollisionObject {
 		forceTo(x, y);
 	}
 
+	protected void release() {
+		collisions.release(this);
+	}
+
 	@Override
 	public void dispose() {
 		if(disposed) {
@@ -80,7 +84,7 @@ public class StaticCollisionPoint extends Point implements CollisionObject {
 			clearPositionChangeListeners();
 
 			disposed = true;
-			collisions.release(this);
+			release();
 			return;
 		}
 		super.dispose();

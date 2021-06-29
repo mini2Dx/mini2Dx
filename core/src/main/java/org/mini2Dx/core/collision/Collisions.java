@@ -44,6 +44,11 @@ public class Collisions {
 	final Queue<StaticCollisionPoint> staticCollisionPoints = new Queue<StaticCollisionPoint>(DEFAULT_POOL_SIZE * 2);
 	final Queue<StaticCollisionPolygon> staticCollisionPolygons = new Queue<StaticCollisionPolygon>(DEFAULT_POOL_SIZE * 2);
 
+	final Queue<QuadTreeAwareStaticCollisionBox> quadTreeAwareStaticCollisionBoxes = new Queue<QuadTreeAwareStaticCollisionBox>(DEFAULT_POOL_SIZE * 2);
+	final Queue<QuadTreeAwareStaticCollisionCircle> quadTreeAwareStaticCollisionCircles = new Queue<QuadTreeAwareStaticCollisionCircle>(DEFAULT_POOL_SIZE * 2);
+	final Queue<QuadTreeAwareStaticCollisionPoint> quadTreeAwareStaticCollisionPoints = new Queue<QuadTreeAwareStaticCollisionPoint>(DEFAULT_POOL_SIZE * 2);
+	final Queue<QuadTreeAwareStaticCollisionPolygon> quadTreeAwareStaticCollisionPolygons = new Queue<QuadTreeAwareStaticCollisionPolygon>(DEFAULT_POOL_SIZE * 2);
+
 	private boolean initialised = false;
 
 	public Collisions() {
@@ -78,6 +83,13 @@ public class Collisions {
 			staticCollisionCircles.removeLast().dispose();
 			staticCollisionPoints.addLast(new StaticCollisionPoint(CollisionIdSequence.nextId(),this));
 			staticCollisionPoints.removeLast().dispose();
+
+			quadTreeAwareStaticCollisionBoxes.addLast(new QuadTreeAwareStaticCollisionBox(CollisionIdSequence.nextId(),this));
+			quadTreeAwareStaticCollisionBoxes.removeLast().dispose();
+			quadTreeAwareStaticCollisionCircles.addLast(new QuadTreeAwareStaticCollisionCircle(CollisionIdSequence.nextId(),this));
+			quadTreeAwareStaticCollisionCircles.removeLast().dispose();
+			quadTreeAwareStaticCollisionPoints.addLast(new QuadTreeAwareStaticCollisionPoint(CollisionIdSequence.nextId(),this));
+			quadTreeAwareStaticCollisionPoints.removeLast().dispose();
 		}
 		initialised = true;
 	}
@@ -413,6 +425,113 @@ public class Collisions {
 		return result;
 	}
 
+	public QuadTreeAwareStaticCollisionBox quadTreeAwareStaticCollisionBox() {
+		return quadTreeAwareStaticCollisionBox(CollisionIdSequence.nextId());
+	}
+
+	public QuadTreeAwareStaticCollisionBox quadTreeAwareStaticCollisionBox(int id) {
+		return quadTreeAwareStaticCollisionBox(id, 0f, 0f, 1f, 1f);
+	}
+
+	public QuadTreeAwareStaticCollisionBox quadTreeAwareStaticCollisionBox(int id, float x, float y, float width, float height) {
+		init();
+
+		final QuadTreeAwareStaticCollisionBox result;
+		synchronized (quadTreeAwareStaticCollisionBoxes) {
+			if(quadTreeAwareStaticCollisionBoxes.size == 0) {
+				result = new QuadTreeAwareStaticCollisionBox(CollisionIdSequence.offset(id), this);
+			} else {
+				result = quadTreeAwareStaticCollisionBoxes.removeFirst();
+			}
+		}
+		result.init(id, x, y, width, height);
+		return result;
+	}
+
+	public QuadTreeAwareStaticCollisionCircle quadTreeAwareStaticCollisionCircle() {
+		return quadTreeAwareStaticCollisionCircle(CollisionIdSequence.nextId());
+	}
+
+	public QuadTreeAwareStaticCollisionCircle quadTreeAwareStaticCollisionCircle(int id) {
+		return quadTreeAwareStaticCollisionCircle(id, 0f, 0f, 1f);
+	}
+
+	public QuadTreeAwareStaticCollisionCircle quadTreeAwareStaticCollisionCircle(int id, float centerX, float centerY, float radius) {
+		init();
+
+		final QuadTreeAwareStaticCollisionCircle result;
+		synchronized (quadTreeAwareStaticCollisionCircle()) {
+			if(quadTreeAwareStaticCollisionCircles.size == 0) {
+				result = new QuadTreeAwareStaticCollisionCircle(CollisionIdSequence.offset(id),this);
+			} else {
+				result = quadTreeAwareStaticCollisionCircles.removeFirst();
+			}
+		}
+		result.init(id, centerX, centerY, radius);
+		return result;
+	}
+
+	public QuadTreeAwareStaticCollisionPoint quadTreeAwareStaticCollisionPoint() {
+		return quadTreeAwareStaticCollisionPoint(CollisionIdSequence.nextId());
+	}
+
+	public QuadTreeAwareStaticCollisionPoint quadTreeAwareStaticCollisionPoint(int id) {
+		return quadTreeAwareStaticCollisionPoint(id, 0f, 0f);
+	}
+
+	public QuadTreeAwareStaticCollisionPoint quadTreeAwareStaticCollisionPoint(int id, float x, float y) {
+		init();
+
+		final QuadTreeAwareStaticCollisionPoint result;
+		synchronized (quadTreeAwareStaticCollisionPoints) {
+			if(quadTreeAwareStaticCollisionPoints.size == 0) {
+				result = new QuadTreeAwareStaticCollisionPoint(CollisionIdSequence.offset(id), this);
+			} else {
+				result = quadTreeAwareStaticCollisionPoints.removeFirst();
+			}
+		}
+		result.init(id, x, y);
+		return result;
+	}
+
+	public QuadTreeAwareStaticCollisionPolygon quadTreeAwareStaticCollisionPolygon(float [] vertices) {
+		return quadTreeAwareStaticCollisionPolygon(CollisionIdSequence.nextId(), vertices);
+	}
+
+	public QuadTreeAwareStaticCollisionPolygon quadTreeAwareStaticCollisionPolygon(int id, float [] vertices) {
+		init();
+
+		final QuadTreeAwareStaticCollisionPolygon result;
+		synchronized (quadTreeAwareStaticCollisionPolygons) {
+			if(quadTreeAwareStaticCollisionPolygons.size == 0) {
+				result = new QuadTreeAwareStaticCollisionPolygon(CollisionIdSequence.offset(id), this, vertices);
+			} else {
+				result = quadTreeAwareStaticCollisionPolygons.removeFirst();
+			}
+		}
+		result.init(id, vertices);
+		return result;
+	}
+
+	public QuadTreeAwareStaticCollisionPolygon quadTreeAwareStaticCollisionPolygon(Vector2[] vectors) {
+		return quadTreeAwareStaticCollisionPolygon(CollisionIdSequence.nextId(), vectors);
+	}
+
+	public QuadTreeAwareStaticCollisionPolygon quadTreeAwareStaticCollisionPolygon(int id, Vector2[] vectors) {
+		init();
+
+		final QuadTreeAwareStaticCollisionPolygon result;
+		synchronized (quadTreeAwareStaticCollisionPolygons) {
+			if(quadTreeAwareStaticCollisionPolygons.size == 0) {
+				result = new QuadTreeAwareStaticCollisionPolygon(CollisionIdSequence.offset(id), this, vectors);
+			} else {
+				result = quadTreeAwareStaticCollisionPolygons.removeFirst();
+			}
+		}
+		result.init(id, vectors);
+		return result;
+	}
+
 	public void release(CollisionBox collisionBox) {
 		synchronized (collisionBoxes) {
 			collisionBoxes.addLast(collisionBox);
@@ -482,6 +601,30 @@ public class Collisions {
 	public void release(StaticCollisionPolygon collisionPolygon) {
 		synchronized (staticCollisionPolygons) {
 			staticCollisionPolygons.addLast(collisionPolygon);
+		}
+	}
+
+	public void release(QuadTreeAwareStaticCollisionBox collisionBox) {
+		synchronized (quadTreeAwareStaticCollisionBoxes) {
+			quadTreeAwareStaticCollisionBoxes.addLast(collisionBox);
+		}
+	}
+
+	public void release(QuadTreeAwareStaticCollisionCircle collisionCircle) {
+		synchronized (quadTreeAwareStaticCollisionCircles) {
+			quadTreeAwareStaticCollisionCircles.addLast(collisionCircle);
+		}
+	}
+
+	public void release(QuadTreeAwareStaticCollisionPoint collisionPoint) {
+		synchronized (quadTreeAwareStaticCollisionPoints) {
+			quadTreeAwareStaticCollisionPoints.addLast(collisionPoint);
+		}
+	}
+
+	public void release(QuadTreeAwareStaticCollisionPolygon collisionPolygon) {
+		synchronized (quadTreeAwareStaticCollisionPolygons) {
+			quadTreeAwareStaticCollisionPolygons.addLast(collisionPolygon);
 		}
 	}
 
@@ -578,6 +721,38 @@ public class Collisions {
 
 		synchronized (staticCollisionPolygons) {
 			return staticCollisionPolygons.size;
+		}
+	}
+
+	public int getTotalQuadTreeAwareStaticCollisionBoxesAvailable() {
+		init();
+
+		synchronized (quadTreeAwareStaticCollisionBoxes) {
+			return quadTreeAwareStaticCollisionBoxes.size;
+		}
+	}
+
+	public int getTotalQuadTreeAwareStaticCollisionCirclesAvailable() {
+		init();
+
+		synchronized (quadTreeAwareStaticCollisionCircles) {
+			return quadTreeAwareStaticCollisionCircles.size;
+		}
+	}
+
+	public int getTotalQuadTreeAwareStaticCollisionPointsAvailable() {
+		init();
+
+		synchronized (quadTreeAwareStaticCollisionPoints) {
+			return quadTreeAwareStaticCollisionPoints.size;
+		}
+	}
+
+	public int getTotalQuadTreeAwareStaticCollisionPolygonsAvailable() {
+		init();
+
+		synchronized (quadTreeAwareStaticCollisionPolygons) {
+			return quadTreeAwareStaticCollisionPolygons.size;
 		}
 	}
 }
