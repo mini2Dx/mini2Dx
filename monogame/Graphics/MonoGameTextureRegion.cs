@@ -317,7 +317,7 @@ namespace monogame.Graphics
                     {
                         actualY = _regionHeight - y;
                     }
-                    pixmap.drawPixel(actualX, actualY, MonoGameColor.toRGBA8888(rawTextureRegionData[x + y * _regionWidth]));
+                    pixmap.drawPixel(actualX, actualY, rawTextureRegionData[x + y * _regionWidth]);
                 }
             }
             

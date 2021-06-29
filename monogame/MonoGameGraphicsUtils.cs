@@ -15,7 +15,6 @@
  ******************************************************************************/
 using System;
 using System.IO;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using monogame.Files;
 using monogame.Graphics;
@@ -139,7 +138,7 @@ namespace monogame
 
             texture = ((MonoGameTexture)newTexture_69120FDF(file)).texture2D;
 
-            var rawTextureData = new UInt32[texture.Width * texture.Height];
+            var rawTextureData = new Microsoft.Xna.Framework.Color[texture.Width * texture.Height];
             texture.GetData(rawTextureData);
             
             var pixmap = new MonoGamePixmap(texture.Width, texture.Height);
@@ -148,7 +147,7 @@ namespace monogame
             {
                 for (int y = 0; y < texture.Height; y++)
                 {
-                    pixmap.drawPixel(x, y, MonoGameColor.argbToRgba(rawTextureData[x + y * texture.Width]));
+                    pixmap.drawPixel(x, y, rawTextureData[x + y * texture.Width]);
                 }
             }
             
@@ -228,9 +227,9 @@ namespace monogame
 
         public override Texture newTexture_5B771B24(Pixmap pixmap, PixmapFormat format)
         {
-            var rawPixmap = ((MonoGamePixmap)pixmap).toRawPixelsARGB();
+            var rawPixmap = ((MonoGamePixmap)pixmap).toRawPixels();
 
-            var texture = new Texture2D(_graphicsDevice, pixmap.getWidth_0EE0D08D(), pixmap.getHeight_0EE0D08D(), false, SurfaceFormat.Color);
+            var texture = new Texture2D(_graphicsDevice, pixmap.getWidth_0EE0D08D(), pixmap.getHeight_0EE0D08D(), false, SurfaceFormat.ColorSRgb);
             texture.SetData(rawPixmap);
 
             return new MonoGameTexture(texture);

@@ -14,14 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-using System;
 using Microsoft.Xna.Framework.Graphics;
-using Java.Lang;
-using Org.Mini2Dx.Core;
-using Org.Mini2Dx.Core.Assets;
-using Org.Mini2Dx.Core.Font;
-using Org.Mini2Dx.Core.Util;
-using Color = Org.Mini2Dx.Core.Graphics.Color;
 using TextureAddressMode = Org.Mini2Dx.Core.Graphics.TextureAddressMode;
 using Org.Mini2Dx.Core.Graphics;
 
@@ -32,7 +25,7 @@ namespace monogame.Graphics
         internal Texture2D texture2D;
         private TextureAddressMode _uMode = TextureAddressMode.CLAMP_, _vMode = TextureAddressMode.CLAMP_;
 
-        private UInt32[] rawTexture;
+        private Microsoft.Xna.Framework.Color[] rawTexture;
 
         public MonoGameTexture(Texture2D texture2D)
         {
@@ -49,7 +42,7 @@ namespace monogame.Graphics
         {
             if(rawTexture == null || rawTexture.Length != (texture2D.Width * texture2D.Height))
             {
-                rawTexture = new UInt32[texture2D.Width * texture2D.Height];
+                rawTexture = new Microsoft.Xna.Framework.Color[texture2D.Width * texture2D.Height];
                 texture2D.GetData(rawTexture);
             }
 
@@ -58,8 +51,8 @@ namespace monogame.Graphics
             {
                 for (var pixmapY = 0; pixmapY < pixmap.getHeight_0EE0D08D(); pixmapY++)
                 {
-                    uint existingValue = rawTexture[x + pixmapX + (y + pixmapY) * texture2D.Width];
-                    uint newValue = (uint)pixmap.getPixel_114D0C65(pixmapX, pixmapY);
+                    Microsoft.Xna.Framework.Color existingValue = rawTexture[x + pixmapX + (y + pixmapY) * texture2D.Width];
+                    Microsoft.Xna.Framework.Color newValue = ((MonoGamePixmap) pixmap)._getMonoGamePixel(pixmapX, pixmapY);
                     if (existingValue != newValue)
                     {
                         rawTexture[x + pixmapX + (y + pixmapY) * texture2D.Width] = newValue;
