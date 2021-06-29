@@ -172,10 +172,10 @@ namespace monogame.Graphics
 
         public virtual Color lerp_50042A18(Color color, float t)
         {
-            _color.R = (byte) ((color.getRAsByte_03E0BF3C() - _color.R) * t + _color.R);
-            _color.G = (byte) ((color.getGAsByte_03E0BF3C() - _color.G) * t + _color.G);
-            _color.B = (byte) ((color.getBAsByte_03E0BF3C() - _color.B) * t + _color.B);
-            _color.A = (byte) ((color.getAAsByte_03E0BF3C() - _color.A) * t + _color.A);
+            _color.R = (byte) ((((MonoGameColor)color)._color.R - _color.R) * t + _color.R);
+            _color.G = (byte) ((((MonoGameColor)color)._color.G - _color.G) * t + _color.G);
+            _color.B = (byte) ((((MonoGameColor)color)._color.B - _color.B) * t + _color.B);
+            _color.A = (byte) ((((MonoGameColor)color)._color.A - _color.A) * t + _color.A);
             return this;
         }
 
@@ -190,10 +190,10 @@ namespace monogame.Graphics
 
         public virtual Color lerp_8C006841(sbyte r, sbyte g, sbyte b, sbyte a, float t)
         {
-            _color.R = (byte) ((r - _color.R) * t + _color.R);
-            _color.G = (byte) ((g - _color.G) * t + _color.G);
-            _color.B = (byte) ((b - _color.B) * t + _color.B);
-            _color.A = (byte) ((a - _color.A) * t + _color.A);
+            _color.R = (byte) (((byte)r - _color.R) * t + _color.R);
+            _color.G = (byte) (((byte)g - _color.G) * t + _color.G);
+            _color.B = (byte) (((byte)b - _color.B) * t + _color.B);
+            _color.A = (byte) (((byte)a - _color.A) * t + _color.A);
             return this;
         }
 
