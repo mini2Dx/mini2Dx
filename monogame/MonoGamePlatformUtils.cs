@@ -88,6 +88,13 @@ namespace monogame
         {
             return new MonoGameZlibStream(arg0);
         }
+
+        public override Java.Lang.String timestampToDateFormat_FC36C8CC(long millis, Java.Lang.String jformat)
+        {
+            string format = jformat;
+            var timespan = TimeSpan.FromMilliseconds(millis);
+            return new DateTime(1970, 1, 1).AddTicks(timespan.Ticks).ToString(format);
+        }
     }
 
     public abstract class PlatformMemoryInfoProvider

@@ -792,8 +792,8 @@ namespace monogame
         internal void updateClip()
         {
             var rect = _graphicsDevice.ScissorRectangle;
-            rect.X = (int) (_clipRectangle.getX_FFE0B8F0() * _scale.X - _translation.X);
-            rect.Y = (int) (_clipRectangle.getY_FFE0B8F0() * _scale.Y - _translation.Y);
+            rect.X = (int) ((_clipRectangle.getX_FFE0B8F0() - _translation.X) * _scale.X);
+            rect.Y = (int) ((_clipRectangle.getY_FFE0B8F0() - _translation.Y) * _scale.Y);
             rect.Width = (int) (_clipRectangle.getWidth_FFE0B8F0() * _scale.X);
             rect.Height = (int) (_clipRectangle.getHeight_FFE0B8F0() * _scale.Y);
             _graphicsDevice.ScissorRectangle = rect;

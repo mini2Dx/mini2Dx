@@ -258,6 +258,7 @@ namespace monogame.Audio
             {
                 Instances.Remove(this);
                 InstancesById.Remove(Id);
+                SoundEffectInstance.Dispose();
 
                 Sound.stopTracking(Id);
                 Sound = null;
