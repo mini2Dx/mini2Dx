@@ -16,17 +16,22 @@
 package org.mini2Dx.ui.navigation;
 
 import org.mini2Dx.core.input.button.GamePadButton;
+import org.mini2Dx.gdx.utils.Queue;
 import org.mini2Dx.ui.element.Actionable;
 
 /**
  * Internal class for setting/unsetting {@link GamePadButton} hotkeys
  */
 public class GamePadHotKeyOperation {
-	private final GamePadButton controllerButton;
-	private final Actionable actionable;
-	private final boolean mapOperation;
+	private static final Queue<GamePadHotKeyOperation> POOL = new Queue<>();
+
+	private GamePadButton controllerButton;
+	private Actionable actionable;
+	private boolean mapOperation;
+
+	private GamePadHotKeyOperation() {}
 	
-	public GamePadHotKeyOperation(GamePadButton controllerButton, Actionable actionable, boolean mapOperation) {
+	private void set(GamePadButton controllerButton, Actionable actionable, boolean mapOperation) {
 		this.controllerButton = controllerButton;
 		this.actionable = actionable;
 		this.mapOperation = mapOperation;
@@ -42,5 +47,27 @@ public class GamePadHotKeyOperation {
 
 	public boolean isMapOperation() {
 		return mapOperation;
+	}
+
+	public void dispose() {
+		controllerButton = null;
+		actionable = null;
+
+		synchronized(POOL) {
+			POOL.addLast(this);
+		}
+	}
+
+	public static GamePadHotKeyOperation allocate(GamePadButton controllerButton, Actionable actionable, boolean mapOperation) {
+		final GamePadHotKeyOperation result;
+		synchronized(POOL) {
+			if(POOL.isEmpty()) {
+				result = new GamePadHotKeyOperation();
+			} else {
+				result = POOL.removeFirst();
+			}
+		}
+		result.set(controllerButton, actionable, mapOperation);
+		return result;
 	}
 }

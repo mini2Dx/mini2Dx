@@ -144,6 +144,7 @@ public class ContainerRenderNode extends ParentRenderNode<Div, ContainerStyleRul
 					controllerHotkeys.remove(hotKeyOperation.getGamePadButton().getInternalName());
 				}
 			}
+			hotKeyOperation.dispose();
 		}
 		while (keyboardHotKeyOperations.size > 0) {
 			KeyboardHotKeyOperation hotKeyOperation = keyboardHotKeyOperations.removeFirst();
@@ -156,6 +157,7 @@ public class ContainerRenderNode extends ParentRenderNode<Div, ContainerStyleRul
 					keyboardHotkeys.remove(hotKeyOperation.getKeycode());
 				}
 			}
+			hotKeyOperation.dispose();
 		}
 	}
 

@@ -64,6 +64,7 @@ public class TabRenderNode extends DivRenderNode implements NavigatableRenderNod
 					controllerHotkeys.remove(hotKeyOperation.getGamePadButton().getInternalName());
 				}
 			}
+			hotKeyOperation.dispose();
 		}
 		while (keyboardHotKeyOperations.size > 0) {
 			KeyboardHotKeyOperation hotKeyOperation = keyboardHotKeyOperations.removeFirst();
@@ -76,6 +77,7 @@ public class TabRenderNode extends DivRenderNode implements NavigatableRenderNod
 					keyboardHotkeys.remove(hotKeyOperation.getKeycode());
 				}
 			}
+			hotKeyOperation.dispose();
 		}
 	}
 

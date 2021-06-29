@@ -15,17 +15,22 @@
  ******************************************************************************/
 package org.mini2Dx.ui.navigation;
 
+import org.mini2Dx.gdx.utils.Queue;
 import org.mini2Dx.ui.element.Actionable;
 
 /**
  * Internal class for setting/unsetting keyboard hotkeys
  */
 public class KeyboardHotKeyOperation {
-	private final int keycode;
-	private final Actionable actionable;
-	private final boolean mapOperation;
+	private static final Queue<KeyboardHotKeyOperation> POOL = new Queue<>();
+
+	private int keycode;
+	private Actionable actionable;
+	private boolean mapOperation;
+
+	private KeyboardHotKeyOperation() {}
 	
-	public KeyboardHotKeyOperation(int keycode, Actionable actionable, boolean mapOperation) {
+	private void set(int keycode, Actionable actionable, boolean mapOperation) {
 		this.keycode = keycode;
 		this.actionable = actionable;
 		this.mapOperation = mapOperation;
@@ -41,5 +46,26 @@ public class KeyboardHotKeyOperation {
 
 	public boolean isMapOperation() {
 		return mapOperation;
+	}
+
+	public void dispose() {
+		actionable = null;
+
+		synchronized(POOL) {
+			POOL.addLast(this);
+		}
+	}
+
+	public static KeyboardHotKeyOperation allocate(int keycode, Actionable actionable, boolean mapOperation) {
+		final KeyboardHotKeyOperation result;
+		synchronized(POOL) {
+			if(POOL.isEmpty()) {
+				result = new KeyboardHotKeyOperation();
+			} else {
+				result = POOL.removeFirst();
+			}
+		}
+		result.set(keycode, actionable, mapOperation);
+		return result;
 	}
 }

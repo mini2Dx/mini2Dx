@@ -87,6 +87,7 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule>im
 					controllerHotkeys.remove(hotKeyOperation.getGamePadButton().getInternalName());
 				}
 			}
+			hotKeyOperation.dispose();
 		}
 		while (keyboardHotKeyOperations.size > 0) {
 			KeyboardHotKeyOperation hotKeyOperation = keyboardHotKeyOperations.removeFirst();
@@ -99,6 +100,7 @@ public class TabViewRenderNode extends ParentRenderNode<TabView, TabStyleRule>im
 					keyboardHotkeys.remove(hotKeyOperation.getKeycode());
 				}
 			}
+			hotKeyOperation.dispose();
 		}
 	}
 

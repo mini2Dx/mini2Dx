@@ -171,32 +171,32 @@ public class Tab extends Div implements Navigatable {
 	
 	@Override
 	public void setHotkey(GamePadButton button, Actionable actionable) {
-		controllerHotKeyOperations.addLast(new GamePadHotKeyOperation(button, actionable, true));
+		controllerHotKeyOperations.addLast(GamePadHotKeyOperation.allocate(button, actionable, true));
 	}
 	
 	@Override
 	public void setHotkey(int keycode, Actionable actionable) {
-		keyboardHotKeyOperations.addLast(new KeyboardHotKeyOperation(keycode, actionable, true));
+		keyboardHotKeyOperations.addLast(KeyboardHotKeyOperation.allocate(keycode, actionable, true));
 	}
 	
 	@Override
 	public void unsetHotkey(GamePadButton button) {
-		controllerHotKeyOperations.addLast(new GamePadHotKeyOperation(button, null, false));
+		controllerHotKeyOperations.addLast(GamePadHotKeyOperation.allocate(button, null, false));
 	}
 	
 	@Override
 	public void unsetHotkey(int keycode) {
-		keyboardHotKeyOperations.addLast(new KeyboardHotKeyOperation(keycode, null, false));
+		keyboardHotKeyOperations.addLast(KeyboardHotKeyOperation.allocate(keycode, null, false));
 	}
 	
 	@Override
 	public void clearGamePadHotkeys() {
-		controllerHotKeyOperations.addLast(new GamePadHotKeyOperation(null, null, false));
+		controllerHotKeyOperations.addLast(GamePadHotKeyOperation.allocate(null, null, false));
 	}
 
 	@Override
 	public void clearKeyboardHotkeys() {
-		keyboardHotKeyOperations.addLast(new KeyboardHotKeyOperation(Integer.MAX_VALUE, null, false));
+		keyboardHotKeyOperations.addLast(KeyboardHotKeyOperation.allocate(Integer.MAX_VALUE, null, false));
 	}
 	
 	@Override

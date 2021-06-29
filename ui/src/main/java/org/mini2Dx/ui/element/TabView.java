@@ -598,7 +598,7 @@ public class TabView extends ParentUiElement implements Navigatable {
 	 * @param keycode The {@link Input.Keys} keycode
 	 */
 	public void setPreviousTabHotkey(int keycode) {
-		keyboardHotKeyOperations.addLast(new KeyboardHotKeyOperation(keycode, previousTabButton, true));
+		keyboardHotKeyOperations.addLast(KeyboardHotKeyOperation.allocate(keycode, previousTabButton, true));
 	}
 
 	/**
@@ -606,7 +606,7 @@ public class TabView extends ParentUiElement implements Navigatable {
 	 * @param button The {@link GamePadButton}
 	 */
 	public void setPreviousTabHotkey(GamePadButton button) {
-		controllerHotKeyOperations.addLast(new GamePadHotKeyOperation(button, previousTabButton, true));
+		controllerHotKeyOperations.addLast(GamePadHotKeyOperation.allocate(button, previousTabButton, true));
 	}
 	
 	/**
@@ -614,7 +614,7 @@ public class TabView extends ParentUiElement implements Navigatable {
 	 * @param keycode The {@link Input.Keys} keycode
 	 */
 	public void setNextTabHotkey(int keycode) {
-		keyboardHotKeyOperations.addLast(new KeyboardHotKeyOperation(keycode, nextTabButton, true));
+		keyboardHotKeyOperations.addLast(KeyboardHotKeyOperation.allocate(keycode, nextTabButton, true));
 	}
 
 	/**
@@ -622,7 +622,7 @@ public class TabView extends ParentUiElement implements Navigatable {
 	 * @param button The {@link GamePadButton}
 	 */
 	public void setNextTabHotkey(GamePadButton button) {
-		controllerHotKeyOperations.addLast(new GamePadHotKeyOperation(button, nextTabButton, true));
+		controllerHotKeyOperations.addLast(GamePadHotKeyOperation.allocate(button, nextTabButton, true));
 	}
 
 	/**
@@ -630,7 +630,7 @@ public class TabView extends ParentUiElement implements Navigatable {
 	 * @param keycode The {@link Input.Keys} keycode
 	 */
 	public void unsetPreviousTabHotkey(int keycode) {
-		keyboardHotKeyOperations.addLast(new KeyboardHotKeyOperation(keycode, previousTabButton, false));
+		keyboardHotKeyOperations.addLast(KeyboardHotKeyOperation.allocate(keycode, previousTabButton, false));
 	}
 
 	/**
@@ -638,7 +638,7 @@ public class TabView extends ParentUiElement implements Navigatable {
 	 * @param button The {@link GamePadButton}
 	 */
 	public void unsetPreviousTabHotkey(GamePadButton button) {
-		controllerHotKeyOperations.addLast(new GamePadHotKeyOperation(button, previousTabButton, false));
+		controllerHotKeyOperations.addLast(GamePadHotKeyOperation.allocate(button, previousTabButton, false));
 	}
 
 	/**
@@ -646,7 +646,7 @@ public class TabView extends ParentUiElement implements Navigatable {
 	 * @param keycode The {@link Input.Keys} keycode
 	 */
 	public void unsetNextTabHotkey(int keycode) {
-		keyboardHotKeyOperations.addLast(new KeyboardHotKeyOperation(keycode, nextTabButton, false));
+		keyboardHotKeyOperations.addLast(KeyboardHotKeyOperation.allocate(keycode, nextTabButton, false));
 	}
 
 	/**
@@ -654,7 +654,7 @@ public class TabView extends ParentUiElement implements Navigatable {
 	 * @param button The {@link GamePadButton}
 	 */
 	public void unsetNextTabHotkey(GamePadButton button) {
-		controllerHotKeyOperations.addLast(new GamePadHotKeyOperation(button, nextTabButton, false));
+		controllerHotKeyOperations.addLast(GamePadHotKeyOperation.allocate(button, nextTabButton, false));
 	}
 
 	@Override
