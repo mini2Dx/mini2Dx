@@ -14,18 +14,14 @@
  * limitations under the License.
  ******************************************************************************/
 using System;
-using Org.Mini2Dx.Core;
-using Org.Mini2Dx.Core.Assets;
-using Org.Mini2Dx.Core.Font;
 using Org.Mini2Dx.Core.Graphics;
-using Org.Mini2Dx.Core.Util;
 using Color = Org.Mini2Dx.Core.Graphics.Color;
 
 namespace monogame.Graphics
 {
     class MonoGamePixmap : global::Java.Lang.Object, Org.Mini2Dx.Core.Graphics.Pixmap
     {
-        private UInt32[,] _pixmap;
+        private Microsoft.Xna.Framework.Color[,] _pixmap;
         private MonoGameColor _setColor;
         private PixmapBlending _blending;
         private PixmapFilter _filter;
@@ -38,7 +34,7 @@ namespace monogame.Graphics
         {
             _width = width;
             _height = height;
-            _pixmap = new UInt32[width, height];
+            _pixmap = new Microsoft.Xna.Framework.Color[width, height];
             _setColor = new MonoGameColor(0, 0, 0, 0);
             _blending = PixmapBlending.NONE_;
             _filter = PixmapFilter.NEAREST_NEIGHBOUR_;
@@ -56,34 +52,33 @@ namespace monogame.Graphics
             {
                 return;
             }
-            var color = _setColor.toRGBA8888();
             int radiusSquared = radius * radius;
             
-            drawPixel(centerX, centerY + radius, color);
-            drawPixel(centerX, centerY - radius, color);
-            drawPixel(centerX + radius, centerY, color);
-            drawPixel(centerX - radius, centerY, color);
+            drawPixel_224D2728(centerX, centerY + radius);
+            drawPixel_224D2728(centerX, centerY - radius);
+            drawPixel_224D2728(centerX + radius, centerY);
+            drawPixel_224D2728(centerX - radius, centerY);
 
             var x = 1;
             var y = (int) (Math.Sqrt(radiusSquared - 1) + 0.5);
             
             while (x < y) {
-                drawPixel(centerX + x, centerY + y, color);
-                drawPixel(centerX + x, centerY - y, color);
-                drawPixel(centerX - x, centerY + y, color);
-                drawPixel(centerX - x, centerY - y, color);
-                drawPixel(centerX + y, centerY + x, color);
-                drawPixel(centerX + y, centerY - x, color);
-                drawPixel(centerX - y, centerY + x, color);
-                drawPixel(centerX - y, centerY - x, color);
+                drawPixel_224D2728(centerX + x, centerY + y);
+                drawPixel_224D2728(centerX + x, centerY - y);
+                drawPixel_224D2728(centerX - x, centerY + y);
+                drawPixel_224D2728(centerX - x, centerY - y);
+                drawPixel_224D2728(centerX + y, centerY + x);
+                drawPixel_224D2728(centerX + y, centerY - x);
+                drawPixel_224D2728(centerX - y, centerY + x);
+                drawPixel_224D2728(centerX - y, centerY - x);
                 x += 1;
                 y = (int) (Math.Sqrt(radiusSquared - x*x) + 0.5);
             }
             if (x == y) {
-                drawPixel(centerX + x, centerY + y, color);
-                drawPixel(centerX + x, centerY - y, color);
-                drawPixel(centerX - x, centerY + y, color);
-                drawPixel(centerX - x, centerY - y, color);
+                drawPixel_224D2728(centerX + x, centerY + y);
+                drawPixel_224D2728(centerX + x, centerY - y);
+                drawPixel_224D2728(centerX - x, centerY + y);
+                drawPixel_224D2728(centerX - x, centerY - y);
             }
         }
 
@@ -109,10 +104,9 @@ namespace monogame.Graphics
                 dx2 = 0;
             }
             var numerator = width >> 1 ;
-            var color = _setColor.toRGBA8888();
             for (var i=0; i<=width; i++)
             {
-                drawPixel(x, y, color);
+                drawPixel_224D2728(x, y);
                 numerator += height;
                 if (numerator >= width)
                 {
@@ -130,17 +124,22 @@ namespace monogame.Graphics
 
         public void drawPixel_224D2728(int x, int y)
         {
-            drawPixel(x, y, _setColor.toRGBA8888());
+            drawPixel(x, y, _setColor._color);
         }
 
         public void drawPixel_E015CAB9(int x, int y, Color color)
         {
-            drawPixel(x, y, ((MonoGameColor) color).toRGBA8888());
+            drawPixel(x, y, ((MonoGameColor) color)._color);
         }
 
-        public void drawPixel(int x, int y, UInt32 color, bool blend = false)
+        internal Microsoft.Xna.Framework.Color _getMonoGamePixel(int x, int y)
         {
-            byte colorAlpha = (byte)MonoGameColor.getAAsByte(color);
+            return _pixmap[x, y];
+        }
+
+        public void drawPixel(int x, int y, Microsoft.Xna.Framework.Color color, bool blend = false)
+        {
+            byte colorAlpha = color.A;
             if (x < getWidth_0EE0D08D() && y < getHeight_0EE0D08D() && x >= 0 && y >= 0)
             {
                 if (colorAlpha == 255 || !blend)
@@ -149,17 +148,13 @@ namespace monogame.Graphics
                 }
                 else
                 {
-                    var newR = (sbyte)(MonoGameColor.getRAsByte(color) * colorAlpha + MonoGameColor.getAAsByte((uint)getPixel_114D0C65(x, y)) * (255 - colorAlpha));
-                    var newG = (sbyte)(MonoGameColor.getRAsByte(color) * colorAlpha + MonoGameColor.getAAsByte((uint)getPixel_114D0C65(x, y)) * (255 - colorAlpha));
-                    var newB = (sbyte)(MonoGameColor.getRAsByte(color) * colorAlpha + MonoGameColor.getAAsByte((uint)getPixel_114D0C65(x, y)) * (255 - colorAlpha));
-                    _pixmap[x, y] = MonoGameColor.toRGBA8888(newR, newG, newB, (sbyte)colorAlpha);
+                    var blendedColor = new Microsoft.Xna.Framework.Color(color.PackedValue);
+                    blendedColor.R = (byte) ((byte)(color.R * colorAlpha) + (byte)(_getMonoGamePixel(x, y).A * (255 - colorAlpha)));
+                    blendedColor.G = (byte) ((byte)(color.G * colorAlpha) + (byte)(_getMonoGamePixel(x, y).A * (255 - colorAlpha)));
+                    blendedColor.B = (byte) ((byte)(color.B * colorAlpha) + (byte)(_getMonoGamePixel(x, y).A * (255 - colorAlpha)));
+                    _pixmap[x, y] = blendedColor;
                 }
             }
-        }
-
-        private void drawPixel(int pixNum, UInt32 color)
-        {
-            drawPixel(pixNum % getWidth_0EE0D08D(), pixNum / getWidth_0EE0D08D(), color);
         }
 
         public void drawPixmap_A700ECD1(Pixmap pixmap, int x, int y)
@@ -173,7 +168,7 @@ namespace monogame.Graphics
             {
                 for (var pixmapY = 0; pixmapY < srcWidth; pixmapY++)
                 {
-                    drawPixel(x + pixmapX, y + pixmapY, (uint) pixmap.getPixel_114D0C65(srcX + pixmapX, srcY + pixmapY));
+                    drawPixel(x + pixmapX, y + pixmapY, ((MonoGamePixmap) pixmap)._getMonoGamePixel(srcX + pixmapX, srcY + pixmapY));
                 }
             }
         }
@@ -194,7 +189,7 @@ namespace monogame.Graphics
                 {
                     for (var y = 0; y < srcHeight; y++)
                     {
-                        drawPixel(dstX + x, dstY + y, (uint) pixmap.getPixel_114D0C65(srcX + x, srcY + y));
+                        drawPixel(dstX + x, dstY + y, ((MonoGamePixmap) pixmap)._getMonoGamePixel(srcX + x, srcY + y));
                     }
                 }
             }
@@ -208,7 +203,7 @@ namespace monogame.Graphics
                     {
                         var srcPixX = (int) Math.Round((x - dstX + srcX) * xRatio, MidpointRounding.AwayFromZero);
                         var srcPixY = (int) Math.Round((y - dstY + srcY) * yRatio, MidpointRounding.AwayFromZero);
-                        drawPixel(x, y, (uint) pixmap.getPixel_114D0C65(srcPixX, srcPixY));
+                        drawPixel(x, y, ((MonoGamePixmap) pixmap)._getMonoGamePixel(srcPixX, srcPixY));
                     }
                 }
             }
@@ -229,15 +224,11 @@ namespace monogame.Graphics
                         var c01 = (uint) pixmap.getPixel_114D0C65(gxi, gyi + 1);
                         var c11 = (uint) pixmap.getPixel_114D0C65(gxi + 1, gyi + 1);
  
-                        UInt32 red = (byte)blerp(MonoGameColor.getRAsByte(c00), MonoGameColor.getRAsByte(c10), MonoGameColor.getRAsByte(c01), MonoGameColor.getRAsByte(c11), gx - gxi, gy - gyi);
-                        UInt32 green = (byte)blerp(MonoGameColor.getGAsByte(c00), MonoGameColor.getGAsByte(c10), MonoGameColor.getGAsByte(c01), MonoGameColor.getGAsByte(c11), gx - gxi, gy - gyi);
-                        UInt32 blue = (byte)blerp(MonoGameColor.getBAsByte(c00), MonoGameColor.getBAsByte(c10), MonoGameColor.getBAsByte(c01), MonoGameColor.getBAsByte(c11), gx - gxi, gy - gyi);
-                        UInt32 alpha = (byte)blerp(MonoGameColor.getAAsByte(c00), MonoGameColor.getAAsByte(c10), MonoGameColor.getAAsByte(c01), MonoGameColor.getAAsByte(c11), gx - gxi, gy - gyi);
-                        var color = ((red << 24) & 0xff000000) |
-                                      ((green << 16) & 0xff0000) |
-                                      ((blue << 8) & 0xff00) |
-                                      alpha;
-                        drawPixel(dstX + x, dstY + y, color);
+                        byte red = (byte)blerp(MonoGameColor.getRAsByte(c00), MonoGameColor.getRAsByte(c10), MonoGameColor.getRAsByte(c01), MonoGameColor.getRAsByte(c11), gx - gxi, gy - gyi);
+                        byte green = (byte)blerp(MonoGameColor.getGAsByte(c00), MonoGameColor.getGAsByte(c10), MonoGameColor.getGAsByte(c01), MonoGameColor.getGAsByte(c11), gx - gxi, gy - gyi);
+                        byte blue = (byte)blerp(MonoGameColor.getBAsByte(c00), MonoGameColor.getBAsByte(c10), MonoGameColor.getBAsByte(c01), MonoGameColor.getBAsByte(c11), gx - gxi, gy - gyi);
+                        byte alpha = (byte)blerp(MonoGameColor.getAAsByte(c00), MonoGameColor.getAAsByte(c10), MonoGameColor.getAAsByte(c01), MonoGameColor.getAAsByte(c11), gx - gxi, gy - gyi);
+                        drawPixel(dstX + x, dstY + y, new Microsoft.Xna.Framework.Color(red, green, blue, alpha));
                     }
                 }
             }
@@ -260,19 +251,17 @@ namespace monogame.Graphics
 
         public void fill_EFE09FC0()
         {
-            var color = _setColor.toRGBA8888();
             for (int x = 0; x < getWidth_0EE0D08D(); x++)
             {
                 for (int y = 0; y < getHeight_0EE0D08D(); y++)
                 {
-                    drawPixel(x, y, color, false);
+                    drawPixel_224D2728(x, y);
                 }
             }
         }
 
         public void fillCircle_FCB7E48B(int x, int y, int radius)
         {
-            var color = _setColor.toRGBA8888();
             for (int circleX = x - radius; circleX < x + radius; circleX++)
             {
                 
@@ -280,7 +269,7 @@ namespace monogame.Graphics
                 {
                     if (Math.Pow(circleX - x, 2) + Math.Pow(circleY - y, 2) <= Math.Pow(radius, 2))
                     {
-                        drawPixel(circleX, circleY, color);
+                        drawPixel_224D2728(circleX, circleY);
                     }
                 }
             }
@@ -288,12 +277,11 @@ namespace monogame.Graphics
 
         public void fillRectangle_9C90BED0(int x, int y, int width, int height)
         {
-            var color = _setColor.toRGBA8888();
             for (int newX = x; x < x + width; x++)
             {
                 for (int newY = y; y < y + height; y++)
                 {
-                    drawPixel(newX, newY, color);
+                    drawPixel_224D2728(newX, newY);
                 }
             }
         }
@@ -339,7 +327,6 @@ namespace monogame.Graphics
             }
 
             var triangleHeight = y3 - y1;
-            var color = _setColor.toRGBA8888();
             for (var i = 0; i < triangleHeight; i++)
             {
                 var secondHalf = i > y2 - y1 || y2 == y1;
@@ -357,7 +344,7 @@ namespace monogame.Graphics
 
                 for (var j = (int) aX; j <= bX; j++)
                 {
-                    drawPixel(j, y1 + i, color);
+                    drawPixel_224D2728(j, y1 + i);
                 }
             }
         }
@@ -388,7 +375,8 @@ namespace monogame.Graphics
             {
                 return 0;
             }
-            return (int) _pixmap[x, y];
+            var color = _pixmap[x, y];
+            return (color.R << 24) | (color.G << 16) | (color.B << 8) | color.A;
         }
 
         private UInt32 getPixel(int pixNum)
@@ -396,19 +384,14 @@ namespace monogame.Graphics
             return (uint)getPixel_114D0C65(pixNum % getWidth_0EE0D08D(), pixNum / getWidth_0EE0D08D());
         }
 
-        public UInt32[] toRawPixelsARGB()
+        public Microsoft.Xna.Framework.Color[] toRawPixels()
         {
-            if (_format != PixmapFormat.RGBA8888_)
-            {
-                throw new NotSupportedException();
-            }
-            
-            var rawPixels = new UInt32[getWidth_0EE0D08D() * getHeight_0EE0D08D()];
+            var rawPixels = new Microsoft.Xna.Framework.Color[getWidth_0EE0D08D() * getHeight_0EE0D08D()];
             for (var x = 0; x < getWidth_0EE0D08D(); x++)
             {
                 for (var y = 0; y < getHeight_0EE0D08D(); y++)
                 {
-                    rawPixels[y * getWidth_0EE0D08D() + x] = MonoGameColor.rgbaToArgb(_pixmap[x, y]);
+                    rawPixels[y * getWidth_0EE0D08D() + x] = _pixmap[x, y];
                 }
             }
 
@@ -484,11 +467,6 @@ namespace monogame.Graphics
         public void setFilter_EACFFDD1(PixmapFilter filter)
         {
             _filter = filter;
-        }
-
-        public void clear()
-        {
-            _pixmap = new UInt32[_width, _height];
         }
     }
 }
