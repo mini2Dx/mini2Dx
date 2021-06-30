@@ -403,13 +403,8 @@ namespace monogame
             fillPolygon_C74D914F(shape.getPolygon_A507AF13().getVertices_9E7A8229(), shape.getPolygon_A507AF13().getTriangles_78095B83().toArray_917A6DB2());
         }
 
-        public void drawSprite_615359F5(Sprite sprite)
+        private void _internalDrawSprite(Sprite sprite, float x, float y, Microsoft.Xna.Framework.Color tint)
         {
-            drawSprite_2D162465(sprite, sprite.getX_FFE0B8F0(), sprite.getY_FFE0B8F0());
-        }
-
-        public void drawSprite_2D162465(Sprite sprite, float x, float y)
-        {     
             beginRendering();   
             if (sprite.getTexture_D75719FD().getUAddressMode_F8C501D6() != _currentUMode || sprite.getTexture_D75719FD().getVAddressMode_F8C501D6() != _currentVMode)
             {
@@ -428,22 +423,31 @@ namespace monogame
             _sharedOriginVector.Y = sprite.getOriginY_FFE0B8F0();
             _sharedScaleVector.X = sprite.getScaleX_FFE0B8F0();
             _sharedScaleVector.Y = sprite.getScaleY_FFE0B8F0();
+            
+            _spriteBatch.Draw(((MonoGameTexture) sprite.getTexture_D75719FD()).texture2D, _sharedPositionVector,
+                _sharedSourceRectangle, tint,
+                MonoGameMathsUtil.degreeToRadian(((MonoGameSprite) sprite).getTotalRotation()),
+                _sharedOriginVector, _sharedScaleVector, (sprite.isFlipX_FBE0B2A4() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
+                                                         (sprite.isFlipY_FBE0B2A4() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
+        }
 
+        public void drawSprite_615359F5(Sprite sprite)
+        {
             //if tint is white use sprite tint
             Microsoft.Xna.Framework.Color drawColor;
             if (_tint.Equals(Microsoft.Xna.Framework.Color.White))
             {
-                drawColor = ((MonoGameColor)sprite.getTint_F0D7D9CF())._color;
+                drawColor = ((MonoGameSprite)sprite)._actualTint;
             } else
             {
                 drawColor = _tint;
             }
-            
-            _spriteBatch.Draw(((MonoGameTexture) sprite.getTexture_D75719FD()).texture2D, _sharedPositionVector,
-                _sharedSourceRectangle, drawColor,
-                MonoGameMathsUtil.degreeToRadian(((MonoGameSprite) sprite).getTotalRotation()),
-                _sharedOriginVector, _sharedScaleVector, (sprite.isFlipX_FBE0B2A4() ? SpriteEffects.FlipHorizontally : SpriteEffects.None) |
-                (sprite.isFlipY_FBE0B2A4() ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
+            _internalDrawSprite(sprite, sprite.getX_FFE0B8F0(), sprite.getY_FFE0B8F0(), drawColor);
+        }
+
+        public void drawSprite_2D162465(Sprite sprite, float x, float y)
+        {     
+            _internalDrawSprite(sprite, x, y, _tint);
         }
 
         internal void drawTexture(MonoGameTexture texture, float x, float y, int srcX, int srcY, int srcWidth,
@@ -850,6 +854,7 @@ namespace monogame
         public void setFont_6B60E80F(GameFont font)
         {
             _font = font;
+            _font.setColor_24D51C91(_setColor);
         }
 
         public Shader getShader_364FDDC3()

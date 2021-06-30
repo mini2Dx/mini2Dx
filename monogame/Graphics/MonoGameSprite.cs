@@ -30,10 +30,12 @@ namespace monogame.Graphics
     {
 
         private float _x, _y, _width, _height, _originX, _originY, _rotation, _scaleX = 1, _scaleY = 1, _90degRotation;
-        private Color _tint = new MonoGameColor(Microsoft.Xna.Framework.Color.White);
+        internal Microsoft.Xna.Framework.Color _actualTint = Microsoft.Xna.Framework.Color.White;
+        private Color _tint;
 
         public MonoGameSprite()
         {
+            _tint = new MonoGameColor(_actualTint);
             setOriginCenter_EFE09FC0();
         }
 
@@ -44,6 +46,7 @@ namespace monogame.Graphics
         public MonoGameSprite(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) : base(texture, srcX,
             srcY, srcWidth, srcHeight)
         {
+            _tint = new MonoGameColor(_actualTint);
             setBounds_C2EDAFC0(srcX, srcY, srcWidth, srcHeight);
             setOriginCenter_EFE09FC0();
         }
@@ -54,6 +57,7 @@ namespace monogame.Graphics
 
         public MonoGameSprite(TextureRegion region, int x, int y, int width, int height) : base(region, x, y, width, height)
         {
+            _tint = new MonoGameColor(_actualTint);
             setFlip_62FCD310(region.isFlipX_FBE0B2A4(), region.isFlipY_FBE0B2A4());
             setBounds_C2EDAFC0(x, y, width, height);
             setOriginCenter_EFE09FC0();
@@ -66,6 +70,7 @@ namespace monogame.Graphics
         public MonoGameSprite(TextureAtlasRegion region, int x, int y, int width, int height) : base(region, x, y,
             width, height)
         {
+            _tint = new MonoGameColor(_actualTint);
             if (region.getRotatedPackedHeight_FFE0B8F0() != region.getRegionHeight_0EE0D08D())
             {
                 rotate90_AA5A2C66(false);
@@ -269,7 +274,7 @@ namespace monogame.Graphics
         public void setTint_24D51C91(Color c)
         {
             var oldAlpha = getAlpha_FFE0B8F0();
-            _tint = c;
+            _tint.set_F18CABCA(c);
             setAlpha_97413DCA(oldAlpha);
         }
 
@@ -280,8 +285,8 @@ namespace monogame.Graphics
 
         public void setAlpha_97413DCA(float alpha)
         {
-            _tint.multiply_DF74E9CF(1f, 1f, 1f, 0f);
-            _tint.add_DF74E9CF(0, 0, 0, alpha);
+            _tint.setA_97413DCA(alpha);
+            _actualTint.PackedValue = ((MonoGameColor) _tint)._color.PackedValue;
         }
     }
 }
