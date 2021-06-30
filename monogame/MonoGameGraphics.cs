@@ -850,6 +850,7 @@ namespace monogame
         public void setFont_6B60E80F(GameFont font)
         {
             _font = font;
+            _font.setColor_24D51C91(_setColor);
         }
 
         public Shader getShader_364FDDC3()
