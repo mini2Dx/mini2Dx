@@ -330,6 +330,9 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 		if (elements != null) {
 			addElementsWithinArea(result, area);
 		}
+
+		boolean nodeCrossed = false;
+
 		if (firstInvocation && topLeft != null){
 			if (area.contains(topLeft) || area.intersects(topLeft)){
 				topLeft.getElementsWithinArea(result, area);
@@ -343,12 +346,11 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			if (area.contains(bottomRight) || area.intersects(bottomRight)){
 				bottomRight.getElementsWithinArea(result, area);
 			}
+			nodeCrossed = true;
 		}
 		if (parent == null) {
 			return;
 		}
-
-		boolean nodeCrossed = false;
 
 		if(childNodeCrossed || firstInvocation) {
 			if (parent.topLeft != this && (area.contains(parent.topLeft) || area.intersects(parent.topLeft))) {
