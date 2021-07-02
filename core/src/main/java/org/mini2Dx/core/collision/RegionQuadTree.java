@@ -349,30 +349,27 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 		}
 
 		boolean nodeCrossed = false;
-		if (parent.topLeft != this && (area.contains(parent.topLeft) || area.intersects(parent.topLeft))) {
-			parent.topLeft.getElementsWithinArea(result, area);
-			nodeCrossed = true;
-		}
-		if (parent.topRight != this && (area.contains(parent.topRight) || area.intersects(parent.topRight))) {
-			parent.topRight.getElementsWithinArea(result, area);
-			nodeCrossed = true;
-		}
-		if (parent.bottomLeft != this && (area.contains(parent.bottomLeft) || area.intersects(parent.bottomLeft))) {
-			parent.bottomLeft.getElementsWithinArea(result, area);
-			nodeCrossed = true;
-		}
-		if (parent.bottomRight != this && (area.contains(parent.bottomRight) || area.intersects(parent.bottomRight))) {
-			parent.bottomRight.getElementsWithinArea(result, area);
-			nodeCrossed = true;
-		}
-		if(!nodeCrossed) {
-			if(childNodeCrossed) {
-				((RegionQuadTree<T>)parent).getElementsWithinAreaUpwards(result, area, false, false);
-				return;
+
+		if(childNodeCrossed || firstInvocation) {
+			if (parent.topLeft != this && (area.contains(parent.topLeft) || area.intersects(parent.topLeft))) {
+				parent.topLeft.getElementsWithinArea(result, area);
+				nodeCrossed = true;
 			}
-			return;
+			if (parent.topRight != this && (area.contains(parent.topRight) || area.intersects(parent.topRight))) {
+				parent.topRight.getElementsWithinArea(result, area);
+				nodeCrossed = true;
+			}
+			if (parent.bottomLeft != this && (area.contains(parent.bottomLeft) || area.intersects(parent.bottomLeft))) {
+				parent.bottomLeft.getElementsWithinArea(result, area);
+				nodeCrossed = true;
+			}
+			if (parent.bottomRight != this && (area.contains(parent.bottomRight) || area.intersects(parent.bottomRight))) {
+				parent.bottomRight.getElementsWithinArea(result, area);
+				nodeCrossed = true;
+			}
 		}
-		((RegionQuadTree<T>)parent).getElementsWithinAreaUpwards(result, area, false, true);
+
+		((RegionQuadTree<T>)parent).getElementsWithinAreaUpwards(result, area, false, nodeCrossed);
 	}
 
 	@Override
