@@ -48,12 +48,8 @@ public class ContainerRenderNode extends ParentRenderNode<Div, ContainerStyleRul
 		if(isDirty()) {
 			elementIdLookupCache.clear();
 		}
-		final boolean allowedLayout = isAllowedUpdate();
-		if(allowedLayout || (previouslyAllowedLayout != allowedLayout)) {
-			((Container) element).getNavigation().layout(layoutState.getScreenSize());
-			super.layout(layoutState);
-		}
-		previouslyAllowedLayout = allowedLayout;
+		((Container) element).getNavigation().layout(layoutState.getScreenSize());
+		super.layout(layoutState);
 	}
 
 	@Override

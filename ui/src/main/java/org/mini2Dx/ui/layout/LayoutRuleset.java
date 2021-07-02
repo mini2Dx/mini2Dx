@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.ui.layout;
 
+import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.ui.UiContainer;
 import org.mini2Dx.ui.element.UiElement;
@@ -63,13 +64,18 @@ public abstract class LayoutRuleset {
 		}
 		if(parentNode.getElement().isFlexLayout()) {
 			if(node.getElement().isFlexLayout()) {
-				node.getElement().set(node.getRelativeX() - parentNode.getStyle().getPaddingLeft(), node.getRelativeY() - parentNode.getStyle().getPaddingRight(), node.getPreferredOuterWidth(), node.getPreferredOuterHeight());
+				node.getElement().set(MathUtils.round(node.getRelativeX() - parentNode.getStyle().getPaddingLeft()),
+						MathUtils.round(node.getRelativeY() - parentNode.getStyle().getPaddingRight()),
+						node.getPreferredOuterWidth(), node.getPreferredOuterHeight());
 			} else {
-				node.getElement().setXY(node.getRelativeX() - parentNode.getStyle().getPaddingLeft(), node.getRelativeY() - parentNode.getStyle().getPaddingRight());
+				node.getElement().setXY(MathUtils.round(node.getRelativeX() - parentNode.getStyle().getPaddingLeft()),
+						MathUtils.round(node.getRelativeY() - parentNode.getStyle().getPaddingRight()));
 			}
 		} else {
 			if(node.getElement().isFlexLayout()) {
-				node.getElement().set(node.getRelativeX() - parentNode.getStyle().getPaddingLeft(), node.getRelativeY() - parentNode.getStyle().getPaddingRight(), node.getPreferredOuterWidth(), node.getPreferredOuterHeight());
+				node.getElement().set(MathUtils.round(node.getRelativeX() - parentNode.getStyle().getPaddingLeft()),
+						MathUtils.round(node.getRelativeY() - parentNode.getStyle().getPaddingRight()),
+						node.getPreferredOuterWidth(), node.getPreferredOuterHeight());
 			}
 		}
 	}

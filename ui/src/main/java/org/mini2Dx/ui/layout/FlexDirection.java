@@ -207,15 +207,15 @@ public enum FlexDirection {
 				maxHeight = MathUtils.round(parentNode.getPreferredContentHeight());
 			}
 			
-			int centerX = MathUtils.round((paddingLeft + paddingRight + parentNode.getPreferredContentWidth()) / 2f);
-			int centerY = MathUtils.round((paddingTop + paddingBottom + maxHeight) / 2);
+			int centerX = MathUtils.round((paddingLeft + paddingRight + parentNode.getPreferredContentWidth()) * 0.5f);
+			int centerY = MathUtils.round((paddingTop + paddingBottom + maxHeight) * 0.5f);
 			for (int i = 0; i < children.size; i++) {
 				final RenderNode<?, ?> node = children.get(i);
 				if (!node.isIncludedInLayout()) {
 					continue;
 				}
-				node.setRelativeX(centerX - (node.getXOffset() / 2f) - (node.getPreferredOuterWidth() / 2f));
-				node.setRelativeY(centerY - (node.getYOffset() / 2f) - (node.getPreferredOuterHeight() / 2f));
+				node.setRelativeX(MathUtils.floor(centerX - (node.getXOffset() * 0.5f) - (node.getPreferredOuterWidth() * 0.5f)));
+				node.setRelativeY(MathUtils.floor(centerY - (node.getYOffset() * 0.5f) - (node.getPreferredOuterHeight() * 0.5f)));
 				LayoutRuleset.setElementSize(parentNode, node);
 			}
 		}

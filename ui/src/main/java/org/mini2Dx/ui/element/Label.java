@@ -151,20 +151,44 @@ public class Label extends UiElement {
 	/**
 	 * Sets the current text of the label
 	 * @param text A non-null {@link String}
+	 * @return True if the text content changed
 	 */
-	public void setText(String text) {
+	public boolean setText(String text) {
 		if(text == null) {
-			return;
+			return false;
 		}
 		if(text.equals(this.text)) {
-			return;
+			return false;
 		}
 		this.text = text;
 		
 		if(renderNode == null) {
-			return;
+			return true;
 		}
 		((LabelRenderNode) renderNode).updateBitmapFontCache();
+		return true;
+	}
+
+	@Override
+	public boolean setWidth(float width) {
+		if(super.setWidth(width)) {
+			if(renderNode != null) {
+				((LabelRenderNode) renderNode).updateBitmapFontCache();
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean setHeight(float height) {
+		if(super.setHeight(height)) {
+			if(renderNode != null) {
+				((LabelRenderNode) renderNode).updateBitmapFontCache();
+			}
+			return true;
+		}
+		return false;
 	}
 
 	@Override

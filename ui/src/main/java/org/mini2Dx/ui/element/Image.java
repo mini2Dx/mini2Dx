@@ -316,6 +316,9 @@ public class Image extends UiElement {
 		if(this.texturePath != null && this.texturePath.equals(texturePath)) {
 			return;
 		}
+		if(this.texturePath == null && this.cachedTexturePath != null && this.cachedTexturePath.equals(texturePath)) {
+			return;
+		}
 		
 		this.cachedTexturePath = texturePath;
 		this.texturePath = texturePath;

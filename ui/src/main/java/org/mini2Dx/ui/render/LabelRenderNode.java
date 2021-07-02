@@ -185,12 +185,6 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 			return;
 		}
 		bitmapCacheReset = true;
-
-		font.getSharedGlyphLayout().setText(element.getText(), white, preferredContentWidth,
-				element.getHorizontalAlignment().getAlignValue(), true);
-		if (font.getSharedGlyphLayout().getHeight() == getPreferredContentHeight()) {
-			return;
-		}
 		setDirty();
 	}
 }
