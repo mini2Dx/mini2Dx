@@ -322,4 +322,11 @@ public class ScrollBox extends Div {
 	public void resizeScrollContentHeightToContents() {
 		PixelLayoutUtils.resizeScrollContentHeightToContents(this);
 	}
+
+	public int getScrollTranslationY() {
+		if(renderNode == null) {
+			return 0;
+		}
+		return ((ScrollBoxRenderNode) renderNode).getScrollTranslationY();
+	}
 }

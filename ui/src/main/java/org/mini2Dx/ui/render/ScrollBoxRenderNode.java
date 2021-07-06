@@ -544,4 +544,8 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 	public boolean isEnabled() {
 		return true;
 	}
+
+	public int getScrollTranslationY() {
+		return scrollTranslationY;
+	}
 }
