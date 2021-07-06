@@ -88,7 +88,7 @@ def docProjects() {
 	subprojects.findAll { !it.name.contains('uat') && !it.name.contains('monogame') }
 }
 
-def projectVersion = '2.0.0-alpha.63'
+def projectVersion = '2.0.0-alpha.64'
 
 configure(docProjects()) {
 	apply plugin: "signing"
@@ -297,13 +297,13 @@ project(":" + rootProject.name + "-core") {
 	
 	jmh {
 		timeUnit = 'ns'
-		threads = Runtime.getRuntime().availableProcessors()
+		threads = Math.min(4, Runtime.getRuntime().availableProcessors())
 		warmupIterations = 5
 		iterations = 5
-		fork = Runtime.getRuntime().availableProcessors()
+		fork = Math.min(4, Runtime.getRuntime().availableProcessors())
 		jvmArgsPrepend = '-Xmx2048m'
 		duplicateClassesStrategy = DuplicatesStrategy.EXCLUDE
-		include = ['LerperPerformanceTest']
+		include = ['RectanglePerformanceTest']
 	}
     
 	jacocoTestReport {
