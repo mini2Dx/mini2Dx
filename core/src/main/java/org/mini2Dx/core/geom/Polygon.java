@@ -295,37 +295,25 @@ public class Polygon extends Shape {
 	 */
 	public boolean intersects(Polygon polygon) {
 		minMaxDirtyCheck();
+		checkSidesCache();
 		polygon.minMaxDirtyCheck();
+		polygon.checkSidesCache();
+
+		if (maxX < polygon.minX)
+			return false;
+		if (polygon.maxX < minX)
+			return false;
+		if (maxY < polygon.minY)
+			return false;
+		if (polygon.maxY < minY)
+			return false;
+
 		if (isRectangle && polygon.isRectangle &&
-				MathUtils.round(rotation % 90f) == 0f &&
-				MathUtils.round(polygon.rotation % 90f) == 0f) {
-			boolean xAxisOverlaps = true;
-			boolean yAxisOverlaps = true;
-
-			if (maxX < polygon.minX)
-				xAxisOverlaps = false;
-			if (polygon.maxX < minX)
-				xAxisOverlaps = false;
-			if (maxY < polygon.minY)
-				yAxisOverlaps = false;
-			if (polygon.maxY < minY)
-				yAxisOverlaps = false;
-
-			return xAxisOverlaps && yAxisOverlaps;
+				MathUtils.round(rotation % 90f) == 0 &&
+				MathUtils.round(polygon.rotation % 90f) == 0) {
+			return true;
 		}
 
-		if (polygon.minX > maxX) {
-			return false;
-		}
-		if (polygon.maxX < minX) {
-			return false;
-		}
-		if (polygon.minY > maxY) {
-			return false;
-		}
-		if (polygon.maxY < minY) {
-			return false;
-		}
 		boolean result = false;
 
 		internalEdgeIterator.begin();
