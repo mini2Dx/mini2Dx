@@ -239,6 +239,34 @@ public class Polygon extends Shape {
 	}
 
 	public boolean contains(Polygon polygon) {
+		if(isRectangle && MathUtils.round(rotation) % 90 == 0) {
+			if(polygon.getMaxX() < getX()) {
+				return false;
+			}
+			if(polygon.getMaxY() < getY()) {
+				return false;
+			}
+			if(polygon.getX() > getMaxX()) {
+				return false;
+			}
+			if(polygon.getY() > getMaxY()) {
+				return false;
+			}
+
+			if(polygon.getMaxX() > getMaxX()) {
+				return false;
+			}
+			if(polygon.getMaxY() > getMaxY()) {
+				return false;
+			}
+			if(polygon.getX() < getX()) {
+				return false;
+			}
+			if(polygon.getY() < getY()) {
+				return false;
+			}
+			return true;
+		}
 		return Intersector.containsPolygon(this, polygon);
 	}
 
@@ -1248,6 +1276,5 @@ public class Polygon extends Shape {
 		public LineSegment getEdgeLineSegment() {
 			return edgeLineSegment;
 		}
-
 	}
 }

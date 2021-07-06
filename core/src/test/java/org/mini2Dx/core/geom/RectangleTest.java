@@ -219,6 +219,30 @@ public class RectangleTest {
 	}
 
 	@Test
+	public void testRotatedContainsRectangle() {
+		rectangle1 = new Rectangle(0, 0, 50, 50);
+		rectangle1.rotate(45f);
+
+		rectangle2 = new Rectangle(0f, 25f, 10f, 10f);
+		Assert.assertTrue(rectangle1.contains(rectangle2));
+
+		rectangle2.rotate(45f);
+		Assert.assertTrue(rectangle1.contains(rectangle2));
+
+		rectangle2 = new Rectangle(25, 25, 50, 50);
+		Assert.assertFalse(rectangle1.contains(rectangle2));
+	}
+
+	@Test
+	public void testContainsRectangleRotated() {
+		rectangle1 = new Rectangle(0, 0, 50, 50);
+
+		rectangle2 = new Rectangle(0f, 25f, 10f, 10f);
+		rectangle2.rotate(45f);
+		Assert.assertTrue(rectangle1.contains(rectangle2));
+	}
+
+	@Test
 	public void testContainsZeroSizeRectangle() {
 		rectangle1 = new Rectangle(0, 0, 10, 10);
 		rectangle2 = new Rectangle(50, 50, 0, 0);

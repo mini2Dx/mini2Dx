@@ -31,6 +31,9 @@ public class RectanglePerformanceTest {
 		public Rectangle rectangle = new Rectangle(0f, 0f, 50f, 50f);
 		public Rectangle intersectingRectangle = new Rectangle(25f, 25f, 50f, 50f);
 		public Rectangle nonIntersectingRectangle = new Rectangle(100f, 100f, 50f, 50f);
+
+		public Rectangle containingRectangle = new Rectangle(25f, 25f, 10f, 10f);
+		public Rectangle nonContainingRectangle = new Rectangle(100f, 100f, 50f, 50f);
 		
 		public LineSegment intersectingLineSegment = new LineSegment(-25f, -25f, 100f, 100f);
 		public LineSegment nonIntersectingLineSegment = new LineSegment(-200f, -25f, -300f, 100f);
@@ -54,6 +57,20 @@ public class RectanglePerformanceTest {
 	@Group("Rectangle")
 	public void testNotContainsXY(TestState state) {
 		state.rectangle.contains(100f, 100f);
+	}
+
+	@Benchmark
+	@BenchmarkMode(value=Mode.AverageTime)
+	@Group("Rectangle")
+	public void testContainsRectangle(TestState state) {
+		state.rectangle.contains(state.containingRectangle);
+	}
+
+	@Benchmark
+	@BenchmarkMode(value=Mode.AverageTime)
+	@Group("Rectangle")
+	public void testNotContainsRectangle(TestState state) {
+		state.rectangle.contains(state.nonContainingRectangle);
 	}
 	
 	@Benchmark
