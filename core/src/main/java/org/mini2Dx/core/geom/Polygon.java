@@ -55,6 +55,7 @@ public class Polygon extends Shape {
 
 	private final PolygonEdgeIterator edgeIterator = new PolygonEdgeIterator();
 	private final PolygonEdgeIterator internalEdgeIterator = new PolygonEdgeIterator(new LineSegment(0f, 0f, 1f, 1f));
+	private final PolygonEdgeIterator cacheIterator = new PolygonEdgeIterator();
 
 	private final Vector2 centroid = new Vector2();
 	private float[] vertices;
@@ -1061,20 +1062,22 @@ public class Polygon extends Shape {
 		if(isRectangle()) {
 			return MathUtils.isEqual(getMaxX() - getX(), getMaxY() - getY(), tolerance);
 		}
-		
-		PolygonEdgeIterator edgeIterator = this.new PolygonEdgeIterator();
-		edgeIterator.begin();
-		edgeIterator.next();
-		float length = edgeIterator.getEdgeLineSegment().getLength();
-		while(edgeIterator.hasNext()) {
+
+		synchronized(cacheIterator) {
+			PolygonEdgeIterator edgeIterator = cacheIterator;
+			edgeIterator.begin();
 			edgeIterator.next();
-			float nextLength = edgeIterator.getEdgeLineSegment().getLength();
-			if(!MathUtils.isEqual(length, nextLength, tolerance)) {
-				edgeIterator.end();
-				return false;
+			float length = edgeIterator.getEdgeLineSegment().getLength();
+			while(edgeIterator.hasNext()) {
+				edgeIterator.next();
+				float nextLength = edgeIterator.getEdgeLineSegment().getLength();
+				if(!MathUtils.isEqual(length, nextLength, tolerance)) {
+					edgeIterator.end();
+					return false;
+				}
 			}
+			edgeIterator.end();
 		}
-		edgeIterator.end();
 		return true;
 	}
 
