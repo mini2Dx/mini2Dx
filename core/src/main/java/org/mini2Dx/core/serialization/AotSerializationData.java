@@ -83,7 +83,7 @@ public class AotSerializationData {
 	}
 
 	public static void restoreFrom(FileHandle fileHandle) throws IOException, ClassNotFoundException {
-		restoreFrom(new InputStreamReader(fileHandle.read()));
+		restoreFrom(new InputStreamReader(new BufferedInputStream(fileHandle.read())));
 	}
 
 	public static void restoreFrom(Reader reader) throws IOException, ClassNotFoundException {
