@@ -243,7 +243,7 @@ public abstract class PlayerData {
         try {
             FileHandle file = resolve(filepath);
             final InputStream inputStream = file.read();
-            return new DataInputStream(inputStream);
+            return new DataInputStream(new BufferedInputStream(inputStream));
         } catch (Exception e) {
             throw new PlayerDataException(e);
         }
@@ -270,7 +270,7 @@ public abstract class PlayerData {
             final FileHandle file = resolve(filepath);
             final FileHandle tmpFile = resolveTmp(filepath);
             final OutputStream outputStream = tmpFile.write(false);
-            final GameDataOutputStream result = new GameDataOutputStream(outputStream);
+            final GameDataOutputStream result = new GameDataOutputStream(new BufferedOutputStream(outputStream));
             result.setCloseListener(new GameDataOutputStream.CloseListener() {
                 @Override
                 public void onClose() {
