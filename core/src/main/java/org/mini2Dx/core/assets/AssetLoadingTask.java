@@ -26,6 +26,7 @@ public class AssetLoadingTask<T> implements Runnable, Comparable<AssetLoadingTas
 	private final AssetLoaderResult<T> assetLoaderResult = new AssetLoaderResult<T>();
 	private final AssetLoader<T> assetLoader;
 	private final AssetDescriptor<T> assetDescriptor;
+	private final long taskSubmissionTimeNanos;
 
 	private Array<AssetDescriptor> dependencies;
 	private boolean dependenciesRetrieved = false;
@@ -39,6 +40,8 @@ public class AssetLoadingTask<T> implements Runnable, Comparable<AssetLoadingTas
 	public AssetLoadingTask(AssetLoader<T> assetLoader, AssetDescriptor<T> assetDescriptor) {
 		this.assetLoader = assetLoader;
 		this.assetDescriptor = assetDescriptor;
+
+		taskSubmissionTimeNanos = System.nanoTime();
 
 		if(assetLoader instanceof AsyncAssetLoader) {
 			asyncLoadingCache = new AsyncLoadingCache();
@@ -102,7 +105,11 @@ public class AssetLoadingTask<T> implements Runnable, Comparable<AssetLoadingTas
 
 	@Override
 	public int compareTo(AssetLoadingTask o) {
-		return Integer.compare(o.getTotalDependencies(), getTotalDependencies());
+		final int dependenciesCompare = Integer.compare(o.getTotalDependencies(), getTotalDependencies());
+		if(dependenciesCompare == 0) {
+			return Long.compare(taskSubmissionTimeNanos, o.taskSubmissionTimeNanos);
+		}
+		return dependenciesCompare;
 	}
 
 	public int getTotalDependencies() {
