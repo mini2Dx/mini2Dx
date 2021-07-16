@@ -206,6 +206,20 @@ public class Polygon extends Shape {
 
 	@Override
 	public boolean contains(float x, float y) {
+		minMaxDirtyCheck();
+		if(x < minX) {
+			return false;
+		}
+		if(y < minY) {
+			return false;
+		}
+		if(x > maxX) {
+			return false;
+		}
+		if(y > maxY) {
+			return false;
+		}
+
 		if (isRectangle) {
 			return triangleContains(x, y, vertices[0], vertices[1], vertices[2], vertices[3], vertices[6], vertices[7])
 					|| triangleContains(x, y, vertices[6], vertices[7], vertices[2], vertices[3], vertices[4],
