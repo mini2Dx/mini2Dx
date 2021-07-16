@@ -502,11 +502,55 @@ public class Polygon extends Shape {
 
 	@Override
 	public boolean intersectsLineSegment(Vector2 pointA, Vector2 pointB) {
+		minMaxDirtyCheck();
+
+		final float minX = Math.min(pointA.x, pointB.x);
+		if(minX > this.maxX) {
+			return false;
+		}
+
+		final float minY = Math.min(pointA.y, pointB.y);
+		if(minY > this.maxY) {
+			return false;
+		}
+
+		final float maxX = Math.max(pointA.x, pointB.x);
+		if(maxX < this.minX) {
+			return false;
+		}
+
+		final float maxY = Math.max(pointA.y, pointB.y);
+		if(maxY < this.minY) {
+			return false;
+		}
+
 		return Intersector.intersectSegmentPolygon(pointA, pointB, vertices);
 	}
 
 	@Override
 	public boolean intersectsLineSegment(float x1, float y1, float x2, float y2) {
+		minMaxDirtyCheck();
+
+		final float minX = Math.min(x1, x2);
+		if(minX > this.maxX) {
+			return false;
+		}
+
+		final float minY = Math.min(y1, y2);
+		if(minY > this.maxY) {
+			return false;
+		}
+
+		final float maxX = Math.max(x1, x2);
+		if(maxX < this.minX) {
+			return false;
+		}
+
+		final float maxY = Math.max(y1, y2);
+		if(maxY < this.minY) {
+			return false;
+		}
+
 		final Vector2 tmpVector1 = TMP_VECTOR1.get();
 		final Vector2 tmpVector2 = TMP_VECTOR2.get();
 		tmpVector1.set(x1, y1);
