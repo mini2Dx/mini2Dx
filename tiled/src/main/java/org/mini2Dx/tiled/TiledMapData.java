@@ -27,6 +27,7 @@ import org.mini2Dx.gdx.utils.ObjectMap;
 import org.mini2Dx.gdx.utils.ObjectSet;
 import org.mini2Dx.tiled.exception.TiledException;
 import org.mini2Dx.tiled.exception.TiledParsingException;
+import org.mini2Dx.tiled.renderer.AnimatedTileRenderer;
 
 import java.io.IOException;
 
@@ -310,10 +311,12 @@ public class TiledMapData implements TiledParserListener {
 		if (tile.getTileRenderer() == null) {
 			return;
 		}
-		if (animatedTiles == null) {
-			animatedTiles = new Array<Tile>(true,1, Tile.class);
+		if (tile.getTileRenderer() instanceof AnimatedTileRenderer) {
+			if (animatedTiles == null) {
+				animatedTiles = new Array<Tile>(true,1, Tile.class);
+			}
+			animatedTiles.add(tile);
 		}
-		animatedTiles.add(tile);
 	}
 
 	@Override
