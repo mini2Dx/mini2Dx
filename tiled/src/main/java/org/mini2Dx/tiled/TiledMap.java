@@ -22,6 +22,7 @@ import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.core.graphics.TextureAtlas;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.gdx.utils.IntMap;
 import org.mini2Dx.tiled.exception.TiledException;
 import org.mini2Dx.tiled.exception.UnsupportedOrientationException;
 import org.mini2Dx.tiled.renderer.*;
@@ -48,6 +49,7 @@ public class TiledMap {
 	public static boolean CLIP_TILES_OUTSIDE_GRAPHICS_VIEWPORT = false;
 
 	private final TiledMapData tiledMapData;
+	private final IntMap<Tileset> tileIdToTileset = new IntMap<>();
 
 	private TileLayerRenderer tileLayerRenderer;
 	private TiledObjectGroupRenderer tiledObjectGroupRenderer;
@@ -104,16 +106,16 @@ public class TiledMap {
 
 		switch (tiledMapData.getOrientation()) {
 		case ORTHOGONAL:
-			tileLayerRenderer = new OrthogonalTileLayerRenderer(this);
+			tileLayerRenderer = new OrthogonalTileLayerRenderer(this, tileIdToTileset);
 			break;
 		case ISOMETRIC:
-			tileLayerRenderer = new IsometricTileLayerRenderer(this);
+			tileLayerRenderer = new IsometricTileLayerRenderer(this, tileIdToTileset);
 			break;
 		case ISOMETRIC_STAGGERED:
 			// TODO: Add renderer for isometric maps
 			break;
 		case HEXAGONAL:
-			tileLayerRenderer = new HexagonalTileLayerRenderer(this);
+			tileLayerRenderer = new HexagonalTileLayerRenderer(this, tileIdToTileset);
 			break;
 		case UNKNOWN:
 		default:

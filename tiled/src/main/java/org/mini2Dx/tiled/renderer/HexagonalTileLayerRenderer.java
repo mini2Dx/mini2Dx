@@ -17,6 +17,7 @@ package org.mini2Dx.tiled.renderer;
 
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.gdx.math.MathUtils;
+import org.mini2Dx.gdx.utils.IntMap;
 import org.mini2Dx.tiled.TileLayer;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.Tileset;
@@ -26,15 +27,17 @@ import org.mini2Dx.tiled.Tileset;
  */
 public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 	private final TiledMap tiledMap;
+	private final IntMap<Tileset> tileIdToTileset;
 
 	private final int hexWidth, hexHeight;
 	private final int sideOffsetX, sideOffsetY;
 	private final int quarterHexWidth, quarterHexHeight, halfHexWidth, halfHexHeight, threeQuarterHexWidth,
 			threeQuarterHexHeight;
 
-	public HexagonalTileLayerRenderer(TiledMap tiledMap) {
+	public HexagonalTileLayerRenderer(TiledMap tiledMap, IntMap<Tileset> tileIdToTileset) {
 		super();
 		this.tiledMap = tiledMap;
+		this.tileIdToTileset = tileIdToTileset;
 
 		sideOffsetX = (tiledMap.getTileWidth() - (tiledMap.getSideLength() * 2)) / 2;
 		sideOffsetY = (tiledMap.getTileHeight() - (tiledMap.getSideLength() * 2)) / 2;
@@ -169,13 +172,20 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 	}
 
 	private void renderTile(Graphics g, int tileId, int tileRenderX, int tileRenderY, float alpha) {
-		for (int i = 0; i < tiledMap.getTilesets().size; i++) {
-			Tileset tileset = tiledMap.getTilesets().get(i);
-			if (tileset.contains(tileId)) {
-				tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY, alpha);
-				break;
+		Tileset tileset = tileIdToTileset.get(tileId, null);
+		if(tileset == null) {
+			for (int i = 0; i < tiledMap.getTilesets().size; i++) {
+				Tileset searchTileset = tiledMap.getTilesets().get(i);
+				if (searchTileset.contains(tileId)) {
+					tileset = searchTileset;
+					break;
+				}
+			}
+			if(tileset == null) {
+				return;
 			}
 		}
+		tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY, alpha);
 	}
 
 	@Override

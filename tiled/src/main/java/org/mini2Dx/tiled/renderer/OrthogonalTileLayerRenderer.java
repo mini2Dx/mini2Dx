@@ -25,14 +25,17 @@ import org.mini2Dx.tiled.*;
  * Renders orthogonal {@link TileLayer}s
  */
 public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
+	private final IntMap<Tileset> tileIdToTileset;
+
 	private IntMap<OrthogonalEmptyTileLayerRenderer> emptyTileLayerRenderers;
 
 	private final TiledMap tiledMap;
 	private final Rectangle graphicsClip = new Rectangle();
 
-	public OrthogonalTileLayerRenderer(TiledMap tiledMap) {
+	public OrthogonalTileLayerRenderer(TiledMap tiledMap, IntMap<Tileset> tileIdToTileset) {
 		super();
 		this.tiledMap = tiledMap;
+		this.tileIdToTileset = tileIdToTileset;
 
 		if(TiledMap.FAST_RENDER_EMPTY_LAYERS) {
 			emptyTileLayerRenderers = new IntMap<OrthogonalEmptyTileLayerRenderer>();
@@ -104,15 +107,26 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 					}
 				}
 
-				for (int i = 0; i < tiledMap.getTilesets().size; i++) {
-					Tileset tileset = tiledMap.getTilesets().get(i);
-					if (tileset.contains(tileId)) {
-						tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY, alpha, flipHorizontally, flipVertically, flipDiagonally);
-						break;
-					}
-				}
+				renderTile(g, alpha, tileId, flipHorizontally, flipVertically, flipDiagonally, tileRenderX, tileRenderY);
 			}
 		}
+	}
+
+	private void renderTile(Graphics g, float alpha, int tileId, boolean flipHorizontally, boolean flipVertically, boolean flipDiagonally, int tileRenderX, int tileRenderY) {
+		Tileset tileset = tileIdToTileset.get(tileId, null);
+		if(tileset == null) {
+			for (int i = 0; i < tiledMap.getTilesets().size; i++) {
+				Tileset searchTileset = tiledMap.getTilesets().get(i);
+				if (searchTileset.contains(tileId)) {
+					tileset = searchTileset;
+					break;
+				}
+			}
+			if(tileset == null) {
+				return;
+			}
+		}
+		tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY, alpha, flipHorizontally, flipVertically, flipDiagonally);
 	}
 
 	@Override

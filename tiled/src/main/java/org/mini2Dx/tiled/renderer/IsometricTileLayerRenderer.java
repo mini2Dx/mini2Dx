@@ -17,6 +17,7 @@ package org.mini2Dx.tiled.renderer;
 
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.gdx.math.MathUtils;
+import org.mini2Dx.gdx.utils.IntMap;
 import org.mini2Dx.tiled.TileLayer;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.Tileset;
@@ -28,11 +29,13 @@ public class IsometricTileLayerRenderer implements TileLayerRenderer {
 	private TiledMapRenderArea mapClip, tmpClip;
 
 	private final TiledMap tiledMap;
+	private final IntMap<Tileset> tileIdToTileset;
 	private final float halfTileWidth, halfTileHeight;
 
-	public IsometricTileLayerRenderer(TiledMap tiledMap) {
+	public IsometricTileLayerRenderer(TiledMap tiledMap, IntMap<Tileset> tileIdToTileset) {
 		super();
 		this.tiledMap = tiledMap;
+		this.tileIdToTileset = tileIdToTileset;
 		
 		this.halfTileWidth = tiledMap.getTileWidth() / 2f;
 		this.halfTileHeight = tiledMap.getTileHeight() / 2f;
@@ -67,18 +70,29 @@ public class IsometricTileLayerRenderer implements TileLayerRenderer {
 				
 				int tileRenderX = MathUtils.round(renderX + ((relativeTileX - relativeTileY) * halfTileWidth));
 				int tileRenderY = MathUtils.round(renderY + ((relativeTileX + relativeTileY) * halfTileHeight));
-				
-				for (int i = 0; i < tiledMap.getTilesets().size; i++) {
-					Tileset tileset = tiledMap.getTilesets().get(i);
-					if (tileset.contains(tileId)) {
-						tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY, alpha);
-						break;
-					}
-				}
+				renderTile(g, alpha, tileId, tileRenderX, tileRenderY);
 			}
 		}
 	}
-	
+
+	private boolean renderTile(Graphics g, float alpha, int tileId, int tileRenderX, int tileRenderY) {
+		Tileset tileset = tileIdToTileset.get(tileId, null);
+		if(tileset == null) {
+			for (int i = 0; i < tiledMap.getTilesets().size; i++) {
+				Tileset searchTileset = tiledMap.getTilesets().get(i);
+				if (searchTileset.contains(tileId)) {
+					tileset = searchTileset;
+					break;
+				}
+			}
+			if(tileset == null) {
+				return true;
+			}
+		}
+		tileset.getTile(tileId).draw(g, tileRenderX, tileRenderY, alpha);
+		return false;
+	}
+
 	private int getTotalCols(int row, int width, int height) {
 		if(row < width && row < height) {
 			return row + 1;
