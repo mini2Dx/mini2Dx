@@ -28,8 +28,8 @@ import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
 import java.util.Random;
 
-public class GridTest {
-	private Grid<CollisionBox> grid;
+public class CellGridTest {
+	private CellGrid<CollisionBox> grid;
 	private CollisionBox box1, box2, box3, box4;
 	private QuadTreeAwareCollisionBox qABox1, qABox2, qABox3, qABox4;
 
@@ -40,7 +40,7 @@ public class GridTest {
 
 		Mdx.graphics = null;
 
-		grid = new Grid<CollisionBox>(0, 0, 128, 128, 32, 32);
+		grid = new CellGrid<CollisionBox>(0, 0, 128, 128, 32, 32);
 
 		box1 = new CollisionBox(1, 1, 32, 32);
 		box2 = new CollisionBox(95, 1, 32, 32);

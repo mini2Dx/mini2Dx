@@ -21,16 +21,16 @@ import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.IntMap;
 import org.mini2Dx.gdx.utils.IntSet;
 
-public class GridCell<T extends CollisionArea> extends Rectangle implements CollisionDetection<T> {
+public class Cell<T extends CollisionArea> extends Rectangle implements CollisionDetection<T> {
 	private final IntMap<T> elements = new IntMap<T>();
 
-	public GridCell(int x, int y, int width, int height) {
+	public Cell(int x, int y, int width, int height) {
 		super(x, y, width, height);
 	}
 
 	@Override
 	public void debugRender(Graphics g) {
-		g.setColor(Grid.ELEMENT_COLOR);
+		g.setColor(CellGrid.ELEMENT_COLOR);
 		for (T element : elements.values()) {
 			g.drawRect(element.getX(), element.getY(), element.getWidth(), element.getHeight());
 		}
@@ -96,7 +96,13 @@ public class GridCell<T extends CollisionArea> extends Rectangle implements Coll
 		final IntMap.Keys keys = elements.keys();
 		while(keys.hasNext) {
 			T element = elements.get(keys.next());
-			if (element != null && (area.contains(element) || area.intersects(element))) {
+			if (element == null) {
+				continue;
+			}
+			if(result.containsKey(element.getId())) {
+				continue;
+			}
+			if (area.contains(element) || area.intersects(element)) {
 				result.put(element.getId(), element);
 			}
 		}
@@ -124,7 +130,13 @@ public class GridCell<T extends CollisionArea> extends Rectangle implements Coll
 		final IntMap.Keys keys = elements.keys();
 		while(keys.hasNext) {
 			T element = elements.get(keys.next());
-			if (element != null && (area.contains(element) || area.intersectsIgnoringEdges(element))) {
+			if (element == null) {
+				continue;
+			}
+			if(result.containsKey(element.getId())) {
+				continue;
+			}
+			if (area.contains(element) || area.intersectsIgnoringEdges(element)) {
 				result.put(element.getId(), element);
 			}
 		}
@@ -167,7 +179,13 @@ public class GridCell<T extends CollisionArea> extends Rectangle implements Coll
 			final IntMap.Keys keys = elements.keys();
 			while(keys.hasNext) {
 				T element = elements.get(keys.next());
-				if (element != null && element.contains(area)) {
+				if (element == null) {
+					continue;
+				}
+				if(result.containsKey(element.getId())) {
+					continue;
+				}
+				if (element.contains(area)) {
 					result.put(element.getId(), element);
 				}
 			}
@@ -175,7 +193,13 @@ public class GridCell<T extends CollisionArea> extends Rectangle implements Coll
 			final IntMap.Keys keys = elements.keys();
 			while(keys.hasNext) {
 				T element = elements.get(keys.next());
-				if (element != null && (element.contains(area) || element.intersects(area))) {
+				if (element == null) {
+					continue;
+				}
+				if(result.containsKey(element.getId())) {
+					continue;
+				}
+				if (element.contains(area) || element.intersects(area)) {
 					//If area is larger than element it is not contained.
 					if(area.getWidth() > element.getWidth() || area.getHeight() > element.getHeight()) {
 						continue;
@@ -208,7 +232,13 @@ public class GridCell<T extends CollisionArea> extends Rectangle implements Coll
 		final IntMap.Keys keys = elements.keys();
 		while(keys.hasNext) {
 			T element = elements.get(keys.next());
-			if (element != null && element.intersects(lineSegment)) {
+			if (element == null) {
+				continue;
+			}
+			if(result.containsKey(element.getId())) {
+				continue;
+			}
+			if (element.intersects(lineSegment)) {
 				result.put(element.getId(), element);
 			}
 		}
@@ -236,7 +266,13 @@ public class GridCell<T extends CollisionArea> extends Rectangle implements Coll
 		final IntMap.Keys keys = elements.keys();
 		while(keys.hasNext) {
 			T element = elements.get(keys.next());
-			if (element != null && element.contains(point)) {
+			if (element == null) {
+				continue;
+			}
+			if(result.containsKey(element.getId())) {
+				continue;
+			}
+			if (element.contains(point)) {
 				result.put(element.getId(), element);
 			}
 		}

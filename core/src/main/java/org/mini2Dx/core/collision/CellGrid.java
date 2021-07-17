@@ -25,17 +25,17 @@ import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.IntMap;
 import org.mini2Dx.gdx.utils.IntSet;
 
-public class Grid<T extends CollisionArea> extends Rectangle implements CollisionDetection<T>, SizeChangeListener<T> {
+public class CellGrid<T extends CollisionArea> extends Rectangle implements CollisionDetection<T>, SizeChangeListener<T> {
 	public static Color QUAD_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(1f, 0f, 0f, 0.5f) : null;
 	public static Color ELEMENT_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(0f, 0f, 1f, 0.5f) : null;
 
 	private final int cellWidth, cellHeight;
-	private final GridCell<T>[][] cells;
+	private final Cell<T>[][] cells;
 
 	private final IntMap<T> tmpCollisions = new IntMap<>();
-	private final Array<GridCell<T>> tmpCells = new Array<>();
+	private final Array<Cell<T>> tmpCells = new Array<>();
 
-	public Grid(int x, int y, int width, int height, int cellWidth, int cellHeight) {
+	public CellGrid(int x, int y, int width, int height, int cellWidth, int cellHeight) {
 		super(x, y, width, height);
 		this.cellWidth = cellWidth;
 		this.cellHeight = cellHeight;
@@ -46,7 +46,7 @@ public class Grid<T extends CollisionArea> extends Rectangle implements Collisio
 		if(height % cellHeight != 0) {
 			throw new MdxException("Height of grid must be divisible by cell height");
 		}
-		cells = new GridCell[width / cellWidth][height / cellHeight];
+		cells = new Cell[width / cellWidth][height / cellHeight];
 	}
 
 	@Override
@@ -163,7 +163,7 @@ public class Grid<T extends CollisionArea> extends Rectangle implements Collisio
 
 		for(int x = minCellX; x <= maxCellX; x++) {
 			for(int y = minCellY; y <= maxCellY; y++) {
-				GridCell<T> cell = getOrCreateCell(x, y);
+				Cell<T> cell = getOrCreateCell(x, y);
 				if(cell == null) {
 					continue;
 				}
@@ -199,7 +199,7 @@ public class Grid<T extends CollisionArea> extends Rectangle implements Collisio
 
 		for(int x = minCellX; x <= maxCellX; x++) {
 			for(int y = minCellY; y <= maxCellY; y++) {
-				GridCell<T> cell = getOrCreateCell(x, y);
+				Cell<T> cell = getOrCreateCell(x, y);
 				if(cell == null) {
 					continue;
 				}
@@ -235,7 +235,7 @@ public class Grid<T extends CollisionArea> extends Rectangle implements Collisio
 
 		for(int x = minCellX; x <= maxCellX; x++) {
 			for(int y = minCellY; y <= maxCellY; y++) {
-				GridCell<T> cell = getOrCreateCell(x, y);
+				Cell<T> cell = getOrCreateCell(x, y);
 				if(cell == null) {
 					continue;
 				}
@@ -271,7 +271,7 @@ public class Grid<T extends CollisionArea> extends Rectangle implements Collisio
 
 		for(int x = minCellX; x <= maxCellX; x++) {
 			for(int y = minCellY; y <= maxCellY; y++) {
-				GridCell<T> cell = getOrCreateCell(x, y);
+				Cell<T> cell = getOrCreateCell(x, y);
 				if(cell == null) {
 					continue;
 				}
@@ -302,7 +302,7 @@ public class Grid<T extends CollisionArea> extends Rectangle implements Collisio
 	public void getElementsContainingPoint(IntMap<T> result, Point point) {
 		final int cellX = MathUtils.floor((point.getX() - getX()) / cellWidth);
 		final int cellY = MathUtils.floor((point.getY() - getY()) / cellHeight);
-		GridCell<T> cell = getOrCreateCell(cellX, cellY);
+		Cell<T> cell = getOrCreateCell(cellX, cellY);
 		if(cell == null) {
 			return;
 		}
@@ -355,7 +355,7 @@ public class Grid<T extends CollisionArea> extends Rectangle implements Collisio
 
 		for(int x = minCellX; x <= maxCellX; x++) {
 			for(int y = minCellY; y <= maxCellY; y++) {
-				GridCell<T> cell = getOrCreateCell(x, y);
+				Cell<T> cell = getOrCreateCell(x, y);
 				if(cell == null) {
 					continue;
 				}
@@ -373,7 +373,7 @@ public class Grid<T extends CollisionArea> extends Rectangle implements Collisio
 
 		for(int x = minCellX; x <= maxCellX; x++) {
 			for(int y = minCellY; y <= maxCellY; y++) {
-				GridCell<T> cell = getOrCreateCell(x, y);
+				Cell<T> cell = getOrCreateCell(x, y);
 				if(cell == null) {
 					continue;
 				}
@@ -382,7 +382,7 @@ public class Grid<T extends CollisionArea> extends Rectangle implements Collisio
 		}
 	}
 
-	private void getOrCreateFor(T sizeable, Array<GridCell<T>> results) {
+	private void getOrCreateFor(T sizeable, Array<Cell<T>> results) {
 		final int minCellX = MathUtils.floor((sizeable.getMinX() - getX()) / cellWidth);
 		final int minCellY = MathUtils.floor((sizeable.getMinY() - getY()) / cellHeight);
 		final int maxCellX = MathUtils.ceil((sizeable.getMaxX() - getX()) / cellWidth);
@@ -390,7 +390,7 @@ public class Grid<T extends CollisionArea> extends Rectangle implements Collisio
 
 		for(int x = minCellX; x <= maxCellX; x++) {
 			for(int y = minCellY; y <= maxCellY; y++) {
-				GridCell<T> cell = getOrCreateCell(x, y);
+				Cell<T> cell = getOrCreateCell(x, y);
 				if(cell == null) {
 					continue;
 				}
@@ -399,7 +399,7 @@ public class Grid<T extends CollisionArea> extends Rectangle implements Collisio
 		}
 	}
 
-	private GridCell<T> getOrCreateCell(int cellX, int cellY) {
+	private Cell<T> getOrCreateCell(int cellX, int cellY) {
 		if(cellX < 0) {
 			return null;
 		}
@@ -412,9 +412,9 @@ public class Grid<T extends CollisionArea> extends Rectangle implements Collisio
 		if(cellY >= cells[0].length) {
 			return null;
 		}
-		GridCell<T> result = cells[cellX][cellY];
+		Cell<T> result = cells[cellX][cellY];
 		if(result == null) {
-			result = new GridCell<T>(MathUtils.round(getX() + (cellX * cellWidth)),
+			result = new Cell<T>(MathUtils.round(getX() + (cellX * cellWidth)),
 					MathUtils.round(getY() + (cellY * cellWidth)),
 					cellWidth, cellHeight);
 			cells[cellX][cellY] = result;
