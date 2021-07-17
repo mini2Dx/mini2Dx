@@ -51,6 +51,7 @@ public class JsonSerializer {
 
 	private final ObjectMap<String, Method[]> methodCache = new ConcurrentObjectMap<>();
 	private final ObjectMap<String, Field[]> fieldCache = new ConcurrentObjectMap<>();
+	private final ObjectMap<String, Method> postDeserializeCache = new ConcurrentObjectMap<>();
 
 	/**
 	 * Reads a JSON document and converts it into an object of the specified
@@ -529,28 +530,38 @@ public class JsonSerializer {
 			if(!methodCache.containsKey(className)) {
 				methodCache.put(className, Mdx.reflect.getDeclaredMethods(currentClass));
 			}
-			final Method [] methods = methodCache.get(className);
+			if(postDeserializeCache.containsKey(className)) {
+				try {
+					postDeserializeCache.get(className).invoke(object);
+				} catch (ReflectionException e) {
+					throw new SerializationException(e);
+				}
+			} else {
+				final Method [] methods = methodCache.get(className);
 
-			final AotSerializedClassData classData = AotSerializationData.getClassData(currentClass);
-			if(classData != null) {
-				if(classData.getPostDeserializeMethodName() != null) {
+				final AotSerializedClassData classData = AotSerializationData.getClassData(currentClass);
+				if(classData != null) {
+					if(classData.getPostDeserializeMethodName() != null) {
+						for(Method method : methods) {
+							if(method.getName().equals(classData.getPostDeserializeMethodName())) {
+								postDeserializeCache.put(className, method);
+								try {
+									method.invoke(object);
+								} catch (ReflectionException e) {
+									throw new SerializationException(e);
+								}
+								break;
+							}
+						}
+					}
+				} else {
 					for(Method method : methods) {
-						if(method.getName().equals(classData.getPostDeserializeMethodName())) {
+						if(method.isAnnotationPresent(PostDeserialize.class)) {
 							try {
 								method.invoke(object);
 							} catch (ReflectionException e) {
 								throw new SerializationException(e);
 							}
-						}
-					}
-				}
-			} else {
-				for(Method method : methods) {
-					if(method.isAnnotationPresent(PostDeserialize.class)) {
-						try {
-							method.invoke(object);
-						} catch (ReflectionException e) {
-							throw new SerializationException(e);
 						}
 					}
 				}
