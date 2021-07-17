@@ -15,9 +15,12 @@
  ******************************************************************************/
 package org.mini2Dx.core.reflect.jvm;
 
+import org.mini2Dx.core.collections.concurrent.ConcurrentObjectSet;
 import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.reflect.Annotation;
 import org.mini2Dx.core.reflect.Method;
+import org.mini2Dx.gdx.utils.ObjectMap;
+import org.mini2Dx.gdx.utils.ObjectSet;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -27,6 +30,8 @@ import java.lang.reflect.Modifier;
  */
 public class JvmMethod implements Method {
 	private final java.lang.reflect.Method method;
+	private final ObjectSet<Class> annotationsPresent = new ConcurrentObjectSet<>();
+	private final ObjectSet<Class> annotationsNotPresent = new ConcurrentObjectSet<>();
 
 	public JvmMethod(java.lang.reflect.Method method) {
 		try {
@@ -51,7 +56,19 @@ public class JvmMethod implements Method {
 
 	@Override
 	public boolean isAnnotationPresent(Class<? extends java.lang.annotation.Annotation> annotation) {
-		return method.isAnnotationPresent(annotation);
+		if(annotationsPresent.contains(annotation)) {
+			return true;
+		}
+		if(annotationsNotPresent.contains(annotation)) {
+			return false;
+		}
+		final boolean present = method.isAnnotationPresent(annotation);
+		if(present) {
+			annotationsPresent.add(annotation);
+		} else {
+			annotationsNotPresent.add(annotation);
+		}
+		return present;
 	}
 
 	@Override
