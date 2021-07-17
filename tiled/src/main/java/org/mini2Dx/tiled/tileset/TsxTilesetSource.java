@@ -19,6 +19,7 @@ import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.AssetDescriptor;
 import org.mini2Dx.core.assets.AssetManager;
+import org.mini2Dx.core.collections.concurrent.ConcurrentObjectMap;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.core.graphics.TextureAtlas;
@@ -38,9 +39,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TsxTilesetSource extends TilesetSource {
 	private static final String LOGGING_TAG = TsxTilesetSource.class.getSimpleName();
 
-	private static final TiledParser TSX_PARSER = new TiledParser();
-	private static final ObjectMap<String, ImageTilesetSource> TILESETS = new ObjectMap<String, ImageTilesetSource>();
-	private static final ObjectMap<String, AtomicInteger> TILESET_REFS = new ObjectMap<String, AtomicInteger>();
+	private static final ConcurrentObjectMap<String, ImageTilesetSource> TILESETS = new ConcurrentObjectMap<>();
+	private static final ConcurrentObjectMap<String, AtomicInteger> TILESET_REFS = new ConcurrentObjectMap<>();
 
 	private final String tsxPath;
 	private final ImageTilesetSource tileset;
@@ -52,12 +52,15 @@ public class TsxTilesetSource extends TilesetSource {
 
 		if (!TILESETS.containsKey(this.tsxPath)) {
 			try {
-				TILESETS.put(this.tsxPath, TSX_PARSER.parseTsx(tsxFileHandle));
+				final TiledParser tiledParser = new TiledParser();
+				TILESETS.putIfAbsent(this.tsxPath, tiledParser.parseTsx(tsxFileHandle));
 			} catch (IOException e) {
 				Mdx.log.error(LOGGING_TAG, "Could not parse " + tsxPath + ". " + e.getMessage(), e);
-				TILESETS.put(this.tsxPath, null);
+				TILESETS.putIfAbsent(this.tsxPath, null);
 			}
-			TILESET_REFS.put(this.tsxPath, new AtomicInteger(0));
+		}
+		if(!TILESET_REFS.containsKey(this.tsxPath)) {
+			TILESET_REFS.putIfAbsent(this.tsxPath, new AtomicInteger(0));
 		}
 		tileset = TILESETS.get(this.tsxPath);
 		TILESET_REFS.get(this.tsxPath).incrementAndGet();
