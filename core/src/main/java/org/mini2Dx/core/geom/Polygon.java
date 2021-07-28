@@ -207,6 +207,7 @@ public class Polygon extends Shape {
 	@Override
 	public boolean contains(float x, float y) {
 		minMaxDirtyCheck();
+
 		if(x < minX) {
 			return false;
 		}
@@ -220,6 +221,7 @@ public class Polygon extends Shape {
 			return false;
 		}
 
+		checkSidesCache();
 		if (isRectangle) {
 			return triangleContains(x, y, vertices[0], vertices[1], vertices[2], vertices[3], vertices[6], vertices[7])
 					|| triangleContains(x, y, vertices[6], vertices[7], vertices[2], vertices[3], vertices[4],
@@ -254,6 +256,7 @@ public class Polygon extends Shape {
 	}
 
 	public boolean contains(Polygon polygon) {
+		checkSidesCache();
 		if(isRectangle && MathUtils.round(rotation) % 90 == 0) {
 			if(polygon.getMaxX() < getX()) {
 				return false;
@@ -324,8 +327,8 @@ public class Polygon extends Shape {
 			return false;
 
 		if (isRectangle && polygon.isRectangle &&
-				MathUtils.round(rotation % 90f) == 0 &&
-				MathUtils.round(polygon.rotation % 90f) == 0) {
+				MathUtils.round(rotation) % 90 == 0 &&
+				MathUtils.round(polygon.rotation) % 90 == 0) {
 			return true;
 		}
 
@@ -345,10 +348,13 @@ public class Polygon extends Shape {
 
 	public boolean intersectsIgnoringEdges(Polygon polygon) {
 		minMaxDirtyCheck();
+		checkSidesCache();
 		polygon.minMaxDirtyCheck();
+		polygon.checkSidesCache();
+
 		if (isRectangle && polygon.isRectangle &&
-				MathUtils.round(rotation % 90f) == 0f &&
-				MathUtils.round(polygon.rotation % 90f) == 0f) {
+				MathUtils.round(rotation) % 90 == 0 &&
+				MathUtils.round(polygon.rotation) % 90 == 0) {
 			boolean xAxisOverlaps = true;
 			boolean yAxisOverlaps = true;
 
