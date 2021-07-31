@@ -29,7 +29,7 @@ import java.util.Objects;
  * An implementation of a collision polygon that does not register as an interpolating collision. Due to this,
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionPolygon} implementation.
  */
-public class StaticCollisionPolygon extends Polygon implements CollisionArea {
+public class StaticCollisionPolygon extends Polygon implements CollisionArea, StaticCollision {
 	private int id;
 	protected Collisions collisions = null;
 
@@ -192,10 +192,10 @@ public class StaticCollisionPolygon extends Polygon implements CollisionArea {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
+		if (o == null || (!(o instanceof StaticCollisionPolygon))) return false;
 		StaticCollisionPolygon that = (StaticCollisionPolygon) o;
-		return id == that.id;
+		if (id != that.id) return false;
+		return super.equals(o);
 	}
 
 	@Override

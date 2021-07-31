@@ -27,7 +27,7 @@ import java.util.Objects;
  * An implementation of a collision point that does not register as an interpolating collision. Due to this,
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionPoint} implementation.
  */
-public class StaticCollisionPoint extends Point implements CollisionObject {
+public class StaticCollisionPoint extends Point implements CollisionObject, StaticCollision {
 	private int id;
 	protected Collisions collisions = null;
 
@@ -144,10 +144,10 @@ public class StaticCollisionPoint extends Point implements CollisionObject {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
+		if (o == null || (!(o instanceof StaticCollisionPoint))) return false;
 		StaticCollisionPoint that = (StaticCollisionPoint) o;
-		return id == that.id;
+		if (id != that.id) return false;
+		return super.equals(o);
 	}
 
 	@Override

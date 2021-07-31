@@ -345,10 +345,10 @@ public class CollisionCircle extends Circle implements CollisionArea,
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof CollisionCircle)) return false;
-		if (!super.equals(o)) return false;
+		if (o == null || (!(o instanceof CollisionCircle))) return false;
 		CollisionCircle that = (CollisionCircle) o;
-		return id == that.id;
+		if (id != that.id) return false;
+		return super.equals(o);
 	}
 
 	@Override

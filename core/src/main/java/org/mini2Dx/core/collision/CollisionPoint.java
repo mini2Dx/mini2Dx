@@ -228,10 +228,10 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof CollisionPoint)) return false;
-		if (!super.equals(o)) return false;
+		if (o == null || (!(o instanceof CollisionPoint))) return false;
 		CollisionPoint that = (CollisionPoint) o;
-		return id == that.id;
+		if (id != that.id) return false;
+		return super.equals(o);
 	}
 
 	@Override

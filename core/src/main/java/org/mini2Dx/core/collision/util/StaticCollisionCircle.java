@@ -15,10 +15,7 @@
  ******************************************************************************/
 package org.mini2Dx.core.collision.util;
 
-import org.mini2Dx.core.collision.CollisionArea;
-import org.mini2Dx.core.collision.CollisionIdSequence;
-import org.mini2Dx.core.collision.Collisions;
-import org.mini2Dx.core.collision.RenderCoordMode;
+import org.mini2Dx.core.collision.*;
 import org.mini2Dx.core.geom.Circle;
 
 import java.util.Objects;
@@ -27,7 +24,7 @@ import java.util.Objects;
  * An implementation of a collision circle that does not register as an interpolating collision. Due to this,
  * memory and CPU overhead are reduced compared to using the {@link org.mini2Dx.core.collision.CollisionCircle} implementation.
  */
-public class StaticCollisionCircle extends Circle implements CollisionArea {
+public class StaticCollisionCircle extends Circle implements CollisionArea, StaticCollision {
 	private int id;
 	protected Collisions collisions = null;
 
@@ -192,10 +189,10 @@ public class StaticCollisionCircle extends Circle implements CollisionArea {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
+		if (o == null || (!(o instanceof StaticCollisionCircle))) return false;
 		StaticCollisionCircle that = (StaticCollisionCircle) o;
-		return id == that.id;
+		if (id != that.id) return false;
+		return super.equals(o);
 	}
 
 	@Override

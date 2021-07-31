@@ -351,10 +351,10 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof CollisionPolygon)) return false;
-		if (!super.equals(o)) return false;
+		if (o == null || (!(o instanceof CollisionPolygon))) return false;
 		CollisionPolygon that = (CollisionPolygon) o;
-		return id == that.id;
+		if (id != that.id) return false;
+		return super.equals(o);
 	}
 
 	@Override

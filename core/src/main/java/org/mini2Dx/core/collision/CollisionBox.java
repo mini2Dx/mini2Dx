@@ -17,6 +17,7 @@ package org.mini2Dx.core.collision;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.TimestepMode;
+import org.mini2Dx.core.collision.util.StaticCollisionBox;
 import org.mini2Dx.core.geom.*;
 import org.mini2Dx.lockprovider.ReadWriteLock;
 import org.mini2Dx.core.util.InterpolationTracker;
@@ -337,10 +338,10 @@ public class CollisionBox extends Rectangle implements CollisionArea,
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
+		if (o == null || (!(o instanceof CollisionBox))) return false;
 		CollisionBox that = (CollisionBox) o;
-		return id == that.id;
+		if (id != that.id) return false;
+		return super.equals(o);
 	}
 
 	@Override
