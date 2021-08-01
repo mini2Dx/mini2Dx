@@ -38,6 +38,7 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, ParentS
 	private final AssetManager assetManager;
 	private final ObjectMap<String, RenderNode<?, ?>> elementIdLookupCache = new ObjectMap<String, RenderNode<?, ?>>();
 	private final LayoutState layoutState = new LayoutState();
+	private final ParentStyleRule styleRule = new ParentStyleRule();
 
 	protected final Array<DeferredRunnable> deferredLayout = new Array<DeferredRunnable>(true,1, DeferredRunnable.class);
 	protected final Array<DeferredRunnable> deferredUpdate = new Array<DeferredRunnable>(true,1, DeferredRunnable.class);
@@ -249,7 +250,7 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, ParentS
 
 	@Override
 	protected ParentStyleRule determineStyleRule(LayoutState layoutState) {
-		return new ParentStyleRule();
+		return styleRule;
 	}
 
 	@Override
