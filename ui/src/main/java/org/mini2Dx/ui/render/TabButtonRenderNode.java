@@ -11,7 +11,7 @@ import org.mini2Dx.ui.layout.LayoutState;
  * {@link RenderNode} implementation for {@link TabButton}
  */
 public class TabButtonRenderNode extends ButtonRenderNode {
-	private LayoutState deferredLayoutState;
+	private final LayoutState deferredLayoutState = new LayoutState();
 	
 	public TabButtonRenderNode(ParentRenderNode<?, ?> parent, TabButton element) {
 		super(parent, element);
@@ -19,7 +19,9 @@ public class TabButtonRenderNode extends ButtonRenderNode {
 
 	@Override
 	public void layout(LayoutState layoutState) {
-		deferredLayoutState = new LayoutState(layoutState.getUiContainerRenderTree(), layoutState.getAssetManager(), layoutState.getTheme(), layoutState.getScreenSize(), layoutState.getTotalColumns(), layoutState.getParentWidth(), layoutState.isScreenSizeChanged());
+		deferredLayoutState.reset(layoutState.getUiContainerRenderTree(), layoutState.getAssetManager(),
+				layoutState.getTheme(), layoutState.getScreenSize(), layoutState.getTotalColumns(),
+				layoutState.getParentWidth(), layoutState.isScreenSizeChanged());
 		super.layout(layoutState);
 	}
 
