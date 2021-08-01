@@ -181,7 +181,8 @@ public class DivRenderNodeTest {
 	}
 	
 	private void configureParentWithWidth(final float parentWidth) {
-		layoutState = new LayoutState(renderTree, null, theme, ScreenSize.XS, 12, parentWidth, true);
+		layoutState = new LayoutState();
+		layoutState.reset(renderTree, null, theme, ScreenSize.XS, 12, parentWidth, true);
 		mockery.checking(new Expectations() {
 			{
 				atLeast(1).of(theme).getId();
