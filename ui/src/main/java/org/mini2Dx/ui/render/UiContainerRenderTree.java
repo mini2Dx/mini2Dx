@@ -37,6 +37,7 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, ParentS
 
 	private final AssetManager assetManager;
 	private final ObjectMap<String, RenderNode<?, ?>> elementIdLookupCache = new ObjectMap<String, RenderNode<?, ?>>();
+	private final LayoutState layoutState = new LayoutState();
 
 	protected final Array<DeferredRunnable> deferredLayout = new Array<DeferredRunnable>(true,1, DeferredRunnable.class);
 	protected final Array<DeferredRunnable> deferredUpdate = new Array<DeferredRunnable>(true,1, DeferredRunnable.class);
@@ -61,8 +62,9 @@ public class UiContainerRenderTree extends ParentRenderNode<UiContainer, ParentS
 	}
 
 	public void layout() {
-		layout(new LayoutState(this, assetManager, UiContainer.getTheme(), currentScreenSize, 12,
-				((UiContainer) element).getWidth(), screenSizeChanged));
+		layoutState.reset(this, assetManager, UiContainer.getTheme(), currentScreenSize, 12,
+				((UiContainer) element).getWidth(), screenSizeChanged);
+		layout(layoutState);
 	}
 
 	@Override

@@ -27,17 +27,16 @@ import org.mini2Dx.ui.style.UiTheme;
  * Represents the current flow state during layout
  */
 public class LayoutState {
-	private final UiContainerRenderTree uiContainerRenderTree;
-	private final AssetManager assetManager;
-	private final UiTheme theme;
-	private final ScreenSize screenSize;
-	private final float totalColumns;
-	private final boolean screenSizeChanged;
-	
+	private UiContainerRenderTree uiContainerRenderTree;
+	private AssetManager assetManager;
+	private UiTheme theme;
+	private ScreenSize screenSize;
+	private float totalColumns;
+	private boolean screenSizeChanged;
 	private float parentWidth;
 
-	public LayoutState(UiContainerRenderTree uiContainerRenderTree, AssetManager assetManager,  UiTheme theme,
-			ScreenSize screenSize, int totalColumns, float parentWidth, boolean screenSizeChanged) {
+	public void reset(UiContainerRenderTree uiContainerRenderTree, AssetManager assetManager,  UiTheme theme,
+	                  ScreenSize screenSize, int totalColumns, float parentWidth, boolean screenSizeChanged) {
 		this.uiContainerRenderTree = uiContainerRenderTree;
 		this.assetManager = assetManager;
 		this.theme = theme;
