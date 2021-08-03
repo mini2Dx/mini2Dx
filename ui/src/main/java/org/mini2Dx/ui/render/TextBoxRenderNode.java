@@ -306,6 +306,9 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule> imp
 		if (!isValidCharacter(c)) {
 			return;
 		}
+		if (element.getCharacterLimit() == cursor){
+			return;
+		}
 		switch (cursor) {
 		case 0:
 			element.setValue(c + element.getValue());
