@@ -242,7 +242,9 @@ public class DesktopMini2DxGame implements Application {
 					listener.update(delta);
 					Mdx.platformUtils.markUpdateEnd();
 
+					Mdx.platformUtils.markInterpolateBegin();
 					listener.interpolate(1f);
+					Mdx.platformUtils.markInterpolateEnd();
 					break;
 				case PHYSICS:
 					float physicsDelta = graphics.getDeltaTime();
@@ -263,7 +265,9 @@ public class DesktopMini2DxGame implements Application {
 					listener.update(delta);
 					Mdx.platformUtils.markUpdateEnd();
 
+					Mdx.platformUtils.markInterpolateBegin();
 					listener.interpolate(accumulator / targetTimestepSeconds);
+					Mdx.platformUtils.markInterpolateEnd();
 					break;
 				}
 

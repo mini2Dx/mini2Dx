@@ -22,15 +22,17 @@ import org.mini2Dx.core.util.InterpolationTracker;
 import java.util.Locale;
 
 public class PerformanceTracker {
-    private static final String DURATION_PREFIX = "Avg update duration:: ";
-    private static final String RENDER_PREFIX = "Avg render duration:: ";
+    private static final String UPDATE_DURATION_PREFIX = "Avg update duration:: ";
+    private static final String INTERPOLATE_DURATION_PREFIX = "Avg interpolate duration:: ";
+    private static final String RENDER_DURATION_PREFIX = "Avg render duration:: ";
+    private static final String FRAME_DURATION_PREFIX = "Avg frame duration:: ";
     private static final String UPDATE_PREFIX = "Updates / second:: ";
     private static final String FRAMES_PREFIX = "Frames / second:: ";
     private static final String MEMORY_PREFIX = "Memory usage:: ";
     private static final String INTERPOLATABLES_PREFIX = "Interpolating Objects:: ";
     private static final String MS = "ms";
 
-    private static final String[] messages = new String[6];
+    private static final String[] messages = new String[8];
     private static long lastMessagesUpdate = 0L;
 
     private static FontGlyphLayout glyphLayout;
@@ -133,15 +135,19 @@ public class PerformanceTracker {
         }
 
         lastMessagesUpdate = currentTime;
-        messages[0] = DURATION_PREFIX + String.format(Locale.ENGLISH, "%.3f", Mdx.platformUtils.getAverageUpdateDuration() / 1000000)
+        messages[0] = UPDATE_DURATION_PREFIX + String.format(Locale.ENGLISH, "%.3f", Mdx.platformUtils.getAverageUpdateDuration() / 1000000)
                 + MS;
-        messages[1] = RENDER_PREFIX + String.format(Locale.ENGLISH, "%.3f", Mdx.platformUtils.getAverageRenderDuration() / 1000000)
+        messages[1] = INTERPOLATE_DURATION_PREFIX + String.format(Locale.ENGLISH, "%.3f", Mdx.platformUtils.getAverageInterpolateDuration() / 1000000)
                 + MS;
-        messages[2] = UPDATE_PREFIX + Mdx.platformUtils.getUpdatesPerSecond();
-        messages[3] = FRAMES_PREFIX + Mdx.platformUtils.getFramesPerSecond();
-        messages[4] = MEMORY_PREFIX + getHumanReadableByteValue(Mdx.platformUtils.getUsedMemory()) + "/"
+        messages[2] = RENDER_DURATION_PREFIX + String.format(Locale.ENGLISH, "%.3f", Mdx.platformUtils.getAverageRenderDuration() / 1000000)
+                + MS;
+        messages[3] = FRAME_DURATION_PREFIX + String.format(Locale.ENGLISH, "%.3f", Mdx.platformUtils.getAverageFrameDuration() / 1000000)
+                + MS;
+        messages[4] = UPDATE_PREFIX + Mdx.platformUtils.getUpdatesPerSecond();
+        messages[5] = FRAMES_PREFIX + Mdx.platformUtils.getFramesPerSecond();
+        messages[6] = MEMORY_PREFIX + getHumanReadableByteValue(Mdx.platformUtils.getUsedMemory()) + "/"
                 + getHumanReadableByteValue(Mdx.platformUtils.getTotalMemory());
-        messages[5] = INTERPOLATABLES_PREFIX + InterpolationTracker.getTotalObjects();
+        messages[7] = INTERPOLATABLES_PREFIX + InterpolationTracker.getTotalObjects();
     }
 
 

@@ -423,7 +423,9 @@ public class Lwjgl3Mini2DxWindow implements Disposable {
 				listener.update(graphics.getDeltaTime());
 				Mdx.platformUtils.markUpdateEnd();
 
+				Mdx.platformUtils.markInterpolateBegin();
 				listener.interpolate(1f);
+				Mdx.platformUtils.markInterpolateEnd();
 				break;
 			case PHYSICS:
 				long deltaNanos = time - lastFrameTime;
@@ -450,7 +452,9 @@ public class Lwjgl3Mini2DxWindow implements Disposable {
 				listener.update(graphics.getDeltaTime());
 				Mdx.platformUtils.markUpdateEnd();
 
+				Mdx.platformUtils.markInterpolateBegin();
 				listener.interpolate((accumulator * 1f) / (targetTimestepNanos * 1f));
+				Mdx.platformUtils.markInterpolateEnd();
 				break;
 			}
 

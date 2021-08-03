@@ -22,13 +22,19 @@ import org.mini2Dx.core.util.ZlibStream;
 public abstract class PlatformUtils {
 
     private long updateSecondStart;
+    private long updateStartNanos;
     private int updates;
     private int updatesPerSecond;
     private final RollingAverage averageUpdateDuration = new RollingAverage(GameContainer.TARGET_FPS);
 
-    private long updateStart;
-    private long renderStart;
+    private long interpolateStartNanos;
+    private final RollingAverage averageInterpolateDuration = new RollingAverage(GameContainer.TARGET_FPS);
+
+    private long renderStartNanos;
     private final RollingAverage averageRenderDuration = new RollingAverage(GameContainer.TARGET_FPS);
+
+    private long frameStartNanos;
+    private final RollingAverage averageFrameDuration = new RollingAverage(GameContainer.TARGET_FPS);
 
     private long frameSecondStart;
     private int frames;
@@ -90,14 +96,31 @@ public abstract class PlatformUtils {
         }
         updates++;
 
-        updateStart = nanoTime();
+        updateStartNanos = nanoTime();
+    }
+
+    /**
+     * Internal usage only: marks the beginning of interpolate operations
+     */
+    public void markInterpolateBegin() {
+        interpolateStartNanos = nanoTime();
+    }
+
+    /**
+     * Internal usage only: marks the end of interpolate operations
+     */
+    public void markInterpolateEnd() {
+        long time = nanoTime();
+        long interpolateDuration = time - interpolateStartNanos;
+
+        averageInterpolateDuration.mark(interpolateDuration);
     }
 
     /**
      * Internal usage only: marks the beginning of rendering operations
      */
     public void markRenderBegin() {
-        renderStart = nanoTime();
+        renderStartNanos = nanoTime();
     }
 
     /**
@@ -105,7 +128,7 @@ public abstract class PlatformUtils {
      */
     public void markRenderEnd() {
         long time = nanoTime();
-        long renderDuration = time - renderStart;
+        long renderDuration = time - renderStartNanos;
 
         averageRenderDuration.mark(renderDuration);
     }
@@ -115,7 +138,7 @@ public abstract class PlatformUtils {
      */
     public void markUpdateEnd() {
         long time = nanoTime();
-        long updateDuration = time - updateStart;
+        long updateDuration = time - updateStartNanos;
 
         averageUpdateDuration.mark(updateDuration);
     }
@@ -125,6 +148,11 @@ public abstract class PlatformUtils {
      */
     public void markFrame() {
         long time = nanoTime();
+
+        if(frameStartNanos != 0) {
+            averageFrameDuration.mark(time - frameStartNanos);
+        }
+        frameStartNanos = time;
 
         if (time - frameSecondStart >= 1000000000) {
             framesPerSecond = frames;
@@ -170,12 +198,30 @@ public abstract class PlatformUtils {
     }
 
     /**
+     * Returns the average duration of interpolate()
+     *
+     * @return The average duration in nanoseconds
+     */
+    public double getAverageInterpolateDuration() {
+        return averageInterpolateDuration.getAverage();
+    }
+
+    /**
      * Returns the average duration of render({@link Graphics})
      *
      * @return The average duration in nanoseconds
      */
     public double getAverageRenderDuration() {
         return averageRenderDuration.getAverage();
+    }
+
+    /**
+     * Returns the average duration of a total frame (update/interpolate/render)
+     *
+     * @return The average duration in nanoseconds
+     */
+    public double getAverageFrameDuration() {
+        return averageFrameDuration.getAverage();
     }
 
     /**
