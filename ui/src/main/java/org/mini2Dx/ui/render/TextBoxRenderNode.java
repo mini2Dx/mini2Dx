@@ -357,7 +357,7 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule> imp
 
 	@Override
 	public void moveCursorRight() {
-		if (cursor == element.getValue().length() - 1) {
+		if (cursor == element.getValue().length()) {
 			return;
 		}
 		cursor++;
@@ -370,6 +370,22 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule> imp
 			return;
 		}
 		cursor--;
+		setCursorRenderX();
+	}
+
+	public void moveCursorToStart(){
+		if (cursor == 0){
+			return;
+		}
+		cursor = 0;
+		setCursorRenderX();
+	}
+
+	public void moveCursorToEnd(){
+		if (cursor == element.getValue().length()){
+			return;
+		}
+		cursor = element.getValue().length();
 		setCursorRenderX();
 	}
 

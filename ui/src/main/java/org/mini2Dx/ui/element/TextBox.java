@@ -25,13 +25,12 @@ import org.mini2Dx.ui.event.ActionEvent;
 import org.mini2Dx.ui.event.ActionEventPool;
 import org.mini2Dx.ui.event.EventTrigger;
 import org.mini2Dx.ui.event.params.EventTriggerParams;
+import org.mini2Dx.ui.event.params.EventTriggerParamsPool;
+import org.mini2Dx.ui.event.params.MouseEventTriggerParams;
 import org.mini2Dx.ui.layout.*;
 import org.mini2Dx.ui.listener.ActionListener;
 import org.mini2Dx.ui.listener.TextInputListener;
-import org.mini2Dx.ui.render.NodeState;
-import org.mini2Dx.ui.render.ParentRenderNode;
-import org.mini2Dx.ui.render.TextBoxRenderNode;
-import org.mini2Dx.ui.render.UiContainerRenderTree;
+import org.mini2Dx.ui.render.*;
 import org.mini2Dx.ui.style.StyleRule;
 
 /**
@@ -497,5 +496,37 @@ public class TextBox extends UiElement implements Actionable, FlexUiElement {
 	 */
 	public void setHeightFlex(float height) {
 		flexLayout = FlexLayoutRuleset.setHeight(flexLayout, height);
+	}
+
+	public ActionableRenderNode getRenderNode(){
+		if (renderNode == null){
+			return null;
+		}
+		return renderNode;
+	}
+
+	public void beginFakeAction(){
+		if (renderNode == null){
+			return;
+		}
+		MouseEventTriggerParams params = EventTriggerParamsPool.allocateMouseParams();
+		params.setMouseX(getRenderX());
+		params.setMouseY(getRenderY());
+		renderNode.beginAction(EventTrigger.LEFT_MOUSE_CLICK, params);
+		renderNode.moveCursorToEnd();
+	}
+
+	public void moveCursorToStart(){
+		if (renderNode == null){
+			return;
+		}
+		renderNode.moveCursorToStart();
+	}
+
+	public void moveCursorToEnd(){
+		if (renderNode == null){
+			return;
+		}
+		renderNode.moveCursorToEnd();
 	}
 }

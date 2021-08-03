@@ -700,6 +700,9 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		case Input.Keys.LEFT:
 			activeTextInput.moveCursorLeft();
 			break;
+		case Input.Keys.ESCAPE:
+			unsetActiveAction();
+			break;
 		}
 		return true;
 	}
@@ -721,6 +724,24 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		}
 		activeAction = actionable;
 		notifyElementActivated(actionable);
+	}
+
+	public void unsetActiveAction() {
+		if (activeAction == null) {
+			return;
+		}
+		if (activeAction instanceof TextInputableRenderNode) {
+			switch (Mdx.platform) {
+			case ANDROID:
+			case IOS:
+				Mdx.input.setOnScreenKeyboardVisible(false);
+				break;
+			default:
+				break;
+			}
+		}
+		activeAction = null;
+		activeTextInput = null;
 	}
 
 	/**
