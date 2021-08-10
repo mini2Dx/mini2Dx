@@ -17,6 +17,7 @@ package org.mini2Dx.core;
 
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.util.RollingAverage;
+import org.mini2Dx.core.util.RollingMax;
 import org.mini2Dx.core.util.ZlibStream;
 
 public abstract class PlatformUtils {
@@ -26,15 +27,20 @@ public abstract class PlatformUtils {
     private int updates;
     private int updatesPerSecond;
     private final RollingAverage averageUpdateDuration = new RollingAverage(GameContainer.TARGET_FPS);
+    private final RollingMax maxUpdateDuration = new RollingMax(GameContainer.TARGET_FPS);
 
     private long interpolateStartNanos;
     private final RollingAverage averageInterpolateDuration = new RollingAverage(GameContainer.TARGET_FPS);
+    private final RollingMax maxInterpolateDuration = new RollingMax(GameContainer.TARGET_FPS);
 
     private long renderStartNanos;
     private final RollingAverage averageRenderDuration = new RollingAverage(GameContainer.TARGET_FPS);
+    private final RollingMax maxRenderDuration = new RollingMax(GameContainer.TARGET_FPS);
 
     private long frameStartNanos;
+    private final RollingAverage averageFrameInterval = new RollingAverage(GameContainer.TARGET_FPS);
     private final RollingAverage averageFrameDuration = new RollingAverage(GameContainer.TARGET_FPS);
+    private final RollingMax maxFrameDuration = new RollingMax(GameContainer.TARGET_FPS);
 
     private long frameSecondStart;
     private int frames;
@@ -114,6 +120,7 @@ public abstract class PlatformUtils {
         long interpolateDuration = time - interpolateStartNanos;
 
         averageInterpolateDuration.mark(interpolateDuration);
+        maxInterpolateDuration.mark(interpolateDuration);
     }
 
     /**
@@ -131,6 +138,7 @@ public abstract class PlatformUtils {
         long renderDuration = time - renderStartNanos;
 
         averageRenderDuration.mark(renderDuration);
+        maxRenderDuration.mark(renderDuration);
     }
 
     /**
@@ -141,16 +149,17 @@ public abstract class PlatformUtils {
         long updateDuration = time - updateStartNanos;
 
         averageUpdateDuration.mark(updateDuration);
+        maxUpdateDuration.mark(updateDuration);
     }
 
     /**
      * Internal usage only: marks a new frame
      */
-    public void markFrame() {
+    public void markFrameBegin() {
         long time = nanoTime();
 
         if(frameStartNanos != 0) {
-            averageFrameDuration.mark(time - frameStartNanos);
+            averageFrameInterval.mark(time - frameStartNanos);
         }
         frameStartNanos = time;
 
@@ -160,6 +169,14 @@ public abstract class PlatformUtils {
             frameSecondStart = time;
         }
         frames++;
+    }
+
+    public void markFrameEnd() {
+        long time = nanoTime();
+        long frameDuration = time - frameStartNanos;
+
+        averageFrameDuration.mark(frameDuration);
+        maxFrameDuration.mark(frameDuration);
     }
 
     /**
@@ -198,12 +215,28 @@ public abstract class PlatformUtils {
     }
 
     /**
+     * Returns the maximum update() duration in the last second
+     * @return The duration in nanoseconds
+     */
+    public double getMaxUpdateDuration() {
+        return maxUpdateDuration.getMax();
+    }
+
+    /**
      * Returns the average duration of interpolate()
      *
      * @return The average duration in nanoseconds
      */
     public double getAverageInterpolateDuration() {
         return averageInterpolateDuration.getAverage();
+    }
+
+    /**
+     * Returns the maximum interpolate() duration in the last second
+     * @return The duration in nanoseconds
+     */
+    public double getMaxInterpolateDuration() {
+        return maxInterpolateDuration.getMax();
     }
 
     /**
@@ -216,12 +249,38 @@ public abstract class PlatformUtils {
     }
 
     /**
-     * Returns the average duration of a total frame (update/interpolate/render)
+     * Returns the maximum render() duration in the last second
+     * @return The duration in nanoseconds
+     */
+    public double getMaxRenderDuration() {
+        return maxRenderDuration.getMax();
+    }
+
+    /**
+     * Returns the average interval of frames (the delta)
+     *
+     * @return The average interval in nanoseconds
+     */
+    public double getAverageFrameInterval() {
+        return averageFrameInterval.getAverage();
+    }
+
+    /**
+     * Returns the average duration of frames (update/interpolate/render/flush)
      *
      * @return The average duration in nanoseconds
      */
     public double getAverageFrameDuration() {
         return averageFrameDuration.getAverage();
+    }
+
+    /**
+     * Returns the max duration of frames (update/interpolate/render/flush) in the last second
+     *
+     * @return The duration in nanoseconds
+     */
+    public double getMaxFrameDuration() {
+        return maxFrameDuration.getMax();
     }
 
     /**

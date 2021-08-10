@@ -115,7 +115,7 @@ public class DesktopMini2DxGame implements Application {
 
 		while (running && windows.size > 0) {
 			if(Mdx.platformUtils != null) {
-				Mdx.platformUtils.markFrame();
+				Mdx.platformUtils.markFrameBegin();
 			}
 
 			// FIXME put it on a separate thread
@@ -171,6 +171,10 @@ public class DesktopMini2DxGame implements Application {
 				closedWindow.dispose();
 
 				windows.removeValue(closedWindow, false);
+			}
+
+			if(Mdx.platformUtils != null) {
+				Mdx.platformUtils.markFrameEnd();
 			}
 
 			if (!haveWindowsRendered) {

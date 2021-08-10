@@ -375,7 +375,7 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 			fps = frames;
 			frames = 0;
 		}
-		Mdx.platformUtils.markFrame();
+		Mdx.platformUtils.markFrameBegin();
 
 		input.processEvents();
 		((IOSGameWrapper) app.listener).getLibgdxInput().updateGamePads();
@@ -429,6 +429,8 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 				lastFrameDropWarning = -1;
 			}
 		}
+
+		Mdx.platformUtils.markFrameEnd();
 	}
 
 	void makeCurrent () {

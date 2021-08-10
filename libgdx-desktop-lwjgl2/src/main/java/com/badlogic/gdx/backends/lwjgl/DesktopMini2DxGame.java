@@ -224,7 +224,7 @@ public class DesktopMini2DxGame implements Application {
 			int frameRate = isBackground ? graphics.config.backgroundFPS : graphics.config.foregroundFPS;
 			if (shouldRender) {
 				graphics.updateTime();
-				Mdx.platformUtils.markFrame();
+				Mdx.platformUtils.markFrameBegin();
 				graphics.frameId++;
 
 				input.update();
@@ -286,6 +286,8 @@ public class DesktopMini2DxGame implements Application {
 						lastFrameDropWarning = -1;
 					}
 				}
+
+				Mdx.platformUtils.markFrameEnd();
 			} else {
 				// Sleeps to avoid wasting CPU in an empty loop.
 				if (frameRate == -1) {

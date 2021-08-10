@@ -56,7 +56,7 @@ public class AndroidMini2DxGraphics extends AndroidGraphics {
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
-		Mdx.platformUtils.markFrame();
+		Mdx.platformUtils.markFrameBegin();
 
 		// After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
 		if (!resume) {
@@ -201,5 +201,7 @@ public class AndroidMini2DxGraphics extends AndroidGraphics {
 			frameStart = time;
 		}
 		frames++;
+
+		Mdx.platformUtils.markFrameEnd();
 	}
 }
