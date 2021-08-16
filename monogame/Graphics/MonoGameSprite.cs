@@ -211,7 +211,7 @@ namespace monogame.Graphics
         public Rectangle getBoundingRectangle_A029B76C()
         {
             var rect = new Rectangle();
-            rect._init_(_x, _y, _width, _height);
+            rect._init_C2EDAFC0(_x, _y, _width, _height);
             rect.setRotation_97413DCA(_90degRotation + _rotation);
             return rect;
         }

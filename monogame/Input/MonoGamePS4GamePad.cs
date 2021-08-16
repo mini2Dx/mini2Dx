@@ -30,12 +30,12 @@ namespace monogame.Input
 
         public MonoGamePS4GamePad(GamePad gamePad, DeadZone leftStickDeadZone, DeadZone rightStickDeadZone) : base()
         {
-            base._init_(gamePad, leftStickDeadZone, rightStickDeadZone);
+            base._init_58DC904A(gamePad, leftStickDeadZone, rightStickDeadZone);
         }
 
         public MonoGamePS4GamePad(GamePad gamePad) : base()
         {
-            base._init_(gamePad);
+            base._init_238EC38A(gamePad);
         }
 
         void O_M_C_Input_GamePadListener.onConnect_238EC38A(GamePad gamePad)

@@ -124,4 +124,30 @@ public interface Input {
      * @return True if the screen was touched or mouse button pressed down then released
      */
     public boolean justTouched();
+
+    /**
+     * Returns if the clipboard is supported by the current platform.
+     * @return True if clipboard is supported by the current platform
+     */
+    public boolean isClipboardSupported();
+
+    /**
+     * Returns if the clipboard has contents. Recommended to use instead of {@link Input#getClipboardContents()} to
+     * prevent triggering unwanted clipboard access notifications (iOS &gt;= 14)
+     * @return True if the system clipboard has contents
+     */
+    public boolean hasClipboardContents();
+
+    /**
+     * Returns the clipboard contents.
+     * @return Clipboard contents
+     */
+    public String getClipboardContents();
+
+    /**
+     * Sets the clipboard contents. Isn't guaranteed to be a synchronous operations so don't rely on getting contents
+     * just after setting them.
+     * @param contents Clipboard contents to be set
+     */
+    public void setClipboardContents(String contents);
 }

@@ -21,6 +21,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Java.Util.Concurrent;
+using Org.Mini2Dx.Core;
 using Org.Mini2Dx.Core.Executor;
 
 namespace monogame
@@ -98,14 +99,22 @@ namespace monogame
         private readonly List<FrameSpreadTask> spreadTasks = new List<FrameSpreadTask>();
         private int maxFrameTasksPerFrame = DefaultMaxFrameTasksPerFrame;
 
-        private Thread[] threads = new Thread[4];
+        private readonly Thread[] threads;
         private ConcurrentQueue<MonoGameAsyncResult> taskQueue = new ConcurrentQueue<MonoGameAsyncResult>();
         private object taskQueueMonitor = new object();
         private int running = 1;
 
         public MonoGameTaskExecutor()
         {
-            for(int i = 0; i < threads.Length; i++)
+            if(Mdx.platform_.Equals(Platform.PLAYSTATION_) || Mdx.platform_.Equals(Platform.XBOX_))
+            {
+                threads = new Thread[8];
+            }
+            else
+            {
+                threads = new Thread[4];
+            }
+            for (int i = 0; i < threads.Length; i++)
             {
                 threads[i] = new Thread(new ThreadStart(ExecuteTasks));
                 threads[i].Start();

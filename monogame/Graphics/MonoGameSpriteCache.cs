@@ -115,8 +115,14 @@ namespace monogame.Graphics
             posX = _posX;
             posY = _posY;
 
-            _spriteBatch.Draw(((MonoGameTexture)texture).texture2D, new Vector2(_posX, _posY),
-                new Rectangle(srcX, srcY, srcWidth, srcHeight), Microsoft.Xna.Framework.Color.White, 0f,
+            _sharedPositionVector.X = _posX;
+            _sharedPositionVector.Y = _posY;
+            _sharedSourceRectangle.X = srcX;
+            _sharedSourceRectangle.Y = srcY;
+            _sharedSourceRectangle.Width = srcWidth;
+            _sharedSourceRectangle.Height = srcHeight;
+            _spriteBatch.Draw(((MonoGameTexture)texture).texture2D, _sharedPositionVector,
+                _sharedSourceRectangle, Microsoft.Xna.Framework.Color.White, 0f,
                 Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
             _posX += srcWidth;
             _maxHeight = Math.Max(srcHeight, _maxHeight);

@@ -17,6 +17,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using monogame.Util;
+using Org.Mini2Dx.Core;
 using Org.Mini2Dx.Core.Util;
 
 namespace monogame
@@ -25,6 +26,7 @@ namespace monogame
     {
         public static PlatformMemoryInfoProvider MEMORY_INFO_PROVIDER = null;
         public static PlatformTimeInfoProvider TIME_INFO_PROVIDER = null;
+        public static Thread GAME_THREAD = null;
 
         public MonoGamePlatformUtils() : base()
         {
@@ -81,7 +83,7 @@ namespace monogame
 
         public override bool isGameThread_FBE0B2A4()
         {
-            return Thread.CurrentThread.ManagedThreadId == 1 && Thread.CurrentThread.Name == null;
+            return Thread.CurrentThread == GAME_THREAD;
         }
 
         public override ZlibStream decompress_5F233ABB(sbyte[] arg0)

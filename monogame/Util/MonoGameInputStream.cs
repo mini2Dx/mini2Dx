@@ -127,7 +127,7 @@ namespace monogame.Util
         public override void reset_EFE09FC0()
         {
             IOException exception = new IOException();
-            exception._init_("mark/reset aren't supported");
+            exception._init_56DB2ED6("mark/reset aren't supported");
             throw exception;
         }
 

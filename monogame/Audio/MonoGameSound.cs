@@ -20,6 +20,7 @@ using System.IO;
 using System.Threading;
 using Microsoft.Xna.Framework.Audio;
 using monogame.Files;
+using Org.Mini2Dx.Core;
 using Org.Mini2Dx.Core.Audio;
 using Org.Mini2Dx.Core.Files;
 
@@ -32,7 +33,10 @@ namespace monogame.Audio
 
         public MonoGameSound(FileHandle fileHandle)
         {
-            _sound = ((MonoGameFileHandle) fileHandle).loadFromContentManager<SoundEffect>();
+            lock(Mdx.audio_)
+            {
+                _sound = ((MonoGameFileHandle)fileHandle).loadFromContentManager<SoundEffect>();
+            }
             _thisInstancesIds = new List<long>();
         }
         

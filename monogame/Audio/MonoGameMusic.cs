@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Media;
 using monogame.Files;
+using Org.Mini2Dx.Core;
 using Org.Mini2Dx.Core.Audio;
 using Org.Mini2Dx.Core.Files;
 
@@ -33,7 +34,10 @@ namespace monogame.Audio
         public MonoGameMusic(FileHandle fileHandle)
         {
             _songId = ++_songNum;
-            _song = ((MonoGameFileHandle)fileHandle).loadFromContentManager<Song>();
+            lock (Mdx.audio_)
+            {
+                _song = ((MonoGameFileHandle)fileHandle).loadFromContentManager<Song>();
+            }
         }
 
         //todo implement a proper solution for disposing Songs

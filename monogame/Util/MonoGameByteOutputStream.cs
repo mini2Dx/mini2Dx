@@ -45,13 +45,14 @@ namespace monogame.Util
             if (b == null)
             {
                 NullPointerException nullPointerException = new NullPointerException();
-                nullPointerException._init_("Byte array cannot be null");
+                nullPointerException._init_56DB2ED6("Byte array cannot be null");
                 throw nullPointerException;
             }
             if ((off < 0) || (off > b.Length) || (len < 0) || ((off + len) > b.Length) || ((off + len) < 0))
             {
                 IndexOutOfBoundsException indexOutOfBoundsException = new IndexOutOfBoundsException();
-                indexOutOfBoundsException._init_("Out of bounds. Offset: " + off + ", Length: " + len);
+                indexOutOfBoundsException._init_56DB2ED6("Out of bounds. Offset: " + off + ", Length: " + len);
+                throw indexOutOfBoundsException;
             }
             if (len == 0)
                 return;

@@ -14,6 +14,7 @@ import org.mini2Dx.core.reflect.jvm.JvmReflection;
 import org.mini2Dx.core.serialization.AotSerializationData;
 import org.mini2Dx.core.serialization.annotation.NonConcrete;
 import org.mini2Dx.libgdx.LibgdxFiles;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 import org.mini2Dx.ui.element.*;
 import org.mini2Dx.ui.style.UiTheme;
 import org.reflections8.Reflections;
@@ -32,6 +33,7 @@ public class AotDataWriter {
 			return;
 		}
 
+		Mdx.locks = new JvmLocks();
 		Mdx.reflect = new JvmReflection();
 		Gdx.files = new Lwjgl3Files();
 		Mdx.files = new LibgdxFiles();

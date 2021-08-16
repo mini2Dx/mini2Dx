@@ -38,6 +38,9 @@ namespace monogame.Font
         private const int REGION_ARRAY_WIDTH = TEXTURE_WIDTH / REGION_WIDTH;
         private const int REGION_ARRAY_HEIGHT = TEXTURE_HEIGHT / REGION_HEIGHT;
 
+        private static Vector2 _sharedPositionVector;
+        private static Color _sharedColor;
+        
         private int _totalIds = 0;
         private Dictionary<int, MonoGameTextureRegion> _caches = new Dictionary<int, MonoGameTextureRegion>();
         private List<MonoGameTextureRegion> _gc = new List<MonoGameTextureRegion>();
@@ -119,7 +122,13 @@ namespace monogame.Font
             for (int i = 0; i < fontCache._previousDrawingOperations.Count; i++)
             {
                 MonoGameGameFontCacheDrawingOperation operation = fontCache._previousDrawingOperations[i];
-                fontCache._gameFont.draw(_spriteBatch, operation.text, operation.targetWidth, operation.horizontalAlign, operation.wrap, new Vector2(rect.X + operation.x, rect.Y + operation.y), operation.color * operation.alpha);
+                _sharedPositionVector.X = rect.X + operation.x;
+                _sharedPositionVector.Y = rect.Y + operation.y;
+                _sharedColor.R = (byte) (operation.color.R * operation.alpha);
+                _sharedColor.G = (byte) (operation.color.G * operation.alpha);
+                _sharedColor.B = (byte) (operation.color.B * operation.alpha);
+                _sharedColor.A = (byte) (operation.color.A * operation.alpha);
+                fontCache._gameFont.draw(_spriteBatch, operation.text, operation.targetWidth, operation.horizontalAlign, operation.wrap, _sharedPositionVector, _sharedColor);
             }
             end();
 
