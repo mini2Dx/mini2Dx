@@ -24,6 +24,7 @@ using monogame.Graphics;
 using Org.Mini2Dx.Core;
 using Org.Mini2Dx.Core.Assets;
 using Org.Mini2Dx.Core.Font;
+using Org.Mini2Dx.Core.Graphics;
 using Org.Mini2Dx.Core.Util;
 using SpriteFontPlus;
 using Color = Org.Mini2Dx.Core.Graphics.Color;
@@ -36,14 +37,17 @@ namespace monogame.Font
         private FontGlyphLayout _sharedFontGlyphLayout;
         private float _capHeight;
         private Microsoft.Xna.Framework.Color _color = Microsoft.Xna.Framework.Color.Black;
+        private MonoGameColor _setColor;
         private readonly MonoGameFileHandle _fileHandle;
+        private static Vector2 _sharedPositionVector = new Vector2();
+        private static Microsoft.Xna.Framework.Color _sharedColor = new Microsoft.Xna.Framework.Color();
 
         private MonoGameGameFont()
         {
-            
+            _setColor = new MonoGameColor(_color);
         }
 
-        public MonoGameGameFont(MonoGameFileHandle fileHandle)
+        public MonoGameGameFont(MonoGameFileHandle fileHandle) : this()
         {
             _fileHandle = fileHandle;
         }
@@ -164,14 +168,13 @@ namespace monogame.Font
         public void draw_F97A968A(_Graphics g, String str, float x, float y, float targetWidth, int horizontalAlignment, bool wrap)
         {
             var graphics = (MonoGameGraphics)g;
-            draw(graphics._spriteBatch, str, targetWidth, horizontalAlignment, wrap,
-                new Vector2(x, y), 
-                new Microsoft.Xna.Framework.Color {
-                    R = (byte)(graphics._tint.R / 255.0f * _color.R),
-                    G = (byte)(graphics._tint.G / 255.0f * _color.G),
-                    B = (byte)(graphics._tint.B / 255.0f * _color.B),
-                    A = (byte)(graphics._tint.A / 255.0f * _color.A)
-                });
+            _sharedPositionVector.X = x;
+            _sharedPositionVector.Y = y;
+            _sharedColor.R = (byte) (graphics._tint.getRAsFloat_FFE0B8F0() * _color.R);
+            _sharedColor.G = (byte) (graphics._tint.getGAsFloat_FFE0B8F0() * _color.G);
+            _sharedColor.B = (byte) (graphics._tint.getBAsFloat_FFE0B8F0() * _color.B);
+            _sharedColor.A = (byte) (graphics._tint.getAAsFloat_FFE0B8F0() * _color.A);
+            draw(graphics._spriteBatch, str, targetWidth, horizontalAlignment, wrap, _sharedPositionVector, _sharedColor);
         }
 
         public FontGlyphLayout newGlyphLayout_2AEFE927()
@@ -191,12 +194,13 @@ namespace monogame.Font
 
         public Color getColor_F0D7D9CF()
         {
-            return new MonoGameColor(_color);
+            return _setColor;
         }
 
         public void setColor_24D51C91(Color c)
         {
-            _color = ((MonoGameColor) c)._color;
+            _setColor = (MonoGameColor) c;
+            _color.PackedValue = _setColor._color.PackedValue;
         }
 
         public float getLineHeight_FFE0B8F0()

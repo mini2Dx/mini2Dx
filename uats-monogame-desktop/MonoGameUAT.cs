@@ -269,7 +269,7 @@ namespace mini2Dx_common_uats
 
         public override void initialise_EFE09FC0()
         {
-            sampleClipRectangle._init_(100, 200, 250, 150);
+            sampleClipRectangle._init_C2EDAFC0(100, 200, 250, 150);
 
             sampleTexture = Mdx.graphics_.newTexture_69120FDF(Mdx.files_.internal_1F3F44D2("mini2Dx.png"));
             sampleRegion = Mdx.graphics_.newTextureRegion_F6DA8362(sampleTexture);
@@ -300,7 +300,7 @@ namespace mini2Dx_common_uats
             sampleFontCache.addText_EAACE007((Java.Lang.String)"Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 500, 165, 100, Align.CENTER_, true);
             sampleFontCache.addText_EAACE007((Java.Lang.String)"Hello!\nBonjour!\nCiao!\nGuten tag!\nNamaste!", 600, 165, 100, Align.RIGHT_, true);
             sampleMap = new TiledMap();
-            sampleMap._init_(Mdx.files_.internal_1F3F44D2("orthogonal_no_cache.tmx"));
+            sampleMap._init_88D76E6E(Mdx.files_.internal_1F3F44D2("orthogonal_no_cache.tmx"));
             Mdx.input_.setInputProcessor_8E738C44(new UATInputProcessor(this));
         }
 

@@ -25,7 +25,14 @@ namespace monogame
     {
         public bool? AllowUserResizing = null;
         public bool? IsMouseVisible = null;
-        public bool IsFixedTimeStep = false;
+        /// <summary>
+        /// Needs to be true if CapToFPS is set, else false
+        /// </summary>
+        public bool IsFixedTimeStep = true;
+        /// <summary>
+        /// Lock frame rate
+        /// </summary>
+        public int? CapToFPS = null;
         public int? PreferredBackBufferWidth = null;
         public int? PreferredBackBufferHeight = null;
         public bool? IsFullScreen = null;

@@ -252,35 +252,39 @@ namespace monogame.Files
         public BufferedInputStream read_0CD0568B(int i)
         {
             BufferedInputStream inputStream = new BufferedInputStream();
-            inputStream._init_(read_C679A59B(), i);
+            inputStream._init_00E7FBDA(read_C679A59B(), i);
             return inputStream;
         }
 
         public Reader reader_58C463C2()
         {
             InputStreamReader inputStreamReader = new InputStreamReader();
-            inputStreamReader._init_(read_C679A59B());
+            BufferedInputStream bufferedInputStream = new BufferedInputStream();
+            bufferedInputStream._init_8BBE17D5(read_C679A59B());
+            inputStreamReader._init_8BBE17D5(bufferedInputStream);
             return inputStreamReader;
         }
 
         public Reader reader_6525B0FC(Java.Lang.String encoding)
         {
             InputStreamReader inputStreamReader = new InputStreamReader();
-            inputStreamReader._init_(read_C679A59B(), encoding);
+            BufferedInputStream bufferedInputStream = new BufferedInputStream();
+            bufferedInputStream._init_8BBE17D5(read_C679A59B());
+            inputStreamReader._init_724C4E4F(bufferedInputStream, encoding);
             return inputStreamReader;
         }
 
         public BufferedReader reader_305041F2(int bufferSize)
         {
             BufferedReader bufferedReader = new BufferedReader();
-            bufferedReader._init_(reader_58C463C2(), bufferSize);
+            bufferedReader._init_C9815983(reader_58C463C2(), bufferSize);
             return bufferedReader;
         }
 
         public BufferedReader reader_F766227C(int bufferSize, Java.Lang.String encoding)
         {
             BufferedReader bufferedReader = new BufferedReader();
-            bufferedReader._init_(reader_6525B0FC(encoding), bufferSize);
+            bufferedReader._init_C9815983(reader_6525B0FC(encoding), bufferSize);
             return bufferedReader;
         }
 
@@ -303,7 +307,7 @@ namespace monogame.Files
         {
             Reader reader = this.reader_6525B0FC(encoding);
             Scanner scanner = new Scanner();
-            scanner._init_(reader);
+            scanner._init_463FC57D(reader);
             Java.Lang.StringBuilder result = new Java.Lang.StringBuilder();
             result._init_();
 
@@ -325,7 +329,7 @@ namespace monogame.Files
             if (_isDirectory)
             {
                 IOException exception = new IOException();
-                exception._init_("Can't read string from a directory");
+                exception._init_56DB2ED6("Can't read string from a directory");
                 throw exception;
             }
 
@@ -345,7 +349,7 @@ namespace monogame.Files
             if (_isDirectory)
             {
                 IOException exception = new IOException();
-                exception._init_("Can't read string from a directory");
+                exception._init_56DB2ED6("Can't read string from a directory");
                 throw exception;
             }
 
@@ -374,7 +378,7 @@ namespace monogame.Files
             if (_isDirectory)
             {
                 IOException exception = new IOException();
-                exception._init_("Can't read bytes from a directory");
+                exception._init_56DB2ED6("Can't read bytes from a directory");
                 throw exception;
             }
 
@@ -403,7 +407,7 @@ namespace monogame.Files
             if (_isDirectory)
             {
                 IOException exception = new IOException();
-                exception._init_("Can't read bytes from a directory");
+                exception._init_56DB2ED6("Can't read bytes from a directory");
                 throw exception;
             }
 
@@ -426,7 +430,7 @@ namespace monogame.Files
             if (_isDirectory)
             {
                 IOException exception = new IOException();
-                exception._init_("Can't read bytes from a directory");
+                exception._init_56DB2ED6("Can't read bytes from a directory");
                 throw exception;
             }
 
@@ -464,7 +468,7 @@ namespace monogame.Files
             if (_isDirectory)
             {
                 IOException exception = new IOException();
-                exception._init_("Can't read bytes from a directory");
+                exception._init_56DB2ED6("Can't read bytes from a directory");
                 throw exception;
             }
 
@@ -505,7 +509,7 @@ namespace monogame.Files
         public OutputStream write_55C7CCC1(bool append, int bufferSize)
         {
             BufferedOutputStream writer = new BufferedOutputStream();
-            writer._init_(write_FF837EC6(append), bufferSize);
+            writer._init_EF519865(write_FF837EC6(append), bufferSize);
             _referenceDirty = true;
             return writer;
         }
@@ -513,7 +517,7 @@ namespace monogame.Files
         public Writer writer_AF9E0B52(bool append)
         {
             OutputStreamWriter writer = new OutputStreamWriter();
-            writer._init_(write_FF837EC6(append));
+            writer._init_20C4DAE2(write_FF837EC6(append));
             _referenceDirty = true;
             return writer;
         }
@@ -521,7 +525,7 @@ namespace monogame.Files
         public Writer writer_09961AAC(bool append, Java.Lang.String encoding)
         {
             OutputStreamWriter writer = new OutputStreamWriter();
-            writer._init_(write_FF837EC6(append), encoding);
+            writer._init_CA4E636C(write_FF837EC6(append), encoding);
             _referenceDirty = true;
             return writer;
         }
@@ -536,14 +540,14 @@ namespace monogame.Files
             if (_isDirectory)
             {
                 IOException exception = new IOException();
-                exception._init_("Can't write string to a directory");
+                exception._init_56DB2ED6("Can't write string to a directory");
                 throw exception;
             }
 
             if (type_28835A82() == FileType.INTERNAL_)
             {
                 IOException exception = new IOException();
-                exception._init_("Can't write in an INTERNAL file");
+                exception._init_56DB2ED6("Can't write in an INTERNAL file");
                 throw exception;
             }
 
@@ -568,13 +572,14 @@ namespace monogame.Files
             if (_isDirectory)
             {
                 IOException exception = new IOException();
-                exception._init_("Can't write bytes to directory");
+                exception._init_56DB2ED6("Can't write bytes to directory");
+                throw exception;
             }
 
             if (type_28835A82() == FileType.INTERNAL_)
             {
                 IOException exception = new IOException();
-                exception._init_("Can't write in an INTERNAL file");
+                exception._init_56DB2ED6("Can't write in an INTERNAL file");
                 throw exception;
             }
 
@@ -727,7 +732,7 @@ namespace monogame.Files
             if (_fileType == FileType.INTERNAL_)
             {
                 IOException exception = new IOException();
-                exception._init_("You can't mkdirs() an INTERNAL file");
+                exception._init_56DB2ED6("You can't mkdirs() an INTERNAL file");
                 throw exception;
             }
 
@@ -753,7 +758,7 @@ namespace monogame.Files
             if (_fileType == FileType.INTERNAL_)
             {
                 IOException exception = new IOException();
-                exception._init_("You can't delete() an INTERNAL file");
+                exception._init_56DB2ED6("You can't delete() an INTERNAL file");
                 throw exception;
             }
 
@@ -779,7 +784,7 @@ namespace monogame.Files
             if (_fileType == FileType.INTERNAL_)
             {
                 IOException exception = new IOException();
-                exception._init_("You can't deleteDirectory() an INTERNAL file");
+                exception._init_56DB2ED6("You can't deleteDirectory() an INTERNAL file");
                 throw exception;
             }
 
@@ -814,7 +819,7 @@ namespace monogame.Files
             if (_fileType == FileType.INTERNAL_)
             {
                 IOException exception = new IOException();
-                exception._init_("You can't emptyDirectory() an INTERNAL file");
+                exception._init_56DB2ED6("You can't emptyDirectory() an INTERNAL file");
                 throw exception;
             }
 
@@ -826,7 +831,7 @@ namespace monogame.Files
             if (_fileType == FileType.INTERNAL_)
             {
                 IOException exception = new IOException();
-                exception._init_("You can't emptyDirectory() an INTERNAL file");
+                exception._init_56DB2ED6("You can't emptyDirectory() an INTERNAL file");
                 throw exception;
             }
 
@@ -960,7 +965,7 @@ namespace monogame.Files
             if (_fileType == FileType.INTERNAL_ || dest.type_28835A82() == FileType.INTERNAL_)
             {
                 IOException exception = new IOException();
-                exception._init_("You can't moveTo() an INTERNAL file");
+                exception._init_56DB2ED6("You can't moveTo() an INTERNAL file");
                 throw exception;
             }
 
@@ -972,7 +977,7 @@ namespace monogame.Files
             if (!exists_FBE0B2A4())
             {
                 IOException exception = new IOException();
-                exception._init_(_originalPath + " does not exist");
+                exception._init_56DB2ED6(_originalPath + " does not exist");
                 throw exception;
             }
 
@@ -1018,7 +1023,7 @@ namespace monogame.Files
             for (var i = 0; i < childs.Length; i++)
             {
                 Java.Io.File file = new Java.Io.File();
-                file._init_(originalPath());
+                file._init_56DB2ED6(originalPath());
                 if (filter.accept_124B7F0F(file, childs[i].name_E605312C()))
                 {
                     matchingChilds.Add(childs[i]);
@@ -1041,7 +1046,7 @@ namespace monogame.Files
             for (var i = 0; i < childs.Length; i++)
             {
                 Java.Io.File file = new Java.Io.File();
-                file._init_(((MonoGameFileHandle)childs[i]).originalPath());
+                file._init_56DB2ED6(((MonoGameFileHandle)childs[i]).originalPath());
                 if (filter.accept_0B8ED885(file))
                 {
                     matchingChilds.Add(childs[i]);

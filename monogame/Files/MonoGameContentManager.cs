@@ -23,6 +23,8 @@ namespace monogame.Files
 {
     public class MonoGameContentManager : ContentManager
     {
+        ReaderWriterLockSlim @lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        private bool disposed = false;
 
         public MonoGameContentManager(IServiceProvider serviceProvider, string rootDirectory) : base(serviceProvider, rootDirectory)
         {
@@ -30,52 +32,68 @@ namespace monogame.Files
 
         public override T Load<T>(string assetName)
         {
-            lock(base.LoadedAssets)
+            if (string.IsNullOrEmpty(assetName))
             {
-                return base.Load<T>(assetName);
+                throw new ArgumentNullException("assetName");
             }
-        }
+            if (disposed)
+            {
+                throw new ObjectDisposedException("ContentManager");
+            }
 
-        public override T LoadLocalized<T>(string assetName)
-        {
-            lock (base.LoadedAssets)
+            T result = default(T);
+
+            // On some platforms, name and slash direction matter.
+            // We store the asset by a /-seperating key rather than how the
+            // path to the file was passed to us to avoid
+            // loading "content/asset1.xnb" and "content\\ASSET1.xnb" as if they were two 
+            // different files. This matches stock XNA behavior.
+            // The dictionary will ignore case differences
+            var key = assetName.Replace('\\', '/');
+
+            // Check for a previously loaded asset first
+            object asset = null;
+            @lock.EnterReadLock();
+            try
             {
-                return base.LoadLocalized<T>(assetName);
+                if (LoadedAssets.TryGetValue(key, out asset))
+                {
+                    if (asset is T)
+                    {
+                        return (T)asset;
+                    }
+                }
             }
+            finally
+            {
+                @lock.ExitReadLock();
+            }
+
+            // Load the asset.
+            result = ReadAsset<T>(assetName, null);
+
+            @lock.EnterWriteLock();
+            try
+            {
+                LoadedAssets[key] = result;
+            }
+            finally
+            {
+                @lock.ExitWriteLock();
+            }
+            return result;
         }
 
         public new Stream OpenStream(string assetName)
         {
-            mini2DxFileContent fileContent = null;
-            lock (base.LoadedAssets)
-            {
-                fileContent = base.Load<mini2DxFileContent>(assetName);
-            }
+            mini2DxFileContent fileContent = Load<mini2DxFileContent>(assetName);
             return new MemoryStream(fileContent.content);
         }
 
-        public override void Unload()
+        protected override void Dispose(bool disposing)
         {
-            lock (base.LoadedAssets)
-            {
-                base.Unload();
-            }
-        }
-
-        protected override void ReloadAsset<T>(string originalAssetName, T currentAsset)
-        {
-            lock (base.LoadedAssets)
-            {
-                base.ReloadAsset(originalAssetName, currentAsset);
-            }
-        }
-
-        protected override void ReloadGraphicsAssets()
-        {
-            lock (base.LoadedAssets)
-            {
-                base.ReloadGraphicsAssets();
-            }
+            base.Dispose(disposing);
+            disposed = true;
         }
     }
 }

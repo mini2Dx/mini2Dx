@@ -24,6 +24,7 @@ using System;
 using Org.Mini2Dx.Gdx.Math;
 using Org.Mini2Dx.Core.Graphics;
 using Microsoft.Xna.Framework.Content;
+using System.Collections.Generic;
 
 namespace monogame.Graphics
 {
@@ -34,6 +35,8 @@ namespace monogame.Graphics
         private Microsoft.Xna.Framework.Vector4 tmpVector4 = new Microsoft.Xna.Framework.Vector4();
         private Microsoft.Xna.Framework.Matrix tmpMatrix = new Microsoft.Xna.Framework.Matrix();
 
+        private Dictionary<Java.Lang.String, string> StringCache = new Dictionary<Java.Lang.String, string>();
+        
         public Effect shader;
         
         public MonoGameShader(string name)
@@ -74,7 +77,7 @@ namespace monogame.Graphics
         {
             try
             {
-                return shader.Parameters[(string) str] != null;
+                return shader.Parameters[GetString(str)] != null;
             }
             catch
             {
@@ -90,19 +93,19 @@ namespace monogame.Graphics
         public void setParameter_42C1476E(Java.Lang.String str, int i, Org.Mini2Dx.Core.Graphics.Texture t)
         {
             MonoGameTexture texture = t as MonoGameTexture;
-            shader.Parameters[(string) str].SetValue(texture.texture2D);
+            shader.Parameters[GetString(str)].SetValue(texture.texture2D);
         }
 
         public void setParameterf_8993FAC4(Java.Lang.String str, float f)
         {
-            shader.Parameters[(string) str].SetValue(f);
+            shader.Parameters[GetString(str)].SetValue(f);
         }
 
         public void setParameterf_BFC06056(Java.Lang.String str, float f1, float f2)
         {
             tmpVector2.X = f1;
             tmpVector2.Y = f2;
-            shader.Parameters[(string) str].SetValue(tmpVector2);
+            shader.Parameters[GetString(str)].SetValue(tmpVector2);
         }
 
         public void setParameterf_2C2C4844(Java.Lang.String str, float f1, float f2, float f3)
@@ -110,7 +113,7 @@ namespace monogame.Graphics
             tmpVector3.X = f1;
             tmpVector3.Y = f2;
             tmpVector3.Z = f3;
-            shader.Parameters[(string) str].SetValue(tmpVector3);
+            shader.Parameters[GetString(str)].SetValue(tmpVector3);
         }
 
         public void setParameterf_A02729D6(Java.Lang.String str, float f1, float f2, float f3, float f4)
@@ -119,14 +122,14 @@ namespace monogame.Graphics
             tmpVector4.Y = f2;
             tmpVector4.Z = f3;
             tmpVector4.W = f4;
-            shader.Parameters[(string) str].SetValue(tmpVector4);
+            shader.Parameters[GetString(str)].SetValue(tmpVector4);
         }
 
         public void setParameterf_DC7C90B6(Java.Lang.String str, Vector2 v)
         {
             tmpVector2.X = v.x_;
             tmpVector2.Y = v.y_;
-            shader.Parameters[(string) str].SetValue(tmpVector2);
+            shader.Parameters[GetString(str)].SetValue(tmpVector2);
         }
 
         public void setParameterf_DA5AD9B1(Java.Lang.String str, Vector3 v)
@@ -134,12 +137,12 @@ namespace monogame.Graphics
             tmpVector3.X = v.x_;
             tmpVector3.Y = v.y_;
             tmpVector3.Z = v.z_;
-            shader.Parameters[(string) str].SetValue(tmpVector3);
+            shader.Parameters[GetString(str)].SetValue(tmpVector3);
         }
 
         public void setParameteri_DB225B79(Java.Lang.String str, int i)
         {
-            shader.Parameters[(string) str].SetValue(i);
+            shader.Parameters[GetString(str)].SetValue(i);
         }
 
         public void setParameterMatrix_BD88B5D2(Java.Lang.String str, Matrix4 m)
@@ -152,11 +155,11 @@ namespace monogame.Graphics
             setTempMatrix(m);
             if (b)
             {
-                shader.Parameters[(string) str].SetValueTranspose(tmpMatrix);
+                shader.Parameters[GetString(str)].SetValueTranspose(tmpMatrix);
             }
             else
             {
-                shader.Parameters[(string) str].SetValue(tmpMatrix);
+                shader.Parameters[GetString(str)].SetValue(tmpMatrix);
             }
         }
 
@@ -178,6 +181,15 @@ namespace monogame.Graphics
             tmpMatrix.M42 = m.val_[Matrix4.M31_];
             tmpMatrix.M43 = m.val_[Matrix4.M32_];
             tmpMatrix.M44 = m.val_[Matrix4.M33_];
+        }
+
+        private string GetString(Java.Lang.String str)
+        {
+            if(!StringCache.ContainsKey(str))
+            {
+                StringCache[str] = (string)str;
+            }
+            return StringCache[str];
         }
 
         public Java.Lang.String getLog_E605312C()

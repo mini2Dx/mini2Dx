@@ -184,15 +184,25 @@ public class UATSelectionScreen extends BasicGameScreen implements ScreenSizeLis
 			}
 		})));
 		uatsDialog.add(FlexRow.withElements("row-clip", UiUtils.createButton(uiNavigation, "Graphics.clip()", false, new ActionListener() {
-					@Override
-					public void onActionBegin(ActionEvent event) {
-					}
+			@Override
+			public void onActionBegin(ActionEvent event) {
+			}
 
-					@Override
-					public void onActionEnd(ActionEvent event) {
-						nextScreenId = ScreenIds.getScreenId(ClippingUAT.class);
-					}
-				})));
+			@Override
+			public void onActionEnd(ActionEvent event) {
+				nextScreenId = ScreenIds.getScreenId(ClippingUAT.class);
+			}
+		})));
+		uatsDialog.add(FlexRow.withElements("row-clipboard", UiUtils.createButton(uiNavigation, "Clipboard", false, new ActionListener() {
+			@Override
+			public void onActionBegin(ActionEvent event) {
+			}
+
+			@Override
+			public void onActionEnd(ActionEvent event) {
+				nextScreenId = ScreenIds.getScreenId(ClipboardUAT.class);
+			}
+		})));
 		uatsDialog.add(FlexRow.withElements("row-geometry", UiUtils.createButton(uiNavigation, "Geometry", new ActionListener() {
 			@Override
 			public void onActionBegin(ActionEvent event) {

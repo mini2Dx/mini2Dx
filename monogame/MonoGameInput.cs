@@ -25,6 +25,7 @@ using Org.Mini2Dx.Gdx;
 using Array = Org.Mini2Dx.Gdx.Utils.Array;
 using GamePad = Org.Mini2Dx.Core.Input.GamePad;
 using Math = System.Math;
+using String = Java.Lang.String;
 
 namespace monogame
 {
@@ -32,7 +33,7 @@ namespace monogame
     {
         private InputProcessor inputProcessor;
         private GamePadConnectionListener gamePadConnectionListener;
-        
+
         private MouseState previousMouseState;
         private Keys[] previousPressedKeys;
         private MonoGameGamePad[] gamePads;
@@ -51,7 +52,7 @@ namespace monogame
             }
             gamePadsArray = Array.with_7D7B1E36(gamePads);
         }
-        
+
         public void setInputProcessor_8E738C44(InputProcessor inputProcessor)
         {
             this.inputProcessor = inputProcessor;
@@ -110,15 +111,25 @@ namespace monogame
 
         public void update()
         {
-            updateControllerInput();
-            previousMouseState = currentMouseState;
-            previousPressedKeys = currentPressedKeys;
-            currentMouseState = Mouse.GetState();
-            currentPressedKeys = Keyboard.GetState().GetPressedKeys();
-            if (inputProcessor != null)
+            try
             {
-                updateMouseInput();
-                updateKeyboardInput();
+                updateControllerInput();
+                previousMouseState = currentMouseState;
+                previousPressedKeys = currentPressedKeys;
+                currentMouseState = Mouse.GetState();
+                currentPressedKeys = Keyboard.GetState().GetPressedKeys();
+                if (inputProcessor != null)
+                {
+                    updateMouseInput();
+                    updateKeyboardInput();
+                }
+            }
+            catch(Exception e)
+            {
+                if(Mdx.log_ != null)
+                {
+                    Mdx.log_.error_159F0320("MonoGameInput", e.Message);
+                }
             }
         }
 
@@ -141,7 +152,7 @@ namespace monogame
                 {
                     if (gamePadConnectionListener != null)
                     {
-                        gamePadConnectionListener.onConnect_238EC38A(gamePads[i]);
+                        gamePadConnectionListener.onDisconnect_238EC38A(gamePads[i]);
                     }
                 }
                 if (gamePads[i].wasConnected() || gamePads[i].isConnected_FBE0B2A4())
@@ -153,11 +164,11 @@ namespace monogame
 
         private static bool isAnyMouseButtonPressed(MouseState state)
         {
-            return state.LeftButton == ButtonState.Pressed || 
+            return state.LeftButton == ButtonState.Pressed ||
                    state.MiddleButton == ButtonState.Pressed ||
                    state.RightButton == ButtonState.Pressed;
         }
-        
+
         private void updateMouseInput()
         {
 
@@ -175,7 +186,7 @@ namespace monogame
 
             if (previousMouseState.ScrollWheelValue != currentMouseState.ScrollWheelValue)
             {
-                inputProcessor.scrolled_1548FAA4(0, 
+                inputProcessor.scrolled_1548FAA4(0,
                     -Math.Sign(currentMouseState.ScrollWheelValue - previousMouseState.ScrollWheelValue));
             }
 
@@ -346,7 +357,7 @@ namespace monogame
             {
                 return key - Org.Mini2Dx.Gdx.Input_n_Keys.A_ + Keys.A;
             }
-            
+
             if (key >= Org.Mini2Dx.Gdx.Input_n_Keys.F1_ && key <= Org.Mini2Dx.Gdx.Input_n_Keys.F12_)
             {
                 return key - Org.Mini2Dx.Gdx.Input_n_Keys.F1_ + Keys.F1;
@@ -448,7 +459,7 @@ namespace monogame
             {
                 return key - Keys.A + Org.Mini2Dx.Gdx.Input_n_Keys.A_;
             }
-            
+
             if (key >= Keys.F1 && key <= Keys.F12)
             {
                 return key - Keys.F1 + Org.Mini2Dx.Gdx.Input_n_Keys.F1_;
@@ -462,7 +473,7 @@ namespace monogame
             {
                 return key - Keys.D0 + Org.Mini2Dx.Gdx.Input_n_Keys.NUM_0_;
             }
-            
+
             switch (key)
             {
                 case Keys.Back:
@@ -525,7 +536,7 @@ namespace monogame
                     return Org.Mini2Dx.Gdx.Input_n_Keys.VOLUME_DOWN_;
                 case Keys.VolumeUp:
                     return Org.Mini2Dx.Gdx.Input_n_Keys.VOLUME_UP_;
-                case Keys.MediaNextTrack: 
+                case Keys.MediaNextTrack:
                     return Org.Mini2Dx.Gdx.Input_n_Keys.MEDIA_NEXT_;
                 case Keys.MediaPreviousTrack:
                     return Org.Mini2Dx.Gdx.Input_n_Keys.MEDIA_PREVIOUS_;
@@ -549,7 +560,7 @@ namespace monogame
                     return 0;
             }
         }
-        
+
         public void setOnScreenKeyboardVisible_AA5A2C66(bool b)
         {
             if (Mdx.platform_.isDesktop_FBE0B2A4())
@@ -566,6 +577,25 @@ namespace monogame
         public int getY_0EE0D08D()
         {
             return previousMouseState.Y;
+        }
+
+        public bool hasClipboardContents_FBE0B2A4()
+        {
+            return false;
+        }
+
+        public bool isClipboardSupported_FBE0B2A4()
+        {
+            return false;
+        }
+
+        public void setClipboardContents_56DB2ED6(String arg0)
+        {
+        }
+
+        public String getClipboardContents_E605312C()
+        {
+            return null;
         }
 
         public bool isKeyJustPressed_4118CD17(int keyCode)

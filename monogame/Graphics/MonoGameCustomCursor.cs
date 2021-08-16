@@ -16,7 +16,7 @@ namespace monogame.Graphics
         
         public MonoGameCustomCursor(Pixmap upPixmap, Pixmap downPixmap, int xHotspot, int yHotspot) : base()
         {
-            base._init_(upPixmap, downPixmap, xHotspot, yHotspot);
+            base._init_33C37B38(upPixmap, downPixmap, xHotspot, yHotspot);
 
             if(Mini2DxGame.instance.getConfig().IsMouseVisible.HasValue &&
                 Mini2DxGame.instance.getConfig().IsMouseVisible.Value)

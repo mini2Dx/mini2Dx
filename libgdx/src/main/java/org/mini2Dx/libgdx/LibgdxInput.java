@@ -201,6 +201,26 @@ public class LibgdxInput implements Input, ControllerListener {
 	}
 
 	@Override
+	public boolean isClipboardSupported() {
+		return true;
+	}
+
+	@Override
+	public boolean hasClipboardContents() {
+		return Gdx.app.getClipboard().hasContents();
+	}
+
+	@Override
+	public String getClipboardContents() {
+		return Gdx.app.getClipboard().getContents();
+	}
+
+	@Override
+	public void setClipboardContents(String contents) {
+		Gdx.app.getClipboard().setContents(contents);
+	}
+
+	@Override
 	public void connected(Controller controller) {
 		connectedGamePadQueue.addLast(controller);
 	}

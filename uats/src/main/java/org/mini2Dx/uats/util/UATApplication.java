@@ -71,6 +71,7 @@ public class UATApplication extends ScreenBasedGame {
 		addScreen(new UATSelectionScreen(assetManager, fallbackFileHandleResolver));
 		addScreen(new BlendingUAT(assetManager));
 		addScreen(new ClippingUAT(assetManager));
+		addScreen(new ClipboardUAT());
 		addScreen(new GeometryUAT());
 		addScreen(new GraphicsUAT(assetManager, fallbackFileHandleResolver));
 		addScreen(new TextureRegionUAT(fallbackFileHandleResolver));

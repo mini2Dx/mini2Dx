@@ -87,7 +87,7 @@ public class DesktopMini2DxGame implements Application {
 		}
 		this.files = Gdx.files = new Lwjgl3Files();
 		this.net = Gdx.net = new Lwjgl3Net(config);
-		this.clipboard = new Lwjgl3Clipboard();
+		this.clipboard = new Lwjgl3Mini2DxClipboard();
 
 		this.sync = new Sync();
 
