@@ -32,8 +32,8 @@ public class UiFontTest {
 
 	@Before
 	public void setup() {
-		Mdx.reflect = new JvmReflection();
 		Mdx.locks = new JvmLocks();
+		Mdx.reflect = new JvmReflection();
 		Mdx.xml = new XmlSerializer();
 		Mdx.json = new JsonSerializer();
 	}

@@ -96,7 +96,7 @@ public class TiledObject {
 	 */
 	public void setProperty(String propertyName, String value) {
 		if(properties == null)
-			properties = new ObjectMap<String, String>();
+			properties = new ObjectMap<String, String>(16);
 		properties.put(propertyName, value);
 	}
 

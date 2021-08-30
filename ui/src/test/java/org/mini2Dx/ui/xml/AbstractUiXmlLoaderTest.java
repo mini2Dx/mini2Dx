@@ -22,6 +22,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.files.FileHandleResolver;
 import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 import org.mini2Dx.ui.element.Container;
 import org.mini2Dx.ui.element.ParentUiElement;
 import org.mini2Dx.ui.element.UiElement;
@@ -54,8 +55,8 @@ public abstract class AbstractUiXmlLoaderTest {
 
     @Before
     public void setUpReflection() {
+        Mdx.locks = new JvmLocks();
         Mdx.reflect = new org.mini2Dx.core.reflect.jvm.JvmReflection();
-
     }
 
     protected <T extends ParentUiElement> T loadFileWithContainer(String xml) {

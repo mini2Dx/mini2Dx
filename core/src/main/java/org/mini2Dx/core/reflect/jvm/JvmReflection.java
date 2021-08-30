@@ -16,11 +16,13 @@
 package org.mini2Dx.core.reflect.jvm;
 
 import org.mini2Dx.core.Reflection;
+import org.mini2Dx.core.collections.concurrent.ConcurrentObjectMap;
 import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.reflect.Annotation;
 import org.mini2Dx.core.reflect.Constructor;
 import org.mini2Dx.core.reflect.Field;
 import org.mini2Dx.core.reflect.Method;
+import org.mini2Dx.gdx.utils.ObjectMap;
 
 import java.lang.reflect.Modifier;
 
@@ -28,6 +30,15 @@ import java.lang.reflect.Modifier;
  * Implementation of {@link Reflection} where JVM-based reflection is supported
  */
 public class JvmReflection implements Reflection {
+	private final ObjectMap<Class, Constructor[]> constructorsCache = new ConcurrentObjectMap<>();
+	private final ObjectMap<Class, Constructor[]> declaredConstructorsCache = new ConcurrentObjectMap<>();
+	private final ObjectMap<Class, Method[]> methodsCache = new ConcurrentObjectMap<>();
+	private final ObjectMap<Class, Method[]> declaredMethodsCache = new ConcurrentObjectMap<>();
+	private final ObjectMap<Class, Field[]> fieldsCache = new ConcurrentObjectMap<>();
+	private final ObjectMap<Class, Field[]> declaredFieldsCache = new ConcurrentObjectMap<>();
+	private final ObjectMap<String, Field> fieldCache = new ConcurrentObjectMap<>();
+	private final ObjectMap<String, Field> declaredFieldCache = new ConcurrentObjectMap<>();
+
 	@Override
 	public Class forName(String qualifiedName) throws ReflectionException {
 		try {
@@ -83,50 +94,76 @@ public class JvmReflection implements Reflection {
 
 	@Override
 	public Constructor[] getConstructors(Class clazz) {
-		return convert(clazz.getConstructors());
+		if(!constructorsCache.containsKey(clazz)) {
+			constructorsCache.put(clazz, convert(clazz.getConstructors()));
+		}
+		return constructorsCache.get(clazz);
 	}
 
 	@Override
 	public Constructor[] getDeclaredConstructors(Class clazz) {
-		return convert(clazz.getDeclaredConstructors());
+		if(!declaredConstructorsCache.containsKey(clazz)) {
+			declaredConstructorsCache.put(clazz, convert(clazz.getDeclaredConstructors()));
+		}
+		return declaredConstructorsCache.get(clazz);
 	}
 
 	@Override
 	public Method[] getMethods(Class clazz) {
-		return convert(clazz.getMethods());
+		if(!methodsCache.containsKey(clazz)) {
+			methodsCache.put(clazz, convert(clazz.getMethods()));
+		}
+		return methodsCache.get(clazz);
 	}
 
 	@Override
 	public Method[] getDeclaredMethods(Class clazz) {
-		return convert(clazz.getDeclaredMethods());
+		if(!declaredMethodsCache.containsKey(clazz)) {
+			declaredMethodsCache.put(clazz, convert(clazz.getDeclaredMethods()));
+		}
+		return declaredMethodsCache.get(clazz);
 	}
 
 	@Override
 	public Field[] getFields(Class clazz) {
-		return convert(clazz.getFields());
+		if(!fieldsCache.containsKey(clazz)) {
+			fieldsCache.put(clazz, convert(clazz.getFields()));
+		}
+		return fieldsCache.get(clazz);
 	}
 
 	@Override
 	public Field[] getDeclaredFields(Class clazz) {
-		return convert(clazz.getDeclaredFields());
+		if(!declaredFieldsCache.containsKey(clazz)) {
+			declaredFieldsCache.put(clazz, convert(clazz.getDeclaredFields()));
+		}
+		return declaredFieldsCache.get(clazz);
 	}
 
 	@Override
 	public Field getField(Class clazz, String fieldName) throws ReflectionException {
-		try {
-			return new JvmField(clazz.getField(fieldName));
-		} catch (NoSuchFieldException e) {
-			throw new ReflectionException(e.getMessage(), e);
+		final String key = clazz.getName() + "->" + fieldName;
+		if(!fieldCache.containsKey(key)) {
+			try {
+				fieldCache.put(key, new JvmField(clazz.getField(fieldName)));
+			} catch (NoSuchFieldException e) {
+				throw new ReflectionException(e.getMessage(), e);
+			}
 		}
+		return fieldCache.get(key);
 	}
 
 	@Override
 	public Field getDeclaredField(Class clazz, String fieldName) throws ReflectionException {
-		try {
-			return new JvmField(clazz.getDeclaredField(fieldName));
-		} catch (NoSuchFieldException e) {
-			throw new ReflectionException(e.getMessage(), e);
+		final String key = clazz.getName() + "->" + fieldName;
+		if(!declaredFieldCache.containsKey(key)) {
+			try {
+				declaredFieldCache.put(key, new JvmField(clazz.getDeclaredField(fieldName)));
+			} catch (NoSuchFieldException e) {
+				throw new ReflectionException(e.getMessage(), e);
+			}
 		}
+		return declaredFieldCache.get(key);
 	}
 
 	@Override

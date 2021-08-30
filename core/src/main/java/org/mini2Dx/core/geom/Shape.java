@@ -241,8 +241,8 @@ public abstract class Shape implements Sizeable, Disposable {
 		TMP_TARGET_VECTOR.set(x, y);
 		Vector2 direction = TMP_TARGET_VECTOR.sub(TMP_SOURCE_VECTOR).nor();
 
-		float xComponent = speed * MathUtils.cosDeg(direction.angle());
-		float yComponent = speed * MathUtils.sinDeg(direction.angle());
+		float xComponent = speed * MathUtils.cosDeg(direction.angleDeg());
+		float yComponent = speed * MathUtils.sinDeg(direction.angleDeg());
 		TMP_SOURCE_VECTOR.add(xComponent, yComponent);
 
 		setXY(TMP_SOURCE_VECTOR.x, TMP_SOURCE_VECTOR.y);

@@ -36,10 +36,10 @@ public class DesktopDependencyInjectionTest {
 	public void setUp() {
 		Gdx.files = new LwjglFiles();
 		Mdx.files = new LibgdxFiles();
+		Mdx.locks = new JvmLocks();
 		Mdx.reflect = new JvmReflection();
 		Mdx.platform = GameWrapper.getPlatform();
 		Mdx.di = new DependencyInjection(new DesktopComponentScanner());
-		Mdx.locks = new JvmLocks();
 		Mdx.executor = new LibgdxTaskExecutor(2);
 	}
 

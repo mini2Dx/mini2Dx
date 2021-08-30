@@ -21,6 +21,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.SerializationException;
 import org.mini2Dx.core.reflect.jvm.JvmReflection;
 import org.mini2Dx.libgdx.LibgdxFiles;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 import org.mini2Dx.ui.layout.ScreenSize;
 import org.mini2Dx.ui.style.ButtonStyleRule;
 import org.mini2Dx.ui.style.UiTheme;
@@ -33,6 +34,7 @@ public class UiThemeWriter {
 
 	public static void main(String [] args) {
 		Gdx.files = new LwjglFiles();
+		Mdx.locks = new JvmLocks();
 		Mdx.reflect = new JvmReflection();
 		Mdx.files = new LibgdxFiles();
 		

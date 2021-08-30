@@ -34,6 +34,7 @@ import org.mini2Dx.core.reflect.jvm.JvmReflection;
 import org.mini2Dx.libgdx.LibgdxFiles;
 import org.mini2Dx.libgdx.desktop.DesktopComponentScanner;
 import org.mini2Dx.libgdx.game.GameWrapper;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
 /**
  * Unit tests for {@link PrototypeBean}
@@ -49,6 +50,7 @@ public class PrototypeBeanTest {
 
 		Gdx.files = new LwjglFiles();
 		Mdx.files = new LibgdxFiles();
+		Mdx.locks = new JvmLocks();
 		Mdx.reflect = new JvmReflection();
 		Mdx.platform = GameWrapper.getPlatform();
 		Mdx.di = new DependencyInjection(new DesktopComponentScanner());

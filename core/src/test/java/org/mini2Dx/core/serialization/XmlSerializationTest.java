@@ -34,9 +34,9 @@ public class XmlSerializationTest {
 
 	@Before
 	public void setUp() {
+		Mdx.locks = new JvmLocks();
 		Mdx.reflect = new JvmReflection();
 		AotSerializationData.clear();
-		Mdx.locks = new JvmLocks();
 		xmlSerializer = new XmlSerializer();
 		parentObject = createTestParentObject();
 	}

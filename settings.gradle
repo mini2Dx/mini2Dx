@@ -21,32 +21,32 @@ boolean hasConsoleSdk() {
 }
 
 boolean hasAndroidSdk() {
-	try {
-		def rootDir = "$rootDir"
-		def localProperties = new File(rootDir, "local.properties")
-		if (localProperties.exists()) {
-			Properties properties = new Properties()
-			localProperties.withInputStream { instr ->
-				properties.load(instr)
-			}
-			def androidHome = properties.getProperty('sdk.dir')
-			if(androidHome != null && androidHome.length() > 0) {
-				println androidHome
-				return true;
-			}
-		}
-	} catch (all) {
-		println all
-	}
-	try {
-		def androidHome = "$System.env.ANDROID_HOME"
-		if(androidHome != null && androidHome.length() > 0 && !androidHome.contains('null')) {
-			println androidHome
-			return true;
-		}
-	} catch (all) {
-		println all
-	}
+//	try {
+//		def rootDir = "$rootDir"
+//		def localProperties = new File(rootDir, "local.properties")
+//		if (localProperties.exists()) {
+//			Properties properties = new Properties()
+//			localProperties.withInputStream { instr ->
+//				properties.load(instr)
+//			}
+//			def androidHome = properties.getProperty('sdk.dir')
+//			if(androidHome != null && androidHome.length() > 0) {
+//				println androidHome
+//				return true;
+//			}
+//		}
+//	} catch (all) {
+//		println all
+//	}
+//	try {
+//		def androidHome = "$System.env.ANDROID_HOME"
+//		if(androidHome != null && androidHome.length() > 0 && !androidHome.contains('null')) {
+//			println androidHome
+//			return true;
+//		}
+//	} catch (all) {
+//		println all
+//	}
 	return false
 }
 

@@ -46,8 +46,6 @@ import java.util.Map;
 public class XmlSerializer {
     private static final String LOGGING_TAG = XmlSerializer.class.getSimpleName();
 
-    private final ObjectMap<String, Method[]> methodCache = new ConcurrentObjectMap<>();
-    private final ObjectMap<String, Field[]> fieldCache = new ConcurrentObjectMap<>();
     private final ObjectMap<String, Method> postDeserializeCache = new ConcurrentObjectMap<>();
 
     /**
@@ -167,11 +165,7 @@ public class XmlSerializer {
                 //Check for @ConstructorArg annotations in interface methods
                 Class<?> [] interfaces = clazz.getInterfaces();
                 for(int i = 0; i < interfaces.length; i++) {
-                    final String className = interfaces[i].getName();
-                    if(!methodCache.containsKey(className)) {
-                        methodCache.put(className, Mdx.reflect.getDeclaredMethods(interfaces[i]));
-                    }
-                    final Method [] methods = methodCache.get(className);
+                    final Method [] methods = Mdx.reflect.getDeclaredMethods(interfaces[i]);
 
                     for(Method method : methods) {
                         if(method.getParameterTypes().length > 0) {
@@ -190,10 +184,7 @@ public class XmlSerializer {
             Class<?> currentClass = clazz;
             while (currentClass != null && !currentClass.equals(Object.class)) {
                 final String className = currentClass.getName();
-                if(!methodCache.containsKey(className)) {
-                    methodCache.put(className, Mdx.reflect.getDeclaredMethods(currentClass));
-                }
-                final Method [] methods = methodCache.get(className);
+                final Method [] methods = Mdx.reflect.getDeclaredMethods(currentClass);
 
                 for (Method method : methods) {
                     if (method.getParameterTypes().length > 0) {
@@ -212,11 +203,7 @@ public class XmlSerializer {
             while(currentClass != null && !currentClass.equals(Object.class)) {
                 final String className = currentClass.getName();
                 final AotSerializedClassData classData = AotSerializationData.getClassData(currentClass);
-
-                if (!fieldCache.containsKey(className)) {
-                    fieldCache.put(className, classData == null ? Mdx.reflect.getDeclaredFields(currentClass) : classData.getFieldDataAsFieldArray());
-                }
-                final Field [] fields = fieldCache.get(className);
+                final Field [] fields = classData == null ? Mdx.reflect.getDeclaredFields(currentClass) : classData.getFieldDataAsFieldArray();
 
                 for (Field field : fields) {
                     Annotation annotation = field
@@ -321,9 +308,6 @@ public class XmlSerializer {
         Class<?> currentClass = clazz;
         while (currentClass != null && !currentClass.equals(Object.class)) {
             final String className = currentClass.getName();
-            if(!methodCache.containsKey(className)) {
-                methodCache.put(className, Mdx.reflect.getDeclaredMethods(currentClass));
-            }
             if(postDeserializeCache.containsKey(className)) {
                 try {
                     postDeserializeCache.get(className).invoke(object);
@@ -331,7 +315,7 @@ public class XmlSerializer {
                     throw new SerializationException(e);
                 }
             } else {
-                final Method [] methods = methodCache.get(className);
+                final Method [] methods = Mdx.reflect.getDeclaredMethods(currentClass);
 
                 final AotSerializedClassData classData = AotSerializationData.getClassData(currentClass);
                 if(classData != null) {

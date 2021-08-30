@@ -40,8 +40,8 @@ public class JsonSerializationTest {
 	public void setUp() {
 		AotSerializationData.clear();
 
-		Mdx.reflect = new JvmReflection();
 		Mdx.locks = new JvmLocks();
+		Mdx.reflect = new JvmReflection();
 		serializer = new JsonSerializer();
 
 		parentObject = new TestParentObject();

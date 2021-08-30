@@ -24,6 +24,7 @@ import org.mini2Dx.core.serialization.aot.AotSerializedClassData;
 import org.mini2Dx.core.serialization.dummy.TestChildObject;
 import org.mini2Dx.core.serialization.dummy.TestComplexConstructorArgObject;
 import org.mini2Dx.core.serialization.dummy.TestParentObject;
+import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -33,6 +34,7 @@ public class AotSerializationDataTest {
 	@Before
 	public void setUp() {
 		AotSerializationData.clear();
+		Mdx.locks = new JvmLocks();
 		Mdx.reflect = new JvmReflection();
 	}
 

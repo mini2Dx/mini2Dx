@@ -31,8 +31,8 @@ public class ImageTest {
 	@Before
 	public void setUp() {
 		Mdx.graphics = new LibgdxGraphicsUtils();
-		Mdx.reflect = new JvmReflection();
 		Mdx.locks = new JvmLocks();
+		Mdx.reflect = new JvmReflection();
 		Mdx.xml = new XmlSerializer();
 	}
 

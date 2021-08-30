@@ -49,8 +49,6 @@ import java.util.Map;
 public class JsonSerializer {
 	private static final String LOGGING_TAG = JsonSerializer.class.getSimpleName();
 
-	private final ObjectMap<String, Method[]> methodCache = new ConcurrentObjectMap<>();
-	private final ObjectMap<String, Field[]> fieldCache = new ConcurrentObjectMap<>();
 	private final ObjectMap<String, Method> postDeserializeCache = new ConcurrentObjectMap<>();
 
 	/**
@@ -217,16 +215,8 @@ public class JsonSerializer {
 
 			Class<?> currentClass = clazz;
 			while (currentClass != null && !currentClass.equals(Object.class)) {
-				final String className = currentClass.getName();
-				if(!fieldCache.containsKey(className)) {
-					fieldCache.put(className, Mdx.reflect.getDeclaredFields(currentClass));
-				}
-				if(!methodCache.containsKey(className)) {
-					methodCache.put(className, Mdx.reflect.getDeclaredMethods(currentClass));
-				}
-
-				final Method [] methods = methodCache.get(className);
-				final Field [] fields = fieldCache.get(className);
+				final Method [] methods = Mdx.reflect.getDeclaredMethods(currentClass);
+				final Field [] fields = Mdx.reflect.getDeclaredFields(currentClass);
 
 				for (Field field : fields) {
 					Annotation annotation = field
@@ -261,10 +251,7 @@ public class JsonSerializer {
 			Class<?> [] interfaces = clazz.getInterfaces();
 			for(int i = 0; i < interfaces.length; i++) {
 				final String className = interfaces[i].getName();
-				if(!methodCache.containsKey(className)) {
-					methodCache.put(className, Mdx.reflect.getDeclaredMethods(interfaces[i]));
-				}
-				final Method [] methods = methodCache.get(className);
+				final Method [] methods = Mdx.reflect.getDeclaredMethods(interfaces[i]);
 
 				for(Method method : methods) {
 					if(method.getParameterTypes().length > 0) {
@@ -527,9 +514,6 @@ public class JsonSerializer {
 		Class<?> currentClass = clazz;
 		while (currentClass != null && !currentClass.equals(Object.class)) {
 			final String className = currentClass.getName();
-			if(!methodCache.containsKey(className)) {
-				methodCache.put(className, Mdx.reflect.getDeclaredMethods(currentClass));
-			}
 			if(postDeserializeCache.containsKey(className)) {
 				try {
 					postDeserializeCache.get(className).invoke(object);
@@ -537,7 +521,7 @@ public class JsonSerializer {
 					throw new SerializationException(e);
 				}
 			} else {
-				final Method [] methods = methodCache.get(className);
+				final Method [] methods = Mdx.reflect.getDeclaredMethods(currentClass);
 
 				final AotSerializedClassData classData = AotSerializationData.getClassData(currentClass);
 				if(classData != null) {
