@@ -30,8 +30,8 @@ import java.lang.reflect.Modifier;
  */
 public class JvmMethod implements Method {
 	private final java.lang.reflect.Method method;
-	private final ObjectSet<Class> annotationsPresent = new ConcurrentObjectSet<>();
-	private final ObjectSet<Class> annotationsNotPresent = new ConcurrentObjectSet<>();
+	private final ObjectSet<Class> annotationsPresent = new ConcurrentObjectSet<>(4);
+	private final ObjectSet<Class> annotationsNotPresent = new ConcurrentObjectSet<>(4);
 
 	public JvmMethod(java.lang.reflect.Method method) {
 		try {
