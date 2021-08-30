@@ -43,7 +43,7 @@ public class TiledMapData implements TiledParserListener {
 	protected final Array<Tileset> tilesets = new Array<Tileset>(true, 2, Tileset.class);
 	protected final IntSet tilesetGids = new IntSet();
 	protected final Array<Layer> layers = new Array<Layer>(true, 2, Layer.class);
-	protected final ObjectMap<String, TiledObjectGroup> objectGroups = new ObjectMap<String, TiledObjectGroup>();
+	protected final ObjectMap<String, TiledObjectGroup> objectGroups = new ObjectMap<String, TiledObjectGroup>(8);
 
 	private String orientationValue;
 	private Orientation orientation;

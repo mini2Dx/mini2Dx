@@ -38,7 +38,7 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 		this.tileIdToTileset = tileIdToTileset;
 
 		if(TiledMap.FAST_RENDER_EMPTY_LAYERS) {
-			emptyTileLayerRenderers = new IntMap<OrthogonalEmptyTileLayerRenderer>();
+			emptyTileLayerRenderers = new IntMap<OrthogonalEmptyTileLayerRenderer>(tiledMap.getLayers().size + 1);
 			for(Layer layer : tiledMap.getLayers()) {
 				if(!layer.getLayerType().equals(LayerType.TILE)) {
 					continue;
