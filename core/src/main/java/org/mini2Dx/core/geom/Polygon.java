@@ -53,12 +53,8 @@ public class Polygon extends Shape {
 		}
 	};
 
-	private final PolygonEdgeIterator edgeIterator = new PolygonEdgeIterator();
-	private final PolygonEdgeIterator internalEdgeIterator = new PolygonEdgeIterator(new LineSegment(0f, 0f, 1f, 1f));
-	private final PolygonEdgeIterator cacheIterator = new PolygonEdgeIterator();
-
 	private final Vector2 centroid = new Vector2();
-	private float[] vertices;
+	float[] vertices;
 	private float rotation = 0f;
 	private int totalSidesCache = -1;
 	private float minX, minY, maxX, maxY;
@@ -334,6 +330,7 @@ public class Polygon extends Shape {
 
 		boolean result = false;
 
+		final PolygonEdgeIterator internalEdgeIterator = PolygonEdgeIterator.allocate(this);
 		internalEdgeIterator.begin();
 		while (internalEdgeIterator.hasNext()) {
 			internalEdgeIterator.next();
@@ -384,6 +381,7 @@ public class Polygon extends Shape {
 		}
 		boolean result = false;
 
+		final PolygonEdgeIterator internalEdgeIterator = PolygonEdgeIterator.allocate(this);
 		internalEdgeIterator.begin();
 		while (internalEdgeIterator.hasNext()) {
 			internalEdgeIterator.next();
@@ -447,6 +445,7 @@ public class Polygon extends Shape {
 
 		boolean result = false;
 
+		final PolygonEdgeIterator internalEdgeIterator = PolygonEdgeIterator.allocate(this);
 		internalEdgeIterator.begin();
 		while (internalEdgeIterator.hasNext()) {
 			internalEdgeIterator.next();
@@ -488,6 +487,7 @@ public class Polygon extends Shape {
 
 		boolean result = false;
 
+		final PolygonEdgeIterator internalEdgeIterator = PolygonEdgeIterator.allocate(this);
 		internalEdgeIterator.begin();
 		while (internalEdgeIterator.hasNext()) {
 			internalEdgeIterator.next();
@@ -1114,7 +1114,7 @@ public class Polygon extends Shape {
 
 	@Override
 	public EdgeIterator edgeIterator() {
-		return edgeIterator;
+		return PolygonEdgeIterator.allocate(this);
 	}
 	
 	public boolean isEquilateral() {
@@ -1127,21 +1127,19 @@ public class Polygon extends Shape {
 			return MathUtils.isEqual(getMaxX() - getX(), getMaxY() - getY(), tolerance);
 		}
 
-		synchronized(cacheIterator) {
-			PolygonEdgeIterator edgeIterator = cacheIterator;
-			edgeIterator.begin();
+		PolygonEdgeIterator edgeIterator = PolygonEdgeIterator.allocate(this);
+		edgeIterator.begin();
+		edgeIterator.next();
+		float length = edgeIterator.getEdgeLineSegment().getLength();
+		while(edgeIterator.hasNext()) {
 			edgeIterator.next();
-			float length = edgeIterator.getEdgeLineSegment().getLength();
-			while(edgeIterator.hasNext()) {
-				edgeIterator.next();
-				float nextLength = edgeIterator.getEdgeLineSegment().getLength();
-				if(!MathUtils.isEqual(length, nextLength, tolerance)) {
-					edgeIterator.end();
-					return false;
-				}
+			float nextLength = edgeIterator.getEdgeLineSegment().getLength();
+			if(!MathUtils.isEqual(length, nextLength, tolerance)) {
+				edgeIterator.end();
+				return false;
 			}
-			edgeIterator.end();
 		}
+		edgeIterator.end();
 		return true;
 	}
 
@@ -1249,87 +1247,5 @@ public class Polygon extends Shape {
 			result.append("]");
 		}
 		return result.toString();
-	}
-
-	private class PolygonEdgeIterator extends EdgeIterator {
-		private int edge = 0;
-		private final LineSegment edgeLineSegment;
-
-		public PolygonEdgeIterator() {
-			this(new LineSegment(0f, 0f, 1f, 1f));
-		}
-
-		public PolygonEdgeIterator(LineSegment edgeLineSegment) {
-			this.edgeLineSegment = edgeLineSegment;
-		}
-
-		@Override
-		protected void beginIteration() {
-			edge = -1;
-		}
-
-		@Override
-		protected void endIteration() {
-		}
-
-		@Override
-		protected void nextEdge() {
-			if (edge >= getNumberOfSides()) {
-				throw new MdxException("No more edges remaining. Make sure to call end()");
-			}
-			edge++;
-			if (!hasNext()) {
-				return;
-			}
-			edgeLineSegment.set(getPointAX(), getPointAY(), getPointBX(), getPointBY());
-		}
-
-		@Override
-		public boolean hasNext() {
-			return edge < getNumberOfSides() - 1;
-		}
-
-		@Override
-		public float getPointAX() {
-			if (edge < 0) {
-				throw new MdxException("Make sure to call next() after beginning iteration");
-			}
-			return vertices[edge * 2];
-		}
-
-		@Override
-		public float getPointAY() {
-			if (edge < 0) {
-				throw new MdxException("Make sure to call next() after beginning iteration");
-			}
-			return vertices[(edge * 2) + 1];
-		}
-
-		@Override
-		public float getPointBX() {
-			if (edge < 0) {
-				throw new MdxException("Make sure to call next() after beginning iteration");
-			}
-			if (edge == getNumberOfSides() - 1) {
-				return vertices[0];
-			}
-			return vertices[(edge + 1) * 2];
-		}
-
-		@Override
-		public float getPointBY() {
-			if (edge < 0) {
-				throw new MdxException("Make sure to call next() after beginning iteration");
-			}
-			if (edge == getNumberOfSides() - 1) {
-				return vertices[1];
-			}
-			return vertices[((edge + 1) * 2) + 1];
-		}
-
-		@Override
-		public LineSegment getEdgeLineSegment() {
-			return edgeLineSegment;
-		}
 	}
 }
