@@ -278,6 +278,9 @@ public class FontBuilderGlyphLayout implements FontGlyphLayout {
 					if(Character.isWhitespace(previousChar)) {
 						return spaceX;
 					}
+					if(Character.isIdeographic(previousChar)) {
+						return spaceX;
+					}
 				}
 				return x;
 			}

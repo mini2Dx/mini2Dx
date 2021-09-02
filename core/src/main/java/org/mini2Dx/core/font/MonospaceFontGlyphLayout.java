@@ -294,6 +294,9 @@ public class MonospaceFontGlyphLayout implements FontGlyphLayout {
 					if(Character.isWhitespace(previousChar)) {
 						return j - from;
 					}
+					if(Character.isIdeographic(previousChar)) {
+						return j - from;
+					}
 				}
 				return i - from;
 			}
