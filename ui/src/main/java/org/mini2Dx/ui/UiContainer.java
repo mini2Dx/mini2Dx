@@ -82,7 +82,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	private boolean themeWarningIssued, initialThemeLayoutComplete;
 	private float inputSourceChangeTimer = 0f, inputSourceChangeThreshold = 0.1f;
 
-	private final IntArray actionKeys = new IntArray();
+	private final IntSet actionKeys = new IntSet();
 	private Navigatable activeNavigation;
 	private ActionableRenderNode activeAction;
 	private TextInputableRenderNode activeTextInput;
@@ -1067,7 +1067,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 *            The {@link Input.Keys} value
 	 */
 	public void removeActionKey(int keycode) {
-		actionKeys.removeValue(keycode);
+		actionKeys.remove(keycode);
 	}
 
 	/**
