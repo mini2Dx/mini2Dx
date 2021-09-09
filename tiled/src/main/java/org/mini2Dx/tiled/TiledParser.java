@@ -432,10 +432,12 @@ public class TiledParser implements TiledParserNotifier {
 									layer.setTileId(x, y, id, flipHorizontally, flipVertically, flipDiagonally);
 
 								} catch (Exception e) {
+									zlibStream.dispose();
 									throw new MdxException("Error Reading TMX Layer Data.", e);
 								}
 							}
 						}
+						zlibStream.dispose();
 					}
 				} else {
 					// any other value of 'encoding' is one we're not aware of,
