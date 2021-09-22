@@ -19,9 +19,17 @@ jobs:
         java-version: 1.8
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
+    - uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r22
     - name: Build with Gradle
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 21
         emulator-build: 7425822
-        script: ./gradlew build -x :mini2Dx-uats-libgdx-android:check -x :mini2Dx-uats-libgdx-android:validateSigningDebug -x :mini2Dx-uats-libgdx-android:packageDebug
+        script: |
+          ln -s ${ANDROID_HOME}/build-tools/31.0.0/d8 ${ANDROID_HOME}/build-tools/31.0.0/dx
+          ln -s ${ANDROID_HOME}/build-tools/31.0.0/lib/d8.jar ${ANDROID_HOME}/build-tools/31.0.0/lib/dx.jar
+          ./gradlew build -x :mini2Dx-uats-libgdx-android:check -x :mini2Dx-uats-libgdx-android:validateSigningDebug -x :mini2Dx-uats-libgdx-android:packageDebug
+
