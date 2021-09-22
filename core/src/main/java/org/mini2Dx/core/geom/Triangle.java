@@ -26,6 +26,7 @@ public class Triangle extends Shape {
 	private static final int TOTAL_SIDES = 3;
 
 	final Polygon polygon;
+	final ProxyListeners proxyListeners = new ProxyListeners();
 
 	/**
 	 * Constructor
@@ -79,18 +80,8 @@ public class Triangle extends Shape {
 	}
 
 	private void initProxyListeners() {
-		polygon.addPostionChangeListener(new PositionChangeListener<Positionable>() {
-			@Override
-			public void positionChanged(Positionable moved) {
-				Triangle.this.notifyPositionChangeListeners();
-			}
-		});
-		polygon.addSizeChangeListener(new SizeChangeListener<Sizeable>() {
-			@Override
-			public void sizeChanged(Sizeable changed) {
-				Triangle.this.notifySizeChangeListeners();
-			}
-		});
+		polygon.addPostionChangeListener(proxyListeners);
+		polygon.addSizeChangeListener(proxyListeners);
 	}
 
 	@Override
@@ -367,5 +358,18 @@ public class Triangle extends Shape {
 		} else if (!polygon.equals(other.polygon))
 			return false;
 		return true;
+	}
+
+	private class ProxyListeners implements PositionChangeListener<Positionable>, SizeChangeListener<Sizeable> {
+
+		@Override
+		public void positionChanged(Positionable moved) {
+			notifyPositionChangeListeners();
+		}
+
+		@Override
+		public void sizeChanged(Sizeable changed) {
+			notifySizeChangeListeners();
+		}
 	}
 }
