@@ -1,4 +1,5 @@
 android {
+    ndkVersion "22.1.7171670"
     compileSdkVersion 21
     defaultConfig {
         testApplicationId "org.mini2Dx.uats.android.test"
