@@ -18,9 +18,7 @@ package org.mini2Dx.core.geom;
 import org.mini2Dx.core.Geometry;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.util.Lerper;
-import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
-import org.w3c.dom.css.Rect;
 
 /**
  * Implements a rectangle.
@@ -44,6 +42,7 @@ public class Rectangle extends Shape {
 	};
 
 	final Polygon polygon;
+	final ProxyListeners proxyListeners = new ProxyListeners();
 	private float width, height;
 	
 	/**
@@ -99,18 +98,8 @@ public class Rectangle extends Shape {
 	}
 
 	private void initProxyListeners() {
-		polygon.addPostionChangeListener(new PositionChangeListener<Positionable>() {
-			@Override
-			public void positionChanged(Positionable moved) {
-				Rectangle.this.notifyPositionChangeListeners();
-			}
-		});
-		polygon.addSizeChangeListener(new SizeChangeListener<Sizeable>() {
-			@Override
-			public void sizeChanged(Sizeable changed) {
-				Rectangle.this.notifySizeChangeListeners();
-			}
-		});
+		polygon.addPostionChangeListener(proxyListeners);
+		polygon.addSizeChangeListener(proxyListeners);
 	}
 
 	@Override
@@ -571,5 +560,18 @@ public class Rectangle extends Shape {
 		if (Float.floatToIntBits(getRotation()) != Float.floatToIntBits(other.getRotation()))
 			return false;
 		return true;
+	}
+
+	private class ProxyListeners implements PositionChangeListener<Positionable>, SizeChangeListener<Sizeable> {
+
+		@Override
+		public void positionChanged(Positionable moved) {
+			notifyPositionChangeListeners();
+		}
+
+		@Override
+		public void sizeChanged(Sizeable changed) {
+			notifySizeChangeListeners();
+		}
 	}
 }

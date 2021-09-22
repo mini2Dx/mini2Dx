@@ -28,6 +28,7 @@ public class RegularPolygon extends Shape {
 	private final float rotationSymmetry;
 	private final int totalSides;
 	private final Point center;
+	final ProxyListeners proxyListeners = new ProxyListeners();
 
 	private Polygon polygon;
 	private float radius;
@@ -78,18 +79,8 @@ public class RegularPolygon extends Shape {
 	}
 
 	private void initProxyListeners() {
-		polygon.addPostionChangeListener(new PositionChangeListener<Positionable>() {
-			@Override
-			public void positionChanged(Positionable moved) {
-				RegularPolygon.this.notifyPositionChangeListeners();
-			}
-		});
-		polygon.addSizeChangeListener(new SizeChangeListener<Sizeable>() {
-			@Override
-			public void sizeChanged(Sizeable changed) {
-				RegularPolygon.this.notifySizeChangeListeners();
-			}
-		});
+		polygon.addPostionChangeListener(proxyListeners);
+		polygon.addSizeChangeListener(proxyListeners);
 	}
 
 	@Override
@@ -446,5 +437,18 @@ public class RegularPolygon extends Shape {
 		} else if (!polygon.equals(other.polygon))
 			return false;
 		return true;
+	}
+
+	private class ProxyListeners implements PositionChangeListener<Positionable>, SizeChangeListener<Sizeable> {
+
+		@Override
+		public void positionChanged(Positionable moved) {
+			notifyPositionChangeListeners();
+		}
+
+		@Override
+		public void sizeChanged(Sizeable changed) {
+			notifySizeChangeListeners();
+		}
 	}
 }
