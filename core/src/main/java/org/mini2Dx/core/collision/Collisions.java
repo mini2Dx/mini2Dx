@@ -27,7 +27,7 @@ public class Collisions {
 	/**
 	 * Default pool size. Modify this value before launching the game to increase the default pool sizes.
 	 */
-	public static int DEFAULT_POOL_SIZE = 32;
+	public static int DEFAULT_POOL_SIZE = 256;
 
 	final Queue<CollisionBox> collisionBoxes = new Queue<CollisionBox>(DEFAULT_POOL_SIZE * 2);
 	final Queue<CollisionCircle> collisionCircles = new Queue<CollisionCircle>(DEFAULT_POOL_SIZE * 2);
