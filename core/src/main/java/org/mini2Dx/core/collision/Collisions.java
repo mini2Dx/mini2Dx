@@ -755,4 +755,161 @@ public class Collisions {
 			return quadTreeAwareStaticCollisionPolygons.size;
 		}
 	}
+
+	/**
+	 * Warms up CollisionBox pool to specified size
+	 * @param poolSize The amount of CollisionBox instances in the pool
+	 */
+	public void warmupCollisionBoxes(int poolSize) {
+		for(int i = 0; i < poolSize; i++) {
+			synchronized(collisionBoxes) {
+				collisionBoxes.addLast(new CollisionBox(CollisionIdSequence.nextId(), this));
+				collisionBoxes.removeLast().dispose();
+			}
+		}
+	}
+
+	/**
+	 * Warms up CollisionCircle pool to specified size
+	 * @param poolSize The amount of CollisionCircle instances in the pool
+	 */
+	public void warmupCollisionCircles(int poolSize) {
+		for(int i = 0; i < poolSize; i++) {
+			synchronized(collisionCircles) {
+				collisionCircles.addLast(new CollisionCircle(CollisionIdSequence.nextId(),this));
+				collisionCircles.removeLast().dispose();
+			}
+		}
+	}
+
+	/**
+	 * Warms up CollisionPoint pool to specified size
+	 * @param poolSize The amount of CollisionPoint instances in the pool
+	 */
+	public void warmupCollisionPoints(int poolSize) {
+		for(int i = 0; i < poolSize; i++) {
+			synchronized(collisionPoints) {
+				collisionPoints.addLast(new CollisionPoint(CollisionIdSequence.nextId(),this));
+				collisionPoints.removeLast().dispose();
+			}
+		}
+	}
+
+	/**
+	 * Warms up StaticCollisionBox pool to specified size
+	 * @param poolSize The amount of StaticCollisionBox instances in the pool
+	 */
+	public void warmupStaticCollisionBoxes(int poolSize) {
+		for(int i = 0; i < poolSize; i++) {
+			synchronized(staticCollisionBoxes) {
+				staticCollisionBoxes.addLast(new StaticCollisionBox(CollisionIdSequence.nextId(),this));
+				staticCollisionBoxes.removeLast().dispose();
+			}
+		}
+	}
+
+	/**
+	 * Warms up StaticCollisionCircle pool to specified size
+	 * @param poolSize The amount of StaticCollisionCircle instances in the pool
+	 */
+	public void warmupStaticCollisionCircles(int poolSize) {
+		for(int i = 0; i < poolSize; i++) {
+			synchronized(staticCollisionCircles) {
+				staticCollisionCircles.addLast(new StaticCollisionCircle(CollisionIdSequence.nextId(),this));
+				staticCollisionCircles.removeLast().dispose();
+			}
+		}
+	}
+
+	/**
+	 * Warms up StaticCollisionPoint pool to specified size
+	 * @param poolSize The amount of StaticCollisionPoint instances in the pool
+	 */
+	public void warmupStaticCollisionPoints(int poolSize) {
+		for(int i = 0; i < poolSize; i++) {
+			synchronized(staticCollisionPoints) {
+				staticCollisionPoints.addLast(new StaticCollisionPoint(CollisionIdSequence.nextId(),this));
+				staticCollisionPoints.removeLast().dispose();
+			}
+		}
+	}
+
+	/**
+	 * Warms up QuadTreeAwareCollisionBox pool to specified size
+	 * @param poolSize The amount of QuadTreeAwareCollisionBox instances in the pool
+	 */
+	public void warmupQuadTreeAwareCollisionBoxes(int poolSize) {
+		for(int i = 0; i < poolSize; i++) {
+			synchronized(quadTreeAwareCollisionBoxes) {
+				quadTreeAwareCollisionBoxes.addLast(new QuadTreeAwareCollisionBox(CollisionIdSequence.nextId(),this));
+				quadTreeAwareCollisionBoxes.removeLast().dispose();
+			}
+		}
+	}
+
+	/**
+	 * Warms up QuadTreeAwareCollisionCircle pool to specified size
+	 * @param poolSize The amount of QuadTreeAwareCollisionCircle instances in the pool
+	 */
+	public void warmupQuadTreeAwareCollisionCircles(int poolSize) {
+		for(int i = 0; i < poolSize; i++) {
+			synchronized(quadTreeAwareCollisionCircles) {
+				quadTreeAwareCollisionCircles.addLast(new QuadTreeAwareCollisionCircle(CollisionIdSequence.nextId(),this));
+				quadTreeAwareCollisionCircles.removeLast().dispose();
+			}
+		}
+	}
+
+	/**
+	 * Warms up QuadTreeAwareCollisionPoint pool to specified size
+	 * @param poolSize The amount of QuadTreeAwareCollisionPoint instances in the pool
+	 */
+	public void warmupQuadTreeAwareCollisionPoints(int poolSize) {
+		for(int i = 0; i < poolSize; i++) {
+			synchronized(quadTreeAwareCollisionPoints) {
+				quadTreeAwareCollisionPoints.addLast(new QuadTreeAwareCollisionPoint(CollisionIdSequence.nextId(),this));
+				quadTreeAwareCollisionPoints.removeLast().dispose();
+			}
+		}
+	}
+
+	/**
+	 * Warms up QuadTreeAwareStaticCollisionBox pool to specified size
+	 * @param poolSize The amount of QuadTreeAwareStaticCollisionBox instances in the pool
+	 */
+	public void warmupQuadTreeAwareStaticCollisionBoxes(int poolSize) {
+		for(int i = 0; i < poolSize; i++) {
+			synchronized(quadTreeAwareStaticCollisionBoxes) {
+				quadTreeAwareStaticCollisionBoxes.addLast(new QuadTreeAwareStaticCollisionBox(CollisionIdSequence.nextId(),this));
+				quadTreeAwareStaticCollisionBoxes.removeLast().dispose();
+			}
+		}
+	}
+
+	/**
+	 * Warms up QuadTreeAwareStaticCollisionCircle pool to specified size
+	 * @param poolSize The amount of QuadTreeAwareStaticCollisionCircle instances in the pool
+	 */
+	public void warmupQuadTreeAwareStaticCollisionCircles(int poolSize) {
+		for(int i = 0; i < poolSize; i++) {
+			synchronized(quadTreeAwareStaticCollisionCircles) {
+				quadTreeAwareStaticCollisionCircles.addLast(new QuadTreeAwareStaticCollisionCircle(CollisionIdSequence.nextId(),this));
+				quadTreeAwareStaticCollisionCircles.removeLast().dispose();
+			}
+		}
+	}
+
+
+	/**
+	 * Warms up QuadTreeAwareStaticCollisionPoint pool to specified size
+	 * @param poolSize The amount of QuadTreeAwareStaticCollisionPoint instances in the pool
+	 */
+	public void warmupQuadTreeAwareStaticCollisionPoints(int poolSize) {
+		for(int i = 0; i < poolSize; i++) {
+			synchronized(quadTreeAwareStaticCollisionPoints) {
+				quadTreeAwareStaticCollisionPoints.addLast(new QuadTreeAwareStaticCollisionPoint(CollisionIdSequence.nextId(),this));
+				quadTreeAwareStaticCollisionPoints.removeLast().dispose();
+			}
+		}
+	}
 }

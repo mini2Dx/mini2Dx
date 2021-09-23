@@ -432,4 +432,88 @@ public class Geometry {
             return triangles.size;
         }
     }
+
+    /**
+     * Warms up Circle pool to specified size
+     * @param poolSize The amount of Circle instances in the pool
+     */
+    public void warmupCircles(int poolSize) {
+        for(int i = 0; i < poolSize; i++) {
+            synchronized(circles) {
+                circles.addLast(new Circle(this));
+            }
+        }
+    }
+
+    /**
+     * Warms up EquilateralTriangle pool to specified size
+     * @param poolSize The amount of EquilateralTriangle instances in the pool
+     */
+    public void warmupEquilateralTriangles(int poolSize) {
+        for(int i = 0; i < poolSize; i++) {
+            synchronized(equilateralTriangles) {
+                equilateralTriangles.addLast(new EquilateralTriangle(this));
+            }
+        }
+    }
+
+    /**
+     * Warms up Line pool to specified size
+     * @param poolSize The amount of Line instances in the pool
+     */
+    public void warmupLines(int poolSize) {
+        for(int i = 0; i < poolSize; i++) {
+            synchronized(lines) {
+                lines.addLast(new Line(this));
+            }
+        }
+    }
+
+    /**
+     * Warms up LineSegment pool to specified size
+     * @param poolSize The amount of LineSegment instances in the pool
+     */
+    public void warmupLineSegments(int poolSize) {
+        for(int i = 0; i < poolSize; i++) {
+            synchronized(lineSegments) {
+                lineSegments.addLast(new LineSegment(this));
+            }
+        }
+    }
+
+    /**
+     * Warms up Rectangle pool to specified size
+     * @param poolSize The amount of Rectangle instances in the pool
+     */
+    public void warmupRectangles(int poolSize) {
+        for(int i = 0; i < poolSize; i++) {
+            synchronized(rectangles) {
+                rectangles.addLast(new Rectangle(this));
+            }
+        }
+    }
+
+    /**
+     * Warms up RegularHexagon pool to specified size
+     * @param poolSize The amount of RegularHexagon instances in the pool
+     */
+    public void warmupRegularHexagons(int poolSize) {
+        for(int i = 0; i < poolSize; i++) {
+            synchronized(regularHexagons) {
+                regularHexagons.addLast(new RegularHexagon(this));
+            }
+        }
+    }
+
+    /**
+     * Warms up RegularPentagon pool to specified size
+     * @param poolSize The amount of RegularPentagon instances in the pool
+     */
+    public void warmupRegualarPentagons(int poolSize) {
+        for(int i = 0; i < poolSize; i++) {
+            synchronized(regularPentagons) {
+                regularPentagons.addLast(new RegularPentagon(this));
+            }
+        }
+    }
 }
