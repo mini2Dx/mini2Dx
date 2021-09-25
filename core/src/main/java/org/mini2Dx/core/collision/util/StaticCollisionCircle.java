@@ -17,6 +17,7 @@ package org.mini2Dx.core.collision.util;
 
 import org.mini2Dx.core.collision.*;
 import org.mini2Dx.core.geom.Circle;
+import org.mini2Dx.core.util.HashUtils;
 
 import java.util.Objects;
 
@@ -197,6 +198,6 @@ public class StaticCollisionCircle extends Circle implements CollisionArea, Stat
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return HashUtils.hashCode(id);
 	}
 }

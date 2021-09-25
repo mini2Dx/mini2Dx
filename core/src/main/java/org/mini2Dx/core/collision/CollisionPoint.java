@@ -21,6 +21,7 @@ import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.PositionChangeListener;
 import org.mini2Dx.core.geom.Positionable;
 import org.mini2Dx.core.geom.Shape;
+import org.mini2Dx.core.util.HashUtils;
 import org.mini2Dx.lockprovider.ReadWriteLock;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.MathUtils;
@@ -236,7 +237,7 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return HashUtils.hashCode(id);
 	}
 
 	@Override

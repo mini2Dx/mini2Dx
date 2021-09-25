@@ -20,6 +20,7 @@ import org.mini2Dx.core.collision.CollisionObject;
 import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.geom.Point;
+import org.mini2Dx.core.util.HashUtils;
 
 import java.util.Objects;
 
@@ -152,6 +153,6 @@ public class StaticCollisionPoint extends Point implements CollisionObject, Stat
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return HashUtils.hashCode(id);
 	}
 }

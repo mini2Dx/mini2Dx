@@ -19,6 +19,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.TimestepMode;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.geom.*;
+import org.mini2Dx.core.util.HashUtils;
 import org.mini2Dx.lockprovider.ReadWriteLock;
 import org.mini2Dx.core.util.InterpolationTracker;
 import org.mini2Dx.gdx.math.MathUtils;
@@ -353,7 +354,7 @@ public class CollisionPolygon extends Polygon implements CollisionArea,
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return HashUtils.hashCode(id);
 	}
 
 	@Override

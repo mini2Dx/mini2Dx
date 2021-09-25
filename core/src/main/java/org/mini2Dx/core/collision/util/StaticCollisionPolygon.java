@@ -21,6 +21,7 @@ import org.mini2Dx.core.collision.Collisions;
 import org.mini2Dx.core.collision.RenderCoordMode;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.geom.Polygon;
+import org.mini2Dx.core.util.HashUtils;
 import org.mini2Dx.gdx.math.Vector2;
 
 import java.util.Objects;
@@ -200,6 +201,6 @@ public class StaticCollisionPolygon extends Polygon implements CollisionArea, St
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return HashUtils.hashCode(id);
 	}
 }
