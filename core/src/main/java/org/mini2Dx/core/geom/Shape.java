@@ -36,8 +36,8 @@ public abstract class Shape implements Sizeable, Disposable {
 	protected final Geometry geometry;
 	protected boolean disposed = false;
 
-	protected Array<PositionChangeListener> positionChangeListeners;
-	protected Array<SizeChangeListener> sizeChangeListeners;
+	protected final Array<PositionChangeListener> positionChangeListeners = new Array<>(2);
+	protected final Array<SizeChangeListener> sizeChangeListeners = new Array<>(2);
 
 	/**
 	 * Constructor for shapes not belonging to the {@link Geometry} pool
@@ -259,9 +259,6 @@ public abstract class Shape implements Sizeable, Disposable {
 	@Override
 	public <T extends Positionable> void addPostionChangeListener(
 			PositionChangeListener<T> listener) {
-		if (positionChangeListeners == null) {
-			positionChangeListeners = new Array<PositionChangeListener>(true,1);
-		}
 		positionChangeListeners.add(listener);
 	}
 
@@ -276,9 +273,6 @@ public abstract class Shape implements Sizeable, Disposable {
 
 	@Override
 	public <T extends Sizeable> void addSizeChangeListener(SizeChangeListener<T> listener) {
-		if (sizeChangeListeners == null) {
-			sizeChangeListeners = new Array<SizeChangeListener>(true,1);
-		}
 		sizeChangeListeners.add(listener);
 	}
 

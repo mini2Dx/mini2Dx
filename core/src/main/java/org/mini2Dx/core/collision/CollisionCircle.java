@@ -294,9 +294,6 @@ public class CollisionCircle extends Circle implements CollisionArea,
 	public <T extends Positionable> void addPostionChangeListener(
 			PositionChangeListener<T> listener) {
 		positionChangeListenerLock.lockWrite();
-		if (positionChangeListeners == null) {
-			positionChangeListeners = new Array<PositionChangeListener>(true,1);
-		}
 		positionChangeListeners.add(listener);
 		positionChangeListenerLock.unlockWrite();
 	}
@@ -310,9 +307,6 @@ public class CollisionCircle extends Circle implements CollisionArea,
 	@Override
 	public <T extends Sizeable> void addSizeChangeListener(SizeChangeListener<T> listener) {
 		sizeChangeListenerLock.lockWrite();
-		if (sizeChangeListeners == null) {
-			sizeChangeListeners = new Array<SizeChangeListener>(true,1);
-		}
 		sizeChangeListeners.add(listener);
 		sizeChangeListenerLock.unlockWrite();
 	}
