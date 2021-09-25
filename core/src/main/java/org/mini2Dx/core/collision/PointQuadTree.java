@@ -151,6 +151,21 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		elements = new Array<T>(true, elementLimitPerQuad);
 	}
 
+	public void warmupWithDepth(int depth) {
+		if(depth > 0) {
+			subdivide();
+			topLeft.warmupWithDepth(depth - 1);
+			topRight.warmupWithDepth(depth - 1);
+			bottomLeft.warmupWithDepth(depth - 1);
+			bottomRight.warmupWithDepth(depth - 1);
+		}
+	}
+
+	public void warmupWithObjects(Array<T> elements) {
+		addAll(elements);
+		removeAll(elements);
+	}
+
 	public void debugRender(Graphics g) {
 		if(getX() - g.getTranslationX() > g.getViewportWidth()) {
 			return;

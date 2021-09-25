@@ -33,7 +33,7 @@ import java.util.Random;
  */
 public class PointQuadTreeTest {
 
-	private QuadTree<CollisionPoint> rootQuad;
+	private PointQuadTree<CollisionPoint> rootQuad;
 	private CollisionPoint point1, point2, point3, point4;
 	private QuadTreeAwareCollisionPoint qAPoint1, qAPoint2, qAPoint3, qAPoint4;
 
@@ -351,5 +351,14 @@ public class PointQuadTreeTest {
 		Assert.assertEquals(false, CollisionPoints.contains(qAPoint2, false));
 		Assert.assertEquals(false, CollisionPoints.contains(qAPoint3, false));
 		Assert.assertEquals(true, CollisionPoints.contains(qAPoint4, false));
+	}
+
+	@Test
+	public void testWarmupWithDepth() {
+		rootQuad.warmupWithDepth(1);
+		Assert.assertEquals(4, rootQuad.getTotalQuads());
+
+		rootQuad.warmupWithDepth(2);
+		Assert.assertEquals(16, rootQuad.getTotalQuads());
 	}
 }

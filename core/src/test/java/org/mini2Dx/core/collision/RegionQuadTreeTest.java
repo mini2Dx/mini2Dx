@@ -558,4 +558,13 @@ public class RegionQuadTreeTest {
 		Assert.assertEquals(0, collisionBoxs.size);
 		Assert.assertEquals(false, collisionBoxs.contains(qABox1, false));
 	}
+
+	@Test
+	public void testWarmupWithDepth() {
+		rootQuad.warmupWithDepth(1);
+		Assert.assertEquals(4, rootQuad.getTotalQuads());
+
+		rootQuad.warmupWithDepth(2);
+		Assert.assertEquals(16, rootQuad.getTotalQuads());
+	}
 }
