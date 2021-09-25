@@ -17,9 +17,7 @@ package org.mini2Dx.core.util;
 
 public class HashUtils {
 	public static int hashCode(int a) {
-		int result = 1;
-		result = 31 * result + Integer.hashCode(a);
-		return result;
+		return a;
 	}
 
 	public static int hashCode(int [] a) {
