@@ -312,6 +312,9 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		final PointQuadTree<T> result = pool.removeFirst();
 		result.parent = parent;
 		result.set(x, y, width, height);
+		if(result.elements != null) {
+			result.elements.clear();
+		}
 		return result;
 	}
 

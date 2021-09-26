@@ -262,6 +262,9 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 		final RegionQuadTree<T> result = (RegionQuadTree) pool.removeFirst();
 		result.parent = parent;
 		result.set(x, y, width, height);
+		if(result.elements != null) {
+			result.elements.clear();
+		}
 		return result;
 	}
 
