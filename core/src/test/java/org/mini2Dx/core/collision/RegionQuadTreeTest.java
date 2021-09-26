@@ -567,4 +567,22 @@ public class RegionQuadTreeTest {
 		rootQuad.warmupWithDepth(2);
 		Assert.assertEquals(16, rootQuad.getTotalQuads());
 	}
+
+	@Test
+	public void testGetElementsContainingAreaUpwardsWithPooling() {
+		rootQuad.warmupPool(32);
+		testGetElementsContainingAreaUpwards();
+	}
+
+	@Test
+	public void testGetElementsContainingAreaWithPooling() {
+		rootQuad.warmupPool(32);
+		testGetElementsContainingArea();
+	}
+
+	@Test
+	public void testGetElementsContainingPointWithPooling() {
+		rootQuad.warmupPool(32);
+		testGetElementsContainingPoint();
+	}
 }

@@ -20,6 +20,7 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.geom.*;
 import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.gdx.utils.Queue;
 
 /**
  * Implements a point quadtree
@@ -33,6 +34,8 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	public static Color ELEMENT_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(0f, 0f, 1f, 0.5f) : null;
 
 	private static final long serialVersionUID = -2034928347848875105L;
+
+	protected Queue<PointQuadTree<T>> pool;
 
 	protected PointQuadTree<T> parent;
 	protected PointQuadTree<T> topLeft, topRight, bottomLeft, bottomRight;
@@ -66,6 +69,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	public PointQuadTree(int elementLimitPerQuad, int mergeWatermark, float x, float y, float width, float height) {
 		this(DEFAULT_MINIMUM_QUAD_SIZE, DEFAULT_MINIMUM_QUAD_SIZE, elementLimitPerQuad, mergeWatermark, x, y, width,
 				height);
+		pool = new Queue<>();
 	}
 
 	/**
@@ -87,6 +91,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	 */
 	public PointQuadTree(int elementLimitPerQuad, float x, float y, float width, float height) {
 		this(elementLimitPerQuad, 0, x, y, width, height);
+		pool = new Queue<>();
 	}
 
 	/**
@@ -108,6 +113,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		this(parent.getMinimumQuadWidth(), parent.getMinimumQuadHeight(), parent.getElementLimitPerQuad(),
 				parent.getMergeWatermark(), x, y, width, height);
 		this.parent = parent;
+		this.pool = parent.pool;
 	}
 
 	/**
@@ -164,6 +170,15 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	public void warmupWithObjects(Array<T> elements) {
 		addAll(elements);
 		removeAll(elements);
+	}
+
+	public void warmupPool(int poolSize) {
+		if(pool == null) {
+			pool = new Queue<>();
+		}
+		for(int i = 0; i < poolSize; i++) {
+			pool.addLast(new PointQuadTree<T>(this, 0, 0, 1, 1));
+		}
 	}
 
 	public void debugRender(Graphics g) {
@@ -277,10 +292,10 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		float halfWidth = getWidth() * 0.5f;
 		float halfHeight = getHeight() * 0.5f;
 
-		topLeft = new PointQuadTree<T>(this, getX(), getY(), halfWidth, halfHeight);
-		topRight = new PointQuadTree<T>(this, getX() + halfWidth, getY(), halfWidth, halfHeight);
-		bottomLeft = new PointQuadTree<T>(this, getX(), getY() + halfHeight, halfWidth, halfHeight);
-		bottomRight = new PointQuadTree<T>(this, getX() + halfWidth, getY() + halfHeight, halfWidth, halfHeight);
+		topLeft = allocate(this, getX(), getY(), halfWidth, halfHeight);
+		topRight = allocate(this, getX() + halfWidth, getY(), halfWidth, halfHeight);
+		bottomLeft = allocate(this, getX(), getY() + halfHeight, halfWidth, halfHeight);
+		bottomRight = allocate(this, getX() + halfWidth, getY() + halfHeight, halfWidth, halfHeight);
 
 		for (int i = elements.size - 1; i >= 0; i--) {
 			T element = elements.removeIndex(i);
@@ -288,6 +303,16 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			addElementToChild(element);
 		}
 		elements = null;
+	}
+
+	protected PointQuadTree<T> allocate(PointQuadTree<T> parent, float x, float y, float width, float height) {
+		if(pool == null || pool.size == 0) {
+			return new PointQuadTree<>(parent, x, y, width, height);
+		}
+		final PointQuadTree<T> result = pool.removeFirst();
+		result.parent = parent;
+		result.set(x, y, width, height);
+		return result;
 	}
 
 	protected boolean isMergable() {
@@ -405,6 +430,13 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			topRight.clear();
 			bottomLeft.clear();
 			bottomRight.clear();
+
+			if(pool != null) {
+				pool.addLast(topLeft);
+				pool.addLast(topRight);
+				pool.addLast(bottomLeft);
+				pool.addLast(bottomRight);
+			}
 
 			topLeft = null;
 			topRight = null;

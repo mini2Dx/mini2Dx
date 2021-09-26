@@ -22,6 +22,7 @@ import org.mini2Dx.core.geom.Shape;
 import org.mini2Dx.core.geom.Sizeable;
 import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.gdx.utils.Queue;
 
 /**
  * Implements a region quadtree
@@ -125,6 +126,16 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 	public RegionQuadTree(float minimumQuadWidth, float minimumQuadHeight, int elementLimitPerQuad, int mergeWatermark,
 			float x, float y, float width, float height) {
 		super(minimumQuadWidth, minimumQuadHeight, elementLimitPerQuad, mergeWatermark, x, y, width, height);
+	}
+
+	@Override
+	public void warmupPool(int poolSize) {
+		if(pool == null) {
+			pool = new Queue<>();
+		}
+		for(int i = 0; i < poolSize; i++) {
+			pool.addLast(new RegionQuadTree<T>(this, 0, 0, 1, 1));
+		}
 	}
 
 	@Override
@@ -232,16 +243,26 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 		float halfWidth = getWidth() / 2f;
 		float halfHeight = getHeight() / 2f;
 
-		topLeft = new RegionQuadTree<T>(this, getX(), getY(), halfWidth, halfHeight);
-		topRight = new RegionQuadTree<T>(this, getX() + halfWidth, getY(), halfWidth, halfHeight);
-		bottomLeft = new RegionQuadTree<T>(this, getX(), getY() + halfHeight, halfWidth, halfHeight);
-		bottomRight = new RegionQuadTree<T>(this, getX() + halfWidth, getY() + halfHeight, halfWidth, halfHeight);
+		topLeft = allocate(this, getX(), getY(), halfWidth, halfHeight);
+		topRight = allocate(this, getX() + halfWidth, getY(), halfWidth, halfHeight);
+		bottomLeft = allocate(this, getX(), getY() + halfHeight, halfWidth, halfHeight);
+		bottomRight = allocate(this, getX() + halfWidth, getY() + halfHeight, halfWidth, halfHeight);
 
 		for (int i = elements.size - 1; i >= 0; i--) {
 			if (addElementToChild(elements.get(i))) {
 				removeElement(elements.get(i));
 			}
 		}
+	}
+
+	protected RegionQuadTree<T> allocate(RegionQuadTree<T> parent, float x, float y, float width, float height) {
+		if(pool == null || pool.size == 0) {
+			return new RegionQuadTree<>(parent, x, y, width, height);
+		}
+		final RegionQuadTree<T> result = (RegionQuadTree) pool.removeFirst();
+		result.parent = parent;
+		result.set(x, y, width, height);
+		return result;
 	}
 
 	@Override
@@ -270,6 +291,13 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			topRight.clear();
 			bottomLeft.clear();
 			bottomRight.clear();
+
+			if(pool != null) {
+				pool.addLast(topLeft);
+				pool.addLast(topRight);
+				pool.addLast(bottomLeft);
+				pool.addLast(bottomRight);
+			}
 
 			topLeft = null;
 			topRight = null;

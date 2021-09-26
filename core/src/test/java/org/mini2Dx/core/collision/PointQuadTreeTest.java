@@ -361,4 +361,22 @@ public class PointQuadTreeTest {
 		rootQuad.warmupWithDepth(2);
 		Assert.assertEquals(16, rootQuad.getTotalQuads());
 	}
+
+	@Test
+	public void testGetElementsWithinRegionUpwardsWithPooling() {
+		rootQuad.warmupPool(32);
+		testGetElementsWithinRegionUpwards();
+	}
+
+	@Test
+	public void testGetElementsIntersectingLineSegmentWithPooling() {
+		rootQuad.warmupPool(32);
+		testGetElementsIntersectingLineSegment();
+	}
+
+	@Test
+	public void testGetElementsWithinRegionIgnoringEdgesWithPooling() {
+		rootQuad.warmupPool(32);
+		testGetElementsWithinRegionIgnoringEdges();
+	}
 }
