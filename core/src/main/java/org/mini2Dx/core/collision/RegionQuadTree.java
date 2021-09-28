@@ -130,11 +130,18 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 
 	@Override
 	public void warmupPool(int poolSize) {
+		warmupPool(poolSize, 16);
+	}
+
+	@Override
+	public void warmupPool(int poolSize, int expectedElementsPerQuad) {
 		if(pool == null) {
 			pool = new Queue<>();
 		}
 		for(int i = 0; i < poolSize; i++) {
-			pool.addLast(new RegionQuadTree<T>(this, 0, 0, 1, 1));
+			RegionQuadTree<T> regionQuadTree = new RegionQuadTree<T>(this, 0, 0, 1, 1);
+			regionQuadTree.elements = new Array<>(expectedElementsPerQuad);
+			pool.addLast(regionQuadTree);
 		}
 	}
 
@@ -306,6 +313,9 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			topRight = null;
 			bottomLeft = null;
 			bottomRight = null;
+		}
+		for(int i = 0; i < elements.size; i++) {
+			elements.get(i).removePositionChangeListener(this);
 		}
 		elements.clear();
 		clearTotalElementsCache();

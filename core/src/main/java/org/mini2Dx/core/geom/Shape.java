@@ -36,8 +36,8 @@ public abstract class Shape implements Sizeable, Disposable {
 	protected final Geometry geometry;
 	protected boolean disposed = false;
 
-	protected final Array<PositionChangeListener> positionChangeListeners = new Array<>(2);
-	protected final Array<SizeChangeListener> sizeChangeListeners = new Array<>(2);
+	protected final Array<PositionChangeListener> positionChangeListeners = new Array<>(4);
+	protected final Array<SizeChangeListener> sizeChangeListeners = new Array<>(4);
 
 	/**
 	 * Constructor for shapes not belonging to the {@link Geometry} pool

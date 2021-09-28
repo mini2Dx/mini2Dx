@@ -585,4 +585,31 @@ public class RegionQuadTreeTest {
 		rootQuad.warmupPool(32);
 		testGetElementsContainingPoint();
 	}
+
+	@Test
+	public void testClearWithPooling() {
+		rootQuad.warmupPool(2);
+
+		for(int x = 0; x < 128; x += 2) {
+			for(int y = 0; y < 128; y += 2) {
+				rootQuad.add(new CollisionBox(x, y, 3, 3));
+			}
+		}
+
+		rootQuad.clear();
+
+		for(int x = 0; x < 128; x += 2) {
+			for(int y = 0; y < 128; y += 2) {
+				rootQuad.add(new CollisionBox(x, y, 3, 3));
+			}
+		}
+	}
+
+	@Test
+	public void testSubdivideWithPooling() {
+		testSubdivide();
+		rootQuad.clear();
+		testSubdivide();
+		rootQuad.clear();
+	}
 }

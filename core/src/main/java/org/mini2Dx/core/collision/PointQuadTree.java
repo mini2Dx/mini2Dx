@@ -173,11 +173,17 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	}
 
 	public void warmupPool(int poolSize) {
+		warmupPool(poolSize, 16);
+	}
+
+	public void warmupPool(int poolSize, int expectedElementsPerQuad) {
 		if(pool == null) {
 			pool = new Queue<>();
 		}
 		for(int i = 0; i < poolSize; i++) {
-			pool.addLast(new PointQuadTree<T>(this, 0, 0, 1, 1));
+			final PointQuadTree<T> pointQuadTree = new PointQuadTree<T>(this, 0, 0, 1, 1);
+			pointQuadTree.elements = new Array<>(expectedElementsPerQuad);
+			pool.addLast(pointQuadTree);
 		}
 	}
 
@@ -448,6 +454,9 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 
 			elements = new Array<T>(true, elementLimitPerQuad);
 		} else {
+			for(int i = 0; i < elements.size; i++) {
+				elements.get(i).removePositionChangeListener(this);
+			}
 			elements.clear();
 		}
 		clearTotalElementsCache();
