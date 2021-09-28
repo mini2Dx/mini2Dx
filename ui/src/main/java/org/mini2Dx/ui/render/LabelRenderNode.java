@@ -44,6 +44,10 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 
 	@Override
 	public void update(UiContainerRenderTree uiContainer, float delta) {
+		if (!initialLayoutOccurred) {
+			return;
+		}
+
 		super.update(uiContainer, delta);
 
 		if(bitmapCacheReset) {
