@@ -122,4 +122,10 @@ public class ButtonRenderNode extends ParentRenderNode<Button, ButtonStyleRule> 
 	public boolean isEnabled() {
 		return element.isEnabled();
 	}
+
+	@Override
+	public void endFakeHover() {
+		setState(NodeState.NORMAL);
+		super.endFakeHover();
+	}
 }
