@@ -18,13 +18,11 @@ package org.mini2Dx.ui.xml;
 import org.junit.Test;
 import org.mini2Dx.ui.element.Image;
 import org.mini2Dx.ui.element.ImageButton;
+import org.mini2Dx.ui.element.Visibility;
 
 import java.util.function.Function;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ImageButtonTest extends AbstractUiElementXmlTest<ImageButton> {
 
@@ -193,6 +191,30 @@ public class ImageButtonTest extends AbstractUiElementXmlTest<ImageButton> {
         ImageButton element = loadFile("<image-button enabled=\"false\"><normal-texture/></image-button>");
 
         assertFalse(element.isEnabled());
+    }
+
+    @Test
+    public void override_setEnabled_false() {
+        ImageButton element = loadFile("<image-button enabled=\"true\"><normal-texture/></image-button>");
+        element.setEnabled(false);
+
+        assertFalse(element.isEnabled());
+        assertSame(element.getNormalImage().getVisibility(), Visibility.HIDDEN);
+        assertSame(element.getActionImage().getVisibility(), Visibility.HIDDEN);
+        assertSame(element.getHoverImage().getVisibility(), Visibility.HIDDEN);
+        assertSame(element.getDisabledImage().getVisibility(), Visibility.VISIBLE);
+    }
+
+    @Test
+    public void override_setEnabled_true() {
+        ImageButton element = loadFile("<image-button enabled=\"false\"><normal-texture/></image-button>");
+        element.setEnabled(true);
+
+        assertTrue(element.isEnabled());
+        assertSame(element.getNormalImage().getVisibility(), Visibility.VISIBLE);
+        assertSame(element.getActionImage().getVisibility(), Visibility.HIDDEN);
+        assertSame(element.getHoverImage().getVisibility(), Visibility.HIDDEN);
+        assertSame(element.getDisabledImage().getVisibility(), Visibility.HIDDEN);
     }
 
     @Test
