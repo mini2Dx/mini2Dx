@@ -191,6 +191,67 @@ public class UiContainerTest implements UiContainerListener {
 		Assert.assertEquals(false, uiContainer.buttonUp(null, XboxButton.A));
 	}
 
+	@Test
+	public void testKeyDownChangeInputSourceMultipleUiContainers() {
+		mockery.checking(new Expectations() {
+			{
+				oneOf(gameContainer).getWidth();
+				will(returnValue(800));
+				oneOf(gameContainer).getHeight();
+				will(returnValue(600));
+			}
+		});
+		UiContainer otherUiContainer = new UiContainer(gameContainer, assetManager);
+		otherUiContainer.setLastInputSource(InputSource.CONTROLLER);
+		uiContainer.setLastInputSource(InputSource.CONTROLLER);
+		uiContainer.update(1f);
+		otherUiContainer.update(1f);
+
+		Assert.assertEquals(InputSource.CONTROLLER, uiContainer.getLastInputSource());
+		Assert.assertEquals(InputSource.CONTROLLER, otherUiContainer.getLastInputSource());
+		uiContainer.keyDown(Keys.A);
+		uiContainer.update(1f);
+		otherUiContainer.update(1f);
+		Assert.assertEquals(InputSource.KEYBOARD_MOUSE, uiContainer.getLastInputSource());
+		Assert.assertEquals(InputSource.KEYBOARD_MOUSE, otherUiContainer.getLastInputSource());
+	}
+
+	@Test
+	public void testControllerChangeGamepadSourceMultipleUiContainers() {
+		mockery.checking(new Expectations() {
+			{
+				oneOf(gameContainer).getWidth();
+				will(returnValue(800));
+				oneOf(gameContainer).getHeight();
+				will(returnValue(600));
+			}
+		});
+		UiContainer otherUiContainer = new UiContainer(gameContainer, assetManager);
+		otherUiContainer.setLastInputSource(InputSource.CONTROLLER);
+		uiContainer.setLastInputSource(InputSource.CONTROLLER);
+		otherUiContainer.setLastGamePadType(GamePadType.UNKNOWN);
+		uiContainer.setLastGamePadType(GamePadType.UNKNOWN);
+
+		uiContainer.update(1f);
+		otherUiContainer.update(1f);
+
+		Assert.assertEquals(InputSource.CONTROLLER, uiContainer.getLastInputSource());
+		Assert.assertEquals(InputSource.CONTROLLER, otherUiContainer.getLastInputSource());
+		Assert.assertEquals(GamePadType.UNKNOWN, uiContainer.getLastGamePadType());
+		Assert.assertEquals(GamePadType.UNKNOWN, otherUiContainer.getLastGamePadType());
+
+		uiContainer.setLastGamePadType(GamePadType.XBOX);
+
+		uiContainer.update(1f);
+		otherUiContainer.update(1f);
+
+		Assert.assertEquals(InputSource.CONTROLLER, uiContainer.getLastInputSource());
+		Assert.assertEquals(InputSource.CONTROLLER, otherUiContainer.getLastInputSource());
+		Assert.assertEquals(GamePadType.XBOX, uiContainer.getLastGamePadType());
+		Assert.assertEquals(GamePadType.XBOX, otherUiContainer.getLastGamePadType());
+	}
+
+
 	@Override
 	public void onScreenSizeChanged(ScreenSize screenSize) {
 		listenerEvents.add("onScreenSizeChanged");
