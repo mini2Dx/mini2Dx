@@ -1264,6 +1264,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	}
 
 	private void notifyInputSourceChange(UiContainer uiContainer, InputSource oldSource, InputSource newSource) {
+		uiContainer.setLastInputSource(newSource);
 		for (int i = uiContainer.inputSourceListeners.size - 1; i >= 0; i--) {
 			uiContainer.inputSourceListeners.get(i).inputSourceChanged(uiContainer, oldSource, newSource);
 		}
@@ -1276,6 +1277,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	}
 
 	private void notifyGamePadTypeChange(UiContainer uiContainer, GamePadType oldGamePadType, GamePadType newGamePadType) {
+		uiContainer.setLastGamePadType(newGamePadType);
 		for (int i = uiContainer.inputSourceListeners.size - 1; i >= 0; i--) {
 			uiContainer.inputSourceListeners.get(i).gamePadTypeChanged(uiContainer, oldGamePadType, newGamePadType);
 		}
