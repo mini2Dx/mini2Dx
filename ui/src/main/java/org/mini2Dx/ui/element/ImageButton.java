@@ -481,4 +481,27 @@ public class ImageButton extends Button implements NodeStateListener {
 			disabledImage.setVisibility(Visibility.VISIBLE);
 		}
 	}
+
+	@Override
+	public void setVisibility(Visibility visibility) {
+		super.setVisibility(visibility);
+		if (normalImage == null){
+			return;
+		}
+		if (isEnabled()){
+			if(disabledImage.getVisibility().equals(Visibility.VISIBLE)) {
+				normalImage.setVisibility(Visibility.VISIBLE);
+				hoverImage.setVisibility(Visibility.HIDDEN);
+				actionImage.setVisibility(Visibility.HIDDEN);
+				disabledImage.setVisibility(Visibility.HIDDEN);
+			}
+		} else {
+			if(normalImage.getVisibility().equals(Visibility.VISIBLE)) {
+				normalImage.setVisibility(Visibility.HIDDEN);
+				hoverImage.setVisibility(Visibility.HIDDEN);
+				actionImage.setVisibility(Visibility.HIDDEN);
+				disabledImage.setVisibility(Visibility.VISIBLE);
+			}
+		}
+	}
 }
