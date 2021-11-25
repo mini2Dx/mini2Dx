@@ -151,6 +151,8 @@ configure(docProjects()) {
 	} else {
 		apply plugin: "java-library"
 		apply plugin: "checkstyle"
+
+		[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 		
 		sourceCompatibility = 1.8
 		targetCompatibility = 1.8
