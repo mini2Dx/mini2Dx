@@ -50,7 +50,7 @@ public class LabelRenderNode extends RenderNode<Label, LabelStyleRule> {
 
 		super.update(uiContainer, delta);
 
-		if(bitmapCacheReset) {
+		if(bitmapCacheReset && !isDirty()) {
 			nullAnimation.onResize(fontCache, element.getText(), preferredContentWidth,
 					element.getHorizontalAlignment().getAlignValue());
 			if (element.getTextAnimation() != null) {

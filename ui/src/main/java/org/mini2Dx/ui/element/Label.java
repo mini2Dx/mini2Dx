@@ -192,6 +192,28 @@ public class Label extends UiElement {
 	}
 
 	@Override
+	public boolean setContentWidth(float contentWidth) {
+		if(super.setContentWidth(contentWidth)) {
+			if(renderNode != null) {
+				((LabelRenderNode) renderNode).updateBitmapFontCache();
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean setContentHeight(float contentHeight) {
+		if(super.setContentHeight(contentHeight)) {
+			if(renderNode != null) {
+				((LabelRenderNode) renderNode).updateBitmapFontCache();
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public void attach(ParentRenderNode<?, ?> parentRenderNode) {
 		if(renderNode != null) {
 			return;
