@@ -41,6 +41,8 @@ public class GridUiNavigation implements UiNavigation {
 	private int columns;
 	private int cursorX, cursorY;
 
+	private boolean triedMovingOnEdge = false;
+
 	/**
 	 * Constructor
 	 * @param xsColumns The amount of columns of the grid on a {@link ScreenSize#XS} screen
@@ -129,6 +131,7 @@ public class GridUiNavigation implements UiNavigation {
 			navigation.add(null);
 		}
 		navigation.set(index, actionable);
+		triedMovingOnEdge = false;
 	}
 	
 	public Actionable get(int x, int y) {
@@ -195,7 +198,15 @@ public class GridUiNavigation implements UiNavigation {
 		if (invokeEndHover && previousElement != null){
 			previousElement.invokeEndHover();
 		}
-		return navigation.get(getIndex(cursorX, cursorY));
+
+		Actionable newElement = navigation.get(getIndex(cursorX, cursorY));
+
+		if (previousElement == newElement && (keycode == Keys.A || keycode == Keys.D)){
+			triedMovingOnEdge = true;
+		} else {
+			triedMovingOnEdge = false;
+		}
+		return newElement;
 	}
 
 	Actionable updateCursor(String hoverElementId) {
@@ -238,6 +249,7 @@ public class GridUiNavigation implements UiNavigation {
 
 		cursorX = 0;
 		cursorY = 0;
+		triedMovingOnEdge = false;
 		if(navigation.size == 0) {
 			return null;
 		}
@@ -321,5 +333,13 @@ public class GridUiNavigation implements UiNavigation {
 
 	int getNavigationSize(){
 		return navigation.size;
+	}
+
+	public boolean isTriedMovingOnEdge() {
+		return triedMovingOnEdge;
+	}
+
+	public void setTriedMovingOnEdge(boolean triedMovingOnEdge) {
+		this.triedMovingOnEdge = triedMovingOnEdge;
 	}
 }
