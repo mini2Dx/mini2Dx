@@ -263,8 +263,47 @@ public class GridUiNavigationTest {
 		}
 
 		navigation.updateCursor(navigationElements[2][1].getId());
-		navigation.set(1, 1, null);
+
+		//set entire middle column to null elements to move over
+		for (int i = 0; i < ROWS; i++) {
+			navigation.set(1, i, null);
+		}
+
 		Assert.assertEquals(navigationElements[0][1], navigation.navigate(Keys.LEFT));
+	}
+
+	@Test
+	public void testNavigateLeftClosestVerticalElementDownwards(){
+		Button[][] navigationElements =  new Button[COLUMNS][ROWS];
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				navigation.set(x, y, navigationElements[x][y]);}
+		}
+
+		navigation.updateCursor(navigationElements[2][1].getId());
+
+		navigation.set(1, 0, null);
+		navigation.set(1, 1, null);
+
+		Assert.assertEquals(navigationElements[1][2], navigation.navigate(Keys.LEFT));
+	}
+
+	@Test
+	public void testNavigateLeftClosestVerticalElementUpwards(){
+		Button[][] navigationElements =  new Button[COLUMNS][ROWS];
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				navigation.set(x, y, navigationElements[x][y]);}
+		}
+
+		navigation.updateCursor(navigationElements[2][1].getId());
+
+		navigation.set(1, 1, null);
+		navigation.set(1, 2, null);
+
+		Assert.assertEquals(navigationElements[1][0], navigation.navigate(Keys.LEFT));
 	}
 
 	@Test
@@ -277,8 +316,71 @@ public class GridUiNavigationTest {
 		}
 
 		navigation.updateCursor(navigationElements[0][1].getId());
-		navigation.set(1, 1, null);
+
+		for (int i = 0; i < ROWS; i++) {
+			navigation.set(1, i, null);
+		}
 		Assert.assertEquals(navigationElements[2][1], navigation.navigate(Keys.RIGHT));
+	}
+
+	@Test
+	public void testNavigateRightClosestVerticalElementDownwards(){
+		Button[][] navigationElements =  new Button[COLUMNS][ROWS];
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				navigation.set(x, y, navigationElements[x][y]);}
+		}
+
+		navigation.updateCursor(navigationElements[0][1].getId());
+
+		navigation.set(1, 0, null);
+		navigation.set(1, 1, null);
+
+		Assert.assertEquals(navigationElements[1][2], navigation.navigate(Keys.RIGHT));
+	}
+
+	@Test
+	public void testNavigateRightClosestVerticalElementUpwards(){
+		Button[][] navigationElements =  new Button[COLUMNS][ROWS];
+		for(int x = 0; x < COLUMNS; x++) {
+			for(int y = 0; y < ROWS; y++) {
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				navigation.set(x, y, navigationElements[x][y]);}
+		}
+
+		navigation.updateCursor(navigationElements[0][1].getId());
+
+		navigation.set(1, 1, null);
+		navigation.set(1, 2, null);
+
+		Assert.assertEquals(navigationElements[1][0], navigation.navigate(Keys.RIGHT));
+	}
+
+	@Test
+	public void testNavigateRightClosestVerticalElementUpwardsUnevenGridSplit(){
+		int cols = 2;
+		int rows = 3;
+
+		GridUiNavigation gridUiNavigation = new GridUiNavigation(cols);
+
+
+		Button[][] navigationElements =  new Button[cols][rows];
+		for(int x = 0; x < cols; x++) {
+			for(int y = 0; y < rows; y++) {
+				if (x == 1 && y == 1){
+					break;
+				}
+				navigationElements[x][y] = new Button("button-" + x + "," + y);
+				gridUiNavigation.set(x, y, navigationElements[x][y]);
+			}
+		}
+
+		gridUiNavigation.updateCursor(navigationElements[0][1].getId());
+
+		gridUiNavigation.set(1, 1, null);
+
+		Assert.assertEquals(navigationElements[1][0], gridUiNavigation.navigate(Keys.RIGHT));
 	}
 
 	@Test
@@ -306,8 +408,13 @@ public class GridUiNavigationTest {
 		}
 
 		navigation.updateCursor(navigationElements[0][0].getId());
-		navigation.set(1, 0, null);
-		navigation.set(2, 0, null);
+
+		//set both rows to null so there is nothing to move to
+		for (int i = 0; i < ROWS; i++) {
+			navigation.set(1, i, null);
+			navigation.set(2, i, null);
+		}
+
 		Assert.assertEquals(navigationElements[0][0], navigation.navigate(Keys.RIGHT));
 	}
 
