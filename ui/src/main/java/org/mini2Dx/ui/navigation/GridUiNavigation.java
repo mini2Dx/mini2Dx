@@ -342,4 +342,12 @@ public class GridUiNavigation implements UiNavigation {
 	public void setTriedMovingOnEdge(boolean triedMovingOnEdge) {
 		this.triedMovingOnEdge = triedMovingOnEdge;
 	}
+
+	public int getCursorX(){
+		return cursorX;
+	}
+
+	public int getCursorY(){
+		return cursorY;
+	}
 }
