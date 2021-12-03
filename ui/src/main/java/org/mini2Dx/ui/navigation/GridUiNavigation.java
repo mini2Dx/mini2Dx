@@ -62,7 +62,7 @@ public class GridUiNavigation implements UiNavigation {
 		return false;
 	}
 	
-	private int getIndex(int x, int y) {
+	int getIndex(int x, int y) {
 		return (y * columns) + x;
 	}
 
@@ -324,11 +324,34 @@ public class GridUiNavigation implements UiNavigation {
 		int tempCursorX = cursorX;
 		while ((cursorX + direction) >= 0 && (cursorX + direction) < getTotalColumns()){
 			cursorX += direction;
+			//after moving in a direction, try moving up/down to closest none null element
+			if (navigation.get(getIndex(cursorX, cursorY)) == null){
+				if (findClosestItemVertically()){
+					return;
+				}
+			}
 			if (navigation.get(getIndex(cursorX, cursorY)) != null){
 				return;
 			}
 		}
 		cursorX = tempCursorX;
+	}
+
+	private boolean findClosestItemVertically() {
+		int tempY = cursorY;
+		int direction = 1;
+		while (tempY + direction < getTotalRows() || tempY - direction >= 0){
+			if (tempY + direction < getTotalRows() && getIndex(cursorX, tempY + direction) < navigation.size && navigation.get(getIndex(cursorX, tempY + direction)) != null){
+				cursorY = tempY + direction;
+				return true;
+			}
+			if (tempY - direction >= 0 && navigation.get(getIndex(cursorX, tempY - direction)) != null){
+				cursorY = tempY - direction;
+				return true;
+			}
+			direction += 1;
+		}
+		return false;
 	}
 
 	int getNavigationSize(){
