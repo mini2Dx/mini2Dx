@@ -26,6 +26,12 @@ import java.util.concurrent.Callable;
  * Interface for platform-specific threading implementations
  */
 public interface TaskExecutor extends Disposable {
+	/**
+	 * Creates a new {@link TaskExecutor} with the specified amount of threads
+	 * @param threads The amount of threads in the pool, minimum 1
+	 * @return A new {@link TaskExecutor} instance
+	 */
+	public TaskExecutor newExecutor(int threads);
 
 	/**
 	 * Updates {@link FrameSpreadTask} instances each frame.

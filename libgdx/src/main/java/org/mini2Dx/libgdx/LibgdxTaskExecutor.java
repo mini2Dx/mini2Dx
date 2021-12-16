@@ -49,6 +49,11 @@ public class LibgdxTaskExecutor implements TaskExecutor {
 	}
 
 	@Override
+	public TaskExecutor newExecutor(int threads) {
+		return new LibgdxTaskExecutor(threads);
+	}
+
+	@Override
 	public void update(float delta) {
 		int taskCount = 0;
 		for(int i = 0; i < spreadTasks.size(); i++) {

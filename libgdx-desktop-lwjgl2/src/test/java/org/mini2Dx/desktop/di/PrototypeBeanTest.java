@@ -61,6 +61,11 @@ public class PrototypeBeanTest {
 			}
 
 			@Override
+			public TaskExecutor newExecutor(int threads) {
+				return this;
+			}
+
+			@Override
 			public void update(float delta) {
 
 			}
