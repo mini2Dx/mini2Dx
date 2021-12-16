@@ -20,6 +20,7 @@ import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.font.FontGlyphLayout;
 import org.mini2Dx.core.font.GameFontCache;
+import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.gdx.Input;
 import org.mini2Dx.ui.element.TextBox;
 import org.mini2Dx.ui.element.Visibility;
@@ -127,8 +128,13 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule> imp
 		fontCache.setPosition(textRenderX, textRenderY);
 		g.drawFontCache(fontCache);
 		if (cursorVisible && isReceivingInput()) {
+			Color previousColor = g.getColor();
+			g.setColor(((TextBoxStyleRule) element.getStyleRule()).getColor());
+
 			g.drawLineSegment(textRenderX + renderCursorX, textRenderY, textRenderX + renderCursorX,
 					textRenderY + renderCursorHeight);
+
+			g.setColor(previousColor);
 		}
 	}
 
