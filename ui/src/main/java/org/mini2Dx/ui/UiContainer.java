@@ -969,6 +969,12 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		if (nextInputSource == null) {
 			return;
 		}
+		if (lastInputSource == null){
+			inputSourceChangeTimer = 0f;
+			lastInputSource = nextInputSource;
+			notifyInputSourceChange(lastInputSource, lastInputSource);
+			return;
+		}
 		if (this.lastInputSource.equals(nextInputSource)) {
 			inputSourceChangeTimer = 0f;
 			return;
