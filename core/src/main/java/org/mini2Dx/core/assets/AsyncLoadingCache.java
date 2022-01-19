@@ -18,7 +18,7 @@ package org.mini2Dx.core.assets;
 import org.mini2Dx.gdx.utils.ObjectMap;
 
 public class AsyncLoadingCache {
-	private final ObjectMap<String, Object> cache = new ObjectMap<String, Object>(7);
+	private final ObjectMap<String, Object> cache = new ObjectMap<String, Object>(4);
 
 	public <T> T getCache(String cacheKey, Class<T> clazz) {
 		return (T) cache.get(cacheKey);
@@ -30,6 +30,10 @@ public class AsyncLoadingCache {
 
 	public void setCache(String cacheKey, Object value) {
 		cache.put(cacheKey, value);
+	}
+
+	public void removeCache(String cacheKey) {
+		cache.remove(cacheKey);
 	}
 
 	public boolean containsCache(String cacheKey) {

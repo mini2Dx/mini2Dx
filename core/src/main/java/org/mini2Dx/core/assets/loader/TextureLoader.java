@@ -30,6 +30,7 @@ public class TextureLoader implements AsyncAssetLoader<Texture> {
 	public boolean loadOnGameThread(AssetManager assetManager, AssetDescriptor<Texture> assetDescriptor,
 	                                AsyncLoadingCache asyncLoadingCache, AssetLoaderResult<Texture> resultHolder) {
 		resultHolder.setResult(Mdx.graphics.newTexture(asyncLoadingCache.getCache(CACHE_TEXTURE_DATA_KEY, byte[].class)));
+		asyncLoadingCache.removeCache(CACHE_TEXTURE_DATA_KEY);
 		return true;
 	}
 

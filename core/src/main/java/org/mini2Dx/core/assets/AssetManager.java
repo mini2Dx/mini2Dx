@@ -169,7 +169,8 @@ public class AssetManager implements Disposable {
 
 		for(int i = loadingTasks.size - 1; i >= 0; i--) {
 			if(loadingTasks.get(i).update(this)) {
-				loadingTasks.removeIndex(i);
+				AssetLoadingTask task = loadingTasks.removeIndex(i);
+				task.dispose();
 				completedTasks++;
 				loadingTasksDirty = true;
 			}
