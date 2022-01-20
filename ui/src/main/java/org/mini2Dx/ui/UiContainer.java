@@ -27,7 +27,6 @@ import org.mini2Dx.gdx.InputProcessor;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
 import org.mini2Dx.gdx.utils.Array;
-import org.mini2Dx.gdx.utils.IntArray;
 import org.mini2Dx.gdx.utils.IntSet;
 import org.mini2Dx.gdx.utils.ObjectSet;
 import org.mini2Dx.ui.gamepad.GamePadUiInput;
@@ -94,6 +93,8 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	private boolean passThroughMouseMovement = false;
 
 	private Viewport viewport;
+
+	private boolean ctrlHeld = false;
 
 	/**
 	 * Constructor
@@ -489,6 +490,16 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 */
 	public boolean keyDownNoInputChange(int keycode) {
 		if (activeTextInput != null && activeTextInput.isReceivingInput()) {
+			if (keycode == Input.Keys.CONTROL_LEFT){
+				ctrlHeld = true;
+			}
+			if (keycode == Input.Keys.V){
+				if (activeTextInput.isReceivingInput()) {
+					if (ctrlHeld && Mdx.input.isClipboardSupported()){
+						activeTextInput.pasteReceived(Mdx.input.getClipboardContents());
+					}
+				}
+			}
 			receivedKeyDowns.add(keycode);
 			return true;
 		}
@@ -702,6 +713,9 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			break;
 		case Input.Keys.ESCAPE:
 			unsetActiveAction();
+			break;
+		case Input.Keys.CONTROL_LEFT:
+			ctrlHeld = false;
 			break;
 		}
 		return true;

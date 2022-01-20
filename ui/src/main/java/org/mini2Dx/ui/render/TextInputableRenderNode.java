@@ -23,7 +23,9 @@ public interface TextInputableRenderNode extends ActionableRenderNode {
 	public ActionableRenderNode mouseDown(int screenX, int screenY, int pointer, int button);
 
 	public void characterReceived(char c);
-	
+
+	public void pasteReceived(String pastedText);
+
 	public void backspace();
 	
 	public boolean enter();

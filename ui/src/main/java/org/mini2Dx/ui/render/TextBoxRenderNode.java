@@ -332,6 +332,38 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule> imp
 	}
 
 	@Override
+	public void pasteReceived(String pastedText) {
+		if (pastedText == null){
+			return;
+		}
+		for (int i = 0; i < pastedText.length(); i++) {
+			if (!element.notifyTextInputListeners(pastedText.charAt(i))) {
+				return;
+			}
+			if (!isValidCharacter(pastedText.charAt(i))) {
+				return;
+			}
+			if (element.getCharacterLimit() == cursor){
+				return;
+			}
+			switch (cursor) {
+			case 0:
+				element.setValue(pastedText.charAt(i) + element.getValue());
+				break;
+			default:
+				if (cursor == element.getValue().length()) {
+					element.setValue(element.getValue() + pastedText.charAt(i));
+				} else {
+					element.setValue(element.getValue().substring(0, cursor) + pastedText.charAt(i) + element.getValue().substring(cursor));
+				}
+				break;
+			}
+			cursor++;
+			setCursorRenderX();
+		}
+	}
+
+	@Override
 	public void backspace() {
 		switch (cursor) {
 		case 0:
