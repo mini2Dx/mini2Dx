@@ -25,6 +25,9 @@ import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
 
 public abstract class SwitchDualJoyConGamePad implements GamePadMapping<SwitchDualJoyConGamePadListener>, Disposable {
+	public static final String [] ID = new String [] {
+			"Joy-Con (Dual)".toLowerCase()
+	};
 
 	private final Array<SwitchDualJoyConGamePadListener> listeners = new Array<SwitchDualJoyConGamePadListener>(true, 2, SwitchDualJoyConGamePadListener.class);
 	private final GamePad gamePad;

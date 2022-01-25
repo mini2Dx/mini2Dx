@@ -26,6 +26,9 @@ import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
 
 public abstract class SwitchJoyConLGamePad implements GamePadListener, Disposable {
+	public static final String [] ID = new String [] {
+			"Joy-Con (L)".toLowerCase()
+	};
 
 	private final Array<SwitchJoyConLGamePadListener> listeners = new Array<SwitchJoyConLGamePadListener>(true, 2, SwitchJoyConLGamePadListener.class);
 	private final GamePad gamePad;
