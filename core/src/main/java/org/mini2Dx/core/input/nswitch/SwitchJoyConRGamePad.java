@@ -17,6 +17,7 @@ package org.mini2Dx.core.input.nswitch;
 
 import org.mini2Dx.core.input.GamePad;
 import org.mini2Dx.core.input.GamePadListener;
+import org.mini2Dx.core.input.GamePadMapping;
 import org.mini2Dx.core.input.button.SwitchJoyConRButton;
 import org.mini2Dx.core.input.deadzone.DeadZone;
 import org.mini2Dx.core.input.deadzone.NoopDeadZone;
@@ -24,7 +25,7 @@ import org.mini2Dx.core.input.deadzone.RadialDeadZone;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
 
-public abstract class SwitchJoyConRGamePad implements GamePadListener, Disposable {
+public abstract class SwitchJoyConRGamePad implements GamePadMapping<SwitchJoyConRGamePadListener>, Disposable {
 	public static final String [] ID = new String [] {
 			"Joy-Con (R)".toLowerCase()
 	};
@@ -122,18 +123,32 @@ public abstract class SwitchJoyConRGamePad implements GamePadListener, Disposabl
 		return false;
 	}
 
+	@Override
 	public void addListener(SwitchJoyConRGamePadListener listener) {
 		listeners.add(listener);
 	}
 
+	@Override
+	public void addListener(int index, SwitchJoyConRGamePadListener listener) {
+		listeners.insert(index, listener);
+	}
+
+	@Override
 	public void removeListener(SwitchJoyConRGamePadListener listener) {
 		listeners.removeValue(listener, false);
 	}
 
+	@Override
+	public void removeListener(int index) {
+		listeners.removeIndex(index);
+	}
+
+	@Override
 	public void clearListeners() {
 		listeners.clear();
 	}
 
+	@Override
 	public int getTotalListeners() {
 		return listeners.size;
 	}
