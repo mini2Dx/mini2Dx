@@ -21,6 +21,9 @@ public enum SwitchDualJoyConButton implements GamePadButton {
 	UP("switch-dual-joycon-up"),
 	DOWN("switch-dual-joycon-down"),
 
+	LEFT_STICK("switch-dual-joycon-left-stick"),
+	RIGHT_STICK("switch-dual-joycon-right-stick"),
+
 	A("switch-dual-joycon-a"),
 	B("switch-dual-joycon-b"),
 	X("switch-dual-joycon-x"),

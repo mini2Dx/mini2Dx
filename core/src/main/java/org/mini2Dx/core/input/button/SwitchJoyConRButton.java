@@ -21,6 +21,8 @@ public enum SwitchJoyConRButton implements GamePadButton {
 	X("switch-joyconR-x"),
 	Y("switch-joyconR-y"),
 
+	STICK("switch-joyconR-stick"),
+
 	R("switch-joyconR-r"),
 	ZR("switch-joyconR-zr"),
 	SL("switch-joyconR-sl"),
