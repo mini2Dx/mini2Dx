@@ -36,7 +36,7 @@ public class SwitchJoyConRUiInput extends SwitchJoyConRGamePadAdapter implements
 	private float stickRepeatTimer = 0.25f;
 	private float stickThreshold = 0.35f;
 	private boolean enabled = true;
-	private SwitchJoyConRButton actionButton = SwitchJoyConRButton.X;
+	private SwitchJoyConRButton actionButton = SwitchJoyConRButton.DOWN;
 
 	/* Internal fields */
 	private float leftTimer = stickRepeatTimer;

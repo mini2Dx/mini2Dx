@@ -16,10 +16,10 @@
 package org.mini2Dx.core.input.button;
 
 public enum SwitchJoyConRButton implements GamePadButton {
-	A("switch-joyconR-a"),
-	B("switch-joyconR-b"),
-	X("switch-joyconR-x"),
-	Y("switch-joyconR-y"),
+	LEFT("switch-joyconR-left"),
+	RIGHT("switch-joyconR-right"),
+	UP("switch-joyconR-up"),
+	DOWN("switch-joyconR-down"),
 
 	STICK("switch-joyconR-stick"),
 
