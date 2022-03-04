@@ -517,8 +517,10 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			}
 			return true;
 		}
-		if (handleModalKeyDown(keycode)) {
+		if (activeNavigation != null) {
 			receivedKeyDowns.add(keycode);
+		}
+		if (handleModalKeyDown(keycode)) {
 			return true;
 		}
 		receivedKeyDowns.remove(keycode);
@@ -780,6 +782,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 				&& this.activeNavigation.getId().equals(activeNavigation.getId())) {
 			return;
 		}
+		clearReceivedButtonKeyDowns();
 		unsetExistingNavigationHover();
 		this.activeNavigation = activeNavigation;
 
@@ -829,6 +832,11 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		activeAction.setState(NodeState.NORMAL);
 	}
 
+	private void clearReceivedButtonKeyDowns(){
+		receivedButtonDowns.clear();
+		receivedKeyDowns.clear();
+	}
+
 	public void clearActiveAction() {
 		unsetExistingNavigationHover();
 		this.activeAction = null;
@@ -851,6 +859,7 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 		if (unsetHoveredItem) {
 			unsetExistingNavigationHover();
 		}
+		clearReceivedButtonKeyDowns();
 		this.activeTextInput = null;
 		this.activeAction = null;
 		this.activeNavigation = null;
