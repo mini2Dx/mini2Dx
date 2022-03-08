@@ -96,7 +96,99 @@ public class GridUiNavigationTest {
 		}
 		Assert.assertEquals(elements[0][0], lastActionable);
 	}
-	
+
+	@Test
+	public void testNavigateOnEdgesWSAD() {
+		addElementsToGrid();
+
+		Actionable lastActionable = null;
+		for(int x = 0; x < COLUMNS - 1; x++) {
+			lastActionable = navigation.navigate(Keys.D);
+		}
+		Assert.assertEquals(elements[2][0], lastActionable);
+		Assert.assertFalse(navigation.isTriedMovingOnEdge());
+
+		lastActionable = navigation.navigate(Keys.D);
+		Assert.assertEquals(elements[2][0], lastActionable);
+		Assert.assertTrue(navigation.isTriedMovingOnEdge());
+
+		for(int x = 0; x < COLUMNS - 1; x++) {
+			lastActionable = navigation.navigate(Keys.A);
+		}
+		Assert.assertEquals(elements[0][0], lastActionable);
+		Assert.assertFalse(navigation.isTriedMovingOnEdge());
+
+		lastActionable = navigation.navigate(Keys.A);
+		Assert.assertEquals(elements[0][0], lastActionable);
+		Assert.assertTrue(navigation.isTriedMovingOnEdge());
+
+		for(int y = 0; y < ROWS - 1; y++) {
+			lastActionable = navigation.navigate(Keys.S);
+		}
+		Assert.assertEquals(elements[0][2], lastActionable);
+		Assert.assertFalse(navigation.isTriedMovingOnEdge());
+
+		lastActionable = navigation.navigate(Keys.S);
+		Assert.assertEquals(elements[0][2], lastActionable);
+		Assert.assertFalse(navigation.isTriedMovingOnEdge());
+
+		for(int y = 0; y < ROWS - 1; y++) {
+			lastActionable = navigation.navigate(Keys.W);
+		}
+		Assert.assertEquals(elements[0][0], lastActionable);
+		Assert.assertFalse(navigation.isTriedMovingOnEdge());
+
+		lastActionable = navigation.navigate(Keys.W);
+		Assert.assertEquals(elements[0][0], lastActionable);
+		Assert.assertFalse(navigation.isTriedMovingOnEdge());
+	}
+
+	@Test
+	public void testNavigateOnEdgesArrows() {
+		addElementsToGrid();
+
+		Actionable lastActionable = null;
+		for(int x = 0; x < COLUMNS - 1; x++) {
+			lastActionable = navigation.navigate(Keys.RIGHT);
+		}
+		Assert.assertEquals(elements[2][0], lastActionable);
+		Assert.assertFalse(navigation.isTriedMovingOnEdge());
+
+		lastActionable = navigation.navigate(Keys.RIGHT);
+		Assert.assertEquals(elements[2][0], lastActionable);
+		Assert.assertTrue(navigation.isTriedMovingOnEdge());
+
+		for(int x = 0; x < COLUMNS - 1; x++) {
+			lastActionable = navigation.navigate(Keys.LEFT);
+		}
+		Assert.assertEquals(elements[0][0], lastActionable);
+		Assert.assertFalse(navigation.isTriedMovingOnEdge());
+
+		lastActionable = navigation.navigate(Keys.LEFT);
+		Assert.assertEquals(elements[0][0], lastActionable);
+		Assert.assertTrue(navigation.isTriedMovingOnEdge());
+
+		for(int y = 0; y < ROWS - 1; y++) {
+			lastActionable = navigation.navigate(Keys.DOWN);
+		}
+		Assert.assertEquals(elements[0][2], lastActionable);
+		Assert.assertFalse(navigation.isTriedMovingOnEdge());
+
+		lastActionable = navigation.navigate(Keys.DOWN);
+		Assert.assertEquals(elements[0][2], lastActionable);
+		Assert.assertFalse(navigation.isTriedMovingOnEdge());
+
+		for(int y = 0; y < ROWS - 1; y++) {
+			lastActionable = navigation.navigate(Keys.UP);
+		}
+		Assert.assertEquals(elements[0][0], lastActionable);
+		Assert.assertFalse(navigation.isTriedMovingOnEdge());
+
+		lastActionable = navigation.navigate(Keys.UP);
+		Assert.assertEquals(elements[0][0], lastActionable);
+		Assert.assertFalse(navigation.isTriedMovingOnEdge());
+	}
+
 	@Test
 	public void testCursorReset() {
 		addElementsToGrid();
