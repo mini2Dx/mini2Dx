@@ -201,7 +201,7 @@ public class GridUiNavigation implements UiNavigation {
 
 		Actionable newElement = navigation.get(getIndex(cursorX, cursorY));
 
-		if (previousElement == newElement && (keycode == Keys.A || keycode == Keys.D)){
+		if (previousElement == newElement && (keycode == Keys.A || keycode == Keys.D || keycode == Keys.LEFT || keycode == Keys.RIGHT)){
 			triedMovingOnEdge = true;
 		} else {
 			triedMovingOnEdge = false;
