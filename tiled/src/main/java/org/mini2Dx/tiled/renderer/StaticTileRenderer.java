@@ -20,10 +20,16 @@ import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.tileset.TilesetSource;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 /**
  * A {@link TileRenderer} for single tile images
  */
 public class StaticTileRenderer implements TileRenderer {
+	public static final int RENDERER_TYPE = 0;
+
 	private final Tile tile;
 	private final TilesetSource tilesetSource;
 
@@ -31,6 +37,18 @@ public class StaticTileRenderer implements TileRenderer {
 		super();
 		this.tilesetSource = tilesetSource;
 		this.tile = tile;
+	}
+
+	public static StaticTileRenderer fromInputStream(TilesetSource tilesetSource, Tile tile) {
+		return new StaticTileRenderer(tilesetSource, tile);
+	}
+
+	@Override
+	public void writeData(DataOutputStream outputStream) throws IOException {
+	}
+
+	@Override
+	public void readData(DataInputStream inputStream) throws IOException {
 	}
 
 	@Override
@@ -85,5 +103,10 @@ public class StaticTileRenderer implements TileRenderer {
 		g.drawSprite(tileImage);
 		tileImage.setRotation(0f);
 		tileImage.setFlip(previousFlipX, previousFlipY);
+	}
+
+	@Override
+	public int getRendererType() {
+		return RENDERER_TYPE;
 	}
 }

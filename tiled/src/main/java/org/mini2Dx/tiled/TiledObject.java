@@ -20,17 +20,24 @@ import org.mini2Dx.core.geom.Circle;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Polygon;
 import org.mini2Dx.core.geom.Rectangle;
+import org.mini2Dx.core.serialization.GameDataSerializable;
+import org.mini2Dx.core.serialization.GameDataSerializableUtils;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.ObjectMap;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 /**
  * Represents an object loaded from a {@link TiledMap}
  */
-public class TiledObject {
+public class TiledObject implements GameDataSerializable {
 
 	private final int id;
 	private final float x, y, width, height;
+	private final boolean builtFromTemplate;
 
 	private TiledObjectShape objectShape = TiledObjectShape.RECTANGLE;
 	private String name;
@@ -43,20 +50,114 @@ public class TiledObject {
 	private float [] vertices;
 	private String text;
 	private boolean wrapText;
-	private boolean builtFromTemplate;
-
-	TiledObject(int id, float x, float y, float width, float height, boolean builtFromTemplate) {
-		this(id, x, y, width, height);
-		this.builtFromTemplate = builtFromTemplate;
-	}
 
 	public TiledObject(int id, float x, float y, float width, float height) {
+		this(id, x, y, width, height, false);
+	}
+
+	TiledObject(int id, float x, float y, float width, float height, boolean builtFromTemplate) {
 		super();
 		this.id = id;
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.builtFromTemplate = builtFromTemplate;
+	}
+
+	public static TiledObject fromInputStream(DataInputStream inputStream) throws IOException {
+		final int id = inputStream.readInt();
+		final float x = inputStream.readFloat();
+		final float y = inputStream.readFloat();
+		final float width = inputStream.readFloat();
+		final float height = inputStream.readFloat();
+		final boolean builtFromTemplate = inputStream.readBoolean();
+
+		final TiledObject result = new TiledObject(id, x, y, width, height, builtFromTemplate);
+		result.readData(inputStream);
+		return result;
+	}
+
+	@Override
+	public void writeData(DataOutputStream outputStream) throws IOException {
+		outputStream.writeInt(id);
+		outputStream.writeFloat(x);
+		outputStream.writeFloat(y);
+		outputStream.writeFloat(width);
+		outputStream.writeFloat(height);
+		outputStream.writeBoolean(builtFromTemplate);
+
+		outputStream.writeUTF(objectShape.name());
+		GameDataSerializableUtils.writeString(name, outputStream);
+		GameDataSerializableUtils.writeString(type, outputStream);
+		outputStream.writeBoolean(visible);
+		outputStream.writeInt(gid);
+		outputStream.writeBoolean(gidFlipHorizontally);
+		outputStream.writeBoolean(gidFlipVertically);
+		outputStream.writeBoolean(gidFlipDiagonally);
+
+		outputStream.writeInt(properties == null ? 0 : properties.size);
+		if(properties != null) {
+			for(String key : properties.keys()) {
+				outputStream.writeUTF(key);
+				GameDataSerializableUtils.writeString(properties.get(key, null), outputStream);
+			}
+		}
+
+		outputStream.writeInt(vertices == null ? -1 : vertices.length);
+		if(vertices != null) {
+			for(int i = 0; i < vertices.length; i++) {
+				outputStream.writeFloat(vertices[i]);
+			}
+		}
+
+		GameDataSerializableUtils.writeString(text, outputStream);
+		outputStream.writeBoolean(wrapText);
+	}
+
+	@Override
+	public void readData(DataInputStream inputStream) throws IOException {
+		objectShape = TiledObjectShape.valueOf(inputStream.readUTF());
+		name = GameDataSerializableUtils.readString(inputStream);
+		type = GameDataSerializableUtils.readString(inputStream);
+		visible = inputStream.readBoolean();
+		gid = inputStream.readInt();
+		gidFlipHorizontally = inputStream.readBoolean();
+		gidFlipVertically = inputStream.readBoolean();
+		gidFlipDiagonally = inputStream.readBoolean();
+
+		final int totalProperties = inputStream.readInt();
+		if(totalProperties > 0) {
+			properties = new ObjectMap<>();
+			for(int i = 0; i < totalProperties; i++) {
+				String key = inputStream.readUTF();
+				String value = GameDataSerializableUtils.readString(inputStream);
+
+				if(builtFromTemplate) {
+					key = key.intern();
+					value = value.intern();
+				}
+
+				properties.put(key, value);
+			}
+		}
+
+		final int totalVertices = inputStream.readInt();
+		if(totalVertices > -1) {
+			vertices = new float[totalVertices];
+			for(int i = 0; i < vertices.length; i++) {
+				vertices[i] = inputStream.readFloat();
+			}
+		}
+
+		text = GameDataSerializableUtils.readString(inputStream);
+		wrapText = inputStream.readBoolean();
+
+		if(builtFromTemplate) {
+			name = name != null ? name.intern() : null;
+			type = type != null ? type.intern() : null;
+			text = text != null ? text.intern() : null;
+		}
 	}
 	
 	/**

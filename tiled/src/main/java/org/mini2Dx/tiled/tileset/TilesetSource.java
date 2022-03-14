@@ -21,6 +21,7 @@ import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.core.graphics.TextureAtlas;
+import org.mini2Dx.core.serialization.GameDataSerializable;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
 import org.mini2Dx.gdx.utils.ObjectMap;
@@ -30,7 +31,7 @@ import org.mini2Dx.tiled.Tileset;
 /**
  * Base class for tileset sources
  */
-public abstract class TilesetSource implements Disposable {
+public abstract class TilesetSource implements GameDataSerializable, Disposable {
 
 	/**
 	 * Returns the tile ID for a given tile within a tileset
@@ -302,6 +303,12 @@ public abstract class TilesetSource implements Disposable {
 	 * @return A non-null String representing this source
 	 */
 	public abstract String getInternalUuid();
+
+	/**
+	 * Returns a int representation of the source type.
+	 * @return {@link ImageTilesetSource#TILESET_TYPE} or {@link TsxTilesetSource#TILESET_TYPE}
+	 */
+	public abstract int getTilesetSourceType();
 
 	@Override
 	public boolean equals(Object obj) {

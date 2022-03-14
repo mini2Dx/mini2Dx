@@ -27,8 +27,11 @@ import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.ObjectMap;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.TiledMap;
+import org.mini2Dx.tiled.TiledMapData;
 import org.mini2Dx.tiled.TiledParser;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -38,6 +41,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class TsxTilesetSource extends TilesetSource {
 	private static final String LOGGING_TAG = TsxTilesetSource.class.getSimpleName();
+
+	public static final int TILESET_TYPE = 1;
 
 	private static final ConcurrentObjectMap<String, ImageTilesetSource> TILESETS = new ConcurrentObjectMap<>();
 	private static final ConcurrentObjectMap<String, AtomicInteger> TILESET_REFS = new ConcurrentObjectMap<>();
@@ -65,7 +70,56 @@ public class TsxTilesetSource extends TilesetSource {
 		tileset = TILESETS.get(this.tsxPath);
 		TILESET_REFS.get(this.tsxPath).incrementAndGet();
 	}
-	
+
+	private TsxTilesetSource(TiledMapData tiledMapData, String tsxPath) {
+		super();
+		this.tsxPath = tsxPath;
+
+		final FileHandle tsxFileHandle;
+		switch (tiledMapData.getFileHandle().type()) {
+		default:
+		case INTERNAL:
+			tsxFileHandle = Mdx.files.internal(tsxPath);
+			break;
+		case EXTERNAL:
+			tsxFileHandle = Mdx.files.external(tsxPath);
+			break;
+		case LOCAL:
+			tsxFileHandle = Mdx.files.local(tsxPath);
+			break;
+		}
+
+		if (!TILESETS.containsKey(this.tsxPath)) {
+			try {
+				final TiledParser tiledParser = new TiledParser();
+				TILESETS.putIfAbsent(this.tsxPath, tiledParser.parseTsx(tsxFileHandle));
+			} catch (IOException e) {
+				Mdx.log.error(LOGGING_TAG, "Could not parse " + tsxPath + ". " + e.getMessage(), e);
+				TILESETS.putIfAbsent(this.tsxPath, null);
+			}
+		}
+		if(!TILESET_REFS.containsKey(this.tsxPath)) {
+			TILESET_REFS.putIfAbsent(this.tsxPath, new AtomicInteger(0));
+		}
+		tileset = TILESETS.get(this.tsxPath);
+		TILESET_REFS.get(this.tsxPath).incrementAndGet();
+	}
+
+	public static TsxTilesetSource fromInputStream(TiledMapData tiledMapData,
+												   DataInputStream inputStream) throws IOException {
+		final String tsxPath = inputStream.readUTF();
+		return new TsxTilesetSource(tiledMapData, tsxPath);
+	}
+
+	@Override
+	public void writeData(DataOutputStream outputStream) throws IOException {
+		outputStream.writeUTF(tsxPath);
+	}
+
+	@Override
+	public void readData(DataInputStream inputStream) throws IOException {
+	}
+
 	@Override
 	public Array<AssetDescriptor> getDependencies(FileHandle tmxPath) {
 		return tileset.getDependencies(tmxPath);
@@ -179,6 +233,11 @@ public class TsxTilesetSource extends TilesetSource {
 	@Override
 	public String getInternalUuid() {
 		return getTsxPath();
+	}
+
+	@Override
+	public int getTilesetSourceType() {
+		return TILESET_TYPE;
 	}
 
 	public String getTsxPath() {

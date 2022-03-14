@@ -15,12 +15,16 @@
  ******************************************************************************/
 package org.mini2Dx.tiled;
 
+import org.mini2Dx.core.serialization.GameDataSerializable;
 import org.mini2Dx.gdx.utils.ObjectMap;
+
+import java.io.DataInputStream;
+import java.io.IOException;
 
 /**
  * Base class for {@link TiledMap} layers
  */
-public abstract class Layer {
+public abstract class Layer implements GameDataSerializable {
 	private final LayerType layerType;
 
 	private String name;
@@ -31,6 +35,24 @@ public abstract class Layer {
 	public Layer(LayerType layerType) {
 		super();
 		this.layerType = layerType;
+	}
+
+	public static Layer fromInputStream(DataInputStream inputStream) throws IOException {
+		final LayerType layerType = LayerType.valueOf(inputStream.readUTF());
+		switch (layerType) {
+		default:
+		case TILE:
+			return TileLayer.fromInputStream(inputStream);
+		case OBJECT:
+			final TiledObjectGroup objectGroup = new TiledObjectGroup();
+			objectGroup.readData(inputStream);
+			return objectGroup;
+		case IMAGE:
+			//Not yet supported
+			return null;
+		case GROUP:
+			return GroupLayer.fromInputStream(inputStream);
+		}
 	}
 
 	/**

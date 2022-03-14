@@ -15,8 +15,12 @@
  ******************************************************************************/
 package org.mini2Dx.tiled;
 
+import org.mini2Dx.core.serialization.GameDataSerializableUtils;
 import org.mini2Dx.gdx.math.MathUtils;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.BitSet;
 
 /**
@@ -24,9 +28,9 @@ import java.util.BitSet;
  */
 public class TileLayer extends Layer {
 	private final int[][] tiles;
-	private final BitSet flipHorizontally;
-	private final BitSet flipVertically;
-	private final BitSet flipDiagonally;
+	private BitSet flipHorizontally;
+	private BitSet flipVertically;
+	private BitSet flipDiagonally;
 
 	public TileLayer(int width, int height) {
 		super(LayerType.TILE);
@@ -35,6 +39,42 @@ public class TileLayer extends Layer {
 		flipHorizontally = new BitSet(width * height);
 		flipVertically = new BitSet(width * height);
 		flipDiagonally = new BitSet(width * height);
+	}
+
+	public static TileLayer fromInputStream(DataInputStream inputStream) throws IOException {
+		final int width = inputStream.readInt();
+		final int height = inputStream.readInt();
+		final TileLayer result = new TileLayer(width, height);
+		result.readData(inputStream);
+		return result;
+	}
+
+	@Override
+	public void writeData(DataOutputStream outputStream) throws IOException {
+		outputStream.writeInt(getWidth());
+		outputStream.writeInt(getHeight());
+		for(int x = 0; x < getWidth(); x++) {
+			for (int y = 0; y < getHeight(); y++) {
+				outputStream.writeInt(tiles[x][y]);
+			}
+		}
+
+		GameDataSerializableUtils.writeArray(flipHorizontally.toLongArray(), outputStream);
+		GameDataSerializableUtils.writeArray(flipVertically.toLongArray(), outputStream);
+		GameDataSerializableUtils.writeArray(flipDiagonally.toLongArray(), outputStream);
+	}
+
+	@Override
+	public void readData(DataInputStream inputStream) throws IOException {
+		for(int x = 0; x < getWidth(); x++) {
+			for (int y = 0; y < getHeight(); y++) {
+				tiles[x][y] = inputStream.readInt();
+			}
+		}
+
+		flipHorizontally = BitSet.valueOf(GameDataSerializableUtils.readArray(inputStream));
+		flipVertically = BitSet.valueOf(GameDataSerializableUtils.readArray(inputStream));
+		flipDiagonally = BitSet.valueOf(GameDataSerializableUtils.readArray(inputStream));
 	}
 
 	/**

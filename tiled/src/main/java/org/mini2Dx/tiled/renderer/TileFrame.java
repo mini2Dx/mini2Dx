@@ -15,17 +15,31 @@
  ******************************************************************************/
 package org.mini2Dx.tiled.renderer;
 
+import org.mini2Dx.core.serialization.GameDataSerializable;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 /**
  *
  */
-public class TileFrame {
-	final float duration;
-	final int tileId;
+public class TileFrame implements GameDataSerializable {
+	float duration;
+	int tileId;
 	
 	public TileFrame(float duration, int tileId) {
 		super();
 		this.duration = duration;
 		this.tileId = tileId;
+	}
+
+	private TileFrame() {}
+
+	public static TileFrame fromInputStream(DataInputStream inputStream) throws IOException {
+		final TileFrame result = new TileFrame();
+		result.readData(inputStream);
+		return result;
 	}
 
 	public float getDuration() {
@@ -34,5 +48,17 @@ public class TileFrame {
 
 	public int getTileId() {
 		return tileId;
+	}
+
+	@Override
+	public void writeData(DataOutputStream outputStream) throws IOException {
+		outputStream.writeFloat(duration);
+		outputStream.writeInt(tileId);
+	}
+
+	@Override
+	public void readData(DataInputStream inputStream) throws IOException {
+		duration = inputStream.readFloat();
+		tileId = inputStream.readInt();
 	}
 }

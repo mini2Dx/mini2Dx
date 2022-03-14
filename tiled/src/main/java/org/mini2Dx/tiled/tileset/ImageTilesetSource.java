@@ -22,20 +22,30 @@ import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.*;
+import org.mini2Dx.core.serialization.GameDataSerializableUtils;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.IntMap;
 import org.mini2Dx.gdx.utils.ObjectMap;
 import org.mini2Dx.tiled.Tile;
+import org.mini2Dx.tiled.renderer.AnimatedTileRenderer;
+import org.mini2Dx.tiled.renderer.StaticTileRenderer;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 /**
  * A {@link TilesetSource} referenced by image directly in a TMX file
  */
 public class ImageTilesetSource extends TilesetSource {
-	private final Tile[][] tiles;
-	private final IntMap<Sprite> tileImages = new IntMap<Sprite>();
-	private final int width, height;
-	private final int tileWidth, tileHeight;
-	private final int spacing, margin;
+
+	public static final int TILESET_TYPE = 0;
+
+	private Tile[][] tiles;
+	private IntMap<Sprite> tileImages = new IntMap<Sprite>();
+	private int width, height;
+	private int tileWidth, tileHeight;
+	private int spacing, margin;
 	
 	private String name, tilesetImagePath, transparentColorValue;
 	private ObjectMap<String, String> properties;
@@ -60,6 +70,96 @@ public class ImageTilesetSource extends TilesetSource {
 			for(int y = 0; y < getHeightInTiles(); y++) {
 				tiles[x][y] = new Tile();
 				tiles[x][y].setTileId(getTileId(x, y, 0));
+			}
+		}
+	}
+
+	private ImageTilesetSource() {}
+
+	public static ImageTilesetSource fromInputStream(DataInputStream inputStream) throws IOException {
+		final ImageTilesetSource result = new ImageTilesetSource();
+		result.readData(inputStream);
+		return result;
+	}
+
+	@Override
+	public void writeData(DataOutputStream outputStream) throws IOException {
+		outputStream.writeInt(width);
+		outputStream.writeInt(height);
+		outputStream.writeInt(tileWidth);
+		outputStream.writeInt(tileHeight);
+		outputStream.writeInt(spacing);
+		outputStream.writeInt(margin);
+
+		GameDataSerializableUtils.writeString(name, outputStream);
+		GameDataSerializableUtils.writeString(tilesetImagePath, outputStream);
+		GameDataSerializableUtils.writeString(transparentColorValue, outputStream);
+
+		outputStream.writeInt(properties == null ? 0 : properties.size);
+		if(properties != null) {
+			for(String key : properties.keys()) {
+				outputStream.writeUTF(key);
+				GameDataSerializableUtils.writeString(properties.get(key, null), outputStream);
+			}
+		}
+
+		for(int x = 0; x < getWidthInTiles(); x++) {
+			for (int y = 0; y < getHeightInTiles(); y++) {
+				tiles[x][y].writeData(outputStream);
+			}
+		}
+		for(int x = 0; x < getWidthInTiles(); x++) {
+			for (int y = 0; y < getHeightInTiles(); y++) {
+				outputStream.writeInt(tiles[x][y].getTileRenderer().getRendererType());
+				tiles[x][y].getTileRenderer().writeData(outputStream);
+			}
+		}
+	}
+
+	@Override
+	public void readData(DataInputStream inputStream) throws IOException {
+		width = inputStream.readInt();
+		height = inputStream.readInt();
+		tileWidth = inputStream.readInt();
+		tileHeight = inputStream.readInt();
+		spacing = inputStream.readInt();
+		margin = inputStream.readInt();
+
+		name = GameDataSerializableUtils.readString(inputStream);
+		tilesetImagePath = GameDataSerializableUtils.readString(inputStream);
+		transparentColorValue = GameDataSerializableUtils.readString(inputStream);
+
+		final int totalProperties = inputStream.readInt();
+		if(totalProperties > 0) {
+			properties = new ObjectMap<>();
+			for(int i = 0; i < totalProperties; i++) {
+				final String key = inputStream.readUTF();
+				final String value = GameDataSerializableUtils.readString(inputStream);
+				properties.put(key, value);
+			}
+		}
+
+		this.widthInTiles = -1;
+		this.heightInTiles = -1;
+		tiles = new Tile[getWidthInTiles()][getHeightInTiles()];
+		for(int x = 0; x < getWidthInTiles(); x++) {
+			for(int y = 0; y < getHeightInTiles(); y++) {
+				tiles[x][y] = new Tile();
+				tiles[x][y].readData(inputStream);
+			}
+		}
+		for(int x = 0; x < getWidthInTiles(); x++) {
+			for(int y = 0; y < getHeightInTiles(); y++) {
+				final int rendererType = inputStream.readInt();
+				switch (rendererType) {
+				case AnimatedTileRenderer.RENDERER_TYPE:
+					tiles[x][y].setTileRenderer(AnimatedTileRenderer.fromInputStream(this, inputStream));
+					break;
+				default:
+				case StaticTileRenderer.RENDERER_TYPE:
+					tiles[x][y].setTileRenderer(StaticTileRenderer.fromInputStream(this, tiles[x][y]));
+					break;
+				}
 			}
 		}
 	}
@@ -313,6 +413,11 @@ public class ImageTilesetSource extends TilesetSource {
 	@Override
 	public String getInternalUuid() {
 		return tilesetImagePath;
+	}
+
+	@Override
+	public int getTilesetSourceType() {
+		return TILESET_TYPE;
 	}
 
 	public String getTilesetImagePath() {

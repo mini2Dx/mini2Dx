@@ -17,12 +17,16 @@ package org.mini2Dx.tiled;
 
 import org.mini2Dx.gdx.utils.Array;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 /**
  * Represents a group of {@link TiledObject}s loaded from a {@link TiledMap}
  */
 public class TiledObjectGroup extends Layer {
 	private int width, height;
-	private Array<TiledObject> objects;
+	private final Array<TiledObject> objects;
 	
 	/**
 	 * Constructor
@@ -30,6 +34,28 @@ public class TiledObjectGroup extends Layer {
 	public TiledObjectGroup() {
 		super(LayerType.OBJECT);
 		objects = new Array<TiledObject>(true, 2, TiledObject.class);
+	}
+
+	@Override
+	public void writeData(DataOutputStream outputStream) throws IOException {
+		outputStream.writeInt(width);
+		outputStream.writeInt(height);
+
+		outputStream.writeInt(objects.size);
+		for(int i = 0; i < objects.size; i++) {
+			objects.get(i).writeData(outputStream);
+		}
+	}
+
+	@Override
+	public void readData(DataInputStream inputStream) throws IOException {
+		width = inputStream.readInt();
+		height = inputStream.readInt();
+
+		final int totalObjects = inputStream.readInt();
+		for(int i = 0; i < totalObjects; i++) {
+			objects.add(TiledObject.fromInputStream(inputStream));
+		}
 	}
 
 	/**

@@ -17,13 +17,14 @@ package org.mini2Dx.tiled.renderer;
 
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
+import org.mini2Dx.core.serialization.GameDataSerializable;
 import org.mini2Dx.gdx.utils.Disposable;
 import org.mini2Dx.tiled.Tile;
 
 /**
  * Common interface for tile renderers
  */
-public interface TileRenderer extends Disposable {
+public interface TileRenderer extends GameDataSerializable, Disposable {
 
 	/**
 	 * Updates the {@link Tile} frame
@@ -73,4 +74,7 @@ public interface TileRenderer extends Disposable {
 	 * @return The current image
 	 */
 	public Sprite getCurrentTileImage();
+
+
+	public int getRendererType();
 }

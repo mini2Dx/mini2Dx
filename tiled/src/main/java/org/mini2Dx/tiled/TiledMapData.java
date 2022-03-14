@@ -15,11 +15,15 @@
  ******************************************************************************/
 package org.mini2Dx.tiled;
 
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.assets.AssetDescriptor;
 import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.files.FileHandle;
+import org.mini2Dx.core.files.FileType;
 import org.mini2Dx.core.graphics.Color;
 import org.mini2Dx.core.graphics.TextureAtlas;
+import org.mini2Dx.core.serialization.GameDataSerializable;
+import org.mini2Dx.core.serialization.GameDataSerializableUtils;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.IntSet;
@@ -29,12 +33,14 @@ import org.mini2Dx.tiled.exception.TiledException;
 import org.mini2Dx.tiled.exception.TiledParsingException;
 import org.mini2Dx.tiled.renderer.AnimatedTileRenderer;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
  * Data parsed from a TMX file created with Tiled
  */
-public class TiledMapData implements TiledParserListener {
+public class TiledMapData implements TiledParserListener, GameDataSerializable {
 	public static long MAX_TILESET_LOAD_TIMESLICE_MILLIS = 2L;
 
 	static final ObjectSet<String> OBJECT_TEMPLATE_TILESET_SOURCES = new ObjectSet<String>();
@@ -81,6 +87,149 @@ public class TiledMapData implements TiledParserListener {
 			throw new TiledParsingException(e);
 		}
 		tiledParser.setListener(null);
+	}
+
+	private TiledMapData(boolean load, FileHandle fileHandle) {
+		super();
+		this.fileHandle = fileHandle;
+	}
+
+	public static TiledMapData fromInputStream(DataInputStream inputStream) throws IOException {
+		final String path = inputStream.readUTF();
+		final FileType fileType = FileType.valueOf(inputStream.readUTF());
+
+		final TiledMapData mapData;
+		switch (fileType) {
+		default:
+		case INTERNAL:
+			mapData = new TiledMapData(false, Mdx.files.internal(path));
+			break;
+		case EXTERNAL:
+			mapData = new TiledMapData(false, Mdx.files.external(path));
+			break;
+		case LOCAL:
+			mapData = new TiledMapData(false, Mdx.files.local(path));
+			break;
+		}
+		mapData.readData(inputStream);
+		return mapData;
+	}
+
+	@Override
+	public void writeData(DataOutputStream outputStream) throws IOException {
+		outputStream.writeUTF(fileHandle.path());
+		outputStream.writeUTF(fileHandle.type().name());
+
+		GameDataSerializableUtils.writeString(orientationValue, outputStream);
+		GameDataSerializableUtils.writeString(orientation == null ? null : orientation.name(), outputStream);
+		GameDataSerializableUtils.writeString(staggerAxis == null ? null : staggerAxis.name(), outputStream);
+		GameDataSerializableUtils.writeString(staggerIndex == null ? null : staggerIndex.name(), outputStream);
+
+		outputStream.writeInt(width);
+		outputStream.writeInt(height);
+		outputStream.writeInt(tileWidth);
+		outputStream.writeInt(tileHeight);
+		outputStream.writeInt(pixelWidth);
+		outputStream.writeInt(pixelHeight);
+		outputStream.writeInt(sideLength);
+
+		outputStream.writeBoolean(backgroundColor != null);
+		if(backgroundColor != null) {
+			outputStream.writeFloat(backgroundColor.rf());
+			outputStream.writeFloat(backgroundColor.gf());
+			outputStream.writeFloat(backgroundColor.bf());
+			outputStream.writeFloat(backgroundColor.af());
+		}
+
+		outputStream.writeInt(properties == null ? 0 : properties.size);
+		if(properties != null && properties.size > 0) {
+			for(String key : properties.keys()) {
+				outputStream.writeUTF(key);
+				GameDataSerializableUtils.writeString(properties.get(key, null), outputStream);
+			}
+		}
+
+		outputStream.writeInt(tilesets.size);
+		for(int i = 0; i < tilesets.size; i++) {
+			tilesets.get(i).writeData(outputStream);
+		}
+
+		outputStream.writeInt(layers.size);
+		for(int i = 0; i < layers.size; i++) {
+			outputStream.writeUTF(layers.get(i).getLayerType().name());
+			layers.get(i).writeData(outputStream);
+		}
+	}
+
+	@Override
+	public void readData(DataInputStream inputStream) throws IOException {
+		orientationValue = GameDataSerializableUtils.readString(inputStream);
+
+		final String orientation = GameDataSerializableUtils.readString(inputStream);
+		if(orientation != null) {
+			this.orientation = Orientation.valueOf(orientation);
+		}
+
+		final String staggerAxis = GameDataSerializableUtils.readString(inputStream);
+		if(staggerAxis != null) {
+			this.staggerAxis = StaggerAxis.valueOf(staggerAxis);
+		}
+
+		final String staggerIndex = GameDataSerializableUtils.readString(inputStream);
+		if(staggerIndex != null) {
+			this.staggerIndex = StaggerIndex.valueOf(staggerIndex);
+		}
+
+		width = inputStream.readInt();
+		height = inputStream.readInt();
+		tileWidth = inputStream.readInt();
+		tileHeight = inputStream.readInt();
+		pixelWidth = inputStream.readInt();
+		pixelHeight = inputStream.readInt();
+		sideLength = inputStream.readInt();
+
+		final boolean backgroundColorExists = inputStream.readBoolean();
+		if(backgroundColorExists) {
+			final float r = inputStream.readFloat();
+			final float g = inputStream.readFloat();
+			final float b = inputStream.readFloat();
+			final float a = inputStream.readFloat();
+			backgroundColor = Mdx.graphics.newColor(r, g, b, a);
+		}
+
+		final int totalProperties = inputStream.readInt();
+		if(totalProperties > 0) {
+			properties = new ObjectMap<>();
+			for(int i = 0; i < totalProperties; i++) {
+				final String key = inputStream.readUTF();
+				final String value = GameDataSerializableUtils.readString(inputStream);
+				properties.put(key, value);
+			}
+		}
+
+		final int totalTilesets = inputStream.readInt();
+		for(int i = 0; i < totalTilesets; i++) {
+			onTilesetParsed(Tileset.fromInputStream(this, inputStream));
+		}
+
+		final int totalLayers = inputStream.readInt();
+		for(int i = 0; i < totalLayers; i++) {
+			final Layer layer = Layer.fromInputStream(inputStream);
+			switch (layer.getLayerType()) {
+			default:
+			case TILE:
+				onTileLayerParsed((TileLayer) layer);
+				break;
+			case OBJECT:
+				onObjectGroupParsed((TiledObjectGroup) layer);
+				break;
+			case IMAGE:
+				break;
+			case GROUP:
+				onGroupLayerParsed((GroupLayer) layer);
+				break;
+			}
+		}
 	}
 
 	public Array<AssetDescriptor> getDependencies() {

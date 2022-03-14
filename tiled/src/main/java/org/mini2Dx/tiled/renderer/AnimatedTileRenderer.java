@@ -20,10 +20,16 @@ import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.tiled.tileset.TilesetSource;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 /**
  * A {@link TileRenderer} for animated tiles
  */
 public class AnimatedTileRenderer implements TileRenderer {
+	public static final int RENDERER_TYPE = 1;
+
 	private final TileFrame[] frames;
 	private final TilesetSource tilesetSource;
 
@@ -35,6 +41,30 @@ public class AnimatedTileRenderer implements TileRenderer {
 		super();
 		this.tilesetSource = tilesetSource;
 		this.frames = frames;
+	}
+
+	public static AnimatedTileRenderer fromInputStream(TilesetSource tilesetSource,
+													   DataInputStream inputStream) throws IOException {
+		final int totalFrames = inputStream.readInt();
+		final AnimatedTileRenderer result = new AnimatedTileRenderer(tilesetSource,
+				new TileFrame[totalFrames]);
+		result.readData(inputStream);
+		return result;
+	}
+
+	@Override
+	public void writeData(DataOutputStream outputStream) throws IOException {
+		outputStream.writeInt(frames.length);
+		for(int i = 0; i < frames.length; i++) {
+			frames[i].writeData(outputStream);
+		}
+	}
+
+	@Override
+	public void readData(DataInputStream inputStream) throws IOException {
+		for(int i = 0; i < frames.length; i++) {
+			frames[i] = TileFrame.fromInputStream(inputStream);
+		}
 	}
 
 	@Override
@@ -68,6 +98,11 @@ public class AnimatedTileRenderer implements TileRenderer {
 	@Override
 	public Sprite getCurrentTileImage() {
 		return tilesetSource.getTileImage(frames[currentFrame].tileId);
+	}
+
+	@Override
+	public int getRendererType() {
+		return RENDERER_TYPE;
 	}
 
 	@Override

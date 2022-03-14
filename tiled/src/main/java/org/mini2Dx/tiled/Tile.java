@@ -16,17 +16,53 @@
 package org.mini2Dx.tiled;
 
 import org.mini2Dx.core.Graphics;
+import org.mini2Dx.core.serialization.GameDataSerializable;
+import org.mini2Dx.core.serialization.GameDataSerializableUtils;
 import org.mini2Dx.gdx.utils.Disposable;
 import org.mini2Dx.gdx.utils.ObjectMap;
 import org.mini2Dx.tiled.renderer.TileRenderer;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 /**
  * Represents a tileset tile
  */
-public class Tile implements Disposable {
+public class Tile implements GameDataSerializable, Disposable {
 	private int tileId;
 	private TileRenderer tileRenderer;
 	private ObjectMap<String, String> properties;
+
+	@Override
+	public void writeData(DataOutputStream outputStream) throws IOException {
+		outputStream.writeInt(tileId);
+		outputStream.writeInt(properties == null ? 0 : properties.size);
+
+		if(properties != null) {
+			for(String key : properties.keys()) {
+				outputStream.writeUTF(key);
+				GameDataSerializableUtils.writeString(properties.get(key, null), outputStream);
+			}
+		}
+
+
+	}
+
+	@Override
+	public void readData(DataInputStream inputStream) throws IOException {
+		tileId = inputStream.readInt();
+
+		final int totalProperties = inputStream.readInt();
+		if(totalProperties > 0) {
+			properties = new ObjectMap<>();
+			for(int i = 0; i < totalProperties; i++) {
+				final String key = inputStream.readUTF();
+				final String value = GameDataSerializableUtils.readString(inputStream);
+				properties.put(key, value);
+			}
+		}
+	}
 
 	public void update(float delta) {
 		if (tileRenderer == null) {

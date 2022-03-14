@@ -14,6 +14,10 @@ package org.mini2Dx.tiled;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.ObjectMap;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 /**
  * Represents a group layer per the Tiled specification
  */
@@ -23,6 +27,37 @@ public class GroupLayer extends Layer implements TiledLayerParserListener {
 
 	public GroupLayer() {
 		super(LayerType.GROUP);
+	}
+
+	@Override
+	public void writeData(DataOutputStream outputStream) throws IOException {
+		outputStream.writeInt(layers.size);
+		for(int i = 0; i < layers.size; i++) {
+			outputStream.writeUTF(layers.get(i).getLayerType().name());
+			layers.get(i).writeData(outputStream);
+		}
+	}
+
+	@Override
+	public void readData(DataInputStream inputStream) throws IOException {
+		final int totalLayers = inputStream.readInt();
+		for(int i = 0; i < totalLayers; i++) {
+			final Layer layer = Layer.fromInputStream(inputStream);
+			switch (layer.getLayerType()) {
+			default:
+			case TILE:
+				onTileLayerParsed((TileLayer) layer);
+				break;
+			case OBJECT:
+				onObjectGroupParsed((TiledObjectGroup) layer);
+				break;
+			case IMAGE:
+				break;
+			case GROUP:
+				onGroupLayerParsed((GroupLayer) layer);
+				break;
+			}
+		}
 	}
 
 	/**

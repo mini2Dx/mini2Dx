@@ -20,16 +20,25 @@ import org.mini2Dx.core.assets.AssetDescriptor;
 import org.mini2Dx.core.assets.AssetManager;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.graphics.TextureAtlas;
+import org.mini2Dx.core.serialization.GameDataSerializable;
+import org.mini2Dx.core.serialization.GameDataSerializableUtils;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.Disposable;
 import org.mini2Dx.gdx.utils.ObjectMap;
+import org.mini2Dx.tiled.tileset.ImageTilesetSource;
 import org.mini2Dx.tiled.tileset.TilesetSource;
+import org.mini2Dx.tiled.tileset.TsxTilesetSource;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * A tileset loaded with a {@link TiledMap}
  */
-public class Tileset implements Disposable {
-	private final TilesetSource tilesetSource;
+public class Tileset implements GameDataSerializable, Disposable {
+	private TilesetSource tilesetSource;
 
 	private int firstGid;
 	private int lastGid = Integer.MAX_VALUE;
@@ -39,6 +48,44 @@ public class Tileset implements Disposable {
 		this.tilesetSource = tilesetSource;
 		this.firstGid = firstGid;
 		calculateLastGid();
+	}
+
+	private Tileset() {}
+
+	public static Tileset fromInputStream(TiledMapData mapData, DataInputStream inputStream) throws IOException {
+		final Tileset result = new Tileset();
+		result.readData(inputStream);
+
+		final int tilesetSourceType = inputStream.readInt();
+		switch (tilesetSourceType) {
+		case TsxTilesetSource.TILESET_TYPE:
+			result.tilesetSource = TsxTilesetSource.fromInputStream(mapData, inputStream);
+			break;
+		default:
+		case ImageTilesetSource.TILESET_TYPE:
+			result.tilesetSource = ImageTilesetSource.fromInputStream(inputStream);
+			break;
+		}
+		result.calculateLastGid();
+
+		for(int x = 0; x < result.getWidthInTiles(); x++) {
+			for(int y = 0; y < result.getHeightInTiles(); y++) {
+				mapData.onTilePropertiesParsed(result.getTile(x, y));
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public void writeData(DataOutputStream outputStream) throws IOException {
+		outputStream.writeInt(firstGid);
+		outputStream.writeInt(tilesetSource.getTilesetSourceType());
+		tilesetSource.writeData(outputStream);
+	}
+
+	@Override
+	public void readData(DataInputStream inputStream) throws IOException {
+		firstGid = inputStream.readInt();
 	}
 
 	/**
