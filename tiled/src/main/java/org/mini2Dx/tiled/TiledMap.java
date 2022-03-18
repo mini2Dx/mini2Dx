@@ -47,9 +47,15 @@ public class TiledMap {
 	 * Set to true if mini2Dx should check the viewport bounds while rendering a tile and avoid rendering it if it is outside of the bounds
 	 */
 	public static boolean CLIP_TILES_OUTSIDE_GRAPHICS_VIEWPORT = false;
+	/**
+	 * Set to true if all maps share the same set of tilesets
+	 */
+	public static boolean SHARED_TILE_ID_MAP = false;
+
+	private static final IntMap<Tileset> GLOBAL_TILE_ID_TO_TILESET = new IntMap<>();
 
 	private final TiledMapData tiledMapData;
-	private final IntMap<Tileset> tileIdToTileset = new IntMap<>();
+	private final IntMap<Tileset> tileIdToTileset;
 
 	private TileLayerRenderer tileLayerRenderer;
 	private TiledObjectGroupRenderer tiledObjectGroupRenderer;
@@ -99,6 +105,8 @@ public class TiledMap {
 	public TiledMap(TiledMapData tiledMapData, boolean loadTilesetTextures) {
 		super();
 		this.tiledMapData = tiledMapData;
+
+		tileIdToTileset = SHARED_TILE_ID_MAP ? GLOBAL_TILE_ID_TO_TILESET : new IntMap<>();
 
 		if (loadTilesetTextures) {
 			loadTilesetTextures();
