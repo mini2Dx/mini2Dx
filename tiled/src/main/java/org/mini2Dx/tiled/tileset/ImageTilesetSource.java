@@ -33,6 +33,8 @@ import org.mini2Dx.tiled.renderer.StaticTileRenderer;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A {@link TilesetSource} referenced by image directly in a TMX file
@@ -452,5 +454,59 @@ public class ImageTilesetSource extends TilesetSource {
 		}
 		backingTexture.dispose();
 		backingTexture = null;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		ImageTilesetSource that = (ImageTilesetSource) o;
+		for(int x = 0; x < getWidthInTiles(); x++) {
+			for (int y = 0; y < getHeightInTiles(); y++) {
+				if(!Objects.equals(tiles[x][y], that.tiles[x][y])) {
+					return false;
+				}
+			}
+		}
+		return width == that.width && height == that.height && tileWidth == that.tileWidth && tileHeight == that.tileHeight && spacing == that.spacing && margin == that.margin && Objects.equals(name, that.name) && Objects.equals(tilesetImagePath, that.tilesetImagePath) && Objects.equals(transparentColorValue, that.transparentColorValue) && Objects.equals(properties, that.properties);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hash(width, height, tileWidth, tileHeight, spacing, margin, name, tilesetImagePath, transparentColorValue, properties);
+		result = 31 * result + Arrays.hashCode(tiles);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder tilesStr = new StringBuilder();
+		tilesStr.append("[");
+		for(int x = 0; x < getWidthInTiles(); x++) {
+			for (int y = 0; y < getHeightInTiles(); y++) {
+				if(tiles[x][y] == null) {
+					tilesStr.append("null");
+				} else {
+					tilesStr.append(tiles[x][y]);
+				}
+				tilesStr.append(' ');
+			}
+		}
+		tilesStr.append("]");
+
+		return "ImageTilesetSource{" +
+				"tiles=" + tilesStr.toString() +
+				", width=" + width +
+				", height=" + height +
+				", tileWidth=" + tileWidth +
+				", tileHeight=" + tileHeight +
+				", spacing=" + spacing +
+				", margin=" + margin +
+				", name='" + name + '\'' +
+				", tilesetImagePath='" + tilesetImagePath + '\'' +
+				", transparentColorValue='" + transparentColorValue + '\'' +
+				", properties=" + properties +
+				"} " + super.toString();
 	}
 }

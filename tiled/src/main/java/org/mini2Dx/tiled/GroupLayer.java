@@ -17,6 +17,7 @@ import org.mini2Dx.gdx.utils.ObjectMap;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Represents a group layer per the Tiled specification
@@ -31,15 +32,18 @@ public class GroupLayer extends Layer implements TiledLayerParserListener {
 
 	@Override
 	public void writeData(DataOutputStream outputStream) throws IOException {
+		super.writeData(outputStream);
+
 		outputStream.writeInt(layers.size);
 		for(int i = 0; i < layers.size; i++) {
-			outputStream.writeUTF(layers.get(i).getLayerType().name());
 			layers.get(i).writeData(outputStream);
 		}
 	}
 
 	@Override
 	public void readData(DataInputStream inputStream) throws IOException {
+		super.readData(inputStream);
+
 		final int totalLayers = inputStream.readInt();
 		for(int i = 0; i < totalLayers; i++) {
 			final Layer layer = Layer.fromInputStream(inputStream);
@@ -169,5 +173,26 @@ public class GroupLayer extends Layer implements TiledLayerParserListener {
 
 	public Array<Layer> getLayers() {
 		return layers;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		GroupLayer that = (GroupLayer) o;
+		return Objects.equals(layers, that.layers);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), layers);
+	}
+
+	@Override
+	public String toString() {
+		return "GroupLayer{" +
+				"layers=" + layers +
+				"} " + super.toString();
 	}
 }

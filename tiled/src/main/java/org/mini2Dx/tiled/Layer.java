@@ -16,10 +16,13 @@
 package org.mini2Dx.tiled;
 
 import org.mini2Dx.core.serialization.GameDataSerializable;
+import org.mini2Dx.core.serialization.GameDataSerializableUtils;
 import org.mini2Dx.gdx.utils.ObjectMap;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Base class for {@link TiledMap} layers
@@ -51,7 +54,42 @@ public abstract class Layer implements GameDataSerializable {
 			//Not yet supported
 			return null;
 		case GROUP:
-			return GroupLayer.fromInputStream(inputStream);
+			final GroupLayer groupLayer = new GroupLayer();
+			groupLayer.readData(inputStream);
+			return groupLayer;
+		}
+	}
+
+	@Override
+	public void writeData(DataOutputStream outputStream) throws IOException {
+		outputStream.writeUTF(layerType.name());
+		GameDataSerializableUtils.writeString(name, outputStream);
+		outputStream.writeInt(index);
+		outputStream.writeBoolean(visible);
+
+		outputStream.writeInt(properties == null ? 0 : properties.size);
+		if(properties != null) {
+			for(String key : properties.keys()) {
+				outputStream.writeUTF(key);
+				GameDataSerializableUtils.writeString(properties.get(key, null), outputStream);
+			}
+		}
+	}
+
+	@Override
+	public void readData(DataInputStream inputStream) throws IOException {
+		name = GameDataSerializableUtils.readString(inputStream);
+		index = inputStream.readInt();
+		visible = inputStream.readBoolean();
+
+		final int totalProperties = inputStream.readInt();
+		if(totalProperties > 0) {
+			properties = new ObjectMap<>();
+			for(int i = 0; i < totalProperties; i++) {
+				final String key = inputStream.readUTF();
+				final String value = GameDataSerializableUtils.readString(inputStream);
+				properties.put(key, value);
+			}
 		}
 	}
 
@@ -159,5 +197,29 @@ public abstract class Layer implements GameDataSerializable {
 
 	public LayerType getLayerType() {
 		return layerType;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Layer layer = (Layer) o;
+		return index == layer.index && visible == layer.visible && layerType == layer.layerType && Objects.equals(name, layer.name) && Objects.equals(properties, layer.properties);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(layerType, name, index, properties, visible);
+	}
+
+	@Override
+	public String toString() {
+		return "Layer{" +
+				"layerType=" + layerType +
+				", name='" + name + '\'' +
+				", index=" + index +
+				", properties=" + properties +
+				", visible=" + visible +
+				'}';
 	}
 }

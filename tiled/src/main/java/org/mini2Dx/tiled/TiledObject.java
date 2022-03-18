@@ -29,6 +29,8 @@ import org.mini2Dx.gdx.utils.ObjectMap;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Represents an object loaded from a {@link TiledMap}
@@ -497,5 +499,42 @@ public class TiledObject implements GameDataSerializable {
 
 	public boolean isBuiltFromTemplate() {
 		return builtFromTemplate;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		TiledObject that = (TiledObject) o;
+		return id == that.id && Float.compare(that.x, x) == 0 && Float.compare(that.y, y) == 0 && Float.compare(that.width, width) == 0 && Float.compare(that.height, height) == 0 && builtFromTemplate == that.builtFromTemplate && visible == that.visible && gid == that.gid && gidFlipHorizontally == that.gidFlipHorizontally && gidFlipVertically == that.gidFlipVertically && gidFlipDiagonally == that.gidFlipDiagonally && wrapText == that.wrapText && objectShape == that.objectShape && Objects.equals(name, that.name) && Objects.equals(type, that.type) && Objects.equals(properties, that.properties) && Arrays.equals(vertices, that.vertices) && Objects.equals(text, that.text);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hash(id, x, y, width, height, builtFromTemplate, objectShape, name, type, visible, gid, gidFlipHorizontally, gidFlipVertically, gidFlipDiagonally, properties, text, wrapText);
+		result = 31 * result + Arrays.hashCode(vertices);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "TiledObject{" +
+				"id=" + id +
+				", x=" + x +
+				", y=" + y +
+				", width=" + width +
+				", height=" + height +
+				", builtFromTemplate=" + builtFromTemplate +
+				", name='" + name + '\'' +
+				", type='" + type + '\'' +
+				", visible=" + visible +
+				", gid=" + gid +
+				", gidFlipHorizontally=" + gidFlipHorizontally +
+				", gidFlipVertically=" + gidFlipVertically +
+				", gidFlipDiagonally=" + gidFlipDiagonally +
+				", properties=" + properties +
+				", text='" + text + '\'' +
+				", wrapText=" + wrapText +
+				'}';
 	}
 }

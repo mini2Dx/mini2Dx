@@ -20,6 +20,7 @@ import org.mini2Dx.gdx.utils.Array;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Represents a group of {@link TiledObject}s loaded from a {@link TiledMap}
@@ -38,6 +39,8 @@ public class TiledObjectGroup extends Layer {
 
 	@Override
 	public void writeData(DataOutputStream outputStream) throws IOException {
+		super.writeData(outputStream);
+
 		outputStream.writeInt(width);
 		outputStream.writeInt(height);
 
@@ -49,6 +52,8 @@ public class TiledObjectGroup extends Layer {
 
 	@Override
 	public void readData(DataInputStream inputStream) throws IOException {
+		super.readData(inputStream);
+
 		width = inputStream.readInt();
 		height = inputStream.readInt();
 
@@ -137,5 +142,28 @@ public class TiledObjectGroup extends Layer {
 			return tiledObject;
 		}
 		return null;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		TiledObjectGroup that = (TiledObjectGroup) o;
+		return width == that.width && height == that.height && Objects.equals(objects, that.objects);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), width, height, objects);
+	}
+
+	@Override
+	public String toString() {
+		return "TiledObjectGroup{" +
+				"width=" + width +
+				", height=" + height +
+				", objects=" + objects +
+				"} " + super.toString();
 	}
 }

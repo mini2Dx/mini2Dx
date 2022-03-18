@@ -36,6 +36,7 @@ import org.mini2Dx.tiled.renderer.AnimatedTileRenderer;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Data parsed from a TMX file created with Tiled
@@ -156,7 +157,6 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 
 		outputStream.writeInt(layers.size);
 		for(int i = 0; i < layers.size; i++) {
-			outputStream.writeUTF(layers.get(i).getLayerType().name());
 			layers.get(i).writeData(outputStream);
 		}
 	}
@@ -215,6 +215,7 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 		final int totalLayers = inputStream.readInt();
 		for(int i = 0; i < totalLayers; i++) {
 			final Layer layer = Layer.fromInputStream(inputStream);
+			System.out.println(layer.getLayerType());
 			switch (layer.getLayerType()) {
 			default:
 			case TILE:
@@ -959,5 +960,39 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 		for (int i = 0; i < tilesets.size; i++) {
 			tilesets.get(i).dispose();
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		TiledMapData that = (TiledMapData) o;
+		return width == that.width && height == that.height && tileWidth == that.tileWidth && tileHeight == that.tileHeight && pixelWidth == that.pixelWidth && pixelHeight == that.pixelHeight && sideLength == that.sideLength && Objects.equals(tilesets, that.tilesets) && Objects.equals(tilesetGids, that.tilesetGids) && Objects.equals(layers, that.layers) && Objects.equals(orientationValue, that.orientationValue) && orientation == that.orientation && staggerAxis == that.staggerAxis && staggerIndex == that.staggerIndex && Objects.equals(backgroundColor, that.backgroundColor) && Objects.equals(animatedTiles, that.animatedTiles) && Objects.equals(properties, that.properties);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(tilesets, tilesetGids, layers, orientationValue, orientation, staggerAxis, staggerIndex, width, height, tileWidth, tileHeight, pixelWidth, pixelHeight, sideLength, backgroundColor, animatedTiles, properties);
+	}
+
+	@Override
+	public String toString() {
+		return "TiledMapData{" +
+				"tilesets=" + tilesets +
+				", layers=" + layers +
+				", orientationValue='" + orientationValue + '\'' +
+				", orientation=" + orientation +
+				", staggerAxis=" + staggerAxis +
+				", staggerIndex=" + staggerIndex +
+				", width=" + width +
+				", height=" + height +
+				", tileWidth=" + tileWidth +
+				", tileHeight=" + tileHeight +
+				", pixelWidth=" + pixelWidth +
+				", pixelHeight=" + pixelHeight +
+				", sideLength=" + sideLength +
+				", backgroundColor=" + backgroundColor +
+				", properties=" + properties +
+				'}';
 	}
 }

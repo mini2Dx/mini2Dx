@@ -22,6 +22,8 @@ import org.mini2Dx.tiled.TileLayer;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.Tileset;
 
+import java.util.Objects;
+
 /**
  * Renders hexagonal {@link TileLayer}s
  */
@@ -178,6 +180,7 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 				Tileset searchTileset = tiledMap.getTilesets().get(i);
 				if (searchTileset.contains(tileId)) {
 					tileset = searchTileset;
+					tileIdToTileset.put(tileId, tileset);
 					break;
 				}
 			}
@@ -193,4 +196,16 @@ public class HexagonalTileLayerRenderer implements TileLayerRenderer {
 
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		HexagonalTileLayerRenderer that = (HexagonalTileLayerRenderer) o;
+		return hexWidth == that.hexWidth && hexHeight == that.hexHeight && sideOffsetX == that.sideOffsetX && sideOffsetY == that.sideOffsetY && quarterHexWidth == that.quarterHexWidth && quarterHexHeight == that.quarterHexHeight && halfHexWidth == that.halfHexWidth && halfHexHeight == that.halfHexHeight && threeQuarterHexWidth == that.threeQuarterHexWidth && threeQuarterHexHeight == that.threeQuarterHexHeight;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(hexWidth, hexHeight, sideOffsetX, sideOffsetY, quarterHexWidth, quarterHexHeight, halfHexWidth, halfHexHeight, threeQuarterHexWidth, threeQuarterHexHeight);
+	}
 }

@@ -21,13 +21,15 @@ import org.mini2Dx.gdx.math.MathUtils;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Objects;
 
 /**
  * Represents a tile layer with in a {@link TiledMap}
  */
 public class TileLayer extends Layer {
-	private final int[][] tiles;
+	private int[][] tiles;
 	private BitSet flipHorizontally;
 	private BitSet flipVertically;
 	private BitSet flipDiagonally;
@@ -41,16 +43,20 @@ public class TileLayer extends Layer {
 		flipDiagonally = new BitSet(width * height);
 	}
 
+	private TileLayer() {
+		super(LayerType.TILE);
+	}
+
 	public static TileLayer fromInputStream(DataInputStream inputStream) throws IOException {
-		final int width = inputStream.readInt();
-		final int height = inputStream.readInt();
-		final TileLayer result = new TileLayer(width, height);
+		final TileLayer result = new TileLayer();
 		result.readData(inputStream);
 		return result;
 	}
 
 	@Override
 	public void writeData(DataOutputStream outputStream) throws IOException {
+		super.writeData(outputStream);
+
 		outputStream.writeInt(getWidth());
 		outputStream.writeInt(getHeight());
 		for(int x = 0; x < getWidth(); x++) {
@@ -66,6 +72,12 @@ public class TileLayer extends Layer {
 
 	@Override
 	public void readData(DataInputStream inputStream) throws IOException {
+		super.readData(inputStream);
+
+		final int width = inputStream.readInt();
+		final int height = inputStream.readInt();
+		tiles = new int[width][height];
+
 		for(int x = 0; x < getWidth(); x++) {
 			for (int y = 0; y < getHeight(); y++) {
 				tiles[x][y] = inputStream.readInt();
@@ -246,5 +258,48 @@ public class TileLayer extends Layer {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		TileLayer tileLayer = (TileLayer) o;
+		for(int x = 0; x < getWidth(); x++) {
+			for (int y = 0; y < getHeight(); y++) {
+				if(tiles[x][y] != tileLayer.tiles[x][y]) {
+					return false;
+				}
+			}
+		}
+		return Objects.equals(flipHorizontally, tileLayer.flipHorizontally) && Objects.equals(flipVertically, tileLayer.flipVertically) && Objects.equals(flipDiagonally, tileLayer.flipDiagonally);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hash(super.hashCode(), flipHorizontally, flipVertically, flipDiagonally);
+		result = 31 * result + Arrays.hashCode(tiles);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder tilesStr = new StringBuilder();
+		tilesStr.append("[");
+		for(int x = 0; x < getWidth(); x++) {
+			for (int y = 0; y < getHeight(); y++) {
+				tilesStr.append(tiles[x][y]);
+				tilesStr.append(' ');
+			}
+		}
+		tilesStr.append("]");
+
+		return "TileLayer{" +
+				"tiles=" + tilesStr.toString() +
+				", flipHorizontally=" + flipHorizontally +
+				", flipVertically=" + flipVertically +
+				", flipDiagonally=" + flipDiagonally +
+				"} " + super.toString();
 	}
 }

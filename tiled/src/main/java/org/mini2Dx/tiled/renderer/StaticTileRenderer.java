@@ -23,6 +23,7 @@ import org.mini2Dx.tiled.tileset.TilesetSource;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * A {@link TileRenderer} for single tile images
@@ -108,5 +109,17 @@ public class StaticTileRenderer implements TileRenderer {
 	@Override
 	public int getRendererType() {
 		return RENDERER_TYPE;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash();
 	}
 }

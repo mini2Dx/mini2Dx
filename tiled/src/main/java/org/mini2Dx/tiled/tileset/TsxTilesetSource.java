@@ -33,6 +33,7 @@ import org.mini2Dx.tiled.TiledParser;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -255,5 +256,19 @@ public class TsxTilesetSource extends TilesetSource {
 			return;
 		}
 		tilesetSource.dispose();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		TsxTilesetSource that = (TsxTilesetSource) o;
+		return Objects.equals(tsxPath, that.tsxPath) && Objects.equals(tileset, that.tileset);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(tsxPath, tileset);
 	}
 }

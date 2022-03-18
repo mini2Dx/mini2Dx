@@ -22,6 +22,8 @@ import org.mini2Dx.tiled.TileLayer;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.Tileset;
 
+import java.util.Objects;
+
 /**
  * Renders isometric {@link TileLayer}s
  */
@@ -37,8 +39,8 @@ public class IsometricTileLayerRenderer implements TileLayerRenderer {
 		this.tiledMap = tiledMap;
 		this.tileIdToTileset = tileIdToTileset;
 		
-		this.halfTileWidth = tiledMap.getTileWidth() / 2f;
-		this.halfTileHeight = tiledMap.getTileHeight() / 2f;
+		this.halfTileWidth = tiledMap.getTileWidth() * 0.5f;
+		this.halfTileHeight = tiledMap.getTileHeight() * 0.5f;
 	}
 
 	@Override
@@ -82,6 +84,7 @@ public class IsometricTileLayerRenderer implements TileLayerRenderer {
 				Tileset searchTileset = tiledMap.getTilesets().get(i);
 				if (searchTileset.contains(tileId)) {
 					tileset = searchTileset;
+					tileIdToTileset.put(tileId, tileset);
 					break;
 				}
 			}
@@ -122,4 +125,16 @@ public class IsometricTileLayerRenderer implements TileLayerRenderer {
 		
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		IsometricTileLayerRenderer that = (IsometricTileLayerRenderer) o;
+		return Float.compare(that.halfTileWidth, halfTileWidth) == 0 && Float.compare(that.halfTileHeight, halfTileHeight) == 0;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(halfTileWidth, halfTileHeight);
+	}
 }

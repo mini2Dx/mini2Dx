@@ -25,6 +25,7 @@ import org.mini2Dx.tiled.renderer.TileRenderer;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Represents a tileset tile
@@ -162,5 +163,27 @@ public class Tile implements GameDataSerializable, Disposable {
 		}
 		tileRenderer.dispose();
 		tileRenderer = null;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Tile tile = (Tile) o;
+		return tileId == tile.tileId && Objects.equals(tileRenderer, tile.tileRenderer) && Objects.equals(properties, tile.properties);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(tileId, tileRenderer, properties);
+	}
+
+	@Override
+	public String toString() {
+		return "Tile{" +
+				"tileId=" + tileId +
+				", tileRenderer=" + tileRenderer +
+				", properties=" + properties +
+				'}';
 	}
 }

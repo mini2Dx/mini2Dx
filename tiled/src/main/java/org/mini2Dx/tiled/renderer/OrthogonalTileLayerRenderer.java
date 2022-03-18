@@ -21,6 +21,8 @@ import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.IntMap;
 import org.mini2Dx.tiled.*;
 
+import java.util.Objects;
+
 /**
  * Renders orthogonal {@link TileLayer}s
  */
@@ -119,6 +121,7 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 				Tileset searchTileset = tiledMap.getTilesets().get(i);
 				if (searchTileset.contains(tileId)) {
 					tileset = searchTileset;
+					tileIdToTileset.put(tileId, tileset);
 					break;
 				}
 			}
@@ -140,4 +143,15 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 		}
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash();
+	}
 }

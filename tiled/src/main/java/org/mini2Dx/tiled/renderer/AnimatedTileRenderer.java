@@ -23,6 +23,8 @@ import org.mini2Dx.tiled.tileset.TilesetSource;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A {@link TileRenderer} for animated tiles
@@ -107,5 +109,18 @@ public class AnimatedTileRenderer implements TileRenderer {
 
 	@Override
 	public void dispose() {
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		AnimatedTileRenderer that = (AnimatedTileRenderer) o;
+		return Arrays.equals(frames, that.frames);
+	}
+
+	@Override
+	public int hashCode() {
+		return 31 * Arrays.hashCode(frames);
 	}
 }

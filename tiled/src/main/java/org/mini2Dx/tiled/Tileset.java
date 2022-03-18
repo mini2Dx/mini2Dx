@@ -33,6 +33,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * A tileset loaded with a {@link TiledMap}
@@ -412,5 +413,26 @@ public class Tileset implements GameDataSerializable, Disposable {
 	 */
 	public String getSourceInternalUuid() {
 		return tilesetSource.getInternalUuid();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Tileset tileset = (Tileset) o;
+		return firstGid == tileset.firstGid && Objects.equals(tilesetSource, tileset.tilesetSource);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(tilesetSource, firstGid);
+	}
+
+	@Override
+	public String toString() {
+		return "Tileset{" +
+				"tilesetSource=" + tilesetSource +
+				", firstGid=" + firstGid +
+				'}';
 	}
 }
