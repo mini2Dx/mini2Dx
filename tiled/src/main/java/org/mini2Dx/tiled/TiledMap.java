@@ -839,4 +839,8 @@ public class TiledMap {
 	public boolean containsAnimatedTiles() {
 		return tiledMapData.containsAnimatedTiles();
 	}
+
+	public TiledMapData getTiledMapData() {
+		return tiledMapData;
+	}
 }
