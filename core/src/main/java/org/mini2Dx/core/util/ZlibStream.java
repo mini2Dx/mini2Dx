@@ -19,5 +19,10 @@ import org.mini2Dx.gdx.utils.Disposable;
 
 public interface ZlibStream extends Disposable {
 
-	public void read(byte [] buffer);
+	/**
+	 * Decompresses bytes in the provided buffer
+	 * @param buffer A byte array to receive bytes
+	 * @return The number of bytes decompress. 0 if end of stream.
+	 */
+	public int read(byte [] buffer);
 }

@@ -31,12 +31,13 @@ public class JvmZlibStream implements ZlibStream {
 	}
 
 	@Override
-	public void read(byte[] buffer) {
+	public int read(byte[] buffer) {
 		try {
-			inflater.inflate(buffer, 0, buffer.length);
+			return inflater.inflate(buffer, 0, buffer.length);
 		} catch (DataFormatException e) {
 			Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
 		}
+		return 0;
 	}
 
 	@Override

@@ -840,6 +840,10 @@ public class TiledMap {
 		return tiledMapData.containsAnimatedTiles();
 	}
 
+	/**
+	 * Returns the underlying data object
+	 * @return
+	 */
 	public TiledMapData getTiledMapData() {
 		return tiledMapData;
 	}
