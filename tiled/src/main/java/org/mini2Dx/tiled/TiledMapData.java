@@ -215,7 +215,6 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 		final int totalLayers = inputStream.readInt();
 		for(int i = 0; i < totalLayers; i++) {
 			final Layer layer = Layer.fromInputStream(inputStream);
-			System.out.println(layer.getLayerType());
 			switch (layer.getLayerType()) {
 			default:
 			case TILE:
