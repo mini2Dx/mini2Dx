@@ -16,6 +16,7 @@
 package org.mini2Dx.tiled;
 
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.gdx.utils.Queue;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -26,15 +27,42 @@ import java.util.Objects;
  * Represents a group of {@link TiledObject}s loaded from a {@link TiledMap}
  */
 public class TiledObjectGroup extends Layer {
+	private static final int INITIAL_POOL_SIZE = 4096;
+	private static final Queue<TiledObjectGroup> POOL = new Queue<>(INITIAL_POOL_SIZE);
+
+	static {
+		for(int i = 0; i < INITIAL_POOL_SIZE; i++) {
+			POOL.addLast(new TiledObjectGroup());
+		}
+	}
+
 	private int width, height;
 	private final Array<TiledObject> objects;
 	
 	/**
 	 * Constructor
 	 */
-	public TiledObjectGroup() {
+	private TiledObjectGroup() {
 		super(LayerType.OBJECT);
 		objects = new Array<TiledObject>(true, 2, TiledObject.class);
+	}
+
+	public static TiledObjectGroup create() {
+		final TiledObjectGroup result;
+		synchronized (POOL) {
+			if(POOL.size == 0) {
+				result = new TiledObjectGroup();
+			} else {
+				result = POOL.removeFirst();
+			}
+		}
+		return result;
+	}
+
+	public static TiledObjectGroup fromInputStream(DataInputStream inputStream) throws IOException {
+		final TiledObjectGroup result = create();
+		result.readData(inputStream);
+		return result;
 	}
 
 	@Override
@@ -142,6 +170,15 @@ public class TiledObjectGroup extends Layer {
 			return tiledObject;
 		}
 		return null;
+	}
+
+	@Override
+	public void dispose() {
+		objects.clear();
+
+		synchronized (POOL) {
+			POOL.addLast(this);
+		}
 	}
 
 	@Override

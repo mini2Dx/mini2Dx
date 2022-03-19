@@ -17,6 +17,7 @@ package org.mini2Dx.tiled;
 
 import org.mini2Dx.core.serialization.GameDataSerializable;
 import org.mini2Dx.core.serialization.GameDataSerializableUtils;
+import org.mini2Dx.gdx.utils.Disposable;
 import org.mini2Dx.gdx.utils.ObjectMap;
 
 import java.io.DataInputStream;
@@ -27,7 +28,7 @@ import java.util.Objects;
 /**
  * Base class for {@link TiledMap} layers
  */
-public abstract class Layer implements GameDataSerializable {
+public abstract class Layer implements Disposable, GameDataSerializable {
 	private final LayerType layerType;
 
 	private String name;
@@ -47,16 +48,12 @@ public abstract class Layer implements GameDataSerializable {
 		case TILE:
 			return TileLayer.fromInputStream(inputStream);
 		case OBJECT:
-			final TiledObjectGroup objectGroup = new TiledObjectGroup();
-			objectGroup.readData(inputStream);
-			return objectGroup;
+			return TiledObjectGroup.fromInputStream(inputStream);
 		case IMAGE:
 			//Not yet supported
 			return null;
 		case GROUP:
-			final GroupLayer groupLayer = new GroupLayer();
-			groupLayer.readData(inputStream);
-			return groupLayer;
+			return GroupLayer.fromInputStream(inputStream);
 		}
 	}
 

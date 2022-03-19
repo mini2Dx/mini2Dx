@@ -977,6 +977,12 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 		for (int i = 0; i < tilesets.size; i++) {
 			tilesets.get(i).dispose();
 		}
+		tilesets.clear();
+
+		for(int i = 0; i < layers.size; i++) {
+			layers.get(i).dispose();
+		}
+		layers.clear();
 	}
 
 	/**

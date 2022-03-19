@@ -13,6 +13,7 @@ package org.mini2Dx.tiled;
 
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.gdx.utils.ObjectMap;
+import org.mini2Dx.gdx.utils.Queue;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -23,11 +24,38 @@ import java.util.Objects;
  * Represents a group layer per the Tiled specification
  */
 public class GroupLayer extends Layer implements TiledLayerParserListener {
+	private static final int INITIAL_POOL_SIZE = 4096;
+	private static final Queue<GroupLayer> POOL = new Queue<>(INITIAL_POOL_SIZE);
+
+	static {
+		for(int i = 0; i < INITIAL_POOL_SIZE; i++) {
+			POOL.addLast(new GroupLayer());
+		}
+	}
+
 	protected final Array<Layer> layers = new Array<Layer>(true, 2, Layer.class);
 	protected final ObjectMap<String, TiledObjectGroup> objectGroups = new ObjectMap<String, TiledObjectGroup>();
 
-	public GroupLayer() {
+	private GroupLayer() {
 		super(LayerType.GROUP);
+	}
+
+	public static GroupLayer create() {
+		final GroupLayer result;
+		synchronized (POOL) {
+			if(POOL.size == 0) {
+				result = new GroupLayer();
+			} else {
+				result = POOL.removeFirst();
+			}
+		}
+		return result;
+	}
+
+	public static GroupLayer fromInputStream(DataInputStream inputStream) throws IOException {
+		final GroupLayer result = create();
+		result.readData(inputStream);
+		return result;
 	}
 
 	@Override
@@ -194,5 +222,18 @@ public class GroupLayer extends Layer implements TiledLayerParserListener {
 		return "GroupLayer{" +
 				"layers=" + layers +
 				"} " + super.toString();
+	}
+
+	@Override
+	public void dispose() {
+		for(int i = 0; i < layers.size; i++) {
+			layers.get(i).dispose();
+		}
+		layers.clear();
+		objectGroups.clear();
+
+		synchronized (POOL) {
+			POOL.addLast(this);
+		}
 	}
 }

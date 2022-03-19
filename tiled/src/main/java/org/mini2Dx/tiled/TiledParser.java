@@ -311,7 +311,7 @@ public class TiledParser implements TiledParserNotifier {
 		final String groupName = layerElement.getAttribute("name", null);
 		final boolean visible = layerElement.getIntAttribute("visible", 1) == 1;
 
-		final GroupLayer groupLayer = new GroupLayer();
+		final GroupLayer groupLayer = GroupLayer.create();
 		groupLayer.setName(groupName);
 		groupLayer.setVisible(visible);
 
@@ -350,7 +350,7 @@ public class TiledParser implements TiledParserNotifier {
 			int width = element.getIntAttribute("width", 0);
 			int height = element.getIntAttribute("height", 0);
 			boolean visible = element.getIntAttribute("visible", 1) == 1;
-			TileLayer layer = new TileLayer(width, height);
+			TileLayer layer = TileLayer.create(width, height);
 			layer.setVisible(visible);
 			layer.setName(name);
 
@@ -465,7 +465,7 @@ public class TiledParser implements TiledParserNotifier {
 	protected TiledObjectGroup loadObjectGroup(TiledLayerParserListener parserListener, Element element, FileHandle tmxFile) throws IOException {
 		if (element.getName().equals("objectgroup")) {
 			String name = element.getAttribute("name", null);
-			TiledObjectGroup tiledObjectGroup = new TiledObjectGroup();
+			TiledObjectGroup tiledObjectGroup = TiledObjectGroup.create();
 			tiledObjectGroup.setName(name);
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {

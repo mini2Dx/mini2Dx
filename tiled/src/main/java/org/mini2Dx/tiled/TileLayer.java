@@ -15,8 +15,10 @@
  ******************************************************************************/
 package org.mini2Dx.tiled;
 
+import org.mini2Dx.core.collections.concurrent.ConcurrentQueue;
 import org.mini2Dx.core.serialization.GameDataSerializableUtils;
 import org.mini2Dx.gdx.math.MathUtils;
+import org.mini2Dx.gdx.utils.Queue;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -29,26 +31,58 @@ import java.util.Objects;
  * Represents a tile layer with in a {@link TiledMap}
  */
 public class TileLayer extends Layer {
+	private static final int INITIAL_POOL_SIZE = 4096;
+	private static final Queue<TileLayer> POOL = new Queue<>(INITIAL_POOL_SIZE);
+
+	static {
+		for(int i = 0; i < INITIAL_POOL_SIZE; i++) {
+			POOL.addLast(new TileLayer());
+		}
+	}
+
 	private int[][] tiles;
 	private BitSet flipHorizontally;
 	private BitSet flipVertically;
 	private BitSet flipDiagonally;
 
-	public TileLayer(int width, int height) {
+	private TileLayer() {
 		super(LayerType.TILE);
+	}
 
+	private void resize(int width, int height) {
 		tiles = new int[width][height];
 		flipHorizontally = new BitSet(width * height);
 		flipVertically = new BitSet(width * height);
 		flipDiagonally = new BitSet(width * height);
 	}
 
-	private TileLayer() {
-		super(LayerType.TILE);
+	public static TileLayer create() {
+		final TileLayer result;
+		synchronized (POOL) {
+			if(POOL.size == 0) {
+				result = new TileLayer();
+			} else {
+				result = POOL.removeFirst();
+			}
+		}
+		return result;
+	}
+
+	public static TileLayer create(int width, int height) {
+		final TileLayer result = create();
+		result.resize(width, height);
+		return result;
 	}
 
 	public static TileLayer fromInputStream(DataInputStream inputStream) throws IOException {
-		final TileLayer result = new TileLayer();
+		final TileLayer result;
+		synchronized (POOL) {
+			if(POOL.size == 0) {
+				result = new TileLayer();
+			} else {
+				result = POOL.removeFirst();
+			}
+		}
 		result.readData(inputStream);
 		return result;
 	}
@@ -76,7 +110,10 @@ public class TileLayer extends Layer {
 
 		final int width = inputStream.readInt();
 		final int height = inputStream.readInt();
-		tiles = new int[width][height];
+
+		if(tiles == null || tiles.length != width || tiles[0].length != height) {
+			tiles = new int[width][height];
+		}
 
 		for(int x = 0; x < getWidth(); x++) {
 			for (int y = 0; y < getHeight(); y++) {
@@ -258,6 +295,17 @@ public class TileLayer extends Layer {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public void dispose() {
+		flipHorizontally.clear();
+		flipVertically.clear();
+		flipDiagonally.clear();
+
+		synchronized (POOL) {
+			POOL.addLast(this);
+		}
 	}
 
 	@Override

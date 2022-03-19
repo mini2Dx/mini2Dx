@@ -13,8 +13,8 @@ public class TileLayerTest {
 
 	@Test
 	public void testIsMostlyEmptyTiles() {
-		final TileLayer mostlyFullLayer = new TileLayer(LAYER_WIDTH, LAYER_HEIGHT);
-		final TileLayer mostlyEmptyLayer = new TileLayer(LAYER_WIDTH, LAYER_HEIGHT);
+		final TileLayer mostlyFullLayer = TileLayer.create(LAYER_WIDTH, LAYER_HEIGHT);
+		final TileLayer mostlyEmptyLayer = TileLayer.create(LAYER_WIDTH, LAYER_HEIGHT);
 
 		fillLayer(mostlyFullLayer, getEmptyLayerThreshold());
 		fillLayer(mostlyEmptyLayer, (LAYER_WIDTH * LAYER_HEIGHT) - getEmptyLayerThreshold());
