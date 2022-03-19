@@ -31,6 +31,8 @@ import org.mini2Dx.tiled.renderer.*;
  * A Tiled map instance
  */
 public class TiledMap {
+	private static int INITIAL_TILE_ID_TO_TILESET_MAP_SIZE = 128;
+
 	/**
 	 * Set to true to tell the renderer to not render layers marked as hidden in Tiled
 	 */
@@ -52,7 +54,7 @@ public class TiledMap {
 	 */
 	public static boolean SHARED_TILE_ID_MAP = false;
 
-	private static final IntMap<Tileset> GLOBAL_TILE_ID_TO_TILESET = new IntMap<>();
+	private static final IntMap<Tileset> GLOBAL_TILE_ID_TO_TILESET = new IntMap<>(INITIAL_TILE_ID_TO_TILESET_MAP_SIZE);
 
 	private final TiledMapData tiledMapData;
 	private final IntMap<Tileset> tileIdToTileset;
@@ -106,7 +108,7 @@ public class TiledMap {
 		super();
 		this.tiledMapData = tiledMapData;
 
-		tileIdToTileset = SHARED_TILE_ID_MAP ? GLOBAL_TILE_ID_TO_TILESET : new IntMap<>();
+		tileIdToTileset = SHARED_TILE_ID_MAP ? GLOBAL_TILE_ID_TO_TILESET : new IntMap<>(INITIAL_TILE_ID_TO_TILESET_MAP_SIZE);
 
 		if (loadTilesetTextures) {
 			loadTilesetTextures();
