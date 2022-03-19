@@ -20,6 +20,7 @@ import org.mini2Dx.core.serialization.GameDataSerializable;
 import org.mini2Dx.core.serialization.GameDataSerializableUtils;
 import org.mini2Dx.gdx.utils.Disposable;
 import org.mini2Dx.gdx.utils.ObjectMap;
+import org.mini2Dx.gdx.utils.Queue;
 import org.mini2Dx.tiled.renderer.TileRenderer;
 
 import java.io.DataInputStream;
@@ -31,9 +32,32 @@ import java.util.Objects;
  * Represents a tileset tile
  */
 public class Tile implements GameDataSerializable, Disposable {
+	private static final int INITIAL_POOL_SIZE = 16384;
+	private static final Queue<Tile> POOL = new Queue<>(INITIAL_POOL_SIZE);
+
+	static {
+		for(int i = 0; i < INITIAL_POOL_SIZE; i++) {
+			POOL.addLast(new Tile());
+		}
+	}
+
 	private int tileId;
 	private TileRenderer tileRenderer;
 	private ObjectMap<String, String> properties;
+
+	private Tile() {}
+
+	public static Tile create() {
+		final Tile tile;
+		synchronized (POOL) {
+			if(POOL.size == 0) {
+				tile = new Tile();
+			} else {
+				tile = POOL.removeFirst();
+			}
+		}
+		return tile;
+	}
 
 	@Override
 	public void writeData(DataOutputStream outputStream) throws IOException {
@@ -156,11 +180,20 @@ public class Tile implements GameDataSerializable, Disposable {
 
 	@Override
 	public void dispose() {
-		if (tileRenderer == null) {
-			return;
+		tileId = 0;
+
+		if(properties != null) {
+			properties.clear();
 		}
-		tileRenderer.dispose();
-		tileRenderer = null;
+
+		if (tileRenderer != null) {
+			tileRenderer.dispose();
+			tileRenderer = null;
+		}
+
+		synchronized (POOL) {
+			POOL.addLast(this);
+		}
 	}
 
 	@Override

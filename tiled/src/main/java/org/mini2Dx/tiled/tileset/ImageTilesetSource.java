@@ -70,7 +70,7 @@ public class ImageTilesetSource extends TilesetSource {
 		tiles = new Tile[getWidthInTiles()][getHeightInTiles()];
 		for(int x = 0; x < getWidthInTiles(); x++) {
 			for(int y = 0; y < getHeightInTiles(); y++) {
-				tiles[x][y] = new Tile();
+				tiles[x][y] = Tile.create();
 				tiles[x][y].setTileId(getTileId(x, y, 0));
 			}
 		}
@@ -146,7 +146,7 @@ public class ImageTilesetSource extends TilesetSource {
 		tiles = new Tile[getWidthInTiles()][getHeightInTiles()];
 		for(int x = 0; x < getWidthInTiles(); x++) {
 			for(int y = 0; y < getHeightInTiles(); y++) {
-				tiles[x][y] = new Tile();
+				tiles[x][y] = Tile.create();
 				tiles[x][y].readData(inputStream);
 			}
 		}
@@ -444,6 +444,7 @@ public class ImageTilesetSource extends TilesetSource {
 			for (int y = 0; y < getHeightInTiles(); y++) {
 				if(tiles[x][y] != null) {
 					tiles[x][y].dispose();
+					tiles[x][y] = null;
 				}
 			}
 		}
