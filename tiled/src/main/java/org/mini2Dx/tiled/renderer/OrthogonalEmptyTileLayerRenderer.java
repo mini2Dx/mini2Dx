@@ -14,6 +14,7 @@ package org.mini2Dx.tiled.renderer;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.gdx.utils.Queue;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.TileLayer;
 import org.mini2Dx.tiled.TiledMap;
@@ -24,6 +25,15 @@ import org.mini2Dx.tiled.Tileset;
  * where the layer consists mostly of empty tiles
  */
 public class OrthogonalEmptyTileLayerRenderer implements TileLayerRenderer {
+	private static final int TILE_RENDER_REF_POOL_INITIAL_SIZE = 8192;
+	private static final Queue<TileRenderRef> TILE_RENDER_REF_POOL = new Queue<>(TILE_RENDER_REF_POOL_INITIAL_SIZE);
+
+	static {
+		for(int i = 0; i < TILE_RENDER_REF_POOL_INITIAL_SIZE; i++) {
+			TILE_RENDER_REF_POOL.addLast(new TileRenderRef());
+		}
+	}
+
 	private final TiledMap tiledMap;
 	private final TileLayer layer;
 	private final Array<TileRenderRef> tiles;
@@ -43,7 +53,14 @@ public class OrthogonalEmptyTileLayerRenderer implements TileLayerRenderer {
 					continue;
 				}
 
-				final TileRenderRef ref = new TileRenderRef();
+				final TileRenderRef ref;
+				synchronized (TILE_RENDER_REF_POOL) {
+					if(TILE_RENDER_REF_POOL.size == 0) {
+						ref = new TileRenderRef();
+					} else {
+						ref = TILE_RENDER_REF_POOL.removeFirst();
+					}
+				}
 				ref.x = x;
 				ref.y = y;
 				ref.tileId = tileId;
@@ -99,6 +116,14 @@ public class OrthogonalEmptyTileLayerRenderer implements TileLayerRenderer {
 
 	@Override
 	public void dispose() {
+		for(int i = 0; i < tiles.size; i++) {
+			final TileRenderRef renderRef = tiles.get(i);
+			renderRef.tile = null;
+
+			synchronized (TILE_RENDER_REF_POOL) {
+				TILE_RENDER_REF_POOL.addLast(renderRef);
+			}
+		}
 		tiles.clear();
 	}
 
@@ -110,7 +135,7 @@ public class OrthogonalEmptyTileLayerRenderer implements TileLayerRenderer {
 		return layer;
 	}
 
-	private class TileRenderRef {
+	private static class TileRenderRef {
 		public int x, y;
 		public int tileId;
 		public Tile tile;
