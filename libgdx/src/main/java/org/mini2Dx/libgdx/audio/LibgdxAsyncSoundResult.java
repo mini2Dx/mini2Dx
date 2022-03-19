@@ -16,6 +16,7 @@
 package org.mini2Dx.libgdx.audio;
 
 import com.badlogic.gdx.Gdx;
+import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.audio.AsyncSoundResult;
 import org.mini2Dx.core.audio.Sound;
 import org.mini2Dx.core.executor.AsyncResult;
@@ -44,10 +45,13 @@ public class LibgdxAsyncSoundResult extends AsyncSoundResult {
 
     @Override
     protected Sound makeSound(AsyncResult result) {
-        try {
-            return (Sound) Gdx.audio.getClass().getMethod("newSound", InputStream.class, String.class).invoke(Gdx.audio, result.getResult(), handle.path());
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            return null;
+        if(Mdx.platformUtils.isGameThread()) {
+            try {
+                return (Sound) Gdx.audio.getClass().getMethod("newSound", InputStream.class, String.class).invoke(Gdx.audio, result.getResult(), handle.path());
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                return null;
+            }
         }
+        return null;
     }
 }

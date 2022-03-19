@@ -19,6 +19,7 @@ import org.mini2Dx.core.Audio;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.exception.MdxException;
 import org.mini2Dx.core.executor.AsyncResult;
+import org.mini2Dx.core.executor.FrameSpreadTask;
 import org.mini2Dx.core.files.FileHandle;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ public abstract class AsyncSoundResult implements AsyncResult<Sound> {
     protected final FileHandle handle;
     private final AsyncResult<Object> result;
     private Sound cached;
+    private boolean submittedToMainThread = false;
 
     public AsyncSoundResult(FileHandle file) {
         handle = file;
@@ -63,6 +65,24 @@ public abstract class AsyncSoundResult implements AsyncResult<Sound> {
             cached = s;
             return s;
         }
+        if(Mdx.platformUtils.isGameThread()) {
+            return fallbackToMainThread();
+        }
+        if(submittedToMainThread) {
+            return null;
+        }
+        Mdx.executor.submit(new FrameSpreadTask() {
+            @Override
+            public boolean updateTask() {
+                fallbackToMainThread();
+                return true;
+            }
+        });
+        submittedToMainThread = true;
+        return null;
+    }
+
+    private Sound fallbackToMainThread() {
         try {
             Mdx.log.info("WARNING", "Async sound loading not supported on this platform, falling back to loading on main thread...");
             cached = Mdx.audio.newSound(handle);
