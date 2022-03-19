@@ -31,7 +31,7 @@ import org.mini2Dx.tiled.renderer.*;
  * A Tiled map instance
  */
 public class TiledMap {
-	private static int INITIAL_TILE_ID_TO_TILESET_MAP_SIZE = 128;
+	private static int INITIAL_TILE_ID_TO_TILESET_MAP_SIZE = 1024;
 
 	/**
 	 * Set to true to tell the renderer to not render layers marked as hidden in Tiled
