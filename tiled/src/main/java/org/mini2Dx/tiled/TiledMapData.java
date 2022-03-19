@@ -45,7 +45,7 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 	public static long MAX_TILESET_LOAD_TIMESLICE_MILLIS = 2L;
 
 	static final ObjectSet<String> OBJECT_TEMPLATE_TILESET_SOURCES = new ObjectSet<String>();
-	protected final FileHandle fileHandle;
+	protected FileHandle fileHandle;
 
 	protected final Array<Tileset> tilesets = new Array<Tileset>(true, 2, Tileset.class);
 	protected final IntSet tilesetGids = new IntSet();
@@ -121,6 +121,11 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 		outputStream.writeUTF(fileHandle.path());
 		outputStream.writeUTF(fileHandle.type().name());
 
+		outputStream.writeInt(OBJECT_TEMPLATE_TILESET_SOURCES.size);
+		for(String objectTemplateTilesetSources : OBJECT_TEMPLATE_TILESET_SOURCES) {
+			outputStream.writeUTF(objectTemplateTilesetSources);
+		}
+
 		GameDataSerializableUtils.writeString(orientationValue, outputStream);
 		GameDataSerializableUtils.writeString(orientation == null ? null : orientation.name(), outputStream);
 		GameDataSerializableUtils.writeString(staggerAxis == null ? null : staggerAxis.name(), outputStream);
@@ -163,6 +168,11 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 
 	@Override
 	public void readData(DataInputStream inputStream) throws IOException {
+		final int totalTemplateTilesetSources = inputStream.readInt();
+		for(int i = 0; i < totalTemplateTilesetSources; i++) {
+			OBJECT_TEMPLATE_TILESET_SOURCES.add(inputStream.readUTF());
+		}
+
 		orientationValue = GameDataSerializableUtils.readString(inputStream);
 
 		final String orientation = GameDataSerializableUtils.readString(inputStream);
@@ -940,6 +950,14 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 	}
 
 	/**
+	 * Sets the {@link FileHandle} for this data
+	 * @param fileHandle
+	 */
+	public void setFileHandle(FileHandle fileHandle) {
+		this.fileHandle = fileHandle;
+	}
+
+	/**
 	 * Releases any resources used by this TiledMap including tilesets
 	 */
 	public void dispose() {
@@ -959,6 +977,14 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 		for (int i = 0; i < tilesets.size; i++) {
 			tilesets.get(i).dispose();
 		}
+	}
+
+	/**
+	 * Returns the list of Tilesets loaded via object templates
+	 * @return An empty set if no tilesets loaded via templates
+	 */
+	public static ObjectSet<String> getObjectTemplateTilesetSources() {
+		return OBJECT_TEMPLATE_TILESET_SOURCES;
 	}
 
 	@Override

@@ -48,8 +48,9 @@ public class TsxTilesetSource extends TilesetSource {
 	private static final ConcurrentObjectMap<String, ImageTilesetSource> TILESETS = new ConcurrentObjectMap<>();
 	private static final ConcurrentObjectMap<String, AtomicInteger> TILESET_REFS = new ConcurrentObjectMap<>();
 
-	private final String tsxPath;
 	private final ImageTilesetSource tileset;
+
+	private String tsxPath;
 
 	public TsxTilesetSource(FileHandle tmxPath, String tsxPath) {
 		super();
@@ -241,8 +242,16 @@ public class TsxTilesetSource extends TilesetSource {
 		return TILESET_TYPE;
 	}
 
+	public ImageTilesetSource getTileset() {
+		return tileset;
+	}
+
 	public String getTsxPath() {
 		return tsxPath;
+	}
+
+	public void setTsxPath(String tsxPath) {
+		this.tsxPath = tsxPath;
 	}
 
 	@Override
