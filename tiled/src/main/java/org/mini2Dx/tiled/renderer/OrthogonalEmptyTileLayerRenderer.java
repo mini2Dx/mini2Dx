@@ -25,7 +25,7 @@ import org.mini2Dx.tiled.Tileset;
  * where the layer consists mostly of empty tiles
  */
 public class OrthogonalEmptyTileLayerRenderer implements TileLayerRenderer {
-	private static final int TILE_RENDER_REF_POOL_INITIAL_SIZE = 8192;
+	private static final int TILE_RENDER_REF_POOL_INITIAL_SIZE = 16384;
 	private static final Queue<TileRenderRef> TILE_RENDER_REF_POOL = new Queue<>(TILE_RENDER_REF_POOL_INITIAL_SIZE);
 
 	static {
