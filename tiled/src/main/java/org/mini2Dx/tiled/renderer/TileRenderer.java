@@ -28,17 +28,21 @@ public interface TileRenderer extends GameDataSerializable, Disposable {
 
 	/**
 	 * Updates the {@link Tile} frame
-	 * 
+	 *
+	 * @param tile
+	 * 			  The {@link Tile} to update
 	 * @param delta
 	 *            The time since the last update in seconds
 	 */
-	public void update(float delta);
+	public void update(Tile tile, float delta);
 
 	/**
 	 * Renders the {@link Tile} at the given coordinates
 	 * 
 	 * @param g
 	 *            The {@link Graphics} context to use
+	 * @param tile
+	 * 			  The {@link Tile} to render
 	 * @param renderX
 	 *            The x coordinate to render at
 	 * @param renderY
@@ -46,13 +50,15 @@ public interface TileRenderer extends GameDataSerializable, Disposable {
 	 * @param alpha
 	 * 	          The alpha value to render with
 	 */
-	public void draw(Graphics g, int renderX, int renderY, float alpha);
+	public void draw(Graphics g, Tile tile, int renderX, int renderY, float alpha);
 
 	/**
 	 * Renders the {@link Tile} at the given coordinates
 	 * 
 	 * @param g
 	 *            The {@link Graphics} context to use
+	 * @param tile
+	 * 			  The {@link Tile} to render
 	 * @param renderX
 	 *            The x coordinate to render at
 	 * @param renderY
@@ -66,14 +72,16 @@ public interface TileRenderer extends GameDataSerializable, Disposable {
 	 * @param flipD
 	 *            True if the tile is flipped (anti) diagonally - rotation
 	 */
-	public void draw(Graphics g, int renderX, int renderY, float alpha, boolean flipH, boolean flipV, boolean flipD);
+	public void draw(Graphics g, Tile tile, int renderX, int renderY, float alpha, boolean flipH, boolean flipV, boolean flipD);
 
 	/**
 	 * Returns the current {@link Tile} image
-	 * 
+	 * @param tile
+	 * 			  The {@link Tile} to get the image for
+	 *
 	 * @return The current image
 	 */
-	public Sprite getCurrentTileImage();
+	public Sprite getCurrentTileImage(Tile tile);
 
 
 	public int getRendererType();

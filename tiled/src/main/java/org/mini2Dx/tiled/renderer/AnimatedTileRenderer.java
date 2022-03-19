@@ -18,6 +18,7 @@ package org.mini2Dx.tiled.renderer;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.graphics.Sprite;
+import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.tileset.TilesetSource;
 
 import java.io.DataInputStream;
@@ -70,7 +71,7 @@ public class AnimatedTileRenderer implements TileRenderer {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(Tile tile, float delta) {
 		// Prevent duplicate updates per frame
 		long currentFrameId = Mdx.graphicsContext.getFrameId();
 		if (currentFrameId <= lastFrameId) {
@@ -85,20 +86,20 @@ public class AnimatedTileRenderer implements TileRenderer {
 	}
 
 	@Override
-	public void draw(Graphics g, int renderX, int renderY, float alpha) {
-		Sprite tileImage = getCurrentTileImage();
+	public void draw(Graphics g, Tile tile, int renderX, int renderY, float alpha) {
+		Sprite tileImage = getCurrentTileImage(tile);
 		tileImage.setAlpha(alpha);
 		tileImage.setPosition(renderX, renderY);
 		g.drawSprite(tileImage);
 	}
 
 	@Override
-	public void draw(Graphics g, int renderX, int renderY, float alpha, boolean flipH, boolean flipV, boolean flipD) {
-		StaticTileRenderer.drawTileImage(g, getCurrentTileImage(), renderX, renderY, alpha, flipH, flipV, flipD);
+	public void draw(Graphics g, Tile tile, int renderX, int renderY, float alpha, boolean flipH, boolean flipV, boolean flipD) {
+		StaticTileRenderer.drawTileImage(g, getCurrentTileImage(tile), renderX, renderY, alpha, flipH, flipV, flipD);
 	}
 
 	@Override
-	public Sprite getCurrentTileImage() {
+	public Sprite getCurrentTileImage(Tile tile) {
 		return tilesetSource.getTileImage(frames[currentFrame].tileId);
 	}
 

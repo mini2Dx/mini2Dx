@@ -46,8 +46,6 @@ public class Tile implements GameDataSerializable, Disposable {
 				GameDataSerializableUtils.writeString(properties.get(key, null), outputStream);
 			}
 		}
-
-
 	}
 
 	@Override
@@ -69,21 +67,21 @@ public class Tile implements GameDataSerializable, Disposable {
 		if (tileRenderer == null) {
 			return;
 		}
-		tileRenderer.update(delta);
+		tileRenderer.update(this, delta);
 	}
 	
 	public void draw(Graphics g, int renderX, int renderY, float alpha, boolean flipH, boolean flipV, boolean flipD) {
 		if (tileRenderer == null) {
 			return;
 		}
-		tileRenderer.draw(g, renderX, renderY, alpha, flipH, flipV, flipD);
+		tileRenderer.draw(g, this, renderX, renderY, alpha, flipH, flipV, flipD);
 	}
 
 	public void draw(Graphics g, int renderX, int renderY, float alpha) {
 		if (tileRenderer == null) {
 			return;
 		}
-		tileRenderer.draw(g, renderX, renderY, alpha);
+		tileRenderer.draw(g, this, renderX, renderY, alpha);
 	}
 
 	/**

@@ -298,7 +298,7 @@ public class TiledParser implements TiledParserNotifier {
 				if (tile.getTileRenderer() != null) {
 					continue;
 				}
-				tile.setTileRenderer(new StaticTileRenderer(tilesetSource, tile));
+				tile.setTileRenderer(StaticTileRenderer.create(tilesetSource));
 			}
 		}
 	}

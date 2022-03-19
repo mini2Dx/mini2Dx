@@ -17,6 +17,7 @@ package org.mini2Dx.tiled.renderer;
 
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
+import org.mini2Dx.gdx.utils.ObjectMap;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.tileset.TilesetSource;
 
@@ -31,17 +32,26 @@ import java.util.Objects;
 public class StaticTileRenderer implements TileRenderer {
 	public static final int RENDERER_TYPE = 0;
 
-	private final Tile tile;
+	private static final ObjectMap<TilesetSource, StaticTileRenderer> RENDERERS = new ObjectMap<>();
+
 	private final TilesetSource tilesetSource;
 
-	public StaticTileRenderer(TilesetSource tilesetSource, Tile tile) {
+	private StaticTileRenderer(TilesetSource tilesetSource) {
 		super();
 		this.tilesetSource = tilesetSource;
-		this.tile = tile;
+	}
+
+	public static StaticTileRenderer create(TilesetSource tilesetSource) {
+		synchronized (RENDERERS) {
+			if(!RENDERERS.containsKey(tilesetSource)) {
+				RENDERERS.put(tilesetSource, new StaticTileRenderer(tilesetSource));
+			}
+			return RENDERERS.get(tilesetSource);
+		}
 	}
 
 	public static StaticTileRenderer fromInputStream(TilesetSource tilesetSource, Tile tile) {
-		return new StaticTileRenderer(tilesetSource, tile);
+		return create(tilesetSource);
 	}
 
 	@Override
@@ -53,24 +63,24 @@ public class StaticTileRenderer implements TileRenderer {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(Tile tile, float delta) {
 	}
 
 	@Override
-	public void draw(Graphics g, int renderX, int renderY, float alpha) {
-		Sprite tileImage = getCurrentTileImage();
+	public void draw(Graphics g, Tile tile, int renderX, int renderY, float alpha) {
+		Sprite tileImage = getCurrentTileImage(tile);
 		tileImage.setAlpha(alpha);
 		tileImage.setPosition(renderX, renderY);
 		g.drawSprite(tileImage);
 	}
 	
 	@Override
-	public void draw(Graphics g, int renderX, int renderY, float alpha, boolean flipH, boolean flipV, boolean flipD) {
-		StaticTileRenderer.drawTileImage(g, getCurrentTileImage(), renderX, renderY, alpha, flipH, flipV, flipD);
+	public void draw(Graphics g, Tile tile, int renderX, int renderY, float alpha, boolean flipH, boolean flipV, boolean flipD) {
+		StaticTileRenderer.drawTileImage(g, getCurrentTileImage(tile), renderX, renderY, alpha, flipH, flipV, flipD);
 	}
 
 	@Override
-	public Sprite getCurrentTileImage() {
+	public Sprite getCurrentTileImage(Tile tile) {
 		return tilesetSource.getTileImage(tile.getTileId(0));
 	}
 
