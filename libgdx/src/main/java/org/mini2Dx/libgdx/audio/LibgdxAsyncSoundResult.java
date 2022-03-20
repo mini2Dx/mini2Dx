@@ -45,13 +45,17 @@ public class LibgdxAsyncSoundResult extends AsyncSoundResult {
 
     @Override
     protected Sound makeSound(AsyncResult result) {
-        if(Mdx.platformUtils.isGameThread()) {
+        synchronized (Mdx.audio) {
             try {
                 return (Sound) Gdx.audio.getClass().getMethod("newSound", InputStream.class, String.class).invoke(Gdx.audio, result.getResult(), handle.path());
             } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 return null;
             }
         }
-        return null;
+    }
+
+    @Override
+    protected boolean supportsLoadingAudioOnNonGameThread() {
+        return true;
     }
 }

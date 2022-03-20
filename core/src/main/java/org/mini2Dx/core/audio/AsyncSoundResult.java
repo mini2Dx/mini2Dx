@@ -66,15 +66,21 @@ public abstract class AsyncSoundResult implements AsyncResult<Sound> {
             return s;
         }
         if(Mdx.platformUtils.isGameThread()) {
-            return fallbackToMainThread();
+            Mdx.log.info("WARNING", "Async sound loading not supported on this platform, falling back to loading on main thread...");
+            return loadFromFileHandle();
+        } else if(supportsLoadingAudioOnNonGameThread()) {
+            synchronized (Mdx.audio) {
+                return loadFromFileHandle();
+            }
         }
         if(submittedToMainThread) {
             return null;
         }
+        Mdx.log.info("WARNING", "Async sound loading not supported on this platform, falling back to loading on main thread...");
         Mdx.executor.submit(new FrameSpreadTask() {
             @Override
             public boolean updateTask() {
-                fallbackToMainThread();
+                loadFromFileHandle();
                 return true;
             }
         });
@@ -82,15 +88,20 @@ public abstract class AsyncSoundResult implements AsyncResult<Sound> {
         return null;
     }
 
-    private Sound fallbackToMainThread() {
+    private Sound loadFromFileHandle() {
         try {
-            Mdx.log.info("WARNING", "Async sound loading not supported on this platform, falling back to loading on main thread...");
             cached = Mdx.audio.newSound(handle);
             return cached;
         } catch (IOException e) {
             throw new MdxException("Failed to load sound on game thread: ", e);
         }
     }
+
+    /**
+     * Returns if this platforms supports loading sounds on non-game thread
+     * @return False if not supported
+     */
+    protected abstract boolean supportsLoadingAudioOnNonGameThread();
 
     /**
      * Returns a {@link Callable} which does the I/O required to load the sound.
