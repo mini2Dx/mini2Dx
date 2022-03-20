@@ -36,6 +36,7 @@ import java.util.Objects;
  * Represents an object loaded from a {@link TiledMap}
  */
 public class TiledObject implements GameDataSerializable {
+	public static int DEFAULT_PROPERTY_MAP_SIZE = 16;
 
 	private final int id;
 	private final float x, y, width, height;
@@ -130,7 +131,7 @@ public class TiledObject implements GameDataSerializable {
 
 		final int totalProperties = inputStream.readInt();
 		if(totalProperties > 0) {
-			properties = new ObjectMap<>();
+			properties = new ObjectMap<>(DEFAULT_PROPERTY_MAP_SIZE);
 			for(int i = 0; i < totalProperties; i++) {
 				String key = inputStream.readUTF();
 				String value = GameDataSerializableUtils.readString(inputStream);
@@ -199,7 +200,7 @@ public class TiledObject implements GameDataSerializable {
 	 */
 	public void setProperty(String propertyName, String value) {
 		if(properties == null)
-			properties = new ObjectMap<String, String>(16);
+			properties = new ObjectMap<String, String>(DEFAULT_PROPERTY_MAP_SIZE);
 		properties.put(propertyName, value);
 	}
 
