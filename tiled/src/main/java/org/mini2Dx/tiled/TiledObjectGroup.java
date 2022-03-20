@@ -174,6 +174,7 @@ public class TiledObjectGroup extends Layer {
 
 	@Override
 	public void dispose() {
+		super.dispose();
 		objects.clear();
 
 		synchronized (POOL) {

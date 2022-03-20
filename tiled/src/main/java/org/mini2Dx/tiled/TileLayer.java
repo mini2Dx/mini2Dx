@@ -299,6 +299,8 @@ public class TileLayer extends Layer {
 
 	@Override
 	public void dispose() {
+		super.dispose();
+
 		flipHorizontally.clear();
 		flipVertically.clear();
 		flipDiagonally.clear();

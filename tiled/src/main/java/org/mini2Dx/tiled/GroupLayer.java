@@ -226,6 +226,8 @@ public class GroupLayer extends Layer implements TiledLayerParserListener {
 
 	@Override
 	public void dispose() {
+		super.dispose();
+
 		for(int i = 0; i < layers.size; i++) {
 			layers.get(i).dispose();
 		}

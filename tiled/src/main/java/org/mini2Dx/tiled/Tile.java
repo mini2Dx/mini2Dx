@@ -32,6 +32,8 @@ import java.util.Objects;
  * Represents a tileset tile
  */
 public class Tile implements GameDataSerializable, Disposable {
+	public static int DEFAULT_PROPERTY_MAP_SIZE = 8;
+
 	private static final int INITIAL_POOL_SIZE = 16384;
 	private static final Queue<Tile> POOL = new Queue<>(INITIAL_POOL_SIZE);
 
@@ -78,7 +80,9 @@ public class Tile implements GameDataSerializable, Disposable {
 
 		final int totalProperties = inputStream.readInt();
 		if(totalProperties > 0) {
-			properties = new ObjectMap<>();
+			if(properties == null) {
+				properties = new ObjectMap<>(DEFAULT_PROPERTY_MAP_SIZE);
+			}
 			for(int i = 0; i < totalProperties; i++) {
 				final String key = inputStream.readUTF();
 				final String value = GameDataSerializableUtils.readString(inputStream);
@@ -144,7 +148,7 @@ public class Tile implements GameDataSerializable, Disposable {
 	 */
 	public void setProperty(String propertyName, String value) {
 		if (properties == null)
-			properties = new ObjectMap<String, String>();
+			properties = new ObjectMap<String, String>(DEFAULT_PROPERTY_MAP_SIZE);
 		properties.put(propertyName, value);
 	}
 

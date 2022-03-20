@@ -29,6 +29,8 @@ import java.util.Objects;
  * Base class for {@link TiledMap} layers
  */
 public abstract class Layer implements Disposable, GameDataSerializable {
+	public static int DEFAULT_PROPERTY_MAP_SIZE = 16;
+
 	private final LayerType layerType;
 
 	private String name;
@@ -58,6 +60,13 @@ public abstract class Layer implements Disposable, GameDataSerializable {
 	}
 
 	@Override
+	public void dispose() {
+		if(properties != null) {
+			properties.clear();
+		}
+	}
+
+	@Override
 	public void writeData(DataOutputStream outputStream) throws IOException {
 		outputStream.writeUTF(layerType.name());
 		GameDataSerializableUtils.writeString(name, outputStream);
@@ -81,7 +90,9 @@ public abstract class Layer implements Disposable, GameDataSerializable {
 
 		final int totalProperties = inputStream.readInt();
 		if(totalProperties > 0) {
-			properties = new ObjectMap<>();
+			if(properties == null) {
+				properties = new ObjectMap<>(DEFAULT_PROPERTY_MAP_SIZE);
+			}
 			for(int i = 0; i < totalProperties; i++) {
 				final String key = inputStream.readUTF();
 				final String value = GameDataSerializableUtils.readString(inputStream);
@@ -164,7 +175,7 @@ public abstract class Layer implements Disposable, GameDataSerializable {
 	 */
 	public void setProperty(String propertyName, String value) {
 		if (properties == null)
-			properties = new ObjectMap<String, String>();
+			properties = new ObjectMap<String, String>(DEFAULT_PROPERTY_MAP_SIZE);
 		properties.put(propertyName, value);
 	}
 	
