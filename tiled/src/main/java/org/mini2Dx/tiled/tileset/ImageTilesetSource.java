@@ -468,12 +468,13 @@ public class ImageTilesetSource extends TilesetSource {
 
 	@Override
 	public int hashCode() {
-		int result = Objects.hash(width, height,
-				tileWidth, tileHeight,
-				spacing, margin,
-				name, tilesetImagePath,
-				transparentColorValue);
-		result = 31 * result;
+		int result = width;
+		result = 31 * result + height;
+		result = 31 * result + tileWidth;
+		result = 31 * result + tileHeight;
+		result = 31 * result + spacing;
+		result = 31 * result + margin;
+		result = 31 * result + (tilesetImagePath != null ? tilesetImagePath.hashCode() : 0);
 		return result;
 	}
 
