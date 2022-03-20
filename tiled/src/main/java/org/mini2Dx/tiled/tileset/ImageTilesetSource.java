@@ -463,20 +463,17 @@ public class ImageTilesetSource extends TilesetSource {
 		if (o == null || getClass() != o.getClass()) return false;
 		if (!super.equals(o)) return false;
 		ImageTilesetSource that = (ImageTilesetSource) o;
-		for(int x = 0; x < getWidthInTiles(); x++) {
-			for (int y = 0; y < getHeightInTiles(); y++) {
-				if(!Objects.equals(tiles[x][y], that.tiles[x][y])) {
-					return false;
-				}
-			}
-		}
-		return width == that.width && height == that.height && tileWidth == that.tileWidth && tileHeight == that.tileHeight && spacing == that.spacing && margin == that.margin && Objects.equals(name, that.name) && Objects.equals(tilesetImagePath, that.tilesetImagePath) && Objects.equals(transparentColorValue, that.transparentColorValue) && Objects.equals(properties, that.properties);
+		return Objects.equals(tilesetImagePath, that.tilesetImagePath);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = Objects.hash(width, height, tileWidth, tileHeight, spacing, margin, name, tilesetImagePath, transparentColorValue, properties);
-		result = 31 * result + Arrays.hashCode(tiles);
+		int result = Objects.hash(width, height,
+				tileWidth, tileHeight,
+				spacing, margin,
+				name, tilesetImagePath,
+				transparentColorValue);
+		result = 31 * result;
 		return result;
 	}
 
