@@ -850,4 +850,10 @@ public interface Graphics {
      * @param filter The mag filter to be set.
      */
     public void setMagFilter(TextureFilter filter);
+
+    /**
+     * Returns the {@link GraphicsDriver} which is determined based on the current {@link Platform} and {@link ApiRuntime}
+     * @return The {@link GraphicsDriver} used by this context
+     */
+    public GraphicsDriver getDriver();
 }

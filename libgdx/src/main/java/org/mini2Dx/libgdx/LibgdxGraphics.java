@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import org.mini2Dx.core.Graphics;
+import org.mini2Dx.core.GraphicsDriver;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.font.GameFont;
 import org.mini2Dx.core.font.GameFontCache;
@@ -862,6 +863,11 @@ public class LibgdxGraphics implements Graphics {
 	@Override
 	public void setMagFilter(TextureFilter filter) {
 		spriteBatch.setMagFilter(filter);
+	}
+
+	@Override
+	public GraphicsDriver getDriver() {
+		return GraphicsDriver.OPENGL;
 	}
 
 	@Override
