@@ -20,5 +20,5 @@ package org.mini2Dx.core;
  */
 public enum ApiRuntime {
 	LIBGDX,
-	MONOGAME
+	XNA
 }
