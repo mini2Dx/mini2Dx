@@ -90,6 +90,9 @@ public class StaticTileRenderer implements TileRenderer {
 
 	public static void drawTileImage(Graphics g, Sprite tileImage, int renderX, int renderY,
 	                                 float alpha, boolean flipH, boolean flipV, boolean flipD) {
+		if(tileImage == null) {
+			return;
+		}
 		boolean previousFlipX = tileImage.isFlipX();
 		boolean previousFlipY = tileImage.isFlipY();
 
