@@ -36,6 +36,6 @@ public enum EventTrigger {
 		case Input.Buttons.MIDDLE:
 			return EventTrigger.MIDDLE_MOUSE_CLICK;
 		}
-		return null;
+		return LEFT_MOUSE_CLICK;
 	}
 }
