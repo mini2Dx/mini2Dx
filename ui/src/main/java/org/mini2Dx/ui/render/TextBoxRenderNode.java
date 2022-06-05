@@ -372,7 +372,7 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule> imp
 			element.setValue(element.getValue().substring(1));
 			break;
 		default:
-			if (cursor == element.getValue().length() - 1) {
+			if (cursor >= element.getValue().length()) {
 				element.setValue(element.getValue().substring(0, element.getValue().length() - 1));
 			} else {
 				element.setValue(element.getValue().substring(0, cursor - 1) + element.getValue().substring(cursor));
