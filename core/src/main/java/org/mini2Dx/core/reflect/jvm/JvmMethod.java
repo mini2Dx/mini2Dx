@@ -19,7 +19,6 @@ import org.mini2Dx.core.collections.concurrent.ConcurrentObjectSet;
 import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.reflect.Annotation;
 import org.mini2Dx.core.reflect.Method;
-import org.mini2Dx.gdx.utils.ObjectMap;
 import org.mini2Dx.gdx.utils.ObjectSet;
 
 import java.lang.reflect.InvocationTargetException;
@@ -32,6 +31,10 @@ public class JvmMethod implements Method {
 	private final java.lang.reflect.Method method;
 	private final ObjectSet<Class> annotationsPresent = new ConcurrentObjectSet<>(4);
 	private final ObjectSet<Class> annotationsNotPresent = new ConcurrentObjectSet<>(4);
+
+	private Class[] parameterTypes = null;
+	private Class returnType = null;
+	private Annotation[] declaredAnnotations = null;
 
 	public JvmMethod(java.lang.reflect.Method method) {
 		try {
@@ -73,14 +76,17 @@ public class JvmMethod implements Method {
 
 	@Override
 	public Annotation[] getDeclaredAnnotations() {
-		final java.lang.annotation.Annotation[] annotations = method.getDeclaredAnnotations();
-		final Annotation[] result = new Annotation[annotations.length];
-		if (annotations != null) {
-			for (int i = 0; i < annotations.length; i++) {
-				result[i] = new JvmAnnotation(annotations[i]);
+		if(declaredAnnotations == null) {
+			final java.lang.annotation.Annotation[] annotations = method.getDeclaredAnnotations();
+			final Annotation[] result = new Annotation[annotations.length];
+			if (annotations != null) {
+				for (int i = 0; i < annotations.length; i++) {
+					result[i] = new JvmAnnotation(annotations[i]);
+				}
 			}
+			declaredAnnotations = result;
 		}
-		return result;
+		return declaredAnnotations;
 	}
 
 	@Override
@@ -99,12 +105,18 @@ public class JvmMethod implements Method {
 
 	@Override
 	public Class getReturnType() {
-		return method.getReturnType();
+		if(returnType == null) {
+			returnType = method.getReturnType();
+		}
+		return returnType;
 	}
 
 	@Override
 	public Class[] getParameterTypes() {
-		return method.getParameterTypes();
+		if(parameterTypes == null) {
+			parameterTypes = method.getParameterTypes();
+		}
+		return parameterTypes;
 	}
 
 	@Override

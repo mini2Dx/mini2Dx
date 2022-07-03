@@ -26,6 +26,9 @@ import java.lang.reflect.InvocationTargetException;
 public class JvmConstructor implements Constructor {
 	public final java.lang.reflect.Constructor constructor;
 
+	private Class [] parameterTypes = null;
+	private Annotation[][] parameterAnnotations = null;
+
 	public JvmConstructor(java.lang.reflect.Constructor constructor) {
 		try {
 			constructor.setAccessible(true);
@@ -40,20 +43,26 @@ public class JvmConstructor implements Constructor {
 
 	@Override
 	public Class[] getParameterTypes() {
-		return constructor.getParameterTypes();
+		if(parameterTypes == null) {
+			parameterTypes = constructor.getParameterTypes();
+		}
+		return parameterTypes;
 	}
 
 	@Override
 	public Annotation[][] getParameterAnnotations() {
-		final java.lang.annotation.Annotation [][] annotations = constructor.getParameterAnnotations();
-		final Annotation [][] result = new Annotation[annotations.length][];
-		for(int i = 0; i < annotations.length; i++) {
-			result[i] = new Annotation[annotations[i].length];
-			for(int j = 0; j < annotations[i].length; j++) {
-				result[i][j] = new JvmAnnotation(annotations[i][j]);
+		if(parameterAnnotations == null) {
+			final java.lang.annotation.Annotation [][] annotations = constructor.getParameterAnnotations();
+			final Annotation [][] result = new Annotation[annotations.length][];
+			for(int i = 0; i < annotations.length; i++) {
+				result[i] = new Annotation[annotations[i].length];
+				for(int j = 0; j < annotations[i].length; j++) {
+					result[i][j] = new JvmAnnotation(annotations[i][j]);
+				}
 			}
+			parameterAnnotations = result;
 		}
-		return result;
+		return parameterAnnotations;
 	}
 
 	@Override
