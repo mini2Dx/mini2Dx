@@ -526,6 +526,9 @@ project(":" + rootProject.name + "-uats") {
 	apply plugin: "java"
 	apply plugin: "org.mini2Dx.mgcb"
 
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+
 	task copyUatResources(type: Copy) {
 		from '../uats/src/main/resources', '../tiled/src/test/resources', '../ui/src/main/resources'
 		into '../uats-libgdx-desktop/assets'
@@ -695,6 +698,9 @@ project(":" + rootProject.name + "-uats-libgdx-desktop-lwjgl2") {
 	apply plugin: "java"
 	apply plugin: "application"
 
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+
 	dependencies {
 		compile project(":" + rootProject.name + "-uats")
 		compile project(":" + rootProject.name + "-libgdx-desktop-lwjgl2")
@@ -707,6 +713,9 @@ project(":" + rootProject.name + "-uats-libgdx-desktop-lwjgl3") {
 
 	apply plugin: "java"
 	apply plugin: "application"
+
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
 
 	dependencies {
 		compile project(":" + rootProject.name + "-uats")
