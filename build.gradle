@@ -100,6 +100,13 @@ configure(docProjects()) {
 	if(project.name.contains("android")) {
 		apply plugin: "com.android.library"
 
+		java {
+			disableAutoTargetJvm()
+		}
+
+		sourceCompatibility = 11
+		targetCompatibility = 11
+
 		task javadoc(type: Javadoc) {
 			failOnError = false
 			options.encoding = 'UTF-8'
@@ -602,6 +609,7 @@ project(":" + rootProject.name + "-uats") {
 
 if (hasAndroidSdk()){
 	project(":" + rootProject.name + "-uats-libgdx-android") {
+
 		description = "mini2Dx Android UATs launcher"
 
 		apply plugin: "com.android.application"
