@@ -219,7 +219,7 @@ public class ConcurrentLruIntMap<T> extends LruIntMap<T> implements ConcurrentCo
     }
 
     /**
-     * Returns the key for the specified value, or <tt>notFound</tt> if it is not in the map. Note this traverses the entire map
+     * Returns the key for the specified value, or <code>notFound</code> if it is not in the map. Note this traverses the entire map
      * and compares every value, which may be an expensive operation.
      *
      * @param value
