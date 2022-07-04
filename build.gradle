@@ -164,10 +164,6 @@ configure(docProjects()) {
 			testOutput.extendsFrom (testCompile)
 		}
 
-		java {
-			disableAutoTargetJvm()
-		}
-
 		javadoc {
 			options.encoding = 'UTF-8'
 		}
