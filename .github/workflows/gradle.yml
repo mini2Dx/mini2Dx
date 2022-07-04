@@ -23,6 +23,8 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v2.24.0
       with:
         api-level: 31
+        arch: x86_64
+        target: google_apis or playstore
         script: |
           ln -s ${ANDROID_HOME}/build-tools/31.0.0/d8 ${ANDROID_HOME}/build-tools/31.0.0/dx
           ln -s ${ANDROID_HOME}/build-tools/31.0.0/lib/d8.jar ${ANDROID_HOME}/build-tools/31.0.0/lib/dx.jar
