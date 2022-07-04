@@ -99,9 +99,9 @@ configure(docProjects()) {
 
 	if(project.name.contains("android")) {
 		apply plugin: "com.android.library"
-		
-		sourceCompatibility = 11
-		targetCompatibility = 11
+
+		sourceCompatibility = 1.8
+		targetCompatibility = 1.8
 
 		task javadoc(type: Javadoc) {
 			failOnError = false
@@ -617,8 +617,8 @@ if (hasAndroidSdk()){
 
 		apply plugin: "com.android.application"
 
-		sourceCompatibility = 11
-		targetCompatibility = 11
+		sourceCompatibility = 1.8
+		targetCompatibility = 1.8
 
 		ext {
 			appName = 'mini2Dx-uats'
