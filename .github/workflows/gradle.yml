@@ -25,6 +25,7 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v2.24.0
       with:
         api-level: 31
+        ndk: 23.2.8568313
         arch: x86_64
         target: google_apis
         script: |
