@@ -28,17 +28,19 @@ public class AndroidPlatformUtils extends LibgdxPlatformUtils {
 
     @Override
     public void enablePerformanceMode() {
-        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            android.app.GameManager gameManager = Context.getSystemService(android.app.GameManager.class);
-            gameManager.setGameMode(new android.app.GameState(true, android.app.GameState.MODE_UNKNOWN));
-        }
+        //TODO: Add when API 33 is release
+//        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            android.app.GameManager gameManager = Context.getSystemService(android.app.GameManager.class);
+//            gameManager.setGameMode(new android.app.GameState(true, android.app.GameState.MODE_UNKNOWN));
+//        }
     }
 
     @Override
     public void cancelPerformanceMode() {
-        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            android.app.GameManager gameManager = Context.getSystemService(android.app.GameManager.class);
-            gameManager.setGameMode(new android.app.GameState(false, android.app.GameState.MODE_UNKNOWN));
-        }
+        //TODO: Add when API 33 is release
+//        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            android.app.GameManager gameManager = Context.getSystemService(android.app.GameManager.class);
+//            gameManager.setGameMode(new android.app.GameState(false, android.app.GameState.MODE_UNKNOWN));
+//        }
     }
 }
