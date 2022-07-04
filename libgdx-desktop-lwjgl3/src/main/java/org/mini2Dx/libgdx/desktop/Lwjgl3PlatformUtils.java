@@ -24,4 +24,14 @@ public class Lwjgl3PlatformUtils extends LibgdxPlatformUtils {
 	public boolean isGameThread() {
 		return Thread.currentThread().getId() == GAME_THREAD_ID;
 	}
+
+	@Override
+	public void enablePerformanceMode() {
+		//NOOP on PC
+	}
+
+	@Override
+	public void cancelPerformanceMode() {
+		//NOOP on PC
+	}
 }

@@ -90,6 +90,18 @@ public abstract class PlatformUtils {
     public abstract boolean isGameThread();
 
     /**
+     * Enables performance mode on the device. Depending on the device, this may be disabled by the OS at any time.
+     * This is best used to temporarily boost performance during asset loading. On devices where this is not supported, this does nothing.
+     */
+    public abstract void enablePerformanceMode();
+
+    /**
+     * Cancels performance mode on the device. If performance mode was already cancelled by the OS, this does nothing.
+     * On devices where this is not supported, this does nothing.
+     */
+    public abstract void cancelPerformanceMode();
+
+    /**
      * Internal usage only: marks the beginning of update operations
      */
     public void markUpdateBegin() {

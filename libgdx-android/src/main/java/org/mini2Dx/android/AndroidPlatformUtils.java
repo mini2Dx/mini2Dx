@@ -15,11 +15,30 @@
  ******************************************************************************/
 package org.mini2Dx.android;
 
+import android.content.Context;
+import android.os.Build;
 import org.mini2Dx.libgdx.LibgdxPlatformUtils;
 
 public class AndroidPlatformUtils extends LibgdxPlatformUtils {
+
     @Override
     public boolean isGameThread() {
         return Thread.currentThread().getName().startsWith("GLThread");
+    }
+
+    @Override
+    public void enablePerformanceMode() {
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            android.app.GameManager gameManager = Context.getSystemService(android.app.GameManager.class);
+            gameManager.setGameMode(new android.app.GameState(true, android.app.GameState.MODE_UNKNOWN));
+        }
+    }
+
+    @Override
+    public void cancelPerformanceMode() {
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            android.app.GameManager gameManager = Context.getSystemService(android.app.GameManager.class);
+            gameManager.setGameMode(new android.app.GameState(false, android.app.GameState.MODE_UNKNOWN));
+        }
     }
 }

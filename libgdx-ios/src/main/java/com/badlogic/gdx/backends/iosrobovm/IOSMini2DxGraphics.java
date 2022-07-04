@@ -342,6 +342,8 @@ public class IOSMini2DxGraphics extends NSObject implements Graphics, GLKViewDel
 
 	@Override
 	public void draw (GLKView view, CGRect rect) {
+		org.mini2Dx.ios.IOSPlatformUtils.GAME_THREAD_ID = Thread.currentThread().getId();
+
 		makeCurrent();
 		// massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
 		// stores the last known viewport and we reset it here...

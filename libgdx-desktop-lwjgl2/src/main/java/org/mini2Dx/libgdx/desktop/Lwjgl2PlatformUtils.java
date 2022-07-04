@@ -35,4 +35,14 @@ public class Lwjgl2PlatformUtils extends LibgdxPlatformUtils {
 			throw new RuntimeException(e);
 		}
 	}
+
+	@Override
+	public void enablePerformanceMode() {
+		//NOOP on PC
+	}
+
+	@Override
+	public void cancelPerformanceMode() {
+		//NOOP on PC
+	}
 }

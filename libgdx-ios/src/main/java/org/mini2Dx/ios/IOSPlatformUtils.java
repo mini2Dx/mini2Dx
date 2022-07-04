@@ -18,6 +18,8 @@ package org.mini2Dx.ios;
 import org.mini2Dx.libgdx.LibgdxPlatformUtils;
 
 public class IOSPlatformUtils extends LibgdxPlatformUtils {
+    public static long GAME_THREAD_ID = -1;
+
     @Override
     public void exit(boolean ignorePlatformRestrictions) {
         if (ignorePlatformRestrictions) {
@@ -26,6 +28,16 @@ public class IOSPlatformUtils extends LibgdxPlatformUtils {
     }
     @Override
     public boolean isGameThread() {
-        return true;
+        return Thread.currentThread().getId() == GAME_THREAD_ID;
+    }
+
+    @Override
+    public void enablePerformanceMode() {
+        //TODO: Is this possible in iOS?
+    }
+
+    @Override
+    public void cancelPerformanceMode() {
+        //TODO: Is this possible in iOS?
     }
 }
