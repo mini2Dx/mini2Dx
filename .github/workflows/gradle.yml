@@ -22,7 +22,7 @@ jobs:
 
     - uses: nttld/setup-ndk@v1.0.6
       with:
-        ndk-version: r31
+        ndk-version: r23c
     - name: Build with Gradle
       uses: reactivecircus/android-emulator-runner@v2
       with:
