@@ -42,6 +42,14 @@ public class SharedParserTiledMapTest {
 			public boolean isGameThread() {
 				return false;
 			}
+
+			@Override
+			public void enablePerformanceMode() {
+			}
+
+			@Override
+			public void cancelPerformanceMode() {
+			}
 		};
 
 		TiledParser parser = new TiledParser();

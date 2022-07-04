@@ -36,6 +36,14 @@ public class TiledObjectTemplateTest {
 			public boolean isGameThread() {
 				return false;
 			}
+
+			@Override
+			public void enablePerformanceMode() {
+			}
+
+			@Override
+			public void cancelPerformanceMode() {
+			}
 		};
 
 		FileHandle file = Mdx.files.internal(Thread.currentThread().getContextClassLoader()
