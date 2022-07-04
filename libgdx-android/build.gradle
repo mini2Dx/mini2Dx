@@ -1,8 +1,8 @@
 android {
     ndkVersion "22.1.7171670"
-    compileSdkVersion 21
+    compileSdkVersion 31
 	defaultConfig {
-		minSdkVersion 21
+		minSdkVersion 31
 	}
     sourceSets {
         main {

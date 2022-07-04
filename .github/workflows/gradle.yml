@@ -22,11 +22,11 @@ jobs:
 
     - uses: nttld/setup-ndk@v1
       with:
-        ndk-version: r22
+        ndk-version: r31
     - name: Build with Gradle
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 21
+        api-level: 31
         emulator-build: 7425822
         script: |
           ln -s ${ANDROID_HOME}/build-tools/31.0.0/d8 ${ANDROID_HOME}/build-tools/31.0.0/dx
