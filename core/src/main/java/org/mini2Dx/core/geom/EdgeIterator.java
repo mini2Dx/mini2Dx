@@ -43,8 +43,8 @@ public abstract class EdgeIterator {
         if(!begun) {
             throw new MdxException("Cannot call end() without first calling begin()");
         }
-        endIteration();
         begun = false;
+        endIteration();
     }
 
     /**
