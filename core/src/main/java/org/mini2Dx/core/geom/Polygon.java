@@ -219,6 +219,10 @@ public class Polygon extends Shape {
 
 		checkSidesCache();
 		if (isRectangle) {
+			//TODO: Fast check 90 degree angle with bit tricks
+			if(MathUtils.isZero(rotation)) {
+				return true;
+			}
 			return triangleContains(x, y, vertices[0], vertices[1], vertices[2], vertices[3], vertices[6], vertices[7])
 					|| triangleContains(x, y, vertices[6], vertices[7], vertices[2], vertices[3], vertices[4],
 							vertices[5]);
@@ -254,29 +258,16 @@ public class Polygon extends Shape {
 	public boolean contains(Polygon polygon) {
 		checkSidesCache();
 		if(isRectangle && MathUtils.round(rotation) % 90 == 0) {
-			if(polygon.getMaxX() < getX()) {
+			if(polygon.getX() < getX()) {
 				return false;
 			}
-			if(polygon.getMaxY() < getY()) {
-				return false;
-			}
-			if(polygon.getX() > getMaxX()) {
-				return false;
-			}
-			if(polygon.getY() > getMaxY()) {
-				return false;
-			}
-
-			if(polygon.getMaxX() > getMaxX()) {
+			if(polygon.getY() < getY()) {
 				return false;
 			}
 			if(polygon.getMaxY() > getMaxY()) {
 				return false;
 			}
-			if(polygon.getX() < getX()) {
-				return false;
-			}
-			if(polygon.getY() < getY()) {
+			if(polygon.getMaxX() > getMaxX()) {
 				return false;
 			}
 			return true;
@@ -322,9 +313,10 @@ public class Polygon extends Shape {
 		if (polygon.maxY < minY)
 			return false;
 
+		//TODO: Fast check 90 degree angle with bit tricks
 		if (isRectangle && polygon.isRectangle &&
-				MathUtils.round(rotation) % 90 == 0 &&
-				MathUtils.round(polygon.rotation) % 90 == 0) {
+				MathUtils.isZero(rotation) &&
+				MathUtils.isZero(polygon.rotation)) {
 			return true;
 		}
 
@@ -881,6 +873,7 @@ public class Polygon extends Shape {
 			centroid.y = (vertices[1] + vertices[3] + vertices[5]) / 3f;
 			break;
 		case 4:
+			//TODO: Fast check 90 degree angle with bit tricks
 			if(MathUtils.isZero(rotation)) {
 				centroid.x = getX() + (getWidth() * 0.5f);
 				centroid.y = getY() + (getHeight() * 0.5f);

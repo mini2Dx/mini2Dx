@@ -274,6 +274,9 @@ public class RectangleTest {
 		Assert.assertTrue(rectangle1.intersects(new LineSegment(31f, 31f, 32f, 32f)));
 		Assert.assertTrue(rectangle1.intersects(new LineSegment(33f, 33f, 32f, 32f)));
 		Assert.assertTrue(rectangle1.intersects(new LineSegment(32f, 32f, 33f, 33f)));
+
+		Assert.assertTrue(rectangle1.intersects(new LineSegment(-16f, 16f, 48f, 16f)));
+		Assert.assertTrue(rectangle1.intersects(new LineSegment(16f, -16f, 16f, 48f)));
 	}
 
 	@Test
