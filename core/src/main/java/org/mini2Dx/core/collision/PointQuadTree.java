@@ -514,6 +514,14 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	}
 
 	protected void addElementsWithinArea(Array<T> result, Shape area) {
+		addElementsWithinArea(result, area, false);
+	}
+
+	protected void addElementsWithinArea(Array<T> result, Shape area, boolean allElements) {
+		if(allElements) {
+			result.addAll(elements);
+			return;
+		}
 		for (int i = elements.size - 1; i >= 0; i--) {
 			T element = elements.get(i);
 			if (element != null && area.contains(element.getX(), element.getY())) {
@@ -524,38 +532,62 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 
 	@Override
 	public void getElementsWithinArea(Array<T> result, Shape area) {
+		getElementsWithinArea(result, area, false);
+	}
+
+	public void getElementsWithinArea(Array<T> result, Shape area, boolean allElements) {
+		if(allElements) {
+			if (topLeft != null) {
+				topLeft.getElementsWithinArea(result, area, true);
+				topRight.getElementsWithinArea(result, area, true);
+				bottomLeft.getElementsWithinArea(result, area, true);
+				bottomRight.getElementsWithinArea(result, area, true);
+			} else {
+				addElementsWithinArea(result, area, true);
+			}
+			return;
+		}
+
 		if (topLeft != null) {
 			boolean quadContains = false;
 			if(topLeft.isSearchRequired()) {
-				if (topLeft.contains(area)) {
-					topLeft.getElementsWithinArea(result, area);
+				if (area.contains(topLeft)) {
+					topLeft.getElementsWithinArea(result, area, true);
+				} else if (topLeft.contains(area)) {
+					topLeft.getElementsWithinArea(result, area, false);
 					quadContains = true;
 				} else if (topLeft.intersects(area)) {
-					topLeft.getElementsWithinArea(result, area);
+					topLeft.getElementsWithinArea(result, area, false);
 				}
 			}
 			if(!quadContains && topRight.isSearchRequired()) {
-				if (topRight.contains(area)) {
-					topRight.getElementsWithinArea(result, area);
+				if (area.contains(topRight)) {
+					topRight.getElementsWithinArea(result, area, true);
+				} else if (topRight.contains(area)) {
+					topRight.getElementsWithinArea(result, area, false);
 					quadContains = true;
 				} else if (topRight.intersects(area)) {
-					topRight.getElementsWithinArea(result, area);
+					topRight.getElementsWithinArea(result, area, false);
 				}
 			}
 			if(!quadContains && bottomLeft.isSearchRequired()) {
-				if (bottomLeft.contains(area)) {
-					bottomLeft.getElementsWithinArea(result, area);
+				if (area.contains(bottomLeft)) {
+					bottomLeft.getElementsWithinArea(result, area, true);
+				} else if (bottomLeft.contains(area)) {
+					bottomLeft.getElementsWithinArea(result, area, false);
 					quadContains = true;
 				} else if (bottomLeft.intersects(area)) {
-					bottomLeft.getElementsWithinArea(result, area);
+					bottomLeft.getElementsWithinArea(result, area, false);
 				}
 			}
 			if(!quadContains && bottomRight.isSearchRequired()) {
-				if(bottomRight.contains(area)) {
-					bottomRight.getElementsWithinArea(result, area);
+				if (area.contains(bottomRight)) {
+					bottomRight.getElementsWithinArea(result, area, true);
+				} else if(bottomRight.contains(area)) {
+					bottomRight.getElementsWithinArea(result, area, false);
 					quadContains = true;
 				} else if(bottomRight.intersects(area)) {
-					bottomRight.getElementsWithinArea(result, area);
+					bottomRight.getElementsWithinArea(result, area, false);
 				}
 			}
 		} else {
