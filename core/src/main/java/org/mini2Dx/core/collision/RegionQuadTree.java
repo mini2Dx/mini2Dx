@@ -459,40 +459,44 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 		}
 
 		if(childNodeCrossed || firstInvocation) {
-			if (parent.topLeft != this && parent.topLeft.isSearchRequired()) {
-				if(area.contains(parent.topLeft)) {
-					parent.topLeft.getElementsWithinArea(result, area, true);
-					nodeCrossed = true;
-				} else if(area.intersects(parent.topLeft)) {
-					parent.topLeft.getElementsWithinArea(result, area, false);
-					nodeCrossed = true;
+			boolean contained = false;
+			if (!this.contains(area)) {
+				//Scan sibling nodes if intersecting this element
+				if (parent.topLeft != this && parent.topLeft.isSearchRequired()) {
+					if(area.contains(parent.topLeft)) {
+						parent.topLeft.getElementsWithinArea(result, area, true);
+						nodeCrossed = true;
+					} else if(area.intersects(parent.topLeft)) {
+						parent.topLeft.getElementsWithinArea(result, area, false);
+						nodeCrossed = true;
+					}
 				}
-			}
-			if (parent.topRight != this && parent.topRight.isSearchRequired()) {
-				if(area.contains(parent.topRight)) {
-					parent.topRight.getElementsWithinArea(result, area, true);
-					nodeCrossed = true;
-				} else if(area.intersects(parent.topRight)) {
-					parent.topRight.getElementsWithinArea(result, area, false);
-					nodeCrossed = true;
+				if (parent.topRight != this && parent.topRight.isSearchRequired()) {
+					if(area.contains(parent.topRight)) {
+						parent.topRight.getElementsWithinArea(result, area, true);
+						nodeCrossed = true;
+					} else if(area.intersects(parent.topRight)) {
+						parent.topRight.getElementsWithinArea(result, area, false);
+						nodeCrossed = true;
+					}
 				}
-			}
-			if (parent.bottomLeft != this && parent.bottomLeft.isSearchRequired()) {
-				if(area.contains(parent.bottomLeft)) {
-					parent.bottomLeft.getElementsWithinArea(result, area, true);
-					nodeCrossed = true;
-				} else if(area.intersects(parent.bottomLeft)) {
-					parent.bottomLeft.getElementsWithinArea(result, area, false);
-					nodeCrossed = true;
+				if (parent.bottomLeft != this && parent.bottomLeft.isSearchRequired()) {
+					if(area.contains(parent.bottomLeft)) {
+						parent.bottomLeft.getElementsWithinArea(result, area, true);
+						nodeCrossed = true;
+					} else if(area.intersects(parent.bottomLeft)) {
+						parent.bottomLeft.getElementsWithinArea(result, area, false);
+						nodeCrossed = true;
+					}
 				}
-			}
-			if (parent.bottomRight != this && parent.bottomRight.isSearchRequired()) {
-				if(area.contains(parent.bottomRight)) {
-					parent.bottomRight.getElementsWithinArea(result, area, true);
-					nodeCrossed = true;
-				} else if(area.intersects(parent.bottomRight)) {
-					parent.bottomRight.getElementsWithinArea(result, area, false);
-					nodeCrossed = true;
+				if (parent.bottomRight != this && parent.bottomRight.isSearchRequired()) {
+					if(area.contains(parent.bottomRight)) {
+						parent.bottomRight.getElementsWithinArea(result, area, true);
+						nodeCrossed = true;
+					} else if(area.intersects(parent.bottomRight)) {
+						parent.bottomRight.getElementsWithinArea(result, area, false);
+						nodeCrossed = true;
+					}
 				}
 			}
 		}
