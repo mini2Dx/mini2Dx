@@ -1,6 +1,6 @@
 android {
     ndkVersion "23.2.8568313"
-    compileSdkVersion 31
+    compileSdkVersion 30
     defaultConfig {
         testApplicationId "org.mini2Dx.uats.android.test"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
