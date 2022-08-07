@@ -104,8 +104,8 @@ public class FastXYSorter<T extends Comparable<T>> {
      * @param obj The object to be added
      */
     public void add(int gridX, int gridY, T obj) {
-        final int targetX = MathUtils.clamp(gridX - originX, 0, width);
-        final int targetY = MathUtils.clamp(gridY - originY, 0, height);
+        final int targetX = MathUtils.clamp(gridX - originX, 0, width - 1);
+        final int targetY = MathUtils.clamp(gridY - originY, 0, height - 1);
         final int index = (targetY * width) + targetX;
         buckets[index].add(obj);
         bitSet.set(index);
@@ -139,5 +139,21 @@ public class FastXYSorter<T extends Comparable<T>> {
             cursor = bitSet.nextSetBit(cursor);
         }
         return null;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getOriginX() {
+        return originX;
+    }
+
+    public int getOriginY() {
+        return originY;
     }
 }
