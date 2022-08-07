@@ -240,6 +240,8 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 				break;
 			}
 		}
+
+		onEndParsing();
 	}
 
 	public Array<AssetDescriptor> getDependencies() {
@@ -418,6 +420,61 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 			this.pixelHeight = height * tileHeight;
 			break;
 		}
+	}
+
+	@Override
+	public void onEndParsing() {
+		if(!TiledMap.OPTIMISE_ANIMATED_TILES) {
+			return;
+		}
+		if(animatedTiles == null) {
+			return;
+		}
+		for(int i = animatedTiles.size - 1; i >= 0; i--) {
+			final Tile animatedTile = animatedTiles.get(i);
+			if(animatedTile == null) {
+				continue;
+			}
+			if(isTileUsed(animatedTile.getTileId(0))) {
+				continue;
+			}
+			animatedTiles.removeIndex(i);
+		}
+	}
+
+	/**
+	 * Returns if the provided tile ID is used in the map data
+	 * @param tileId The tile ID to search for
+	 * @return True if used, otherwise false
+	 */
+	public boolean isTileUsed(int tileId) {
+		return isTileUsed(tileId, layers);
+	}
+
+	private boolean isTileUsed(int tileId, Array<Layer> layers) {
+		for(int layerIndex = 0; layerIndex < layers.size; layerIndex++) {
+			final Layer layer = layers.get(layerIndex);
+			switch (layer.getLayerType()) {
+			case GROUP:
+				final GroupLayer groupLayer = (GroupLayer) layer;
+				if(isTileUsed(tileId, groupLayer.getLayers())) {
+					return true;
+				}
+				continue;
+			case TILE:
+				break;
+			case OBJECT:
+			case IMAGE:
+			default:
+				continue;
+			}
+
+			final TileLayer tileLayer = (TileLayer) layer;
+			if(tileLayer.isTileUsed(tileId)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

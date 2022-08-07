@@ -25,6 +25,8 @@ public interface TiledParserListener extends TiledLayerParserListener {
 	public void onBeginParsing(String orientation, String staggerAxis, String staggerIndex, Color backgroundColor,
 			int width, int height, int tileWidth, int tileHeight, int sideLength);
 
+	public void onEndParsing();
+
 	public void onMapPropertyParsed(String propertyName, String value);
 
 	public void onTilePropertiesParsed(Tile tile);

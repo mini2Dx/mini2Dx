@@ -32,6 +32,8 @@ public interface TiledParserNotifier {
 	public void notifyBeginParsing(String orientation, String staggerAxis, String staggerIndex, Color backgroundColor,
 			int width, int height, int tileWidth, int tileHeight, int sideLength);
 
+	public void notifyEndParsing();
+
 	public void notifyMapPropertyParsed(String propertyName, String value);
 
 	public void notifyTilePropertyParsed(Tile tile);

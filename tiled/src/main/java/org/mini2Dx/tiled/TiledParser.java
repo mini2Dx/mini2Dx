@@ -661,6 +661,14 @@ public class TiledParser implements TiledParserNotifier {
 	}
 
 	@Override
+	public void notifyEndParsing() {
+		if (listener == null) {
+			return;
+		}
+		listener.onEndParsing();
+	}
+
+	@Override
 	public void notifyMapPropertyParsed(String propertyName, String value) {
 		if (listener == null) {
 			return;
