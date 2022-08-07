@@ -459,7 +459,6 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 		}
 
 		if(childNodeCrossed || firstInvocation) {
-			boolean contained = false;
 			if (!this.contains(area)) {
 				//Scan sibling nodes if intersecting this element
 				if (parent.topLeft != this && parent.topLeft.isSearchRequired()) {
