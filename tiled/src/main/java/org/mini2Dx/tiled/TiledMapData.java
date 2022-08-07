@@ -472,7 +472,7 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 		}
 		if (tile.getTileRenderer() instanceof AnimatedTileRenderer) {
 			if (animatedTiles == null) {
-				animatedTiles = new Array<Tile>(true,1, Tile.class);
+				animatedTiles = new Array<Tile>(true,8, Tile.class);
 			}
 			animatedTiles.add(tile);
 		}
