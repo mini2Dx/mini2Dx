@@ -21,6 +21,7 @@ import org.mini2Dx.core.audio.*;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.libgdx.audio.LibgdxAsyncSoundResult;
+import org.mini2Dx.libgdx.audio.LibgdxExtAudio;
 import org.mini2Dx.libgdx.audio.LibgdxMusic;
 import org.mini2Dx.libgdx.audio.LibgdxSound;
 import org.mini2Dx.libgdx.files.LibgdxFileHandle;
@@ -43,9 +44,14 @@ public class LibgdxAudio implements Audio {
 	}
 
 	@Override
-	public Music newMusic(FileHandle fileHandle) throws IOException {
+	public Music newMusic(FileHandle fileHandle, boolean loadIntoMemory) throws IOException {
 		final LibgdxFileHandle gdxFileHandle = (LibgdxFileHandle) fileHandle;
-		return new LibgdxMusic(this, Gdx.audio.newMusic(gdxFileHandle.fileHandle));
+		return new LibgdxMusic(this, ((LibgdxExtAudio) Gdx.audio).newMusic(gdxFileHandle.fileHandle, loadIntoMemory));
+	}
+
+	@Override
+	public Music newMusic(byte[] bytes, String format) throws IOException {
+		return new LibgdxMusic(this, ((LibgdxExtAudio) Gdx.audio).newMusic(bytes, format));
 	}
 
 	@Override

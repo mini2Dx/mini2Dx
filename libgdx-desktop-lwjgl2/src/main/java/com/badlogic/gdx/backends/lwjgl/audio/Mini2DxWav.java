@@ -19,10 +19,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
-import java.io.EOFException;
-import java.io.FilterInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * Modified version of {@link Wav} to support sound completion events
@@ -39,9 +36,21 @@ public class Mini2DxWav extends Wav {
 			setup(input.channels, input.sampleRate);
 		}
 
+		public Music (Mini2DxOpenALAudio audio, byte [] bytes) {
+			super(audio, bytes);
+			input = new WavInputStream(new ByteArrayInputStream(bytes), "byte[]");
+			if (audio.noDevice) return;
+			setup(input.channels, input.sampleRate);
+		}
+
 		public int read (byte[] buffer) {
 			if (input == null) {
-				input = new WavInputStream(file);
+				if(file != null) {
+					input = new WavInputStream(file);
+				} else {
+					input = new WavInputStream(new ByteArrayInputStream(bytes), "byte[]");
+				}
+
 				setup(input.channels, input.sampleRate);
 			}
 			try {

@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl3.audio;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.StreamUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
@@ -37,9 +38,21 @@ public class Mini2DxOgg extends Ogg {
 			setup(input.getChannels(), input.getSampleRate());
 		}
 
+		public Music (Mini2DxOpenALAudio audio, byte [] bytes) {
+			super(audio, bytes);
+			if (audio.noDevice) return;
+			input = new OggInputStream(new ByteArrayInputStream(bytes));
+			setup(input.getChannels(), input.getSampleRate());
+		}
+
 		public int read (byte[] buffer) {
 			if (input == null) {
-				input = new OggInputStream(file.read(), previousInput);
+				if(file != null) {
+					input = new OggInputStream(file.read(), previousInput);
+				} else {
+					input = new OggInputStream(new ByteArrayInputStream(buffer), previousInput);
+				}
+
 				setup(input.getChannels(), input.getSampleRate());
 				previousInput = null; // release this reference
 			}

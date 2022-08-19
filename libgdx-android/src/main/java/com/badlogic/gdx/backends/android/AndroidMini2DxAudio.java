@@ -18,10 +18,7 @@ package com.badlogic.gdx.backends.android;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.SoundPool;
+import android.media.*;
 import android.os.Build;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.audio.AudioDevice;
@@ -33,6 +30,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.LongArray;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.libgdx.LibgdxAudio;
+import org.mini2Dx.libgdx.audio.LibgdxExtAudio;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +39,7 @@ import java.util.List;
 /**
  * Modified version of AndroidAudio to support sound completion events
  */
-public class AndroidMini2DxAudio implements com.badlogic.gdx.backends.android.AndroidAudio {
+public class AndroidMini2DxAudio implements com.badlogic.gdx.backends.android.AndroidAudio, LibgdxExtAudio {
     private final SoundPool soundPool;
     private final AudioManager manager;
     private final LongArray recentSoundIds = new LongArray();
@@ -217,6 +215,30 @@ public class AndroidMini2DxAudio implements com.badlogic.gdx.backends.android.An
             } catch (Exception ex) {
                 throw new GdxRuntimeException("Error loading audio file: " + file, ex);
             }
+        }
+    }
+
+    @Override
+    public Music newMusic(FileHandle file, boolean loadIntoMemory) {
+        if(!loadIntoMemory) {
+            return newMusic(file);
+        }
+        return newMusic(file.readBytes(), file.extension());
+    }
+
+    @Override
+    public Music newMusic(byte[] bytes, String format) {
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(new ByteArrayMediaSource(bytes));
+            mediaPlayer.prepare();
+            AndroidMini2DxMusic music = new AndroidMini2DxMusic(this, mediaPlayer);
+            synchronized (musics) {
+                musics.add(music);
+            }
+            return music;
+        } catch (Exception ex) {
+            throw new GdxRuntimeException("Error loading audio byte[]: " + format, ex);
         }
     }
 }

@@ -67,7 +67,43 @@ public interface Audio {
 	 * @return The new {@link Music} instance
 	 * @throws IOException Thrown when the music could not be loaded
 	 */
-	public Music newMusic(FileHandle fileHandle) throws IOException;
+	public default Music newMusic(FileHandle fileHandle) throws IOException {
+		return newMusic(fileHandle, false);
+	}
+
+	/**
+	 * <p>
+	 * Creates a new {@link Music} instance used to play back an audio stream.
+	 * Music instances are automatically paused when the application is paused and resumed when the application is resumed.
+	 * </p>
+	 *
+	 * <p>Currently supported formats are WAV, MP3 and OGG.</p>
+	 *
+	 * <p>When the {@link Music} instance is no longer needed, call the {@link Music#dispose()} method</p>
+	 *
+	 * @param fileHandle The {@link FileHandle} to stream the audio from
+	 * @param loadIntoMemory True if the file should be read into memory and streamed from memory. False, if streamed for disk.
+	 * @return The new {@link Music} instance
+	 * @throws IOException Thrown when the music could not be loaded
+	 */
+	public Music newMusic(FileHandle fileHandle, boolean loadIntoMemory) throws IOException;
+
+	/**
+	 * <p>
+	 * Creates a new {@link Music} instance used to play back an audio stream.
+	 * Music instances are automatically paused when the application is paused and resumed when the application is resumed.
+	 * </p>
+	 *
+	 * <p>Currently supported formats are WAV, MP3 and OGG.</p>
+	 *
+	 * <p>When the {@link Music} instance is no longer needed, call the {@link Music#dispose()} method</p>
+	 *
+	 * @param bytes The byte array to stream the audio from
+	 * @param format "ogg", "mp3" or "wav"
+	 * @return The new {@link Music} instance
+	 * @throws IOException Thrown when the music could not be loaded
+	 */
+	public Music newMusic(byte [] bytes, String format) throws IOException;
 
 	/**
 	 * Adds a {@link MusicCompletionListener}

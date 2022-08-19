@@ -19,6 +19,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import javazoom.jl.decoder.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
@@ -51,11 +52,34 @@ public class Mini2DxMp3 extends Mp3 {
 			}
 		}
 
+		public Music (Mini2DxOpenALAudio audio, byte [] bytes) {
+			super(audio, bytes);
+			if (audio.noDevice) return;
+			bitstream = new Bitstream(new ByteArrayInputStream(bytes));
+			decoder = new MP3Decoder();
+			bufferOverhead = 4096;
+			try {
+				Header header = bitstream.readFrame();
+				if (header == null) throw new GdxRuntimeException("Empty MP3");
+				int channels = header.mode() == Header.SINGLE_CHANNEL ? 1 : 2;
+				outputBuffer = new OutputBuffer(channels, false);
+				decoder.setOutputBuffer(outputBuffer);
+				setup(channels, header.getSampleRate());
+			} catch (BitstreamException e) {
+				throw new GdxRuntimeException("error while preloading mp3", e);
+			}
+		}
+
 		public int read (byte[] buffer) {
 			try {
 				boolean setup = bitstream == null;
 				if (setup) {
-					bitstream = new Bitstream(file.read());
+					if(file != null) {
+						bitstream = new Bitstream(file.read());
+					} else {
+						bitstream = new Bitstream(new ByteArrayInputStream(bytes));
+					}
+
 					decoder = new MP3Decoder();
 				}
 

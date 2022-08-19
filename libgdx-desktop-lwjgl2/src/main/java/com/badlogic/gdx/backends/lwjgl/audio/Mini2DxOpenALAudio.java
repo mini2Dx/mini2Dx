@@ -15,9 +15,9 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.lwjgl.audio;
 
-import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.*;
@@ -28,6 +28,7 @@ import org.lwjgl.openal.AL10;
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.audio.Sound;
 import org.mini2Dx.libgdx.LibgdxAudio;
+import org.mini2Dx.libgdx.audio.LibgdxExtAudio;
 import org.mini2Dx.libgdx.audio.LibgdxSound;
 
 import java.io.InputStream;
@@ -38,7 +39,7 @@ import static org.lwjgl.openal.AL10.*;
 /**
  * Modified version of OpenALAudio to support sound completion events
  */
-public class Mini2DxOpenALAudio implements Audio {
+public class Mini2DxOpenALAudio implements LibgdxExtAudio {
 	private final int deviceBufferSize;
 	private final int deviceBufferCount;
 	private IntArray idleSources, allSources;
@@ -149,17 +150,43 @@ public class Mini2DxOpenALAudio implements Audio {
 		}
 	}
 
-	public Mini2DxOpenALMusic newMusic(FileHandle file) {
+	@Override
+	public Music newMusic(FileHandle file) {
+		return newMusic(file, false);
+	}
+
+	@Override
+	public Music newMusic(FileHandle file, boolean loadIntoMemory) {
 		if (file == null)
 			throw new IllegalArgumentException("file cannot be null.");
 		Class<? extends Mini2DxOpenALMusic> musicClass = extensionToMusicClass.get(file.extension().toLowerCase());
 		if (musicClass == null)
 			throw new GdxRuntimeException("Unknown file extension for music: " + file);
 		try {
-			return musicClass.getConstructor(new Class[] { Mini2DxOpenALAudio.class, FileHandle.class }).newInstance(this,
-					file);
+			if(loadIntoMemory) {
+				return musicClass.getConstructor(new Class[] { Mini2DxOpenALAudio.class, byte[].class }).newInstance(this,
+						file.readBytes());
+			} else {
+				return musicClass.getConstructor(new Class[] { Mini2DxOpenALAudio.class, FileHandle.class }).newInstance(this,
+						file);
+			}
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error creating music " + musicClass.getName() + " for file: " + file, ex);
+		}
+	}
+
+	@Override
+	public Music newMusic(byte[] bytes, String format) {
+		if (bytes == null)
+			throw new IllegalArgumentException("bytes cannot be null.");
+		Class<? extends Mini2DxOpenALMusic> musicClass = extensionToMusicClass.get(format.toLowerCase());
+		if (musicClass == null)
+			throw new GdxRuntimeException("Unknown file extension for byte[]: " + format);
+		try {
+			return musicClass.getConstructor(new Class[] { Mini2DxOpenALAudio.class, byte[].class }).newInstance(this,
+					bytes);
+		} catch (Exception ex) {
+			throw new GdxRuntimeException("Error creating music " + musicClass.getName() + " for byte[]: " + format, ex);
 		}
 	}
 

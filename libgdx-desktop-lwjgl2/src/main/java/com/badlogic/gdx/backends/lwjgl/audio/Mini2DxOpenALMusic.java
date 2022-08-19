@@ -52,6 +52,7 @@ public abstract class Mini2DxOpenALMusic implements Music {
 	private float renderedSeconds, maxSecondsPerBuffer;
 
 	protected final FileHandle file;
+	protected final byte [] bytes;
 	protected int bufferOverhead = 0;
 
 	private OnCompletionListener onCompletionListener;
@@ -59,6 +60,14 @@ public abstract class Mini2DxOpenALMusic implements Music {
 	public Mini2DxOpenALMusic (Mini2DxOpenALAudio audio, FileHandle file) {
 		this.audio = audio;
 		this.file = file;
+		this.bytes = null;
+		this.onCompletionListener = null;
+	}
+
+	public Mini2DxOpenALMusic (Mini2DxOpenALAudio audio, byte [] bytes) {
+		this.audio = audio;
+		this.bytes = bytes;
+		this.file = null;
 		this.onCompletionListener = null;
 	}
 
