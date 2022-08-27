@@ -479,6 +479,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		element.removePositionChangeListener(this);
 
 		if (parent == null) {
+			QuadTreeAwareUtils.removeQuadTreeRef(element);
 			return result;
 		}
 		if (result){
@@ -905,6 +906,13 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			totalElementsCache = elements.size;
 		}
 		return totalElementsCache;
+	}
+
+	public int getTotalImmediateElements() {
+		if(elements == null) {
+			return 0;
+		}
+		return elements.size;
 	}
 
 	protected void clearTotalElementsCache() {
