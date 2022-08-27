@@ -156,7 +156,7 @@ public class RegionQuadTreeTest {
 		
 		rootQuad.add(new CollisionBox(48, 48, 32, 32));
 		Assert.assertEquals(6, rootQuad.getElements().size);
-		Assert.assertEquals(4, rootQuad.getTotalQuads());
+		Assert.assertEquals(7, rootQuad.getTotalQuads());
 		
 		rootQuad.add(new CollisionBox(12, 48, 8, 8));
 		Assert.assertEquals(7, rootQuad.getElements().size);
@@ -349,8 +349,13 @@ public class RegionQuadTreeTest {
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox5, false));
 
 		collisionBoxs = qABox1.getQuad().getElementsWithinAreaIgnoringEdges(new CollisionBox(12, 40, 48, 8), QuadTreeSearchDirection.UPWARDS);
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(collisionBox6, false));
+		Assert.assertEquals(0, collisionBoxs.size);
+
+		collisionBoxs = qABox1.getQuad().getElementsWithinAreaIgnoringEdges(new CollisionBox(12, 40, 49, 8), QuadTreeSearchDirection.UPWARDS);
+		Assert.assertEquals(0, collisionBoxs.size);
+
+		collisionBoxs = qABox1.getQuad().getElementsWithinAreaIgnoringEdges(new CollisionBox(12, 40, 50, 10), QuadTreeSearchDirection.UPWARDS);
+		Assert.assertEquals(2, collisionBoxs.size);
 	}
 	
 	@Test
