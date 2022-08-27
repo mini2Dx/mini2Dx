@@ -29,7 +29,7 @@ import org.mini2Dx.gdx.utils.Queue;
  *      Wikipedia: Point Quad Tree</a>
  */
 public class PointQuadTree<T extends Positionable> extends Rectangle implements QuadTree<T> {
-	public static final float DEFAULT_MINIMUM_QUAD_SIZE = 8f;
+	public static float DEFAULT_MINIMUM_QUAD_SIZE = 8f;
 	public static Color QUAD_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(1f, 0f, 0f, 0.5f) : null;
 	public static Color ELEMENT_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(0f, 0f, 1f, 0.5f) : null;
 

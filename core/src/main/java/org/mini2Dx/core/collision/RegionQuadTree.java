@@ -416,7 +416,7 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 		}
 	}
 
-	private void getElementsWithinAreaUpwards(Array<T> result, Shape area, boolean firstInvocation, boolean childNodeCrossed) {
+	protected void getElementsWithinAreaUpwards(Array<T> result, Shape area, boolean firstInvocation, boolean childNodeCrossed) {
 		if (elements != null) {
 			addElementsWithinArea(result, area);
 		}
@@ -560,7 +560,7 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 		}
 	}
 
-	private void getElementsWithinAreaIgnoringEdgesUpwards(Array<T> result, Shape area, boolean firstInvocation) {
+	protected void getElementsWithinAreaIgnoringEdgesUpwards(Array<T> result, Shape area, boolean firstInvocation) {
 		if (elements != null) {
 			addElementsWithinArea(result, area);
 		}
@@ -747,7 +747,7 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 		}
 	}
 
-	private void getElementsContainingPointUpwards(Array<T> result, Point point, boolean firstInvocation) {
+	protected void getElementsContainingPointUpwards(Array<T> result, Point point, boolean firstInvocation) {
 		if (elements != null){
 			addElementsContainingPoint(result, point);
 		}
@@ -824,7 +824,7 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 		}
 	}
 
-	private void addElementsIntersectingLineSegmentUpwards(Array<T> result, LineSegment lineSegment, boolean firstInvocation) {
+	protected void addElementsIntersectingLineSegmentUpwards(Array<T> result, LineSegment lineSegment, boolean firstInvocation) {
 		if (elements != null) {
 			addElementsIntersectingLineSegment(result, lineSegment);
 		}
