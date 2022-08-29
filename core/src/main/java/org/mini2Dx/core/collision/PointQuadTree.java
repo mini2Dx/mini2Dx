@@ -509,7 +509,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		if (topLeft != null) {
 			return removeElementFromChild(element);
 		}
-		return removeElement(element);
+		return removeElement(element, true);
 	}
 
 	public void clear() {
@@ -539,6 +539,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			elements.clear();
 		}
 		clearTotalElementsCache();
+		elementsRemoved = true;
 	}
 
 	protected boolean removeElementFromChild(T element) {
@@ -553,16 +554,22 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		return false;
 	}
 
-	protected boolean removeElement(T element) {
+	protected boolean removeElement(T element, boolean clearQuadRef) {
 		boolean result = elements.removeValue(element, false);
 		element.removePositionChangeListener(this);
-
+		
 		if (parent == null) {
 			QuadTreeAwareUtils.removeQuadTreeRef(element);
 			return result;
 		}
+
 		if (result){
-			QuadTreeAwareUtils.removeQuadTreeRef(element);
+			if(clearQuadRef) {
+				QuadTreeAwareUtils.removeQuadTreeRef(element);
+			}
+			if (parent == null) {
+				return true;
+			}
 			if (parent.isMergable()){
 				parent.merge();
 			}
@@ -1012,7 +1019,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		if (this.contains(moved.getX(), moved.getY()))
 			return;
 
-		removeElement(moved);
+		removeElement(moved, true);
 
 		QuadTree<T> parentQuad = parent;
 		while (parentQuad != null) {

@@ -97,7 +97,7 @@ public class GridRegionQuadTreeSmallCell<T extends Sizeable> extends RegionQuadT
 		if (this.contains(moved))
 			return;
 
-		removeElement(moved);
+		removeElement(moved, true);
 
 		QuadTree<T> parentQuad = this.parent;
 		while (parentQuad != null) {
