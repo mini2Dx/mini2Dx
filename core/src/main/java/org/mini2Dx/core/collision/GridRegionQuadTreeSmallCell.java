@@ -69,7 +69,7 @@ public class GridRegionQuadTreeSmallCell<T extends Sizeable> extends RegionQuadT
 			}
 		}
 
-		parent.getElementsWithinAreaUpwards(result, area, false, nodeCrossed);
+		//parent.getElementsWithinAreaUpwards(result, area, false, nodeCrossed);
 	}
 
 	@Override

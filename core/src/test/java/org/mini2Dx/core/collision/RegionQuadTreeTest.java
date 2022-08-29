@@ -156,7 +156,7 @@ public class RegionQuadTreeTest {
 		
 		rootQuad.add(new CollisionBox(48, 48, 32, 32));
 		Assert.assertEquals(6, rootQuad.getElements().size);
-		Assert.assertEquals(4, rootQuad.getTotalQuads());
+		Assert.assertEquals(7, rootQuad.getTotalQuads());
 		
 		rootQuad.add(new CollisionBox(12, 48, 8, 8));
 		Assert.assertEquals(7, rootQuad.getElements().size);

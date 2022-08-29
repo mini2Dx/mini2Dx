@@ -23,6 +23,7 @@ import org.mini2Dx.core.collision.util.QuadTreeAwareCollisionPoint;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.util.InterpolationTracker;
+import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.lockprovider.jvm.JvmLocks;
 
@@ -58,21 +59,49 @@ public class PointQuadTreeTest {
 	@Test
 	public void testAdd() {
 		Random random = new Random();
+		float minX = 1000f;
+		float minY = 1000f;
+		float maxX = -1000f;
+		float maxY = -1000f;
+
 		for(int i = 0; i < 100; i++) {
-			rootQuad.add(new CollisionPoint(random.nextInt(128), random.nextInt(128)));
+			final CollisionPoint point = new CollisionPoint(random.nextInt(128), random.nextInt(128));
+			minX = Math.min(point.getX(), minX);
+			minY = Math.min(point.getY(), minY);
+			maxX = Math.max(point.getX(), maxX);
+			maxY = Math.max(point.getY(), maxY);
+			rootQuad.add(point);
 			Assert.assertEquals(i + 1, rootQuad.getElements().size);
 		}
+
+		Assert.assertEquals(minX, rootQuad.elementsBounds.getX(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(minY, rootQuad.elementsBounds.getY(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(maxX, rootQuad.elementsBounds.getMaxX(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(maxY, rootQuad.elementsBounds.getMaxY(), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 	
 	@Test
 	public void testAddAll() {
 		Random random = new Random();
 		Array<CollisionPoint> points = new Array<CollisionPoint>();
+		float minX = 1000f;
+		float minY = 1000f;
+		float maxX = -1000f;
+		float maxY = -1000f;
 		for(int i = 0; i < 100; i++) {
-			points.add(new CollisionPoint(random.nextInt(128), random.nextInt(128)));
+			final CollisionPoint point = new CollisionPoint(random.nextInt(128), random.nextInt(128));
+			minX = Math.min(point.getX(), minX);
+			minY = Math.min(point.getY(), minY);
+			maxX = Math.max(point.getX(), maxX);
+			maxY = Math.max(point.getY(), maxY);
+			points.add(point);
 		}
 		rootQuad.addAll(points);
 		Assert.assertEquals(points.size, rootQuad.getTotalElements());
+		Assert.assertEquals(minX, rootQuad.elementsBounds.getX(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(minY, rootQuad.elementsBounds.getY(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(maxX, rootQuad.elementsBounds.getMaxX(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(maxY, rootQuad.elementsBounds.getMaxY(), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 	
 	@Test

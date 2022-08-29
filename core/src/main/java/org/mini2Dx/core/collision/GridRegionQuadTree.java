@@ -126,8 +126,8 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 				final float cellWorldY = y + (gy * smallGridCellHeight);
 
 				final int largeGridIndex = getLargeGridIndex(cellWorldX, cellWorldY);
-				smallGrid[index] = new GridRegionQuadTreeSmallCell(largeGrid[largeGridIndex],
-						elementLimitPerQuad, cellWorldX, cellWorldY, smallGridCellWidth, smallGridCellHeight);
+//				smallGrid[index] = new GridRegionQuadTreeSmallCell(largeGrid[largeGridIndex],
+//						elementLimitPerQuad, cellWorldX, cellWorldY, smallGridCellWidth, smallGridCellHeight);
 			}
 		}
 	}
