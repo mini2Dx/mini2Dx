@@ -197,7 +197,28 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			boundsUpdated = true;
 		}
 		if(boundsUpdated) {
-			elementsBounds.set(getCenterX() - 1f, getCenterY() - 1f, 2f, 2f);
+			float minX = topLeft.elementsBounds.getX();
+			float minY = topLeft.elementsBounds.getY();
+			float maxX = topLeft.elementsBounds.getMaxX();
+			float maxY = topLeft.elementsBounds.getMaxY();
+
+			minX = Math.min(minX, topRight.elementsBounds.getMinX());
+			minX = Math.min(minX, bottomLeft.elementsBounds.getMinX());
+			minX = Math.min(minX, bottomRight.elementsBounds.getMinX());
+
+			minY = Math.min(minY, topRight.elementsBounds.getMinY());
+			minY = Math.min(minY, bottomLeft.elementsBounds.getMinY());
+			minY = Math.min(minY, bottomRight.elementsBounds.getMinY());
+
+			maxX = Math.max(maxX, topRight.elementsBounds.getMaxX());
+			maxX = Math.max(maxX, bottomLeft.elementsBounds.getMaxX());
+			maxX = Math.max(maxX, bottomRight.elementsBounds.getMaxX());
+
+			maxY = Math.max(maxY, topRight.elementsBounds.getMaxY());
+			maxY = Math.max(maxY, bottomLeft.elementsBounds.getMaxY());
+			maxY = Math.max(maxY, bottomRight.elementsBounds.getMaxY());
+
+			elementsBounds.set(minX, minY, maxX - minX, maxY - minY);
 		}
 		return boundsUpdated;
 	}
@@ -433,43 +454,38 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 		}
 
 		if (topLeft != null) {
-			boolean quadContains = false;
 			if(topLeft.isSearchRequired()) {
 				if (area.contains(topLeft.elementsBounds)) {
 					topLeft.getElementsWithinArea(result, area, true);
 				} else if (topLeft.elementsBounds.contains(area)) {
 					topLeft.getElementsWithinArea(result, area, false);
-					quadContains = true;
 				} else if (topLeft.elementsBounds.intersects(area)) {
 					topLeft.getElementsWithinArea(result, area, false);
 				}
 			}
-			if(!quadContains && topRight.isSearchRequired()) {
+			if(topRight.isSearchRequired()) {
 				if (area.contains(topRight.elementsBounds)) {
 					topRight.getElementsWithinArea(result, area, true);
 				} else if (topRight.elementsBounds.contains(area)) {
 					topRight.getElementsWithinArea(result, area, false);
-					quadContains = true;
 				} else if (topRight.elementsBounds.intersects(area)) {
 					topRight.getElementsWithinArea(result, area, false);
 				}
 			}
-			if(!quadContains && bottomLeft.isSearchRequired()) {
+			if(bottomLeft.isSearchRequired()) {
 				if (area.contains(bottomLeft.elementsBounds)) {
 					bottomLeft.getElementsWithinArea(result, area, true);
 				} else if (bottomLeft.elementsBounds.contains(area)) {
 					bottomLeft.getElementsWithinArea(result, area, false);
-					quadContains = true;
 				} else if (bottomLeft.elementsBounds.intersects(area)) {
 					bottomLeft.getElementsWithinArea(result, area, false);
 				}
 			}
-			if(!quadContains && bottomRight.isSearchRequired()) {
+			if(bottomRight.isSearchRequired()) {
 				if (area.contains(bottomRight.elementsBounds)) {
 					bottomRight.getElementsWithinArea(result, area, true);
 				} else if(bottomRight.elementsBounds.contains(area)) {
 					bottomRight.getElementsWithinArea(result, area, false);
-					quadContains = true;
 				} else if(bottomRight.elementsBounds.intersects(area)) {
 					bottomRight.getElementsWithinArea(result, area, false);
 				}
@@ -594,46 +610,41 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 	@Override
 	public void getElementsWithinAreaIgnoringEdges(Array<T> result, Shape area) {
 		if (topLeft != null) {
-			boolean containedInQuad = false;
 			if (topLeft.isSearchRequired()) {
 				if(area.contains(topLeft.elementsBounds)) {
 					topLeft.getElementsWithinAreaIgnoringEdges(result, area);
 				} else if(topLeft.elementsBounds.contains(area)) {
 					topLeft.getElementsWithinAreaIgnoringEdges(result, area);
-					containedInQuad = true;
 				} else if(topLeft.elementsBounds.intersectsIgnoringEdges(area)) {
 					topLeft.getElementsWithinAreaIgnoringEdges(result, area);
 				}
 			}
 
-			if (!containedInQuad && topRight.isSearchRequired()) {
+			if (topRight.isSearchRequired()) {
 				if(area.contains(topRight.elementsBounds)) {
 					topRight.getElementsWithinAreaIgnoringEdges(result, area);
 				} else if(topRight.elementsBounds.contains(area)) {
 					topRight.getElementsWithinAreaIgnoringEdges(result, area);
-					containedInQuad = true;
 				} else if(topRight.elementsBounds.intersectsIgnoringEdges(area)) {
 					topRight.getElementsWithinAreaIgnoringEdges(result, area);
 				}
 			}
 
-			if (!containedInQuad && bottomLeft.isSearchRequired()) {
+			if (bottomLeft.isSearchRequired()) {
 				if(area.contains(bottomLeft.elementsBounds)) {
 					bottomLeft.getElementsWithinAreaIgnoringEdges(result, area);
 				} else if(bottomLeft.elementsBounds.contains(area)) {
 					bottomLeft.getElementsWithinAreaIgnoringEdges(result, area);
-					containedInQuad = true;
 				} else if(bottomLeft.elementsBounds.intersectsIgnoringEdges(area)) {
 					bottomLeft.getElementsWithinAreaIgnoringEdges(result, area);
 				}
 			}
 
-			if (!containedInQuad && bottomRight.isSearchRequired()) {
+			if (bottomRight.isSearchRequired()) {
 				if(area.contains(bottomRight.elementsBounds)) {
 					bottomRight.getElementsWithinAreaIgnoringEdges(result, area);
 				} else if(bottomRight.elementsBounds.contains(area)) {
 					bottomRight.getElementsWithinAreaIgnoringEdges(result, area);
-					containedInQuad = true;
 				} else if(bottomRight.elementsBounds.intersectsIgnoringEdges(area)) {
 					bottomRight.getElementsWithinAreaIgnoringEdges(result, area);
 				}

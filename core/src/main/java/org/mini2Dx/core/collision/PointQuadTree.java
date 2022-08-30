@@ -338,7 +338,28 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			boundsUpdated = true;
 		}
 		if(boundsUpdated) {
-			elementsBounds.set(getCenterX() - 1f, getCenterY() - 1f, 2f, 2f);
+			float minX = topLeft.elementsBounds.getX();
+			float minY = topLeft.elementsBounds.getY();
+			float maxX = topLeft.elementsBounds.getMaxX();
+			float maxY = topLeft.elementsBounds.getMaxY();
+
+			minX = Math.min(minX, topRight.elementsBounds.getMinX());
+			minX = Math.min(minX, bottomLeft.elementsBounds.getMinX());
+			minX = Math.min(minX, bottomRight.elementsBounds.getMinX());
+
+			minY = Math.min(minY, topRight.elementsBounds.getMinY());
+			minY = Math.min(minY, bottomLeft.elementsBounds.getMinY());
+			minY = Math.min(minY, bottomRight.elementsBounds.getMinY());
+
+			maxX = Math.max(maxX, topRight.elementsBounds.getMaxX());
+			maxX = Math.max(maxX, bottomLeft.elementsBounds.getMaxX());
+			maxX = Math.max(maxX, bottomRight.elementsBounds.getMaxX());
+
+			maxY = Math.max(maxY, topRight.elementsBounds.getMaxY());
+			maxY = Math.max(maxY, bottomLeft.elementsBounds.getMaxY());
+			maxY = Math.max(maxY, bottomRight.elementsBounds.getMaxY());
+
+			elementsBounds.set(minX, minY, maxX - minX, maxY - minY);
 		}
 		return boundsUpdated;
 	}
