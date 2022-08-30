@@ -32,7 +32,7 @@ public class GridRegionQuadTreeCell<T extends Sizeable> extends RegionQuadTree<T
 
 	@Override
 	public void positionChanged(T moved) {
-		if (this.contains(moved))
+		if (this.contains(moved.getCenterX(), moved.getCenterY()))
 			return;
 
 		removeElement(moved, true);

@@ -121,9 +121,9 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 			pool.ensureCapacity(poolSize);
 		}
 		for(int i = 0; i < poolSize; i++) {
-			RegionQuadTree<T> regionQuadTree = new RegionQuadTree<T>(null, 0, 0, 1, 1);
-			regionQuadTree.elements = new Array<>(expectedElementsPerQuad);
-			pool.addLast(regionQuadTree);
+//			RegionQuadTree<T> regionQuadTree = new RegionQuadTree<T>(null, 0, 0, 1, 1);
+//			regionQuadTree.elements = new Array<>(expectedElementsPerQuad);
+//			pool.addLast(regionQuadTree);
 		}
 	}
 
@@ -131,6 +131,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 		int cursor = 0;
 		while(cursor > -1 && cursor < grid.length) {
 			grid[cursor].cleanup();
+			dirtyCells.clear(cursor);
 			cursor = dirtyCells.nextSetBit(cursor);
 		}
 	}
@@ -185,10 +186,10 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 	@Override
 	public void getElementsWithinArea(Array<T> result, Shape area) {
 		//Check +1 in all axis in case of bounds overlap
-		final int minX = MathUtils.floor(area.getX() * invCellWidth) - 1;
-		final int minY = MathUtils.floor(area.getY() * invCellHeight) - 1;
-		final int maxX = MathUtils.floor(area.getMaxX() * invCellWidth) + 1;
-		final int maxY = MathUtils.floor(area.getMaxY() * invCellHeight) + 1;
+		final int minX = MathUtils.floor(area.getX() * invCellWidth) - gridWorldX - 1;
+		final int minY = MathUtils.floor(area.getY() * invCellHeight) - gridWorldY - 1;
+		final int maxX = MathUtils.floor(area.getMaxX() * invCellWidth) - gridWorldX + 1;
+		final int maxY = MathUtils.floor(area.getMaxY() * invCellHeight) - gridWorldY + 1;
 
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
