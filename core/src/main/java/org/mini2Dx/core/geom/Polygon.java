@@ -257,7 +257,7 @@ public class Polygon extends Shape {
 
 	public boolean contains(Polygon polygon) {
 		checkSidesCache();
-		if(isRectangle && MathUtils.round(rotation) % 90 == 0) {
+		if(isRectangle && MathUtils.isZero(rotation)) {
 			if(polygon.getX() < getX()) {
 				return false;
 			}
@@ -342,8 +342,8 @@ public class Polygon extends Shape {
 		polygon.checkSidesCache();
 
 		if (isRectangle && polygon.isRectangle &&
-				MathUtils.round(rotation) % 90 == 0 &&
-				MathUtils.round(polygon.rotation) % 90 == 0) {
+				MathUtils.isZero(rotation) &&
+				MathUtils.isZero(polygon.rotation)) {
 			boolean xAxisOverlaps = true;
 			boolean yAxisOverlaps = true;
 
