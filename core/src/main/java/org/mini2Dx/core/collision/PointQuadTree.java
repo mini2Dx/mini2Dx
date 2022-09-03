@@ -295,6 +295,14 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		elementsBounds.set(getX() + (getWidth() * 0.5f) - 1f, getY() + (getHeight() * 0.5f) - 1f, 2f, 2f);
 	}
 
+	protected void disposeBounds() {
+		if(elementsBounds == null) {
+			return;
+		}
+		elementsBounds.dispose();
+		elementsBounds = null;
+	}
+
 	protected boolean updateBounds(T element) {
 		initBounds();
 		float minX = Math.min(element.getX(), elementsBounds.getX());
@@ -311,12 +319,9 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 				return false;
 			}
 			if(elements.size == 0) {
-				if(elementsBounds != null) {
-					elementsBounds.dispose();
-					elementsBounds = null;
-				}
+				disposeBounds();
 				elementsRemoved = false;
-				return false;
+				return true;
 			}
 
 			initBounds();
@@ -356,37 +361,71 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			boundsUpdated = true;
 		}
 		if(boundsUpdated) {
-			initBounds();
-			float minX = topLeft.elementsBounds.getX();
-			float minY = topLeft.elementsBounds.getY();
-			float maxX = topLeft.elementsBounds.getMaxX();
-			float maxY = topLeft.elementsBounds.getMaxY();
+			if(topLeft.isSearchRequired() || topRight.isSearchRequired() ||
+					bottomLeft.isSearchRequired() || bottomRight.isSearchRequired()) {
+				initBounds();
+				float minX;
+				float minY;
+				float maxX;
+				float maxY;
 
-			minX = Math.min(minX, topRight.elementsBounds.getMinX());
-			minX = Math.min(minX, bottomLeft.elementsBounds.getMinX());
-			minX = Math.min(minX, bottomRight.elementsBounds.getMinX());
+				if(topLeft.isSearchRequired()) {
+					minX = topLeft.elementsBounds.getX();
+					minY = topLeft.elementsBounds.getY();
+					maxX = topLeft.elementsBounds.getMaxX();
+					maxY = topLeft.elementsBounds.getMaxY();
+				} else if(topRight.isSearchRequired()) {
+					minX = topRight.elementsBounds.getX();
+					minY = topRight.elementsBounds.getY();
+					maxX = topRight.elementsBounds.getMaxX();
+					maxY = topRight.elementsBounds.getMaxY();
+				} else if(bottomLeft.isSearchRequired()) {
+					minX = bottomLeft.elementsBounds.getX();
+					minY = bottomLeft.elementsBounds.getY();
+					maxX = bottomLeft.elementsBounds.getMaxX();
+					maxY = bottomLeft.elementsBounds.getMaxY();
+				} else {
+					minX = bottomRight.elementsBounds.getX();
+					minY = bottomRight.elementsBounds.getY();
+					maxX = bottomRight.elementsBounds.getMaxX();
+					maxY = bottomRight.elementsBounds.getMaxY();
+				}
 
-			minY = Math.min(minY, topRight.elementsBounds.getMinY());
-			minY = Math.min(minY, bottomLeft.elementsBounds.getMinY());
-			minY = Math.min(minY, bottomRight.elementsBounds.getMinY());
+				if(topLeft.isSearchRequired()) {
+					minX = Math.min(minX, topLeft.elementsBounds.getMinX());
+					minY = Math.min(minY, topLeft.elementsBounds.getMinY());
+					maxX = Math.max(maxX, topLeft.elementsBounds.getMaxX());
+					maxY = Math.max(maxY, topLeft.elementsBounds.getMaxY());
+				}
+				if(topRight.isSearchRequired()) {
+					minX = Math.min(minX, topRight.elementsBounds.getMinX());
+					minY = Math.min(minY, topRight.elementsBounds.getMinY());
+					maxX = Math.max(maxX, topRight.elementsBounds.getMaxX());
+					maxY = Math.max(maxY, topRight.elementsBounds.getMaxY());
+				}
+				if(bottomLeft.isSearchRequired()) {
+					minX = Math.min(minX, bottomLeft.elementsBounds.getMinX());
+					minY = Math.min(minY, bottomLeft.elementsBounds.getMinY());
+					maxX = Math.max(maxX, bottomLeft.elementsBounds.getMaxX());
+					maxY = Math.max(maxY, bottomLeft.elementsBounds.getMaxY());
+				}
+				if(bottomRight.isSearchRequired()) {
+					minX = Math.min(minX, bottomRight.elementsBounds.getMinX());
+					minY = Math.min(minY, bottomRight.elementsBounds.getMinY());
+					maxX = Math.max(maxX, bottomRight.elementsBounds.getMaxX());
+					maxY = Math.max(maxY, bottomRight.elementsBounds.getMaxY());
+				}
 
-			maxX = Math.max(maxX, topRight.elementsBounds.getMaxX());
-			maxX = Math.max(maxX, bottomLeft.elementsBounds.getMaxX());
-			maxX = Math.max(maxX, bottomRight.elementsBounds.getMaxX());
-
-			maxY = Math.max(maxY, topRight.elementsBounds.getMaxY());
-			maxY = Math.max(maxY, bottomLeft.elementsBounds.getMaxY());
-			maxY = Math.max(maxY, bottomRight.elementsBounds.getMaxY());
-
-			elementsBounds.set(minX, minY, maxX - minX, maxY - minY);
+				elementsBounds.set(minX, minY, maxX - minX, maxY - minY);
+			} else {
+				//All child quads have been emptied, make this quad as empty
+				disposeBounds();
+			}
 		} else {
 			if(!topLeft.isSearchRequired() && !topRight.isSearchRequired() &&
 				!bottomLeft.isSearchRequired() && !bottomRight.isSearchRequired()) {
 				//All child quads have been emptied, make this quad as empty
-				if(elementsBounds != null) {
-					elementsBounds.dispose();
-					elementsBounds = null;
-				}
+				disposeBounds();
 			}
 		}
 		return boundsUpdated;

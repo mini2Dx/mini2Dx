@@ -40,7 +40,8 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 	public static Color QUAD_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(1f, 0f, 0f, 0.5f) : null;
 	public static Color ELEMENT_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(0f, 0f, 1f, 0.5f) : null;
 
-	protected final GridRegionQuadTreeLooseCell[] grid;
+	protected final GridRegionQuadTreeLooseCell[] looseGrid;
+	protected final GridRegionQuadTreeTightCell[] tightGrid;
 	protected final BitSet dirtyCells;
 
 	protected final int gridWorldX, gridWorldY;
@@ -83,7 +84,8 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 		final int totalGridCellsX = width / cellWidth;
 		final int totalGridCellsY = height / cellHeight;
-		grid = new GridRegionQuadTreeLooseCell[totalGridCellsX * totalGridCellsY];
+		looseGrid = new GridRegionQuadTreeLooseCell[totalGridCellsX * totalGridCellsY];
+		tightGrid = new GridRegionQuadTreeTightCell[totalGridCellsX * totalGridCellsY];
 		dirtyCells = new BitSet(totalGridCellsX * totalGridCellsY);
 
 		for(int gy = 0; gy < totalGridCellsY; gy++) {
@@ -92,7 +94,8 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 				final float cellWorldX = x + (gx * cellWidth);
 				final float cellWorldY = y + (gy * cellHeight);
 
-				grid[index] = new GridRegionQuadTreeLooseCell(this, index, minimumQuadWidth, minimumQuadHeight,
+				tightGrid[index] = new GridRegionQuadTreeTightCell(index);
+				looseGrid[index] = new GridRegionQuadTreeLooseCell(this, index, minimumQuadWidth, minimumQuadHeight,
 						elementLimitPerQuad, cellWorldX, cellWorldY, cellWidth, cellHeight);
 			}
 		}
@@ -101,15 +104,35 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 	protected int getGridIndex(float x, float y) {
 		final int gridX = MathUtils.floor(x * invCellWidth) - gridWorldX;
 		final int gridY = MathUtils.floor(y * invCellHeight) - gridWorldY;
-		return MathUtils.clamp ((gridY * totalCellsX) + gridX, 0, grid.length - 1);
+		return MathUtils.clamp ((gridY * totalCellsX) + gridX, 0, looseGrid.length - 1);
 	}
 
-	protected GridRegionQuadTreeLooseCell<T> getCell(T element) {
-		return getCell(element.getCenterX(), element.getCenterY());
+	public int getMinGridIndex(T element) {
+		return getGridIndex(element.getX(), element.getY());
 	}
 
-	protected GridRegionQuadTreeLooseCell<T> getCell(float x, float y) {
-		return grid[getGridIndex(x, y)];
+	public int getMaxGridIndex(T element) {
+		return getGridIndex(element.getMaxX(), element.getMaxY());
+	}
+
+	public GridRegionQuadTreeTightCell<T> getTightCell(int index) {
+		return tightGrid[index];
+	}
+
+	public GridRegionQuadTreeTightCell<T> getTightCell(T element) {
+		return getTightCell(element.getCenterX(), element.getCenterY());
+	}
+
+	public GridRegionQuadTreeTightCell<T> getTightCell(float x, float y) {
+		return tightGrid[getGridIndex(x, y)];
+	}
+
+	public GridRegionQuadTreeLooseCell<T> getLooseCell(T element) {
+		return getLooseCell(element.getCenterX(), element.getCenterY());
+	}
+
+	public GridRegionQuadTreeLooseCell<T> getLooseCell(float x, float y) {
+		return looseGrid[getGridIndex(x, y)];
 	}
 
 	public void warmupPool(int poolSize) {
@@ -129,8 +152,8 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 	public void cleanup() {
 		int cursor = 0;
-		while(cursor > -1 && cursor < grid.length) {
-			grid[cursor].cleanup();
+		while(cursor > -1 && cursor < looseGrid.length) {
+			looseGrid[cursor].cleanup();
 			dirtyCells.clear(cursor);
 			cursor = dirtyCells.nextSetBit(cursor);
 		}
@@ -143,12 +166,12 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 	@Override
 	public boolean add(T element) {
-		return getCell(element).add(element);
+		return getLooseCell(element).add(element);
 	}
 
 	@Override
 	public boolean remove(T element) {
-		return getCell(element).remove(element);
+		return getLooseCell(element).remove(element);
 	}
 
 	@Override
@@ -166,13 +189,14 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 	}
 
 	protected boolean removeElement(T element, boolean clearQuadRef) {
-		return getCell(element).removeElement(element, clearQuadRef);
+		return getLooseCell(element).removeElement(element, clearQuadRef);
 	}
 
 	@Override
 	public void clear() {
-		for(int i = 0; i < grid.length; i++) {
-			grid[i].clear();
+		for(int i = 0; i < looseGrid.length; i++) {
+			looseGrid[i].clear();
+			tightGrid[i].clear();
 		}
 	}
 
@@ -185,25 +209,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 	@Override
 	public void getElementsWithinArea(Array<T> result, Shape area) {
-		//Check +1 in all axis in case of bounds overlap
-		final int minX = MathUtils.floor(area.getX() * invCellWidth) - gridWorldX - 1;
-		final int minY = MathUtils.floor(area.getY() * invCellHeight) - gridWorldY - 1;
-		final int maxX = MathUtils.floor(area.getMaxX() * invCellWidth) - gridWorldX + 1;
-		final int maxY = MathUtils.floor(area.getMaxY() * invCellHeight) - gridWorldY + 1;
-
-		for(int gy = minY; gy <= maxY; gy++) {
-			for(int gx = minX; gx <= maxX; gx++) {
-				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
-				if (area.contains(cell.elementsBounds)) {
-					cell.getElementsWithinArea(result, area, true);
-				} else if (cell.elementsBounds.contains(area)) {
-					cell.getElementsWithinArea(result, area, false);
-				} else if (cell.elementsBounds.intersects(area)) {
-					cell.getElementsWithinArea(result, area, false);
-				}
-			}
-		}
+		getElementsWithinArea(result, area, QuadTreeSearchDirection.DOWNWARDS);
 	}
 
 	@Override
@@ -215,25 +221,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 	@Override
 	public void getElementsWithinAreaIgnoringEdges(Array<T> result, Shape area) {
-		//Check +1 in all axis in case of bounds overlap
-		final int minX = MathUtils.floor(area.getX() * invCellWidth) - 1;
-		final int minY = MathUtils.floor(area.getY() * invCellHeight) - 1;
-		final int maxX = MathUtils.floor(area.getMaxX() * invCellWidth) + 1;
-		final int maxY = MathUtils.floor(area.getMaxY() * invCellHeight) + 1;
-
-		for(int gy = minY; gy <= maxY; gy++) {
-			for(int gx = minX; gx <= maxX; gx++) {
-				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
-				if (area.contains(cell.elementsBounds)) {
-					cell.getElementsWithinAreaIgnoringEdges(result, area);
-				} else if (cell.elementsBounds.contains(area)) {
-					cell.getElementsWithinAreaIgnoringEdges(result, area);
-				} else if (cell.elementsBounds.intersectsIgnoringEdges(area)) {
-					cell.getElementsWithinAreaIgnoringEdges(result, area);
-				}
-			}
-		}
+		getElementsWithinAreaIgnoringEdges(result, area, QuadTreeSearchDirection.DOWNWARDS);
 	}
 
 	@Override
@@ -245,21 +233,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 	@Override
 	public void getElementsContainingArea(Array<T> result, Shape area, boolean entirelyContained) {
-		//Check +1 in all axis in case of bounds overlap
-		final int minX = MathUtils.floor(area.getX() * invCellWidth) - 1;
-		final int minY = MathUtils.floor(area.getY() * invCellHeight) - 1;
-		final int maxX = MathUtils.floor(area.getMaxX() * invCellWidth) + 1;
-		final int maxY = MathUtils.floor(area.getMaxY() * invCellHeight) + 1;
-
-		for(int gy = minY; gy <= maxY; gy++) {
-			for(int gx = minX; gx <= maxX; gx++) {
-				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
-				if(cell.elementsBounds.contains(area) || cell.elementsBounds.intersects(area)) {
-					cell.getElementsContainingArea(result, area, entirelyContained);
-				}
-			}
-		}
+		getElementsContainingArea(result, area, QuadTreeSearchDirection.DOWNWARDS, entirelyContained);
 	}
 
 	@Override
@@ -271,19 +245,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 	@Override
 	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment) {
-		//Check +1 in all axis in case of bounds overlap
-		final int minX = MathUtils.floor(lineSegment.getMinX() * invCellWidth) - 1;
-		final int minY = MathUtils.floor(lineSegment.getMinY() * invCellHeight) - 1;
-		final int maxX = MathUtils.floor(lineSegment.getMaxX() * invCellWidth) + 1;
-		final int maxY = MathUtils.floor(lineSegment.getMaxY() * invCellHeight) + 1;
-
-		for(int gy = minY; gy <= maxY; gy++) {
-			for(int gx = minX; gx <= maxX; gx++) {
-				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
-				cell.getElementsIntersectingLineSegment(result, lineSegment);
-			}
-		}
+		getElementsIntersectingLineSegment(result, lineSegment, QuadTreeSearchDirection.DOWNWARDS);
 	}
 
 	@Override
@@ -295,22 +257,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 	@Override
 	public void getElementsContainingPoint(Array<T> result, Point point) {
-		//Check +1 in all axis in case of bounds overlap
-		final int minX = MathUtils.floor(point.getX() * invCellWidth) - 1;
-		final int minY = MathUtils.floor(point.getY() * invCellHeight - 1);
-		final int maxX = MathUtils.floor(point.getX() * invCellWidth) + 1;
-		final int maxY = MathUtils.floor(point.getY() * invCellHeight) + 1;
-
-		for(int gy = minY; gy <= maxY; gy++) {
-			for(int gx = minX; gx <= maxX; gx++) {
-				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
-				if(!cell.elementsBounds.contains(point)) {
-					continue;
-				}
-				cell.getElementsContainingPoint(result, point);
-			}
-		}
+		getElementsContainingPoint(result, point, QuadTreeSearchDirection.DOWNWARDS);
 	}
 
 	@Override
@@ -322,17 +269,44 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 	@Override
 	public void getElementsWithinArea(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection) {
-		//Check +1 in all axis in case of bounds overlap
-		final int minX = MathUtils.floor(area.getX() * invCellWidth) - 1;
-		final int minY = MathUtils.floor(area.getY() * invCellHeight) - 1;
-		final int maxX = MathUtils.floor(area.getMaxX() * invCellWidth) + 1;
-		final int maxY = MathUtils.floor(area.getMaxY() * invCellHeight) + 1;
+		final int minX = MathUtils.floor(area.getX() * invCellWidth) - gridWorldX;
+		final int minY = MathUtils.floor(area.getY() * invCellHeight) - gridWorldY;
+		final int maxX = MathUtils.floor(area.getMaxX() * invCellWidth) - gridWorldX;
+		final int maxY = MathUtils.floor(area.getMaxY() * invCellHeight) - gridWorldY;
 
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
 				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
-				cell.getElementsWithinArea(result, area, searchDirection);
+				final GridRegionQuadTreeTightCell<T> tightCell = tightGrid[index];
+				for(GridRegionQuadTreeLooseCell<T> looseCell : tightCell.getCells()) {
+					if(!looseCell.isSearchRequired()) {
+						continue;
+					}
+					looseCell.getElementsWithinArea(result, area, searchDirection);
+				}
+			}
+		}
+	}
+
+	void getElementsWithinArea(Array<T> result, Shape area, GridRegionQuadTreeLooseCell<T> excludedCell) {
+		final int minX = MathUtils.floor(area.getX() * invCellWidth) - gridWorldX;
+		final int minY = MathUtils.floor(area.getY() * invCellHeight) - gridWorldY;
+		final int maxX = MathUtils.floor(area.getMaxX() * invCellWidth) - gridWorldX;
+		final int maxY = MathUtils.floor(area.getMaxY() * invCellHeight) - gridWorldY;
+
+		for(int gy = minY; gy <= maxY; gy++) {
+			for(int gx = minX; gx <= maxX; gx++) {
+				final int index = (gy * totalCellsX) + gx;
+				final GridRegionQuadTreeTightCell<T> tightCell = tightGrid[index];
+				for(GridRegionQuadTreeLooseCell<T> looseCell : tightCell.getCells()) {
+					if(looseCell == excludedCell) {
+						continue;
+					}
+					if(!looseCell.isSearchRequired()) {
+						continue;
+					}
+					looseCell.getElementsWithinArea(result, area, QuadTreeSearchDirection.DOWNWARDS);
+				}
 			}
 		}
 	}
@@ -346,17 +320,44 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 	@Override
 	public void getElementsWithinAreaIgnoringEdges(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection) {
-		//Check +1 in all axis in case of bounds overlap
-		final int minX = MathUtils.floor(area.getX() * invCellWidth) - 1;
-		final int minY = MathUtils.floor(area.getY() * invCellHeight) - 1;
-		final int maxX = MathUtils.floor(area.getMaxX() * invCellWidth) + 1;
-		final int maxY = MathUtils.floor(area.getMaxY() * invCellHeight) + 1;
+		final int minX = MathUtils.floor(area.getX() * invCellWidth) - gridWorldX;
+		final int minY = MathUtils.floor(area.getY() * invCellHeight) - gridWorldY;
+		final int maxX = MathUtils.floor(area.getMaxX() * invCellWidth) - gridWorldX;
+		final int maxY = MathUtils.floor(area.getMaxY() * invCellHeight) - gridWorldY;
 
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
 				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
-				cell.getElementsWithinAreaIgnoringEdges(result, area, searchDirection);
+				final GridRegionQuadTreeTightCell<T> tightCell = tightGrid[index];
+				for(GridRegionQuadTreeLooseCell<T> looseCell : tightCell.getCells()) {
+					if(!looseCell.isSearchRequired()) {
+						continue;
+					}
+					looseCell.getElementsWithinAreaIgnoringEdges(result, area, searchDirection);
+				}
+			}
+		}
+	}
+
+	void getElementsWithinAreaIgnoringEdges(Array<T> result, Shape area, GridRegionQuadTreeLooseCell<T> excludedCell) {
+		final int minX = MathUtils.floor(area.getX() * invCellWidth) - gridWorldX;
+		final int minY = MathUtils.floor(area.getY() * invCellHeight) - gridWorldY;
+		final int maxX = MathUtils.floor(area.getMaxX() * invCellWidth) - gridWorldX;
+		final int maxY = MathUtils.floor(area.getMaxY() * invCellHeight) - gridWorldY;
+
+		for(int gy = minY; gy <= maxY; gy++) {
+			for(int gx = minX; gx <= maxX; gx++) {
+				final int index = (gy * totalCellsX) + gx;
+				final GridRegionQuadTreeTightCell<T> tightCell = tightGrid[index];
+				for(GridRegionQuadTreeLooseCell<T> looseCell : tightCell.getCells()) {
+					if(looseCell == excludedCell) {
+						continue;
+					}
+					if(!looseCell.isSearchRequired()) {
+						continue;
+					}
+					looseCell.getElementsWithinAreaIgnoringEdges(result, area, QuadTreeSearchDirection.DOWNWARDS);
+				}
 			}
 		}
 	}
@@ -370,17 +371,44 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 	@Override
 	public void getElementsContainingArea(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection, boolean entirelyContained) {
-		//Check +1 in all axis in case of bounds overlap
-		final int minX = MathUtils.floor(area.getX() * invCellWidth) - 1;
-		final int minY = MathUtils.floor(area.getY() * invCellHeight) - 1;
-		final int maxX = MathUtils.floor(area.getMaxX() * invCellWidth) + 1;
-		final int maxY = MathUtils.floor(area.getMaxY() * invCellHeight) + 1;
+		final int minX = MathUtils.floor(area.getX() * invCellWidth) - gridWorldX;
+		final int minY = MathUtils.floor(area.getY() * invCellHeight) - gridWorldY;
+		final int maxX = MathUtils.floor(area.getMaxX() * invCellWidth) - gridWorldX;
+		final int maxY = MathUtils.floor(area.getMaxY() * invCellHeight) - gridWorldY;
 
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
 				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
-				cell.getElementsContainingArea(result, area, searchDirection, entirelyContained);
+				final GridRegionQuadTreeTightCell<T> tightCell = tightGrid[index];
+				for(GridRegionQuadTreeLooseCell<T> looseCell : tightCell.getCells()) {
+					if(!looseCell.isSearchRequired()) {
+						continue;
+					}
+					looseCell.getElementsContainingArea(result, area, searchDirection, entirelyContained);
+				}
+			}
+		}
+	}
+
+	void getElementsContainingArea(Array<T> result, Shape area, boolean entirelyContained, GridRegionQuadTreeLooseCell<T> excludedCell) {
+		final int minX = MathUtils.floor(area.getX() * invCellWidth) - gridWorldX;
+		final int minY = MathUtils.floor(area.getY() * invCellHeight) - gridWorldY;
+		final int maxX = MathUtils.floor(area.getMaxX() * invCellWidth) - gridWorldX;
+		final int maxY = MathUtils.floor(area.getMaxY() * invCellHeight) - gridWorldY;
+
+		for(int gy = minY; gy <= maxY; gy++) {
+			for(int gx = minX; gx <= maxX; gx++) {
+				final int index = (gy * totalCellsX) + gx;
+				final GridRegionQuadTreeTightCell<T> tightCell = tightGrid[index];
+				for(GridRegionQuadTreeLooseCell<T> looseCell : tightCell.getCells()) {
+					if(looseCell == excludedCell) {
+						continue;
+					}
+					if(!looseCell.isSearchRequired()) {
+						continue;
+					}
+					looseCell.getElementsContainingArea(result, area, QuadTreeSearchDirection.DOWNWARDS, entirelyContained);
+				}
 			}
 		}
 	}
@@ -394,17 +422,44 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 	@Override
 	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment, QuadTreeSearchDirection searchDirection) {
-		//Check +1 in all axis in case of bounds overlap
-		final int minX = MathUtils.floor(lineSegment.getMinX() * invCellWidth) - 1;
-		final int minY = MathUtils.floor(lineSegment.getMinY() * invCellHeight) - 1;
-		final int maxX = MathUtils.floor(lineSegment.getMaxX() * invCellWidth) + 1;
-		final int maxY = MathUtils.floor(lineSegment.getMaxY() * invCellHeight) + 1;
+		final int minX = MathUtils.floor(lineSegment.getMinX() * invCellWidth) - gridWorldX;
+		final int minY = MathUtils.floor(lineSegment.getMinY() * invCellHeight) - gridWorldY;
+		final int maxX = MathUtils.floor(lineSegment.getMaxX() * invCellWidth) - gridWorldX;
+		final int maxY = MathUtils.floor(lineSegment.getMaxY() * invCellHeight) - gridWorldY;
 
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
 				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
-				cell.getElementsIntersectingLineSegment(result, lineSegment, searchDirection);
+				final GridRegionQuadTreeTightCell<T> tightCell = tightGrid[index];
+				for(GridRegionQuadTreeLooseCell<T> looseCell : tightCell.getCells()) {
+					if(!looseCell.isSearchRequired()) {
+						continue;
+					}
+					looseCell.getElementsIntersectingLineSegment(result, lineSegment, searchDirection);
+				}
+			}
+		}
+	}
+
+	void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment, GridRegionQuadTreeLooseCell<T> excludedCell) {
+		final int minX = MathUtils.floor(lineSegment.getMinX() * invCellWidth) - gridWorldX;
+		final int minY = MathUtils.floor(lineSegment.getMinY() * invCellHeight) - gridWorldY;
+		final int maxX = MathUtils.floor(lineSegment.getMaxX() * invCellWidth) - gridWorldX;
+		final int maxY = MathUtils.floor(lineSegment.getMaxY() * invCellHeight) - gridWorldY;
+
+		for(int gy = minY; gy <= maxY; gy++) {
+			for(int gx = minX; gx <= maxX; gx++) {
+				final int index = (gy * totalCellsX) + gx;
+				final GridRegionQuadTreeTightCell<T> tightCell = tightGrid[index];
+				for(GridRegionQuadTreeLooseCell<T> looseCell : tightCell.getCells()) {
+					if(looseCell == excludedCell) {
+						continue;
+					}
+					if(!looseCell.isSearchRequired()) {
+						continue;
+					}
+					looseCell.getElementsIntersectingLineSegment(result, lineSegment, QuadTreeSearchDirection.DOWNWARDS);
+				}
 			}
 		}
 	}
@@ -418,21 +473,33 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 	@Override
 	public void getElementsContainingPoint(Array<T> result, Point point, QuadTreeSearchDirection searchDirection) {
-		//Check +1 in all axis in case of bounds overlap
-		final int minX = MathUtils.floor(point.getX() * invCellWidth) - 1;
-		final int minY = MathUtils.floor(point.getY() * invCellHeight - 1);
-		final int maxX = MathUtils.floor(point.getX() * invCellWidth) + 1;
-		final int maxY = MathUtils.floor(point.getY() * invCellHeight) + 1;
+		final int cellX = MathUtils.floor(point.getX() * invCellWidth) - gridWorldX;
+		final int cellY = MathUtils.floor(point.getY() * invCellHeight) - gridWorldY;
 
-		for(int gy = minY; gy <= maxY; gy++) {
-			for(int gx = minX; gx <= maxX; gx++) {
-				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
-				if(searchDirection == QuadTreeSearchDirection.DOWNWARDS && !cell.elementsBounds.contains(point)) {
-					continue;
-				}
-				cell.getElementsContainingPoint(result, point, searchDirection);
+		final int index = (cellY * totalCellsX) + cellX;
+		final GridRegionQuadTreeTightCell<T> tightCell = tightGrid[index];
+		for(GridRegionQuadTreeLooseCell<T> looseCell : tightCell.getCells()) {
+			if(!looseCell.isSearchRequired()) {
+				continue;
 			}
+			looseCell.getElementsContainingPoint(result, point, searchDirection);
+		}
+	}
+
+	void getElementsContainingPoint(Array<T> result, Point point, GridRegionQuadTreeLooseCell<T> excludedCell) {
+		final int cellX = MathUtils.floor(point.getX() * invCellWidth) - gridWorldX;
+		final int cellY = MathUtils.floor(point.getY() * invCellHeight) - gridWorldY;
+
+		final int index = (cellY * totalCellsX) + cellX;
+		final GridRegionQuadTreeTightCell<T> tightCell = tightGrid[index];
+		for(GridRegionQuadTreeLooseCell<T> looseCell : tightCell.getCells()) {
+			if(looseCell == excludedCell) {
+				continue;
+			}
+			if(!looseCell.isSearchRequired()) {
+				continue;
+			}
+			looseCell.getElementsContainingPoint(result, point, QuadTreeSearchDirection.DOWNWARDS);
 		}
 	}
 
@@ -453,8 +520,8 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 	@Override
 	public void getElements(Array<T> result) {
-		for(int i = 0; i < grid.length; i++) {
-			grid[i].getElements(result);
+		for(int i = 0; i < looseGrid.length; i++) {
+			looseGrid[i].getElements(result);
 		}
 	}
 
@@ -465,8 +532,8 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 		}
 
 		totalElementsCache = 0;
-		for(int i = 0; i < grid.length; i++) {
-			totalElementsCache += grid[i].getTotalElements();
+		for(int i = 0; i < looseGrid.length; i++) {
+			totalElementsCache += looseGrid[i].getTotalElements();
 		}
 		return totalElementsCache;
 	}
@@ -474,8 +541,8 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 	@Override
 	public int getTotalQuads() {
 		int result = 0;
-		for(int i = 0; i < grid.length; i++) {
-			result += grid[i].getTotalQuads();
+		for(int i = 0; i < looseGrid.length; i++) {
+			result += looseGrid[i].getTotalQuads();
 		}
 		return result;
 	}
