@@ -699,7 +699,7 @@ public class Polygon extends Shape {
 	public void setVertices(float[] vertices) {
 		boolean changed = false;
 		if(this.vertices.length == vertices.length) {
-			for(int i = 0; i < vertices.length; i++) {
+			for(int i = 0; i < vertices.length && !changed; i++) {
 				changed |= !MathUtils.isEqual(this.vertices[i], vertices[i]);
 			}
 		} else {
