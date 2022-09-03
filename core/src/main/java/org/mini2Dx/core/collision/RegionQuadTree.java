@@ -147,6 +147,7 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 
 	@Override
 	protected boolean updateBounds(T element) {
+		initBounds();
 		float minX = Math.min(element.getX(), elementsBounds.getX());
 		float minY = Math.min(element.getY(), elementsBounds.getY());
 		float maxX = Math.max(element.getMaxX(), elementsBounds.getMaxX());
@@ -161,6 +162,16 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			if(!elementsRemoved) {
 				return false;
 			}
+			if(elements.size == 0) {
+				if(elementsBounds != null) {
+					elementsBounds.dispose();
+					elementsBounds = null;
+				}
+				elementsRemoved = false;
+				return false;
+			}
+
+			initBounds();
 			elementsBounds.set(getCenterX() - 1f, getCenterY() - 1f, 2f, 2f);
 			float minX = elementsBounds.getX();
 			float minY = elementsBounds.getY();
@@ -197,6 +208,7 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			boundsUpdated = true;
 		}
 		if(boundsUpdated) {
+			initBounds();
 			float minX = topLeft.elementsBounds.getX();
 			float minY = topLeft.elementsBounds.getY();
 			float maxX = topLeft.elementsBounds.getMaxX();
@@ -219,6 +231,15 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			maxY = Math.max(maxY, bottomRight.elementsBounds.getMaxY());
 
 			elementsBounds.set(minX, minY, maxX - minX, maxY - minY);
+		} else {
+			if(!topLeft.isSearchRequired() && !topRight.isSearchRequired() &&
+					!bottomLeft.isSearchRequired() && !bottomRight.isSearchRequired()) {
+				//All child quads have been emptied, make this quad as empty
+				if(elementsBounds != null) {
+					elementsBounds.dispose();
+					elementsBounds = null;
+				}
+			}
 		}
 		return boundsUpdated;
 	}

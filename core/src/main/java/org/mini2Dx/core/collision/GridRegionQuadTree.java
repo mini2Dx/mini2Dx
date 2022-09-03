@@ -40,7 +40,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 	public static Color QUAD_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(1f, 0f, 0f, 0.5f) : null;
 	public static Color ELEMENT_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(0f, 0f, 1f, 0.5f) : null;
 
-	protected final GridRegionQuadTreeCell[] grid;
+	protected final GridRegionQuadTreeLooseCell[] grid;
 	protected final BitSet dirtyCells;
 
 	protected final int gridWorldX, gridWorldY;
@@ -83,7 +83,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 
 		final int totalGridCellsX = width / cellWidth;
 		final int totalGridCellsY = height / cellHeight;
-		grid = new GridRegionQuadTreeCell[totalGridCellsX * totalGridCellsY];
+		grid = new GridRegionQuadTreeLooseCell[totalGridCellsX * totalGridCellsY];
 		dirtyCells = new BitSet(totalGridCellsX * totalGridCellsY);
 
 		for(int gy = 0; gy < totalGridCellsY; gy++) {
@@ -92,7 +92,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 				final float cellWorldX = x + (gx * cellWidth);
 				final float cellWorldY = y + (gy * cellHeight);
 
-				grid[index] = new GridRegionQuadTreeCell(this, index, minimumQuadWidth, minimumQuadHeight,
+				grid[index] = new GridRegionQuadTreeLooseCell(this, index, minimumQuadWidth, minimumQuadHeight,
 						elementLimitPerQuad, cellWorldX, cellWorldY, cellWidth, cellHeight);
 			}
 		}
@@ -104,11 +104,11 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 		return MathUtils.clamp ((gridY * totalCellsX) + gridX, 0, grid.length - 1);
 	}
 
-	protected GridRegionQuadTreeCell<T> getCell(T element) {
+	protected GridRegionQuadTreeLooseCell<T> getCell(T element) {
 		return getCell(element.getCenterX(), element.getCenterY());
 	}
 
-	protected GridRegionQuadTreeCell<T> getCell(float x, float y) {
+	protected GridRegionQuadTreeLooseCell<T> getCell(float x, float y) {
 		return grid[getGridIndex(x, y)];
 	}
 
@@ -194,7 +194,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
 				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeCell<T> cell = grid[index];
+				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
 				if (area.contains(cell.elementsBounds)) {
 					cell.getElementsWithinArea(result, area, true);
 				} else if (cell.elementsBounds.contains(area)) {
@@ -224,7 +224,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
 				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeCell<T> cell = grid[index];
+				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
 				if (area.contains(cell.elementsBounds)) {
 					cell.getElementsWithinAreaIgnoringEdges(result, area);
 				} else if (cell.elementsBounds.contains(area)) {
@@ -254,7 +254,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
 				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeCell<T> cell = grid[index];
+				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
 				if(cell.elementsBounds.contains(area) || cell.elementsBounds.intersects(area)) {
 					cell.getElementsContainingArea(result, area, entirelyContained);
 				}
@@ -280,7 +280,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
 				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeCell<T> cell = grid[index];
+				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
 				cell.getElementsIntersectingLineSegment(result, lineSegment);
 			}
 		}
@@ -304,7 +304,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
 				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeCell<T> cell = grid[index];
+				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
 				if(!cell.elementsBounds.contains(point)) {
 					continue;
 				}
@@ -331,7 +331,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
 				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeCell<T> cell = grid[index];
+				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
 				cell.getElementsWithinArea(result, area, searchDirection);
 			}
 		}
@@ -355,7 +355,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
 				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeCell<T> cell = grid[index];
+				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
 				cell.getElementsWithinAreaIgnoringEdges(result, area, searchDirection);
 			}
 		}
@@ -379,7 +379,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
 				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeCell<T> cell = grid[index];
+				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
 				cell.getElementsContainingArea(result, area, searchDirection, entirelyContained);
 			}
 		}
@@ -403,7 +403,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
 				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeCell<T> cell = grid[index];
+				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
 				cell.getElementsIntersectingLineSegment(result, lineSegment, searchDirection);
 			}
 		}
@@ -427,7 +427,7 @@ public class GridRegionQuadTree<T extends Sizeable> extends Rectangle implements
 		for(int gy = minY; gy <= maxY; gy++) {
 			for(int gx = minX; gx <= maxX; gx++) {
 				final int index = (gy * totalCellsX) + gx;
-				final GridRegionQuadTreeCell<T> cell = grid[index];
+				final GridRegionQuadTreeLooseCell<T> cell = grid[index];
 				if(searchDirection == QuadTreeSearchDirection.DOWNWARDS && !cell.elementsBounds.contains(point)) {
 					continue;
 				}

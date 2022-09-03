@@ -40,7 +40,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	protected PointQuadTree<T> parent;
 	protected PointQuadTree<T> topLeft, topRight, bottomLeft, bottomRight;
 
-	protected final Rectangle elementsBounds;
+	protected Rectangle elementsBounds;
 	protected Array<T> elements;
 	protected final int elementLimitPerQuad;
 	protected final int mergeWatermark;
@@ -158,7 +158,6 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		this.minimumQuadWidth = minimumQuadWidth;
 		this.minimumQuadHeight = minimumQuadHeight;
 		elements = new Array<T>(true, elementLimitPerQuad);
-		elementsBounds = new Rectangle(x + (width * 0.5f) - 1f, y + (height * 0.5f) - 1f, 2f, 2f);
 	}
 
 	public void cleanup() {
@@ -288,7 +287,16 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		return true;
 	}
 
+	protected void initBounds() {
+		if(elementsBounds != null) {
+			return;
+		}
+		elementsBounds = Mdx.geom.rectangle();
+		elementsBounds.set(getX() + (getWidth() * 0.5f) - 1f, getY() + (getHeight() * 0.5f) - 1f, 2f, 2f);
+	}
+
 	protected boolean updateBounds(T element) {
+		initBounds();
 		float minX = Math.min(element.getX(), elementsBounds.getX());
 		float minY = Math.min(element.getY(), elementsBounds.getY());
 		float maxX = Math.max(element.getX(), elementsBounds.getMaxX());
@@ -302,6 +310,16 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			if(!elementsRemoved) {
 				return false;
 			}
+			if(elements.size == 0) {
+				if(elementsBounds != null) {
+					elementsBounds.dispose();
+					elementsBounds = null;
+				}
+				elementsRemoved = false;
+				return false;
+			}
+
+			initBounds();
 			elementsBounds.set(getCenterX() - 1f, getCenterY() - 1f, 2f, 2f);
 			float minX = elementsBounds.getX();
 			float minY = elementsBounds.getY();
@@ -338,6 +356,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			boundsUpdated = true;
 		}
 		if(boundsUpdated) {
+			initBounds();
 			float minX = topLeft.elementsBounds.getX();
 			float minY = topLeft.elementsBounds.getY();
 			float maxX = topLeft.elementsBounds.getMaxX();
@@ -360,6 +379,15 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			maxY = Math.max(maxY, bottomRight.elementsBounds.getMaxY());
 
 			elementsBounds.set(minX, minY, maxX - minX, maxY - minY);
+		} else {
+			if(!topLeft.isSearchRequired() && !topRight.isSearchRequired() &&
+				!bottomLeft.isSearchRequired() && !bottomRight.isSearchRequired()) {
+				//All child quads have been emptied, make this quad as empty
+				if(elementsBounds != null) {
+					elementsBounds.dispose();
+					elementsBounds = null;
+				}
+			}
 		}
 		return boundsUpdated;
 	}
@@ -1053,7 +1081,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 
 	protected boolean isSearchRequired() {
 		if(topLeft != null) {
-			return true;
+			return elementsBounds != null;
 		}
 		return elements.size > 0;
 	}
