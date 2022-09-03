@@ -281,19 +281,19 @@ public abstract class Shape implements Sizeable, Disposable {
 		removeSizeListener(sizeChangeListeners, listener);
 	}
 
-	protected void notifyPositionChangeListeners() {
+	public void notifyPositionChangeListeners() {
 		notifyPositionListeners(positionChangeListeners, this);
 	}
 
-	protected void clearPositionChangeListeners() {
+	public void clearPositionChangeListeners() {
 		clearPositionListeners(positionChangeListeners);
 	}
 
-	protected void notifySizeChangeListeners() {
+	public void notifySizeChangeListeners() {
 		notifySizeListeners(sizeChangeListeners, this);
 	}
 
-	protected void clearSizeChangeListeners() {
+	public void clearSizeChangeListeners() {
 		clearSizeListeners(sizeChangeListeners);
 	}
 

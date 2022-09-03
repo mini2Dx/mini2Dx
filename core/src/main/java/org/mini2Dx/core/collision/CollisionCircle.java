@@ -318,22 +318,22 @@ public class CollisionCircle extends Circle implements CollisionArea,
 	}
 
 	@Override
-	protected void notifyPositionChangeListeners() {
+	public void notifyPositionChangeListeners() {
 		notifyPositionListeners(positionChangeListenerLock, positionChangeListeners, this);
 	}
 
 	@Override
-	protected void clearPositionChangeListeners() {
+	public void clearPositionChangeListeners() {
 		clearPositionListeners(positionChangeListenerLock, positionChangeListeners);
 	}
 
 	@Override
-	protected void notifySizeChangeListeners() {
+	public void notifySizeChangeListeners() {
 		notifySizeListeners(sizeChangeListenerLock, sizeChangeListeners, this);
 	}
 
 	@Override
-	protected void clearSizeChangeListeners() {
+	public void clearSizeChangeListeners() {
 		clearSizeListeners(sizeChangeListenerLock, sizeChangeListeners);
 	}
 

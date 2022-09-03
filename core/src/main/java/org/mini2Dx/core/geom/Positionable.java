@@ -122,4 +122,14 @@ public interface Positionable {
 	 *            The {@link PositionChangeListener} to remove
 	 */
 	public <T extends Positionable> void removePositionChangeListener(PositionChangeListener<T> listener);
+
+	/**
+	 * Notifies all listeners of the current position. Note: This is automatically called when the position changes.
+	 */
+	public void notifyPositionChangeListeners();
+
+	/**
+	 * Removes all listeners
+	 */
+	public void clearPositionChangeListeners();
 }

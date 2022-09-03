@@ -217,12 +217,12 @@ public class CollisionPoint extends Point implements CollisionObject, PositionCh
 	}
 
 	@Override
-	protected void notifyPositionChangeListeners() {
+	public void notifyPositionChangeListeners() {
 		Shape.notifyPositionListeners(positionChangeListenerLock, positionChangeListeners, this);
 	}
 
 	@Override
-	protected void clearPositionChangeListeners() {
+	public void clearPositionChangeListeners() {
 		Shape.clearPositionListeners(positionChangeListenerLock, positionChangeListeners);
 	}
 

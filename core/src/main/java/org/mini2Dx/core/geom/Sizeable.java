@@ -209,6 +209,16 @@ public interface Sizeable extends Positionable {
 	public <T extends Sizeable> void removeSizeChangeListener(SizeChangeListener<T> listener);
 
 	/**
+	 * Notifies all listeners when the size changes. Note: This is automatically called when the size changes.
+	 */
+	public void notifySizeChangeListeners();
+
+	/**
+	 * Removes all listeners
+	 */
+	public void clearSizeChangeListeners();
+
+	/**
 	 * Returns if this is a {@link Circle} instance
 	 * @return False unless a {@link Circle} instance
 	 */

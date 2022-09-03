@@ -161,7 +161,7 @@ public class Point extends Vector2 implements Positionable, Disposable {
         positionChangeListeners.removeValue(listener, false);
     }
 
-    protected void notifyPositionChangeListeners() {
+    public void notifyPositionChangeListeners() {
         if (positionChangeListeners == null) {
             return;
         }
@@ -174,7 +174,7 @@ public class Point extends Vector2 implements Positionable, Disposable {
         }
     }
 
-    protected void clearPositionChangeListeners() {
+    public void clearPositionChangeListeners() {
         if (positionChangeListeners == null) {
             return;
         }
