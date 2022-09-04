@@ -647,7 +647,9 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		element.removePositionChangeListener(this);
 		
 		if (parent == null) {
-			QuadTreeAwareUtils.removeQuadTreeRef(element);
+			if(clearQuadRef) {
+				QuadTreeAwareUtils.removeQuadTreeRef(element);
+			}
 			return result;
 		}
 
