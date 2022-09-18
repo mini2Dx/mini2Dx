@@ -1182,29 +1182,19 @@ public class Polygon extends Shape {
 	}
 
 	private void calculateMinMaxXY(float[] vertices) {
-		int minXIndex = 0;
-		int minYIndex = 1;
-		int maxXIndex = 0;
-		int maxYIndex = 1;
-		for (int i = 2; i < vertices.length; i += 2) {
-			if (vertices[i] < vertices[minXIndex]) {
-				minXIndex = i;
-			}
-			if (vertices[i + 1] < vertices[minYIndex]) {
-				minYIndex = i + 1;
-			}
-			if (vertices[i] > vertices[maxXIndex]) {
-				maxXIndex = i;
-			}
-			if (vertices[i + 1] > vertices[maxYIndex]) {
-				maxYIndex = i + 1;
-			}
+		this.minX = vertices[0];
+		this.minY = vertices[1];
+		this.maxX = vertices[0];
+		this.maxY = vertices[1];
 
+		for (int i = 2; i < vertices.length; i += 2) {
+			final float x = vertices[i];
+			final float y = vertices[i + 1];
+			this.minX = Math.min(this.minX, x);
+			this.minY = Math.min(this.minY, y);
+			this.maxX = Math.max(this.maxX, x);
+			this.maxY = Math.max(this.maxY, y);
 		}
-		this.minX = vertices[minXIndex];
-		this.minY = vertices[minYIndex];
-		this.maxX = vertices[maxXIndex];
-		this.maxY = vertices[maxYIndex];
 	}
 
 	@Override
