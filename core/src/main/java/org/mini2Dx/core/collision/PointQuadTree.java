@@ -31,6 +31,7 @@ import org.mini2Dx.gdx.utils.Queue;
 public class PointQuadTree<T extends Positionable> extends Rectangle implements QuadTree<T> {
 	public static float DEFAULT_MINIMUM_QUAD_SIZE = 8f;
 	public static Color QUAD_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(1f, 0f, 0f, 0.5f) : null;
+	public static Color BOUNDS_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(1f, 0f, 1f, 0.5f) : null;
 	public static Color ELEMENT_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(0f, 0f, 1f, 0.5f) : null;
 
 	private static final long serialVersionUID = -2034928347848875105L;
@@ -218,10 +219,16 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		} else {
 			g.setColor(QUAD_COLOR);
 			g.drawShape(this);
+
 			g.drawRect(getX(), getY(), getWidth(), getHeight());
 			g.setColor(ELEMENT_COLOR);
 			for (T element : elements) {
 				g.fillRect(element.getX(), element.getY(), 1f, 1f);
+			}
+
+			if(elementsBounds != null) {
+				g.setColor(BOUNDS_COLOR);
+				g.drawShape(elementsBounds);
 			}
 		}
 		g.setColor(tmp);
@@ -473,7 +480,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			addElementToChild(element);
 		}
 		elements = null;
-		elementsRemoved = false;
+		elementsRemoved = true;
 	}
 
 	protected PointQuadTree<T> allocate(PointQuadTree<T> parent, float x, float y, float width, float height) {
@@ -645,7 +652,8 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	protected boolean removeElement(T element, boolean clearQuadRef) {
 		boolean result = elements.removeValue(element, false);
 		element.removePositionChangeListener(this);
-		
+
+		elementsRemoved |= result;
 		if (parent == null) {
 			if(clearQuadRef) {
 				QuadTreeAwareUtils.removeQuadTreeRef(element);
@@ -663,7 +671,6 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			if (parent.isMergable()){
 				parent.merge();
 			}
-			elementsRemoved = true;
 		}
 		return result;
 	}
@@ -1106,8 +1113,10 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 
 	@Override
 	public void positionChanged(T moved) {
-		if (this.contains(moved.getX(), moved.getY()))
+		if (this.contains(moved.getX(), moved.getY())) {
+			updateBounds(moved);
 			return;
+		}
 
 		removeElement(moved, true);
 
