@@ -815,7 +815,7 @@ public class Polygon extends Shape {
 	 */
 	@Override
 	public float getX() {
-		return getX(0);
+		return vertices[0];
 	}
 
 	/**
@@ -825,7 +825,7 @@ public class Polygon extends Shape {
 	 */
 	@Override
 	public float getY() {
-		return getY(0);
+		return vertices[1];
 	}
 
 	/**
