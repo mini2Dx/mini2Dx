@@ -148,12 +148,22 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 	@Override
 	protected boolean updateBounds(T element) {
 		initBounds();
-		float minX = Math.min(element.getX(), elementsBounds.getX());
-		float minY = Math.min(element.getY(), elementsBounds.getY());
-		float maxX = Math.max(element.getMaxX(), elementsBounds.getMaxX());
-		float maxY = Math.max(element.getMaxY(), elementsBounds.getMaxY());
-		elementsBounds.set(minX, minY, maxX - minX, maxY - minY);
-		return true;
+		final float boundsX = elementsBounds.getX();
+		final float boundsY = elementsBounds.getY();
+		final float boundsMaxX = elementsBounds.getMaxX();
+		final float boundsMaxY = elementsBounds.getMaxY();
+		final float boundsWidth = boundsMaxX - boundsX;
+		final float boundsHeight = boundsMaxY - boundsY;
+
+		float minX = Math.min(element.getX(), boundsX);
+		float minY = Math.min(element.getY(), boundsY);
+		float maxX = Math.max(element.getMaxX(), boundsMaxX);
+		float maxY = Math.max(element.getMaxY(), boundsMaxY);
+
+		final float newWidth = maxX - minX;
+		final float newHeight = maxY - minY;
+		elementsBounds.set(minX, minY, newWidth, newHeight);
+		return boundsWidth != newWidth || boundsHeight != newHeight;
 	}
 
 	@Override
@@ -1077,7 +1087,16 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 	@Override
 	public void positionChanged(T moved) {
 		if (this.contains(moved.getCenterX(), moved.getCenterY())) {
-			updateBounds(moved);
+			if(!updateBounds(moved)) {
+				return;
+			}
+			PointQuadTree<T> parentQuad = parent;
+			while (parentQuad != null) {
+				if(!parentQuad.updateBounds(moved)) {
+					return;
+				}
+				parentQuad = parentQuad.parent;
+			}
 			return;
 		}
 

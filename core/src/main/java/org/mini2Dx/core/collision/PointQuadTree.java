@@ -312,12 +312,22 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 
 	protected boolean updateBounds(T element) {
 		initBounds();
+		final float boundsX = elementsBounds.getX();
+		final float boundsY = elementsBounds.getY();
+		final float boundsMaxX = elementsBounds.getMaxX();
+		final float boundsMaxY = elementsBounds.getMaxY();
+		final float boundsWidth = boundsMaxX - boundsX;
+		final float boundsHeight = boundsMaxY - boundsY;
+
 		float minX = Math.min(element.getX(), elementsBounds.getX());
 		float minY = Math.min(element.getY(), elementsBounds.getY());
 		float maxX = Math.max(element.getX(), elementsBounds.getMaxX());
 		float maxY = Math.max(element.getY(), elementsBounds.getMaxY());
-		elementsBounds.set(minX, minY, maxX - minX, maxY - minY);
-		return true;
+
+		final float newWidth = maxX - minX;
+		final float newHeight = maxY - minY;
+		elementsBounds.set(minX, minY, newWidth, newHeight);
+		return boundsWidth != newWidth || boundsHeight != newHeight;
 	}
 
 	protected boolean updateBounds() {
@@ -1114,7 +1124,16 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	@Override
 	public void positionChanged(T moved) {
 		if (this.contains(moved.getX(), moved.getY())) {
-			updateBounds(moved);
+			if(!updateBounds(moved)) {
+				return;
+			}
+			PointQuadTree<T> parentQuad = parent;
+			while (parentQuad != null) {
+				if(!parentQuad.updateBounds(moved)) {
+					return;
+				}
+				parentQuad = parentQuad.parent;
+			}
 			return;
 		}
 
