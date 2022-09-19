@@ -1190,10 +1190,18 @@ public class Polygon extends Shape {
 		for (int i = 2; i < vertices.length; i += 2) {
 			final float x = vertices[i];
 			final float y = vertices[i + 1];
-			this.minX = Math.min(this.minX, x);
-			this.minY = Math.min(this.minY, y);
-			this.maxX = Math.max(this.maxX, x);
-			this.maxY = Math.max(this.maxY, y);
+			if(x < this.minX) {
+				this.minX = x;
+			}
+			if(y < this.minY) {
+				this.minY = y;
+			}
+			if(x > this.maxX) {
+				this.maxX = x;
+			}
+			if(y > this.maxY) {
+				this.maxY = y;
+			}
 		}
 	}
 
