@@ -154,7 +154,7 @@ public class Polygon extends Shape {
 		}
 		if (from.getRotation() != target.getRotation()) {
 			float newRotation = Lerper.lerp(from.rotation, target.getRotation(), alpha);
-			if (from.getX() == target.getX() && from.getY() == target.getY()) {
+			if (from.vertices[0] == target.vertices[0] && from.vertices[1] == target.vertices[1]) {
 				// Same origin, only rotational change
 				result.setRotation(newRotation);
 			} else {
