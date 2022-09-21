@@ -238,7 +238,7 @@ public class Triangle extends Shape {
 	
 	@Override
 	public float getX() {
-		return polygon.getX();
+		return polygon.vertices[0];
 	}
 	
 	@Override
@@ -248,7 +248,7 @@ public class Triangle extends Shape {
 	
 	@Override
 	public float getY() {
-		return polygon.getY();
+		return polygon.vertices[1];
 	}
 
 	@Override

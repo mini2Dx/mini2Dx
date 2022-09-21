@@ -348,7 +348,7 @@ public class Rectangle extends Shape {
 	
 	@Override
 	public float getX() {
-		return polygon.getX();
+		return polygon.vertices[0];
 	}
 	
 	public void setX(float x) {
@@ -357,7 +357,7 @@ public class Rectangle extends Shape {
 	
 	@Override
 	public float getY() {
-		return polygon.getY();
+		return polygon.vertices[1];
 	}
 	
 	public void setY(float y) {
