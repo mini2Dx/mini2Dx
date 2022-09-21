@@ -258,10 +258,10 @@ public class Polygon extends Shape {
 	public boolean contains(Polygon polygon) {
 		checkSidesCache();
 		if(isRectangle && MathUtils.isZero(rotation)) {
-			if(polygon.getX() < getX()) {
+			if(polygon.vertices[0] < vertices[0]) {
 				return false;
 			}
-			if(polygon.getY() < getY()) {
+			if(polygon.vertices[1] < vertices[1]) {
 				return false;
 			}
 			if(polygon.getMaxY() > getMaxY()) {
