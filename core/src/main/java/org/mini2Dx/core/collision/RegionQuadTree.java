@@ -168,13 +168,14 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 
 	@Override
 	protected boolean updateBounds() {
+		if(!cleanupRequired) {
+			return false;
+		}
+		cleanupRequired = false;
+
 		if(topLeft == null) {
-			if(!elementsRemoved) {
-				return false;
-			}
 			if(elements.size == 0) {
 				disposeBounds();
-				elementsRemoved = false;
 				return true;
 			}
 
@@ -196,8 +197,6 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 				maxY = Math.max(element.getMaxY(), elementsBounds.getMaxY());
 			}
 			elementsBounds.set(minX, minY, maxX - minX, maxY - minY);
-
-			elementsRemoved = false;
 			return true;
 		}
 
@@ -418,7 +417,7 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			element.removePositionChangeListener(this);
 			addElementToChild(element);
 		}
-		elementsRemoved = true;
+		markCleanupRequired();
 	}
 
 	protected RegionQuadTree<T> allocate(RegionQuadTree<T> parent, float x, float y, float width, float height) {
@@ -479,7 +478,7 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 		}
 		elements.clear();
 		clearTotalElementsCache();
-		elementsRemoved = true;
+		markCleanupRequired();
 	}
 
 	@Override

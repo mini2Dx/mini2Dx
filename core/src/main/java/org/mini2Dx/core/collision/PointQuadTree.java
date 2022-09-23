@@ -48,7 +48,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	protected final float minimumQuadWidth, minimumQuadHeight;
 
 	protected int totalElementsCache = -1;
-	protected boolean elementsRemoved = false;
+	protected boolean cleanupRequired = false;
 
 	/**
 	 * Constructs a {@link PointQuadTree} with a specified element limit and
@@ -163,6 +163,22 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 
 	public void cleanup() {
 		updateBounds();
+	}
+
+	protected void markCleanupRequired() {
+		if(cleanupRequired) {
+			return;
+		}
+		cleanupRequired = true;
+
+		PointQuadTree<T> parentQuad = parent;
+		while (parentQuad != null) {
+			if (parentQuad.cleanupRequired) {
+				return;
+			}
+			parentQuad.cleanupRequired = true;
+			parentQuad = parentQuad.parent;
+		}
 	}
 
 	public void warmupWithDepth(int depth) {
@@ -331,13 +347,14 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	}
 
 	protected boolean updateBounds() {
+		if(!cleanupRequired) {
+			return false;
+		}
+		cleanupRequired = false;
+
 		if(topLeft == null) {
-			if(!elementsRemoved) {
-				return false;
-			}
 			if(elements.size == 0) {
 				disposeBounds();
-				elementsRemoved = false;
 				return true;
 			}
 
@@ -359,8 +376,6 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 				maxY = Math.max(element.getY(), elementsBounds.getMaxY());
 			}
 			elementsBounds.set(minX, minY, maxX - minX, maxY - minY);
-
-			elementsRemoved = false;
 			return true;
 		}
 
@@ -490,7 +505,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			addElementToChild(element);
 		}
 		elements = null;
-		elementsRemoved = true;
+		markCleanupRequired();
 	}
 
 	protected PointQuadTree<T> allocate(PointQuadTree<T> parent, float x, float y, float width, float height) {
@@ -563,7 +578,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		topRight = null;
 		bottomLeft = null;
 		bottomRight = null;
-		elementsRemoved = true;
+		markCleanupRequired();
 	}
 
 	public void removeAll(Array<T> elementsToRemove) {
@@ -599,7 +614,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		if (parent.isMergable()) {
 			parent.merge();
 		}
-		elementsRemoved = true;
+		markCleanupRequired();
 	}
 
 	public boolean remove(T element) {
@@ -644,7 +659,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			elements.clear();
 		}
 		clearTotalElementsCache();
-		elementsRemoved = true;
+		markCleanupRequired();
 	}
 
 	protected boolean removeElementFromChild(T element) {
@@ -663,7 +678,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 		boolean result = elements.removeValue(element, false);
 		element.removePositionChangeListener(this);
 
-		elementsRemoved |= result;
+		markCleanupRequired();
 		if (parent == null) {
 			if(clearQuadRef) {
 				QuadTreeAwareUtils.removeQuadTreeRef(element);
