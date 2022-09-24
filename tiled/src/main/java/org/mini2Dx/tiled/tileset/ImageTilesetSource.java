@@ -45,6 +45,7 @@ public class ImageTilesetSource extends TilesetSource {
 
 	private Tile[][] tiles;
 	private IntMap<Sprite> tileImages = new IntMap<Sprite>();
+	private Array<Tile> animatedTiles = new Array<>();
 	private int width, height;
 	private int tileWidth, tileHeight;
 	private int spacing, margin;
@@ -52,6 +53,8 @@ public class ImageTilesetSource extends TilesetSource {
 	private String name, tilesetImagePath, transparentColorValue;
 	private ObjectMap<String, String> properties;
 	private int widthInTiles, heightInTiles;
+
+	private long lastFrameId;
 
 	private Texture backingTexture;
 	private TextureRegion textureRegion;
@@ -156,6 +159,7 @@ public class ImageTilesetSource extends TilesetSource {
 				switch (rendererType) {
 				case AnimatedTileRenderer.RENDERER_TYPE:
 					tiles[x][y].setTileRenderer(AnimatedTileRenderer.fromInputStream(this, inputStream));
+					registerAnimatedTile(tiles[x][y]);
 					break;
 				default:
 				case StaticTileRenderer.RENDERER_TYPE:
@@ -373,7 +377,31 @@ public class ImageTilesetSource extends TilesetSource {
 	public ObjectMap<String, String> getProperties() {
 		return properties;
 	}
-	
+
+	@Override
+	public void updateAnimatedTiles(float delta) {
+		// Prevent duplicate updates per frame
+		long currentFrameId = Mdx.graphicsContext.getFrameId();
+		if (currentFrameId <= lastFrameId) {
+			return;
+		}
+		lastFrameId = currentFrameId;
+
+		for(int i = 0; i < animatedTiles.size; i++) {
+			animatedTiles.get(i).update(delta);
+		}
+	}
+
+	@Override
+	public Array<Tile> getAnimatedTiles() {
+		return animatedTiles;
+	}
+
+	@Override
+	public void registerAnimatedTile(Tile tile) {
+		animatedTiles.add(tile);
+	}
+
 	@Override
 	public int getWidth() {
 		return width;

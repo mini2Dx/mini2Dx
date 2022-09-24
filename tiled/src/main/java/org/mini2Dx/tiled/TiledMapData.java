@@ -58,7 +58,6 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 	private StaggerIndex staggerIndex;
 	private int width, height, tileWidth, tileHeight, pixelWidth, pixelHeight, sideLength;
 	private Color backgroundColor;
-	private Array<Tile> animatedTiles;
 	private ObjectMap<String, String> properties;
 
 	/**
@@ -424,22 +423,6 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 
 	@Override
 	public void onEndParsing() {
-		if(!TiledMap.OPTIMISE_ANIMATED_TILES) {
-			return;
-		}
-		if(animatedTiles == null) {
-			return;
-		}
-		for(int i = animatedTiles.size - 1; i >= 0; i--) {
-			final Tile animatedTile = animatedTiles.get(i);
-			if(animatedTile == null) {
-				continue;
-			}
-			if(isTileUsed(animatedTile.getTileId(0))) {
-				continue;
-			}
-			animatedTiles.removeIndex(i);
-		}
 	}
 
 	/**
@@ -524,15 +507,6 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 
 	@Override
 	public void onTilePropertiesParsed(Tile tile) {
-		if (tile.getTileRenderer() == null) {
-			return;
-		}
-		if (tile.getTileRenderer() instanceof AnimatedTileRenderer) {
-			if (animatedTiles == null) {
-				animatedTiles = new Array<Tile>(true,8, Tile.class);
-			}
-			animatedTiles.add(tile);
-		}
 	}
 
 	@Override
@@ -927,10 +901,6 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 		return layers;
 	}
 
-	public Array<Tile> getAnimatedTiles() {
-		return animatedTiles;
-	}
-
 	/**
 	 * Returns the total amount of {@link TiledObjectGroup} instances
 	 * 
@@ -964,10 +934,16 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 	 * @return True if there are animated tiles
 	 */
 	public boolean containsAnimatedTiles() {
-		if (animatedTiles == null) {
-			return false;
+		for(int i = 0; i < tilesets.size; i++) {
+			final Tileset tileset = tilesets.get(i);
+			if(tileset.getTilesetSource() == null) {
+				continue;
+			}
+			if(tileset.getTilesetSource().getAnimatedTiles().size > 0) {
+				return true;
+			}
 		}
-		return animatedTiles.size > 0;
+		return false;
 	}
 
 	/**
@@ -1055,12 +1031,19 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		TiledMapData that = (TiledMapData) o;
-		return width == that.width && height == that.height && tileWidth == that.tileWidth && tileHeight == that.tileHeight && pixelWidth == that.pixelWidth && pixelHeight == that.pixelHeight && sideLength == that.sideLength && Objects.equals(tilesets, that.tilesets) && Objects.equals(tilesetGids, that.tilesetGids) && Objects.equals(layers, that.layers) && Objects.equals(orientationValue, that.orientationValue) && orientation == that.orientation && staggerAxis == that.staggerAxis && staggerIndex == that.staggerIndex && Objects.equals(backgroundColor, that.backgroundColor) && Objects.equals(animatedTiles, that.animatedTiles) && Objects.equals(properties, that.properties);
+		return width == that.width && height == that.height && tileWidth == that.tileWidth && tileHeight == that.tileHeight &&
+				pixelWidth == that.pixelWidth && pixelHeight == that.pixelHeight && sideLength == that.sideLength &&
+				Objects.equals(tilesets, that.tilesets) && Objects.equals(tilesetGids, that.tilesetGids) &&
+				Objects.equals(layers, that.layers) && Objects.equals(orientationValue, that.orientationValue) &&
+				orientation == that.orientation && staggerAxis == that.staggerAxis && staggerIndex == that.staggerIndex &&
+				Objects.equals(backgroundColor, that.backgroundColor) && Objects.equals(properties, that.properties);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(tilesets, tilesetGids, layers, orientationValue, orientation, staggerAxis, staggerIndex, width, height, tileWidth, tileHeight, pixelWidth, pixelHeight, sideLength, backgroundColor, animatedTiles, properties);
+		return Objects.hash(tilesets, tilesetGids, layers, orientationValue, orientation,
+				staggerAxis, staggerIndex, width, height, tileWidth, tileHeight,
+				pixelWidth, pixelHeight, sideLength, backgroundColor,properties);
 	}
 
 	@Override

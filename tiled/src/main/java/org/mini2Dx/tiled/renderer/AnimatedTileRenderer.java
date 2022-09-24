@@ -38,7 +38,6 @@ public class AnimatedTileRenderer implements TileRenderer {
 
 	private int currentFrame;
 	private float timer;
-	private long lastFrameId;
 
 	public AnimatedTileRenderer(TilesetSource tilesetSource, TileFrame[] frames) {
 		super();
@@ -72,17 +71,11 @@ public class AnimatedTileRenderer implements TileRenderer {
 
 	@Override
 	public void update(Tile tile, float delta) {
-		// Prevent duplicate updates per frame
-		long currentFrameId = Mdx.graphicsContext.getFrameId();
-		if (currentFrameId <= lastFrameId) {
-			return;
-		}
 		timer += delta;
 		while (timer >= frames[currentFrame].duration) {
 			timer -= frames[currentFrame].duration;
 			currentFrame = currentFrame == frames.length - 1 ? 0 : currentFrame + 1;
 		}
-		lastFrameId = currentFrameId;
 	}
 
 	@Override

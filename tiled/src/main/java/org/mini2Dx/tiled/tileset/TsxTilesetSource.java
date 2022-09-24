@@ -233,6 +233,21 @@ public class TsxTilesetSource extends TilesetSource {
 	}
 
 	@Override
+	public void updateAnimatedTiles(float delta) {
+		tileset.updateAnimatedTiles(delta);
+	}
+
+	@Override
+	public Array<Tile> getAnimatedTiles() {
+		return tileset.getAnimatedTiles();
+	}
+
+	@Override
+	public void registerAnimatedTile(Tile tile) {
+		tileset.registerAnimatedTile(tile);
+	}
+
+	@Override
 	public String getInternalUuid() {
 		return getTsxPath();
 	}

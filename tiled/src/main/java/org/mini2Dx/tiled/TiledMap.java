@@ -53,10 +53,6 @@ public class TiledMap {
 	 * Set to true if all maps share the same set of tilesets
 	 */
 	public static boolean SHARED_TILE_ID_MAP = false;
-	/**
-	 * Set to true if unused animated tiles should be removed from update()
-	 */
-	public static boolean OPTIMISE_ANIMATED_TILES = false;
 
 	private static final IntMap<Tileset> GLOBAL_TILE_ID_TO_TILESET = new IntMap<>(INITIAL_TILE_ID_TO_TILESET_MAP_SIZE);
 
@@ -223,11 +219,12 @@ public class TiledMap {
 	 *            The time since the last frame (in seconds)
 	 */
 	public void update(float delta) {
-		if (tiledMapData.getAnimatedTiles() == null) {
-			return;
-		}
-		for (int i = 0; i < tiledMapData.getAnimatedTiles().size; i++) {
-			tiledMapData.getAnimatedTiles().get(i).update(delta);
+		for (int i = 0; i < tiledMapData.getTilesets().size; i++) {
+			final Tileset tileset = tiledMapData.getTilesets().get(i);
+			if(tileset.getTilesetSource() == null) {
+				return;
+			}
+			tileset.getTilesetSource().updateAnimatedTiles(delta);
 		}
 	}
 

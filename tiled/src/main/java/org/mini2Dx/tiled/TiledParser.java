@@ -283,6 +283,7 @@ public class TiledParser implements TiledParserNotifier {
 					}
 					
 					tile.setTileRenderer(new AnimatedTileRenderer(tilesetSource, frames));
+					tilesetSource.registerAnimatedTile(tile);
 				}
 				
 				notifyTilePropertyParsed(tile);
