@@ -107,6 +107,16 @@ public class TsxTilesetSource extends TilesetSource {
 		TILESET_REFS.get(this.tsxPath).incrementAndGet();
 	}
 
+	/**
+	 * Updates animated tiles across all tilesets even if they are unreferenced by a TiledMap
+	 * @param delta The time since the last frame (in seconds)
+	 */
+	public static void updateAllAnimatedTiles(float delta) {
+		for(ImageTilesetSource tilesetSource : TILESETS.values()) {
+			tilesetSource.updateAnimatedTiles(delta);
+		}
+	}
+
 	public static TsxTilesetSource fromInputStream(TiledMapData tiledMapData,
 												   DataInputStream inputStream) throws IOException {
 		final String tsxPath = inputStream.readUTF();
