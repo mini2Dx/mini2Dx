@@ -546,6 +546,9 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			switch (Mdx.platform) {
 			case ANDROID:
 			case IOS:
+			case NINTENDO_SWITCH:
+			case PLAYSTATION:
+			case XBOX:
 				Mdx.input.setOnScreenKeyboardVisible(false);
 				break;
 			default:
@@ -700,6 +703,9 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 				switch (Mdx.platform) {
 				case ANDROID:
 				case IOS:
+				case NINTENDO_SWITCH:
+				case PLAYSTATION:
+				case XBOX:
 					Mdx.input.setOnScreenKeyboardVisible(false);
 					break;
 				default:
@@ -732,6 +738,9 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			switch (Mdx.platform) {
 			case ANDROID:
 			case IOS:
+			case NINTENDO_SWITCH:
+			case PLAYSTATION:
+			case XBOX:
 				Mdx.input.setOnScreenKeyboardVisible(true);
 				break;
 			default:
@@ -750,6 +759,9 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			switch (Mdx.platform) {
 			case ANDROID:
 			case IOS:
+			case NINTENDO_SWITCH:
+			case PLAYSTATION:
+			case XBOX:
 				Mdx.input.setOnScreenKeyboardVisible(false);
 				break;
 			default:

@@ -40,7 +40,11 @@ public interface Input {
     public void setGamePadConnectionListener(GamePadConnectionListener listener, boolean notifyExisting);
 
     /**
-     * Sets on mobile and consoles of the on-screen keyboard should appear
+     * Sets on mobile and consoles of the on-screen keyboard should appear.
+     *
+     * Note: The keyboard may close itself via OS events.
+     * {@link org.mini2Dx.gdx.Input.Keys#ESCAPE} is sent when the keyboard is closed.
+     *
      * @param visible True if the keyboard should appear
      */
     public void setOnScreenKeyboardVisible(boolean visible);
