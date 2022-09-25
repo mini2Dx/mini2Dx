@@ -264,19 +264,18 @@ public class Polygon extends Shape {
 	public boolean contains(Polygon polygon) {
 		checkSidesCache();
 		if(isRectangle && (rotation == 0f || MathUtils.isZero(rotation))) {
-			minMaxDirtyCheck();
 			polygon.minMaxDirtyCheck();
 
-			if(polygon.minX < minX) {
+			if(polygon.minX < vertices[0]) {
 				return false;
 			}
-			if(polygon.minY < minY) {
+			if(polygon.minY < vertices[1]) {
 				return false;
 			}
-			if(polygon.maxY > maxY) {
+			if(polygon.maxX > vertices[4]) {
 				return false;
 			}
-			if(polygon.maxX > maxX) {
+			if(polygon.maxY > vertices[5]) {
 				return false;
 			}
 			return true;
@@ -309,9 +308,7 @@ public class Polygon extends Shape {
 	 */
 	public boolean intersects(Polygon polygon) {
 		minMaxDirtyCheck();
-		checkSidesCache();
 		polygon.minMaxDirtyCheck();
-		polygon.checkSidesCache();
 
 		if (maxX < polygon.minX)
 			return false;
@@ -321,6 +318,9 @@ public class Polygon extends Shape {
 			return false;
 		if (polygon.maxY < minY)
 			return false;
+
+		checkSidesCache();
+		polygon.checkSidesCache();
 
 		//TODO: Fast check 90 degree angle with bit tricks
 		if (isRectangle && polygon.isRectangle &&

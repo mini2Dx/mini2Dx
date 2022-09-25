@@ -150,23 +150,36 @@ public class Rectangle extends Shape {
 	}
 	
 	public boolean contains(Rectangle rectangle) {
-		polygon.minMaxDirtyCheck();
 		rectangle.polygon.minMaxDirtyCheck();
 
+		if(polygon.rotation == 0f || MathUtils.isZero(polygon.rotation)) {
+			if(rectangle.polygon.minX < polygon.vertices[0]) {
+				return false;
+			}
+			if(rectangle.polygon.minY < polygon.vertices[1]) {
+				return false;
+			}
+			if(rectangle.polygon.maxX > polygon.vertices[4]) {
+				return false;
+			}
+			if(rectangle.polygon.maxY > polygon.vertices[5]) {
+				return false;
+			}
+			return true;
+		}
+
+		polygon.minMaxDirtyCheck();
 		if(rectangle.polygon.minX < polygon.minX) {
 			return false;
 		}
 		if(rectangle.polygon.minY < polygon.minY) {
 			return false;
 		}
-		if(rectangle.polygon.maxY > polygon.maxY) {
-			return false;
-		}
 		if(rectangle.polygon.maxX > polygon.maxX) {
 			return false;
 		}
-		if(polygon.rotation == 0f || MathUtils.isZero(polygon.rotation)) {
-			return true;
+		if(rectangle.polygon.maxY > polygon.maxY) {
+			return false;
 		}
 		return Intersector.containsPolygon(polygon, rectangle.polygon);
 	}
