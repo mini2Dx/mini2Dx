@@ -314,6 +314,10 @@ public class RectangleTest {
 		rectangle2 = new Rectangle(101f, 101f, 70f, 70f);
 		Assert.assertTrue(rectangle1.intersects(rectangle2));
 		Assert.assertTrue(rectangle2.intersects(rectangle1));
+
+		rectangle2 = new Rectangle(90f, 90f, 200f, 200f);
+		Assert.assertTrue(rectangle1.intersects(rectangle2));
+		Assert.assertTrue(rectangle2.intersects(rectangle1));
 	}
 
 	@Test

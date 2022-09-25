@@ -522,8 +522,6 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			if(topLeft.isSearchRequired()) {
 				if (area.contains(topLeft.elementsBounds)) {
 					topLeft.getElementsWithinArea(result, area, true);
-				} else if (topLeft.elementsBounds.contains(area)) {
-					topLeft.getElementsWithinArea(result, area, false);
 				} else if (topLeft.elementsBounds.intersects(area)) {
 					topLeft.getElementsWithinArea(result, area, false);
 				}
@@ -531,8 +529,6 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			if(topRight.isSearchRequired()) {
 				if (area.contains(topRight.elementsBounds)) {
 					topRight.getElementsWithinArea(result, area, true);
-				} else if (topRight.elementsBounds.contains(area)) {
-					topRight.getElementsWithinArea(result, area, false);
 				} else if (topRight.elementsBounds.intersects(area)) {
 					topRight.getElementsWithinArea(result, area, false);
 				}
@@ -540,8 +536,6 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			if(bottomLeft.isSearchRequired()) {
 				if (area.contains(bottomLeft.elementsBounds)) {
 					bottomLeft.getElementsWithinArea(result, area, true);
-				} else if (bottomLeft.elementsBounds.contains(area)) {
-					bottomLeft.getElementsWithinArea(result, area, false);
 				} else if (bottomLeft.elementsBounds.intersects(area)) {
 					bottomLeft.getElementsWithinArea(result, area, false);
 				}
@@ -549,8 +543,6 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			if(bottomRight.isSearchRequired()) {
 				if (area.contains(bottomRight.elementsBounds)) {
 					bottomRight.getElementsWithinArea(result, area, true);
-				} else if(bottomRight.elementsBounds.contains(area)) {
-					bottomRight.getElementsWithinArea(result, area, false);
 				} else if(bottomRight.elementsBounds.intersects(area)) {
 					bottomRight.getElementsWithinArea(result, area, false);
 				}
@@ -580,36 +572,28 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 
 		if (firstInvocation && topLeft != null){
 			if (topLeft.isSearchRequired()){
-				if(area.contains(topLeft.elementsBounds)) {
-					topLeft.getElementsWithinArea(result, area, true);
-				} else if(area.intersects(topLeft.elementsBounds)) {
+				if(area.intersects(topLeft.elementsBounds)) {
 					topLeft.getElementsWithinArea(result, area, false);
 				} else if(topLeft.elementsBounds.contains(area)) {
 					topLeft.getElementsWithinArea(result, area, false);
 				}
 			}
 			if (topRight.isSearchRequired()){
-				if(area.contains(topRight.elementsBounds)) {
-					topRight.getElementsWithinArea(result, area, true);
-				} else if(area.intersects(topRight.elementsBounds)) {
+				if(area.intersects(topRight.elementsBounds)) {
 					topRight.getElementsWithinArea(result, area, false);
 				} else if(topRight.elementsBounds.contains(area)) {
 					topRight.getElementsWithinArea(result, area, false);
 				}
 			}
 			if (bottomLeft.isSearchRequired()){
-				if(area.contains(bottomLeft.elementsBounds)) {
-					bottomLeft.getElementsWithinArea(result, area, true);
-				} else if(area.intersects(bottomLeft.elementsBounds)) {
+				if(area.intersects(bottomLeft.elementsBounds)) {
 					bottomLeft.getElementsWithinArea(result, area, false);
 				} else if(bottomLeft.elementsBounds.contains(area)) {
 					bottomLeft.getElementsWithinArea(result, area, false);
 				}
 			}
 			if (bottomRight.isSearchRequired()){
-				if(area.contains(bottomRight.elementsBounds)) {
-					bottomRight.getElementsWithinArea(result, area, true);
-				} else if(area.intersects(bottomRight.elementsBounds)) {
+				if(area.intersects(bottomRight.elementsBounds)) {
 					bottomRight.getElementsWithinArea(result, area, false);
 				} else if(bottomRight.elementsBounds.contains(area)) {
 					bottomRight.getElementsWithinArea(result, area, false);
@@ -623,29 +607,25 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 
 		//Scan sibling nodes if intersecting this element
 		if (parent.topLeft != this && parent.topLeft.isSearchRequired()) {
-			if(area.contains(parent.topLeft.elementsBounds) ||
-					area.intersects(parent.topLeft.elementsBounds)) {
+			if(area.intersects(parent.topLeft.elementsBounds)) {
 				parent.topLeft.getElementsWithinArea(result, area, false);
 				nodeCrossed = true;
 			}
 		}
 		if (parent.topRight != this && parent.topRight.isSearchRequired()) {
-			if(area.contains(parent.topRight.elementsBounds) ||
-					area.intersects(parent.topRight.elementsBounds)) {
+			if(area.intersects(parent.topRight.elementsBounds)) {
 				parent.topRight.getElementsWithinArea(result, area, false);
 				nodeCrossed = true;
 			}
 		}
 		if (parent.bottomLeft != this && parent.bottomLeft.isSearchRequired()) {
-			if(area.contains(parent.bottomLeft.elementsBounds) ||
-					area.intersects(parent.bottomLeft.elementsBounds)) {
+			if(area.intersects(parent.bottomLeft.elementsBounds)) {
 				parent.bottomLeft.getElementsWithinArea(result, area, false);
 				nodeCrossed = true;
 			}
 		}
 		if (parent.bottomRight != this && parent.bottomRight.isSearchRequired()) {
-			if(area.contains(parent.bottomRight.elementsBounds) ||
-					area.intersects(parent.bottomRight.elementsBounds)) {
+			if(area.intersects(parent.bottomRight.elementsBounds)) {
 				parent.bottomRight.getElementsWithinArea(result, area, false);
 				nodeCrossed = true;
 			}
@@ -674,8 +654,6 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			if (topLeft.isSearchRequired()) {
 				if(area.contains(topLeft.elementsBounds)) {
 					topLeft.getElementsWithinAreaIgnoringEdges(result, area);
-				} else if(topLeft.elementsBounds.contains(area)) {
-					topLeft.getElementsWithinAreaIgnoringEdges(result, area);
 				} else if(topLeft.elementsBounds.intersectsIgnoringEdges(area)) {
 					topLeft.getElementsWithinAreaIgnoringEdges(result, area);
 				}
@@ -683,8 +661,6 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 
 			if (topRight.isSearchRequired()) {
 				if(area.contains(topRight.elementsBounds)) {
-					topRight.getElementsWithinAreaIgnoringEdges(result, area);
-				} else if(topRight.elementsBounds.contains(area)) {
 					topRight.getElementsWithinAreaIgnoringEdges(result, area);
 				} else if(topRight.elementsBounds.intersectsIgnoringEdges(area)) {
 					topRight.getElementsWithinAreaIgnoringEdges(result, area);
@@ -694,8 +670,6 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			if (bottomLeft.isSearchRequired()) {
 				if(area.contains(bottomLeft.elementsBounds)) {
 					bottomLeft.getElementsWithinAreaIgnoringEdges(result, area);
-				} else if(bottomLeft.elementsBounds.contains(area)) {
-					bottomLeft.getElementsWithinAreaIgnoringEdges(result, area);
 				} else if(bottomLeft.elementsBounds.intersectsIgnoringEdges(area)) {
 					bottomLeft.getElementsWithinAreaIgnoringEdges(result, area);
 				}
@@ -703,8 +677,6 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 
 			if (bottomRight.isSearchRequired()) {
 				if(area.contains(bottomRight.elementsBounds)) {
-					bottomRight.getElementsWithinAreaIgnoringEdges(result, area);
-				} else if(bottomRight.elementsBounds.contains(area)) {
 					bottomRight.getElementsWithinAreaIgnoringEdges(result, area);
 				} else if(bottomRight.elementsBounds.intersectsIgnoringEdges(area)) {
 					bottomRight.getElementsWithinAreaIgnoringEdges(result, area);
@@ -823,13 +795,13 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 	@Override
 	public void getElementsContainingArea(Array<T> result, Shape area, boolean entirelyContained) {
 		if (topLeft != null) {
-			if (topLeft.isSearchRequired() && (topLeft.elementsBounds.contains(area) || topLeft.elementsBounds.intersects(area)))
+			if (topLeft.isSearchRequired() && (topLeft.elementsBounds.intersects(area)))
 				topLeft.getElementsContainingArea(result, area, entirelyContained);
-			if (topRight.isSearchRequired() && (topRight.elementsBounds.contains(area) || topRight.elementsBounds.intersects(area)))
+			if (topRight.isSearchRequired() && (topRight.elementsBounds.intersects(area)))
 				topRight.getElementsContainingArea(result, area, entirelyContained);
-			if (bottomLeft.isSearchRequired() && (bottomLeft.elementsBounds.contains(area) || bottomLeft.elementsBounds.intersects(area)))
+			if (bottomLeft.isSearchRequired() && (bottomLeft.elementsBounds.intersects(area)))
 				bottomLeft.getElementsContainingArea(result, area, entirelyContained);
-			if (bottomRight.isSearchRequired() && (bottomRight.elementsBounds.contains(area) || bottomRight.elementsBounds.intersects(area)))
+			if (bottomRight.isSearchRequired() && (bottomRight.elementsBounds.intersects(area)))
 				bottomRight.getElementsContainingArea(result, area, entirelyContained);
 		}
 		addElementsContainingArea(result, area, entirelyContained);
@@ -852,34 +824,34 @@ public class RegionQuadTree<T extends Sizeable> extends PointQuadTree<T> {
 			addElementsContainingArea(result, area, entirelyContained);
 		}
 		if (firstInvocation && topLeft != null){
-			if (topLeft.isSearchRequired() && (area.contains(topLeft.elementsBounds) || area.intersects(topLeft.elementsBounds))){
+			if (topLeft.isSearchRequired() && (area.intersects(topLeft.elementsBounds))){
 				topLeft.getElementsContainingArea(result, area, entirelyContained);
 			}
-			if (topRight.isSearchRequired() && (area.contains(topRight.elementsBounds) || area.intersects(topRight.elementsBounds))){
+			if (topRight.isSearchRequired() && (area.intersects(topRight.elementsBounds))){
 				topRight.getElementsContainingArea(result, area, entirelyContained);
 			}
-			if (bottomLeft.isSearchRequired() && (area.contains(bottomLeft.elementsBounds) || area.intersects(bottomLeft.elementsBounds))){
+			if (bottomLeft.isSearchRequired() && (area.intersects(bottomLeft.elementsBounds))){
 				bottomLeft.getElementsContainingArea(result, area, entirelyContained);
 			}
-			if (bottomRight.isSearchRequired() && (area.contains(bottomRight.elementsBounds) || area.intersects(bottomRight.elementsBounds))){
+			if (bottomRight.isSearchRequired() && (area.intersects(bottomRight.elementsBounds))){
 				bottomRight.getElementsContainingArea(result, area, entirelyContained);
 			}
 		}
 		if (parent != null) {
 			if (parent.topLeft != this && parent.topLeft.isSearchRequired() &&
-					(area.contains(parent.topLeft.elementsBounds) || area.intersects(parent.topLeft.elementsBounds))) {
+					(area.intersects(parent.topLeft.elementsBounds))) {
 				parent.topLeft.getElementsContainingArea(result, area, entirelyContained);
 			}
 			if (parent.topRight != this && parent.topRight.isSearchRequired() &&
-					(area.contains(parent.topRight.elementsBounds) || area.intersects(parent.topRight.elementsBounds))) {
+					(area.intersects(parent.topRight.elementsBounds))) {
 				parent.topRight.getElementsContainingArea(result, area, entirelyContained);
 			}
 			if (parent.bottomLeft != this && parent.bottomLeft.isSearchRequired() &&
-					(area.contains(parent.bottomLeft.elementsBounds) || area.intersects(parent.bottomLeft.elementsBounds))) {
+					(area.intersects(parent.bottomLeft.elementsBounds))) {
 				parent.bottomLeft.getElementsContainingArea(result, area, entirelyContained);
 			}
 			if (parent.bottomRight != this && parent.bottomRight.isSearchRequired() &&
-					(area.contains(parent.bottomRight.elementsBounds) || area.intersects(parent.bottomRight.elementsBounds))) {
+					(area.intersects(parent.bottomRight.elementsBounds))) {
 				parent.bottomRight.getElementsContainingArea(result, area, entirelyContained);
 			}
 			((RegionQuadTree<T>)parent).getElementsContainingAreaUpwards(result, area, false, entirelyContained);
