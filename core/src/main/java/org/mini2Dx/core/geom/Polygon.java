@@ -55,14 +55,15 @@ public class Polygon extends Shape {
 
 	private final Vector2 centroid = new Vector2();
 	float[] vertices;
-	private float rotation = 0f;
+	float rotation = 0f;
 	private int totalSidesCache = -1;
-	private float minX, minY, maxX, maxY;
+	float minX, minY, maxX, maxY;
 	private ShortArray triangles;
 	private boolean isRectangle, isEquilateral;
 	private boolean minMaxDirty = true;
 	private boolean trianglesDirty = true;
 	private boolean centroidDirty = true;
+	private boolean equilateralDirty = true;
 
 	/**
 	 * Constructs a {@link Polygon} belonging to the {@link Geometry} pool
@@ -168,6 +169,7 @@ public class Polygon extends Shape {
 			}
 			result.vertices = resultVertices;
 			result.setDirty();
+			result.clearEquilateralCache();
 			result.notifyPositionChangeListeners();
 		}
 	}
@@ -181,6 +183,10 @@ public class Polygon extends Shape {
 
 	private void clearTotalSidesCache() {
 		totalSidesCache = -1;
+	}
+
+	private void clearEquilateralCache() {
+		equilateralDirty = true;
 	}
 
 	protected boolean triangleContains(float x, float y, float p1x, float p1y, float p2x, float p2y, float p3x,
@@ -257,17 +263,20 @@ public class Polygon extends Shape {
 
 	public boolean contains(Polygon polygon) {
 		checkSidesCache();
-		if(isRectangle && MathUtils.isZero(rotation)) {
-			if(polygon.vertices[0] < vertices[0]) {
+		if(isRectangle && (rotation == 0f || MathUtils.isZero(rotation))) {
+			minMaxDirtyCheck();
+			polygon.minMaxDirtyCheck();
+
+			if(polygon.minX < minX) {
 				return false;
 			}
-			if(polygon.vertices[1] < vertices[1]) {
+			if(polygon.minY < minY) {
 				return false;
 			}
-			if(polygon.getMaxY() > getMaxY()) {
+			if(polygon.maxY > maxY) {
 				return false;
 			}
-			if(polygon.getMaxX() > getMaxX()) {
+			if(polygon.maxX > maxX) {
 				return false;
 			}
 			return true;
@@ -315,8 +324,8 @@ public class Polygon extends Shape {
 
 		//TODO: Fast check 90 degree angle with bit tricks
 		if (isRectangle && polygon.isRectangle &&
-				MathUtils.isZero(rotation) &&
-				MathUtils.isZero(polygon.rotation)) {
+				(rotation == 0f || MathUtils.isZero(rotation)) &&
+				(polygon.rotation == 0f || MathUtils.isZero(polygon.rotation))) {
 			return true;
 		}
 
@@ -342,8 +351,8 @@ public class Polygon extends Shape {
 		polygon.checkSidesCache();
 
 		if (isRectangle && polygon.isRectangle &&
-				MathUtils.isZero(rotation) &&
-				MathUtils.isZero(polygon.rotation)) {
+				(rotation == 0f || MathUtils.isZero(rotation)) &&
+				(polygon.rotation == 0f || MathUtils.isZero(polygon.rotation))) {
 			boolean xAxisOverlaps = true;
 			boolean yAxisOverlaps = true;
 
@@ -603,6 +612,7 @@ public class Polygon extends Shape {
 		this.vertices = newVertices;
 
 		clearTotalSidesCache();
+		clearEquilateralCache();
 		setDirty();
 		notifyPositionChangeListeners();
 		notifySizeChangeListeners();
@@ -631,6 +641,7 @@ public class Polygon extends Shape {
 
 		setDirty();
 		clearTotalSidesCache();
+		clearEquilateralCache();
 		notifyPositionChangeListeners();
 		notifySizeChangeListeners();
 	}
@@ -673,7 +684,6 @@ public class Polygon extends Shape {
 		}
 		totalSidesCache = vertices.length / 2;
 		isRectangle = totalSidesCache == 4;
-		isEquilateral = isEquilateral(MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 
 	@Override
@@ -703,6 +713,7 @@ public class Polygon extends Shape {
 				changed |= !MathUtils.isEqual(this.vertices[i], vertices[i]);
 			}
 		} else {
+			clearTotalSidesCache();
 			changed = true;
 		}
 		
@@ -718,7 +729,7 @@ public class Polygon extends Shape {
 
 		this.vertices = vertices;
 
-		clearTotalSidesCache();
+		clearEquilateralCache();
 		setDirty();
 
 		if(!MathUtils.isEqual(previousX, getX()) || !MathUtils.isEqual(previousY, getY())) {
@@ -753,7 +764,7 @@ public class Polygon extends Shape {
 		if(!changed) {
 			return;
 		}
-		clearTotalSidesCache();
+		clearEquilateralCache();
 		setDirty();
 
 		if(!MathUtils.isEqual(previousX, getX()) || !MathUtils.isEqual(previousY, getY())) {
@@ -1084,9 +1095,12 @@ public class Polygon extends Shape {
 	}
 
 	public void set(Polygon polygon) {
+		if(this.vertices.length != polygon.vertices.length) {
+			clearTotalSidesCache();
+		}
 		this.vertices = polygon.vertices;
 		this.rotation = polygon.rotation;
-		clearTotalSidesCache();
+		clearEquilateralCache();
 		setDirty();
 		notifyPositionChangeListeners();
 		notifySizeChangeListeners();
@@ -1111,7 +1125,10 @@ public class Polygon extends Shape {
 	}
 	
 	public boolean isEquilateral() {
-		checkSidesCache();
+		if(equilateralDirty) {
+			isEquilateral = isEquilateral(MathUtils.FLOAT_ROUNDING_ERROR);
+			equilateralDirty = false;
+		}
 		return isEquilateral;
 	}
 	
@@ -1161,7 +1178,7 @@ public class Polygon extends Shape {
 		centroidDirty = true;
 	}
 
-	private void minMaxDirtyCheck() {
+	void minMaxDirtyCheck() {
 		if (!minMaxDirty) {
 			return;
 		}
@@ -1169,7 +1186,7 @@ public class Polygon extends Shape {
 		minMaxDirty = false;
 	}
 
-	private void trianglesDirtyCheck() {
+	void trianglesDirtyCheck() {
 		if (!trianglesDirty) {
 			return;
 		}

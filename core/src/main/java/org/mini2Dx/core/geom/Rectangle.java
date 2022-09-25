@@ -18,6 +18,7 @@ package org.mini2Dx.core.geom;
 import org.mini2Dx.core.Geometry;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.util.Lerper;
+import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.math.Vector2;
 
 /**
@@ -149,7 +150,25 @@ public class Rectangle extends Shape {
 	}
 	
 	public boolean contains(Rectangle rectangle) {
-		return this.polygon.contains(rectangle.polygon);
+		polygon.minMaxDirtyCheck();
+		rectangle.polygon.minMaxDirtyCheck();
+
+		if(rectangle.polygon.minX < polygon.minX) {
+			return false;
+		}
+		if(rectangle.polygon.minY < polygon.minY) {
+			return false;
+		}
+		if(rectangle.polygon.maxY > polygon.maxY) {
+			return false;
+		}
+		if(rectangle.polygon.maxX > polygon.maxX) {
+			return false;
+		}
+		if(polygon.rotation == 0f || MathUtils.isZero(polygon.rotation)) {
+			return true;
+		}
+		return Intersector.containsPolygon(polygon, rectangle.polygon);
 	}
 	
 	public boolean contains(Circle circle) {

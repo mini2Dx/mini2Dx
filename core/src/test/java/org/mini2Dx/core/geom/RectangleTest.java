@@ -237,9 +237,13 @@ public class RectangleTest {
 	public void testContainsRectangleRotated() {
 		rectangle1 = new Rectangle(0, 0, 50, 50);
 
-		rectangle2 = new Rectangle(0f, 25f, 10f, 10f);
+		rectangle2 = new Rectangle(8f, 25f, 10f, 10f);
 		rectangle2.rotate(45f);
 		Assert.assertTrue(rectangle1.contains(rectangle2));
+		Assert.assertFalse(rectangle2.contains(rectangle1));
+
+		rectangle2.rotate(45f);
+		Assert.assertFalse(rectangle1.contains(rectangle2));
 	}
 
 	@Test
