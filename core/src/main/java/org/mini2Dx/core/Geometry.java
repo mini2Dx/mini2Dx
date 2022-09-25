@@ -52,7 +52,12 @@ public class Geometry {
         if(initialised) {
             return;
         }
-        for(int i = 0; i < DEFAULT_POOL_SIZE; i++) {
+        warmup(DEFAULT_POOL_SIZE);
+        initialised = true;
+    }
+
+    public void warmup(int amount) {
+        for(int i = 0; i < amount; i++) {
             circles.addLast(new Circle(this));
             equilateralTriangles.addLast(new EquilateralTriangle(this));
             lines.addLast(new Line(this));
@@ -62,7 +67,6 @@ public class Geometry {
             regularHexagons.addLast(new RegularHexagon(this));
             regularPentagons.addLast(new RegularPentagon(this));
         }
-        initialised = true;
     }
 
     /**
