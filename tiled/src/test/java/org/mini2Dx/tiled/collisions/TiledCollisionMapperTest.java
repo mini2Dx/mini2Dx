@@ -17,7 +17,7 @@ package org.mini2Dx.tiled.collisions;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,6 +28,7 @@ import org.mini2Dx.core.collision.QuadTree;
 import org.mini2Dx.core.collision.RegionQuadTree;
 import org.mini2Dx.core.files.FileHandle;
 import org.mini2Dx.core.geom.Rectangle;
+import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
 import org.mini2Dx.libgdx.LibgdxFiles;
 import org.mini2Dx.libgdx.LibgdxGraphicsUtils;
@@ -86,7 +87,7 @@ public class TiledCollisionMapperTest {
 
 		collisionBoxMapper.mapCollisionsByLayer(quadTree, tiledMap, collisionLayerIndex);
 
-		Array<CollisionBox> collisions = quadTree.getElementsWithinArea(area);
+		Array<CollisionBox> collisions = quadTree.getElementsOverlappingArea(area);
 		Assert.assertEquals(7, collisions.size);
 
 		assertCollisionAt(6, 3, quadTree, tiledMap);
@@ -119,12 +120,12 @@ public class TiledCollisionMapperTest {
 		collisionBoxMapper.mapCollisionsByObjectGroup(quadTree, tiledMap, "Objects");
 		Rectangle area = new Rectangle(0f, 0f, tiledMap.getPixelWidth(), tiledMap.getPixelHeight());
 
-		Array<CollisionBox> collisions = quadTree.getElementsWithinArea(area);
+		Array<CollisionBox> collisions = quadTree.getElementsOverlappingArea(area);
 		Assert.assertEquals(3, collisions.size);
-		Assert.assertEquals(288f, collisions.get(0).getX());
-		Assert.assertEquals(96f, collisions.get(0).getY());
-		Assert.assertEquals(32f, collisions.get(0).getWidth());
-		Assert.assertEquals(32f, collisions.get(0).getHeight());
+		Assert.assertEquals(288f, collisions.get(2).getX(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(96f, collisions.get(2).getY(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(32f, collisions.get(2).getWidth(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(32f, collisions.get(2).getHeight(), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 
 	@Test
@@ -135,12 +136,12 @@ public class TiledCollisionMapperTest {
 		Rectangle area = new Rectangle(0f, 0f, tiledMap.getWidth() * tiledMap.getTileWidth(),
 				tiledMap.getHeight() * tiledMap.getTileHeight());
 
-		Array<CollisionBox> collisions = quadTree.getElementsWithinArea(area);
+		Array<CollisionBox> collisions = quadTree.getElementsOverlappingArea(area);
 		Assert.assertEquals(1, collisions.size);
-		Assert.assertEquals(32f, collisions.get(0).getX());
-		Assert.assertEquals(64f, collisions.get(0).getY());
-		Assert.assertEquals(16f, collisions.get(0).getWidth());
-		Assert.assertEquals(24f, collisions.get(0).getHeight());
+		Assert.assertEquals(32f, collisions.get(0).getX(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(64f, collisions.get(0).getY(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(16f, collisions.get(0).getWidth(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(24f, collisions.get(0).getHeight(), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 
 	@Test
@@ -151,20 +152,20 @@ public class TiledCollisionMapperTest {
 
 		collisionBoxMapper.mapAndMergeCollisionsByLayer(quadTree, tiledMap, collisionLayerIndex);
 
-		Array<CollisionBox> collisions = quadTree.getElementsWithinArea(quadTree);
+		Array<CollisionBox> collisions = quadTree.getElements();
 		Assert.assertEquals(4, collisions.size);
 
 		CollisionBox collision = getCollisionAt(1, 5, quadTree, tiledMap);
-		Assert.assertEquals(tiledMap.getTileWidth() * 2f, collision.getWidth());
-		Assert.assertEquals(tiledMap.getTileHeight() * 2f, collision.getHeight());
+		Assert.assertEquals(tiledMap.getTileWidth() * 2f, collision.getWidth(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(tiledMap.getTileHeight() * 2f, collision.getHeight(), MathUtils.FLOAT_ROUNDING_ERROR);
 
 		collision = getCollisionAt(5, 4, quadTree, tiledMap);
-		Assert.assertEquals(tiledMap.getTileWidth() * 1f, collision.getWidth());
-		Assert.assertEquals(tiledMap.getTileHeight() * 1f, collision.getHeight());
+		Assert.assertEquals(tiledMap.getTileWidth() * 1f, collision.getWidth(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(tiledMap.getTileHeight() * 1f, collision.getHeight(), MathUtils.FLOAT_ROUNDING_ERROR);
 
 		collision = getCollisionAt(6, 3, quadTree, tiledMap);
-		Assert.assertEquals(tiledMap.getTileWidth() * 1f, collision.getWidth());
-		Assert.assertEquals(tiledMap.getTileHeight() * 1f, collision.getHeight());
+		Assert.assertEquals(tiledMap.getTileWidth() * 1f, collision.getWidth(), MathUtils.FLOAT_ROUNDING_ERROR);
+		Assert.assertEquals(tiledMap.getTileHeight() * 1f, collision.getHeight(), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 
 	@Test
@@ -236,19 +237,19 @@ public class TiledCollisionMapperTest {
 		collisionBoxMapper = new TiledCollisionMapper<>(new TiledCollisionBoxFactory(), new AllCollisionMerger());
 		collisionBoxMapper.mapAndMergeEmptySpacesByLayer(quadTree, tiledMap, collisionLayerIndex);
 
-		Array<CollisionBox> collisions = quadTree.getElementsWithinArea(quadTree);
+		Array<CollisionBox> collisions = quadTree.getElements();
 		Assert.assertEquals(19, collisions.size);
 	}
 
 	private void assertCollisionAt(int tileX, int tileY, QuadTree<?> quadTree, TiledMap tiledMap) {
-		Array<?> collisions = quadTree.getElementsWithinArea(new Rectangle(tileX * tiledMap.getTileWidth(),
+		Array<?> collisions = quadTree.getElementsOverlappingArea(new Rectangle(tileX * tiledMap.getTileWidth(),
 				tileY * tiledMap.getTileHeight(), tiledMap.getTileWidth() - 1f, tiledMap.getTileHeight() - 1f));
 		Assert.assertEquals(1, collisions.size);
 	}
 
 	private CollisionBox getCollisionAt(int tileX, int tileY, RegionQuadTree<CollisionBox> quadTree,
 			TiledMap tiledMap) {
-		Array<CollisionBox> collisions = quadTree.getElementsWithinArea(new Rectangle(tileX * tiledMap.getTileWidth(),
+		Array<CollisionBox> collisions = quadTree.getElementsOverlappingArea(new Rectangle(tileX * tiledMap.getTileWidth(),
 				tileY * tiledMap.getTileHeight(), tiledMap.getTileWidth() - 1f, tiledMap.getTileHeight() - 1f));
 		Assert.assertEquals(1, collisions.size);
 		return collisions.get(0);

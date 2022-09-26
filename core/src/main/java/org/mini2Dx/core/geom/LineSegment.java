@@ -27,7 +27,7 @@ public class LineSegment implements Disposable {
     protected final Geometry geometry;
     protected boolean disposed = false;
 
-    protected Point pointA, pointB;
+    public Point pointA, pointB;
 
     /**
      * Constructs a {@link LineSegment} belonging to the {@link Geometry} pool

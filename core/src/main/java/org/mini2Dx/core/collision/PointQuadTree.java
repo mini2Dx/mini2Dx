@@ -17,10 +17,11 @@ package org.mini2Dx.core.collision;
 
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.collections.FreeArray;
 import org.mini2Dx.core.geom.*;
 import org.mini2Dx.core.graphics.Color;
-import org.mini2Dx.gdx.utils.Array;
-import org.mini2Dx.gdx.utils.Queue;
+import org.mini2Dx.core.util.IntSetPool;
+import org.mini2Dx.gdx.utils.*;
 
 /**
  * Implements a point quadtree
@@ -28,7 +29,8 @@ import org.mini2Dx.gdx.utils.Queue;
  * @see <a href="http://en.wikipedia.org/wiki/Quadtree#Point_quadtree">
  *      Wikipedia: Point Quad Tree</a>
  */
-public class PointQuadTree<T extends Positionable> extends Rectangle implements QuadTree<T> {
+public class PointQuadTree<T extends CollisionObject> implements QuadTree<T> {
+	public static int INITIAL_QUAD_ELEMENTS_POOL_SIZE = 64;
 	public static float DEFAULT_MINIMUM_QUAD_SIZE = 8f;
 	public static Color QUAD_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(1f, 0f, 0f, 0.5f) : null;
 	public static Color BOUNDS_COLOR = Mdx.graphics != null ? Mdx.graphics.newColor(1f, 0f, 1f, 0.5f) : null;
@@ -36,45 +38,23 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 
 	private static final long serialVersionUID = -2034928347848875105L;
 
-	protected Queue<PointQuadTree<T>> pool;
+	protected final Queue<QuadElements<T>> quadElementsPool = new Queue<QuadElements<T>>();
 
-	protected PointQuadTree<T> parent;
-	protected PointQuadTree<T> topLeft, topRight, bottomLeft, bottomRight;
 
-	protected Rectangle elementsBounds;
-	protected Array<T> elements;
+	protected final IntIntMap elementsToQuads = new IntIntMap();
+	protected final FreeArray<Quad> quads = new FreeArray<Quad>();
+	protected final FreeArray<QuadElements<T>> quadElements = new FreeArray<QuadElements<T>>();
+	protected final Quad rootQuad = new Quad();
+
 	protected final int elementLimitPerQuad;
-	protected final int mergeWatermark;
 	protected final float minimumQuadWidth, minimumQuadHeight;
 
-	protected int totalElementsCache = -1;
-	protected boolean cleanupRequired = false;
+	protected final Array<Quad> processQueue = new Array<Quad>(false, 256);
+	protected final Array<Quad> leaves = new Array<Quad>(false, 256);
 
-	/**
-	 * Constructs a {@link PointQuadTree} with a specified element limit and
-	 * watermark
-	 * 
-	 * @param elementLimitPerQuad
-	 *            The maximum number of elements in a quad before it is split
-	 *            into 4 child {@link PointQuadTree}s
-	 * @param mergeWatermark
-	 *            When a parent {@link PointQuadTree}'s total elements go lower
-	 *            than this mark, the child {@link PointQuadTree}s will be
-	 *            merged back together
-	 * @param x
-	 *            The x coordinate of the {@link PointQuadTree}
-	 * @param y
-	 *            The y coordiante of the {@link PointQuadTree}
-	 * @param width
-	 *            The width of the {@link PointQuadTree}
-	 * @param height
-	 *            The height of the {@link PointQuadTree}
-	 */
-	public PointQuadTree(int elementLimitPerQuad, int mergeWatermark, float x, float y, float width, float height) {
-		this(DEFAULT_MINIMUM_QUAD_SIZE, DEFAULT_MINIMUM_QUAD_SIZE, elementLimitPerQuad, mergeWatermark, x, y, width,
-				height);
-		pool = new Queue<>();
-	}
+	private int totalElements = 0;
+	private boolean cleanupRequired = false;
+
 
 	/**
 	 * Constructs a {@link PointQuadTree} with a specified element limit and no
@@ -94,30 +74,7 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	 *            The height of the {@link PointQuadTree}
 	 */
 	public PointQuadTree(int elementLimitPerQuad, float x, float y, float width, float height) {
-		this(elementLimitPerQuad, 0, x, y, width, height);
-		pool = new Queue<>();
-	}
-
-	/**
-	 * Constructs a {@link PointQuadTree} as a child of another
-	 * {@link PointQuadTree}
-	 * 
-	 * @param parent
-	 *            The parent {@link PointQuadTree}
-	 * @param x
-	 *            The x coordinate of the {@link PointQuadTree}
-	 * @param y
-	 *            The y coordiante of the {@link PointQuadTree}
-	 * @param width
-	 *            The width of the {@link PointQuadTree}
-	 * @param height
-	 *            The height of the {@link PointQuadTree}
-	 */
-	public PointQuadTree(PointQuadTree<T> parent, float x, float y, float width, float height) {
-		this(parent.getMinimumQuadWidth(), parent.getMinimumQuadHeight(), parent.getElementLimitPerQuad(),
-				parent.getMergeWatermark(), x, y, width, height);
-		this.parent = parent;
-		this.pool = parent.pool;
+		this(DEFAULT_MINIMUM_QUAD_SIZE, DEFAULT_MINIMUM_QUAD_SIZE, elementLimitPerQuad, x, y, width, height);
 	}
 
 	/**
@@ -133,10 +90,6 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	 * @param elementLimitPerQuad
 	 *            The maximum number of elements in a quad before it is split
 	 *            into 4 child {@link PointQuadTree}s
-	 * @param mergeWatermark
-	 *            When a parent {@link PointQuadTree}'s total elements go lower
-	 *            than this mark, the child {@link PointQuadTree}s will be
-	 *            merged back together
 	 * @param x
 	 *            The x coordinate of the {@link PointQuadTree}
 	 * @param y
@@ -146,108 +99,149 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	 * @param height
 	 *            The height of the {@link PointQuadTree}
 	 */
-	public PointQuadTree(float minimumQuadWidth, float minimumQuadHeight, int elementLimitPerQuad, int mergeWatermark,
+	public PointQuadTree(float minimumQuadWidth, float minimumQuadHeight, int elementLimitPerQuad,
 			float x, float y, float width, float height) {
-		super(x, y, width, height);
-
-		if (mergeWatermark >= elementLimitPerQuad) {
-			throw new QuadWatermarkException(elementLimitPerQuad, mergeWatermark);
-		}
+		super();
+		rootQuad.x = x;
+		rootQuad.y = y;
+		rootQuad.maxX = x + width;
+		rootQuad.maxY = y + height;
 
 		this.elementLimitPerQuad = elementLimitPerQuad;
-		this.mergeWatermark = mergeWatermark;
 		this.minimumQuadWidth = minimumQuadWidth;
 		this.minimumQuadHeight = minimumQuadHeight;
-		elements = new Array<T>(true, elementLimitPerQuad);
-	}
 
-	public void cleanup() {
-		updateBounds();
-	}
-
-	protected void markCleanupRequired() {
-		if(cleanupRequired) {
-			return;
-		}
-		cleanupRequired = true;
-
-		PointQuadTree<T> parentQuad = parent;
-		while (parentQuad != null) {
-			if (parentQuad.cleanupRequired) {
-				return;
-			}
-			parentQuad.cleanupRequired = true;
-			parentQuad = parentQuad.parent;
+		for(int i = 0; i < INITIAL_QUAD_ELEMENTS_POOL_SIZE; i++) {
+			quadElementsPool.addLast(new QuadElements<T>());
 		}
 	}
 
-	public void warmupWithDepth(int depth) {
-		if(depth > 0) {
-			subdivide();
-			topLeft.warmupWithDepth(depth - 1);
-			topRight.warmupWithDepth(depth - 1);
-			bottomLeft.warmupWithDepth(depth - 1);
-			bottomRight.warmupWithDepth(depth - 1);
+	protected QuadElements<T> allocateQuadElements() {
+		if(quadElementsPool.size == 0) {
+			return new QuadElements<T>();
 		}
+		return quadElementsPool.removeFirst();
 	}
 
-	public void warmupWithObjects(Array<T> elements) {
-		addAll(elements);
-		removeAll(elements);
+	protected void releaseQuadElements(QuadElements<T> elements) {
+		elements.clear();
+		this.quadElementsPool.addLast(elements);
 	}
 
-	public void warmupPool(int poolSize) {
-		warmupPool(poolSize, 16);
-	}
-
-	public void warmupPool(int poolSize, int expectedElementsPerQuad) {
-		if(pool == null) {
-			pool = new Queue<>();
-		}
-		for(int i = 0; i < poolSize; i++) {
-			final PointQuadTree<T> pointQuadTree = new PointQuadTree<T>(this, 0, 0, 1, 1);
-			pointQuadTree.elements = new Array<>(expectedElementsPerQuad);
-			pool.addLast(pointQuadTree);
-		}
+	public boolean cleanup() {
+		return updateBounds(rootQuad);
 	}
 
 	public void debugRender(Graphics g) {
-		if(getX() - g.getTranslationX() > g.getViewportWidth()) {
+		debugRender(g, rootQuad);
+	}
+
+	protected void debugRender(Graphics g, Quad quad) {
+		if(quad.x - g.getTranslationX() > g.getViewportWidth()) {
 			return;
 		}
-		if(getY() - g.getTranslationY() > g.getViewportHeight()) {
+		if(quad.y - g.getTranslationY() > g.getViewportHeight()) {
 			return;
 		}
-		if(getMaxX() - g.getTranslationX() < 0f) {
+		if(quad.maxX - g.getTranslationX() < 0f) {
 			return;
 		}
-		if(getMaxY() - g.getTranslationY() < 0f) {
+		if(quad.maxY - g.getTranslationY() < 0f) {
+			return;
+		}
+
+		if(quad.childIndex != -1) {
+			debugRender(g, this.quads.get(quad.childIndex + Quad.CHILD_TOP_LEFT_OFFSET));
+			debugRender(g, this.quads.get(quad.childIndex + Quad.CHILD_TOP_RIGHT_OFFSET));
+			debugRender(g, this.quads.get(quad.childIndex + Quad.CHILD_BOTTOM_LEFT_OFFSET));
+			debugRender(g, this.quads.get(quad.childIndex + Quad.CHILD_BOTTOM_RIGHT_OFFSET));
 			return;
 		}
 
 		Color tmp = g.getColor();
 
-		if (topLeft != null) {
-			topLeft.debugRender(g);
-			topRight.debugRender(g);
-			bottomLeft.debugRender(g);
-			bottomRight.debugRender(g);
-		} else {
-			g.setColor(QUAD_COLOR);
-			g.drawShape(this);
+		g.setColor(QUAD_COLOR);
+		g.drawRect(quad.x, quad.y, quad.getWidth(), quad.getHeight());
 
-			g.drawRect(getX(), getY(), getWidth(), getHeight());
-			g.setColor(ELEMENT_COLOR);
-			for (T element : elements) {
+		g.setColor(ELEMENT_COLOR);
+
+		if(quad.elementsIndex > -1) {
+			final QuadElements<T> elements = this.quadElements.get(quad.elementsIndex);
+			for(T element : elements) {
 				g.fillRect(element.getX(), element.getY(), 1f, 1f);
 			}
-
-			if(elementsBounds != null) {
-				g.setColor(BOUNDS_COLOR);
-				g.drawShape(elementsBounds);
-			}
 		}
+
+		if(quad.elementBounds != null) {
+			g.setColor(BOUNDS_COLOR);
+			g.drawRect(quad.elementBounds.x, quad.elementBounds.y,
+					quad.elementBounds.maxX - quad.elementBounds.x,
+					quad.elementBounds.maxY - quad.elementBounds.y);
+		}
+
 		g.setColor(tmp);
+	}
+
+	protected Quad findQuad(T element, float x, float y, boolean updateBounds) {
+		Quad result = rootQuad;
+		OUTER_LOOP: while(result.childIndex > -1) {
+			//Scan down tree
+			if(updateBounds) {
+				updateBounds(result, element);
+			}
+			for(int i = 0; i < 4; i++) {
+
+				Quad nextQuad = quads.get(result.childIndex + i);
+				if(!nextQuad.contains(x, y)) {
+					continue;
+				}
+				result = nextQuad;
+				continue OUTER_LOOP;
+			}
+			break;
+		}
+		return result;
+	}
+
+	protected boolean belongsToQuad(Quad quad, T element) {
+		return quad.contains(element.getX(), element.getY());
+	}
+
+	protected boolean addToQuad(Quad quad, T element) {
+		if (!belongsToQuad(quad, element)) {
+			return false;
+		}
+		if(quad.elementsIndex < 0) {
+			quad.elementsIndex = this.quadElements.add(allocateQuadElements());
+		}
+		final QuadElements<T> quadElements = this.quadElements.get(quad.elementsIndex);
+		quadElements.add(element);
+		totalElements++;
+
+		element.addPostionChangeListener(this);
+		elementsToQuads.put(element.getId(), quad.index);
+		updateBounds(quad, element);
+
+		if(quadElements.size > elementLimitPerQuad) {
+			subdivide(quad);
+		}
+		return true;
+	}
+
+	protected boolean removeFromQuad(Quad quad, T element) {
+		if(quad.elementsIndex < 0) {
+			return false;
+		}
+		final QuadElements<T> quadElements = this.quadElements.get(quad.elementsIndex);
+		if(!quadElements.removeValue(element, false)) {
+			return false;
+		}
+		totalElements--;
+
+		elementsToQuads.remove(element.getId(), -1);
+		element.removePositionChangeListener(this);
+		cleanupRequired = true;
+		return true;
 	}
 
 	public void addAll(Array<T> elementsToAdd) {
@@ -255,330 +249,19 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			return;
 		}
 
-		Array<T> elementsWithinQuad = new Array<T>();
 		for (T element : elementsToAdd) {
-			if (this.contains(element.getX(), element.getY())) {
-				elementsWithinQuad.add(element);
-				updateBounds(element);
-			}
-		}
-
-		clearTotalElementsCache();
-
-		if (topLeft != null) {
-			for (T element : elementsWithinQuad) {
-				addElementToChild(element);
-			}
-			return;
-		}
-		for (T element : elementsWithinQuad) {
-			elements.add(element);
-			element.addPostionChangeListener(this);
-		}
-		if (elements.size > elementLimitPerQuad && (getWidth() * 0.5f) >= minimumQuadWidth
-				&& (getHeight() * 0.5f) >= minimumQuadHeight) {
-			subdivide();
+			add(element);
 		}
 	}
 
 	public boolean add(T element) {
 		if (element == null)
 			return false;
-
-		if (!this.contains(element.getX(), element.getY())) {
+		if (!rootQuad.contains(element.getX(), element.getY())) {
 			return false;
 		}
-		clearTotalElementsCache();
-		updateBounds(element);
-
-		if (topLeft != null) {
-			return addElementToChild(element);
-		}
-		return addElement(element);
-	}
-
-	protected boolean addElement(T element) {
-		elements.add(element);
-		element.addPostionChangeListener(this);
-
-		QuadTreeAwareUtils.setQuadTreeRef(element, this);
-
-		if (elements.size > elementLimitPerQuad && (getWidth() * 0.5f) >= minimumQuadWidth
-				&& (getHeight() * 0.5f) >= minimumQuadHeight) {
-			subdivide();
-		}
-		return true;
-	}
-
-	protected void initBounds() {
-		if(elementsBounds != null) {
-			return;
-		}
-		elementsBounds = Mdx.geom.rectangle();
-		elementsBounds.set(getX() + (getWidth() * 0.5f) - 1f, getY() + (getHeight() * 0.5f) - 1f, 2f, 2f);
-	}
-
-	protected void disposeBounds() {
-		if(elementsBounds == null) {
-			return;
-		}
-		elementsBounds.dispose();
-		elementsBounds = null;
-	}
-
-	protected boolean updateBounds(T element) {
-		initBounds();
-		final float boundsX = elementsBounds.getX();
-		final float boundsY = elementsBounds.getY();
-		final float boundsMaxX = elementsBounds.getMaxX();
-		final float boundsMaxY = elementsBounds.getMaxY();
-		final float boundsWidth = boundsMaxX - boundsX;
-		final float boundsHeight = boundsMaxY - boundsY;
-
-		float minX = Math.min(element.getX(), elementsBounds.getX());
-		float minY = Math.min(element.getY(), elementsBounds.getY());
-		float maxX = Math.max(element.getX(), elementsBounds.getMaxX());
-		float maxY = Math.max(element.getY(), elementsBounds.getMaxY());
-
-		final float newWidth = maxX - minX;
-		final float newHeight = maxY - minY;
-		elementsBounds.set(minX, minY, newWidth, newHeight);
-		return boundsWidth != newWidth || boundsHeight != newHeight;
-	}
-
-	protected boolean updateBounds() {
-		if(!cleanupRequired) {
-			return false;
-		}
-		cleanupRequired = false;
-
-		if(topLeft == null) {
-			if(elements.size == 0) {
-				disposeBounds();
-				return true;
-			}
-
-			initBounds();
-			elementsBounds.set(getCenterX() - 1f, getCenterY() - 1f, 2f, 2f);
-			float minX = elementsBounds.getX();
-			float minY = elementsBounds.getY();
-			float maxX = elementsBounds.getMaxX();
-			float maxY = elementsBounds.getMaxY();
-
-			for(int i = 0; i < elements.size; i++) {
-				final T element = elements.get(i);
-				if(element == null) {
-					continue;
-				}
-				minX = Math.min(element.getX(), elementsBounds.getX());
-				minY = Math.min(element.getY(), elementsBounds.getY());
-				maxX = Math.max(element.getX(), elementsBounds.getMaxX());
-				maxY = Math.max(element.getY(), elementsBounds.getMaxY());
-			}
-			elementsBounds.set(minX, minY, maxX - minX, maxY - minY);
-			return true;
-		}
-
-		boolean boundsUpdated = false;
-		if(topLeft.updateBounds()) {
-			boundsUpdated = true;
-		}
-		if(topRight.updateBounds()) {
-			boundsUpdated = true;
-		}
-		if(bottomLeft.updateBounds()) {
-			boundsUpdated = true;
-		}
-		if(bottomRight.updateBounds()) {
-			boundsUpdated = true;
-		}
-		if(boundsUpdated) {
-			if(topLeft.isSearchRequired() || topRight.isSearchRequired() ||
-					bottomLeft.isSearchRequired() || bottomRight.isSearchRequired()) {
-				initBounds();
-				float minX;
-				float minY;
-				float maxX;
-				float maxY;
-
-				if(topLeft.isSearchRequired()) {
-					minX = topLeft.elementsBounds.getX();
-					minY = topLeft.elementsBounds.getY();
-					maxX = topLeft.elementsBounds.getMaxX();
-					maxY = topLeft.elementsBounds.getMaxY();
-				} else if(topRight.isSearchRequired()) {
-					minX = topRight.elementsBounds.getX();
-					minY = topRight.elementsBounds.getY();
-					maxX = topRight.elementsBounds.getMaxX();
-					maxY = topRight.elementsBounds.getMaxY();
-				} else if(bottomLeft.isSearchRequired()) {
-					minX = bottomLeft.elementsBounds.getX();
-					minY = bottomLeft.elementsBounds.getY();
-					maxX = bottomLeft.elementsBounds.getMaxX();
-					maxY = bottomLeft.elementsBounds.getMaxY();
-				} else {
-					minX = bottomRight.elementsBounds.getX();
-					minY = bottomRight.elementsBounds.getY();
-					maxX = bottomRight.elementsBounds.getMaxX();
-					maxY = bottomRight.elementsBounds.getMaxY();
-				}
-
-				if(topLeft.isSearchRequired()) {
-					minX = Math.min(minX, topLeft.elementsBounds.getMinX());
-					minY = Math.min(minY, topLeft.elementsBounds.getMinY());
-					maxX = Math.max(maxX, topLeft.elementsBounds.getMaxX());
-					maxY = Math.max(maxY, topLeft.elementsBounds.getMaxY());
-				}
-				if(topRight.isSearchRequired()) {
-					minX = Math.min(minX, topRight.elementsBounds.getMinX());
-					minY = Math.min(minY, topRight.elementsBounds.getMinY());
-					maxX = Math.max(maxX, topRight.elementsBounds.getMaxX());
-					maxY = Math.max(maxY, topRight.elementsBounds.getMaxY());
-				}
-				if(bottomLeft.isSearchRequired()) {
-					minX = Math.min(minX, bottomLeft.elementsBounds.getMinX());
-					minY = Math.min(minY, bottomLeft.elementsBounds.getMinY());
-					maxX = Math.max(maxX, bottomLeft.elementsBounds.getMaxX());
-					maxY = Math.max(maxY, bottomLeft.elementsBounds.getMaxY());
-				}
-				if(bottomRight.isSearchRequired()) {
-					minX = Math.min(minX, bottomRight.elementsBounds.getMinX());
-					minY = Math.min(minY, bottomRight.elementsBounds.getMinY());
-					maxX = Math.max(maxX, bottomRight.elementsBounds.getMaxX());
-					maxY = Math.max(maxY, bottomRight.elementsBounds.getMaxY());
-				}
-
-				elementsBounds.set(minX, minY, maxX - minX, maxY - minY);
-			} else {
-				//All child quads have been emptied, make this quad as empty
-				disposeBounds();
-			}
-		} else {
-			if(!topLeft.isSearchRequired() && !topRight.isSearchRequired() &&
-				!bottomLeft.isSearchRequired() && !bottomRight.isSearchRequired()) {
-				//All child quads have been emptied, make this quad as empty
-				disposeBounds();
-			}
-		}
-		return boundsUpdated;
-	}
-
-	protected boolean addElementToChild(T element) {
-		if(element.getX() > getCenterX()) {
-			if (topRight.add(element))
-				return true;
-			if (bottomRight.add(element))
-				return true;
-			if (topLeft.add(element))
-				return true;
-			if (bottomLeft.add(element))
-				return true;
-		} else {
-			if (topLeft.add(element))
-				return true;
-			if (bottomLeft.add(element))
-				return true;
-			if (topRight.add(element))
-				return true;
-			if (bottomRight.add(element))
-				return true;
-		}
-		return false;
-	}
-
-	protected void subdivide() {
-		if (topLeft != null) {
-			return;
-		}
-
-		float halfWidth = getWidth() * 0.5f;
-		float halfHeight = getHeight() * 0.5f;
-
-		topLeft = allocate(this, getX(), getY(), halfWidth, halfHeight);
-		topRight = allocate(this, getX() + halfWidth, getY(), halfWidth, halfHeight);
-		bottomLeft = allocate(this, getX(), getY() + halfHeight, halfWidth, halfHeight);
-		bottomRight = allocate(this, getX() + halfWidth, getY() + halfHeight, halfWidth, halfHeight);
-
-		for (int i = elements.size - 1; i >= 0; i--) {
-			T element = elements.removeIndex(i);
-			element.removePositionChangeListener(this);
-			addElementToChild(element);
-		}
-		elements = null;
-		markCleanupRequired();
-	}
-
-	protected PointQuadTree<T> allocate(PointQuadTree<T> parent, float x, float y, float width, float height) {
-		if(pool == null || pool.size == 0) {
-			return new PointQuadTree<>(parent, x, y, width, height);
-		}
-		final PointQuadTree<T> result = pool.removeFirst();
-		result.parent = parent;
-		result.set(x, y, width, height);
-		if(result.elements != null) {
-			result.elements.clear();
-		}
-		return result;
-	}
-
-	protected boolean isMergable() {
-		if (topLeft == null) {
-			return false;
-		}
-		if (mergeWatermark <= 0) {
-			return false;
-		}
-
-		int topLeftTotal = topLeft.getTotalElements();
-		if (topLeftTotal >= mergeWatermark) {
-			return false;
-		}
-
-		int topRightTotal = topRight.getTotalElements();
-		if (topRightTotal >= mergeWatermark) {
-			return false;
-		}
-
-		int bottomLeftTotal = bottomLeft.getTotalElements();
-		if (bottomLeftTotal >= mergeWatermark) {
-			return false;
-		}
-
-		int bottomRightTotal = bottomRight.getTotalElements();
-		if (bottomRightTotal >= mergeWatermark) {
-			return false;
-		}
-		return topLeftTotal + topRightTotal + bottomLeftTotal + bottomRightTotal < mergeWatermark;
-	}
-
-	protected void merge() {
-		if (topLeft == null) {
-			return;
-		}
-
-		elements = new Array<>(true, elementLimitPerQuad);
-		topLeft.getElements(elements);
-		topRight.getElements(elements);
-		bottomLeft.getElements(elements);
-		bottomRight.getElements(elements);
-
-		for (T element : elements) {
-			topLeft.elements.removeValue(element, false);
-			element.removePositionChangeListener(topLeft);
-			topRight.elements.removeValue(element, false);
-			element.removePositionChangeListener(topRight);
-			bottomLeft.elements.removeValue(element, false);
-			element.removePositionChangeListener(bottomLeft);
-			bottomRight.elements.removeValue(element, false);
-			element.removePositionChangeListener(bottomRight);
-			element.addPostionChangeListener(this);
-		}
-
-		topLeft = null;
-		topRight = null;
-		bottomLeft = null;
-		bottomRight = null;
-		markCleanupRequired();
+		final Quad quad = findQuad(element, element.getX(), element.getY(), true);
+		return addToQuad(quad, element);
 	}
 
 	public void removeAll(Array<T> elementsToRemove) {
@@ -586,604 +269,682 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 			return;
 		}
 
-		Array<T> elementsWithinQuad = new Array<T>();
 		for (T element : elementsToRemove) {
-			if (this.contains(element.getX(), element.getY())) {
-				elementsWithinQuad.add(element);
-			}
+			remove(element);
 		}
-
-		clearTotalElementsCache();
-
-		if (topLeft != null) {
-			for (T element : elementsWithinQuad) {
-				removeElementFromChild(element);
-			}
-		}
-		if (elements == null) {
-			return;
-		}
-		elements.removeAll(elementsWithinQuad, false);
-		for (T element : elementsWithinQuad) {
-			element.removePositionChangeListener(this);
-		}
-
-		if (parent == null) {
-			return;
-		}
-		if (parent.isMergable()) {
-			parent.merge();
-		}
-		markCleanupRequired();
 	}
 
 	public boolean remove(T element) {
 		if (element == null)
 			return false;
 
-		if (!this.contains(element.getX(), element.getY())) {
+		if (!rootQuad.contains(element.getX(), element.getY())) {
 			return false;
 		}
-		clearTotalElementsCache();
+		final int quadIndex = elementsToQuads.remove(element.getId(), -1);
+		final Quad quad = quadIndex < 0 ? rootQuad : quads.get(quadIndex);
+		return removeFromQuad(quad, element);
+	}
 
-		if (topLeft != null) {
-			return removeElementFromChild(element);
+	protected void initBounds(Quad quad, T element) {
+		if(quad.elementBounds != null) {
+			return;
 		}
-		return removeElement(element, true);
+		quad.elementBounds = QuadElementBounds.allocate();
+		quad.elementBounds.x = element.getX();
+		quad.elementBounds.y = element.getY();
+		quad.elementBounds.maxX = quad.elementBounds.x + 1f;
+		quad.elementBounds.maxY = quad.elementBounds.y + 1f;
+	}
+
+	private void initBounds(Quad quad) {
+		if(quad.elementBounds != null) {
+			return;
+		}
+		quad.elementBounds = QuadElementBounds.allocate();
+	}
+
+	private boolean disposeBounds(Quad quad) {
+		if(quad.elementBounds == null) {
+			return false;
+		}
+		quad.elementBounds.dispose();
+		quad.elementBounds = null;
+		return true;
+	}
+
+	protected boolean updateBounds(Quad quad, T element) {
+		initBounds(quad, element);
+		final float boundsX = quad.elementBounds.x;
+		final float boundsY = quad.elementBounds.y;
+		final float boundsMaxX = quad.elementBounds.maxX;
+		final float boundsMaxY = quad.elementBounds.maxY;
+		final float boundsWidth = boundsMaxX - boundsX;
+		final float boundsHeight = boundsMaxY - boundsY;
+
+		float minX = Math.min(element.getX(), boundsX);
+		float minY = Math.min(element.getY(), boundsY);
+		float maxX = Math.max(element.getX(), boundsMaxX);
+		float maxY = Math.max(element.getY(), boundsMaxY);
+
+		final float newWidth = maxX - minX;
+		final float newHeight = maxY - minY;
+		quad.elementBounds.x = minX;
+		quad.elementBounds.y = minY;
+		quad.elementBounds.maxX = maxX;
+		quad.elementBounds.maxY = maxY;
+		return boundsWidth != newWidth || boundsHeight != newHeight;
+	}
+
+	private boolean updateBounds(Quad quad) {
+		if(!cleanupRequired) {
+			return false;
+		}
+		cleanupRequired = false;
+
+		if(quad.childIndex > -1) {
+			final Quad topLeft = quads.get(quad.childIndex);
+			final Quad topRight = quads.get(quad.childIndex + Quad.CHILD_TOP_RIGHT_OFFSET);
+			final Quad bottomLeft = quads.get(quad.childIndex + Quad.CHILD_BOTTOM_LEFT_OFFSET);
+			final Quad bottomRight = quads.get(quad.childIndex + Quad.CHILD_BOTTOM_RIGHT_OFFSET);
+
+			boolean childBoundsUpdate = false;
+
+			if(updateBounds(topLeft)) {
+				childBoundsUpdate = true;
+			}
+			if(updateBounds(topRight)) {
+				childBoundsUpdate = true;
+			}
+			if(updateBounds(bottomLeft)) {
+				childBoundsUpdate = true;
+			}
+			if(updateBounds(bottomRight)) {
+				childBoundsUpdate = true;
+			}
+			if(!childBoundsUpdate) {
+				return false;
+			}
+			float minX;
+			float minY;
+			float maxX;
+			float maxY;
+
+			if(topLeft.elementBounds != null) {
+				minX = topLeft.elementBounds.x;
+				minY = topLeft.elementBounds.y;
+				maxX = topLeft.elementBounds.maxX;
+				maxY = topLeft.elementBounds.maxY;
+			} else if(topRight.elementBounds != null) {
+				minX = topRight.elementBounds.x;
+				minY = topRight.elementBounds.y;
+				maxX = topRight.elementBounds.maxX;
+				maxY = topRight.elementBounds.maxY;
+			} else if(bottomLeft.elementBounds != null) {
+				minX = bottomLeft.elementBounds.x;
+				minY = bottomLeft.elementBounds.y;
+				maxX = bottomLeft.elementBounds.maxX;
+				maxY = bottomLeft.elementBounds.maxY;
+			} else if(bottomRight.elementBounds != null) {
+				minX = bottomRight.elementBounds.x;
+				minY = bottomRight.elementBounds.y;
+				maxX = bottomRight.elementBounds.maxX;
+				maxY = bottomRight.elementBounds.maxY;
+			} else {
+				return disposeBounds(quad);
+			}
+
+			if(topRight.elementBounds != null) {
+				minX = Math.min(minX, topRight.elementBounds.x);
+				minY = Math.min(minY, topRight.elementBounds.y);
+				maxX = Math.max(maxX, topRight.elementBounds.maxX);
+				maxY = Math.max(maxY, topRight.elementBounds.maxY);
+			}
+			if(bottomLeft.elementBounds != null) {
+				minX = Math.min(minX, bottomLeft.elementBounds.x);
+				minY = Math.min(minY, bottomLeft.elementBounds.y);
+				maxX = Math.max(maxX, bottomLeft.elementBounds.maxX);
+				maxY = Math.max(maxY, bottomLeft.elementBounds.maxY);
+			}
+			if(bottomRight.elementBounds != null) {
+				minX = Math.min(minX, bottomRight.elementBounds.x);
+				minY = Math.min(minY, bottomRight.elementBounds.y);
+				maxX = Math.max(maxX, bottomRight.elementBounds.maxX);
+				maxY = Math.max(maxY, bottomRight.elementBounds.maxY);
+			}
+
+			initBounds(quad);
+			quad.elementBounds.x = minX;
+			quad.elementBounds.y = minY;
+			quad.elementBounds.maxX = maxX;
+			quad.elementBounds.maxY = maxY;
+			return true;
+		}
+		if(quad.elementsIndex < 0) {
+			return false;
+		}
+
+		final QuadElements<T> quadElements = this.quadElements.get(quad.elementsIndex);
+
+		boolean boundsUpdated = false;
+		for(int i = quadElements.size - 1; i >= 0; i--) {
+			final T element = quadElements.get(i);
+			boundsUpdated |= updateBounds(quad, element);
+		}
+		return boundsUpdated;
+	}
+
+	private void subdivide(Quad quad) {
+		final float halfWidth = ((quad.maxX - quad.x) * 0.5f);
+		final float halfHeight = ((quad.maxY - quad.y) * 0.5f);
+
+		if(halfWidth < minimumQuadWidth) {
+			return;
+		}
+		if(halfHeight < minimumQuadHeight) {
+			return;
+		}
+
+		final Quad topLeft = Quad.allocate();
+		topLeft.x = quad.x;
+		topLeft.y = quad.y;
+		topLeft.maxX = quad.x + halfWidth;
+		topLeft.maxY = quad.y + halfHeight;
+
+		final Quad topRight = Quad.allocate();
+		topRight.x = quad.x + halfWidth;
+		topRight.y = quad.y;
+		topRight.maxX = topRight.x + halfWidth;
+		topRight.maxY = topRight.y + halfHeight;
+
+		final Quad bottomLeft = Quad.allocate();
+		bottomLeft.x = quad.x;
+		bottomLeft.y = quad.y + halfHeight;
+		bottomLeft.maxX = bottomLeft.x + halfWidth;
+		bottomLeft.maxY = bottomLeft.y + halfHeight;
+
+		final Quad bottomRight = Quad.allocate();
+		bottomRight.x = quad.x + halfWidth;
+		bottomRight.y = quad.y + halfHeight;
+		bottomRight.maxX = bottomRight.x + halfWidth;
+		bottomRight.maxY = bottomRight.y + halfHeight;
+
+		quad.childIndex = quads.add(topLeft);
+		topLeft.index = quad.childIndex;
+		topLeft.parentIndex = quad.index;
+
+		quads.add(topRight);
+		topRight.index = quad.childIndex + Quad.CHILD_TOP_RIGHT_OFFSET;
+		topRight.parentIndex = quad.index;
+
+		quads.add(bottomLeft);
+		bottomLeft.index = quad.childIndex + Quad.CHILD_BOTTOM_LEFT_OFFSET;
+		bottomLeft.parentIndex = quad.index;
+
+		quads.add(bottomRight);
+		bottomRight.index = quad.childIndex + Quad.CHILD_BOTTOM_RIGHT_OFFSET;
+		bottomRight.parentIndex = quad.index;
+
+		final QuadElements<T> elements = this.quadElements.remove(quad.elementsIndex);
+		topLeft.elementsIndex = this.quadElements.add(allocateQuadElements());
+		topRight.elementsIndex = this.quadElements.add(allocateQuadElements());
+		bottomLeft.elementsIndex = this.quadElements.add(allocateQuadElements());
+		bottomRight.elementsIndex = this.quadElements.add(allocateQuadElements());
+		quad.elementsIndex = -1;
+
+		totalElements -= elements.size;
+
+		for(T element : elements) {
+			element.removePositionChangeListener(this);
+
+			if (addToQuad(topLeft, element)) {
+				continue;
+			}
+			if (addToQuad(topRight, element)) {
+				continue;
+			}
+			if (addToQuad(bottomLeft, element)) {
+				continue;
+			}
+			if (addToQuad(bottomRight, element)) {
+				continue;
+			}
+		}
+		releaseQuadElements(elements);
+		cleanupRequired = true;
 	}
 
 	public void clear() {
-		if (topLeft != null) {
-			topLeft.clear();
-			topRight.clear();
-			bottomLeft.clear();
-			bottomRight.clear();
+		this.elementsToQuads.clear();
+		this.rootQuad.reset();
 
-			if(pool != null) {
-				pool.addLast(topLeft);
-				pool.addLast(topRight);
-				pool.addLast(bottomLeft);
-				pool.addLast(bottomRight);
-			}
-
-			topLeft = null;
-			topRight = null;
-			bottomLeft = null;
-			bottomRight = null;
-
-			elements = new Array<T>(true, elementLimitPerQuad);
-		} else {
-			for(int i = 0; i < elements.size; i++) {
+		for(QuadElements<T> elements : this.quadElements) {
+			for(int i = elements.size - 1; i >= 0; i--) {
 				elements.get(i).removePositionChangeListener(this);
 			}
-			elements.clear();
+			releaseQuadElements(elements);
 		}
-		clearTotalElementsCache();
-		markCleanupRequired();
-	}
+		this.quadElements.clear();
 
-	protected boolean removeElementFromChild(T element) {
-		if (topLeft.remove(element))
-			return true;
-		if (topRight.remove(element))
-			return true;
-		if (bottomLeft.remove(element))
-			return true;
-		if (bottomRight.remove(element))
-			return true;
-		return false;
-	}
-
-	protected boolean removeElement(T element, boolean clearQuadRef) {
-		boolean result = elements.removeValue(element, false);
-		element.removePositionChangeListener(this);
-
-		markCleanupRequired();
-		if (parent == null) {
-			if(clearQuadRef) {
-				QuadTreeAwareUtils.removeQuadTreeRef(element);
-			}
-			return result;
+		for(Quad quad : this.quads) {
+			quad.dispose();
 		}
+		this.quads.clear();
 
-		if (result){
-			if(clearQuadRef) {
-				QuadTreeAwareUtils.removeQuadTreeRef(element);
-			}
-			if (parent == null) {
-				return true;
-			}
-			if (parent.isMergable()){
-				parent.merge();
-			}
-		}
-		return result;
+		totalElements = 0;
+		cleanupRequired = true;
 	}
 
-	@Override
-	public Array<T> getElementsWithinArea(Shape area) {
-		Array<T> result = new Array<T>();
-		getElementsWithinArea(result, area);
-		return result;
-	}
-
-	@Override
-	public Array<T> getElementsWithinArea(Shape area, QuadTreeSearchDirection searchDirection) {
-		Array<T> result = new Array<>();
-
-		switch (searchDirection){
-			case UPWARDS:
-				getElementsWithinArea(result, area, searchDirection);
-				break;
-			case DOWNWARDS:
-				getElementsWithinArea(result, area);
-				break;
-		}
-
-		return result;
-	}
-
-	protected void addElementsWithinArea(Array<T> result, Shape area) {
-		addElementsWithinArea(result, area, false);
-	}
-
-	protected void addElementsWithinArea(Array<T> result, Shape area, boolean allElements) {
+	protected void addElementsOverlappingArea(Quad quad, Array<T> result, Rectangle area, boolean allElements) {
+		final QuadElements<T> elements = this.quadElements.get(quad.elementsIndex);
 		if(allElements) {
 			result.addAll(elements);
 			return;
 		}
-		for (int i = elements.size - 1; i >= 0; i--) {
-			T element = elements.get(i);
-			if (element != null && area.contains(element.getX(), element.getY())) {
+
+		for(int i = elements.size - 1; i >= 0; i--) {
+			final T element = elements.get(i);
+			if(area.contains(element.getX(), element.getY())) {
 				result.add(element);
 			}
 		}
 	}
 
-	@Override
-	public void getElementsWithinArea(Array<T> result, Shape area) {
-		getElementsWithinArea(result, area, false);
-	}
-
-	public void getElementsWithinArea(Array<T> result, Shape area, boolean allElements) {
+	protected void addElementsOverlappingAreaIgnoringEdges(Quad quad, Array<T> result, Rectangle area, boolean allElements) {
+		final QuadElements<T> elements = this.quadElements.get(quad.elementsIndex);
 		if(allElements) {
-			if (topLeft != null) {
-				topLeft.getElementsWithinArea(result, area, true);
-				topRight.getElementsWithinArea(result, area, true);
-				bottomLeft.getElementsWithinArea(result, area, true);
-				bottomRight.getElementsWithinArea(result, area, true);
-			} else {
-				addElementsWithinArea(result, area, true);
-			}
+			result.addAll(elements);
 			return;
 		}
 
-		if (topLeft != null) {
-			boolean quadContains = false;
-			if(topLeft.isSearchRequired()) {
-				if (area.contains(topLeft.elementsBounds)) {
-					topLeft.getElementsWithinArea(result, area, true);
-				} else if (topLeft.elementsBounds.contains(area)) {
-					topLeft.getElementsWithinArea(result, area, false);
-					quadContains = true;
-				} else if (topLeft.elementsBounds.intersects(area)) {
-					topLeft.getElementsWithinArea(result, area, false);
-				}
+		for(int i = elements.size - 1; i >= 0; i--) {
+			final T element = elements.get(i);
+			if(area.contains(element.getX(), element.getY())) {
+				result.add(element);
 			}
-			if(!quadContains && topRight.isSearchRequired()) {
-				if (area.contains(topRight.elementsBounds)) {
-					topRight.getElementsWithinArea(result, area, true);
-				} else if (topRight.elementsBounds.contains(area)) {
-					topRight.getElementsWithinArea(result, area, false);
-					quadContains = true;
-				} else if (topRight.elementsBounds.intersects(area)) {
-					topRight.getElementsWithinArea(result, area, false);
-				}
-			}
-			if(!quadContains && bottomLeft.isSearchRequired()) {
-				if (area.contains(bottomLeft.elementsBounds)) {
-					bottomLeft.getElementsWithinArea(result, area, true);
-				} else if (bottomLeft.elementsBounds.contains(area)) {
-					bottomLeft.getElementsWithinArea(result, area, false);
-					quadContains = true;
-				} else if (bottomLeft.elementsBounds.intersects(area)) {
-					bottomLeft.getElementsWithinArea(result, area, false);
-				}
-			}
-			if(!quadContains && bottomRight.isSearchRequired()) {
-				if (area.contains(bottomRight.elementsBounds)) {
-					bottomRight.getElementsWithinArea(result, area, true);
-				} else if(bottomRight.elementsBounds.contains(area)) {
-					bottomRight.getElementsWithinArea(result, area, false);
-					quadContains = true;
-				} else if(bottomRight.elementsBounds.intersects(area)) {
-					bottomRight.getElementsWithinArea(result, area, false);
-				}
-			}
-		} else {
-			addElementsWithinArea(result, area);
 		}
 	}
 
-	@Override
-	public void getElementsWithinArea(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection) {
-		switch (searchDirection){
-			case UPWARDS:
-				if (elements != null) {
-					addElementsWithinArea(result, area);
-				}
-				if (parent != null) {
-					if (parent.topLeft != this && parent.topLeft.isSearchRequired() &&
-							(area.contains(parent.topLeft.elementsBounds) || area.intersects(parent.topLeft.elementsBounds))) {
-						parent.topLeft.getElementsWithinArea(result, area);
-					}
-					if (parent.topRight != this && parent.topRight.isSearchRequired() &&
-							(area.contains(parent.topRight.elementsBounds) || area.intersects(parent.topRight.elementsBounds))) {
-						parent.topRight.getElementsWithinArea(result, area);
-					}
-					if (parent.bottomLeft != this && parent.bottomLeft.isSearchRequired() &&
-							(area.contains(parent.bottomLeft.elementsBounds) || area.intersects(parent.bottomLeft.elementsBounds))) {
-						parent.bottomLeft.getElementsWithinArea(result, area);
-					}
-					if (parent.bottomRight != this && parent.bottomRight.isSearchRequired() &&
-							(area.contains(parent.bottomRight.elementsBounds) || area.intersects(parent.bottomRight.elementsBounds))) {
-						parent.bottomRight.getElementsWithinArea(result, area);
-					}
-					parent.getElementsWithinArea(result, area, searchDirection);
-				}
-				break;
-			case DOWNWARDS:
-				getElementsWithinArea(result, area);
-				break;
+	protected void addElementsContainedInArea(Quad quad, Array<T> result, Rectangle area, boolean allElements) {
+		final QuadElements<T> elements = this.quadElements.get(quad.elementsIndex);
+		if(allElements) {
+			result.addAll(elements);
+			return;
+		}
+
+		for(int i = elements.size - 1; i >= 0; i--) {
+			final T element = elements.get(i);
+			if(area.contains(element.getX(), element.getY())) {
+				result.add(element);
+			}
 		}
 	}
 
-	@Override
-	public Array<T> getElementsWithinAreaIgnoringEdges(Shape area) {
-		Array<T> result = new Array<T>();
-		getElementsWithinAreaIgnoringEdges(result, area);
-		return result;
-	}
+	protected void addElementsIntersectingLineSegment(Quad quad, Array<T> result, LineSegment lineSegment) {
+		final QuadElements<T> elements = this.quadElements.get(quad.elementsIndex);
 
-	@Override
-	public Array<T> getElementsWithinAreaIgnoringEdges(Shape area, QuadTreeSearchDirection searchDirection) {
-		Array<T> result = new Array<T>();
-		getElementsWithinAreaIgnoringEdges(result, area, searchDirection);
-		return result;
-	}
-
-	@Override
-	public void getElementsWithinAreaIgnoringEdges(Array<T> result, Shape area) {
-		if (topLeft != null) {
-			if(topLeft.isSearchRequired() && (area.contains(topLeft.elementsBounds) || area.intersects(topLeft.elementsBounds))) {
-				topLeft.getElementsWithinAreaIgnoringEdges(result, area);
+		for(int i = elements.size - 1; i >= 0; i--) {
+			final T element = elements.get(i);
+			if(lineSegment.contains(element.getX(), element.getY())) {
+				result.add(element);
 			}
-			if(topRight.isSearchRequired() && (area.contains(topRight.elementsBounds) || area.intersects(topRight.elementsBounds))) {
-				topRight.getElementsWithinAreaIgnoringEdges(result, area);
-			}
-			if(bottomLeft.isSearchRequired() && (area.contains(bottomLeft.elementsBounds) || area.intersects(bottomLeft.elementsBounds))) {
-				bottomLeft.getElementsWithinAreaIgnoringEdges(result, area);
-			}
-			if(bottomRight.isSearchRequired() && (area.contains(bottomRight.elementsBounds) || area.intersects(bottomRight.elementsBounds))) {
-				bottomRight.getElementsWithinAreaIgnoringEdges(result, area);
-			}
-		} else {
-			addElementsWithinArea(result, area);
 		}
 	}
 
-	@Override
-	public void getElementsWithinAreaIgnoringEdges(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection) {
-		switch (searchDirection){
-			case UPWARDS:
-				if (elements != null) {
-					addElementsWithinArea(result, area);
-				}
-				if (parent != null) {
-					if (parent.topLeft != this && parent.topLeft.isSearchRequired() &&
-							(area.contains(parent.topLeft.elementsBounds) || area.intersectsIgnoringEdges(parent.topLeft.elementsBounds))) {
-						parent.topLeft.getElementsWithinAreaIgnoringEdges(result, area);
-					}
-					if (parent.topRight != this && parent.topRight.isSearchRequired() &&
-							(area.contains(parent.topRight.elementsBounds) || area.intersectsIgnoringEdges(parent.topRight.elementsBounds))) {
-						parent.topRight.getElementsWithinAreaIgnoringEdges(result, area);
-					}
-					if (parent.bottomLeft != this && parent.bottomLeft.isSearchRequired() &&
-							(area.contains(parent.bottomLeft.elementsBounds) || area.intersectsIgnoringEdges(parent.bottomLeft.elementsBounds))) {
-						parent.bottomLeft.getElementsWithinAreaIgnoringEdges(result, area);
-					}
-					if (parent.bottomRight != this && parent.bottomRight.isSearchRequired() &&
-							(area.contains(parent.bottomRight.elementsBounds) || area.intersectsIgnoringEdges(parent.bottomRight.elementsBounds))) {
-						parent.bottomRight.getElementsWithinAreaIgnoringEdges(result, area);
-					}
-					parent.getElementsWithinAreaIgnoringEdges(result, area, searchDirection);
-				}
-				break;
-			case DOWNWARDS:
-				getElementsWithinAreaIgnoringEdges(result, area);
-				break;
-		}
-	}
+	protected void addElementsContainingPoint(Quad quad, Array<T> result, Point point) {
+		final QuadElements<T> elements = this.quadElements.get(quad.elementsIndex);
 
-	@Override
-	public Array<T> getElementsContainingArea(Shape area, boolean entirelyContained) {
-		return new Array<>();
-	}
-
-	@Override
-	public Array<T> getElementsContainingArea(Shape area, QuadTreeSearchDirection searchDirection, boolean entirelyContained) {
-		return new Array<>();
-	}
-
-	@Override
-	public void getElementsContainingArea(Array<T> result, Shape area, boolean entirelyContained) {
-
-	}
-
-	@Override
-	public void getElementsContainingArea(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection, boolean entirelyContained) {
-
-	}
-
-	@Override
-	public Array<T> getElementsContainingPoint(Point point) {
-		Array<T> result = new Array<T>();
-		getElementsContainingPoint(result, point);
-		return result;
-	}
-
-	@Override
-	public Array<T> getElementsContainingPoint(Point point, QuadTreeSearchDirection searchDirection) {
-		Array<T> result = new Array<>();
-
-		switch (searchDirection){
-			case UPWARDS:
-				getElementsContainingPoint(result, point, searchDirection);
-				break;
-			case DOWNWARDS:
-				getElementsContainingPoint(result, point);
-				break;
-		}
-
-		return result;
-	}
-
-	protected void addElementsContainingPoint(Array<T> result, Point point) {
-		for (int i = elements.size - 1; i >= 0; i--) {
-			T element = elements.get(i);
-			if (element == null) {
+		for(int i = elements.size - 1; i >= 0; i--) {
+			final T element = elements.get(i);
+			if(element.getX() != point.x) {
 				continue;
 			}
-			if (element.getX() != point.x) {
-				continue;
-			}
-			if (element.getY() != point.y) {
+			if(element.getY() != point.y) {
 				continue;
 			}
 			result.add(element);
 		}
 	}
 
+	private int addElements(Quad quad, QuadTreeInspector<T> inspector) {
+		if(quad.elementsIndex < 0) {
+			return QuadTreeInspector.CONTINUE_INSPECTING_ELEMENTS;
+		}
+		final QuadElements<T> elements = this.quadElements.get(quad.elementsIndex);
+
+		for(int i = elements.size - 1; i >= 0; i--) {
+			final T element = elements.get(i);
+			final int result = inspector.inspect(element);
+			if(result >= QuadTreeInspector.CONTINUE_INSPECTING_ELEMENTS) {
+				continue;
+			}
+			return result;
+		}
+		return QuadTreeInspector.CONTINUE_INSPECTING_ELEMENTS;
+	}
+
 	@Override
-	public void getElementsContainingPoint(Array<T> result, Point point) {
-		if (topLeft != null) {
-			if (topLeft.isSearchRequired() && topLeft.elementsBounds.contains(point)) {
-				topLeft.getElementsContainingPoint(result, point);
+	public Array<T> getElementsOverlappingArea(Rectangle area) {
+		final Array<T> result = new Array<>();
+		getElementsOverlappingArea(result, area);
+		return result;
+	}
+
+	@Override
+	public void getElementsOverlappingArea(Array<T> result, Rectangle area) {
+		getElementsOverlappingArea(rootQuad, result, area);
+	}
+
+	private void getElementsOverlappingArea(Quad initialQuad, Array<T> result, Rectangle area) {
+		processQueue.add(initialQuad);
+
+		final float rectMinX = area.getMinX();
+		final float rectMinY = area.getMinY();
+		final float rectMaxX = area.getMaxX();
+		final float rectMaxY = area.getMaxY();
+
+		while(processQueue.size > 0) {
+			final Quad quad = processQueue.removeIndex(0);
+			if(!quad.elementsOverlap(rectMinX, rectMinY, rectMaxX, rectMaxY)) {
+				continue;
 			}
-			if (topRight.isSearchRequired() && topRight.elementsBounds.contains(point)) {
-				topRight.getElementsContainingPoint(result, point);
+			if(quad.childIndex < 0) {
+				leaves.add(quad);
+				continue;
 			}
-			if (bottomLeft.isSearchRequired() && bottomLeft.elementsBounds.contains(point)) {
-				bottomLeft.getElementsContainingPoint(result, point);
-			}
-			if (bottomRight.isSearchRequired() && bottomRight.elementsBounds.contains(point)) {
-				bottomRight.getElementsContainingPoint(result, point);
-			}
-		} else {
-			addElementsContainingPoint(result, point);
+			processQueue.add(this.quads.get(quad.childIndex));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_TOP_RIGHT_OFFSET));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_BOTTOM_LEFT_OFFSET));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_BOTTOM_RIGHT_OFFSET));
+		}
+		while(leaves.size > 0) {
+			final Quad leaf = leaves.removeIndex(0);
+			addElementsOverlappingArea(leaf, result, area,
+					leaf.elementBounds.containedBy(rectMinX, rectMinY, rectMaxX, rectMaxY));
 		}
 	}
 
 	@Override
-	public void getElementsContainingPoint(Array<T> result, Point point, QuadTreeSearchDirection searchDirection) {
-		switch (searchDirection){
-			case UPWARDS:
-				if (elements != null){
-					addElementsContainingPoint(result, point);
-				}
-				break;
-			case DOWNWARDS:
-				getElementsContainingPoint(result, point);
-				break;
+	public Array<T> getElementsOverlappingArea(Circle area) {
+		final Array<T> result = new Array<>();
+		getElementsOverlappingArea(result, area);
+		return result;
+	}
+
+	@Override
+	public void getElementsOverlappingArea(Array<T> result, Circle area) {
+		getElementsOverlappingArea(rootQuad, result, area.getBoundingBox());
+	}
+
+	@Override
+	public Array<T> getElementsOverlappingAreaIgnoringEdges(Rectangle area) {
+		final Array<T> result = new Array<>();
+		getElementsOverlappingAreaIgnoringEdges(result, area);
+		return result;
+	}
+
+	@Override
+	public void getElementsOverlappingAreaIgnoringEdges(Array<T> result, Rectangle area) {
+		getElementsOverlappingAreaIgnoringEdges(rootQuad, result, area);
+	}
+
+	private void getElementsOverlappingAreaIgnoringEdges(Quad initialQuad, Array<T> result, Rectangle area) {
+		processQueue.add(initialQuad);
+
+		final float rectMinX = area.getMinX();
+		final float rectMinY = area.getMinY();
+		final float rectMaxX = area.getMaxX();
+		final float rectMaxY = area.getMaxY();
+
+		while(processQueue.size > 0) {
+			final Quad quad = processQueue.removeIndex(0);
+			if(!quad.elementsOverlapIgnoringEdges(rectMinX, rectMinY, rectMaxX, rectMaxY)) {
+				continue;
+			}
+			if(quad.childIndex < 0) {
+				leaves.add(quad);
+				continue;
+			}
+			processQueue.add(this.quads.get(quad.childIndex));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_TOP_RIGHT_OFFSET));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_BOTTOM_LEFT_OFFSET));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_BOTTOM_RIGHT_OFFSET));
+		}
+		while(leaves.size > 0) {
+			final Quad leaf = leaves.removeIndex(0);
+			addElementsOverlappingAreaIgnoringEdges(leaf, result, area,
+					leaf.elementBounds.containedBy(rectMinX, rectMinY, rectMaxX, rectMaxY));
 		}
 	}
 
+	@Override
+	public Array<T> getElementsContainedInArea(Rectangle area) {
+		final Array<T> result = new Array<>();
+		getElementsContainedInArea(result, area);
+		return result;
+	}
+
+	@Override
+	public void getElementsContainedInArea(Array<T> result, Rectangle area) {
+		getElementsContainedInArea(rootQuad, result, area);
+	}
+
+	private void getElementsContainedInArea(Quad initialQuad, Array<T> result, Rectangle area) {
+		processQueue.add(initialQuad);
+
+		final float rectMinX = area.getMinX();
+		final float rectMinY = area.getMinY();
+		final float rectMaxX = area.getMaxX();
+		final float rectMaxY = area.getMaxY();
+
+		while(processQueue.size > 0) {
+			final Quad quad = processQueue.removeIndex(0);
+			if(!quad.elementsOverlap(rectMinX, rectMinY, rectMaxX, rectMaxY)) {
+				continue;
+			}
+			if(quad.childIndex < 0) {
+				leaves.add(quad);
+				continue;
+			}
+			processQueue.add(this.quads.get(quad.childIndex));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_TOP_RIGHT_OFFSET));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_BOTTOM_LEFT_OFFSET));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_BOTTOM_RIGHT_OFFSET));
+		}
+		while(leaves.size > 0) {
+			final Quad leaf = leaves.removeIndex(0);
+			addElementsContainedInArea(leaf, result, area,
+					leaf.elementBounds.containedBy(rectMinX, rectMinY, rectMaxX, rectMaxY));
+		}
+	}
+
+	@Override
+	public void getElements(QuadTreeInspector<T> inspector) {
+		getElements(rootQuad, inspector);
+	}
+
+	private void getElements(Quad initialQuad, QuadTreeInspector<T> inspector) {
+		processQueue.add(initialQuad);
+
+		while(processQueue.size > 0) {
+			final Quad quad = processQueue.removeIndex(0);
+			if(!inspector.isQuadValidForInspection(quad)) {
+				continue;
+			}
+			if(quad.childIndex < 0) {
+				leaves.add(quad);
+				continue;
+			}
+			processQueue.add(this.quads.get(quad.childIndex));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_TOP_RIGHT_OFFSET));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_BOTTOM_LEFT_OFFSET));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_BOTTOM_RIGHT_OFFSET));
+		}
+		while(leaves.size > 0) {
+			final Quad leaf = leaves.removeIndex(0);
+			getElements(leaf, inspector);
+		}
+	}
+
+	@Override
+	public Array<T> getElementsContainingArea(Rectangle area) {
+		final Array<T> result = new Array<>();
+		getElementsContainingArea(result, area);
+		return result;
+	}
+
+	@Override
+	public void getElementsContainingArea(Array<T> result, Rectangle area) {
+
+	}
+
+	@Override
 	public Array<T> getElementsIntersectingLineSegment(LineSegment lineSegment) {
-		Array<T> result = new Array<T>();
+		final Array<T> result = new Array<>();
 		getElementsIntersectingLineSegment(result, lineSegment);
 		return result;
 	}
 
 	@Override
-	public Array<T> getElementsIntersectingLineSegment(LineSegment lineSegment, QuadTreeSearchDirection searchDirection) {
-		Array<T> result = new Array<>();
+	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment) {
+		getElementsIntersectingLineSegment(rootQuad, result, lineSegment);
+	}
 
-		switch (searchDirection){
-			case UPWARDS:
-				getElementsIntersectingLineSegment(result, lineSegment, searchDirection);
-				break;
-			case DOWNWARDS:
-				getElementsIntersectingLineSegment(result, lineSegment);
-				break;
+	private void getElementsIntersectingLineSegment(Quad initialQuad, Array<T> result, LineSegment lineSegment) {
+		processQueue.add(initialQuad);
+
+		while(processQueue.size > 0) {
+			final Quad quad = processQueue.removeIndex(0);
+			if(!quad.elementsIntersect(lineSegment)) {
+				continue;
+			}
+			if(quad.childIndex < 0) {
+				leaves.add(quad);
+				continue;
+			}
+			processQueue.add(this.quads.get(quad.childIndex));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_TOP_RIGHT_OFFSET));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_BOTTOM_LEFT_OFFSET));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_BOTTOM_RIGHT_OFFSET));
 		}
+		while(leaves.size > 0) {
+			final Quad leaf = leaves.removeIndex(0);
+			addElementsIntersectingLineSegment(leaf, result, lineSegment);
+		}
+	}
 
+	@Override
+	public Array<T> getElementsContainingPoint(Point point) {
+		final Array<T> result = new Array<>();
+		getElementsContainingPoint(result, point);
 		return result;
 	}
 
-	protected void addElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment) {
-		for (int i = elements.size - 1; i >= 0; i--) {
-			T element = elements.get(i);
-			if (element != null && lineSegment.contains(element.getX(), element.getY())) {
+	@Override
+	public void getElementsContainingPoint(Array<T> result, Point point) {
+		getElementsContainingPoint(rootQuad, result, point);
+	}
+
+	private void getElementsContainingPoint(Quad initialQuad, Array<T> result, Point point) {
+		processQueue.add(initialQuad);
+
+		while(processQueue.size > 0) {
+			final Quad quad = processQueue.removeIndex(0);
+			if(!quad.elementsContain(point)) {
+				continue;
+			}
+			if(quad.childIndex < 0) {
+				leaves.add(quad);
+				continue;
+			}
+			processQueue.add(this.quads.get(quad.childIndex));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_TOP_RIGHT_OFFSET));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_BOTTOM_LEFT_OFFSET));
+			processQueue.add(this.quads.get(quad.childIndex + Quad.CHILD_BOTTOM_RIGHT_OFFSET));
+		}
+		while(leaves.size > 0) {
+			final Quad leaf = leaves.removeIndex(0);
+			addElementsContainingPoint(leaf, result, point);
+		}
+	}
+
+	@Override
+	public Array<T> getElements() {
+		final Array<T> result = new Array<>();
+		getElements(result);
+		return result;
+	}
+
+	@Override
+	public void getElements(Array<T> result) {
+		for(int i = this.quadElements.length - 1; i >= 0; i--) {
+			final QuadElements<T> quadElements = this.quadElements.get(i);
+			if(quadElements == null) {
+				continue;
+			}
+			for(T element : quadElements) {
 				result.add(element);
 			}
 		}
 	}
 
-	protected static boolean intersects(Rectangle tree, LineSegment segment){
-		return tree.intersects(segment) || tree.contains(segment.getPointA()) || tree.contains(segment.getPointB());
-	}
-
-	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment) {
-		if (topLeft != null) {
-			if (topLeft.isSearchRequired() && intersects(topLeft, lineSegment)) {
-				topLeft.getElementsIntersectingLineSegment(result, lineSegment);
-			}
-			if (topRight.isSearchRequired() && intersects(topRight, lineSegment)) {
-				topRight.getElementsIntersectingLineSegment(result, lineSegment);
-			}
-			if (bottomLeft.isSearchRequired() && intersects(bottomLeft, lineSegment)) {
-				bottomLeft.getElementsIntersectingLineSegment(result, lineSegment);
-			}
-			if (bottomRight.isSearchRequired() && intersects(bottomRight, lineSegment)) {
-				bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
-			}
-		} else {
-			addElementsIntersectingLineSegment(result, lineSegment);
-		}
-	}
-
-	@Override
-	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment, QuadTreeSearchDirection searchDirection) {
-		switch (searchDirection){
-			case UPWARDS:
-				if (elements != null) {
-					addElementsIntersectingLineSegment(result, lineSegment);
-				}
-				if (parent != null) {
-					if (parent.topLeft != this && parent.topLeft.isSearchRequired() && intersects(parent.topLeft, lineSegment)) {
-						parent.topLeft.getElementsIntersectingLineSegment(result, lineSegment);
-					}
-					if (parent.topRight != this && parent.topRight.isSearchRequired() && intersects(parent.topRight, lineSegment)) {
-						parent.topRight.getElementsIntersectingLineSegment(result, lineSegment);
-					}
-					if (parent.bottomLeft != this && parent.bottomLeft.isSearchRequired() && intersects(parent.bottomLeft, lineSegment)) {
-						parent.bottomLeft.getElementsIntersectingLineSegment(result, lineSegment);
-					}
-					if (parent.bottomRight != this && parent.bottomRight.isSearchRequired() && intersects(parent.bottomRight, lineSegment)) {
-						parent.bottomRight.getElementsIntersectingLineSegment(result, lineSegment);
-					}
-					parent.getElementsIntersectingLineSegment(result, lineSegment, searchDirection);
-				}
-				break;
-			case DOWNWARDS:
-				getElementsIntersectingLineSegment(result, lineSegment);
-				break;
-		}
-	}
-
-	public Array<T> getElements() {
-		Array<T> result = new Array<T>();
-		getElements(result);
-		return result;
-	}
-
-	public void getElements(Array<T> result) {
-		if (topLeft != null) {
-			topLeft.getElements(result);
-			topRight.getElements(result);
-			bottomLeft.getElements(result);
-			bottomRight.getElements(result);
-		} else {
-			result.addAll(elements);
-		}
-	}
-
-	public int getTotalQuads() {
-		if (topLeft != null) {
-			int result = topLeft.getTotalQuads();
-			result += topRight.getTotalQuads();
-			result += bottomLeft.getTotalQuads();
-			result += bottomRight.getTotalQuads();
-			return result;
-		} else {
-			return 1;
-		}
-	}
-
-	public int getTotalElements() {
-		if (totalElementsCache >= 0) {
-			return totalElementsCache;
-		}
-		if (topLeft != null) {
-			totalElementsCache = topLeft.getTotalElements();
-			totalElementsCache += topRight.getTotalElements();
-			totalElementsCache += bottomLeft.getTotalElements();
-			totalElementsCache += bottomRight.getTotalElements();
-		} else {
-			totalElementsCache = elements.size;
-		}
-		return totalElementsCache;
-	}
-
-	public int getTotalImmediateElements() {
-		if(elements == null) {
-			return 0;
-		}
-		return elements.size;
-	}
-
-	protected void clearTotalElementsCache() {
-		totalElementsCache = -1;
-	}
-
 	@Override
 	public void positionChanged(T moved) {
-		if (this.contains(moved.getX(), moved.getY())) {
-			if(!updateBounds(moved)) {
+		final int quadIndex = this.elementsToQuads.get(moved.getId(), -1);
+		Quad quad = quadIndex < 0 ? rootQuad : this.quads.get(quadIndex);
+		if(belongsToQuad(quad, moved)) {
+			if(!updateBounds(quad, moved)) {
 				return;
 			}
-			PointQuadTree<T> parentQuad = parent;
-			while (parentQuad != null) {
-				if(!parentQuad.updateBounds(moved)) {
+			while(quad.parentIndex != -1) {
+				quad = quads.get(quad.parentIndex);
+				if(!updateBounds(quad, moved)) {
 					return;
 				}
-				parentQuad = parentQuad.parent;
 			}
+			updateBounds(rootQuad, moved);
 			return;
 		}
 
-		removeElement(moved, true);
+		removeFromQuad(quad, moved);
 
-		QuadTree<T> parentQuad = parent;
-		while (parentQuad != null) {
-			if (parentQuad.add(moved)) {
+		while(quad.parentIndex != -1) {
+			quad = quads.get(quad.parentIndex);
+			if (addToQuad(quad, moved)) {
 				return;
 			}
-			parentQuad = parentQuad.getParent();
+		}
+		addToQuad(rootQuad, moved);
+	}
+
+	/**
+	 * Returns the Quad that the specified element belongs to
+	 * @param element The element to search for
+	 * @return Null if not contained in this quad tree
+	 */
+	public Quad getQuad(T element) {
+		final int quadIndex = this.elementsToQuads.get(element.getId(), -2);
+		switch (quadIndex) {
+		case -2:
+			return null;
+		case -1:
+			return rootQuad;
+		default:
+			return quads.get(quadIndex);
 		}
 	}
 
-	protected boolean isSearchRequired() {
-		if(topLeft != null) {
-			return elementsBounds != null;
-		}
-		return elements.size > 0;
+	/**
+	 * Checks if an element is added to the quad tree
+	 * @param element The element to check
+	 * @return True if added to the quad tree
+	 */
+	public boolean contains(T element) {
+		return elementsToQuads.containsKey(element.getId());
 	}
-
-	public QuadTree<T> getParent() {
-		return parent;
-	}
-
+	@Override
 	public int getElementLimitPerQuad() {
 		return elementLimitPerQuad;
-	}
-
-	public int getMergeWatermark() {
-		return mergeWatermark;
-	}
-
-	public boolean hasChildQuads() {
-		return topLeft != null;
 	}
 
 	@Override
@@ -1194,5 +955,15 @@ public class PointQuadTree<T extends Positionable> extends Rectangle implements 
 	@Override
 	public float getMinimumQuadHeight() {
 		return minimumQuadHeight;
+	}
+
+	@Override
+	public int getTotalQuads() {
+		return quads.totalItems + 1;
+	}
+
+	@Override
+	public int getTotalElements() {
+		return totalElements;
 	}
 }

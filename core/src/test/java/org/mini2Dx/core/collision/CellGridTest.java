@@ -19,7 +19,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mini2Dx.core.Mdx;
-import org.mini2Dx.core.collision.util.QuadTreeAwareCollisionBox;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.util.InterpolationTracker;
@@ -31,7 +30,6 @@ import java.util.Random;
 public class CellGridTest {
 	private CellGrid<CollisionBox> grid;
 	private CollisionBox box1, box2, box3, box4;
-	private QuadTreeAwareCollisionBox qABox1, qABox2, qABox3, qABox4;
 
 	@Before
 	public void setup() {
@@ -46,10 +44,6 @@ public class CellGridTest {
 		box2 = new CollisionBox(95, 1, 32, 32);
 		box3 = new CollisionBox(1, 95, 32, 32);
 		box4 = new CollisionBox(95, 95, 32, 32);
-		qABox1 = new QuadTreeAwareCollisionBox(box1);
-		qABox2 = new QuadTreeAwareCollisionBox(box2);
-		qABox3 = new QuadTreeAwareCollisionBox(box3);
-		qABox4 = new QuadTreeAwareCollisionBox(box4);
 	}
 
 	@Test
@@ -150,13 +144,13 @@ public class CellGridTest {
 	}
 
 	@Test
-	public void testGetElementsWithinRegion() {
+	public void testGetElementsOverlappingArea() {
 		grid.add(box1);
 		grid.add(box2);
 		grid.add(box3);
 		grid.add(box4);
 
-		Array<CollisionBox> collisionBoxs = grid.getElementsWithinArea(new CollisionBox(48, 48, 32, 32));
+		Array<CollisionBox> collisionBoxs = grid.getElementsOverlappingArea(new CollisionBox(48, 48, 32, 32));
 		Assert.assertEquals(0, collisionBoxs.size);
 
 		CollisionBox collisionBox5 = new CollisionBox(24, 24, 2, 2);
@@ -167,52 +161,52 @@ public class CellGridTest {
 		grid.add(collisionBox6);
 		grid.add(collisionBox7);
 
-		collisionBoxs = grid.getElementsWithinArea(new CollisionBox(0, 0, 128, 128));
+		collisionBoxs = grid.getElementsOverlappingArea(new CollisionBox(0, 0, 128, 128));
 		Assert.assertEquals(grid.getElements().size, collisionBoxs.size);
 
-		collisionBoxs = grid.getElementsWithinArea(new CollisionBox(36, 36, 32, 32));
+		collisionBoxs = grid.getElementsOverlappingArea(new CollisionBox(36, 36, 32, 32));
 		Assert.assertEquals(1, collisionBoxs.size);
 		Assert.assertEquals(collisionBox6, collisionBoxs.get(0));
 
-		collisionBoxs = grid.getElementsWithinArea(new CollisionBox(0, 0, 64, 64));
+		collisionBoxs = grid.getElementsOverlappingArea(new CollisionBox(0, 0, 64, 64));
 		Assert.assertEquals(4, collisionBoxs.size);
 		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox5, false));
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox6, false));
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox7, false));
 
-		collisionBoxs = grid.getElementsWithinArea(new CollisionBox(16, 16, 24, 24));
+		collisionBoxs = grid.getElementsOverlappingArea(new CollisionBox(16, 16, 24, 24));
 		Assert.assertEquals(2, collisionBoxs.size);
 		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox5, false));
 
-		collisionBoxs = grid.getElementsWithinArea(new CollisionBox(12, 40, 48, 8));
+		collisionBoxs = grid.getElementsOverlappingArea(new CollisionBox(12, 40, 48, 8));
 		Assert.assertEquals(2, collisionBoxs.size);
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox6, false));
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox7, false));
 	}
 
 	@Test
-	public void testGetElementsWithinR10egionIgnoringEdges() {
+	public void testGetElementsOverlappingAreaIgnoringEdges() {
 		grid.add(box1);
 		grid.add(box2);
 		grid.add(box3);
 		grid.add(box4);
 
-		Array<CollisionBox> collisionBoxs = grid.getElementsWithinAreaIgnoringEdges(new CollisionBox(48, 48, 32, 32));
+		Array<CollisionBox> collisionBoxs = grid.getElementsOverlappingAreaIgnoringEdges(new CollisionBox(48, 48, 32, 32));
 		Assert.assertEquals(0, collisionBoxs.size);
 
-		collisionBoxs = grid.getElementsWithinAreaIgnoringEdges(new CollisionBox(0, 0, 128, 128));
+		collisionBoxs = grid.getElementsOverlappingAreaIgnoringEdges(new CollisionBox(0, 0, 128, 128));
 		Assert.assertEquals(grid.getElements().size, collisionBoxs.size);
 
-		collisionBoxs = grid.getElementsWithinAreaIgnoringEdges(new CollisionBox(32, 32, 8, 8));
+		collisionBoxs = grid.getElementsOverlappingAreaIgnoringEdges(new CollisionBox(32, 32, 8, 8));
 		Assert.assertEquals(1, collisionBoxs.size);
 		Assert.assertEquals(box1, collisionBoxs.get(0));
 
-		collisionBoxs = grid.getElementsWithinAreaIgnoringEdges(new CollisionBox(33, 0, 8, 8));
+		collisionBoxs = grid.getElementsOverlappingAreaIgnoringEdges(new CollisionBox(33, 0, 8, 8));
 		Assert.assertEquals(0, collisionBoxs.size);
 
-		collisionBoxs = grid.getElementsWithinAreaIgnoringEdges(new CollisionBox(0, 33, 8, 8));
+		collisionBoxs = grid.getElementsOverlappingAreaIgnoringEdges(new CollisionBox(0, 33, 8, 8));
 		Assert.assertEquals(0, collisionBoxs.size);
 	}
 
@@ -273,38 +267,22 @@ public class CellGridTest {
 		grid.add(box1);
 
 		//Collision box is inside box1
-		Array<CollisionBox> collisionBoxs = grid.getElementsContainingArea(new CollisionBox(2, 2, 10, 10), false);
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
-
-		collisionBoxs = grid.getElementsContainingArea(new CollisionBox(2, 2, 10, 10), true);
+		Array<CollisionBox> collisionBoxs = grid.getElementsContainingArea(new CollisionBox(2, 2, 10, 10));
 		Assert.assertEquals(1, collisionBoxs.size);
 		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
 
 		//Collision box is outside box1
-		collisionBoxs = grid.getElementsContainingArea(new CollisionBox(40, 40, 10, 10), false);
-		Assert.assertEquals(0, collisionBoxs.size);
-		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
-
-		collisionBoxs = grid.getElementsContainingArea(new CollisionBox(40, 40, 10, 10), true);
+		collisionBoxs = grid.getElementsContainingArea(new CollisionBox(40, 40, 10, 10));
 		Assert.assertEquals(0, collisionBoxs.size);
 		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
 
 		//Collision box is partially inside box1
-		collisionBoxs = grid.getElementsContainingArea(new CollisionBox(25, 25, 10, 10), false);
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
-
-		collisionBoxs = grid.getElementsContainingArea(new CollisionBox(25, 25, 10, 10), true);
+		collisionBoxs = grid.getElementsContainingArea(new CollisionBox(25, 25, 10, 10));
 		Assert.assertEquals(0, collisionBoxs.size);
 		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
 
 		//Collision box is larger than, and contains box 1
-		collisionBoxs = grid.getElementsContainingArea(new CollisionBox(0.5f, 0.5f, 64, 64), false);
-		Assert.assertEquals(0, collisionBoxs.size);
-		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
-
-		collisionBoxs = grid.getElementsContainingArea(new CollisionBox(0.5f, 0.5f, 64, 64), true);
+		collisionBoxs = grid.getElementsContainingArea(new CollisionBox(0.5f, 0.5f, 64, 64));
 		Assert.assertEquals(0, collisionBoxs.size);
 		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
 	}

@@ -18,7 +18,6 @@ package org.mini2Dx.core.collision;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mini2Dx.core.collision.util.QuadTreeAwareCollisionBox;
 import org.mini2Dx.core.geom.LineSegment;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.util.InterpolationTracker;
@@ -32,9 +31,8 @@ import java.util.Random;
  * Unit tests for {@link RegionQuadTree}
  */
 public class RegionQuadTreeTest {
-	private RegionQuadTree<CollisionBox> rootQuad;
+	private RegionQuadTree<CollisionBox> quadTree;
 	private CollisionBox box1, box2, box3, box4;
-	private QuadTreeAwareCollisionBox qABox1, qABox2, qABox3, qABox4;
 	
 	@Before
 	public void setup() {
@@ -43,16 +41,12 @@ public class RegionQuadTreeTest {
 
 		Mdx.graphics = null;
 
-		rootQuad = new RegionQuadTree<CollisionBox>(2, 0, 0, 128, 128);
+		quadTree = new RegionQuadTree<CollisionBox>(2, 0, 0, 128, 128);
 		
 		box1 = new CollisionBox(1, 1, 32, 32);
 		box2 = new CollisionBox(95, 1, 32, 32);
 		box3 = new CollisionBox(1, 95, 32, 32);
 		box4 = new CollisionBox(95, 95, 32, 32);
-		qABox1 = new QuadTreeAwareCollisionBox(box1);
-		qABox2 = new QuadTreeAwareCollisionBox(box2);
-		qABox3 = new QuadTreeAwareCollisionBox(box3);
-		qABox4 = new QuadTreeAwareCollisionBox(box4);
 	}
 	
 	@Test
@@ -62,8 +56,8 @@ public class RegionQuadTreeTest {
 		long startTime = System.nanoTime();
 		for(int i = 0; i < totalElements; i++) {
 			CollisionBox rect = new CollisionBox(random.nextInt(96), random.nextInt(96), 32f, 32f);
-			Assert.assertEquals(true, rootQuad.add(rect));
-			Assert.assertEquals(i + 1, rootQuad.getTotalElements());
+			Assert.assertEquals(true, quadTree.add(rect));
+			Assert.assertEquals(i + 1, quadTree.getTotalElements());
 		}
 		long duration = System.nanoTime() - startTime;
 		System.out.println("Took " + duration + "ns to add " + totalElements + " elements individually to " + RegionQuadTree.class.getSimpleName());
@@ -80,10 +74,10 @@ public class RegionQuadTreeTest {
 		}
 		rects.add(new CollisionBox(-4f, -4f, 32f, 32f));
 		
-		rootQuad.addAll(rects);
+		quadTree.addAll(rects);
 		long duration = System.nanoTime() - startTime;
 		System.out.println("Took " + duration + "ns to add " + totalElements + " elements in bulk to " + RegionQuadTree.class.getSimpleName());
-		Assert.assertEquals(rects.size, rootQuad.getTotalElements());
+		Assert.assertEquals(rects.size, quadTree.getTotalElements());
 	}
 	
 	@Test
@@ -95,14 +89,14 @@ public class RegionQuadTreeTest {
 		}
 		
 		for(int i = 0; i < collisionBoxs.size; i++) {
-			rootQuad.add(collisionBoxs.get(i));
-			Assert.assertEquals(i + 1, rootQuad.getElements().size);
+			quadTree.add(collisionBoxs.get(i));
+			Assert.assertEquals(i + 1, quadTree.getElements().size);
 		}
 		
 		for(int i = collisionBoxs.size - 1; i >= 0 ; i--) {
-			Assert.assertEquals(i + 1, rootQuad.getElements().size);
-			rootQuad.remove(collisionBoxs.get(i));
-			Assert.assertEquals(i, rootQuad.getElements().size);
+			Assert.assertEquals(i + 1, quadTree.getElements().size);
+			quadTree.remove(collisionBoxs.get(i));
+			Assert.assertEquals(i, quadTree.getElements().size);
 		}
 	}
 	
@@ -113,10 +107,10 @@ public class RegionQuadTreeTest {
 		for(int i = 0; i < 100; i++) {
 			rects.add(new CollisionBox(random.nextInt(96), random.nextInt(96), random.nextInt(32), random.nextInt(32)));
 		}
-		rootQuad.addAll(rects);
-		Assert.assertEquals(rects.size, rootQuad.getTotalElements());
-		rootQuad.removeAll(rects);
-		Assert.assertEquals(0, rootQuad.getTotalElements());
+		quadTree.addAll(rects);
+		Assert.assertEquals(rects.size, quadTree.getTotalElements());
+		quadTree.removeAll(rects);
+		Assert.assertEquals(0, quadTree.getTotalElements());
 	}
 
 	@Test
@@ -126,246 +120,138 @@ public class RegionQuadTreeTest {
 		for(int i = 0; i < 100; i++) {
 			rects.add(new CollisionBox(random.nextInt(96), random.nextInt(96), random.nextInt(32), random.nextInt(32)));
 		}
-		rootQuad.addAll(rects);
-		Assert.assertEquals(rects.size, rootQuad.getTotalElements());
-		rootQuad.clear();
-		Assert.assertEquals(0, rootQuad.getTotalElements());
+		quadTree.addAll(rects);
+		Assert.assertEquals(rects.size, quadTree.getTotalElements());
+		quadTree.clear();
+		Assert.assertEquals(0, quadTree.getTotalElements());
 	}
 	
 	@Test
 	public void testSubdivide() {
-		rootQuad.add(box1);
-		Assert.assertEquals(1, rootQuad.getElements().size);
-		Assert.assertEquals(1, rootQuad.getTotalQuads());
+		quadTree.add(box1);
+		Assert.assertEquals(1, quadTree.getElements().size);
+		Assert.assertEquals(1, quadTree.getTotalQuads());
 		
-		rootQuad.add(box2);
-		Assert.assertEquals(2, rootQuad.getElements().size);
-		Assert.assertEquals(1, rootQuad.getTotalQuads());
+		quadTree.add(box2);
+		Assert.assertEquals(2, quadTree.getElements().size);
+		Assert.assertEquals(1, quadTree.getTotalQuads());
 		
-		rootQuad.add(box3);
-		Assert.assertEquals(3, rootQuad.getElements().size);
-		Assert.assertEquals(4, rootQuad.getTotalQuads());
+		quadTree.add(box3);
+		Assert.assertEquals(3, quadTree.getElements().size);
+		Assert.assertEquals(5, quadTree.getTotalQuads());
 		
-		rootQuad.add(box4);
-		Assert.assertEquals(4, rootQuad.getElements().size);
-		Assert.assertEquals(4, rootQuad.getTotalQuads());
+		quadTree.add(box4);
+		Assert.assertEquals(4, quadTree.getElements().size);
+		Assert.assertEquals(5, quadTree.getTotalQuads());
 		
-		rootQuad.add(new CollisionBox(24, 24, 2, 2));
-		Assert.assertEquals(5, rootQuad.getElements().size);
-		Assert.assertEquals(4, rootQuad.getTotalQuads());
+		quadTree.add(new CollisionBox(24, 24, 2, 2));
+		Assert.assertEquals(5, quadTree.getElements().size);
+		Assert.assertEquals(5, quadTree.getTotalQuads());
 		
-		rootQuad.add(new CollisionBox(48, 48, 32, 32));
-		Assert.assertEquals(6, rootQuad.getElements().size);
-		Assert.assertEquals(7, rootQuad.getTotalQuads());
+		quadTree.add(new CollisionBox(48, 48, 32, 32));
+		Assert.assertEquals(6, quadTree.getElements().size);
+		Assert.assertEquals(9, quadTree.getTotalQuads());
 		
-		rootQuad.add(new CollisionBox(12, 48, 8, 8));
-		Assert.assertEquals(7, rootQuad.getElements().size);
-		Assert.assertEquals(7, rootQuad.getTotalQuads());
-	}
-	
-	@Test
-	public void testMerge() {
-		rootQuad = new RegionQuadTree<CollisionBox>(4, 3, 0, 0, 128, 128);
-		Assert.assertEquals(true, rootQuad.add(box1));
-		Assert.assertEquals(1, rootQuad.getTotalQuads());
-		Assert.assertEquals(true, rootQuad.add(box2));
-		Assert.assertEquals(true, rootQuad.add(box3));
-		Assert.assertEquals(true, rootQuad.add(box4));
-		Assert.assertEquals(true, rootQuad.add(new CollisionBox(24, 24, 2, 2)));
-		Assert.assertEquals(4, rootQuad.getTotalQuads());
-		Assert.assertEquals(true, rootQuad.remove(box4));
-		Assert.assertEquals(true, rootQuad.remove(box3));
-		Assert.assertEquals(true, rootQuad.remove(box2));
-		Assert.assertEquals(1, rootQuad.getTotalQuads());
-		Assert.assertEquals(2, rootQuad.getTotalElements());
-		Assert.assertEquals(true, rootQuad.getElements().contains(box1, false));
+		quadTree.add(new CollisionBox(12, 48, 8, 8));
+		Assert.assertEquals(7, quadTree.getElements().size);
+		Assert.assertEquals(9, quadTree.getTotalQuads());
 	}
 	
 	@Test
 	public void testGetTotalElements() {
-		rootQuad.add(box1);
-		Assert.assertEquals(1, rootQuad.getTotalElements());
-		rootQuad.add(box2);
-		Assert.assertEquals(2, rootQuad.getTotalElements());
-		rootQuad.add(box3);
-		Assert.assertEquals(3, rootQuad.getTotalElements());
-		rootQuad.remove(box2);
-		Assert.assertEquals(2, rootQuad.getTotalElements());
-		rootQuad.add(box4);
-		Assert.assertEquals(3, rootQuad.getTotalElements());
-		rootQuad.add(box2);
-		Assert.assertEquals(4, rootQuad.getTotalElements());
-		rootQuad.add(new CollisionBox(48, 48, 32, 32));
-		Assert.assertEquals(5, rootQuad.getTotalElements());
-		rootQuad.add(new CollisionBox(12, 48, 8, 8));
-		Assert.assertEquals(6, rootQuad.getTotalElements());
+		quadTree.add(box1);
+		Assert.assertEquals(1, quadTree.getTotalElements());
+		quadTree.add(box2);
+		Assert.assertEquals(2, quadTree.getTotalElements());
+		quadTree.add(box3);
+		Assert.assertEquals(3, quadTree.getTotalElements());
+		quadTree.remove(box2);
+		Assert.assertEquals(2, quadTree.getTotalElements());
+		quadTree.add(box4);
+		Assert.assertEquals(3, quadTree.getTotalElements());
+		quadTree.add(box2);
+		Assert.assertEquals(4, quadTree.getTotalElements());
+		quadTree.add(new CollisionBox(48, 48, 32, 32));
+		Assert.assertEquals(5, quadTree.getTotalElements());
+		quadTree.add(new CollisionBox(12, 48, 8, 8));
+		Assert.assertEquals(6, quadTree.getTotalElements());
 	}
 	
 	@Test
-	public void testGetElementsWithinRegion() {
-		rootQuad.add(box1);
-		rootQuad.add(box2);
-		rootQuad.add(box3);
-		rootQuad.add(box4);
+	public void testGetElementsOverlappingArea() {
+		quadTree.add(box1);
+		quadTree.add(box2);
+		quadTree.add(box3);
+		quadTree.add(box4);
 
-		Array<CollisionBox> collisionBoxs = rootQuad.getElementsWithinArea(new CollisionBox(48, 48, 32, 32));
+		Array<CollisionBox> collisionBoxs = quadTree.getElementsOverlappingArea(new CollisionBox(48, 48, 32, 32));
 		Assert.assertEquals(0, collisionBoxs.size);
 		
 		CollisionBox collisionBox5 = new CollisionBox(24, 24, 2, 2);
 		CollisionBox collisionBox6 = new CollisionBox(48, 48, 32, 32);
 		CollisionBox collisionBox7 = new CollisionBox(12, 48, 8, 8);
 		
-		rootQuad.add(collisionBox5);
-		rootQuad.add(collisionBox6);
-		rootQuad.add(collisionBox7);
+		quadTree.add(collisionBox5);
+		quadTree.add(collisionBox6);
+		quadTree.add(collisionBox7);
 		
-		collisionBoxs = rootQuad.getElementsWithinArea(new CollisionBox(0, 0, 128, 128));
-		Assert.assertEquals(rootQuad.getElements().size, collisionBoxs.size);
+		collisionBoxs = quadTree.getElementsOverlappingArea(new CollisionBox(0, 0, 128, 128));
+		Assert.assertEquals(quadTree.getElements().size, collisionBoxs.size);
 		
-		collisionBoxs = rootQuad.getElementsWithinArea(new CollisionBox(36, 36, 32, 32));
+		collisionBoxs = quadTree.getElementsOverlappingArea(new CollisionBox(36, 36, 32, 32));
 		Assert.assertEquals(1, collisionBoxs.size);
 		Assert.assertEquals(collisionBox6, collisionBoxs.get(0));
 		
-		collisionBoxs = rootQuad.getElementsWithinArea(new CollisionBox(0, 0, 64, 64));
+		collisionBoxs = quadTree.getElementsOverlappingArea(new CollisionBox(0, 0, 64, 64));
 		Assert.assertEquals(4, collisionBoxs.size);
 		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox5, false));
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox6, false));
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox7, false));
 		
-		collisionBoxs = rootQuad.getElementsWithinArea(new CollisionBox(16, 16, 24, 24));
+		collisionBoxs = quadTree.getElementsOverlappingArea(new CollisionBox(16, 16, 24, 24));
 		Assert.assertEquals(2, collisionBoxs.size);
 		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox5, false));
 		
-		collisionBoxs = rootQuad.getElementsWithinArea(new CollisionBox(12, 40, 48, 8));
+		collisionBoxs = quadTree.getElementsOverlappingArea(new CollisionBox(12, 40, 48, 8));
 		Assert.assertEquals(2, collisionBoxs.size);
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox6, false));
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox7, false));
 	}
 
 	@Test
-	public void testGetElementsWithinR10egionIgnoringEdges() {
-		rootQuad.add(box1);
-		rootQuad.add(box2);
-		rootQuad.add(box3);
-		rootQuad.add(box4);
+	public void testGetElementsOverlappingAreaIgnoringEdges() {
+		quadTree.add(box1);
+		quadTree.add(box2);
+		quadTree.add(box3);
+		quadTree.add(box4);
 
-		Array<CollisionBox> collisionBoxs = rootQuad.getElementsWithinAreaIgnoringEdges(new CollisionBox(48, 48, 32, 32));
+		Array<CollisionBox> collisionBoxs = quadTree.getElementsOverlappingAreaIgnoringEdges(new CollisionBox(48, 48, 32, 32));
 		Assert.assertEquals(0, collisionBoxs.size);
 
-		collisionBoxs = rootQuad.getElementsWithinAreaIgnoringEdges(new CollisionBox(0, 0, 128, 128));
-		Assert.assertEquals(rootQuad.getElements().size, collisionBoxs.size);
+		collisionBoxs = quadTree.getElementsOverlappingAreaIgnoringEdges(new CollisionBox(0, 0, 128, 128));
+		Assert.assertEquals(quadTree.getElements().size, collisionBoxs.size);
 
-		collisionBoxs = rootQuad.getElementsWithinAreaIgnoringEdges(new CollisionBox(32, 32, 8, 8));
+		collisionBoxs = quadTree.getElementsOverlappingAreaIgnoringEdges(new CollisionBox(32, 32, 8, 8));
 		Assert.assertEquals(1, collisionBoxs.size);
 		Assert.assertEquals(box1, collisionBoxs.get(0));
 
-		collisionBoxs = rootQuad.getElementsWithinAreaIgnoringEdges(new CollisionBox(33, 0, 8, 8));
+		collisionBoxs = quadTree.getElementsOverlappingAreaIgnoringEdges(new CollisionBox(33, 0, 8, 8));
 		Assert.assertEquals(0, collisionBoxs.size);
 
-		collisionBoxs = rootQuad.getElementsWithinAreaIgnoringEdges(new CollisionBox(0, 33, 8, 8));
+		collisionBoxs = quadTree.getElementsOverlappingAreaIgnoringEdges(new CollisionBox(0, 33, 8, 8));
 		Assert.assertEquals(0, collisionBoxs.size);
-	}
-
-	@Test
-	public void testGetElementsWithinRegionUpwards() {
-		rootQuad.add(qABox1);
-		rootQuad.add(qABox2);
-		rootQuad.add(qABox3);
-		rootQuad.add(qABox4);
-
-		Array<CollisionBox> collisionBoxs = rootQuad.getElementsWithinArea(new CollisionBox(48, 48, 32, 32));
-		Assert.assertEquals(0, collisionBoxs.size);
-
-		QuadTreeAwareCollisionBox collisionBox5 = new QuadTreeAwareCollisionBox(24, 24, 2, 2);
-		QuadTreeAwareCollisionBox collisionBox6 = new QuadTreeAwareCollisionBox(48, 48, 32, 32);
-		QuadTreeAwareCollisionBox collisionBox7 = new QuadTreeAwareCollisionBox(12, 48, 8, 8);
-
-		rootQuad.add(collisionBox5);
-		rootQuad.add(collisionBox6);
-		rootQuad.add(collisionBox7);
-
-		collisionBoxs = rootQuad.getElementsWithinArea(new CollisionBox(0, 0, 128, 128));
-		Assert.assertEquals(rootQuad.getElements().size, collisionBoxs.size);
-
-		collisionBoxs = collisionBox6.getQuad().getElementsWithinArea(new CollisionBox(36, 36, 32, 32));
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(collisionBox6, collisionBoxs.get(0));
-
-		collisionBoxs = qABox1.getQuad().getElementsWithinArea(new CollisionBox(0, 0, 64, 64), QuadTreeSearchDirection.UPWARDS);
-		Assert.assertEquals(4, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox1, false));
-		Assert.assertEquals(true, collisionBoxs.contains(collisionBox5, false));
-		Assert.assertEquals(true, collisionBoxs.contains(collisionBox6, false));
-		Assert.assertEquals(true, collisionBoxs.contains(collisionBox7, false));
-
-		collisionBoxs = qABox1.getQuad().getElementsWithinArea(new CollisionBox(16, 16, 24, 24), QuadTreeSearchDirection.UPWARDS);
-		Assert.assertEquals(2, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox1, false));
-		Assert.assertEquals(true, collisionBoxs.contains(collisionBox5, false));
-
-		collisionBoxs = qABox1.getQuad().getElementsWithinArea(new CollisionBox(12, 40, 48, 8), QuadTreeSearchDirection.UPWARDS);
-		Assert.assertEquals(2, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(collisionBox6, false));
-		Assert.assertEquals(true, collisionBoxs.contains(collisionBox7, false));
-	}
-
-	@Test
-	public void testGetElementsWithinRegionIgnoringEdgesUpwards() {
-		rootQuad.add(qABox1);
-		rootQuad.add(qABox2);
-		rootQuad.add(qABox3);
-		rootQuad.add(qABox4);
-
-		Array<CollisionBox> collisionBoxs = rootQuad.getElementsWithinAreaIgnoringEdges(new CollisionBox(48, 48, 32, 32));
-		Assert.assertEquals(0, collisionBoxs.size);
-
-		QuadTreeAwareCollisionBox collisionBox5 = new QuadTreeAwareCollisionBox(24, 24, 2, 2);
-		QuadTreeAwareCollisionBox collisionBox6 = new QuadTreeAwareCollisionBox(48, 48, 32, 32);
-		QuadTreeAwareCollisionBox collisionBox7 = new QuadTreeAwareCollisionBox(12, 48, 8, 8);
-
-		rootQuad.add(collisionBox5);
-		rootQuad.add(collisionBox6);
-		rootQuad.add(collisionBox7);
-
-		collisionBoxs = rootQuad.getElementsWithinAreaIgnoringEdges(new CollisionBox(0, 0, 128, 128));
-		Assert.assertEquals(rootQuad.getElements().size, collisionBoxs.size);
-
-		collisionBoxs = collisionBox6.getQuad().getElementsWithinAreaIgnoringEdges(new CollisionBox(36, 36, 32, 32));
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(collisionBox6, collisionBoxs.get(0));
-
-		collisionBoxs = qABox1.getQuad().getElementsWithinAreaIgnoringEdges(new CollisionBox(0, 0, 64, 64), QuadTreeSearchDirection.UPWARDS);
-		Assert.assertEquals(4, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox1, false));
-		Assert.assertEquals(true, collisionBoxs.contains(collisionBox5, false));
-		Assert.assertEquals(true, collisionBoxs.contains(collisionBox6, false));
-		Assert.assertEquals(true, collisionBoxs.contains(collisionBox7, false));
-
-		collisionBoxs = qABox1.getQuad().getElementsWithinAreaIgnoringEdges(new CollisionBox(16, 16, 24, 24), QuadTreeSearchDirection.UPWARDS);
-		Assert.assertEquals(2, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox1, false));
-		Assert.assertEquals(true, collisionBoxs.contains(collisionBox5, false));
-
-		collisionBoxs = qABox1.getQuad().getElementsWithinAreaIgnoringEdges(new CollisionBox(12, 40, 48, 8), QuadTreeSearchDirection.UPWARDS);
-		Assert.assertEquals(0, collisionBoxs.size);
-
-		collisionBoxs = qABox1.getQuad().getElementsWithinAreaIgnoringEdges(new CollisionBox(12, 40, 49, 8), QuadTreeSearchDirection.UPWARDS);
-		Assert.assertEquals(0, collisionBoxs.size);
-
-		collisionBoxs = qABox1.getQuad().getElementsWithinAreaIgnoringEdges(new CollisionBox(12, 40, 50, 10), QuadTreeSearchDirection.UPWARDS);
-		Assert.assertEquals(2, collisionBoxs.size);
 	}
 	
 	@Test
 	public void testGetElementsIntersectingLineSegment() {
-		rootQuad.add(box1);
-		rootQuad.add(box2);
-		rootQuad.add(box3);
-		rootQuad.add(box4);
+		quadTree.add(box1);
+		quadTree.add(box2);
+		quadTree.add(box3);
+		quadTree.add(box4);
 
-		Array<CollisionBox> collisionBoxs = rootQuad.getElementsIntersectingLineSegment(new LineSegment(0,  0, 128, 128));
+		Array<CollisionBox> collisionBoxs = quadTree.getElementsIntersectingLineSegment(new LineSegment(0,  0, 128, 128));
 		Assert.assertEquals(2, collisionBoxs.size);
 		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
 		Assert.assertEquals(true, collisionBoxs.contains(box4, false));
@@ -374,247 +260,68 @@ public class RegionQuadTreeTest {
 		CollisionBox collisionBox6 = new CollisionBox(48, 48, 32, 32);
 		CollisionBox collisionBox7 = new CollisionBox(12, 48, 8, 8);
 		
-		rootQuad.add(collisionBox5);
-		rootQuad.add(collisionBox6);
-		rootQuad.add(collisionBox7);
+		quadTree.add(collisionBox5);
+		quadTree.add(collisionBox6);
+		quadTree.add(collisionBox7);
 		
-		collisionBoxs = rootQuad.getElementsIntersectingLineSegment(new LineSegment(0,  0, 128, 128));
+		collisionBoxs = quadTree.getElementsIntersectingLineSegment(new LineSegment(0,  0, 128, 128));
 		Assert.assertEquals(4, collisionBoxs.size);
 		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
 		Assert.assertEquals(true, collisionBoxs.contains(box4, false));
-		Assert.assertEquals(true, collisionBoxs.contains(collisionBox5, false));
-		Assert.assertEquals(true, collisionBoxs.contains(collisionBox6, false));
-	}
-
-	@Test
-	public void testGetElementsIntersectingLineSegmentUpwards() {
-		rootQuad.add(qABox1);
-		rootQuad.add(qABox2);
-		rootQuad.add(qABox3);
-		rootQuad.add(qABox4);
-
-		Array<CollisionBox> collisionBoxs = rootQuad.getElementsIntersectingLineSegment(new LineSegment(0,  0, 128, 128));
-		Assert.assertEquals(2, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox1, false));
-		Assert.assertEquals(true, collisionBoxs.contains(qABox4, false));
-
-		QuadTreeAwareCollisionBox collisionBox5 = new QuadTreeAwareCollisionBox(24, 24, 2, 2);
-		QuadTreeAwareCollisionBox collisionBox6 = new QuadTreeAwareCollisionBox(48, 48, 32, 32);
-		QuadTreeAwareCollisionBox collisionBox7 = new QuadTreeAwareCollisionBox(12, 48, 8, 8);
-
-		rootQuad.add(collisionBox5);
-		rootQuad.add(collisionBox6);
-		rootQuad.add(collisionBox7);
-
-		collisionBoxs =	qABox1.getQuad().getElementsIntersectingLineSegment(new LineSegment(0,  0, 128, 128));
-		Assert.assertEquals(2, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox1, false));
-		Assert.assertEquals(true, collisionBoxs.contains(collisionBox5, false));
-
-		collisionBoxs =	qABox1.getQuad().getElementsIntersectingLineSegment(new LineSegment(0,  0, 128, 128), QuadTreeSearchDirection.UPWARDS);
-		Assert.assertEquals(4, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox1, false));
-		Assert.assertEquals(true, collisionBoxs.contains(qABox4, false));
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox5, false));
 		Assert.assertEquals(true, collisionBoxs.contains(collisionBox6, false));
 	}
 	
 	@Test
 	public void testGetElementsContainingPoint() {
-		rootQuad.add(box1);
-		rootQuad.add(box2);
-		rootQuad.add(box3);
-		rootQuad.add(box4);
+		quadTree.add(box1);
+		quadTree.add(box2);
+		quadTree.add(box3);
+		quadTree.add(box4);
 
-		Array<CollisionBox> collisionBoxs = rootQuad.getElementsContainingPoint(new Point(16, 16));
+		Array<CollisionBox> collisionBoxs = quadTree.getElementsContainingPoint(new Point(16, 16));
 		Assert.assertEquals(1, collisionBoxs.size);
 		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
 		
-		collisionBoxs = rootQuad.getElementsContainingPoint(new Point(112, 16));
+		collisionBoxs = quadTree.getElementsContainingPoint(new Point(112, 16));
 		Assert.assertEquals(1, collisionBoxs.size);
 		Assert.assertEquals(true, collisionBoxs.contains(box2, false));
 		
-		collisionBoxs = rootQuad.getElementsContainingPoint(new Point(16, 112));
+		collisionBoxs = quadTree.getElementsContainingPoint(new Point(16, 112));
 		Assert.assertEquals(1, collisionBoxs.size);
 		Assert.assertEquals(true, collisionBoxs.contains(box3, false));
 		
-		collisionBoxs = rootQuad.getElementsContainingPoint(new Point(112, 112));
+		collisionBoxs = quadTree.getElementsContainingPoint(new Point(112, 112));
+		Assert.assertEquals(1, collisionBoxs.size);
+		Assert.assertEquals(true, collisionBoxs.contains(box4, false));
+
+		collisionBoxs = quadTree.getElementsContainingPoint(new Point(95, 95));
 		Assert.assertEquals(1, collisionBoxs.size);
 		Assert.assertEquals(true, collisionBoxs.contains(box4, false));
 	}
 
 	@Test
-	public void testGetElementsContainingPointUpwards() {
-		rootQuad.add(qABox1);
-		rootQuad.add(qABox2);
-		rootQuad.add(qABox3);
-		rootQuad.add(qABox4);
-
-		Array<CollisionBox> collisionBoxs = qABox1.getQuad().getElementsContainingPoint(new Point(16, 16), QuadTreeSearchDirection.UPWARDS);
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox1, false));
-
-		collisionBoxs = qABox1.getQuad().getElementsContainingPoint(new Point(112, 16));
-		Assert.assertEquals(0, collisionBoxs.size);
-
-		collisionBoxs = qABox1.getQuad().getElementsContainingPoint(new Point(112, 16), QuadTreeSearchDirection.UPWARDS);
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox2, false));
-
-		collisionBoxs = qABox3.getQuad().getElementsContainingPoint(new Point(16, 112), QuadTreeSearchDirection.UPWARDS);
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox3, false));
-
-		collisionBoxs = qABox4.getQuad().getElementsContainingPoint(new Point(112, 112), QuadTreeSearchDirection.UPWARDS);
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox4, false));
-	}
-
-	@Test
 	public void testGetElementsContainingArea() {
-		rootQuad.add(box1);
+		quadTree.add(box1);
 
 		//Collision box is inside box1
-		Array<CollisionBox> collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(2, 2, 10, 10), false);
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
-
-		collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(2, 2, 10, 10), true);
+		Array<CollisionBox> collisionBoxs = quadTree.getElementsContainingArea(new CollisionBox(2, 2, 10, 10));
 		Assert.assertEquals(1, collisionBoxs.size);
 		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
 
 		//Collision box is outside box1
-		collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(40, 40, 10, 10), false);
-		Assert.assertEquals(0, collisionBoxs.size);
-		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
-
-		collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(40, 40, 10, 10), true);
+		collisionBoxs = quadTree.getElementsContainingArea(new CollisionBox(40, 40, 10, 10));
 		Assert.assertEquals(0, collisionBoxs.size);
 		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
 
 		//Collision box is partially inside box1
-		collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(25, 25, 10, 10), false);
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(box1, false));
-
-		collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(25, 25, 10, 10), true);
+		collisionBoxs = quadTree.getElementsContainingArea(new CollisionBox(25, 25, 10, 10));
 		Assert.assertEquals(0, collisionBoxs.size);
 		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
 
 		//Collision box is larger than, and contains box 1
-		collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(0.5f, 0.5f, 64, 64), false);
+		collisionBoxs = quadTree.getElementsContainingArea(new CollisionBox(0.5f, 0.5f, 64, 64));
 		Assert.assertEquals(0, collisionBoxs.size);
 		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
-
-		collisionBoxs = rootQuad.getElementsContainingArea(new CollisionBox(0.5f, 0.5f, 64, 64), true);
-		Assert.assertEquals(0, collisionBoxs.size);
-		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
-	}
-
-	@Test
-	public void testGetElementsContainingAreaUpwards() {
-		rootQuad.add(qABox1);
-		rootQuad.add(qABox2);
-		rootQuad.add(qABox3);
-		rootQuad.add(qABox4);
-
-		//Small area, entirely contained
-		Array<CollisionBox> collisionBoxs = qABox1.getQuad().getElementsContainingArea(
-				new CollisionBox(16, 16, 1, 1), QuadTreeSearchDirection.UPWARDS, true);
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox1, false));
-
-		collisionBoxs = qABox1.getQuad().getElementsContainingArea(new CollisionBox(112, 16, 1, 1), true);
-		Assert.assertEquals(0, collisionBoxs.size);
-
-		collisionBoxs = qABox1.getQuad().getElementsContainingArea(new CollisionBox(112, 16, 1, 1), QuadTreeSearchDirection.UPWARDS, true);
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox2, false));
-
-		collisionBoxs = qABox3.getQuad().getElementsContainingArea(new CollisionBox(16, 112, 1, 1), QuadTreeSearchDirection.UPWARDS, true);
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox3, false));
-
-		collisionBoxs = qABox4.getQuad().getElementsContainingArea(new CollisionBox(112, 112, 1, 1), QuadTreeSearchDirection.UPWARDS, true);
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox4, false));
-
-
-		//Not entirely contained tests
-		collisionBoxs = qABox1.getQuad().getElementsContainingArea(
-				new CollisionBox(16, 16, 20, 10), QuadTreeSearchDirection.UPWARDS, false);
-		Assert.assertEquals(1, collisionBoxs.size);
-		Assert.assertEquals(true, collisionBoxs.contains(qABox1, false));
-
-		collisionBoxs = qABox1.getQuad().getElementsContainingArea(
-				new CollisionBox(16, 16, 20, 10), QuadTreeSearchDirection.UPWARDS, true);
-		Assert.assertEquals(0, collisionBoxs.size);
-		Assert.assertEquals(false, collisionBoxs.contains(qABox1, false));
-
-
-		//Area larger than element tests
-		collisionBoxs = qABox1.getQuad().getElementsContainingArea(
-				new CollisionBox(0.5f, 0.5f, 40, 40), QuadTreeSearchDirection.UPWARDS, false);
-		Assert.assertEquals(0, collisionBoxs.size);
-		Assert.assertEquals(false, collisionBoxs.contains(qABox1, false));
-
-		collisionBoxs = qABox1.getQuad().getElementsContainingArea(
-				new CollisionBox(0.5f, 0.5f, 40, 40), QuadTreeSearchDirection.UPWARDS, true);
-		Assert.assertEquals(0, collisionBoxs.size);
-		Assert.assertEquals(false, collisionBoxs.contains(qABox1, false));
-	}
-
-	@Test
-	public void testWarmupWithDepth() {
-		rootQuad.warmupWithDepth(1);
-		Assert.assertEquals(4, rootQuad.getTotalQuads());
-
-		rootQuad.warmupWithDepth(2);
-		Assert.assertEquals(16, rootQuad.getTotalQuads());
-	}
-
-	@Test
-	public void testGetElementsContainingAreaUpwardsWithPooling() {
-		rootQuad.warmupPool(32);
-		testGetElementsContainingAreaUpwards();
-	}
-
-	@Test
-	public void testGetElementsContainingAreaWithPooling() {
-		rootQuad.warmupPool(32);
-		testGetElementsContainingArea();
-	}
-
-	@Test
-	public void testGetElementsContainingPointWithPooling() {
-		rootQuad.warmupPool(32);
-		testGetElementsContainingPoint();
-	}
-
-	@Test
-	public void testClearWithPooling() {
-		rootQuad.warmupPool(2);
-
-		for(int x = 0; x < 128; x += 2) {
-			for(int y = 0; y < 128; y += 2) {
-				rootQuad.add(new CollisionBox(x, y, 3, 3));
-			}
-		}
-
-		rootQuad.clear();
-
-		for(int x = 0; x < 128; x += 2) {
-			for(int y = 0; y < 128; y += 2) {
-				rootQuad.add(new CollisionBox(x, y, 3, 3));
-			}
-		}
-	}
-
-	@Test
-	public void testSubdivideWithPooling() {
-		testSubdivide();
-		rootQuad.clear();
-		testSubdivide();
-		rootQuad.clear();
 	}
 }

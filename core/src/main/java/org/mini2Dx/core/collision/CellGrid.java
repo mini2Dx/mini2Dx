@@ -137,16 +137,16 @@ public class CellGrid<T extends CollisionArea> extends Rectangle implements Coll
 	}
 
 	@Override
-	public Array<T> getElementsWithinArea(Shape area) {
+	public Array<T> getElementsOverlappingArea(Rectangle area) {
 		Array<T> result = new Array<>();
-		getElementsWithinArea(result, area);
+		getElementsOverlappingArea(result, area);
 		return result;
 	}
 
 	@Override
-	public void getElementsWithinArea(Array<T> result, Shape area) {
+	public void getElementsOverlappingArea(Array<T> result, Rectangle area) {
 		tmpCollisions.clear();
-		getElementsWithinArea(tmpCollisions, area);
+		getElementsOverlappingArea(tmpCollisions, area);
 
 		final IntMap.Keys keys = tmpCollisions.keys();
 		while(keys.hasNext) {
@@ -155,7 +155,26 @@ public class CellGrid<T extends CollisionArea> extends Rectangle implements Coll
 		}
 	}
 
-	public void getElementsWithinArea(IntMap<T> result, Shape area) {
+	@Override
+	public Array<T> getElementsOverlappingArea(Circle area) {
+		Array<T> result = new Array<>();
+		getElementsOverlappingArea(result, area);
+		return result;
+	}
+
+	@Override
+	public void getElementsOverlappingArea(Array<T> result, Circle area) {
+		tmpCollisions.clear();
+		getElementsOverlappingArea(tmpCollisions, area.getBoundingBox());
+
+		final IntMap.Keys keys = tmpCollisions.keys();
+		while(keys.hasNext) {
+			final int id = keys.next();
+			result.add(tmpCollisions.get(id));
+		}
+	}
+
+	public void getElementsOverlappingArea(IntMap<T> result, Rectangle area) {
 		final int minCellX = MathUtils.floor((area.getMinX() - getX()) / cellWidth);
 		final int minCellY = MathUtils.floor((area.getMinY() - getY()) / cellHeight);
 		final int maxCellX = MathUtils.ceil((area.getMaxX() - getX()) / cellWidth);
@@ -167,22 +186,22 @@ public class CellGrid<T extends CollisionArea> extends Rectangle implements Coll
 				if(cell == null) {
 					continue;
 				}
-				cell.getElementsWithinArea(result, area);
+				cell.getElementsOverlappingArea(result, area);
 			}
 		}
 	}
 
 	@Override
-	public Array<T> getElementsWithinAreaIgnoringEdges(Shape area) {
+	public Array<T> getElementsOverlappingAreaIgnoringEdges(Rectangle area) {
 		Array<T> result = new Array<>();
-		getElementsWithinAreaIgnoringEdges(result, area);
+		getElementsOverlappingAreaIgnoringEdges(result, area);
 		return result;
 	}
 
 	@Override
-	public void getElementsWithinAreaIgnoringEdges(Array<T> result, Shape area) {
+	public void getElementsOverlappingAreaIgnoringEdges(Array<T> result, Rectangle area) {
 		tmpCollisions.clear();
-		getElementsWithinAreaIgnoringEdges(tmpCollisions, area);
+		getElementsOverlappingAreaIgnoringEdges(tmpCollisions, area);
 
 		final IntMap.Keys keys = tmpCollisions.keys();
 		while(keys.hasNext) {
@@ -191,7 +210,7 @@ public class CellGrid<T extends CollisionArea> extends Rectangle implements Coll
 		}
 	}
 
-	public void getElementsWithinAreaIgnoringEdges(IntMap<T> result, Shape area) {
+	public void getElementsOverlappingAreaIgnoringEdges(IntMap<T> result, Rectangle area) {
 		final int minCellX = MathUtils.floor((area.getMinX() - getX()) / cellWidth);
 		final int minCellY = MathUtils.floor((area.getMinY() - getY()) / cellHeight);
 		final int maxCellX = MathUtils.ceil((area.getMaxX() - getX()) / cellWidth);
@@ -203,22 +222,22 @@ public class CellGrid<T extends CollisionArea> extends Rectangle implements Coll
 				if(cell == null) {
 					continue;
 				}
-				cell.getElementsWithinAreaIgnoringEdges(result, area);
+				cell.getElementsOverlappingAreaIgnoringEdges(result, area);
 			}
 		}
 	}
 
 	@Override
-	public Array<T> getElementsContainingArea(Shape area, boolean entirelyContained) {
+	public Array<T> getElementsContainedInArea(Rectangle area) {
 		Array<T> result = new Array<>();
-		getElementsContainingArea(result, area, entirelyContained);
+		getElementsContainedInArea(result, area);
 		return result;
 	}
 
 	@Override
-	public void getElementsContainingArea(Array<T> result, Shape area, boolean entirelyContained) {
+	public void getElementsContainedInArea(Array<T> result, Rectangle area) {
 		tmpCollisions.clear();
-		getElementsContainingArea(tmpCollisions, area, entirelyContained);
+		getElementsContainedInArea(tmpCollisions, area);
 
 		final IntMap.Keys keys = tmpCollisions.keys();
 		while(keys.hasNext) {
@@ -227,7 +246,7 @@ public class CellGrid<T extends CollisionArea> extends Rectangle implements Coll
 		}
 	}
 
-	public void getElementsContainingArea(IntMap<T> result, Shape area, boolean entirelyContained) {
+	public void getElementsContainedInArea(IntMap<T> result, Rectangle area) {
 		final int minCellX = MathUtils.floor((area.getMinX() - getX()) / cellWidth);
 		final int minCellY = MathUtils.floor((area.getMinY() - getY()) / cellHeight);
 		final int maxCellX = MathUtils.ceil((area.getMaxX() - getX()) / cellWidth);
@@ -239,7 +258,43 @@ public class CellGrid<T extends CollisionArea> extends Rectangle implements Coll
 				if(cell == null) {
 					continue;
 				}
-				cell.getElementsContainingArea(result, area, entirelyContained);
+				cell.getElementsContainedInArea(result, area);
+			}
+		}
+	}
+
+	@Override
+	public Array<T> getElementsContainingArea(Rectangle area) {
+		Array<T> result = new Array<>();
+		getElementsContainingArea(result, area);
+		return result;
+	}
+
+	@Override
+	public void getElementsContainingArea(Array<T> result, Rectangle area) {
+		tmpCollisions.clear();
+		getElementsContainingArea(tmpCollisions, area);
+
+		final IntMap.Keys keys = tmpCollisions.keys();
+		while(keys.hasNext) {
+			final int id = keys.next();
+			result.add(tmpCollisions.get(id));
+		}
+	}
+
+	public void getElementsContainingArea(IntMap<T> result, Rectangle area) {
+		final int minCellX = MathUtils.floor((area.getMinX() - getX()) / cellWidth);
+		final int minCellY = MathUtils.floor((area.getMinY() - getY()) / cellHeight);
+		final int maxCellX = MathUtils.ceil((area.getMaxX() - getX()) / cellWidth);
+		final int maxCellY = MathUtils.ceil((area.getMaxY() - getY()) / cellHeight);
+
+		for(int x = minCellX; x <= maxCellX; x++) {
+			for(int y = minCellY; y <= maxCellY; y++) {
+				Cell<T> cell = getOrCreateCell(x, y);
+				if(cell == null) {
+					continue;
+				}
+				cell.getElementsContainingArea(result, area);
 			}
 		}
 	}
