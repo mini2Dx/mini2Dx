@@ -75,24 +75,42 @@ public class Cell<T extends CollisionArea> extends Rectangle implements Collisio
 	}
 
 	@Override
-	public Array<T> getElementsWithinArea(Shape area) {
+	public Array<T> getElementsOverlappingArea(Rectangle area) {
 		Array<T> result = new Array<>();
-		getElementsWithinArea(result, area);
+		getElementsOverlappingArea(result, area);
 		return result;
 	}
 
 	@Override
-	public void getElementsWithinArea(Array<T> result, Shape area) {
+	public void getElementsOverlappingArea(Array<T> result, Rectangle area) {
 		final IntMap.Keys keys = elements.keys();
 		while(keys.hasNext) {
 			T element = elements.get(keys.next());
-			if (element != null && (area.contains(element) || area.intersects(element))) {
+			if (element != null && area.intersects(element)) {
 				result.add(element);
 			}
 		}
 	}
 
-	public void getElementsWithinArea(IntMap<T> result, Shape area) {
+	@Override
+	public Array<T> getElementsOverlappingArea(Circle area) {
+		Array<T> result = new Array<>();
+		getElementsOverlappingArea(result, area);
+		return result;
+	}
+
+	@Override
+	public void getElementsOverlappingArea(Array<T> result, Circle area) {
+		final IntMap.Keys keys = elements.keys();
+		while(keys.hasNext) {
+			T element = elements.get(keys.next());
+			if (element != null && area.intersects(element)) {
+				result.add(element);
+			}
+		}
+	}
+
+	public void getElementsOverlappingArea(IntMap<T> result, Rectangle area) {
 		final IntMap.Keys keys = elements.keys();
 		while(keys.hasNext) {
 			T element = elements.get(keys.next());
@@ -102,31 +120,31 @@ public class Cell<T extends CollisionArea> extends Rectangle implements Collisio
 			if(result.containsKey(element.getId())) {
 				continue;
 			}
-			if (area.contains(element) || area.intersects(element)) {
+			if (area.intersects(element)) {
 				result.put(element.getId(), element);
 			}
 		}
 	}
 
 	@Override
-	public Array<T> getElementsWithinAreaIgnoringEdges(Shape area) {
+	public Array<T> getElementsOverlappingAreaIgnoringEdges(Rectangle area) {
 		Array<T> result = new Array<>();
-		getElementsWithinAreaIgnoringEdges(result, area);
+		getElementsOverlappingAreaIgnoringEdges(result, area);
 		return result;
 	}
 
 	@Override
-	public void getElementsWithinAreaIgnoringEdges(Array<T> result, Shape area) {
+	public void getElementsOverlappingAreaIgnoringEdges(Array<T> result, Rectangle area) {
 		final IntMap.Keys keys = elements.keys();
 		while(keys.hasNext) {
 			T element = elements.get(keys.next());
-			if (element != null && (area.contains(element) || area.intersectsIgnoringEdges(element))) {
+			if (element != null && (area.intersectsIgnoringEdges(element))) {
 				result.add(element);
 			}
 		}
 	}
 
-	public void getElementsWithinAreaIgnoringEdges(IntMap<T> result, Shape area) {
+	public void getElementsOverlappingAreaIgnoringEdges(IntMap<T> result, Rectangle area) {
 		final IntMap.Keys keys = elements.keys();
 		while(keys.hasNext) {
 			T element = elements.get(keys.next());
@@ -136,76 +154,76 @@ public class Cell<T extends CollisionArea> extends Rectangle implements Collisio
 			if(result.containsKey(element.getId())) {
 				continue;
 			}
-			if (area.contains(element) || area.intersectsIgnoringEdges(element)) {
+			if (area.intersectsIgnoringEdges(element)) {
 				result.put(element.getId(), element);
 			}
 		}
 	}
 
 	@Override
-	public Array<T> getElementsContainingArea(Shape area, boolean entirelyContained) {
+	public Array<T> getElementsContainedInArea(Rectangle area) {
 		Array<T> result = new Array<>();
-		getElementsContainingArea(result, area, entirelyContained);
+		getElementsContainedInArea(result, area);
 		return result;
 	}
 
 	@Override
-	public void getElementsContainingArea(Array<T> result, Shape area, boolean entirelyContained) {
-		if(entirelyContained) {
-			final IntMap.Keys keys = elements.keys();
-			while(keys.hasNext) {
-				T element = elements.get(keys.next());
-				if (element != null && element.contains(area)) {
-					result.add(element);
-				}
-			}
-		} else {
-			final IntMap.Keys keys = elements.keys();
-			while(keys.hasNext) {
-				T element = elements.get(keys.next());
-				if (element != null && (element.contains(area) || element.intersects(area))) {
-					//If area is larger than element it is not contained.
-					if(area.getWidth() > element.getWidth() || area.getHeight() > element.getHeight()) {
-						continue;
-					}
-					result.add(element);
-				}
+	public void getElementsContainedInArea(Array<T> result, Rectangle area) {
+		final IntMap.Keys keys = elements.keys();
+		while(keys.hasNext) {
+			T element = elements.get(keys.next());
+			if (element != null && area.contains(element)) {
+				result.add(element);
 			}
 		}
 	}
 
-	public void getElementsContainingArea(IntMap<T> result, Shape area, boolean entirelyContained) {
-		if(entirelyContained) {
-			final IntMap.Keys keys = elements.keys();
-			while(keys.hasNext) {
-				T element = elements.get(keys.next());
-				if (element == null) {
-					continue;
-				}
-				if(result.containsKey(element.getId())) {
-					continue;
-				}
-				if (element.contains(area)) {
-					result.put(element.getId(), element);
-				}
+	public void getElementsContainedInArea(IntMap<T> result, Rectangle area) {
+		final IntMap.Keys keys = elements.keys();
+		while(keys.hasNext) {
+			T element = elements.get(keys.next());
+			if (element == null) {
+				continue;
 			}
-		} else {
-			final IntMap.Keys keys = elements.keys();
-			while(keys.hasNext) {
-				T element = elements.get(keys.next());
-				if (element == null) {
-					continue;
-				}
-				if(result.containsKey(element.getId())) {
-					continue;
-				}
-				if (element.contains(area) || element.intersects(area)) {
-					//If area is larger than element it is not contained.
-					if(area.getWidth() > element.getWidth() || area.getHeight() > element.getHeight()) {
-						continue;
-					}
-					result.put(element.getId(), element);
-				}
+			if(result.containsKey(element.getId())) {
+				continue;
+			}
+			if (area.contains(element)) {
+				result.put(element.getId(), element);
+			}
+		}
+	}
+
+	@Override
+	public Array<T> getElementsContainingArea(Rectangle area) {
+		Array<T> result = new Array<>();
+		getElementsContainingArea(result, area);
+		return result;
+	}
+
+	@Override
+	public void getElementsContainingArea(Array<T> result, Rectangle area) {
+		final IntMap.Keys keys = elements.keys();
+		while(keys.hasNext) {
+			T element = elements.get(keys.next());
+			if (element != null && element.contains(area)) {
+				result.add(element);
+			}
+		}
+	}
+
+	public void getElementsContainingArea(IntMap<T> result, Rectangle area) {
+		final IntMap.Keys keys = elements.keys();
+		while(keys.hasNext) {
+			T element = elements.get(keys.next());
+			if (element == null) {
+				continue;
+			}
+			if(result.containsKey(element.getId())) {
+				continue;
+			}
+			if (element.contains(area)) {
+				result.put(element.getId(), element);
 			}
 		}
 	}

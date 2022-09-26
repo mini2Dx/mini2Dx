@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.mini2Dx.core.collision;
 
-import org.mini2Dx.core.Graphics;
 import org.mini2Dx.core.geom.*;
 import org.mini2Dx.gdx.utils.Array;
 
@@ -24,31 +23,35 @@ import org.mini2Dx.gdx.utils.Array;
  */
 public interface QuadTree<T extends Positionable> extends CollisionDetection<T> {
 
-	public Array<T> getElementsWithinArea(Shape area, QuadTreeSearchDirection searchDirection);
+	public Array<T> getElementsOverlappingArea(Rectangle area);
 
-	public void getElementsWithinArea(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection);
+	public void getElementsOverlappingArea(Array<T> result, Rectangle area);
 
-	public Array<T> getElementsWithinAreaIgnoringEdges(Shape area, QuadTreeSearchDirection searchDirection);
+	public Array<T> getElementsOverlappingAreaIgnoringEdges(Rectangle area);
 
-	public void getElementsWithinAreaIgnoringEdges(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection);
+	public void getElementsOverlappingAreaIgnoringEdges(Array<T> result, Rectangle area);
 
-	public Array<T> getElementsContainingArea(Shape area, QuadTreeSearchDirection searchDirection, boolean entirelyContained);
+	public void getElements(QuadTreeInspector<T> inspector);
 
-	public void getElementsContainingArea(Array<T> result, Shape area, QuadTreeSearchDirection searchDirection, boolean entirelyContained);
+	public Array<T> getElementsContainingArea(Rectangle area);
 
-	public Array<T> getElementsIntersectingLineSegment(LineSegment lineSegment, QuadTreeSearchDirection searchDirection);
+	public void getElementsContainingArea(Array<T> result, Rectangle area);
 
-	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment, QuadTreeSearchDirection searchDirection);
+	public Array<T> getElementsIntersectingLineSegment(LineSegment lineSegment);
 
-	public Array<T> getElementsContainingPoint(Point point, QuadTreeSearchDirection searchDirection);
+	public void getElementsIntersectingLineSegment(Array<T> result, LineSegment lineSegment);
 
-	public void getElementsContainingPoint(Array<T> result, Point point, QuadTreeSearchDirection searchDirection);
+	public Array<T> getElementsContainingPoint(Point point);
+
+	public void getElementsContainingPoint(Array<T> result, Point point);
 
 	public int getTotalQuads();
-	
-	public QuadTree<T> getParent();
+
+	public int getTotalElements();
 	
 	public float getMinimumQuadWidth();
 	
 	public float getMinimumQuadHeight();
+
+	public int getElementLimitPerQuad();
 }

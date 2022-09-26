@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2019 Viridian Software Limited
+ * Copyright 2022 See AUTHORS file
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mini2Dx.core.collision.util;
+package org.mini2Dx.core.collections;
 
-import org.mini2Dx.core.collision.QuadTree;
-import org.mini2Dx.core.collision.QuadTreeAware;
-
-
-/**
- * A generic object which implements {@link QuadTreeAware} in order to allow {@link org.mini2Dx.core.collision.QuadTreeSearchDirection#UPWARDS} search.
- */
-public abstract class QuadTreeAwareObject implements QuadTreeAware {
-    private QuadTree tree;
-
-    public QuadTree getQuad() {
-        return tree;
-    }
-
-    @Override
-    public void setQuad(QuadTree quadTree) {
-        tree = quadTree;
-    }
+public class FreeElement<T> {
+    public T element;
+    public int nextFreeIndex = -1;
 }

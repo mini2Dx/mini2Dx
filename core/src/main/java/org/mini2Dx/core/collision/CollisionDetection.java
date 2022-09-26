@@ -53,17 +53,25 @@ public interface CollisionDetection<T extends Positionable> extends PositionChan
 	 */
 	public void clear();
 
-	public Array<T> getElementsWithinArea(Shape area);
+	public Array<T> getElementsOverlappingArea(Rectangle area);
 
-	public void getElementsWithinArea(Array<T> result, Shape area);
+	public void getElementsOverlappingArea(Array<T> result, Rectangle area);
 
-	public Array<T> getElementsWithinAreaIgnoringEdges(Shape area);
+	public Array<T> getElementsOverlappingArea(Circle area);
 
-	public void getElementsWithinAreaIgnoringEdges(Array<T> result, Shape area);
+	public void getElementsOverlappingArea(Array<T> result, Circle area);
 
-	public Array<T> getElementsContainingArea(Shape area, boolean entirelyContained);
+	public Array<T> getElementsOverlappingAreaIgnoringEdges(Rectangle area);
 
-	public void getElementsContainingArea(Array<T> result, Shape area, boolean entirelyContained);
+	public void getElementsOverlappingAreaIgnoringEdges(Array<T> result, Rectangle area);
+
+	public Array<T> getElementsContainedInArea(Rectangle area);
+
+	public void getElementsContainedInArea(Array<T> result, Rectangle area);
+
+	public Array<T> getElementsContainingArea(Rectangle area);
+
+	public void getElementsContainingArea(Array<T> result, Rectangle area);
 
 	public Array<T> getElementsIntersectingLineSegment(LineSegment lineSegment);
 

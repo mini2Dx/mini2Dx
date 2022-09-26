@@ -302,13 +302,13 @@ project(":" + rootProject.name + "-core") {
 	
 	jmh {
 		timeUnit = 'ns'
-		threads = Math.min(4, Runtime.getRuntime().availableProcessors())
+		threads = Math.min(2, Runtime.getRuntime().availableProcessors())
 		warmupIterations = 2
 		iterations = 5
-		fork = Math.min(4, Runtime.getRuntime().availableProcessors())
+		fork = Math.min(2, Runtime.getRuntime().availableProcessors())
 		jvmArgsPrepend = '-Xmx4096m'
 		duplicateClassesStrategy = DuplicatesStrategy.EXCLUDE
-		include = ['RegionQuadTreePerformanceTest']
+		include = ['RectanglePerformanceTest']
 	}
     
 	jacocoTestReport {
