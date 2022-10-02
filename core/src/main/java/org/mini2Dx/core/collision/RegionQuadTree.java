@@ -93,6 +93,11 @@ public class RegionQuadTree<T extends CollisionArea> extends PointQuadTree<T> {
 	}
 
 	@Override
+	protected Quad findQuad(Quad startQuad, T element, boolean updateBounds) {
+		return findQuad(startQuad, element, element.getCenterX(), element.getCenterY(), updateBounds);
+	}
+
+	@Override
 	public boolean add(T element) {
 		if (element == null)
 			return false;

@@ -324,4 +324,50 @@ public class RegionQuadTreeTest {
 		Assert.assertEquals(0, collisionBoxs.size);
 		Assert.assertEquals(false, collisionBoxs.contains(box1, false));
 	}
+
+	@Test
+	public void testMove() {
+		quadTree.add(box1);
+		quadTree.add(box2);
+		quadTree.add(box3);
+		quadTree.add(box4);
+
+		final CollisionBox box = new CollisionBox(126, 126, 4f, 4f);
+		quadTree.add(box);
+
+		final int notExpected = quadTree.getQuad(box).index;
+		box.forceTo(0, 126);
+		Assert.assertNotEquals(notExpected, quadTree.getQuad(box).index);
+		Assert.assertNotEquals(-1, quadTree.getQuad(box).index);
+	}
+
+	@Test
+	public void testMove2() {
+		quadTree.add(box1);
+		quadTree.add(box2);
+		quadTree.add(box3);
+		quadTree.add(box4);
+
+		for(int i = 0; i < 4; i++) {
+			final CollisionBox box1 = new CollisionBox(126 - i, 126 - i, 4f, 4f);
+			quadTree.add(box1);
+		}
+
+		final CollisionBox box = new CollisionBox(100f, 100f, 4f, 4f);
+		quadTree.add(box);
+
+		final int notExpected = quadTree.getQuad(box).index;
+		Assert.assertNotEquals(-1, notExpected);
+
+		box.forceTo(96, 126);
+		final int result1 = quadTree.getQuad(box).index;
+		Assert.assertNotEquals(notExpected, result1);
+		Assert.assertNotEquals(-1, result1);
+
+		box.forceTo(0, 126);
+		final int result2 = quadTree.getQuad(box).index;
+		Assert.assertNotEquals(notExpected, result1);
+		Assert.assertNotEquals(result1, result2);
+		Assert.assertNotEquals(-1, result2);
+	}
 }

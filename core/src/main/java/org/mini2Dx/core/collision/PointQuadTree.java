@@ -183,14 +183,21 @@ public class PointQuadTree<T extends CollisionObject> implements QuadTree<T> {
 	}
 
 	protected Quad findQuad(T element, float x, float y, boolean updateBounds) {
-		Quad result = rootQuad;
+		return findQuad(rootQuad, element, x, y, updateBounds);
+	}
+
+	protected Quad findQuad(Quad startQuad, T element, boolean updateBounds) {
+		return findQuad(startQuad, element, element.getX(), element.getY(), updateBounds);
+	}
+
+	protected Quad findQuad(Quad startQuad, T element, float x, float y, boolean updateBounds) {
+		Quad result = startQuad;
 		OUTER_LOOP: while(result.childIndex > -1) {
 			//Scan down tree
 			if(updateBounds) {
 				updateBounds(result, element);
 			}
 			for(int i = 0; i < 4; i++) {
-
 				Quad nextQuad = quads.get(result.childIndex + i);
 				if(!nextQuad.contains(x, y)) {
 					continue;
@@ -910,11 +917,15 @@ public class PointQuadTree<T extends CollisionObject> implements QuadTree<T> {
 
 		while(quad.parentIndex != -1) {
 			quad = quads.get(quad.parentIndex);
-			if (addToQuad(quad, moved)) {
-				return;
+			if(!belongsToQuad(quad, moved)) {
+				continue;
 			}
+			quad = findQuad(quad, moved, true);
+			addToQuad(quad, moved);
+			return;
 		}
-		addToQuad(rootQuad, moved);
+		quad = findQuad(rootQuad, moved, true);
+		addToQuad(quad, moved);
 	}
 
 	/**

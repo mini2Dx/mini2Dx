@@ -311,6 +311,7 @@ public class PointQuadTreeTest {
 		final int notExpected = quadTree.getQuad(point).index;
 		point.forceTo(0, 126);
 		Assert.assertNotEquals(notExpected, quadTree.getQuad(point).index);
+		Assert.assertNotEquals(-1, quadTree.getQuad(point).index);
 	}
 
 	@Test
@@ -329,13 +330,17 @@ public class PointQuadTreeTest {
 		quadTree.add(point);
 
 		final int notExpected = quadTree.getQuad(point).index;
+		Assert.assertNotEquals(-1, notExpected);
+
 		point.forceTo(96, 126);
 		final int result1 = quadTree.getQuad(point).index;
 		Assert.assertNotEquals(notExpected, result1);
+		Assert.assertNotEquals(-1, result1);
 
 		point.forceTo(0, 126);
 		final int result2 = quadTree.getQuad(point).index;
 		Assert.assertNotEquals(notExpected, result1);
 		Assert.assertNotEquals(result1, result2);
+		Assert.assertNotEquals(-1, result2);
 	}
 }
