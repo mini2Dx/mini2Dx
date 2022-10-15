@@ -502,18 +502,18 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule> imp
 				glyphLayout.setText(element.getValue().charAt(i) + "");
 				result -= glyphLayout.getWidth();
 				cursor = i;
-				setCursorRender(result - 1f, glyphLayout.getHeight());
+				setCursorRender(result - 1f, Math.max(glyphLayout.getFont().getCapHeight(), glyphLayout.getHeight()));
 				return;
 			}
 		}
 		cursor = element.getValue().length();
-		setCursorRender(glyphLayout.getWidth() + 1f, glyphLayout.getHeight());
+		setCursorRender(glyphLayout.getWidth() + 1f, Math.max(glyphLayout.getFont().getCapHeight(), glyphLayout.getHeight()));
 	}
 
 	private void setCursorRenderX() {
 		switch (cursor) {
 		case 0:
-			setCursorRender(0f, style.getFontSize());
+			setCursorRender(0f, Math.min(glyphLayout.getFont().getCapHeight(), style.getFontSize()));
 			return;
 		default:
 			if (style == null) {
@@ -524,7 +524,7 @@ public class TextBoxRenderNode extends RenderNode<TextBox, TextBoxStyleRule> imp
 			} else {
 				glyphLayout.setText(element.getValue().substring(0, cursor));
 			}
-			setCursorRender(glyphLayout.getWidth() + 1f, glyphLayout.getHeight());
+			setCursorRender(glyphLayout.getWidth() + 1f, Math.max(glyphLayout.getFont().getCapHeight(), glyphLayout.getHeight()));
 			break;
 		}
 	}
