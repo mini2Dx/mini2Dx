@@ -1032,6 +1032,10 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 	 *            The {@link InputSource} last used
 	 */
 	public void setLastInputSource(InputSource lastInputSource) {
+		if(Mdx.platform.isConsole()) {
+			this.nextInputSource = InputSource.CONTROLLER;
+			return;
+		}
 		this.nextInputSource = lastInputSource;
 	}
 
