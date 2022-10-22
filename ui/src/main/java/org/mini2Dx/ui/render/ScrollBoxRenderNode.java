@@ -229,10 +229,15 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 		if (scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + getInnerHeight()) {
 			if (scrollTo.isImmediate()) {
 				// TODO: Optimise this
+				int previousScrollTranslationY = Integer.MAX_VALUE;
 				while (scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + getInnerHeight()
 						+ scrollFactor) {
+					if(previousScrollTranslationY == scrollTranslationY) {
+						break;
+					}
 					setScrollThumbPosition(scrollThumbPosition + ((ScrollBox) element).getScrollFactor());
 					currentScrollY = getInnerY() + scrollTranslationY;
+					previousScrollTranslationY = scrollTranslationY;
 				}
 				if (scrollToNode.getOuterY() + scrollToNode.getOuterHeight() > currentScrollY + getInnerHeight()){
 					float scrollAmount = (scrollToNode.getOuterY() + scrollToNode.getOuterHeight()) - (currentScrollY + getInnerHeight());
@@ -244,9 +249,14 @@ public class ScrollBoxRenderNode extends ParentRenderNode<ScrollBox, ScrollBoxSt
 		} else if (scrollToNode.getOuterY() < currentScrollY) {
 			if (scrollTo.isImmediate()) {
 				// TODO: Optimise this
+				int previousScrollTranslationY = Integer.MAX_VALUE;
 				while (scrollToNode.getOuterY() < currentScrollY - scrollFactor) {
+					if(previousScrollTranslationY == scrollTranslationY) {
+						break;
+					}
 					setScrollThumbPosition(scrollThumbPosition - ((ScrollBox) element).getScrollFactor());
 					currentScrollY = getInnerY() + scrollTranslationY;
+					previousScrollTranslationY = scrollTranslationY;
 				}
 				if (scrollToNode.getOuterY() < currentScrollY){
 					float scrollAmount = currentScrollY - scrollToNode.getOuterY();
