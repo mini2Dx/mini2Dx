@@ -49,7 +49,7 @@ if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
 ext {
 	androidBeansVersion="1.0.0"
 	androidVersion="4.4"
-	artemisVersion="2.3.0"
+	artemisVersion="2.4.0"
 	beanutilsVersion="1.8.3"
 	gdxVersion="1.9.13"
 	gdxControllersVersion="2.0.1"
@@ -756,8 +756,8 @@ project(":" + rootProject.name + "-artemis-odb") {
 	
     dependencies {
 		compile project(":" + rootProject.name + "-core")
-		compile "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
-		compile "net.onedaybeard.artemis:artemis-odb-serializer:$artemisVersion"
+		compile "org.mini2Dx:artemis-odb:$artemisVersion"
+		compile "org.mini2Dx:artemis-odb-serializer:$artemisVersion"
 		
 		testCompile "junit:junit:$junitVersion"
 		testCompile "org.jmock:jmock-junit4:$jmockVersion"
