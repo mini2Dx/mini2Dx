@@ -40,6 +40,12 @@ public interface Input {
     public void setGamePadConnectionListener(GamePadConnectionListener listener, boolean notifyExisting);
 
     /**
+     * Returns if the on-screen keyboard is visible
+     * @return True if visible
+     */
+    public boolean isOnScreenKeyboardVisible();
+
+    /**
      * Sets on mobile and consoles of the on-screen keyboard should appear.
      *
      * Note: The keyboard may close itself via OS events.

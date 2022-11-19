@@ -41,6 +41,7 @@ public class LibgdxInput implements Input, ControllerListener {
 	private GamePadConnectionListener connectionListener = null;
 
 	private boolean initialised = false;
+	private boolean onScreenKeyboardVisible = false;
 
 	public LibgdxInput() {
 		super();
@@ -136,7 +137,14 @@ public class LibgdxInput implements Input, ControllerListener {
 	}
 
 	@Override
+	public boolean isOnScreenKeyboardVisible() {
+		return onScreenKeyboardVisible;
+	}
+
+	@Override
 	public void setOnScreenKeyboardVisible(boolean visible) {
+		this.onScreenKeyboardVisible = visible;
+
 		Gdx.input.setOnscreenKeyboardVisible(visible);
 	}
 
