@@ -693,9 +693,17 @@ public class UiContainer extends ParentUiElement implements InputProcessor {
 			activeTextInput.backspace();
 			break;
 		case Input.Keys.ENTER:
-			if (!textInputIgnoredFirstEnter) {
-				textInputIgnoredFirstEnter = true;
-				return true;
+			switch (Mdx.platform) {
+			case NINTENDO_SWITCH:
+			case PLAYSTATION:
+			case XBOX:
+				break;
+			default:
+				if (!textInputIgnoredFirstEnter) {
+					textInputIgnoredFirstEnter = true;
+					return true;
+				}
+				break;
 			}
 			if (activeTextInput.enter()) {
 				activeTextInput = null;
