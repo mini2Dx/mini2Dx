@@ -37,6 +37,7 @@ import java.io.*;
  */
 public abstract class PlayerData {
     private static final String LOGGING_TAG = PlayerData.class.getSimpleName();
+    private static final int DEFAULT_WRITE_BUFFER_SIZE = 8 * 1024; //8kb
 
     /**
      * Returns a {@link FileHandle} for a file or directory within the save data directory
@@ -262,6 +263,23 @@ public abstract class PlayerData {
      *             data cannot be written to the file.
      */
     public DataOutputStream writeBytes(String... filepath) throws PlayerDataException {
+        return writeBytes(DEFAULT_WRITE_BUFFER_SIZE, filepath);
+    }
+
+    /**
+     * Writes contents to a file in the player data location.
+     * Note: Ensure that {@link DataOutputStream#close()} is called when finished writing.
+     *
+     * @param filepath
+     *            The path to the file. This will be resolved as a path
+     *            within the game data location.
+     * @param bufferSize The write buffer size in bytes
+     * @return A {@link DataOutputStream} to write to
+     * @throws PlayerDataException
+     *             Thrown if the game data location cannot be accessed or the
+     *             data cannot be written to the file.
+     */
+    public DataOutputStream writeBytes(int bufferSize, String... filepath) throws PlayerDataException {
         if (filepath.length == 0) {
             throw new PlayerDataException("No file path specified");
         }
@@ -270,7 +288,7 @@ public abstract class PlayerData {
             final FileHandle file = resolve(filepath);
             final FileHandle tmpFile = resolveTmp(filepath);
             final OutputStream outputStream = tmpFile.write(false);
-            final GameDataOutputStream result = new GameDataOutputStream(new BufferedOutputStream(outputStream));
+            final GameDataOutputStream result = new GameDataOutputStream(new BufferedOutputStream(outputStream, bufferSize));
             result.setCloseListener(new GameDataOutputStream.CloseListener() {
                 @Override
                 public void onClose() {
