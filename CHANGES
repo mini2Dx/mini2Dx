@@ -17,6 +17,7 @@
 - Optimised shape rendering under LibGDX
 - Improvements to UiContainer input handling
 - Fixed UI input when rendering to a viewport
+- Fixed delta always being set to zero before game container update methods invoked (only affecting Android)
 
 [1.9.10]
 - Update to latest RoboVM to support iOS 12
