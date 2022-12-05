@@ -18,4 +18,9 @@ package org.mini2Dx.core.collections;
 public class FreeElement<T> {
     public T element;
     public int nextFreeIndex = -1;
+
+    public void reset() {
+        element = null;
+        nextFreeIndex = -1;
+    }
 }

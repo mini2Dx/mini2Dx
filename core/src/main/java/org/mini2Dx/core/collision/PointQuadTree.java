@@ -114,6 +114,8 @@ public class PointQuadTree<T extends CollisionObject> implements QuadTree<T> {
 		for(int i = 0; i < INITIAL_QUAD_ELEMENTS_POOL_SIZE; i++) {
 			quadElementsPool.addLast(new QuadElements<T>());
 		}
+		quads.ensureCapacity(INITIAL_QUAD_ELEMENTS_POOL_SIZE);
+		quadElements.ensureCapacity(INITIAL_QUAD_ELEMENTS_POOL_SIZE);
 	}
 
 	protected QuadElements<T> allocateQuadElements() {

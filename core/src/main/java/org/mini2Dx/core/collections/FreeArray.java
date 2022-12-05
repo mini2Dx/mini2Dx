@@ -16,6 +16,7 @@
 package org.mini2Dx.core.collections;
 
 import org.mini2Dx.core.exception.MdxException;
+import org.mini2Dx.gdx.utils.Queue;
 import org.mini2Dx.gdx.utils.compat.ArrayReflection;
 
 import java.util.Arrays;
@@ -23,6 +24,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class FreeArray<T> implements Iterable<T> {
+    private final Queue<FreeElement<T>> pool = new Queue<>();
+
     public FreeElement<T>[] items;
     public int length = 0;
     public int totalItems = 0;
@@ -36,6 +39,19 @@ public class FreeArray<T> implements Iterable<T> {
 
     public FreeArray(int capacity) {
         items = (FreeElement<T>[]) ArrayReflection.newInstance(FreeElement.class, capacity);
+        pool.ensureCapacity(capacity);
+
+        warmupPool(capacity);
+    }
+
+    private void warmupPool(int capacity) {
+        capacity = capacity - totalItems;
+        if(capacity <= 0) {
+            return;
+        }
+        for(int i = 0; i < capacity; i++) {
+            pool.addLast(new FreeElement<>());
+        }
     }
 
     public T get(int index) {
@@ -45,7 +61,9 @@ public class FreeArray<T> implements Iterable<T> {
     public int add(T item) {
         FreeElement<T>[] items = this.items;
         if (length == items.length) {
-            items = resize(Math.max(8, (int) (length * 1.75f)));
+            final int capacity = Math.max(8, (int) (length * 1.75f));
+            items = resize(capacity);
+            warmupPool(capacity);
         }
         totalItems++;
 
@@ -55,7 +73,7 @@ public class FreeArray<T> implements Iterable<T> {
             nextFreeIndex = items[nextFreeIndex].nextFreeIndex;
             return result;
         }
-        FreeElement<T> element = new FreeElement<>();
+        FreeElement<T> element = pool.size == 0 ? new FreeElement<>() : pool.removeFirst();
         element.element = item;
         items[length++] = element;
         return length - 1;
@@ -71,10 +89,25 @@ public class FreeArray<T> implements Iterable<T> {
     }
 
     public void clear() {
-        Arrays.fill(items, 0, length, null);
+        for(int i = 0; i < items.length; i++) {
+            if(items[i] == null) {
+                continue;
+            }
+            items[i].reset();
+            pool.addLast(items[i]);
+            items[i] = null;
+        }
         length = 0;
         totalItems = 0;
         nextFreeIndex = -1;
+    }
+
+    public void ensureCapacity(int capacity) {
+        if(capacity < items.length) {
+            return;
+        }
+        resize(capacity);
+        warmupPool(capacity);
     }
 
     protected FreeElement<T>[] resize (int newSize) {
