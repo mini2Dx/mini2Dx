@@ -261,6 +261,16 @@ public interface Graphics {
      *
      * @param texture
      *            The {@link Texture} to draw
+     * @param shape
+     *            The {@link Shape} applied to the provided {@link Texture}
+     */
+    public void drawTexture(Texture texture, Shape shape);
+
+    /**
+     * Draws a texture to this graphics context
+     *
+     * @param texture
+     *            The {@link Texture} to draw
      * @param x
      *            The x coordinate to draw at
      * @param y

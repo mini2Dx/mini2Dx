@@ -438,6 +438,11 @@ public class LibgdxGraphics implements Graphics {
 	}
 
 	@Override
+	public void drawTexture(Texture texture, Shape shape) {
+		drawTexture(texture, shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight());
+	}
+
+	@Override
 	public void drawTexture(Texture texture, float x, float y) {
 		drawTexture(texture, x, y, texture.getWidth(), texture.getHeight());
 	}
