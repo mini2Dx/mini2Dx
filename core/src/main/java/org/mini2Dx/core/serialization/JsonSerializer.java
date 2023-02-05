@@ -17,6 +17,7 @@ package org.mini2Dx.core.serialization;
 
 import org.mini2Dx.core.Mdx;
 import org.mini2Dx.core.collections.concurrent.ConcurrentObjectMap;
+import org.mini2Dx.core.collections.concurrent.ConcurrentObjectSet;
 import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.exception.RequiredFieldException;
 import org.mini2Dx.core.exception.SerializationException;
@@ -35,10 +36,13 @@ import org.mini2Dx.gdx.json.JsonReader;
 import org.mini2Dx.gdx.json.JsonValue;
 import org.mini2Dx.gdx.json.JsonWriter;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.gdx.utils.IntMap;
 import org.mini2Dx.gdx.utils.ObjectMap;
+import org.mini2Dx.gdx.utils.ObjectSet;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -50,6 +54,13 @@ public class JsonSerializer {
 	private static final String LOGGING_TAG = JsonSerializer.class.getSimpleName();
 
 	private final ObjectMap<String, Method> postDeserializeCache = new ConcurrentObjectMap<>();
+	private final ObjectSet<String> aotClassesWithPrimitiveConstructors = new ConcurrentObjectSet<>();
+	private final ThreadLocal<IntMap<Object[]>> objectArrayPool = new ThreadLocal<IntMap<Object[]>>() {
+		@Override
+		protected IntMap<Object[]> initialValue() {
+			return new IntMap<>();
+		}
+	};
 
 	/**
 	 * Reads a JSON document and converts it into an object of the specified
@@ -428,10 +439,25 @@ public class JsonSerializer {
 				return (T) Mdx.reflect.newInstance(clazz);
 			}
 
-			final Object[] constructorParameters = new Object[bestMatchedConstructor.getTotalArgs()];
+			IntMap<Object[]> paramPool = objectArrayPool.get();
+			if(!paramPool.containsKey(bestMatchedConstructor.getTotalArgs())) {
+				paramPool.put(bestMatchedConstructor.getTotalArgs(), new Object[bestMatchedConstructor.getTotalArgs()]);
+			}
+
+			final Object[] constructorParameters = paramPool.get(bestMatchedConstructor.getTotalArgs());
+			Arrays.fill(constructorParameters, null);
+
 			for (int i = 0; i < bestMatchedConstructor.getTotalArgs(); i++) {
 				constructorParameters[i] = deserialize(objectRoot.get(bestMatchedConstructor.getConstructorArgName(i)), bestMatchedConstructor.getConstructorArgType(i));
 				objectRoot.remove(bestMatchedConstructor.getConstructorArgName(i));
+			}
+
+			if(aotClassesWithPrimitiveConstructors.contains(clazz.getName())) {
+				try {
+					return (T) clazz.getConstructor(bestMatchedConstructor.getConstructorArgTypesWithPrimitives()).newInstance(constructorParameters);
+				} catch (Exception e) {
+					Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
+				}
 			}
 
 			boolean couldNotFindConstructor = false;
@@ -443,7 +469,9 @@ public class JsonSerializer {
 				Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
 			}
 			try {
-				return (T) clazz.getConstructor(bestMatchedConstructor.getConstructorArgTypesWithPrimitives()).newInstance(constructorParameters);
+				T result = (T) clazz.getConstructor(bestMatchedConstructor.getConstructorArgTypesWithPrimitives()).newInstance(constructorParameters);
+				aotClassesWithPrimitiveConstructors.add(clazz.getName());
+				return result;
 			} catch (NoSuchMethodException e) {
 				couldNotFindConstructor = true;
 			} catch (Exception e) {
@@ -505,7 +533,14 @@ public class JsonSerializer {
 				return (T) Mdx.reflect.newInstance(clazz);
 			}
 
-			final Object[] constructorParameters = new Object[detectedAnnotations.size];
+			final IntMap<Object[]> paramPool = objectArrayPool.get();
+			if(!paramPool.containsKey(detectedAnnotations.size)) {
+				paramPool.put(detectedAnnotations.size, new Object[detectedAnnotations.size]);
+			}
+
+			final Object[] constructorParameters = paramPool.get(detectedAnnotations.size);
+			Arrays.fill(constructorParameters, null);
+
 			for (int i = 0; i < detectedAnnotations.size; i++) {
 				ConstructorArg constructorArg = detectedAnnotations.get(i);
 				constructorParameters[i] = deserialize(objectRoot.get(constructorArg.name()), constructorArg.clazz());
