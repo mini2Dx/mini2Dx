@@ -91,6 +91,26 @@ public class XmlSerializer {
     }
 
     /**
+     * Reads an XML document from a {@link Reader} and converts it into an object of the specified type
+     *
+     * @param root The XML document
+     * @param clazz The {@link Class} to convert the document to
+     * @param <T> The type of {@link Class} to return
+     * @return The object deserialized from XML
+     * @throws SerializationException Thrown when the data is invalid
+     */
+    public <T> T fromXml(XmlReader.Element root, Class<T> clazz)
+            throws SerializationException {
+        T result = null;
+        try {
+            result = deserializeObject(root, clazz);
+        } catch (org.mini2Dx.gdx.xml.SerializationException e) {
+            throw new SerializationException(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    /**
      * Writes a XML document by searching the object for {@link org.mini2Dx.core.serialization.annotation.Field} annotations
      * @param object The object to convert to XML
      * @param <T> The type of {@link Class} to write

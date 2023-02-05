@@ -30,10 +30,10 @@ import org.mini2Dx.ui.style.UiTheme;
 public class UiThemeLoader implements AsyncAssetLoader<UiTheme> {
 	private static final String LOGGING_TAG = UiThemeLoader.class.getSimpleName();
 
-	private static final String CACHE_THEME_KEY = "theme";
+	protected static final String CACHE_THEME_KEY = "theme";
 
-	private final FileHandleResolver fileHandleResolver;
-	private final boolean headless;
+	protected final FileHandleResolver fileHandleResolver;
+	protected final boolean headless;
 	
 	/**
 	 * Constructor

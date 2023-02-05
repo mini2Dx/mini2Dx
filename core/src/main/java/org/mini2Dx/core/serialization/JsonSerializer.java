@@ -88,6 +88,22 @@ public class JsonSerializer {
 	}
 
 	/**
+	 * Reads a JSON document and converts it into an object of the specified
+	 * type
+	 *
+	 * @param json
+	 *            The JSON document
+	 * @param clazz
+	 *            The {@link Class} to convert the document to
+	 * @return The object deserialized from JSON
+	 * @throws SerializationException
+	 *             Thrown when the data is invalid
+	 */
+	public <T> T fromJson(JsonValue json, Class<T> clazz) throws SerializationException {
+		return deserialize(json, clazz);
+	}
+
+	/**
 	 * Writes a JSON document by searching the object for
 	 * {@link org.mini2Dx.core.serialization.annotation.Field} annotations
 	 *
