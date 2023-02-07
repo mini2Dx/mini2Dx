@@ -299,6 +299,7 @@ public abstract class PlayerData {
                         tmpFile.moveTo(file);
                     } catch (Exception e) {
                         Mdx.log.error(LOGGING_TAG, e.getMessage(), e);
+                        throw new PlayerDataException(e);
                     }
                 }
             });

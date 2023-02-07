@@ -20,7 +20,7 @@ import org.mini2Dx.core.PlayerData;
 /**
  * Thrown when an error occurs during {@link PlayerData} operations
  */
-public class PlayerDataException extends Exception {
+public class PlayerDataException extends RuntimeException {
     private static final long serialVersionUID = 1489776657559713023L;
 
     public PlayerDataException(String message) {
