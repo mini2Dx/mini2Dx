@@ -35,6 +35,7 @@ import org.mini2Dx.gdx.utils.OrderedMap;
  */
 public class BeanInjector {
 	private static final String LOGGING_TAG = BeanInjector.class.getSimpleName();
+	public static boolean SKIP_VERIFICATION = false;
 
 	private OrderedMap<String, Object> singletons;
 	private OrderedMap<String, Object> prototypes;
@@ -142,6 +143,9 @@ public class BeanInjector {
 	}
 	
 	private void checkInjectionSuccessful() throws NoSuchBeanException, IllegalArgumentException, IllegalAccessException {
+		if(SKIP_VERIFICATION) {
+			return;
+		}
 		for (String key : singletons.keys()) {
 			Object object = singletons.get(key);
 			checkInjectionSuccessful(object, key);
