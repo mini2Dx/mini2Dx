@@ -91,13 +91,13 @@ public class JvmMethod implements Method {
 
 	@Override
 	public Annotation getDeclaredAnnotation(Class<? extends java.lang.annotation.Annotation> annotationType) {
-		final java.lang.annotation.Annotation[] annotations = method.getDeclaredAnnotations();
+		final Annotation[] annotations = getDeclaredAnnotations();
 		if (annotations == null) {
 			return null;
 		}
-		for (java.lang.annotation.Annotation annotation : annotations) {
-			if (annotation.annotationType().equals(annotationType)) {
-				return new JvmAnnotation(annotation);
+		for (Annotation annotation : annotations) {
+			if (annotation.getAnnotationType().equals(annotationType)) {
+				return annotation;
 			}
 		}
 		return null;

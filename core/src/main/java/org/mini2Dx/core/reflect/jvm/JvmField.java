@@ -16,9 +16,11 @@
 package org.mini2Dx.core.reflect.jvm;
 
 import org.mini2Dx.core.Mdx;
+import org.mini2Dx.core.collections.concurrent.ConcurrentObjectSet;
 import org.mini2Dx.core.exception.ReflectionException;
 import org.mini2Dx.core.reflect.Annotation;
 import org.mini2Dx.core.reflect.Field;
+import org.mini2Dx.gdx.utils.ObjectSet;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Modifier;
@@ -30,6 +32,10 @@ import java.lang.reflect.Type;
  */
 public class JvmField implements Field {
 	public final java.lang.reflect.Field field;
+
+	private final ObjectSet<Class> annotationsPresent = new ConcurrentObjectSet<>(4);
+	private final ObjectSet<Class> annotationsNotPresent = new ConcurrentObjectSet<>(4);
+	private Annotation[] declaredAnnotationsCache = null;
 
 	public JvmField(java.lang.reflect.Field field) {
 		try {
@@ -66,30 +72,44 @@ public class JvmField implements Field {
 
 	@Override
 	public boolean isAnnotationPresent(Class<? extends java.lang.annotation.Annotation> annotation) {
-		return field.isAnnotationPresent(annotation);
+		if(annotationsPresent.contains(annotation)) {
+			return true;
+		}
+		if(annotationsNotPresent.contains(annotation)) {
+			return false;
+		}
+		final boolean present = field.isAnnotationPresent(annotation);
+		if(present) {
+			annotationsPresent.add(annotation);
+		} else {
+			annotationsNotPresent.add(annotation);
+		}
+		return present;
 	}
 
 	@Override
 	public Annotation[] getDeclaredAnnotations() {
-		final java.lang.annotation.Annotation[] annotations = field.getDeclaredAnnotations();
-		final Annotation[] result = new Annotation[annotations.length];
-		if(annotations != null) {
-			for (int i = 0; i < annotations.length; i++) {
-				result[i] = new JvmAnnotation(annotations[i]);
+		if(declaredAnnotationsCache == null) {
+			final java.lang.annotation.Annotation[] annotations = field.getDeclaredAnnotations();
+			declaredAnnotationsCache = new Annotation[annotations.length];
+			if(annotations != null) {
+				for (int i = 0; i < annotations.length; i++) {
+					declaredAnnotationsCache[i] = new JvmAnnotation(annotations[i]);
+				}
 			}
 		}
-		return result;
+		return declaredAnnotationsCache;
 	}
 
 	@Override
 	public Annotation getDeclaredAnnotation(Class<? extends java.lang.annotation.Annotation> annotationType) {
-		final java.lang.annotation.Annotation[] annotations = field.getDeclaredAnnotations();
+		final Annotation[] annotations = getDeclaredAnnotations();
 		if (annotations == null) {
 			return null;
 		}
-		for (java.lang.annotation.Annotation annotation : annotations) {
-			if (annotation.annotationType().equals(annotationType)) {
-				return new JvmAnnotation(annotation);
+		for (Annotation annotation : annotations) {
+			if (annotation.getAnnotationType().equals(annotationType)) {
+				return annotation;
 			}
 		}
 		return null;
