@@ -49,7 +49,8 @@ public class OrthogonalTileLayerRenderer implements TileLayerRenderer {
 				if(!tileLayer.isMostlyEmptyTiles()) {
 					continue;
 				}
-				emptyTileLayerRenderers.put(tileLayer.getIndex(), new OrthogonalEmptyTileLayerRenderer(tiledMap, tileLayer));
+				emptyTileLayerRenderers.put(tileLayer.getIndex(),
+						new OrthogonalEmptyTileLayerRenderer(tiledMap, tileLayer, tileIdToTileset));
 			}
 		}
 	}

@@ -14,36 +14,32 @@ package org.mini2Dx.tiled.renderer;
 import org.mini2Dx.core.Graphics;
 import org.mini2Dx.gdx.math.MathUtils;
 import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.gdx.utils.IntMap;
 import org.mini2Dx.gdx.utils.Queue;
 import org.mini2Dx.tiled.Tile;
 import org.mini2Dx.tiled.TileLayer;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.Tileset;
 
+import java.util.BitSet;
+
 /**
- * Optimises CPU time (at cost of memory) for rendering orthogonal {@link TileLayer}s
+ * Optimises CPU time for rendering orthogonal {@link TileLayer}s
  * where the layer consists mostly of empty tiles
  */
 public class OrthogonalEmptyTileLayerRenderer implements TileLayerRenderer {
-	private static final int TILE_RENDER_REF_POOL_INITIAL_SIZE = 16384;
-	private static final Queue<TileRenderRef> TILE_RENDER_REF_POOL = new Queue<>(TILE_RENDER_REF_POOL_INITIAL_SIZE);
-
-	static {
-		for(int i = 0; i < TILE_RENDER_REF_POOL_INITIAL_SIZE; i++) {
-			TILE_RENDER_REF_POOL.addLast(new TileRenderRef());
-		}
-	}
-
+	private final IntMap<Tileset> tileIdToTileset;
 	private final TiledMap tiledMap;
 	private final TileLayer layer;
-	private final Array<TileRenderRef> tiles;
+	private final BitSet tiles;
 
-	public OrthogonalEmptyTileLayerRenderer(TiledMap tiledMap, TileLayer layer) {
+	public OrthogonalEmptyTileLayerRenderer(TiledMap tiledMap, TileLayer layer, IntMap<Tileset> tileIdToTileset) {
 		super();
+		this.tileIdToTileset = tileIdToTileset;
 		this.tiledMap = tiledMap;
 		this.layer = layer;
 
-		tiles = new Array<TileRenderRef>(layer.getTotalFilledTiles() + 1);
+		tiles = new BitSet(layer.getWidth() * layer.getHeight());
 
 		for (int y = 0; y < layer.getHeight(); y++) {
 			for (int x = 0; x < layer.getWidth(); x++) {
@@ -52,19 +48,7 @@ public class OrthogonalEmptyTileLayerRenderer implements TileLayerRenderer {
 				if (tileId < 1) {
 					continue;
 				}
-
-				final TileRenderRef ref;
-				synchronized (TILE_RENDER_REF_POOL) {
-					if(TILE_RENDER_REF_POOL.size == 0) {
-						ref = new TileRenderRef();
-					} else {
-						ref = TILE_RENDER_REF_POOL.removeFirst();
-					}
-				}
-				ref.x = x;
-				ref.y = y;
-				ref.tileId = tileId;
-				tiles.add(ref);
+				tiles.set((y * layer.getWidth()) + x);
 			}
 		}
 	}
@@ -78,52 +62,59 @@ public class OrthogonalEmptyTileLayerRenderer implements TileLayerRenderer {
 		renderX = MathUtils.round(renderX - startTileRenderX);
 		renderY = MathUtils.round(renderY - startTileRenderY);
 
-		for(TileRenderRef tileRef : tiles) {
-			if(tileRef.x < startTileX) {
+		for (int index = tiles.nextSetBit(0); index >= 0; index = tiles.nextSetBit(index + 1)) {
+			int tileY = index / layer.getWidth();
+			int tileX = index - (tileY * layer.getWidth());
+
+			if(tileX < startTileX) {
 				continue;
 			}
-			if(tileRef.y < startTileY) {
+			if(tileY < startTileY) {
 				continue;
 			}
-			if(tileRef.x >= startTileX + widthInTiles) {
+			if(tileX >= startTileX + widthInTiles) {
 				continue;
 			}
-			if(tileRef.y >= startTileY + heightInTiles) {
+			if(tileY >= startTileY + heightInTiles) {
 				continue;
 			}
 
-			if(tileRef.tile == null) {
+			int tileId = layer.getTileId(tileX, tileY);
+
+			if (tileId < 1) {
+				continue;
+			}
+
+			Tileset tileset = tileIdToTileset.get(tileId, null);
+			if(tileset == null) {
 				for (int i = 0; i < tiledMap.getTilesets().size; i++) {
-					Tileset tileset = tiledMap.getTilesets().get(i);
-					if (tileset.contains(tileRef.tileId)) {
-						tileRef.tile = tileset.getTile(tileRef.tileId);
+					Tileset searchTileset = tiledMap.getTilesets().get(i);
+					if (searchTileset.contains(tileId)) {
+						tileset = searchTileset;
+						tileIdToTileset.put(tileId, tileset);
 						break;
 					}
 				}
+				if(tileset == null) {
+					return;
+				}
 			}
-			if(tileRef.tile != null) {
-				boolean flipHorizontally = layer.isFlippedHorizontally(tileRef.x, tileRef.y);
-				boolean flipVertically = layer.isFlippedVertically(tileRef.x, tileRef.y);
-				boolean flipDiagonally = layer.isFlippedDiagonally(tileRef.x, tileRef.y);
 
-				int tileRenderX = renderX + (tileRef.x * tiledMap.getTileWidth());
-				int tileRenderY = renderY + (tileRef.y * tiledMap.getTileHeight());
+			Tile tile = tileset.getTile(tileId);
 
-				tileRef.tile.draw(g, tileRenderX, tileRenderY, alpha, flipHorizontally, flipVertically, flipDiagonally);
-			}
+			boolean flipHorizontally = layer.isFlippedHorizontally(tileX, tileY);
+			boolean flipVertically = layer.isFlippedVertically(tileX, tileY);
+			boolean flipDiagonally = layer.isFlippedDiagonally(tileX, tileY);
+
+			int tileRenderX = renderX + (tileX * tiledMap.getTileWidth());
+			int tileRenderY = renderY + (tileY * tiledMap.getTileHeight());
+
+			tile.draw(g, tileRenderX, tileRenderY, alpha, flipHorizontally, flipVertically, flipDiagonally);
 		}
 	}
 
 	@Override
 	public void dispose() {
-		for(int i = 0; i < tiles.size; i++) {
-			final TileRenderRef renderRef = tiles.get(i);
-			renderRef.tile = null;
-
-			synchronized (TILE_RENDER_REF_POOL) {
-				TILE_RENDER_REF_POOL.addLast(renderRef);
-			}
-		}
 		tiles.clear();
 	}
 
