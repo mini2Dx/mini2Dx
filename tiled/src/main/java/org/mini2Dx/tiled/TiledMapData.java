@@ -48,7 +48,7 @@ public class TiledMapData implements TiledParserListener, GameDataSerializable {
 	protected FileHandle fileHandle;
 
 	protected final Array<Tileset> tilesets = new Array<Tileset>(true, 2, Tileset.class);
-	protected final IntSet tilesetGids = new IntSet();
+	protected final IntSet tilesetGids = new IntSet(8);
 	protected final Array<Layer> layers = new Array<Layer>(true, 2, Layer.class);
 	protected final ObjectMap<String, TiledObjectGroup> objectGroups = new ObjectMap<String, TiledObjectGroup>(8);
 
