@@ -36,7 +36,16 @@ import java.util.Objects;
  * Represents an object loaded from a {@link TiledMap}
  */
 public class TiledObject implements GameDataSerializable {
+	/**
+	 * Default property map capacity
+	 */
 	public static int DEFAULT_PROPERTY_MAP_SIZE = 16;
+	/**
+	 * True if Tiled objects should be discarded on load. Useful for reducing memory consumption.
+	 */
+	public static boolean DISCARD_TILED_OBJECTS = false;
+
+	private static final TiledObject DISCARD_OBJECT = new TiledObject(0, 0, 0, 0, 0);
 
 	private final int id;
 	private final float x, y, width, height;
@@ -76,7 +85,7 @@ public class TiledObject implements GameDataSerializable {
 		final float height = inputStream.readFloat();
 		final boolean builtFromTemplate = inputStream.readBoolean();
 
-		final TiledObject result = new TiledObject(id, x, y, width, height, builtFromTemplate);
+		final TiledObject result = DISCARD_TILED_OBJECTS ? DISCARD_OBJECT : new TiledObject(id, x, y, width, height, builtFromTemplate);
 		result.readData(inputStream);
 		return result;
 	}
@@ -131,10 +140,18 @@ public class TiledObject implements GameDataSerializable {
 
 		final int totalProperties = inputStream.readInt();
 		if(totalProperties > 0) {
-			properties = new ObjectMap<>(DEFAULT_PROPERTY_MAP_SIZE);
+			if(properties != null) {
+				properties.clear();
+			} else {
+				properties = new ObjectMap<>(DEFAULT_PROPERTY_MAP_SIZE);
+			}
 			for(int i = 0; i < totalProperties; i++) {
 				String key = inputStream.readUTF();
 				String value = GameDataSerializableUtils.readString(inputStream);
+
+				if(DISCARD_TILED_OBJECTS) {
+					continue;
+				}
 
 				if(builtFromTemplate) {
 					key = key.intern();
@@ -147,9 +164,15 @@ public class TiledObject implements GameDataSerializable {
 
 		final int totalVertices = inputStream.readInt();
 		if(totalVertices > -1) {
-			vertices = new float[totalVertices];
-			for(int i = 0; i < vertices.length; i++) {
-				vertices[i] = inputStream.readFloat();
+			if(DISCARD_TILED_OBJECTS) {
+				for(int i = 0; i < totalVertices; i++) {
+					inputStream.readFloat();
+				}
+			} else {
+				vertices = new float[totalVertices];
+				for(int i = 0; i < vertices.length; i++) {
+					vertices[i] = inputStream.readFloat();
+				}
 			}
 		}
 

@@ -87,7 +87,11 @@ public class TiledObjectGroup extends Layer {
 
 		final int totalObjects = inputStream.readInt();
 		for(int i = 0; i < totalObjects; i++) {
-			objects.add(TiledObject.fromInputStream(inputStream));
+			final TiledObject tiledObject = TiledObject.fromInputStream(inputStream);
+			if(TiledObject.DISCARD_TILED_OBJECTS) {
+				continue;
+			}
+			objects.add(tiledObject);
 		}
 	}
 
