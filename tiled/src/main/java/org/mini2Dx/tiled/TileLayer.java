@@ -320,7 +320,7 @@ public class TileLayer extends Layer {
 		flipDiagonally.clear();
 
 		synchronized (POOL) {
-			POOL.addLast(this);
+			POOL.addFirst(this);
 		}
 	}
 
