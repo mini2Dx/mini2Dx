@@ -602,7 +602,7 @@ public class TiledParser implements TiledParserNotifier {
 			Element polyline = element.getChildByName("polyline");
 			if(polyline != null) {
 				object.setAsPolyline(polyline.getAttribute("points", ""));
-			} else if(objectTemplate != null && objectTemplate.getObjectShape().equals(TiledObjectShape.POLYGON)) {
+			} else if(objectTemplate != null && objectTemplate.getObjectShape().equals(TiledObjectShape.POLYLINE)) {
 				object.setAsPolyline(objectTemplate.getVertices());
 			}
 			Element text = element.getChildByName("text");
